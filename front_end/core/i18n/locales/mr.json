@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "कॅशे बंद करा (DevTools उघडे असताना)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "ऑटो गडद मोड बंद करा"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript बंद करा"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP फॉरमॅट बंद करा"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "बंद करा"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "सिंक न केलेले स्टॅक ट्रेस कॅप्चर करू नका"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS मीडिया प्रकाराचे अनुकरण करू नका"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "ऑटो गडद मोडचे अनुकरण करू नका"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ग्रिड ओळींचा विस्तार करू नका"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "कस्टम फॉरमॅटर सुरू करा"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "ऑटो गडद मोड सुरू करा"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript सुरू करा"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP फॉरमॅट सुरू करा"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "सुरू करा"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ग्रिड ओळींचा विस्तार करा"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "फोकस केलेल्या पेजचे अनुकरण करा"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "फोकस केलेल्या पेजचे अनुकरण करते."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "तपासणी केलेल्या पेजसाठी ऑटोमेटिक गडद मोड सुरू करते."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut मीडिया वैशिष्ट्याची सक्ती करते"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "कन्सोल ड्रॉवर दाखवा"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "सिस्टमने प्राधान्य दिलेली कलर स्कीम बदलली आहे. हा बदल DevTools वर लागू करण्यासाठी रीलोड करा."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "वेगळ्या विंडोमध्ये अनडॉक करा"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "फाइल राइट करत आहे…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "आशय सुरक्षा धोरण - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "मॅनिफेस्टवरून आवश्यक आयकन डाउनलोड करता आला नाही"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "वर्णन"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "वर्कर"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "फक्त GET विनंतीद्वारे लोड केलेली पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र आहेत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "फक्त 2XX चा स्टेटस कोड असलेली पेज कॅशे केली जाऊ शकतात."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "कॅशेमध्ये असताना JavaScript अमलात आणण्याचा प्रयत्न Chrome ने डिटेक्ट केला आहे."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "ज्या पेजनी AppBanner ची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "फ्लॅगद्वारे बॅक/फॉरवर्ड कॅशे बंद केली गेली. ती या डिव्हाइसवर स्थानिकरीत्या सुरू करण्यासाठी chrome://flags/#back-forward-cache ला भेट द्या."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "कमांड लाइनद्वारे बॅक/फॉरवर्ड कॅशे बंद केली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "अपुर्‍या मेमरीमुळे बॅक/फॉरवर्ड कॅशे बंद केली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "बॅक/फॉरवर्ड कॅशेला प्रतिनिधीचा सपोर्ट नाही."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "प्रीरेंडररसाठी बॅक/फॉरवर्ड कॅशे बंद केली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "पेजमध्ये नोंदणी केलेल्या ऐकणार्‍यांसह BroadcastChannel इंस्टन्स असल्यामुळे ते कॅशे केले जाऊ शकत नाही."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "ज्या पेजमध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "कॅशे हेतुपुरस्सर साफ केली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "दुसर्‍या पेजला कॅशे केले जाऊ देण्यासाठी पेज कॅशेमधून काढले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "प्लगिनचा समावेश असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "मीडिया डिव्हाइस डिस्पॅचर वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "सोडत असताना मीडिया प्लेअर प्ले होत होता."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API वापरणारी आणि प्लेबॅक स्थिती सेट करणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API वापरणारी आणि कृती हँडलर सेट करणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "सिरीअल API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthentication API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "समर्पित कर्मचारी किंवा वर्कलेट वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "दस्तऐवज सोडण्यापूर्वी तो लोड होणे पूर्ण झाले नाही."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना सेवा कर्मचारी अ‍ॅक्टिव्हेट केले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "दुसर्‍या पेजला कॅशे केले जाऊ देण्यासाठी पेज कॅशेमधून काढले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "ज्या पेजनी मीडिया स्ट्रीमचा अ‍ॅक्सेस दिला आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "पोर्टल वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "ज्या पेजमध्ये उघडलेले IndexedDB कनेक्शन आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "अपात्र API वापरले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "ज्या पेजमध्ये एक्स्टेंशनद्वारे JavaScript इंजेक्ट केले गेले आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "ज्या पेजमध्ये एक्स्टेंशनद्वारे StyleSheet इंजेक्ट केले गेले आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "अंतर्गत एरर."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "कीबोर्ड लॉक वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "पेज सोडण्यापूर्वी ते लोड होणे पूर्ण झाले नाही."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "ज्या पेजच्या मुख्य स्रोतामध्ये cache-control:no-cache आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "ज्या पेजच्या मुख्य स्रोतामध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "बॅक/फॉरवर्ड कॅशेमधून पेज रिस्टोअर केले जाण्यापूर्वी नेव्हिगेशन रद्द केले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "अ‍ॅक्टिव्ह नेटवर्क कनेक्शनला खूप जास्त डेटा मिळाल्यामुळे पेज कॅशेमधून काढले गेले. पेज कॅशे केले असताना ते मिळवू शकत असलेल्या डेटाचे प्रमाण Chrome मर्यादित करते."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ज्या पेजमध्ये इनफ्लाइट फेच() किंवा XHR आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "अ‍ॅक्टिव्ह नेटवर्क विनंतीमध्ये रीडिरेक्टचा समावेश असल्यामुळे पेज बॅक/फॉरवर्ड कॅशेमधून काढले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "नेटवर्क कनेक्शन खूप वेळ उघडे असल्यामुळे पेज कॅशेमधून काढले गेले. पेज कॅशे केले असताना ते मिळवू शकत असलेल्या डेटाला लागणार्‍या वेळाचे प्रमाण Chrome मर्यादित करते."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "ज्या पेजमध्ये वैध प्रतिसाद हेड नाही, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "नेव्हिगेशन हे मुख्य फ्रेमव्यतिरिक्त इतर फ्रेममध्ये घडले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "सुरू असलेले अनुक्रमित केलेले DB व्यवहार असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "इन-फ्लाइट नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "इन-फ्लाइट फेच नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "इन-फ्लाइट नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "इन-फ्लाइट XHR नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "चित्रात-चित्र वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "पोर्टल वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "प्रिंटिंग UI दाखवणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "पेज 'window.open()' वापरून उघडले गेले आणि दुसर्‍या टॅबला त्याचा संदर्भ आहे किंवा पेजने विंडो उघडली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "बॅक/फॉरवर्ड कॅशेमधील पेजसाठी रेंडरिंग प्रक्रिया क्रॅश झाली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "बॅक/फॉरवर्ड कॅशेमधील पेजसाठी रेंडरिंग प्रक्रिया थांबवली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "ज्या पेजनी ऑडिओ कॅप्चर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "ज्या पेजनी सेन्सर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "ज्या पेजनी बॅकग्राउंड सिंक किंवा फेच परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "ज्या पेजनी MIDI परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "ज्या पेजनी सूचना परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "स्टोरेज अ‍ॅक्सेसची विनंती केलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ज्या पेजनी व्हिडिओ कॅप्चर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "फक्त URL स्कीम ही HTTP / HTTPS असलेली पेज कॅशे केली जाऊ शकतात."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना त्यावर सेवा कर्मचार्‍याने दावा केला."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "सेवा कर्मचार्‍याने बॅक/फॉरवर्ड कॅशेमध्ये असलेल्या पेजला MessageEvent पाठवण्याचा प्रयत्न केला."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना ServiceWorker ची नोंदणी रद्द केली गेली."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "सेवा कर्मचारी अ‍ॅक्टिव्हेशनमुळे पेज बॅक/फॉरवर्ड कॅशेमधून काढले गेले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome रीस्टार्ट झाले आणि त्याने बॅक/फॉरवर्ड कॅशे एंट्री साफ केल्या."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "पेजवरील आयफ्रेमने नेव्हिगेशन सुरू केले, जे पूर्ण झाले नाही."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "ज्या पेजच्या सबरिसोर्समध्ये cache-control:no-cache आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "ज्या पेजच्या सबरिसोर्समध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "पेजने बॅक/फॉरवर्ड कॅशेमध्ये कमाल वेळमर्यादा ओलांडली आणि ते एक्स्पायर झाले."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "बॅक/फॉरवर्ड कॅशे एंटर करताना पेजची वेळ संपली (संभवतः खूप वेळ रन झालेल्या पेजहाइड हँडलरमुळे)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "पेजला मुख्य फ्रेममध्ये अनलोड हँडलर आहे."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "पेजला सब फ्रेममध्ये अनलोड हँडलर आहे."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ब्राउझरने वापरकर्ता एजंट ओव्हरराइड हेडर बदलले आहे."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ज्या पेजनी व्हिडिओ किंवा ऑडिओ रेकॉर्ड करण्यासाठी अ‍ॅक्सेस दिला आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "बॅक/फॉरवर्ड कॅशे"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "कृती करण्यायोग्य नाही"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "ही कारणे कृती करण्यायोग्य नाहीत, म्हणजेच, पेजच्या थेट नियंत्रणाबाहेर असलेल्या एखाद्या गोष्टीमुळे कॅशे करणे रोखले गेले होते."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "अधिक जाणून घ्या: बॅक/फॉरवर्ड कॅशेसंबंधित पात्रता"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "मुख्य फ्रेम"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "बॅक/फॉरवर्ड कॅशेमधून सर्व्ह केले नाही: बॅक/फॉरवर्ड कॅशे ट्रिगर करण्यासाठी, Chrome ची बॅक/फॉरवर्ड बटणे वापरा किंवा दुसरीकडे आणि मागे आपोआप नेव्हिगेट करण्यासाठी खालील चाचणी बटण वापरा."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "कृती करण्यायोग्य आहे"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "ही कारणे कृती करण्यायोग्य आहेत, म्हणजेच, बॅक/फॉरवर्ड कॅशेसाठी पेज पात्र बनवण्याकरिता समस्यांचे निराकरण करण्यासाठी तुम्ही कृती करू शकता."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "बॅक/फॉरवर्ड कॅशेमधून यशस्वीरीत्या सर्व्ह केले आहे."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "बॅक/फॉरवर्ड कॅशेची चाचणी करा"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "चाचणी रन करत आहे"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "सपोर्ट प्रलंबित आहे"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "या कारणांसाठी Chrome सपोर्ट प्रलंबित आहे, म्हणजेच, Chrome च्या भविष्यातील आवृत्तीमध्ये ती पेजला बॅक/फॉरवर्ड कॅशेसाठी पात्र ठरण्यापासून रोखणार नाहीत."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "उपलब्ध नाही"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "अज्ञात स्टेटस"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "बॅकग्राउंड फेच"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "इव्हेंट रेकॉर्ड करणे थांबवा"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "फक्त GET विनंतीद्वारे लोड केलेली पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र आहेत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "फक्त 2XX चा स्टेटस कोड असलेली पेज कॅशे केली जाऊ शकतात."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "कॅशेमध्ये असताना JavaScript अमलात आणण्याचा प्रयत्न Chrome ने डिटेक्ट केला आहे."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "ज्या पेजनी AppBanner ची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "फ्लॅगद्वारे बॅक/फॉरवर्ड कॅशे बंद केली गेली. ती या डिव्हाइसवर स्थानिकरीत्या सुरू करण्यासाठी chrome://flags/#back-forward-cache ला भेट द्या."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "कमांड लाइनद्वारे बॅक/फॉरवर्ड कॅशे बंद केली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "अपुर्‍या मेमरीमुळे बॅक/फॉरवर्ड कॅशे बंद केली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "बॅक/फॉरवर्ड कॅशेला प्रतिनिधीचा सपोर्ट नाही."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "प्रीरेंडररसाठी बॅक/फॉरवर्ड कॅशे बंद केली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "पेजमध्ये नोंदणी केलेल्या ऐकणार्‍यांसह BroadcastChannel इंस्टन्स असल्यामुळे ते कॅशे केले जाऊ शकत नाही."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "ज्या पेजमध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "कॅशे हेतुपुरस्सर साफ केली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "दुसर्‍या पेजला कॅशे केले जाऊ देण्यासाठी पेज कॅशेमधून काढले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "प्लगिनचा समावेश असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "मीडिया डिव्हाइस डिस्पॅचर वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "सोडत असताना मीडिया प्लेअर प्ले होत होता."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API वापरणारी आणि प्लेबॅक स्थिती सेट करणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API वापरणारी आणि कृती हँडलर सेट करणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "सिरीअल API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthentication API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API वापरणारी पेज बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "समर्पित कर्मचारी किंवा वर्कलेट वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "दस्तऐवज सोडण्यापूर्वी तो लोड होणे पूर्ण झाले नाही."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना सेवा कर्मचारी अ‍ॅक्टिव्हेट केले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "दुसर्‍या पेजला कॅशे केले जाऊ देण्यासाठी पेज कॅशेमधून काढले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "ज्या पेजनी मीडिया स्ट्रीमचा अ‍ॅक्सेस दिला आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "पोर्टल वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ज्या पेजमध्ये उघडलेले IndexedDB कनेक्शन आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "अपात्र API वापरले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ज्या पेजमध्ये एक्स्टेंशनद्वारे JavaScript इंजेक्ट केले गेले आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ज्या पेजमध्ये एक्स्टेंशनद्वारे StyleSheet इंजेक्ट केले गेले आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "अंतर्गत एरर."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "कीबोर्ड लॉक वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "पेज सोडण्यापूर्वी ते लोड होणे पूर्ण झाले नाही."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ज्या पेजच्या मुख्य स्रोतामध्ये cache-control:no-cache आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ज्या पेजच्या मुख्य स्रोतामध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "बॅक/फॉरवर्ड कॅशेमधून पेज रिस्टोअर केले जाण्यापूर्वी नेव्हिगेशन रद्द केले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "अ‍ॅक्टिव्ह नेटवर्क कनेक्शनला खूप जास्त डेटा मिळाल्यामुळे पेज कॅशेमधून काढले गेले. पेज कॅशे केले असताना ते मिळवू शकत असलेल्या डेटाचे प्रमाण Chrome मर्यादित करते."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ज्या पेजमध्ये इनफ्लाइट फेच() किंवा XHR आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "अ‍ॅक्टिव्ह नेटवर्क विनंतीमध्ये रीडिरेक्टचा समावेश असल्यामुळे पेज बॅक/फॉरवर्ड कॅशेमधून काढले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "नेटवर्क कनेक्शन खूप वेळ उघडे असल्यामुळे पेज कॅशेमधून काढले गेले. पेज कॅशे केले असताना ते मिळवू शकत असलेल्या डेटाला लागणार्‍या वेळाचे प्रमाण Chrome मर्यादित करते."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ज्या पेजमध्ये वैध प्रतिसाद हेड नाही, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "नेव्हिगेशन हे मुख्य फ्रेमव्यतिरिक्त इतर फ्रेममध्ये घडले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "सुरू असलेले अनुक्रमित केलेले DB व्यवहार असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "इन-फ्लाइट नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "इन-फ्लाइट फेच नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "इन-फ्लाइट नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "इन-फ्लाइट XHR नेटवर्क विनंती असलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "चित्रात-चित्र वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "पोर्टल वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "प्रिंटिंग UI दाखवणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "पेज 'window.open()' वापरून उघडले गेले आणि दुसर्‍या टॅबला त्याचा संदर्भ आहे किंवा पेजने विंडो उघडली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "बॅक/फॉरवर्ड कॅशेमधील पेजसाठी रेंडरिंग प्रक्रिया क्रॅश झाली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "बॅक/फॉरवर्ड कॅशेमधील पेजसाठी रेंडरिंग प्रक्रिया थांबवली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ज्या पेजनी ऑडिओ कॅप्चर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ज्या पेजनी सेन्सर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ज्या पेजनी बॅकग्राउंड सिंक किंवा फेच परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "ज्या पेजनी MIDI परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "ज्या पेजनी सूचना परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "स्टोरेज अ‍ॅक्सेसची विनंती केलेली पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ज्या पेजनी व्हिडिओ कॅप्चर परवानग्यांची विनंती केली आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "फक्त URL स्कीम ही HTTP / HTTPS असलेली पेज कॅशे केली जाऊ शकतात."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना त्यावर सेवा कर्मचार्‍याने दावा केला."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "सेवा कर्मचार्‍याने बॅक/फॉरवर्ड कॅशेमध्ये असलेल्या पेजला MessageEvent पाठवण्याचा प्रयत्न केला."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "पेज बॅक/फॉरवर्ड कॅशेमध्ये असताना ServiceWorker ची नोंदणी रद्द केली गेली."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "सेवा कर्मचारी अ‍ॅक्टिव्हेशनमुळे पेज बॅक/फॉरवर्ड कॅशेमधून काढले गेले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome रीस्टार्ट झाले आणि त्याने बॅक/फॉरवर्ड कॅशे एंट्री साफ केल्या."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "पेजवरील आयफ्रेमने नेव्हिगेशन सुरू केले, जे पूर्ण झाले नाही."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ज्या पेजच्या सबरिसोर्समध्ये cache-control:no-cache आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ज्या पेजच्या सबरिसोर्समध्ये cache-control:no-store आहे, ती बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "पेजने बॅक/फॉरवर्ड कॅशेमध्ये कमाल वेळमर्यादा ओलांडली आणि ते एक्स्पायर झाले."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "बॅक/फॉरवर्ड कॅशे एंटर करताना पेजची वेळ संपली (संभवतः खूप वेळ रन झालेल्या पेजहाइड हँडलरमुळे)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "पेजला मुख्य फ्रेममध्ये अनलोड हँडलर आहे."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "पेजला सब फ्रेममध्ये अनलोड हँडलर आहे."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ब्राउझरने वापरकर्ता एजंट ओव्हरराइड हेडर बदलले आहे."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ज्या पेजनी व्हिडिओ किंवा ऑडिओ रेकॉर्ड करण्यासाठी अ‍ॅक्सेस दिला आहे, ती सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport असलेली पेज बॅक/फॉरवर्ड कॅशे एंटर करू शकत नाहीत."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR वापरणारी पेज सध्या बॅक/फॉरवर्ड कॅशेसाठी पात्र नाहीत."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "बॅक/फॉरवर्ड कॅशे"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "कृती करण्यायोग्य नाही"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ही कारणे कृती करण्यायोग्य नाहीत, म्हणजेच, पेजच्या थेट नियंत्रणाबाहेर असलेल्या एखाद्या गोष्टीमुळे कॅशे करणे रोखले गेले होते."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "अधिक जाणून घ्या: बॅक/फॉरवर्ड कॅशेसंबंधित पात्रता"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "मुख्य फ्रेम"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "बॅक/फॉरवर्ड कॅशेमधून सर्व्ह केले नाही: बॅक/फॉरवर्ड कॅशे ट्रिगर करण्यासाठी, Chrome ची बॅक/फॉरवर्ड बटणे वापरा किंवा दुसरीकडे आणि मागे आपोआप नेव्हिगेट करण्यासाठी खालील चाचणी बटण वापरा."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "कृती करण्यायोग्य आहे"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ही कारणे कृती करण्यायोग्य आहेत, म्हणजेच, बॅक/फॉरवर्ड कॅशेसाठी पेज पात्र बनवण्याकरिता समस्यांचे निराकरण करण्यासाठी तुम्ही कृती करू शकता."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "बॅक/फॉरवर्ड कॅशेमधून यशस्वीरीत्या सर्व्ह केले आहे."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "बॅक/फॉरवर्ड कॅशेची चाचणी करा"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "चाचणी रन करत आहे"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "सपोर्ट प्रलंबित आहे"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "या कारणांसाठी Chrome सपोर्ट प्रलंबित आहे, म्हणजेच, Chrome च्या भविष्यातील आवृत्तीमध्ये ती पेजला बॅक/फॉरवर्ड कॅशेसाठी पात्र ठरण्यापासून रोखणार नाहीत."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "उपलब्ध नाही"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "अज्ञात स्टेटस"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "दाखवण्यासाठी कोणतेही एंडपॉइंट नाहीत"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "सेव्ह करा"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools शी पुन्हा कनेक्ट करा"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (कंफर्म करण्यासाठी 'एंटर ' किंवा रद्द करण्यासाठी 'एस्केप' दाबा.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "कमांड स्विच करण्यासाठी टॅब वापरा. उपलब्ध कमांड पाहण्यासाठी '?' टाइप करा"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "उपलब्ध कमांड पाहण्यासाठी '?' टाइप करा"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "फाइल उघडा"

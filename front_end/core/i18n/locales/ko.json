@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "DevTools가 열려 있는 동안 캐시 사용 중지"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "자동 어두운 모드 사용 중지"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "자바스크립트 사용 중지"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP 형식 사용 중지"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "사용 중지"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "비동기 스택 트레이스 캡처 안함"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS 미디어 유형 에뮬레이션 안함"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "자동 어두운 모드 에뮬레이션 안함"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "그리드 라인 확장 안함"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "맞춤 형식 지정 도구 사용 설정"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "자동 어두운 모드 사용 설정"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "자바스크립트 사용 설정"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 형식 사용 설정"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "사용"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "그리드 선 확장"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "포커스된 페이지 에뮬레이션"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "포커스된 페이지를 에뮬레이션합니다."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "검사한 페이지에 대해 자동 어두운 모드를 사용합니다."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut 미디어 기능을 강제 실행합니다."
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "콘솔 창 표시"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "시스템의 기본 색 구성표가 변경되었습니다. 이 변경사항을 DevTools에 적용하려면 새로고침하세요."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "별도의 창으로 고정 해제"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "파일 쓰는 중…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "콘텐츠 보안 정책 - 평가"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "매니페스트에서 필요한 아이콘을 다운로드할 수 없음"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "설명"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "작업자"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET 요청을 통해 로드된 페이지만 뒤로-앞으로 캐시를 사용할 수 있습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "상태 코드가 2XX인 페이지만 캐시될 수 있습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome이 캐시된 페이지에서 자바스크립트 실행 시도를 감지했습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "플래그에서 뒤로-앞으로 캐시가 사용 중지되었습니다. chrome://flags/#back-forward-cache로 이동하여 뒤로-앞으로 캐시를 사용 설정하세요. 캐시는 기기의 로컬에 저장됩니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "명령줄에 의해 뒤로-앞으로 캐시가 사용 중지되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "메모리가 충분하지 못하여 뒤로-앞으로 캐시가 사용 중지되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "권한을 위임받은 사용자가 뒤로-앞으로 캐시를 허용하지 않습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "프리렌더러에 의해 뒤로-앞으로 캐시가 사용 중지되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "페이지에 등록된 리스너가 포함된 BroadcastChannel 인스턴스가 있어 페이지를 캐시할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store 헤더가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "캐시가 의도적으로 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "다른 페이지를 캐시하기 위해 페이지가 캐시에서 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "플러그인을 포함하고 있는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "미디어 기기 디스패처를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "페이지에서 나갈 때 미디어 플레이어가 재생 중이었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API를 사용하며 재생 상태를 설정한 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API를 사용하며 작업 핸들러를 설정한 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "전용 작업자 또는 Worklet을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "사용자가 문서에서 나갈 때까지 문서 로드가 완료되지 않았습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 서비스 워커가 활성화되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "다른 페이지를 캐시하기 위해 페이지가 캐시에서 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "미디어 스트림 액세스 권한을 부여한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "포털을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "IndexedDB가 연결된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "사용 불가능한 API가 사용되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "확장 프로그램에 의해 자바스크립트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "확장 프로그램에 의해 스타일시트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "내부 오류입니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "키보드 잠금을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "사용자가 페이지에서 나갈 때까지 페이지 로드가 완료되지 않았습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "기본 리소스에 cache-control:no-cache가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "기본 리소스에 cache-control:no-store가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "뒤로-앞으로 캐시에서 페이지를 복원하기 전에 탐색이 취소되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "활성 네트워크에 연결된 동안 페이지에서 지나치게 많은 데이터를 수신하여 페이지가 캐시에서 삭제되었습니다. Chrome은 캐시된 페이지에서 수신할 수 있는 데이터의 양을 제한합니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "fetch() 또는 XHR이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "활성 네트워크 요청에 리디렉션이 발생하여 페이지가 뒤로-앞으로 캐시에서 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "네트워크 연결 시간이 너무 길어 페이지가 캐시에서 삭제되었습니다. Chrome은 캐시된 페이지에서 데이터를 수신할 수 있는 시간을 제한합니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "유효한 응답 헤드가 없는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "기본 프레임이 아닌 다른 프레임에서 탐색이 이루어졌습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "indexedDB 트랜잭션이 진행 중인 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "가져오기 네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "XHR 네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "PIP 모드를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "포털을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "인쇄 UI를 표시하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "페이지가 'window.open()'을(를) 사용하여 열렸고 다른 탭에 해당 페이지 참조가 있거나 페이지가 새 창에서 열렸습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "뒤로-앞으로 캐시에 저장된 페이지의 렌더기 프로세스가 다운되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "뒤로-앞으로 캐시에 저장된 페이지의 렌더기 프로세스가 중단되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "오디오 캡처 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "센서 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "백그라운드 동기화 또는 가져오기 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "알림 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "저장용량 액세스를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "동영상 캡처 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "URL 스킴이 HTTP/HTTPS인 페이지만 캐시될 수 있습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 서비스 워커에 의해 사용되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "서비스 워커가 뒤로-앞으로 캐시에 추가된 페이지에 MessageEvent 속성을 전송하려고 했습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 ServiceWorker가 등록 취소되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "서비스 워커 활성화로 인하여 페이지가 뒤로-앞으로 캐시에서 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome이 다시 시작되면서 뒤로-앞으로 캐시 항목이 삭제되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "페이지의 iframe이 탐색을 시작했으나 완료되지 않았습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "하위 리소스에 cache-control:no-cache가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "하위 리소스에 cache-control:no-store가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "페이지가 뒤로-앞으로 캐시에서 최대 시간을 초과하여 만료되었습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "페이지의 뒤로-앞으로 캐시 시작이 타임아웃되었습니다(페이지 숨김 핸들러의 장기간 실행 때문일 가능성이 큼)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "페이지 기본 프레임에 로드 취소 핸들러가 있습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "페이지 하위 프레임에 로드 취소 핸들러가 있습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "브라우저에서 사용자 에이전트 재정의 헤더를 변경했습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "동영상 녹화 또는 오디오 녹음 액세스를 부여한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLock을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket이 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "뒤로-앞으로 캐시"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "조치를 취할 수 없음"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "이러한 이유는 조치 가능하지 않습니다. 즉, 페이지의 직접 제어가 아닌 다른 요인으로 인하여 캐싱이 차단되었습니다."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "자세히 알아보기: 뒤로-앞으로 캐시 사용 조건"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "메인 프레임"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "뒤로-앞으로 캐시를 통해 페이지를 복원하지 못했습니다. 뒤로-앞으로 캐시를 실행하려면 Chrome의 뒤로/앞으로 버튼을 사용하거나 아래의 테스트 버튼을 사용하여 자동으로 앞뒤로 이동하세요."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "실행 가능"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "이러한 이유는 해결 가능합니다. 즉, 문제를 해결하면 페이지에서 뒤로-앞으로 캐시를 사용할 수 있습니다."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "뒤로-앞으로 캐시를 통해 페이지를 복원했습니다."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "뒤로-앞으로 캐시 테스트"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "테스트 실행 중"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "지원 보류 중"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "이러한 이유에 대한 Chrome 지원이 보류됩니다. 즉, 향후 버전의 Chrome에서는 페이지에서 뒤로-앞으로 캐시 사용이 차단되지 않습니다."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "사용할 수 없음"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "알 수 없는 상태"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "배경화면 가져오기"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "이벤트 기록 중지"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET 요청을 통해 로드된 페이지만 뒤로-앞으로 캐시를 사용할 수 있습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "상태 코드가 2XX인 페이지만 캐시될 수 있습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome이 캐시된 페이지에서 자바스크립트 실행 시도를 감지했습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "플래그에서 뒤로-앞으로 캐시가 사용 중지되었습니다. chrome://flags/#back-forward-cache로 이동하여 뒤로-앞으로 캐시를 사용 설정하세요. 캐시는 기기의 로컬에 저장됩니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "명령줄에 의해 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "메모리가 충분하지 못하여 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "권한을 위임받은 사용자가 뒤로-앞으로 캐시를 허용하지 않습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "프리렌더러에 의해 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "페이지에 등록된 리스너가 포함된 BroadcastChannel 인스턴스가 있어 페이지를 캐시할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store 헤더가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "캐시가 의도적으로 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "다른 페이지를 캐시하기 위해 페이지가 캐시에서 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "플러그인을 포함하고 있는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "미디어 기기 디스패처를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "페이지에서 나갈 때 미디어 플레이어가 재생 중이었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API를 사용하며 재생 상태를 설정한 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API를 사용하며 작업 핸들러를 설정한 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "전용 작업자 또는 Worklet을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "사용자가 문서에서 나갈 때까지 문서 로드가 완료되지 않았습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 서비스 워커가 활성화되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "다른 페이지를 캐시하기 위해 페이지가 캐시에서 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "미디어 스트림 액세스 권한을 부여한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "포털을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "IndexedDB가 연결된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "사용 불가능한 API가 사용되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "확장 프로그램에 의해 자바스크립트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "확장 프로그램에 의해 스타일시트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "내부 오류입니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "키보드 잠금을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "사용자가 페이지에서 나갈 때까지 페이지 로드가 완료되지 않았습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "기본 리소스에 cache-control:no-cache가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "기본 리소스에 cache-control:no-store가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "뒤로-앞으로 캐시에서 페이지를 복원하기 전에 탐색이 취소되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "활성 네트워크에 연결된 동안 페이지에서 지나치게 많은 데이터를 수신하여 페이지가 캐시에서 삭제되었습니다. Chrome은 캐시된 페이지에서 수신할 수 있는 데이터의 양을 제한합니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "fetch() 또는 XHR이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "활성 네트워크 요청에 리디렉션이 발생하여 페이지가 뒤로-앞으로 캐시에서 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "네트워크 연결 시간이 너무 길어 페이지가 캐시에서 삭제되었습니다. Chrome은 캐시된 페이지에서 데이터를 수신할 수 있는 시간을 제한합니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "유효한 응답 헤드가 없는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "기본 프레임이 아닌 다른 프레임에서 탐색이 이루어졌습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "indexedDB 트랜잭션이 진행 중인 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "가져오기 네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "XHR 네트워크 요청이 발생한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "PIP 모드를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "포털을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "인쇄 UI를 표시하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "페이지가 'window.open()'을(를) 사용하여 열렸고 다른 탭에 해당 페이지 참조가 있거나 페이지가 새 창에서 열렸습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "뒤로-앞으로 캐시에 저장된 페이지의 렌더기 프로세스가 다운되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "뒤로-앞으로 캐시에 저장된 페이지의 렌더기 프로세스가 중단되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "오디오 캡처 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "센서 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "백그라운드 동기화 또는 가져오기 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "알림 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "저장용량 액세스를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "동영상 캡처 권한을 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "URL 스킴이 HTTP/HTTPS인 페이지만 캐시될 수 있습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 서비스 워커에 의해 사용되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "서비스 워커가 뒤로-앞으로 캐시에 추가된 페이지에 MessageEvent 속성을 전송하려고 했습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 ServiceWorker가 등록 취소되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "서비스 워커 활성화로 인하여 페이지가 뒤로-앞으로 캐시에서 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome이 다시 시작되면서 뒤로-앞으로 캐시 항목이 삭제되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "페이지의 iframe이 탐색을 시작했으나 완료되지 않았습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "하위 리소스에 cache-control:no-cache가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "하위 리소스에 cache-control:no-store가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "페이지가 뒤로-앞으로 캐시에서 최대 시간을 초과하여 만료되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "페이지의 뒤로-앞으로 캐시 시작이 타임아웃되었습니다(페이지 숨김 핸들러의 장기간 실행 때문일 가능성이 큼)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "페이지 기본 프레임에 로드 취소 핸들러가 있습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "페이지 하위 프레임에 로드 취소 핸들러가 있습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "브라우저에서 사용자 에이전트 재정의 헤더를 변경했습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "동영상 녹화 또는 오디오 녹음 액세스를 부여한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLock을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare를 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket이 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport가 있는 페이지에서는 뒤로-앞으로 캐시를 시작할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "뒤로-앞으로 캐시"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "조치를 취할 수 없음"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "이러한 이유는 조치 가능하지 않습니다. 즉, 페이지의 직접 제어가 아닌 다른 요인으로 인하여 캐싱이 차단되었습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "자세히 알아보기: 뒤로-앞으로 캐시 사용 조건"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "메인 프레임"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "뒤로-앞으로 캐시를 통해 페이지를 복원하지 못했습니다. 뒤로-앞으로 캐시를 실행하려면 Chrome의 뒤로/앞으로 버튼을 사용하거나 아래의 테스트 버튼을 사용하여 자동으로 앞뒤로 이동하세요."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "실행 가능"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "이러한 이유는 해결 가능합니다. 즉, 문제를 해결하면 페이지에서 뒤로-앞으로 캐시를 사용할 수 있습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "뒤로-앞으로 캐시를 통해 페이지를 복원했습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "뒤로-앞으로 캐시 테스트"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "테스트 실행 중"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "지원 보류 중"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "이러한 이유에 대한 Chrome 지원이 보류됩니다. 즉, 향후 버전의 Chrome에서는 페이지에서 뒤로-앞으로 캐시 사용이 차단되지 않습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "사용할 수 없음"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "알 수 없는 상태"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "표시할 엔드포인트 없음"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "저장"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools 다시 연결"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}('Enter' 키를 눌러 확인하거나 'Esc' 키를 눌러 취소)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "명령어를 바꾸려면 Tab을 누르세요. 사용 가능한 명령을 확인하려면 물음표를 입력하세요."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "'?'를 입력하여 사용 가능한 명령어 보기"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "파일 열기"

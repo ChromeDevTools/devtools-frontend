@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "ကက်ရှ်ပိတ်ရန် (DevTools ဖွင့်ထားစဉ်)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "အလိုအလျောက်လုပ်သော အမှောင်မုဒ် ပိတ်ခြင်း"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript ပိတ်ခြင်း"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP အမျိုးအစားကို ပိတ်ပါ"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "ပိတ်ရန်"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "ထပ်တူမညီသော ဖြစ်စဉ်မှတ်တမ်းများကို မရိုက်ကူးပါနှင့်"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS မီဒီယာ အမျိုးအစားကို ပုံတူမထုတ်လုပ်ပါနှင့်"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "အလိုအလျောက်လုပ်သော အမှောင်မုဒ်ကို ပုံတူမထုတ်လုပ်ပါနှင့်"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ဇယားကွက်လိုင်းများကို မချဲ့ပါနှင့်"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "စိတ်ကြိုက်ဖော်မက်ထည့်သွင်းစနစ်များ ဖွင့်မည်"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "အလိုအလျောက်လုပ်သော အမှောင်မုဒ် ဖွင့်ခြင်း"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ဖွင့်ခြင်း"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP အမျိုးအစား ဖွင့်ပါ"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "ဖွင့်ရန်"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ဇယားကွက်မျဉ်းများ တိုးချဲ့မည်"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "အထူးပြသထားသော စာမျက်နှာကို ပုံတူထုတ်လုပ်ရန်"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "အထူးပြသထားသော စာမျက်နှာကို ပုံတူထုတ်လုပ်သည်။"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "စစ်ဆေးထားသော စာမျက်နှာအတွက် အလိုအလျောက်လုပ်သော အမှောင်မုဒ်ကို ဖွင့်နိုင်သည်။"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut မီဒီယာဝန်ဆောင်မှုကို မဖြစ်မနေအသုံးပြုစေသည်"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "ကွန်ဆိုးလ်အံဆွဲကို ပြရန်"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "စနစ်၏ စိတ်ကြိုက်အရောင်စနစ်ကို ပြောင်းထားသည်။ ဤအပြောင်းအလဲကို DevTools တွင် ထည့်သွင်းရန် ပြန်လည်စတင်ပါ။"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "သီးခြားဝင်းဒိုးထဲသို့ ဖြုတ်ရန်"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ဖိုင်ကို ရေးနေသည်…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "အကြောင်းအရာ လုံခြုံရေးမူဝါဒ - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "သတ်မှတ်ထားသောသင်္ကေတကို မန်နီးဖက်စ်မှ ဒေါင်းလုဒ်လုပ်၍မရပါ"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "ဖော်ပြချက်"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "လုပ်သား"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET တောင်းဆိုချက်မှတစ်ဆင့် ဖွင့်ထားသောစာမျက်နှာများသာ ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးဝင်ပါသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "အခြေအနေပြကုတ် 2XX ပါသော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "ကက်ရှ်သိမ်းနေစဉ် Chrome သည် JavaScript စီမံဆောင်ရွက်ရန် ကြိုးပမ်းမှုတစ်ခု တွေ့ရှိသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "ရှေ့-နောက် ကက်ရှ်ကို အလံပြခြင်းများက ပိတ်လိုက်သည်။ Chrome://flags/#back-forward-cache သို့ ဝင်ကြည့်ပြီး ဤစက်ပေါ်တွင် ဖွင့်လိုက်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "ရှေ့-နောက် ကက်ရှ်ကို ကွန်မန်းလိုင်းက ပိတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "မှတ်ဉာဏ်မလုံလောက်သဖြင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ရှေ့-နောက် ကက်ရှ်ကို မြှုပ်သွင်းခြင်းအတွက် မပံ့ပိုးပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "အကြိုပုံဖော်ခြင်းအတွက် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "မှတ်ပုံတင်ထားသော နားထောင်သူများပါသည့် BroadcastChannel ဖြစ်ရပ် ရှိသဖြင့် စာမျက်နှာကို ကက်ရှ်သိမ်း၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "ခေါင်းစီး cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "ဤကက်ရှ်ကို ရည်ရွယ်ချက်ရှိရှိ ရှင်းထုတ်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "ပလတ်အင်များပါဝင်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "‘မီဒီယာ စက်ပစ္စည်း ဆက်သွယ်စနစ်’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "ထွက်သွားချိန်တွင် မီဒီယာ ပလေယာကို ဖွင့်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API သုံးပြီး ဖွင့်ရန်အခြေအနေ သတ်မှတ်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API သုံးပြီး လုပ်ဆောင်ချက်စီမံသူများ သတ်မှတ်ထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "သတ်မှတ်ထားသော လုပ်သား (သို့) လုပ်ဆောင်စရာနေရာ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "မှတ်တမ်းသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker ကို စတင်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "မီဒီယာထုတ်လွှင့်ခွင့် ပေးထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "ဖွင့်ထားသော IndexedDB ချိတ်ဆက်မှုရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "အကျုံးမဝင်သော API များ သုံးထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "နောက်ဆက်တွဲများက JavaScript ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "နောက်ဆက်တွဲများက StyleSheet ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "အတွင်းပိုင်း အမှား။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "ကီးဘုတ်လော့ခ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "စာမျက်နှာသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "ရှေ့-နောက် ကက်ရှ်မှ စာမျက်နှာကို ပြန်မယူနိုင်မီ ထွက်သွားခြင်းကို ရပ်ဆိုင်းလိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "ဖွင့်ထားသော ကွန်ရက်ချိတ်ဆက်မှုသည် ဒေတာအများအပြား လက်ခံနေသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော ဒေတာပမာဏကို Chrome က ကန့်သတ်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "လုပ်ဆောင်ဆဲ fetch() (သို့) XHR ရှိသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "လက်ရှိ ကွန်ရက်တောင်းဆိုချက်တွင် တစ်ဆင့်ပြန်ညွှန်ပြခြင်း ပါဝင်နေသောကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "ကွန်ရက်ချိတ်ဆက်မှု အလွန်ကြာရှည်စွာ ဖွင့်ထားသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော အချိန်ပမာဏကို Chrome က ကန့်သတ်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "မှန်ကန်သောတုံ့ပြန်မှု ခေါင်းစီးမရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "လမ်းညွှန်ခြင်းသည် ပင်မဖရိမ်ထက် ဖရိမ်တစ်ခုတွင် ဖြစ်ပေါ်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "လက်ရှိအက္ခရာစဉ် DB လွှဲပြောင်းမှုများပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "လုပ်ဆောင်ဆဲ fetch ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "လုပ်ဆောင်ဆဲ XHR ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "‘နှစ်ခုထပ်၍ ကြည့်ခြင်း’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "‘ပုံနှိပ်ထုတ်ယူမှု UI’ ပြသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "စာမျက်နှာကို 'window.open()' သုံး၍ ဖွင့်ထားပြီး တဘ်နောက်တစ်ခုတွင် ၎င်းသို့ ရည်ညွှန်းချက်ပါရှိသည် (သို့) စာမျက်နှာက ဝင်းဒိုးတစ်ခု ဖွင့်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ် ရပ်တန့်သွားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ်ကို ပိတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "အသံဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "အာရုံခံကိရိယာခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "နောက်ခံစင့်ခ်လုပ်ခြင်း (သို့) fetch ခွင့်ပြုချက် တောင်းဆိုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "အကြောင်းကြားချက် ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "သိုလှောင်ခန်းသုံးခွင့် တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ဗီဒီယိုဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "URL စနစ်သည် HTTP / HTTPS ဖြစ်သော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker က တောင်းဆိုထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "ရှေ့-နောက် ကက်ရှ်တွင် ServiceWorker သည် စာမျက်နှာအား MessageEvent ပို့ရန် ကြိုးပမ်းထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ရှိနေချိန်၌ ServiceWorker ကို စာရင်းသွင်းမထားပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "ServiceWorker စတင်မှုကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome ပြန်စသွားပြီး ရှေ့-နောက် ကက်ရှ်ဝင်ရောက်မှုများကို ရှင်းထုတ်လိုက်သည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "စာမျက်နှာပေါ်ရှိ iframe သည် အပြီးမသတ်သော လမ်းညွှန်မှုစတင်ထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "စာမျက်နှာ ရှေ့-နောက် ကက်ရှ်ရှိ အများဆုံးအချိန်ထက် ကျော်သွားပြီး သက်တမ်းကုန်သွားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်ရန် အချိန်ကုန်သွားသည် (အချိန်ကြာလုပ်ဆောင်နေသော စာမျက်နှာဖျောက်သည့် စီမံသူများကြောင့် ဖြစ်နိုင်သည်)။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "စာမျက်နှာတွင် ပင်မဖရိမ်အတွင်း၌ ဖယ်ရှားမှုစီမံသူရှိသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "စာမျက်နှာတွင် ဖရိမ်ခွဲအတွင်း၌ ဖယ်ရှားမှုစီမံသူ ရှိသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ဘရောင်ဇာသည် အသုံးပြုသူ အေးဂျင့် အစားထိုးခေါင်းစီးကို ပြောင်းထားသည်။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ဗီဒီယို (သို့) အသံဖမ်းယူရန် ခွင့်ပြုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "ရှေ့-နောက် ကက်ရှ်"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "လုပ်ဆောင်နိုင်ခြင်းမရှိပါ"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "စာမျက်နှာ၏ တိုက်ရိုက်ထိန်းချုပ်မှုမရှိသည့် အရာတစ်ခုက ကက်ရှ်သိမ်းခြင်းကို တားမြစ်ထားလျှင် ၎င်းကိုလုပ်ဆောင်၍ မရပါ။"
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "ရှေ့-နောက် ကက်ရှ် အရည်အချင်းပြည့်မီမှုအကြောင်း ပိုမိုလေ့လာရန်"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "ပင်မဖရိမ်"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "ရှေ့-နောက် ကက်ရှ်မှ ဝန်ဆောင်မှုရယူမထားပါ- ရှေ့-နောက် ကက်ရှ် စတင်ရန် Chrome ၏ ရှေ့-နောက် ခလုတ်များ သုံးပါ (သို့) အလိုအလျောက် ထွက်သွားရန်နှင့် ပြန်လာရန် အောက်ရှိ စစ်ဆေးခလုတ် သုံးပါ။"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "လုပ်ဆောင်နိုင်သည်"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်ရန် ၎င်းအကြောင်းအရင်းများကို ရှင်းလင်းနိုင်သည်။"
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "ရှေ့-နောက် ကက်ရှ်မှ ဝန်ဆောင်မှုရယူထားသည်။"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "ရှေ့-နောက် ကက်ရှ် စစ်ဆေးရန်"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "စစ်ဆေးမှု လုပ်ဆောင်နေသည်"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "ဤအကြောင်းရင်းများအတွက် Chrome ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်။ Chrome ၏ လာမည့်ဗားရှင်းတွင် ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်နေခြင်းကို တားဆီးမည်မဟုတ်ဟု ဆိုလိုသည်။"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "မရနိုင်ပါ"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "အခြေအနေမသိပါ"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL-"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "နောက်ခံတွင် ရယူမှု"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ဖြစ်ရပ်များ မှတ်တမ်းတင်မှု ရပ်ပါ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET တောင်းဆိုချက်မှတစ်ဆင့် ဖွင့်ထားသောစာမျက်နှာများသာ ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးဝင်ပါသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "အခြေအနေပြကုတ် 2XX ပါသော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "ကက်ရှ်သိမ်းနေစဉ် Chrome သည် JavaScript စီမံဆောင်ရွက်ရန် ကြိုးပမ်းမှုတစ်ခု တွေ့ရှိသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို အလံပြခြင်းများက ပိတ်လိုက်သည်။ Chrome://flags/#back-forward-cache သို့ ဝင်ကြည့်ပြီး ဤစက်ပေါ်တွင် ဖွင့်လိုက်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို ကွန်မန်းလိုင်းက ပိတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "မှတ်ဉာဏ်မလုံလောက်သဖြင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို မြှုပ်သွင်းခြင်းအတွက် မပံ့ပိုးပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "အကြိုပုံဖော်ခြင်းအတွက် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "မှတ်ပုံတင်ထားသော နားထောင်သူများပါသည့် BroadcastChannel ဖြစ်ရပ် ရှိသဖြင့် စာမျက်နှာကို ကက်ရှ်သိမ်း၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "ခေါင်းစီး cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ဤကက်ရှ်ကို ရည်ရွယ်ချက်ရှိရှိ ရှင်းထုတ်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ပလတ်အင်များပါဝင်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "‘မီဒီယာ စက်ပစ္စည်း ဆက်သွယ်စနစ်’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ထွက်သွားချိန်တွင် မီဒီယာ ပလေယာကို ဖွင့်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API သုံးပြီး ဖွင့်ရန်အခြေအနေ သတ်မှတ်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API သုံးပြီး လုပ်ဆောင်ချက်စီမံသူများ သတ်မှတ်ထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "သတ်မှတ်ထားသော လုပ်သား (သို့) လုပ်ဆောင်စရာနေရာ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "မှတ်တမ်းသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker ကို စတင်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "မီဒီယာထုတ်လွှင့်ခွင့် ပေးထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ဖွင့်ထားသော IndexedDB ချိတ်ဆက်မှုရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "အကျုံးမဝင်သော API များ သုံးထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "နောက်ဆက်တွဲများက JavaScript ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "နောက်ဆက်တွဲများက StyleSheet ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "အတွင်းပိုင်း အမှား။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ကီးဘုတ်လော့ခ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "စာမျက်နှာသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ရှေ့-နောက် ကက်ရှ်မှ စာမျက်နှာကို ပြန်မယူနိုင်မီ ထွက်သွားခြင်းကို ရပ်ဆိုင်းလိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ဖွင့်ထားသော ကွန်ရက်ချိတ်ဆက်မှုသည် ဒေတာအများအပြား လက်ခံနေသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော ဒေတာပမာဏကို Chrome က ကန့်သတ်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "လုပ်ဆောင်ဆဲ fetch() (သို့) XHR ရှိသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "လက်ရှိ ကွန်ရက်တောင်းဆိုချက်တွင် တစ်ဆင့်ပြန်ညွှန်ပြခြင်း ပါဝင်နေသောကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ကွန်ရက်ချိတ်ဆက်မှု အလွန်ကြာရှည်စွာ ဖွင့်ထားသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော အချိန်ပမာဏကို Chrome က ကန့်သတ်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "မှန်ကန်သောတုံ့ပြန်မှု ခေါင်းစီးမရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "လမ်းညွှန်ခြင်းသည် ပင်မဖရိမ်ထက် ဖရိမ်တစ်ခုတွင် ဖြစ်ပေါ်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "လက်ရှိအက္ခရာစဉ် DB လွှဲပြောင်းမှုများပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "လုပ်ဆောင်ဆဲ fetch ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "လုပ်ဆောင်ဆဲ XHR ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "‘နှစ်ခုထပ်၍ ကြည့်ခြင်း’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "‘ပုံနှိပ်ထုတ်ယူမှု UI’ ပြသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "စာမျက်နှာကို 'window.open()' သုံး၍ ဖွင့်ထားပြီး တဘ်နောက်တစ်ခုတွင် ၎င်းသို့ ရည်ညွှန်းချက်ပါရှိသည် (သို့) စာမျက်နှာက ဝင်းဒိုးတစ်ခု ဖွင့်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ် ရပ်တန့်သွားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ်ကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "အသံဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "အာရုံခံကိရိယာခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "နောက်ခံစင့်ခ်လုပ်ခြင်း (သို့) fetch ခွင့်ပြုချက် တောင်းဆိုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "အကြောင်းကြားချက် ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "သိုလှောင်ခန်းသုံးခွင့် တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ဗီဒီယိုဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "URL စနစ်သည် HTTP / HTTPS ဖြစ်သော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker က တောင်းဆိုထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ရှေ့-နောက် ကက်ရှ်တွင် ServiceWorker သည် စာမျက်နှာအား MessageEvent ပို့ရန် ကြိုးပမ်းထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ရှိနေချိန်၌ ServiceWorker ကို စာရင်းသွင်းမထားပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ServiceWorker စတင်မှုကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ပြန်စသွားပြီး ရှေ့-နောက် ကက်ရှ်ဝင်ရောက်မှုများကို ရှင်းထုတ်လိုက်သည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "စာမျက်နှာပေါ်ရှိ iframe သည် အပြီးမသတ်သော လမ်းညွှန်မှုစတင်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "စာမျက်နှာ ရှေ့-နောက် ကက်ရှ်ရှိ အများဆုံးအချိန်ထက် ကျော်သွားပြီး သက်တမ်းကုန်သွားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်ရန် အချိန်ကုန်သွားသည် (အချိန်ကြာလုပ်ဆောင်နေသော စာမျက်နှာဖျောက်သည့် စီမံသူများကြောင့် ဖြစ်နိုင်သည်)။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "စာမျက်နှာတွင် ပင်မဖရိမ်အတွင်း၌ ဖယ်ရှားမှုစီမံသူရှိသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "စာမျက်နှာတွင် ဖရိမ်ခွဲအတွင်း၌ ဖယ်ရှားမှုစီမံသူ ရှိသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ဘရောင်ဇာသည် အသုံးပြုသူ အေးဂျင့် အစားထိုးခေါင်းစီးကို ပြောင်းထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ဗီဒီယို (သို့) အသံဖမ်းယူရန် ခွင့်ပြုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "ရှေ့-နောက် ကက်ရှ်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "လုပ်ဆောင်နိုင်ခြင်းမရှိပါ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "စာမျက်နှာ၏ တိုက်ရိုက်ထိန်းချုပ်မှုမရှိသည့် အရာတစ်ခုက ကက်ရှ်သိမ်းခြင်းကို တားမြစ်ထားလျှင် ၎င်းကိုလုပ်ဆောင်၍ မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "ရှေ့-နောက် ကက်ရှ် အရည်အချင်းပြည့်မီမှုအကြောင်း ပိုမိုလေ့လာရန်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "ပင်မဖရိမ်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "ရှေ့-နောက် ကက်ရှ်မှ ဝန်ဆောင်မှုရယူမထားပါ- ရှေ့-နောက် ကက်ရှ် စတင်ရန် Chrome ၏ ရှေ့-နောက် ခလုတ်များ သုံးပါ (သို့) အလိုအလျောက် ထွက်သွားရန်နှင့် ပြန်လာရန် အောက်ရှိ စစ်ဆေးခလုတ် သုံးပါ။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "လုပ်ဆောင်နိုင်သည်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်ရန် ၎င်းအကြောင်းအရင်းများကို ရှင်းလင်းနိုင်သည်။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "ရှေ့-နောက် ကက်ရှ်မှ ဝန်ဆောင်မှုရယူထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "ရှေ့-နောက် ကက်ရှ် စစ်ဆေးရန်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "စစ်ဆေးမှု လုပ်ဆောင်နေသည်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ဤအကြောင်းရင်းများအတွက် Chrome ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်။ Chrome ၏ လာမည့်ဗားရှင်းတွင် ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်နေခြင်းကို တားဆီးမည်မဟုတ်ဟု ဆိုလိုသည်။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "မရနိုင်ပါ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "အခြေအနေမသိပါ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL-"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ပြသရန် အဆုံးမှတ်မရှိပါ"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "သိမ်းရန်"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools ပြန်လည်ချိတ်ဆက်ရန်"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (အတည်ပြုရန် ‘Enter’ နှိပ်ပါ (သို့) ပယ်ဖျက်ရန် ‘Escape’ နှိပ်ပါ။)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "ကွန်မန်းများပြောင်းရန် ‘တဘ်’ ကိုသုံးပါ။ ရနိုင်သောကွန်မန်းများ ကြည့်ရန် '?' ကို ရိုက်ပါ"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "ရနိုင်သောကွန်မန်းများ ကြည့်ရန် '?' ကို ရိုက်ပါ"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ဖိုင်ဖွင့်ရန်"

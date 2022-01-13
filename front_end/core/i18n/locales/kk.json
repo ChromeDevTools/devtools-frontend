@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Кэшті өшіру (DevTools ашық кезде)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Автоматты қараңғы режимді өшіру"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript өшіру"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP форматын өшіру"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Өшіру"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Асинхронды трассирленген стэктерді түсірмеу"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS мультимедиа түрін эмуляцияламау"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Автоматты қараңғы режимді эмуляцияламау"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Тор сызықтарын кеңейтпеу"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Арнаулы форматтаушыларды қосу"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Автоматты қараңғы режимді қосу"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript қосу"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматын қосу"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Қосу"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Тор сызықтарын кеңейту"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Ерекшеленген бетті эмуляциялау"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Фокусталған бетті эмуляциялайды."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Тексерілетін бет үшін автоматты қараңғы режимді қосады."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut мультимедиа функциясын іске қосады."
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Консоль тартпасын көрсету"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Жүйенің таңдаулы түстер схемасы өзгертілді. Осы өзгерісті DevTools құралдарына қолдану үшін қайта жүктеңіз."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Бөлек терезеге алып тастау"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Файл жазылуда…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Мазмұн қауіпсіздігі саясаты – бағалау"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Манифестен қажетті белгіше жүктеп алынбады."
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Сипаттама"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "жұмысшы"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET сұрауы арқылы жүктелген беттер ғана алға-артқа өту кэшіне жарайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "2XX күй коды бар беттер ғана кэштеледі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome браузері кэштеу кезінде JavaScript бағдарламасын іске қосу талпынысын анықтады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Алға-артқа өту кэші жалаушалар арқылы өшірілді. Оны осы құрылғыда қосу үшін chrome://flags/#back-forward-cache бетіне өтіңіз."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Алға-артқа өту кэші пәрмен жолы арқылы өшірілді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Жад жеткіліксіз болғандықтан, алға-артқа өту кэші өшірілді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Бағытталған құрал алға-артқа өту кэшіне қолдау көрсетпейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Алдын ала рендерер үшін алға-артқа өту кэші өшірілді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Бет кэштелмейді, себебі онда тіркелген тыңдаушылардан тұратын BroadcastChannel көшірмесі бар."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "\"cache-control:no-store\" тақырыбы бар беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Кэш әдейі тазартылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Басқа беттің кэштелуіне мүмкіндік беру үшін, бет кэштен шығарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Плагиндерден тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Файл жүйесіне кіру API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Сақтау құрылғысы диспетчерін пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Media Player кері шыққан бойдан ойнатылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API интерфейсін пайдаланатын беттер және ойнату күйін орнату алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API-ын пайдаланатын және әрекет өңдегіштерді тағайындайтын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler-ді пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Сериялық API-ды пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Dedicated Worker немесе Worklet интерфейсіндегі беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Құжат одан шыққанға дейін жүктеуді аяқтамады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Бет алға-артқа өту кэшінде болған кезде, Service Worker іске қосылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Басқа беттің кэштелуіне мүмкіндік беру үшін, бет кэштен шығарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Медиа трансляциялау рұқсаты берілген беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Порталдар пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Ашық IndexedDB байланысы бар беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Жарамсыз API-лар пайдаланылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Кеңейтімдер арқылы JavaScript бағдарламасы ендірілген IPages беттері қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Кеңейтімдер арқылы StyleSheet интерфейсі ендірілген беттер қазір алға-артқа өту кэші жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Ішкі қате шықты."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Пернетақта құлпын пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Бет одан шыққанға дейін жүктеуді аяқтамады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Негізгі ресурсында \"cache-control:no-cache\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Негізгі ресурсында \"cache-control:no-store\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Бет алға-артқа өту кэшінен қалпына келтірілмей тұрып, оған өтуден бас тартылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Белсенді желі байланысы тым көп дерек қабылдағандықтан, бет кэштен шығарылды. Chrome браузері кэштеу кезінде бет қабылдайтын деректер көлемін шектейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Белсенді fetch() немесе XHR мәні бар беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Белсенді желі сұрауы бағытты ауыстырғандықтан, бет алға-артқа өту кэшінен шығарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Желі байланысы тым ұзақ ашық тұрғандықтан, бұл бет кэштен шығарылды. Chrome браузері кэштеу кезінде беттің деректі қабылдауға жұмсайтын уақытын шектейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Жарамды жауап тақырыбы жоқ беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Шолу негізгі кадрдан тыс кадрда орындалды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Ағымдағы индекстелген DB транзакциялары бар беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Белсенді желі сұрауынан тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Белсенді шығару желісін сұрау беттері қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Белсенді желі сұрауынан тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Белсенді XHR интерфейсіндегі желі сұрауы бар беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "\"Суреттегі сурет\" режимін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Порталдар пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Басып шығару интерфейсін көрсететін беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Бет \"window.open()\" арқылы ашылды және басқа қойындының оған сілтемесі бар немесе бет терезені ашты."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Алға-артқа өту кэшіндегі беттің рендеринг процесі бұзылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Алға-артқа өту кэшіндегі беттің рендеринг процесі жойылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Аудио жазуға рұқсат сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Датчик рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Фондық синхрондауды немесе іріктеу рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Хабарландырулар рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Жадқа кіруге рұқсат сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Бейнеге түсіруге рұқсаттар сұраған беттер алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "URL схемасы HTTP/HTTPS кеңейтіміндегі беттер ғана кэштеледі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Бет алға-артқа өту кэшінде болған кезде, оған Service Worker арқылы шағым түсірілді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Service Worker параметрі алға-артқа өту кэшіндегі бетке MessageEvent үзіндісін жібермекші болды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Бет алға-артқа өту кэшінде болған кезде, ServiceWorker функциясын тіркеуден бас тартылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Service Worker қосылғандықтан, бет алға-артқа өту кэшінен шығарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome өшіп қосылып, алға-артқа өту кэшінің жазбаларын тазалады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Беттегі iframe орындалмаған шолуды бастады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Ішкі ресурсында \"cache-control:no-cache\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Ішкі ресурсында \"cache-control:no-store\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Бет алға-артқа өту кэшіндегі максималды уақыттан асып кетті және оның мерзімі аяқталды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Беттің алға-артқа өту кэшіне кіру уақыты өтіп кетті (бетті ұзақ жасыратын өңдегіштерге байланысты болуы мүмкін)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Негізгі кадрдағы бетте босату өңдегіші бар."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Қосалқы кадрдағы бетте босату өңдегіші бар."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Браузер пайдаланушы агентін қайта анықтау тақырыбын өзгертті."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Бейне немесе аудио жазуға рұқсат берген беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc интерфейсіндегі беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService параметрін пайдаланатын беттер қазір \"bfcache\" мәні үшін жарамсыз."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket протоколындағы беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Алға-артқа өту кэші"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Мәселені шешу мүмкін емес"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Бұл себептер өңделмейді, яғни кэштеуге беттің тікелей басқару құралынан тыс бірдеңе кедергі келтірді."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Толығырақ: алға-артқа өту кэшінің жарамдылығы"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Негізгі жиек"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Алға-артқа өту кэшінен қалыпқа келтірілмеді. Алға-артқа өту кэшін қосу үшін Chrome браузерінің алға-артқа өту түймелерін пайдаланыңыз немесе автоматты түрде алға өтіп, қайту үшін төмендегі сынақ түймесін басыңыз."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Мәселені шешуге болады"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Бұл себептер өңделеді, яғни оларды тазалап, бетті алға-артқа өту кэшіне жарамды етуге болады."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Алға-артқа өту кэшінен қалыпқа келтірілді."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Алға-артқа өту кэшін сынау"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Сынақ жүруде"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Қолдау көрсету күтілуде"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Осы себептер бойынша Chrome-ға қолдау көрсету күтілуде, бұл ретте олар Chrome-ның алдағы нұсқасында беттің алға-артқа өту кэшіне жарамды болуына кедергі келтірмейді."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "қолжетімсіз"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Белгісіз күй"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонды алу"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Іс-шараларды жазуды тоқтату"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET сұрауы арқылы жүктелген беттер ғана алға-артқа өту кэшіне жарайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "2XX күй коды бар беттер ғана кэштеледі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome браузері кэштеу кезінде JavaScript бағдарламасын іске қосу талпынысын анықтады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Алға-артқа өту кэші жалаушалар арқылы өшірілді. Оны осы құрылғыда қосу үшін chrome://flags/#back-forward-cache бетіне өтіңіз."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Алға-артқа өту кэші пәрмен жолы арқылы өшірілді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Жад жеткіліксіз болғандықтан, алға-артқа өту кэші өшірілді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Бағытталған құрал алға-артқа өту кэшіне қолдау көрсетпейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Алдын ала рендерер үшін алға-артқа өту кэші өшірілді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Бет кэштелмейді, себебі онда тіркелген тыңдаушылардан тұратын BroadcastChannel көшірмесі бар."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "\"cache-control:no-store\" тақырыбы бар беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Кэш әдейі тазартылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Басқа беттің кэштелуіне мүмкіндік беру үшін, бет кэштен шығарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Плагиндерден тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Файл жүйесіне кіру API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Сақтау құрылғысы диспетчерін пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Media Player кері шыққан бойдан ойнатылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API интерфейсін пайдаланатын беттер және ойнату күйін орнату алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API-ын пайдаланатын және әрекет өңдегіштерді тағайындайтын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler-ді пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API-ды пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API-ын пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Dedicated Worker немесе Worklet интерфейсіндегі беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Құжат одан шыққанға дейін жүктеуді аяқтамады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Бет алға-артқа өту кэшінде болған кезде, Service Worker іске қосылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Басқа беттің кэштелуіне мүмкіндік беру үшін, бет кэштен шығарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Медиа трансляциялау рұқсаты берілген беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Порталдар пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Ашық IndexedDB байланысы бар беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Жарамсыз API-лар пайдаланылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Кеңейтімдер арқылы JavaScript бағдарламасы ендірілген IPages беттері қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Кеңейтімдер арқылы StyleSheet интерфейсі ендірілген беттер қазір алға-артқа өту кэші жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Ішкі қате шықты."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Пернетақта құлпын пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Бет одан шыққанға дейін жүктеуді аяқтамады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Негізгі ресурсында \"cache-control:no-cache\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Негізгі ресурсында \"cache-control:no-store\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Бет алға-артқа өту кэшінен қалпына келтірілмей тұрып, оған өтуден бас тартылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Белсенді желі байланысы тым көп дерек қабылдағандықтан, бет кэштен шығарылды. Chrome браузері кэштеу кезінде бет қабылдайтын деректер көлемін шектейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Белсенді fetch() немесе XHR мәні бар беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Белсенді желі сұрауы бағытты ауыстырғандықтан, бет алға-артқа өту кэшінен шығарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Желі байланысы тым ұзақ ашық тұрғандықтан, бұл бет кэштен шығарылды. Chrome браузері кэштеу кезінде беттің деректі қабылдауға жұмсайтын уақытын шектейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Жарамды жауап тақырыбы жоқ беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Шолу негізгі кадрдан тыс кадрда орындалды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Ағымдағы индекстелген DB транзакциялары бар беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Белсенді желі сұрауынан тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Белсенді шығару желісін сұрау беттері қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Белсенді желі сұрауынан тұратын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Белсенді XHR интерфейсіндегі желі сұрауы бар беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "\"Суреттегі сурет\" режимін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Порталдар пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Басып шығару интерфейсін көрсететін беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Бет \"window.open()\" арқылы ашылды және басқа қойындының оған сілтемесі бар немесе бет терезені ашты."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Алға-артқа өту кэшіндегі беттің рендеринг процесі бұзылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Алға-артқа өту кэшіндегі беттің рендеринг процесі жойылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Аудио жазуға рұқсат сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Датчик рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Фондық синхрондауды немесе іріктеу рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Хабарландырулар рұқсаттарын сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Жадқа кіруге рұқсат сұраған беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Бейнеге түсіруге рұқсаттар сұраған беттер алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "URL схемасы HTTP/HTTPS кеңейтіміндегі беттер ғана кэштеледі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Бет алға-артқа өту кэшінде болған кезде, оған Service Worker арқылы шағым түсірілді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service Worker параметрі алға-артқа өту кэшіндегі бетке MessageEvent үзіндісін жібермекші болды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Бет алға-артқа өту кэшінде болған кезде, ServiceWorker функциясын тіркеуден бас тартылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Service Worker қосылғандықтан, бет алға-артқа өту кэшінен шығарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome өшіп қосылып, алға-артқа өту кэшінің жазбаларын тазалады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Беттегі iframe орындалмаған шолуды бастады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Ішкі ресурсында \"cache-control:no-cache\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Ішкі ресурсында \"cache-control:no-store\" мәні бар беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Бет алға-артқа өту кэшіндегі максималды уақыттан асып кетті және оның мерзімі аяқталды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Беттің алға-артқа өту кэшіне кіру уақыты өтіп кетті (бетті ұзақ жасыратын өңдегіштерге байланысты болуы мүмкін)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Негізгі кадрдағы бетте босату өңдегіші бар."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Қосалқы кадрдағы бетте босату өңдегіші бар."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Браузер пайдаланушы агентін қайта анықтау тақырыбын өзгертті."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Бейне немесе аудио жазуға рұқсат берген беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc интерфейсіндегі беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService параметрін пайдаланатын беттер қазір \"bfcache\" мәні үшін жарамсыз."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket протоколындағы беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport интерфейсіндегі беттер алға-артқа өту кэшіне кірмейді."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR параметрін пайдаланатын беттер қазір алға-артқа өту кэшіне жарамайды."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Алға-артқа өту кэші"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Мәселені шешу мүмкін емес"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Бұл себептер өңделмейді, яғни кэштеуге беттің тікелей басқару құралынан тыс бірдеңе кедергі келтірді."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Толығырақ: алға-артқа өту кэшінің жарамдылығы"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Негізгі жиек"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Алға-артқа өту кэшінен қалыпқа келтірілмеді. Алға-артқа өту кэшін қосу үшін Chrome браузерінің алға-артқа өту түймелерін пайдаланыңыз немесе автоматты түрде алға өтіп, қайту үшін төмендегі сынақ түймесін басыңыз."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Мәселені шешуге болады"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Бұл себептер өңделеді, яғни оларды тазалап, бетті алға-артқа өту кэшіне жарамды етуге болады."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Алға-артқа өту кэшінен қалыпқа келтірілді."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Алға-артқа өту кэшін сынау"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Сынақ жүруде"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Қолдау көрсету күтілуде"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Осы себептер бойынша Chrome-ға қолдау көрсету күтілуде, бұл ретте олар Chrome-ның алдағы нұсқасында беттің алға-артқа өту кэшіне жарамды болуына кедергі келтірмейді."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "қолжетімсіз"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Белгісіз күй"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Көрсететін соңғы нүкте жоқ."
@@ -4221,7 +4263,7 @@
     "message": "Жылдам бастау: бағаларды салыстыру қызметінің жаңа шолу панелімен жұмысты бастаңыз"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
-    "message": "Бағаларды салыстыру қызметі туралы жалпы ақпарат"
+    "message": "CSS туралы жалпы ақпарат"
   },
   "panels/css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "CSS шолуын көрсету"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сақтау"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools құралдарына қайта қосылу"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Растау үшін Enter пернесін, ал бас тарту үшін Escape пернесін басыңыз.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Пәрмендерді ауыстыру үшін Tab пернесін пайдаланыңыз. Қолжетімді пәрмендерді көру үшін \"?\" белгісін теріңіз."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Қолжетімді пәрмендерді көру үшін \"?\" белгісін теріңіз."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файлды ашу"

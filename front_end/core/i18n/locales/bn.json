@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "ক্যাশে বন্ধ করুন (DevTools খোলা থাকলে)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "অটো ডার্ক মোড বন্ধ করুন"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "জাভাস্ক্রিপ্ট বন্ধ করুন"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ফর্ম্যাট বন্ধ করুন"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "বন্ধ করুন"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "এসিঙ্ক স্ট্যাক ট্রেস ক্যাপচার করবেন না"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS মিডিয়া ধরন ইমুলেট করবেন না"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "অটো ডার্ক মোড ইমুলেট করবেন না"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "গ্রিড লাইন বাড়াবেন না"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "কাস্টম ফর্ম্যাটার চালু করুন"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "অটো ডার্ক মোড চালু করুন"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "জাভাস্ক্রিপ্ট চালু করুন"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ফর্ম্যাট চালু করুন"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "চালু করুন"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "গ্রিড লাইন বিস্তৃত করুন"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "একটি ফোকাস পৃষ্ঠা ইমুলেট করুন"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "অটোমেটিক ডার্ক মোড চালু করুন"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "একটি ফোকাস পৃষ্ঠা ইমুলেট করুন।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "পরীক্ষিত পৃষ্ঠায় অটোমেটিক ডার্ক মোড চালু করুন।"
+    "message": "অটোমেটিক ডার্ক মোড চালু করুন এবং dark-এ prefers-color-scheme সেট করুন।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut মিডিয়া ফিচার চালু করে"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "কনসোল ড্রয়ার দেখান"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "সিস্টেমের পছন্দসই রঙের স্কিম পরিবর্তন করা হয়েছে। DevTools-এ এই পরিবর্তন প্রয়োগ করতে, রিলোড করুন।"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "আলাদা উইন্ডোতে আনডক করুন"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ফাইলে লেখা হচ্ছে…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints ইনফ্রাস্ট্রাকচার"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "কন্টেন্ট নিরাপত্তা নীতি - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "ম্যানিফেস্ট থেকে প্রয়োজনীয় আইকন ডাউনলোড করা যায়নি"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "ডার্ক ব্যাকগ্রাউন্ড রঙ"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "ডার্ক থিম রঙ"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "বিবরণ"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ওয়ার্কার"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "শুধু GET অনুরোধের মাধ্যমে লোড করা পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "শুধু 2XX স্ট্যাটাস কোড সহ পৃষ্ঠা ক্যাশে করা যায়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome, ক্যাশেতে থাকাকালীন জাভাস্ক্রিপ্ট এক্সিকিউট করার চেষ্টা শনাক্ত করেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner-এর অনুরোধ করেছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "chrome://flags-এ ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে। এই ডিভাইসে স্থানীয়ভাবে চালু করতে chrome://flags/#back-forward-cache লিঙ্ক দেখুন।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "কমান্ড লাইন ব্যবহার করে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "মেমরিতে যথেষ্ট জায়গা নেই বলে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ডেলিগেটে ব্যাক-ফরোয়ার্ড ক্যাশে কাজ করে না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "প্রিরেন্ডারিংয়ের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "পৃষ্ঠাটিতে রেজিস্টার করা শ্রোতা সহ BroadcastChannel ইন্সট্যান্স আছে বলে সেটি ক্যাশে করা যাবে না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "'cache-control:no-store' হেডার সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "ক্যাশে ইচ্ছাকৃতভাবে পরিষ্কার করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "প্লাগ-ইন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "ফাইল সিস্টেম অ্যাক্সেস API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "মিডিয়া ডিভাইস ডিস্প্যাচার ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় মিডিয়া প্লেয়ার চলছিল।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API ব্যবহার এবং প্লেব্যাক স্টেট সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API ব্যবহার এবং অ্যাকশন হ্যান্ডলার সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে ডকুমেন্টটি সম্পূর্ণ লোড হয়নি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার চালু করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "মিডিয়া স্ট্রিম কন্টেন্টে অ্যাক্সেস দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "খোলা Indexed DB কানেকশন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "অনুপযুক্ত API ব্যবহার করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "এক্সটেনশনের ইঞ্জেক্ট করা জাভাস্ক্রিপ্ট সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "এক্সটেনশনের ইঞ্জেক্ট করা StyleSheet সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "অভ্যন্তরীণ সমস্যা।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "কীবোর্ড লক ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে সেটি সম্পূর্ণ লোড হয়নি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "'cache-control:no-cache' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "'cache-control:no-store' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করার আগে নেভিগেশন বাতিল করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "কোনও অ্যাক্টিভ নেটওয়ার্ক কানেকশনের মাধ্যমে পৃষ্ঠাটিতে অনেক ডেটা পাঠানো হয়েছে, তাই ক্যাশে থেকে সেটি সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কত ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ইন-ফ্লাইট fetch() বা XHR আছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "অ্যাক্টিভ নেটওয়ার্কের অনুরোধ রিডাইরেক্ট করা হয়েছে বলে ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "কোনও নেটওয়ার্ক কানেকশন অনেকক্ষণ খোলা ছিল বলে পৃষ্ঠাটি ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কতক্ষণ ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "সঠিক প্রতিক্রিয়ার হেডার নেই এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "মেন ফ্রেম ছাড়া অন্য ফ্রেমে নেভিগেশন হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Indexed DB ট্রানজ্যাকশন চলছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ইন-ফ্লাইট ফেচ নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ইন-ফ্লাইট XHR নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "ছবির-মধ্যে-ছবি ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "প্রিন্টিং UI দেখায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "'window.open()' ব্যবহার করে পৃষ্ঠাটি খোলা হয়েছিল এবং অন্য ট্যাব সেটি রেফারেন্স করে অথবা পৃষ্ঠাটি একটি উইন্ডো খুলেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস ক্র্যাশ করেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস বন্ধ করে দেওয়া হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "অডিও রেকর্ড করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "সেন্সর অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "ব্যাকগ্রাউন্ড সিঙ্ক বা ফেচের জন্য অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI ডিভাইস অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "বিজ্ঞপ্তি সংক্রান্ত অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "স্টোরেজ অ্যাক্সেসের অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ভিডিও তোলার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "শুধু HTTP / HTTPS স্কিমের URL আছে এমন পৃষ্ঠা ক্যাশে করা যাবে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন পৃষ্ঠাটি কোনও সার্ভিস ওয়ার্কার দাবি করেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে যে পৃষ্ঠাটি রয়েছে, সার্ভিস ওয়ার্কার সেটিকে MessageEvent পাঠানোর চেষ্টা করেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "কোনও পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার আনরেজিস্টার করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "সার্ভিস ওয়ার্কার চালু হওয়ার ফলে পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome রিস্টার্ট হওয়ার পরে ব্যাক-ফরোয়ার্ড ক্যাশের সব এন্ট্রি মুছে দিয়েছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "পৃষ্ঠাতে কোনও iframe নেভিগেশন শুরু হলেও সম্পূর্ণ হয়নি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "'cache-control:no-cache' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "'cache-control:no-store' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে সর্বাধিক সময়ের সীমা ছাড়িয়ে গেছে এবং সেটি আর রিস্টোর করা হয়নি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার সময় পৃষ্ঠাটি টাইম-আউট হয়ে গেছে (খুব সম্ভবত অনেকক্ষণ ধরে pagehide হ্যান্ডলার রান করছিল বলে)।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "মেন ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "সাব-ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ব্রাউজার ইউজার এজেন্ট ওভাররাইড হেডার পরিবর্তন করেছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ভিডিও বা অডিও রেকর্ড করার জন্য অ্যাক্সেসের অনুমতি দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "অ্যাকশন নেওয়া যাবে না"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পৃষ্ঠার নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে।"
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "আরও জানুন: ব্যাক-ফরোয়ার্ড ক্যাশে যোগ্যতা"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "প্রধান ফ্রেম"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করা যায়নি: ব্যাক-ফরোয়ার্ড ক্যাশে ট্রিগার করতে, Chrome-এর ব্যাক-ফরোয়ার্ড বোতাম ব্যবহার করুন বা অটোমেটিক দূরে সরিয়ে নেভিগেট করে যাওয়া ও ফিরে আসার জন্য নিচে পরীক্ষা বোতাম ব্যবহার করুন।"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "অ্যাকশন নিতে হবে"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে, অর্থাৎ সেগুলি পরিষ্কার করা হলে পৃষ্ঠাটি ব্যাক/ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত হিসেবে বিবেচিত হবে।"
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে রিস্টোর করা হয়েছে।"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে পরীক্ষা করুন"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "পরীক্ষা চলছে"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "সহায়তা বাকি আছে"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "এই আইটেমগুলি এখনও Chrome-এ কাজ করে না, অর্থাৎ সেগুলি ভবিষ্যতের কোনও Chrome ভার্সনে ব্যাক/ফরোয়ার্ড ক্যাশের জন্য পৃষ্ঠাটিকে উপযুক্ত হিসেবে বিবেচিত হতে বাধা দেবে না।"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "উপলভ্য নেই"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "অজানা স্ট্যাটাস"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ব্যাকগ্রাউন্ড ফেচ"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ইভেন্ট রেকর্ড করা বন্ধ করুন"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "শুধু GET অনুরোধের মাধ্যমে লোড করা পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "শুধু 2XX স্ট্যাটাস কোড সহ পৃষ্ঠা ক্যাশে করা যায়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome, ক্যাশেতে থাকাকালীন জাভাস্ক্রিপ্ট এক্সিকিউট করার চেষ্টা শনাক্ত করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner-এর অনুরোধ করেছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "chrome://flags-এ ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে। এই ডিভাইসে স্থানীয়ভাবে চালু করতে chrome://flags/#back-forward-cache লিঙ্ক দেখুন।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "কমান্ড লাইন ব্যবহার করে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "মেমরিতে যথেষ্ট জায়গা নেই বলে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ডেলিগেটে ব্যাক-ফরোয়ার্ড ক্যাশে কাজ করে না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "প্রিরেন্ডারিংয়ের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "পৃষ্ঠাটিতে রেজিস্টার করা শ্রোতা সহ BroadcastChannel ইন্সট্যান্স আছে বলে সেটি ক্যাশে করা যাবে না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "'cache-control:no-store' হেডার সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ক্যাশে ইচ্ছাকৃতভাবে পরিষ্কার করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "প্লাগ-ইন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ফাইল সিস্টেম অ্যাক্সেস API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "মিডিয়া ডিভাইস ডিস্প্যাচার ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় মিডিয়া প্লেয়ার চলছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API ব্যবহার এবং প্লেব্যাক স্টেট সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API ব্যবহার এবং অ্যাকশন হ্যান্ডলার সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "স্ক্রিন রিডারের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে ডকুমেন্টটি সম্পূর্ণ লোড হয়নি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় অ্যাপ ব্যানার দেখা যাচ্ছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় Chrome পাসওয়ার্ড ম্যানেজার ছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় DOM ডিস্টিলেশন প্রসেস চলছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় DOM ডিস্টিলার ভিউয়ার দেখা যাচ্ছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "মেসেজিং API ব্যবহার করে এক্সটেনশনের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে যাওয়ার আগে দীর্ঘস্থায়ী কানেকশন সহ এক্সটেনশন দ্বারা কানেকশন বন্ধ করা উচিত।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "দীর্ঘস্থায়ী কানেকশন সহ এক্সটেনশনগুলি ব্যাক-ফরোয়ার্ড ক্যাশে ফ্রেম করার জন্য মেসেজ পাঠানোর চেষ্টা করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "এক্সটেনশনের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় পৃষ্ঠাটির জন্য ফর্ম পুনরায় জমা দেওয়া বা http পাসওয়ার্ড ডায়ালগের মতো মডেল ডায়ালগ দেখানো হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় অফলাইন পৃষ্ঠাটি দেখানো হয়েছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় আউট-অফ-মেমরি ইন্টারভেনশন দেখা যাচ্ছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় অনুমতি অনুরোধ ছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় পপ-আপ ব্লকার দেখানো হয়েছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় Safe Browsing বিবরণ দেখানো হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing এই পৃষ্ঠাটিকে আপত্তিজনক হিসেবে শনাক্ত করেছে এবং পপ-আপ ব্লক করে দিয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার চালু করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "মিডিয়া স্ট্রিম কন্টেন্টে অ্যাক্সেস দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "খোলা Indexed DB কানেকশন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "অনুপযুক্ত API ব্যবহার করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "এক্সটেনশনের ইঞ্জেক্ট করা জাভাস্ক্রিপ্ট সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "এক্সটেনশনের ইঞ্জেক্ট করা StyleSheet সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "অভ্যন্তরীণ সমস্যা।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "কীবোর্ড লক ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে সেটি সম্পূর্ণ লোড হয়নি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "'cache-control:no-cache' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "'cache-control:no-store' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করার আগে নেভিগেশন বাতিল করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "কোনও অ্যাক্টিভ নেটওয়ার্ক কানেকশনের মাধ্যমে পৃষ্ঠাটিতে অনেক ডেটা পাঠানো হয়েছে, তাই ক্যাশে থেকে সেটি সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কত ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ইন-ফ্লাইট fetch() বা XHR আছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "অ্যাক্টিভ নেটওয়ার্কের অনুরোধ রিডাইরেক্ট করা হয়েছে বলে ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "কোনও নেটওয়ার্ক কানেকশন অনেকক্ষণ খোলা ছিল বলে পৃষ্ঠাটি ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কতক্ষণ ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "সঠিক প্রতিক্রিয়ার হেডার নেই এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "মেন ফ্রেম ছাড়া অন্য ফ্রেমে নেভিগেশন হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Indexed DB ট্রানজ্যাকশন চলছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ইন-ফ্লাইট ফেচ নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ইন-ফ্লাইট XHR নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ছবির-মধ্যে-ছবি ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "প্রিন্টিং UI দেখায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "'window.open()' ব্যবহার করে পৃষ্ঠাটি খোলা হয়েছিল এবং অন্য ট্যাব সেটি রেফারেন্স করে অথবা পৃষ্ঠাটি একটি উইন্ডো খুলেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস ক্র্যাশ করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস বন্ধ করে দেওয়া হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "অডিও রেকর্ড করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "সেন্সর অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ব্যাকগ্রাউন্ড সিঙ্ক বা ফেচের জন্য অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI ডিভাইস অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "বিজ্ঞপ্তি সংক্রান্ত অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "স্টোরেজ অ্যাক্সেসের অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ভিডিও তোলার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "শুধু HTTP / HTTPS স্কিমের URL আছে এমন পৃষ্ঠা ক্যাশে করা যাবে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন পৃষ্ঠাটি কোনও সার্ভিস ওয়ার্কার দাবি করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে যে পৃষ্ঠাটি রয়েছে, সার্ভিস ওয়ার্কার সেটিকে MessageEvent পাঠানোর চেষ্টা করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "কোনও পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার আনরেজিস্টার করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "সার্ভিস ওয়ার্কার চালু হওয়ার ফলে পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome রিস্টার্ট হওয়ার পরে ব্যাক-ফরোয়ার্ড ক্যাশের সব এন্ট্রি মুছে দিয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "পৃষ্ঠাতে কোনও iframe নেভিগেশন শুরু হলেও সম্পূর্ণ হয়নি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "'cache-control:no-cache' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "'cache-control:no-store' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে সর্বাধিক সময়ের সীমা ছাড়িয়ে গেছে এবং সেটি আর রিস্টোর করা হয়নি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার সময় পৃষ্ঠাটি টাইম-আউট হয়ে গেছে (খুব সম্ভবত অনেকক্ষণ ধরে pagehide হ্যান্ডলার রান করছিল বলে)।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "মেন ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "সাব-ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ব্রাউজার ইউজার এজেন্ট ওভাররাইড হেডার পরিবর্তন করেছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ভিডিও বা অডিও রেকর্ড করার জন্য অ্যাক্সেসের অনুমতি দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "অ্যাকশন নেওয়া যাবে না"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পৃষ্ঠার নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "আরও জানুন: ব্যাক-ফরোয়ার্ড ক্যাশে যোগ্যতা"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "প্রধান ফ্রেম"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করা যায়নি: ব্যাক-ফরোয়ার্ড ক্যাশে ট্রিগার করতে, Chrome-এর ব্যাক-ফরোয়ার্ড বোতাম ব্যবহার করুন বা অটোমেটিক দূরে সরিয়ে নেভিগেট করে যাওয়া ও ফিরে আসার জন্য নিচে পরীক্ষা বোতাম ব্যবহার করুন।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "অ্যাকশন নিতে হবে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে, অর্থাৎ সেগুলি পরিষ্কার করা হলে পৃষ্ঠাটি ব্যাক/ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত হিসেবে বিবেচিত হবে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে রিস্টোর করা হয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে পরীক্ষা করুন"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "পরীক্ষা চলছে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "সহায়তা বাকি আছে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "এই আইটেমগুলি এখনও Chrome-এ কাজ করে না, অর্থাৎ সেগুলি ভবিষ্যতের কোনও Chrome ভার্সনে ব্যাক/ফরোয়ার্ড ক্যাশের জন্য পৃষ্ঠাটিকে উপযুক্ত হিসেবে বিবেচিত হতে বাধা দেবে না।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "উপলভ্য নেই"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "অজানা স্ট্যাটাস"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "দেখানোর মতো কোনও এন্ডপয়েন্ট নেই"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "সেভ করুন"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "ডিবাগিং কানেকশন বন্ধ করা হয়েছে। কারণ: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools-কে আবার কানেক্ট করুন"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (কনফার্ম করতে 'এন্টার' প্রেস করুন অথবা বাতিল করতে 'এস্কেপ' কী প্রেস করুন।)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "কমান্ড সুইচ করার জন্য 'ট্যাব' ব্যবহার করুন। উপলভ্য থাকা কমান্ড দেখতে '?' টাইপ করুন"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "উপলভ্য কমান্ড দেখতে '?' লিখুন"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ফাইল খুলুন"

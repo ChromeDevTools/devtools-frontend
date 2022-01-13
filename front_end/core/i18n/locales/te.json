@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "కాష్‌ను డిజేబుల్ చేయండి (DevTools తెరిచినప్పుడు)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "ఆటో డార్క్ మోడ్‌ను డిజేబుల్ చేయండి"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptను డిజేబుల్ చేయండి"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ఫార్మాట్‌ను డిజేబుల్ చేయండి"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "డిజేబుల్ చేయండి"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "అసమకాలిక స్టాక్ ట్రేస్‌లను క్యాప్చర్ చేయకండి"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS మీడియా రకాన్ని అనుకరించకండి"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "ఆటో డార్క్ మోడ్‌ను అనుకరించకండి"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "గ్రిడ్ లైన్‌లను విస్తరించకండి"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "అనుకూల ఫార్మాటర్‌లను ప్రారంభించండి"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "ఆటో డార్క్ మోడ్‌ను ఎనేబుల్ చేయండి"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScriptను ఎనేబుల్ చేయండి"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ఫార్మాట్‌ను ఎనేబుల్ చేయండి"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "ఎనేబుల్ చేయండి"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "గ్రిడ్ లైన్‌లను విస్తరించండి"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "ఫోకస్ చేయబడిన పేజీని అనుకరించండి"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "ఆటోమేటిక్ డార్క్ మోడ్‌ను ఎనేబుల్ చేయండి"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ఫోకస్ చేయబడిన పేజీని అనుకరిస్తుంది."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "ఇన్స్పెక్ట్ చేయబడిన పేజీ కోసం ఆటోమేటిక్ డార్క్ మోడ్‌ను ఎనేబుల్ చేస్తుంది."
+    "message": "ఆటోమేటిక్ డార్క్ మోడ్‌ను ఎనేబుల్ చేసి, prefers-color-schemeను darkకు సెట్ చేస్తుంది."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut మీడియా ఫీచర్‌ను ఫోర్స్ చేస్తుంది"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "కన్సోల్ డ్రాయర్‌ను చూపండి"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "సిస్టమ్-సూచించిన రంగు స్కీమ్ మార్చబడింది. DevToolsకు ఈ మార్పుకు వర్తించడానికి, రీలోడ్ చేయండి."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ప్రత్యేక విండోకు అన్‌డాక్ చేయండి"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ఫైల్‌ను రైట్ చేస్తోంది…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints ఇన్‌ఫ్రాస్ట్రక్చర్"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "కంటెంట్ భద్రతా పాలసీ - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "మ్యానిఫెస్ట్ నుండి అవసరమైన చిహ్నాన్ని డౌన్‌లోడ్ చేయడం సాధ్యపడలేదు"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "ముదురు బ్యాక్‌గ్రౌండ్ రంగు"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "డార్క్ థీమ్ రంగు"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "వివరణ"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "వర్కర్"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET రిక్వెస్ట్ ద్వారా లోడ్ చేయబడిన పేజీలకు మాత్రమే వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి అర్హత ఉంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "2XX స్టేటస్ కోడ్‌ను కలిగి ఉన్న పేజీలు మాత్రమే కాష్ చేయబడతాయి."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "కాష్‌లో ఉన్నప్పుడు JavaScriptను ఎగ్జిక్యూట్ చేసే ప్రయత్నాన్ని Chrome గుర్తించింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "వెనుకకు/ముందుకు కాష్ ఫ్లాగ్‌ల ద్వారా డిజేబుల్ చేయబడింది. chrome://flags/#back-forward-cacheకు వెళ్లి, దాన్ని ఈ పరికరంలోనే ఎనేబుల్ చేయండి."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "కమాండ్ లైన్ ద్వారా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "తగినంత మెమరీ లేనందున వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "వెనుకకు/ముందుకు కాష్‌కు డెలిగేట్ సపోర్ట్ లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "ప్రీరెండరర్ కోసం వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "రిజిస్టర్ అయిన లిజనర్‌లతో ఈ పేజీ BroadcastChannel పర్యాయాన్ని కలిగి ఉంది కనుక, ఈ పేజీని కాష్ చేయడం కుదరదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store హెడర్‌ను కలిగి ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "కాష్ ఉద్దేశపూర్వకంగా క్లియర్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "మరొక పేజీని కాష్ చేయడానికి ఈ పేజీ కాష్ నుండి తీసివేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "ప్లగ్ఇన్‌లను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Device Dispatcherను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు మీడియా ప్లేయర్ ప్లే అవుతోంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession APIను ఉపయోగించే, ఇంకా ప్లేబ్యాక్ స్థితిని సెట్ చేసే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession APIను ఉపయోగించే, యాక్షన్ హ్యాండ్లర్‌లను సెట్ చేసే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandlerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "డెడికేటెడ్ వర్కర్ లేదా వర్క్‌లెట్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "డాక్యుమెంట్ లోడ్ అవ్వడం పూర్తి కాకుండానే పేజీ నుండి నిష్క్రమించారు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌లో ఉన్నప్పుడు ఒక సర్వీస్ వర్కర్ యాక్టివేట్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "మరొక పేజీని కాష్ చేయడానికి ఈ పేజీ కాష్ నుండి తీసివేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "మీడియా స్ట్రీమ్ యాక్సెస్ కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "పోర్టల్స్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManagerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "ఓపెన్ IndexedDB కనెక్షన్ ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "అర్హత లేని APIలు ఉపయోగించబడ్డాయి."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "ఎక్స్‌టెన్షన్‌ల ద్వారా JavaScript ఇంజెక్ట్ చేయబడిన IPagesకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "ఎక్స్‌టెన్షన్‌ల ద్వారా ఇంజెక్ట్ చేయబడిన StyleSheetను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "అంతర్గత ఎర్రర్."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "కీబోర్డ్ లాక్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "పేజీ లోడ్ అవ్వడం పూర్తి కాకుండానే పేజీ నుండి నిష్క్రమించారు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "cache-control:no-cache, ప్రధాన రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "cache-control:no-store, ప్రధాన రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "వెనుకకు/ముందుకు కాష్ నుండి పేజీని రీస్టోర్ చేయడానికి ముందే నావిగేషన్ రద్దు చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "కాష్ నుండి ఈ పేజీ తీసివేయబడింది, ఎందుకంటే ప్రస్తుతం ఉన్న నెట్‌వర్క్ కనెక్షన్ చాలా ఎక్కువ డేటాను అందుకుంది. ఏదైనా పేజీ కాష్ చేయబడుతున్నప్పుడు ఆ పేజీ అందుకునే డేటా మొత్తాన్ని Chrome పరిమితం చేస్తుంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ఇన్‌ఫ్లయిట్ ఫెచ్() లేదా XHR ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "యాక్టీవ్ నెట్‌వర్క్ రిక్వెస్ట్‌పై మళ్లింపు సంభవించింది, దీని వలన పేజీ వెనుకకు/ముందుకు కాష్ నుండి తీసివేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "కాష్ నుండి ఈ పేజీ తీసివేయబడింది, ఎందుకంటే నెట్‌వర్క్ కనెక్షన్ చాలా సేపు తెరిచి ఉంది. పేజీ కాష్ అయినప్పుడు డేటాను తిరిగి పొందేందుకు పట్టే సమయాన్ని Chrome పరిమితం చేస్తుంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "చెల్లుబాటు అయ్యే ప్రతిస్పందన హెడర్ లేని పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "నావిగేషన్ ప్రధాన ఫ్రేమ్‌లో కాకుండా వేరొక ఫ్రేమ్‌లో జరిగింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "ఇండెక్స్ చేయబడిన ఆన్‌గోయింగ్ DB లావాదేవీలను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ఇన్-ఫ్లయిట్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ఇన్-ఫ్లయిట్ ఫెచ్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ఇన్-ఫ్లయిట్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ఇన్-ఫ్లయిట్ XHR నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManagerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "పిక్చర్-ఇన్-పిక్చర్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "పోర్టల్స్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "ప్రింటింగ్ UIను చూపించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "ఈ పేజీ 'window.open()'ను ఉపయోగించి తెరవబడింది, అలాగే ఇది వేరొక ట్యాబ్ రెఫరెన్స్‌ను కలిగి ఉంది, లేదా ఆ పేజీ విండోను తెరిచింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "వెనుకకు/ముందుకు కాష్‌లో పేజీ కోసం రెండరర్ ప్రాసెస్ క్రాష్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "వెనుకకు/ముందుకు కాష్‌లోని పేజీ కోసం రెండరర్ ప్రాసెస్ ఆపివేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "ఆడియో క్యాప్చర్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "సెన్సార్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "బ్యాక్‌గ్రౌండ్ సింక్ కోసం లేదా బ్యాక్‌గ్రౌండ్‌లో అనుమతులను పొందడానికి రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "నోటిఫికేషన్‌ల అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "స్టోరేజ్ యాక్సెస్ కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "వీడియో క్యాప్చర్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "HTTP / HTTPS URL స్కీమ్ ఉన్న పేజీలు మాత్రమే కాష్ చేయబడతాయి."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "ఈ పేజీని వెనుకకు/ముందుకు కాష్ చేస్తున్నప్పుడు సర్వీస్ వర్కర్ ద్వారా పేజీ వినియోగించబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "సర్వీస్ వర్కర్, వెనుకకు/ముందుకు కాష్‌లో ఉన్న పేజీకి MessageEventను పంపడానికి ట్రై చేసింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌లో ఉన్నప్పుడు ServiceWorker రిజిస్టర్ చేయబడలేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "సర్వీస్ వర్కర్‌కు సంబంధించిన యాక్టివేషన్ కారణంగా పేజీ వెనుక/ముందుకు కాష్ నుండి తీసివేయబడింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome రీస్టార్ట్ చేయబడింది, ఇంకా అది వెనుకకు/ముందుకు కాష్ ఎంట్రీలను క్లియర్ చేసింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorkerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesisను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "పేజీలోని iframe ఒక నావిగేషన్‌ను ప్రారంభించింది, కానీ అది పూర్తి కాలేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "cache-control:no-cache, సబ్‌రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "cache-control:no-store సబ్‌రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "ఈ పేజీ వెనుకకు/ముందుకు కాష్‌లో గరిష్ఠ సమయాన్ని దాటింది, ఇంకా దీని గడువు ముగిసింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి సమయం ముగిసింది (pagehide హ్యాండ్లర్‌లు ఎక్కువ సేపు రన్ అయిన కారణంగా ఇలా జరిగి ఉండవచ్చు)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "ఈ పేజీ, ప్రధాన ఫ్రేమ్‌లో అన్‌లోడ్ హ్యాండ్లర్‌ను కలిగి ఉంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "ఈ పేజీ సబ్ ఫ్రేమ్‌లో అన్‌లోడ్ హ్యాండ్లర్ ఉంది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "బ్రౌజర్, వెబ్‌సైట్ యాక్సెస్ సాధనం ఓవర్‌రైడ్ హెడర్‌ను మార్చింది."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "వీడియో లేదా ఆడియోను రికార్డ్ చేయడానికి యాక్సెస్‌ను మంజూరు చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabaseను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHIDను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocksను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfcని ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPServiceను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTCని ఉపయోగించే పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShareను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSockets ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransportను ఉపయోగించే పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXRను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "వెనుకకు/ముందుకు కాష్"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "చర్య తీసుకోదగనివి"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "ఈ కారణాలు చర్య తీసుకోలేనివి, మరో మాటలో చెప్పాలంటే, పేజీ కంట్రోల్‌లో లేని కారణంగా కాషింగ్ ప్రక్రియకు అంతరాయం ఏర్పడింది."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "మరింత తెలుసుకోండి: వెనుకకు/ముందుకు కాష్ అర్హత"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "ప్రధాన ఫ్రేమ్"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "వెనుకకు/ముందుకు కాష్ నుండి సర్వ్ చేయబడలేదు: వెనుకకు/ముందుకు కాష్‌ను ట్రిగ్గర్ చేయడానికి, Chrome వెనుకకు/ముందుకు బటన్‌లను ఉపయోగించండి లేదా ఆటోమేటిక్‌గా దూరంగా, వెనుకకు నావిగేట్ చేయడానికి ఈ కింద టెస్ట్ బటన్‌ను ఉపయోగించండి."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "చర్య తీసుకోదగ్గవి"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "ఈ కారణాలు చర్య తీసుకోదగినవి, అంటే మీరు సమస్యను పరిష్కరిస్తే, పేజీని వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించగలదని దీని అర్థం."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "వెనుకకు/ముందుకు కాష్ నుండి విజయవంతంగా సర్వ్ చేయబడింది."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "వెనుకకు/ముందుకు కాష్‌ను టెస్ట్ చేయండి"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "టెస్ట్‌ను రన్ చేస్తోంది"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "సపోర్ట్ పెండింగ్‌లో ఉంది"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "ఈ కారణాల వల్ల Chrome సపోర్ట్ పెండింగ్‌లో ఉంది, అంటే భవిష్యత్తులో వచ్చే Chrome వెర్షన్‌లో వెనుకకు/ముందుకు కాష్‌కు అర్హత పొందకుండా అవి పేజీని నిరోధించవు."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "అందుబాటులో లేదు"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "స్టేటస్ తెలియదు"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "బ్యాక్‌గ్రౌండ్‌లో పొందు"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ఈవెంట్‌లను రికార్డ్ చేయడాన్ని ఆపివేయండి"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET రిక్వెస్ట్ ద్వారా లోడ్ చేయబడిన పేజీలకు మాత్రమే వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి అర్హత ఉంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "2XX స్టేటస్ కోడ్‌ను కలిగి ఉన్న పేజీలు మాత్రమే కాష్ చేయబడతాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "కాష్‌లో ఉన్నప్పుడు JavaScriptను ఎగ్జిక్యూట్ చేసే ప్రయత్నాన్ని Chrome గుర్తించింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "వెనుకకు/ముందుకు కాష్ ఫ్లాగ్‌ల ద్వారా డిజేబుల్ చేయబడింది. chrome://flags/#back-forward-cacheకు వెళ్లి, దాన్ని ఈ పరికరంలోనే ఎనేబుల్ చేయండి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "కమాండ్ లైన్ ద్వారా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "తగినంత మెమరీ లేనందున వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "వెనుకకు/ముందుకు కాష్‌కు డెలిగేట్ సపోర్ట్ లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ప్రీరెండరర్ కోసం వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "రిజిస్టర్ అయిన లిజనర్‌లతో ఈ పేజీ BroadcastChannel పర్యాయాన్ని కలిగి ఉంది కనుక, ఈ పేజీని కాష్ చేయడం కుదరదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store హెడర్‌ను కలిగి ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "కాష్ ఉద్దేశపూర్వకంగా క్లియర్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "మరొక పేజీని కాష్ చేయడానికి ఈ పేజీ కాష్ నుండి తీసివేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ప్లగ్ఇన్‌లను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Device Dispatcherను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు మీడియా ప్లేయర్ ప్లే అవుతోంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession APIను ఉపయోగించే, ఇంకా ప్లేబ్యాక్ స్థితిని సెట్ చేసే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession APIను ఉపయోగించే, యాక్షన్ హ్యాండ్లర్‌లను సెట్ చేసే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "స్క్రీన్ రీడర్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandlerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "డెడికేటెడ్ వర్కర్ లేదా వర్క్‌లెట్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "డాక్యుమెంట్ లోడ్ అవ్వడం పూర్తి కాకుండానే పేజీ నుండి నిష్క్రమించారు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు యాప్ బ్యానర్ రన్ అవుతూ ఉండింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు Chrome పాస్‌వర్డ్ మేనేజర్ రన్ అవుతూ ఉండింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు DOM డిస్టిలేషన్ ప్రోగ్రెస్‌లో ఉంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు DOM Distiller వ్యూయర్ రన్ అవుతూ ఉండింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "మెసేజింగ్ APIను ఉపయోగించే ఎక్స్‌టెన్షన్‌ల కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "దీర్ఘకాలిక కనెక్షన్‌ను కలిగి ఉన్న ఎక్స్‌టెన్షన్‌లు వెనుకకు/ముందుకు కాష్‌లో స్టోర్ అవ్వకంటే ముందు అవి ఆ కనెక్షన్‌ను నిలిపివేయాలి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "దీర్ఘకాలిక కనెక్షన్‌ను కలిగి ఉన్న ఎక్స్‌టెన్షన్‌లు వెనుకకు/ముందుకు కాష్‌లో ఫ్రేమ్‌లకు మెసేజ్‌లను పంపడానికి ట్రై చేశాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "ఎక్స్‌టెన్షన్‌ల కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు ఫారమ్ తిరిగి సమర్పించడానికి సంబంధించిన సమాచారం లేదా HTTP పాస్‌వర్డ్ డైలాగ్ వంటి మోడల్ డైలాగ్ కనిపించింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు ఆఫ్‌లైన్ పేజీ చూపబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు మెమరీ నిండింది అనే చూపే ఇంటర్వెన్షన్ బార్ రన్ అవుతూ ఉండింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు అనుమతికి సంబంధించిన రిక్వెస్ట్‌లు ఎదురయ్యాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు పాప్‌అప్ బ్లాకర్ రన్ అవుతూ ఉండింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "పేజీ నుండి నిష్క్రమిస్తున్నప్పుడు సురక్షిత బ్రౌజింగ్ వివరాలు ప్రదర్శించబడ్డాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "సురక్షిత బ్రౌజింగ్, ఈ పేజీ దుర్వినియోగమైనదిగా గుర్తించి, పాప్‌‌అప్‌ను బ్లాక్ చేసింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌లో ఉన్నప్పుడు ఒక సర్వీస్ వర్కర్ యాక్టివేట్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "మరొక పేజీని కాష్ చేయడానికి ఈ పేజీ కాష్ నుండి తీసివేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "మీడియా స్ట్రీమ్ యాక్సెస్ కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "పోర్టల్స్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManagerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ఓపెన్ IndexedDB కనెక్షన్ ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "అర్హత లేని APIలు ఉపయోగించబడ్డాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ఎక్స్‌టెన్షన్‌ల ద్వారా JavaScript ఇంజెక్ట్ చేయబడిన IPagesకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ఎక్స్‌టెన్షన్‌ల ద్వారా ఇంజెక్ట్ చేయబడిన StyleSheetను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "అంతర్గత ఎర్రర్."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "కీబోర్డ్ లాక్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "పేజీ లోడ్ అవ్వడం పూర్తి కాకుండానే పేజీ నుండి నిష్క్రమించారు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "cache-control:no-cache, ప్రధాన రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "cache-control:no-store, ప్రధాన రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "వెనుకకు/ముందుకు కాష్ నుండి పేజీని రీస్టోర్ చేయడానికి ముందే నావిగేషన్ రద్దు చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "కాష్ నుండి ఈ పేజీ తీసివేయబడింది, ఎందుకంటే ప్రస్తుతం ఉన్న నెట్‌వర్క్ కనెక్షన్ చాలా ఎక్కువ డేటాను అందుకుంది. ఏదైనా పేజీ కాష్ చేయబడుతున్నప్పుడు ఆ పేజీ అందుకునే డేటా మొత్తాన్ని Chrome పరిమితం చేస్తుంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ఇన్‌ఫ్లయిట్ ఫెచ్() లేదా XHR ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "యాక్టీవ్ నెట్‌వర్క్ రిక్వెస్ట్‌పై మళ్లింపు సంభవించింది, దీని వలన పేజీ వెనుకకు/ముందుకు కాష్ నుండి తీసివేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "కాష్ నుండి ఈ పేజీ తీసివేయబడింది, ఎందుకంటే నెట్‌వర్క్ కనెక్షన్ చాలా సేపు తెరిచి ఉంది. పేజీ కాష్ అయినప్పుడు డేటాను తిరిగి పొందేందుకు పట్టే సమయాన్ని Chrome పరిమితం చేస్తుంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "చెల్లుబాటు అయ్యే ప్రతిస్పందన హెడర్ లేని పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "నావిగేషన్ ప్రధాన ఫ్రేమ్‌లో కాకుండా వేరొక ఫ్రేమ్‌లో జరిగింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "ఇండెక్స్ చేయబడిన ఆన్‌గోయింగ్ DB లావాదేవీలను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ఇన్-ఫ్లయిట్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ఇన్-ఫ్లయిట్ ఫెచ్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ఇన్-ఫ్లయిట్ నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ఇన్-ఫ్లయిట్ XHR నెట్‌వర్క్ రిక్వెస్ట్‌ను కలిగి ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManagerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "పిక్చర్-ఇన్-పిక్చర్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "పోర్టల్స్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "ప్రింటింగ్ UIను చూపించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ఈ పేజీ 'window.open()'ను ఉపయోగించి తెరవబడింది, అలాగే ఇది వేరొక ట్యాబ్ రెఫరెన్స్‌ను కలిగి ఉంది, లేదా ఆ పేజీ విండోను తెరిచింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "వెనుకకు/ముందుకు కాష్‌లో పేజీ కోసం రెండరర్ ప్రాసెస్ క్రాష్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "వెనుకకు/ముందుకు కాష్‌లోని పేజీ కోసం రెండరర్ ప్రాసెస్ ఆపివేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ఆడియో క్యాప్చర్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "సెన్సార్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "బ్యాక్‌గ్రౌండ్ సింక్ కోసం లేదా బ్యాక్‌గ్రౌండ్‌లో అనుమతులను పొందడానికి రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "నోటిఫికేషన్‌ల అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "స్టోరేజ్ యాక్సెస్ కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "వీడియో క్యాప్చర్ అనుమతుల కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "HTTP / HTTPS URL స్కీమ్ ఉన్న పేజీలు మాత్రమే కాష్ చేయబడతాయి."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ఈ పేజీని వెనుకకు/ముందుకు కాష్ చేస్తున్నప్పుడు సర్వీస్ వర్కర్ ద్వారా పేజీ వినియోగించబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "సర్వీస్ వర్కర్, వెనుకకు/ముందుకు కాష్‌లో ఉన్న పేజీకి MessageEventను పంపడానికి ట్రై చేసింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌లో ఉన్నప్పుడు ServiceWorker రిజిస్టర్ చేయబడలేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "సర్వీస్ వర్కర్‌కు సంబంధించిన యాక్టివేషన్ కారణంగా పేజీ వెనుక/ముందుకు కాష్ నుండి తీసివేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome రీస్టార్ట్ చేయబడింది, ఇంకా అది వెనుకకు/ముందుకు కాష్ ఎంట్రీలను క్లియర్ చేసింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorkerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizerను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesisను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "పేజీలోని iframe ఒక నావిగేషన్‌ను ప్రారంభించింది, కానీ అది పూర్తి కాలేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "cache-control:no-cache, సబ్‌రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "cache-control:no-store సబ్‌రిసోర్స్‌గా ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "ఈ పేజీ వెనుకకు/ముందుకు కాష్‌లో గరిష్ఠ సమయాన్ని దాటింది, ఇంకా దీని గడువు ముగిసింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "పేజీ వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి సమయం ముగిసింది (pagehide హ్యాండ్లర్‌లు ఎక్కువ సేపు రన్ అయిన కారణంగా ఇలా జరిగి ఉండవచ్చు)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ఈ పేజీ, ప్రధాన ఫ్రేమ్‌లో అన్‌లోడ్ హ్యాండ్లర్‌ను కలిగి ఉంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ఈ పేజీ సబ్ ఫ్రేమ్‌లో అన్‌లోడ్ హ్యాండ్లర్ ఉంది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "బ్రౌజర్, వెబ్‌సైట్ యాక్సెస్ సాధనం ఓవర్‌రైడ్ హెడర్‌ను మార్చింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "వీడియో లేదా ఆడియోను రికార్డ్ చేయడానికి యాక్సెస్‌ను మంజూరు చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabaseను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHIDను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocksను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfcని ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPServiceను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTCని ఉపయోగించే పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShareను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSockets ఉన్న పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransportను ఉపయోగించే పేజీలు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయలేవు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXRను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "వెనుకకు/ముందుకు కాష్"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "చర్య తీసుకోదగనివి"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ఈ కారణాలు చర్య తీసుకోలేనివి, మరో మాటలో చెప్పాలంటే, పేజీ కంట్రోల్‌లో లేని కారణంగా కాషింగ్ ప్రక్రియకు అంతరాయం ఏర్పడింది."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "మరింత తెలుసుకోండి: వెనుకకు/ముందుకు కాష్ అర్హత"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "ప్రధాన ఫ్రేమ్"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "వెనుకకు/ముందుకు కాష్ నుండి సర్వ్ చేయబడలేదు: వెనుకకు/ముందుకు కాష్‌ను ట్రిగ్గర్ చేయడానికి, Chrome వెనుకకు/ముందుకు బటన్‌లను ఉపయోగించండి లేదా ఆటోమేటిక్‌గా దూరంగా, వెనుకకు నావిగేట్ చేయడానికి ఈ కింద టెస్ట్ బటన్‌ను ఉపయోగించండి."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "చర్య తీసుకోదగ్గవి"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ఈ కారణాలు చర్య తీసుకోదగినవి, అంటే మీరు సమస్యను పరిష్కరిస్తే, పేజీని వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించగలదని దీని అర్థం."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "వెనుకకు/ముందుకు కాష్ నుండి విజయవంతంగా సర్వ్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "వెనుకకు/ముందుకు కాష్‌ను టెస్ట్ చేయండి"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "టెస్ట్‌ను రన్ చేస్తోంది"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "సపోర్ట్ పెండింగ్‌లో ఉంది"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ఈ కారణాల వల్ల Chrome సపోర్ట్ పెండింగ్‌లో ఉంది, అంటే భవిష్యత్తులో వచ్చే Chrome వెర్షన్‌లో వెనుకకు/ముందుకు కాష్‌కు అర్హత పొందకుండా అవి పేజీని నిరోధించవు."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "అందుబాటులో లేదు"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "స్టేటస్ తెలియదు"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ప్రదర్శించడానికి ముగింపుపాయింట్‌లు ఏవీ లేవు"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "సేవ్ చేయి"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "డీబగ్గింగ్ కనెక్షన్ నిలిపివేయబడింది. కారణం: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevToolsను మళ్లీ కనెక్ట్ చేయి"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (నిర్ధారించడానికి 'ఎంటర్' కీని లేదా రద్దు చేయడానికి 'ఎస్కేప్' కీని నొక్కండి.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "కమాండ్‌లను మార్చడానికి Tabను ఉపయోగించండి. అందుబాటులో ఉన్న కమాండ్‌లను చూడటానికి '?'ను టైప్ చేయండి"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "అందుబాటులో ఉన్న కమాండ్‌లను చూడటానికి '?'ను టైప్ చేయండి"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ఫైల్‌ను తెరవండి"

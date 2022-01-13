@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Vypnout mezipaměť (když je DevTools otevřené)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Vypnout automatickou aktivaci tmavého režimu"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Zakázat JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Zakázat formát WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Vypnout"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Nezachycovat asynchronní trasování zásobníku"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Neemulovat typ média CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Neemulovat automatickou aktivaci tmavého režimu"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Neprotahovat čáry mřížky"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Povolit vlastní formátovače"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Zapnout automatickou aktivaci tmavého režimu"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Povolit JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Povolit formát WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Zapnout"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Protáhnout čáry mřížky"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emulovat vybranou stránku"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuluje vybranou stránku."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Zapne pro kontrolovanou stránku automatický tmavý režim."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Vynucuje funkci média CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Zobrazit vysouvací panel konzole"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Barevné schéma preferované systémem se změnilo. Pokud tuto změnu chcete použít v nástrojích DevTools, znovu je načtěte."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Otevřít v samostatném neukotveném okně"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Zapisuje se soubor…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Zásady zabezpečení obsahu – eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Z manifestu nelze stáhnout požadovanou ikonu"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Popis"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "pracovník"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed mohou využívat pouze stránky načtené pomocí požadavků GET."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Do mezipaměti lze uložit pouze stránky se stavovým kódem 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome během uložení v mezipaměti zjistil pokus o spuštění JavaScriptu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Stránky, které požádaly o AppBanner, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příznaků. Pokud ji na tomto zařízení chcete místně povolit, přejděte na adresu chrome://flags/#back-forward-cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příkazového řádku."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána, protože není k dispozici dostatek paměti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Delegát mezipaměť pro přechod zpět nebo vpřed nepodporuje."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed je pro předběžné vykreslování deaktivována."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Stránku nelze uložit do mezipaměti, protože má instanci rozhraní BroadcastChannel se zaregistrovanými posluchači."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Stránky se záhlavím cache-control:no-store nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Mezipaměť byla úmyslně vymazána."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Stránka byla z mezipaměti odstraněna, aby do ní bylo možné uložit jinou stránku."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Stránky s pluginy v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Stránky, které používají rozhraní FileChooser API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Stránky, které používají File System Access API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Stránky, které používají nástroj Media Device Dispatcher, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Při opuštění stránky hrál přehrávač médií."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Stránky, které používají rozhraní MediaSession API a nastavují stav přehrávání, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Stránky, které používají rozhraní MediaSession API a nastavují obslužné nástroje akcí, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Stránky, které používají SecurityHandler, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Stránky, které používají rozhraní Serial API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Stránky, které používají rozhraní WebAuthetication API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Stránky, které používají rozhraní WebBluetooth API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Stránky, které používají rozhraní WebUSB API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Stránky, které používají vlastní skript worker nebo worklet, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Dokument byl opuštěn dříve, než bylo dokončeno načítání."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byl aktivován skript service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Stránka byla z mezipaměti odstraněna, aby do ní bylo možné uložit jinou stránku."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Stránky, kterým byl udělen přístup ke streamu médií, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Stránky, které používají portály, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Stránky, které používají funkci IdleManager, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Stránky, které mají otevřené připojení k databázi IndexedDB, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Byla použita nepodporovaná rozhraní API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Stránky, na které rozšíření vkládají JavaScript, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Stránky, na které rozšíření vkládají šablony stylů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Interní chyba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Stránky, které používají zámek klávesnice, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Stránka byla opuštěna dříve, než bylo dokončeno načítání."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Stránky, jejichž hlavní zdroj má záhlaví cache-control:no-cache, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Stránky, jejichž hlavní zdroj má záhlaví cache-control:no-store, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigace byla zrušena dříve, než bylo možné stránku obnovit z mezipaměti pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Stránka byla z mezipaměti odstraněna, protože aktivní připojení k síti obdrželo příliš mnoho dat. Chrome omezuje množství dat, které stránka během uložení v mezipaměti může obdržet."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Stránky s probíhajícími požadavky fetch nebo XHR v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Stránka byla z mezipaměti odstraněna, protože u aktivního připojení k síti došlo k přesměrování."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Stránka byla z mezipaměti odstraněna, protože bylo příliš dlouho otevřené připojení k síti. Chrome omezuje dobu, po kterou stránka během uložení v mezipaměti může přijímat data."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Stránky bez platného záhlaví odpovědi nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "K navigaci došlo v jiném než hlavním rámci."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Stránky s probíhajícími transakcemi s indexovanou databází, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Stránky s probíhajícím síťovým požadavkem v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Stránky s probíhajícím síťovým požadavkem fetch v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Stránky s probíhajícím síťovým požadavkem v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Stránky s probíhajícím síťovým požadavkem XHR v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Stránky, které používají funkci PaymentManager, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Pro stránky s funkcí obrazu v obraze v současné době nelze používat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Stránky, které používají portály, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Stránky, které zobrazují uživatelské rozhraní k tisku, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Stránka byla otevřena metodou window.open() a jiná karta na ni má referenci, nebo stránka otevřela okno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Vykreslovací proces pro stránku v mezipaměti pro přechod zpět nebo vpřed spadl."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Vykreslovací proces pro stránku v mezipaměti pro přechod zpět nebo vpřed byl ukončen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Stránky, které požádaly o oprávnění zaznamenávat zvuk, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Stránky, které požádaly o oprávnění k použití senzorů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Stránky, které požádaly o oprávnění k synchronizaci nebo načítání dat na pozadí, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Stránky, které požádaly o oprávnění k používání MIDI, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Stránky, které požádaly o oprávnění k zobrazování oznámení, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Stránky, které požádaly o přístup k úložišti, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Stránky, které požádaly o oprávnění zaznamenávat video, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Do mezipaměti lze ukládat pouze stránky, jejichž adresy URL mají schéma HTTP nebo HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Stránka byla během uložení v mezipaměti pro přechod zpět nebo vpřed nárokována skriptem service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Skript service worker se stránce v mezipaměti pro přechod zpět nebo vpřed pokusil odeslat zprávu MessageEvent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byla zrušena registrace skriptu ServiceWorker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Stránka byla z mezipaměti pro přechod zpět nebo vpřed odstraněna kvůli aktivaci skriptu service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome byl restartován a záznamy v mezipaměti pro přechod zpět nebo vpřed vymazal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Stránky, které používají SharedWorker, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Stránky, které používají funkci SpeechRecognizer, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Stránky, které používají rozhraní SpeechSynthesis, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Prvek iframe na stránce zahájil navigaci, která nebyla dokončena."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Stránky, jejichž některé zdroje mají záhlaví cache-control:no-cache, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Stránky, které zahrnují dílčí zdroje se záhlavím cache-control:no-store, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Stránka překročila maximální dobu v mezipaměti pro přechod zpět nebo vpřed a její platnost vypršela."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Při ukládání stránky do mezipaměti pro přechod zpět nebo vpřed vypršel časový limit (pravděpodobně kvůli dlouho běžícím obslužným nástrojům pagehide)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Stránka má v hlavním rámci obslužný nástroj unload."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Stránka má obslužný nástroj unload v dílčím rámci."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Prohlížeč změnil záhlaví k přepsání user-agenta."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Stránky, které obdržely přístup k záznamu videí nebo zvuku, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Stránky, které používají funkci WebDatabase, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Stránky, které používají WebHID, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Stránky, které používají funkci WebLocks, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Stránky, které používají WebNfc, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Stránky, které používají službu WebOTPService, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Stránky s WebRTC nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Stránky, které používají rozhraní WebShare, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Stránky s funkcí WebSocket nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Stránky, které využívají rozhraní WebTransport, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Stránky, které používají WebXR, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Mezipaměť pro přechod zpět nebo vpřed"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Nelze provést akci"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Tyto důvody nelze vyřešit – tj. uložení do mezipaměti zabránilo něco, co stránka nemá přímo pod kontrolou."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Další informace: Použití mezipaměti pro přechod zpět nebo vpřed"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Hlavní rámec"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Nezobrazeno z mezipaměti pro přechod zpět nebo vpřed: Tato mezipaměť se aktivuje pomocí tlačítek zpět/vpřed v Chromu, případně můžete automaticky přecházet zpět a vpřed pomocí testovacího tlačítka níže."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Lze provést akci"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Tyto důvody lze vyřešit a zajistit tak, aby stránka mohla využívat mezipaměť pro přechod zpět nebo vpřed."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Úspěšně zobrazeno z mezipaměti pro přechod zpět nebo vpřed"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Otestovat mezipaměť pro přechod zpět nebo vpřed"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Běží test"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Čeká se na podporu"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "U těchto důvodů se čeká na přidání podpory – v budoucích verzích Chromu již tyto důvody stránce v používání mezipaměti pro přechod zpět nebo vpřed bránit nebudou."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "není k dispozici"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Neznámý stav"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Načtení na pozadí"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Zastavit zaznamenávání událostí"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed mohou využívat pouze stránky načtené pomocí požadavků GET."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Do mezipaměti lze uložit pouze stránky se stavovým kódem 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome během uložení v mezipaměti zjistil pokus o spuštění JavaScriptu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Stránky, které požádaly o AppBanner, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příznaků. Pokud ji na tomto zařízení chcete místně povolit, přejděte na adresu chrome://flags/#back-forward-cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příkazového řádku."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána, protože není k dispozici dostatek paměti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Delegát mezipaměť pro přechod zpět nebo vpřed nepodporuje."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je pro předběžné vykreslování deaktivována."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Stránku nelze uložit do mezipaměti, protože má instanci rozhraní BroadcastChannel se zaregistrovanými posluchači."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Stránky se záhlavím cache-control:no-store nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Mezipaměť byla úmyslně vymazána."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Stránka byla z mezipaměti odstraněna, aby do ní bylo možné uložit jinou stránku."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Stránky s pluginy v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Stránky, které používají rozhraní FileChooser API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Stránky, které používají File System Access API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Stránky, které používají nástroj Media Device Dispatcher, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Při opuštění stránky hrál přehrávač médií."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Stránky, které používají rozhraní MediaSession API a nastavují stav přehrávání, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Stránky, které používají rozhraní MediaSession API a nastavují obslužné nástroje akcí, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Stránky, které používají SecurityHandler, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Stránky, které používají rozhraní Serial API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Stránky, které používají rozhraní WebAuthetication API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Stránky, které používají rozhraní WebBluetooth API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Stránky, které používají rozhraní WebUSB API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Stránky, které používají vlastní skript worker nebo worklet, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokument byl opuštěn dříve, než bylo dokončeno načítání."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byl aktivován skript service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Stránka byla z mezipaměti odstraněna, aby do ní bylo možné uložit jinou stránku."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Stránky, kterým byl udělen přístup ke streamu médií, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Stránky, které používají portály, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Stránky, které používají funkci IdleManager, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Stránky, které mají otevřené připojení k databázi IndexedDB, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Byla použita nepodporovaná rozhraní API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Stránky, na které rozšíření vkládají JavaScript, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Stránky, na které rozšíření vkládají šablony stylů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interní chyba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Stránky, které používají zámek klávesnice, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Stránka byla opuštěna dříve, než bylo dokončeno načítání."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Stránky, jejichž hlavní zdroj má záhlaví cache-control:no-cache, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Stránky, jejichž hlavní zdroj má záhlaví cache-control:no-store, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigace byla zrušena dříve, než bylo možné stránku obnovit z mezipaměti pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Stránka byla z mezipaměti odstraněna, protože aktivní připojení k síti obdrželo příliš mnoho dat. Chrome omezuje množství dat, které stránka během uložení v mezipaměti může obdržet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Stránky s probíhajícími požadavky fetch nebo XHR v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Stránka byla z mezipaměti odstraněna, protože u aktivního připojení k síti došlo k přesměrování."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Stránka byla z mezipaměti odstraněna, protože bylo příliš dlouho otevřené připojení k síti. Chrome omezuje dobu, po kterou stránka během uložení v mezipaměti může přijímat data."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Stránky bez platného záhlaví odpovědi nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "K navigaci došlo v jiném než hlavním rámci."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Stránky s probíhajícími transakcemi s indexovanou databází, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Stránky s probíhajícím síťovým požadavkem v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Stránky s probíhajícím síťovým požadavkem fetch v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Stránky s probíhajícím síťovým požadavkem v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Stránky s probíhajícím síťovým požadavkem XHR v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Stránky, které používají funkci PaymentManager, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Pro stránky s funkcí obrazu v obraze v současné době nelze používat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Stránky, které používají portály, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Stránky, které zobrazují uživatelské rozhraní k tisku, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Stránka byla otevřena metodou window.open() a jiná karta na ni má referenci, nebo stránka otevřela okno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Vykreslovací proces pro stránku v mezipaměti pro přechod zpět nebo vpřed spadl."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Vykreslovací proces pro stránku v mezipaměti pro přechod zpět nebo vpřed byl ukončen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Stránky, které požádaly o oprávnění zaznamenávat zvuk, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Stránky, které požádaly o oprávnění k použití senzorů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Stránky, které požádaly o oprávnění k synchronizaci nebo načítání dat na pozadí, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Stránky, které požádaly o oprávnění k používání MIDI, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Stránky, které požádaly o oprávnění k zobrazování oznámení, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Stránky, které požádaly o přístup k úložišti, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Stránky, které požádaly o oprávnění zaznamenávat video, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Do mezipaměti lze ukládat pouze stránky, jejichž adresy URL mají schéma HTTP nebo HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Stránka byla během uložení v mezipaměti pro přechod zpět nebo vpřed nárokována skriptem service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Skript service worker se stránce v mezipaměti pro přechod zpět nebo vpřed pokusil odeslat zprávu MessageEvent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byla zrušena registrace skriptu ServiceWorker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Stránka byla z mezipaměti pro přechod zpět nebo vpřed odstraněna kvůli aktivaci skriptu service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome byl restartován a záznamy v mezipaměti pro přechod zpět nebo vpřed vymazal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Stránky, které používají SharedWorker, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Stránky, které používají funkci SpeechRecognizer, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Stránky, které používají rozhraní SpeechSynthesis, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Prvek iframe na stránce zahájil navigaci, která nebyla dokončena."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Stránky, jejichž některé zdroje mají záhlaví cache-control:no-cache, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Stránky, které zahrnují dílčí zdroje se záhlavím cache-control:no-store, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Stránka překročila maximální dobu v mezipaměti pro přechod zpět nebo vpřed a její platnost vypršela."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Při ukládání stránky do mezipaměti pro přechod zpět nebo vpřed vypršel časový limit (pravděpodobně kvůli dlouho běžícím obslužným nástrojům pagehide)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Stránka má v hlavním rámci obslužný nástroj unload."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Stránka má obslužný nástroj unload v dílčím rámci."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Prohlížeč změnil záhlaví k přepsání user-agenta."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Stránky, které obdržely přístup k záznamu videí nebo zvuku, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Stránky, které používají funkci WebDatabase, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Stránky, které používají WebHID, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Stránky, které používají funkci WebLocks, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Stránky, které používají WebNfc, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Stránky, které používají službu WebOTPService, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Stránky s WebRTC nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Stránky, které používají rozhraní WebShare, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Stránky s funkcí WebSocket nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Stránky, které využívají rozhraní WebTransport, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Stránky, které používají WebXR, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Nelze provést akci"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Tyto důvody nelze vyřešit – tj. uložení do mezipaměti zabránilo něco, co stránka nemá přímo pod kontrolou."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Další informace: Použití mezipaměti pro přechod zpět nebo vpřed"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Hlavní rámec"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Nezobrazeno z mezipaměti pro přechod zpět nebo vpřed: Tato mezipaměť se aktivuje pomocí tlačítek zpět/vpřed v Chromu, případně můžete automaticky přecházet zpět a vpřed pomocí testovacího tlačítka níže."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Lze provést akci"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Tyto důvody lze vyřešit a zajistit tak, aby stránka mohla využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Úspěšně zobrazeno z mezipaměti pro přechod zpět nebo vpřed"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Otestovat mezipaměť pro přechod zpět nebo vpřed"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Běží test"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Čeká se na podporu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "U těchto důvodů se čeká na přidání podpory – v budoucích verzích Chromu již tyto důvody stránce v používání mezipaměti pro přechod zpět nebo vpřed bránit nebudou."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "není k dispozici"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Neznámý stav"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nejsou k dispozici žádné koncové body k zobrazení"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Uložit"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Znovu připojit DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Klávesou Enter akci potvrdíte, klávesou Esc ji zrušíte.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Mezi příkazy lze přepínat pomocí tabulátoru. Pokud chcete zobrazit dostupné příkazy, zadejte „?“"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Pokud chcete zobrazit dostupné příkazy, zadejte „?“"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Otevřít soubor"

@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "ປິດການນຳໃຊ້ແຄສ (ໃນຂະນະທີ່ DevTools ເປີດຢູ່)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "ປິດການນຳໃຊ້ໂໝດມືດອັດຕະໂນມັດ"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ປິດການນຳໃຊ້ JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "ປິດການນຳໃຊ້ຮູບແບບ WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "ປິດການນຳໃຊ້"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "ຢ່າບັນທຶກການຕິດຕາມແບບຊ້ອນກັນທີ່ບໍ່ພ້ອມກັນ"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "ຢ່າຈຳລອງປະເພດມີເດຍ CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "ຢ່າຈຳລອງໂໝດມືດອັດຕະໂນມັດ"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ຢ່າຂະຫຍາຍແຖວຊ່ອງ"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "ເປີດການນຳໃຊ້ຕົວຈັດຮູບແບບກຳນົດເອງ"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "ເປີດການນຳໃຊ້ໂໝດມືດອັດຕະໂນມັດ"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "ເປີດການນຳໃຊ້ JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "ເປິດການນຳໃຊ້ຮູບແບບ WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "ເປີດການນຳໃຊ້"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ຂະຫຍາຍເສັ້ນຊ່ອງ"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "ຈຳລອງໜ້າທີ່ໂຟກັສໄວ້"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ຈຳລອງໜ້າທີ່ໂຟກັສແລ້ວ."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "ເປີດການນຳໃຊ້ໂໝດມືດອັດຕະໂນມັດສຳລັບໜ້າທີ່ກວດສອບແລ້ວ."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "ບັງຄັບຄຸນສົມບັດມີເດຍ CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "ສະແດງລິ້ນຊັກຄອນໂຊ"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "ປ່ຽນຮູບແບບສີທີ່ລະບົບຕ້ອງການແລ້ວ. ກະລຸນາໂຫຼດໃໝ່ເພື່ອນຳໃຊ້ການປ່ຽນແປງນີ້ຫາ DevTools."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ຢຸດຈອດໄປໃສ່ໜ້າຈໍແຍກຕ່າງຫາກ"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ກຳລັງຂຽນໄຟລ໌…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວເນື້ອຫາ - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "ບໍ່ສາມາດດາວໂຫຼດໄອຄອນທີ່ຈຳເປັນຈາກໄຟລ໌ manifest ໄດ້"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "ລາຍລະອຽດ"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ຜູ້ເຮັດວຽກ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "ສະເພາະໜ້າທີ່ໂຫຼດຜ່ານຄຳຮ້ອງຂໍ GET ທີ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "ສະເພາະໜ້າທີ່ມີລະຫັດສະຖານະ 2XX ທີ່ສາມາດຖືກແຄສໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome ກວດພົບຄວາມພະຍາຍາມເປີດໃຊ້ JavaScript ໃນຂະນະທີ່ຢູ່ໃນແຄສ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍ AppBanner ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍການປັກທຸງ. ກະລຸນາເຂົ້າໄປ chrome://flags/#back-forward-cache ເພື່ອເປີດການນຳໃຊ້ມັນຢູ່ອຸປະກອນນີ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍ command line."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກໜ່ວຍຄວາມຈຳບໍ່ພຽງພໍ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງໂດຍຕົວແທນ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ສຳລັບຕົວສະແດງພາບລ່ວງໜ້າ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "ບໍ່ສາມາດແຄສໜ້າໄດ້ເນື່ອງຈາກມັນມີອິນສະແຕນ BroadcastChannel ທີ່ມີຕົວຟັງທີ່ລົງທະບຽນແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "ໜ້າທີ່ມີສ່ວນຫົວ cache-control:no-store ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "ແຄສຖືກລຶບລ້າງໂດຍຄວາມຕັ້ງໃຈແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີປລັກອິນແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "ໜ້າທີ່ໃຊ້ FileChooser API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "ໜ້າທີ່ໃຊ້ File System Access API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "ໜ້າທີ່ໃຊ້ Media Device Dispatcher ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "ເຄື່ອງຫຼິ້ນມີເດຍກຳລັງຫຼິ້ນໃນເວລາກຳລັງນຳທາງໄປບ່ອນອື່ນ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງສະຖານະການຫຼິ້ນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງຕົວຈັດການຄຳສັ່ງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "ໜ້າທີ່ໃຊ້ SecurityHandler ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "ໜ້າທີ່ໃຊ້ Serial API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "ໜ້າທີ່ໃຊ້ WebAuthetication API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "ໜ້າທີ່ໃຊ້ WebBluetooth API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "ໜ້າທີ່ໃຊ້ WebUSB API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ຕົວເຮັດວຽກສະເພາະ ຫຼື worklet ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "ການໂຫຼດເອກະສານບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "ຕົວເຮັດວຽກບໍລິການຖືກເປີດໃຊ້ໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງການສະຕຣີມມີເດຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ IdleManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີການເຊື່ອມຕໍ່ IndexedDB ເປີດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "ໃຊ້ API ທີ່ບໍ່ມີສິດ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ JavaScript ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ StyleSheet ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "ຂໍ້ຜິດພາດພາຍໃນ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການລັອກແປ້ນພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "ການໂຫຼດໜ້າບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "ການນຳທາງຖືກຍົກເລີກກ່ອນໜ້າຈະຖືກກູູ້ຄືນຈາກແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ເຮັດວຽກຢູ່ນັ້ນໄດ້ຮັບຂໍ້ມູນຫຼາຍເກີນໄປ. Chrome ຈຳກັດຈຳນວນຂໍ້ມູນທີ່ໜ້າສາມາດຮັບໄດ້ໃນຂະນະທີ່ແຄສແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີ inflight fetch() ຫຼື XHR ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກຄຳຮ້ອງຂໍເຄືອຂ່າຍທີ່ດຳເນີນຢູ່ມີການປ່ຽນເສັ້ນທາງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກເປີດການເຊື່ອມຕໍ່ເຄືອຂ່າຍດົນເກີນໄປ. Chrome ຈຳກັດໄລຍະເວລາທີ່ໜ້າສາມາດໄດ້ຮັບຂໍ້ມູນໃນຂະນະທີ່ແຄສແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "ໜ້າທີ່ບໍ່ມີສ່ວນຫົວຄຳຕອບທີ່ຖືກຕ້ອງບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "ການນຳທາງເກີດຂຶ້ນໃນເຟຣມໃດໜຶ່ງທີ່ນອກເໜືອໄປຈາກເຟຣມຫຼັກ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີທຸລະກຳ DB ທີ່ສ້າງດັດຊະນີແລ້ວທີ່ດຳເນີນຢູ່ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍການໂຫຼດເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍ XHR ແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ PaymentManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການສະແດງຜົນຊ້ອນກັນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "ຕອນນີ້ໜ້າທີ່ສະແດງສ່ວນຕິດຕໍ່ຜູ້ໃຊ້ການພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "ໜ້າຖືກເປີດໂດຍໃຊ້ 'window.open()' ແລະ ແຖບອື່ນມີການອ້າງອີງຫາມັນ ຫຼື ໜ້າໄດ້ເປີດໜ້າຈໍໃດໜຶ່ງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຫຼົ້ມ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຖືກຢຸດແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດເຊັນເຊີແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການຊິ້ງຂໍ້ມູນພື້ນຫຼັງ ຫຼື ການອະນຸຍາດການໂຫຼດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດ MIDI ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການແຈ້ງເຕືອນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການເຂົ້າເຖິງບ່ອນຈັດເກັບຂໍ້ມູນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກວິດີໂອແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "ມີພຽງໜ້າທີ່ຮູບແບບ URL ເປັນ HTTP / HTTPS ທີ່ສາມາດຖືກແຄສໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "ໜ້າຖືກອ້າງສິດໂດຍຕົວເຮັດວຽກບໍລິການອື່ນໃນຂະນະທີ່ມັນຢູ່ໃນແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "ຕົວເຮັດວຽກບໍລິການພະຍາຍາມສົ່ງ MessageEvent ໄປໃສ່ໜ້າໃນແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ServiceWorker ຖືກຖອນການລົງທະບຽນໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກການເປີດນຳໃຊ້ຕົວເຮັດວຽກບໍລິການ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome ຣີສະຕາດ ແລະ ລຶບລ້າງຂໍ້ມູນແຄສຍ້ອນຫຼັງແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SharedWorker ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechRecognizer ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechSynthesis ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "iframe ຢູ່ໜ້າເລີ່ມການນຳທາງທີ່ບໍ່ສຳເລັດ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "ໜ້າເກີນເວລາສູງສຸດໃນແຄສຍ້ອນຫຼັງ ແລະ ໝົດອາຍຸແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "ໜ້າໝົດເວລາໃນຂະນະທີ່ກຳລັງເຂົ້າແຄສຍ້ອນຫຼັງ (ໜ້າຈະເປັນຍ້ອນຕົວຈັດການການເຊື່ອງໜ້າທີ່ເອີ້ນໃຊ້ດົນ)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຫຼັກແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຍ່ອຍແລ້ວ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ໂປຣແກຣມທ່ອງເວັບປ່ຽນສ່ວນຫົວການຍົກເລີກໂປຣແກຣມຜູ້ໃຊ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງເພື່ອບັນທຶກວິດີໂອ ຫຼື ສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebDatabase ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebHID ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebLocks ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebNfc ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebOTPService ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "ໜ້າທີ່ມີ WebRTC ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebShare ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "ໜ້າທີ່ມີ WebSocket ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "ໜ້າທີ່ມີ WebTransport ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebXR ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "ແຄສຍ້ອນຫຼັງ"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "ບໍ່ສາມາດດຳເນີນການໄດ້"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "ເຫດຜົນເຫຼົ່ານີ້ບໍ່ສາມາດດຳເນີນການໄດ້ ເຊັ່ນ: ການແຄສຖືກປ້ອງກັນໄວ້ໂດຍບາງຢ່າງນອກການຄວບຄຸມໂດຍກົງຂອງໜ້າ."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "ສຶກສາເພີ່ມເຕີມ: ການມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "ເຟຣມຫຼັກ"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "ບໍ່ໄດ້ສະແດງຈາກແຄສຍ້ອນຫຼັງ: ເພື່ອເປີດໃຊ້ແຄສຍ້ອນຫຼັງ, ໃຫ້ໃຊ້ປຸ່ມກັບຫຼັງ/ໄປໜ້າຂອງ Chrome ຫຼື ໃຊ້ປຸ່ມທົດສອບທາງລຸ່ມເພື່ອໄປບ່ອນອື່ນ ແລະ ກັບມາອັດຕະໂນມັດ."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "ສາມາດດຳເນີນການໄດ້"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "ເຫດຜົນເຫຼົ່ານີ້ແມ່ນດຳເນີນການໄດ້ ເຊັ່ນ: ພວກມັນສາມາດຖືກລຶບລ້າງເພື່ອເຮັດໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "ສະແດງຈາກແຄສຍ້ອນຫຼັງສຳເລັດແລ້ວ."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "ທົດສອບແຄສຍ້ອນຫຼັງ"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "ກຳລັງທົດສອບ"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "ກຳລັງລໍຖ້າການຮອງຮັບຢູ່"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "ການຮັບຮອງ Chrome ສຳລັບເຫດຜົນເຫຼົ່ານີ້ແມ່ນລໍຖ້າດຳເນີນການຢູ່ ເຊັ່ນ: ພວກມັນຈະບໍ່ປ້ອງກັນບໍ່ໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໃນ Chrome ເວີຊັນໃນອະນາຄົດ."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "ບໍ່ສາມາດໃຊ້ໄດ້"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "ສະຖານະທີ່ບໍ່ຮູ້ຈັກ"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ການດຶງຂໍ້ມູນໃນພື້ນຫຼັງ"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ຢຸດເຫດການບັນທຶກ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "ສະເພາະໜ້າທີ່ໂຫຼດຜ່ານຄຳຮ້ອງຂໍ GET ທີ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "ສະເພາະໜ້າທີ່ມີລະຫັດສະຖານະ 2XX ທີ່ສາມາດຖືກແຄສໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome ກວດພົບຄວາມພະຍາຍາມເປີດໃຊ້ JavaScript ໃນຂະນະທີ່ຢູ່ໃນແຄສ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍ AppBanner ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍການປັກທຸງ. ກະລຸນາເຂົ້າໄປ chrome://flags/#back-forward-cache ເພື່ອເປີດການນຳໃຊ້ມັນຢູ່ອຸປະກອນນີ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍ command line."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກໜ່ວຍຄວາມຈຳບໍ່ພຽງພໍ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງໂດຍຕົວແທນ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ສຳລັບຕົວສະແດງພາບລ່ວງໜ້າ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "ບໍ່ສາມາດແຄສໜ້າໄດ້ເນື່ອງຈາກມັນມີອິນສະແຕນ BroadcastChannel ທີ່ມີຕົວຟັງທີ່ລົງທະບຽນແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "ໜ້າທີ່ມີສ່ວນຫົວ cache-control:no-store ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ແຄສຖືກລຶບລ້າງໂດຍຄວາມຕັ້ງໃຈແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີປລັກອິນແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "ໜ້າທີ່ໃຊ້ FileChooser API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ໜ້າທີ່ໃຊ້ File System Access API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "ໜ້າທີ່ໃຊ້ Media Device Dispatcher ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ເຄື່ອງຫຼິ້ນມີເດຍກຳລັງຫຼິ້ນໃນເວລາກຳລັງນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງສະຖານະການຫຼິ້ນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງຕົວຈັດການຄຳສັ່ງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "ໜ້າທີ່ໃຊ້ SecurityHandler ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "ໜ້າທີ່ໃຊ້ Serial API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "ໜ້າທີ່ໃຊ້ WebAuthetication API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "ໜ້າທີ່ໃຊ້ WebBluetooth API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "ໜ້າທີ່ໃຊ້ WebUSB API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ຕົວເຮັດວຽກສະເພາະ ຫຼື worklet ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ການໂຫຼດເອກະສານບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ຕົວເຮັດວຽກບໍລິການຖືກເປີດໃຊ້ໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງການສະຕຣີມມີເດຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ IdleManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີການເຊື່ອມຕໍ່ IndexedDB ເປີດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "ໃຊ້ API ທີ່ບໍ່ມີສິດ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ JavaScript ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ StyleSheet ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "ຂໍ້ຜິດພາດພາຍໃນ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການລັອກແປ້ນພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "ການໂຫຼດໜ້າບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ການນຳທາງຖືກຍົກເລີກກ່ອນໜ້າຈະຖືກກູູ້ຄືນຈາກແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ເຮັດວຽກຢູ່ນັ້ນໄດ້ຮັບຂໍ້ມູນຫຼາຍເກີນໄປ. Chrome ຈຳກັດຈຳນວນຂໍ້ມູນທີ່ໜ້າສາມາດຮັບໄດ້ໃນຂະນະທີ່ແຄສແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີ inflight fetch() ຫຼື XHR ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກຄຳຮ້ອງຂໍເຄືອຂ່າຍທີ່ດຳເນີນຢູ່ມີການປ່ຽນເສັ້ນທາງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກເປີດການເຊື່ອມຕໍ່ເຄືອຂ່າຍດົນເກີນໄປ. Chrome ຈຳກັດໄລຍະເວລາທີ່ໜ້າສາມາດໄດ້ຮັບຂໍ້ມູນໃນຂະນະທີ່ແຄສແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ໜ້າທີ່ບໍ່ມີສ່ວນຫົວຄຳຕອບທີ່ຖືກຕ້ອງບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ການນຳທາງເກີດຂຶ້ນໃນເຟຣມໃດໜຶ່ງທີ່ນອກເໜືອໄປຈາກເຟຣມຫຼັກ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີທຸລະກຳ DB ທີ່ສ້າງດັດຊະນີແລ້ວທີ່ດຳເນີນຢູ່ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍການໂຫຼດເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍ XHR ແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ PaymentManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການສະແດງຜົນຊ້ອນກັນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "ຕອນນີ້ໜ້າທີ່ສະແດງສ່ວນຕິດຕໍ່ຜູ້ໃຊ້ການພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ໜ້າຖືກເປີດໂດຍໃຊ້ 'window.open()' ແລະ ແຖບອື່ນມີການອ້າງອີງຫາມັນ ຫຼື ໜ້າໄດ້ເປີດໜ້າຈໍໃດໜຶ່ງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຫຼົ້ມ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຖືກຢຸດແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດເຊັນເຊີແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການຊິ້ງຂໍ້ມູນພື້ນຫຼັງ ຫຼື ການອະນຸຍາດການໂຫຼດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດ MIDI ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການແຈ້ງເຕືອນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການເຂົ້າເຖິງບ່ອນຈັດເກັບຂໍ້ມູນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກວິດີໂອແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "ມີພຽງໜ້າທີ່ຮູບແບບ URL ເປັນ HTTP / HTTPS ທີ່ສາມາດຖືກແຄສໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ໜ້າຖືກອ້າງສິດໂດຍຕົວເຮັດວຽກບໍລິການອື່ນໃນຂະນະທີ່ມັນຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ຕົວເຮັດວຽກບໍລິການພະຍາຍາມສົ່ງ MessageEvent ໄປໃສ່ໜ້າໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker ຖືກຖອນການລົງທະບຽນໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກການເປີດນຳໃຊ້ຕົວເຮັດວຽກບໍລິການ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ຣີສະຕາດ ແລະ ລຶບລ້າງຂໍ້ມູນແຄສຍ້ອນຫຼັງແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SharedWorker ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechRecognizer ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechSynthesis ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe ຢູ່ໜ້າເລີ່ມການນຳທາງທີ່ບໍ່ສຳເລັດ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "ໜ້າເກີນເວລາສູງສຸດໃນແຄສຍ້ອນຫຼັງ ແລະ ໝົດອາຍຸແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ໜ້າໝົດເວລາໃນຂະນະທີ່ກຳລັງເຂົ້າແຄສຍ້ອນຫຼັງ (ໜ້າຈະເປັນຍ້ອນຕົວຈັດການການເຊື່ອງໜ້າທີ່ເອີ້ນໃຊ້ດົນ)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຫຼັກແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຍ່ອຍແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ໂປຣແກຣມທ່ອງເວັບປ່ຽນສ່ວນຫົວການຍົກເລີກໂປຣແກຣມຜູ້ໃຊ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງເພື່ອບັນທຶກວິດີໂອ ຫຼື ສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebDatabase ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebHID ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebLocks ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebNfc ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebOTPService ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "ໜ້າທີ່ມີ WebRTC ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebShare ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "ໜ້າທີ່ມີ WebSocket ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "ໜ້າທີ່ມີ WebTransport ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebXR ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "ແຄສຍ້ອນຫຼັງ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "ບໍ່ສາມາດດຳເນີນການໄດ້"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ເຫດຜົນເຫຼົ່ານີ້ບໍ່ສາມາດດຳເນີນການໄດ້ ເຊັ່ນ: ການແຄສຖືກປ້ອງກັນໄວ້ໂດຍບາງຢ່າງນອກການຄວບຄຸມໂດຍກົງຂອງໜ້າ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "ສຶກສາເພີ່ມເຕີມ: ການມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "ເຟຣມຫຼັກ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "ບໍ່ໄດ້ສະແດງຈາກແຄສຍ້ອນຫຼັງ: ເພື່ອເປີດໃຊ້ແຄສຍ້ອນຫຼັງ, ໃຫ້ໃຊ້ປຸ່ມກັບຫຼັງ/ໄປໜ້າຂອງ Chrome ຫຼື ໃຊ້ປຸ່ມທົດສອບທາງລຸ່ມເພື່ອໄປບ່ອນອື່ນ ແລະ ກັບມາອັດຕະໂນມັດ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ສາມາດດຳເນີນການໄດ້"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ເຫດຜົນເຫຼົ່ານີ້ແມ່ນດຳເນີນການໄດ້ ເຊັ່ນ: ພວກມັນສາມາດຖືກລຶບລ້າງເພື່ອເຮັດໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "ສະແດງຈາກແຄສຍ້ອນຫຼັງສຳເລັດແລ້ວ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "ທົດສອບແຄສຍ້ອນຫຼັງ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "ກຳລັງທົດສອບ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "ກຳລັງລໍຖ້າການຮອງຮັບຢູ່"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ການຮັບຮອງ Chrome ສຳລັບເຫດຜົນເຫຼົ່ານີ້ແມ່ນລໍຖ້າດຳເນີນການຢູ່ ເຊັ່ນ: ພວກມັນຈະບໍ່ປ້ອງກັນບໍ່ໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໃນ Chrome ເວີຊັນໃນອະນາຄົດ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "ບໍ່ສາມາດໃຊ້ໄດ້"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "ສະຖານະທີ່ບໍ່ຮູ້ຈັກ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ບໍ່ມີຈຸດສິ້ນສຸດໃຫ້ສະແດງຜົນ"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ບັນທຶກ"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "ເຊື່ອມຕໍ່ຫາ DevTools ຄືນໃໝ່"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (ກົດ 'Enter' ເພື່ອຢືນຢັນ ຫຼື ກົດ 'Escape' ເພື່ອຍົກເລີກ.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "ໃຊ້ແຖບເພື່ອສະຫຼັບຄຳສັ່ງ. ພິມ '?' ເພື່ອເບິ່ງຄຳສັ່ງທີ່ສາມາດໃຊ້ໄດ້"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "ພິມ '?' ເພື່ອເບິ່ງຄຳສັ່ງທີ່ສາມາດໃຊ້ໄດ້"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ເປີດໄຟລ໌"

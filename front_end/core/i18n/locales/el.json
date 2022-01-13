@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Απενεργοποίηση κρυφής μνήμης (όσο τα Εργαλεία για προγραμματιστές είναι ανοιχτά)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Απενεργοποίηση αυτόματης λειτουργίας χαμηλού φωτισμού"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Απενεργοποίηση JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Απενεργοποίηση της μορφής WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Απενεργοποίηση"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Να μην γίνεται λήψη μη συγχρονισμένων ιχνηλατήσεων στοίβας"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Να μην γίνεται προσομοίωση του τύπου μέσων CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Να μην γίνεται προσομοίωση της αυτόματης λειτουργίας χαμηλού φωτισμού"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Να μην γίνεται επέκταση των γραμμών πλέγματος"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Ενεργοποίηση προσαρμοσμένων μορφοποιητών"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Ενεργοποίηση αυτόματης λειτουργίας χαμηλού φωτισμού"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ενεργοποίηση JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ενεργοποίηση μορφής WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Ενεργοποίηση"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Επέκταση γραμμών πλέγματος"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Προσομοίωση εστιασμένης σελίδας"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Προσομοιώνει μια εστιασμένη σελίδα."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Ενεργοποιεί την αυτόματη λειτουργία χαμηλού φωτισμού για τη σελίδα που επιθεωρείται."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Επιβάλλει τη λειτουργία μέσων CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Εμφάνιση συρταριού κονσόλας"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Το χρωματικό θέμα που προτιμάται από το σύστημα έχει αλλάξει. Για να εφαρμόσετε αυτήν την αλλαγή στα Εργαλεία για προγραμματιστές, επαναλάβετε τη φόρτωση."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Απαγκύρωση σε ξεχωριστό παράθυρο"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Εγγραφή αρχείου…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Πολιτική ασφάλειας περιεχομένου - Υπολογισμός"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Δεν ήταν δυνατή η λήψη ενός απαιτούμενου εικονιδίου από το μανιφέστο"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Περιγραφή"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Μόνο οι σελίδες που φορτώνονται μέσω αιτήματος GET είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Μόνο οι σελίδες με κωδικό κατάστασης 2XX μπορούν να αποθηκευτούν στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Το Chrome εντόπισε μια προσπάθεια εκτέλεσης JavaScript κατά την αποθήκευση στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Οι σελίδες που έχουν ζητήσει ένα AppBanner δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από επισημάνσεις. Μεταβείτε στο chrome://flags/#back-forward-cache για να την ενεργοποιήσετε τοπικά σε αυτήν τη συσκευή."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από τη γραμμή εντολής."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε λόγω ανεπαρκούς μνήμης."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός δεν υποστηρίζεται από εκπρόσωπο."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε για προαπόδοση."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Δεν είναι δυνατή η αποθήκευση της σελίδας στην κρυφή μνήμη επειδή έχει μια παρουσία BroadcastChannel με εγγεγραμμένες λειτουργίες αναμονής."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Οι σελίδες με την κεφαλίδα cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Έγινε σκόπιμα εκκαθάριση της προσωρινής μνήμης."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη προκειμένου να επιτραπεί η αποθήκευση μιας άλλης σελίδας στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Οι σελίδες που περιέχουν προσθήκες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API FileChooser δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API πρόσβασης στο σύστημα αρχείων δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Οι σελίδες που χρησιμοποιούν διεκπεραιωτή συσκευής μέσων δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Γινόταν αναπαραγωγή από ένα Media Player κατά την απομάκρυνση."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API MediaSession και ορίζουν κατάσταση αναπαραγωγής δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API MediaSession και ορίζουν δείκτες χειρισμού ενεργειών δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SecurityHandler δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API Serial δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API WebAuthetication δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API WebBluetooth δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Οι σελίδες που χρησιμοποιούν το API WebUSB δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Οι σελίδες που χρησιμοποιούν ένα ειδικό worker ή worklet δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Η φόρτωση του εγγράφου δεν ολοκληρώθηκε πριν από την απομάκρυνση."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Ένα service worker ενεργοποιήθηκε ενώ η σελίδα βρισκόταν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη προκειμένου να επιτραπεί η αποθήκευση μιας άλλης σελίδας στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Οι σελίδες στις οποίες έχει εκχωρηθεί πρόσβαση για ροή μέσων δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Οι σελίδες που χρησιμοποιούν πύλες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο IdleManager δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Οι σελίδες που έχουν ανοικτή σύνδεση IndexedDB δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Χρησιμοποιήθηκαν ακατάλληλα API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Οι σελίδες στις οποίες έχει εισαχθεί JavaScript από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Οι σελίδες στις οποίες έχει εισαχθεί φύλλο στιλ από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Εσωτερικό σφάλμα."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Οι σελίδες που χρησιμοποιούν το κλείδωμα πληκτρολογίου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Η φόρτωση της σελίδας δεν ολοκληρώθηκε πριν από την απομάκρυνση."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Οι σελίδες των οποίων ο κύριος πόρος έχει το στοιχείο cache-control:no-cache δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Οι σελίδες των οποίων ο κύριος πόρος έχει το στοιχείο cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Η πλοήγηση ακυρώθηκε πριν να είναι δυνατή η επαναφορά της σελίδας από την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη επειδή μια ενεργή σύνδεση δικτύου έλαβε πάρα πολλά δεδομένα. Το Chrome περιορίζει την ποσότητα δεδομένων που μπορεί να λάβει μια σελίδα ενώ είναι αποθηκευμένη στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Οι σελίδες που έχουν αιτήματα ανάκτησης inflight () ή XHR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη πίσω-εμπρός επειδή ένα ενεργό αίτημα δικτύου περιλάμβανε ανακατεύθυνση."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη επειδή μια σύνδεση δικτύου ήταν ανοικτή για μεγάλο διάστημα. Το Chrome περιορίζει την ποσότητα χρόνου που μπορεί να λάβει δεδομένα μια σελίδα ενώ είναι αποθηκευμένη στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Οι σελίδες που δεν έχουν κεφαλίδα έγκυρης απόκρισης δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Η πλοήγηση έγινε σε πλαίσιο διαφορετικό από το κύριο πλαίσιο."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Οι σελίδες με καταλογοποιημένες συναλλαγές DB σε εξέλιξη δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Οι σελίδες με αίτημα δικτύου in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Οι σελίδες με αίτημα δικτύου ανάκτησης in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Οι σελίδες με αίτημα δικτύου in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Οι σελίδες με αίτημα δικτύου in-flight XHR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο PaymentManager δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Οι σελίδες που χρησιμοποιούν τη λειτουργία picture-in-picture δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Οι σελίδες που χρησιμοποιούν πύλες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Οι σελίδες που εμφανίζουν τη διεπαφή χρήστη εκτύπωσης δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Η σελίδα άνοιξε με χρήση window.open() και μια άλλη καρτέλα περιέχει αναφορά σε αυτό ή η σελίδα άνοιξε ένα παράθυρο."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Η διαδικασία της λειτουργία απόδοσης για τη σελίδα στην κρυφή μνήμη πίσω-εμπρός παρουσίασε σφάλμα."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Η διαδικασία της λειτουργίας απόδοσης για τη σελίδα στην κρυφή μνήμη πίσω-εμπρός τερματίστηκε."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες εγγραφής ήχου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες αισθητήρα δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες συγχρονισμού ή ανάκτησης στο παρασκήνιο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες MIDI δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες ειδοποίησης δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Οι σελίδες που έχουν ζητήσει πρόσβαση στον αποθηκευτικό χώρο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Οι σελίδες που έχουν ζητήσει άδειες εγγραφής βίντεο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Μόνο οι σελίδες των οποίων ο συνδυασμός URL είναι HTTP/HTTPS μπορούν να αποθηκευτούν στην κρυφή μνήμη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Υποβλήθηκε αξίωση για αυτήν τη σελίδα από service worker κατά την αποθήκευση στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Ένα service worker προσπάθησε να στείλει στη σελίδα στην κρυφή μνήμη πίσω-εμπρός MessageEvent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Η εγγραφή του ServiceWorker καταργήθηκε ενώ η σελίδα βρισκόταν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη πίσω-εμπρός λόγω ενεργοποίησης service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Έγινε επανεκκίνηση του Chrome και οι καταχωρίσεις της κρυφής μνήμης πίσω-εμπρός διαγράφηκαν."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SharedWorker δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SpeechRecognizer δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SpeechSynthesis δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Ένα iframe στη σελίδα ξεκίνησε πλοήγηση που δεν ολοκληρώθηκε."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Οι σελίδες των οποίων ο δευτερεύων πόρος έχει το στοιχείο cache-control:no-cache δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Οι σελίδες των οποίων ο δευτερεύων πόρος έχει το στοιχείο cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Έγινε υπέρβαση του μέγιστου χρόνου στην κρυφή μνήμη πίσω-εμπρός από τη σελίδα και έληξε."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Το χρονικό όριο της σελίδας στην κρυφή μνήμη πίσω-εμπρός έληξε (ενδεχομένως λόγω δεικτών χειρισμού pagehide που εκτελούνται για μεγάλο χρονικό διάστημα)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Η σελίδα έχει δείκτη χειρισμού unload στο κύριο πλαίσιο."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Η σελίδα έχει δείκτη χειρισμού unload στο δευτερεύον πλαίσιο."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Το πρόγραμμα περιήγησης άλλαξε την κεφαλίδα παράκαμψης παράγοντα χρήστη."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Οι σελίδες στις οποίες έχει εκχωρηθεί πρόσβαση για εγγραφή βίντεο ή ήχου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebDatabase δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebHID δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Οι σελίδες που χρησιμοποιούν WebLocks δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebNfc δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebOTPService δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Οι σελίδες με το στοιχείο WebRTC δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebShare δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Οι σελίδες με το στοιχείο WebSocket δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Οι σελίδες με το στοιχείο WebTransport δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebXR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Κρυφή μνήμη πίσω-εμπρός"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Χωρίς δυνατότητα ενέργειας"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Δεν υπάρχει δυνατότητα ενέργειας για αυτούς τους λόγους, δηλαδή η αποθήκευση στην κρυφή μνήμη αποτράπηκε για κάποιον λόγο εκτός του άμεσου ελέγχου της σελίδας."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Μάθετε περισσότερα : καταλληλότητα για την κρυφή μνήμη πίσω-εμπρός"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Κύριο πλαίσιο"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Δεν προβλήθηκε από την κρυφή μνήμη πίσω-εμπρός: για την ενεργοποίηση της κρυφής μνήμης πίσω-εμπρός, χρησιμοποιήστε τα κουμπιά πίσω/εμπρός του Chrome ή χρησιμοποιήστε το κουμπί δοκιμής παρακάτω για να απομακρυνθείτε και να επιστρέψετε εδώ αυτόματα."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Με δυνατότητα ενέργειας"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Υπάρχει δυνατότητα ενέργειας για αυτούς τους λόγους, δηλαδή μπορεί να γίνει διαγραφή των στοιχείων έτσι ώστε η σελίδα να είναι κατάλληλη για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Προβλήθηκε επιτυχώς από την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Δοκιμή κρυφής μνήμης πίσω-εμπρός"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Εκτέλεση δοκιμής"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Υποστήριξη σε εκκρεμότητα"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Εκκρεμεί η υποστήριξη του Chrome για αυτούς τους λόγους. Αυτό σημαίνει ότι δεν πρόκειται να αποτρέψουν την καταλληλότητα της σελίδας για την κρυφή μνήμη πίσω-εμπρός σε κάποια μελλοντική έκδοση του Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "μη διαθέσιμο"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Άγνωστη κατάσταση"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Λήψη παρασκηνίου"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Διακοπή εγγραφής συμβάντων"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Μόνο οι σελίδες που φορτώνονται μέσω αιτήματος GET είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Μόνο οι σελίδες με κωδικό κατάστασης 2XX μπορούν να αποθηκευτούν στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Το Chrome εντόπισε μια προσπάθεια εκτέλεσης JavaScript κατά την αποθήκευση στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Οι σελίδες που έχουν ζητήσει ένα AppBanner δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από επισημάνσεις. Μεταβείτε στο chrome://flags/#back-forward-cache για να την ενεργοποιήσετε τοπικά σε αυτήν τη συσκευή."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από τη γραμμή εντολής."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε λόγω ανεπαρκούς μνήμης."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός δεν υποστηρίζεται από εκπρόσωπο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε για προαπόδοση."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Δεν είναι δυνατή η αποθήκευση της σελίδας στην κρυφή μνήμη επειδή έχει μια παρουσία BroadcastChannel με εγγεγραμμένες λειτουργίες αναμονής."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Οι σελίδες με την κεφαλίδα cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Έγινε σκόπιμα εκκαθάριση της προσωρινής μνήμης."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη προκειμένου να επιτραπεί η αποθήκευση μιας άλλης σελίδας στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Οι σελίδες που περιέχουν προσθήκες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API FileChooser δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API πρόσβασης στο σύστημα αρχείων δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Οι σελίδες που χρησιμοποιούν διεκπεραιωτή συσκευής μέσων δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Γινόταν αναπαραγωγή από ένα Media Player κατά την απομάκρυνση."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API MediaSession και ορίζουν κατάσταση αναπαραγωγής δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API MediaSession και ορίζουν δείκτες χειρισμού ενεργειών δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SecurityHandler δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API Serial δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API WebAuthetication δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API WebBluetooth δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Οι σελίδες που χρησιμοποιούν το API WebUSB δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Οι σελίδες που χρησιμοποιούν ένα ειδικό worker ή worklet δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Η φόρτωση του εγγράφου δεν ολοκληρώθηκε πριν από την απομάκρυνση."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Ένα service worker ενεργοποιήθηκε ενώ η σελίδα βρισκόταν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη προκειμένου να επιτραπεί η αποθήκευση μιας άλλης σελίδας στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Οι σελίδες στις οποίες έχει εκχωρηθεί πρόσβαση για ροή μέσων δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Οι σελίδες που χρησιμοποιούν πύλες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο IdleManager δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Οι σελίδες που έχουν ανοικτή σύνδεση IndexedDB δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Χρησιμοποιήθηκαν ακατάλληλα API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Οι σελίδες στις οποίες έχει εισαχθεί JavaScript από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Οι σελίδες στις οποίες έχει εισαχθεί φύλλο στιλ από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Εσωτερικό σφάλμα."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Οι σελίδες που χρησιμοποιούν το κλείδωμα πληκτρολογίου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Η φόρτωση της σελίδας δεν ολοκληρώθηκε πριν από την απομάκρυνση."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Οι σελίδες των οποίων ο κύριος πόρος έχει το στοιχείο cache-control:no-cache δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Οι σελίδες των οποίων ο κύριος πόρος έχει το στοιχείο cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Η πλοήγηση ακυρώθηκε πριν να είναι δυνατή η επαναφορά της σελίδας από την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη επειδή μια ενεργή σύνδεση δικτύου έλαβε πάρα πολλά δεδομένα. Το Chrome περιορίζει την ποσότητα δεδομένων που μπορεί να λάβει μια σελίδα ενώ είναι αποθηκευμένη στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Οι σελίδες που έχουν αιτήματα ανάκτησης inflight () ή XHR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη πίσω-εμπρός επειδή ένα ενεργό αίτημα δικτύου περιλάμβανε ανακατεύθυνση."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη επειδή μια σύνδεση δικτύου ήταν ανοικτή για μεγάλο διάστημα. Το Chrome περιορίζει την ποσότητα χρόνου που μπορεί να λάβει δεδομένα μια σελίδα ενώ είναι αποθηκευμένη στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Οι σελίδες που δεν έχουν κεφαλίδα έγκυρης απόκρισης δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Η πλοήγηση έγινε σε πλαίσιο διαφορετικό από το κύριο πλαίσιο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Οι σελίδες με καταλογοποιημένες συναλλαγές DB σε εξέλιξη δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Οι σελίδες με αίτημα δικτύου in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Οι σελίδες με αίτημα δικτύου ανάκτησης in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Οι σελίδες με αίτημα δικτύου in-flight δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Οι σελίδες με αίτημα δικτύου in-flight XHR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο PaymentManager δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Οι σελίδες που χρησιμοποιούν τη λειτουργία picture-in-picture δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Οι σελίδες που χρησιμοποιούν πύλες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Οι σελίδες που εμφανίζουν τη διεπαφή χρήστη εκτύπωσης δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Η σελίδα άνοιξε με χρήση window.open() και μια άλλη καρτέλα περιέχει αναφορά σε αυτό ή η σελίδα άνοιξε ένα παράθυρο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Η διαδικασία της λειτουργία απόδοσης για τη σελίδα στην κρυφή μνήμη πίσω-εμπρός παρουσίασε σφάλμα."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Η διαδικασία της λειτουργίας απόδοσης για τη σελίδα στην κρυφή μνήμη πίσω-εμπρός τερματίστηκε."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες εγγραφής ήχου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες αισθητήρα δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες συγχρονισμού ή ανάκτησης στο παρασκήνιο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες MIDI δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες ειδοποίησης δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Οι σελίδες που έχουν ζητήσει πρόσβαση στον αποθηκευτικό χώρο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Οι σελίδες που έχουν ζητήσει άδειες εγγραφής βίντεο δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Μόνο οι σελίδες των οποίων ο συνδυασμός URL είναι HTTP/HTTPS μπορούν να αποθηκευτούν στην κρυφή μνήμη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Υποβλήθηκε αξίωση για αυτήν τη σελίδα από service worker κατά την αποθήκευση στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Ένα service worker προσπάθησε να στείλει στη σελίδα στην κρυφή μνήμη πίσω-εμπρός MessageEvent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Η εγγραφή του ServiceWorker καταργήθηκε ενώ η σελίδα βρισκόταν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη πίσω-εμπρός λόγω ενεργοποίησης service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Έγινε επανεκκίνηση του Chrome και οι καταχωρίσεις της κρυφής μνήμης πίσω-εμπρός διαγράφηκαν."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SharedWorker δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SpeechRecognizer δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο SpeechSynthesis δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Ένα iframe στη σελίδα ξεκίνησε πλοήγηση που δεν ολοκληρώθηκε."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Οι σελίδες των οποίων ο δευτερεύων πόρος έχει το στοιχείο cache-control:no-cache δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Οι σελίδες των οποίων ο δευτερεύων πόρος έχει το στοιχείο cache-control:no-store δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Έγινε υπέρβαση του μέγιστου χρόνου στην κρυφή μνήμη πίσω-εμπρός από τη σελίδα και έληξε."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Το χρονικό όριο της σελίδας στην κρυφή μνήμη πίσω-εμπρός έληξε (ενδεχομένως λόγω δεικτών χειρισμού pagehide που εκτελούνται για μεγάλο χρονικό διάστημα)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Η σελίδα έχει δείκτη χειρισμού unload στο κύριο πλαίσιο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Η σελίδα έχει δείκτη χειρισμού unload στο δευτερεύον πλαίσιο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Το πρόγραμμα περιήγησης άλλαξε την κεφαλίδα παράκαμψης παράγοντα χρήστη."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Οι σελίδες στις οποίες έχει εκχωρηθεί πρόσβαση για εγγραφή βίντεο ή ήχου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebDatabase δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebHID δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Οι σελίδες που χρησιμοποιούν WebLocks δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebNfc δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebOTPService δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Οι σελίδες με το στοιχείο WebRTC δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebShare δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Οι σελίδες με το στοιχείο WebSocket δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Οι σελίδες με το στοιχείο WebTransport δεν μπορούν να εισέλθουν στην κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Οι σελίδες που χρησιμοποιούν το στοιχείο WebXR δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Κρυφή μνήμη πίσω-εμπρός"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Χωρίς δυνατότητα ενέργειας"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Δεν υπάρχει δυνατότητα ενέργειας για αυτούς τους λόγους, δηλαδή η αποθήκευση στην κρυφή μνήμη αποτράπηκε για κάποιον λόγο εκτός του άμεσου ελέγχου της σελίδας."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Μάθετε περισσότερα : καταλληλότητα για την κρυφή μνήμη πίσω-εμπρός"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Κύριο πλαίσιο"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Δεν προβλήθηκε από την κρυφή μνήμη πίσω-εμπρός: για την ενεργοποίηση της κρυφής μνήμης πίσω-εμπρός, χρησιμοποιήστε τα κουμπιά πίσω/εμπρός του Chrome ή χρησιμοποιήστε το κουμπί δοκιμής παρακάτω για να απομακρυνθείτε και να επιστρέψετε εδώ αυτόματα."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Με δυνατότητα ενέργειας"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Υπάρχει δυνατότητα ενέργειας για αυτούς τους λόγους, δηλαδή μπορεί να γίνει διαγραφή των στοιχείων έτσι ώστε η σελίδα να είναι κατάλληλη για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Προβλήθηκε επιτυχώς από την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Δοκιμή κρυφής μνήμης πίσω-εμπρός"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Εκτέλεση δοκιμής"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Υποστήριξη σε εκκρεμότητα"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Εκκρεμεί η υποστήριξη του Chrome για αυτούς τους λόγους. Αυτό σημαίνει ότι δεν πρόκειται να αποτρέψουν την καταλληλότητα της σελίδας για την κρυφή μνήμη πίσω-εμπρός σε κάποια μελλοντική έκδοση του Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "μη διαθέσιμο"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Άγνωστη κατάσταση"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Δεν υπάρχουν τελικά σημεία για προβολή"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Αποθήκευση"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Επανασύνδεση DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Πατήστε το πλήκτρο Enter για επιβεβαίωση ή το πλήκτρο Escape για ακύρωση.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Χρησιμοποιήστε το πλήκτρο Tab για εναλλαγή εντολών. Πληκτρολογήστε ? για να δείτε τις διαθέσιμες εντολές."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Πληκτρολογήστε ? για να δείτε τις διαθέσιμες εντολές"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Άνοιγμα αρχείου"

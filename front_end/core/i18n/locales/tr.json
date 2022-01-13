@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Önbelleği devre dışı bırak (Geliştirici Araçları açıkken)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Otomatik koyu modu devre dışı bırakma"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'i devre dışı bırak"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP biçimini devre dışı bırak"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Devre dışı bırak"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Eş zamansız yığın izlemeleri (stack trace) yakalanmasın"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS medya türü emülasyonu kullanılmasın"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Otomatik koyu mod emülasyonu kullanılmasın"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Kılavuz çizgileri uzatılmasın"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Özel biçimlendiricileri etkinleştir"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Otomatik koyu modu etkinleştirme"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript’i Etkinleştir"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP biçimini etkinleştir"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Etkinleştir"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Kılavuz çizgilerini uzat"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Odaklanılmış sayfa emülasyonu"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Odaklanılmış bir sayfa emüle eder"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "İncelenen sayfa için otomatik koyu modu etkinleştirir."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut medya özelliğini zorunlu kılar"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Konsol çekmecesini göster"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Sistem tarafından tercih edilen renk şeması değişti. Bu değişikliği Geliştirici Araçları'na uygulamak için yeniden yükleyin."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ayrı pencereye yerleştir"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Dosya yazılıyor…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "İçerik Güvenliği Politikası - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Gereken bir simge manifest'ten indirilemedi"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Açıklama"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "çalışan"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Yalnızca GET isteği aracılığıyla yüklenen sayfalar geri-ileri önbelleğe alınmaya uygundur."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Yalnızca 2XX durum koduna sahip sayfalar önbelleğe alınabilir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome, önbellekteyken JavaScript'i yürütme girişimi tespit etti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Geri-ileri önbellek, flag'lerle devre dışı bırakılmış. Özelliği yerel olarak bu cihazda etkinleştirmek için chrome://flags/#back-forward-cache adresine gidin."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Geri-ileri önbellek, komut satırıyla devre dışı bırakılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Geri-ileri önbellek, yetersiz bellek nedeniyle devre dışı bırakılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Geri-ileri önbellek, yetki verilmiş kullanıcı tarafından desteklenmiyor."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Geri-ileri önbellek, önceden oluşturucu için devre dışı bırakılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Sayfa, kayıtlı dinleyicileri olan bir BroadcastChannel örneği içerdiğinden önbelleğe alınamıyor."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store başlığı içeren sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Önbellek kasıtlı olarak temizlenmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Sayfa, başka bir sayfanın önbelleğe alınabilmesi için önbellekten çıkarılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Eklenti içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Device Dispatcher kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Sayfadan çıkılırken medya içeriği oynatılıyormuş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API kullanan ve oynatma durumu tanımlamış olan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API kullanan ve işlem işleyicileri tanımlamış olan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Özel bir çalışan veya iş akışı kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Yüklenmesi tamamlanmadan dokümandan çıkılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Sayfa geri-ileri önbellekteyken bir hizmet çalışanı etkinleştirilmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Sayfa, başka bir sayfanın önbelleğe alınabilmesi için önbellekten çıkarılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Medya yayınına erişim izni veren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Portal kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Açık bir IndexedDB bağlantısına sahip olan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Uygun olmayan API'ler kullanılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Uzantılar aracılığıyla JavaScript'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Uzantılar aracılığıyla StyleSheet'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Dahili hata."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Klavye kilidi kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Yüklenmesi tamamlanmadan sayfadan çıkılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Ana kaynağında cache-control:no-cache bulunan sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Ana kaynağında cache-control:no-store bulunan sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Sayfa geri-ileri önbellekten geri yüklenemeden önce gezinme iptal edilmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Etkin bir ağ bağlantısı çok fazla veri aldığından sayfa önbellekten çıkarılmış. Chrome, önbellekteki bir sayfanın alabileceği veri miktarını sınırlar."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "İletim aşamasında fetch() veya XHR içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Sayfa, yönlendirmeyle ilgili etkin bir ağ isteği nedeniyle geri-ileri önbellekten çıkarılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Sayfa, çok uzun süre açık kalan bir ağ bağlantısı nedeniyle önbellekten çıkarılmış. Chrome, önbellekteki bir sayfanın veri alabileceği süreyi sınırlar."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Geçerli yanıt başlığı içermeyen sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Gezinme, ana çerçeve dışında bir çerçevede gerçekleşmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Devam etmekte olan dizine eklenmiş DB işlemleri içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "İletim aşamasında bir ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "İletim aşamasında bir getirme ağı isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "İletim aşamasında bir ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "İletim aşamasında bir XHR ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Pencere içinde pencere özelliğini kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Portal kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Yazdırma kullanıcı arayüzü görüntüleyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Sayfa, \"window.open()\" kullanılarak açılmış ve başka bir sekmede buna atıfta bulunuluyor ya da sayfa bir pencere açmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Geri-ileri önbellekteki sayfa için oluşturucu süreci kilitlenmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Geri-ileri önbellekteki sayfa için oluşturucu süreci sonlandırılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Ses kaydetme izni isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Sensör izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Arka plan senkronizasyonu veya getirme izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Bildirim izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Depolama alanına erişim isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Video kaydetme izni isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Yalnızca URL şeması HTTP/HTTPS olan sayfalar önbelleğe alınabilir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Bir hizmet çalışanı, geri-ileri önbellekteyken sayfa üzerinde hak talebinde bulunmuş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Bir hizmet çalışanı, geri-ileri önbellekteki sayfaya MessageEvent gönderme girişiminde bulunmuş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Bir sayfa geri-ileri önbellekteyken ServiceWorker kaydı iptal edilmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Sayfa, bir hizmet çalışanının etkinleştirilmesi nedeniyle geri-ileri önbellekten çıkarılmış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome yeniden başlatılmış ve geri-ileri önbellek girişlerini temizlemiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Sayfadaki bir iframe'in başlattığı gezinme işlemi tamamlanmamış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Alt kaynağında cache-control:no-cache bulunan sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Alt kaynağında cache-control:no-store bulunan sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Sayfa, geri-ileri önbellekte azami süreyi aşmış ve geçerliliğini kaybetmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Sayfa, muhtemelen uzun süre çalışan sayfa gizleme işleyicileri nedeniyle, geri-ileri önbelleğe girerken zaman aşımına uğramış."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Sayfanın ana çerçevesinde kaldırma işleyicisi var."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Sayfanın alt çerçevelerinden birinde kaldırma işleyicisi var."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Tarayıcı, kullanıcı aracısını geçersiz kılma başlığını değiştirmiş."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Video veya ses kaydı erişimine izin veren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC içeren sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket içeren sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport içeren sayfalar geri-ileri önbelleğe giremez."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Geri-ileri önbellek"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "İşlem Yapılamaz"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Bu nedenlerle ilgili işlem yapılamaz. Yani önbelleğe alma, doğrudan sayfanın kontrolünde olmayan bir nedenden ötürü engellenmiştir."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Daha fazla bilgi: geri-ileri önbellek uygunluğu"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Ana Bilgisayar"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Geri-ileri önbellekten sunulmadı: Geri-ileri önbelleği tetiklemek için Chrome'un geri/ileri düğmelerini kullanın veya otomatik olarak ayrılıp geri dönmek için aşağıdaki test düğmesini kullanın."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "İşlem Yapılabilir"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Bu nedenlerle ilgili işlem yapılabilir. Yani bu nedenler ortadan kaldırılarak sayfa geri-ileri önbelleğe alınmaya uygun hale getirilebilir."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Geri-ileri önbellekten başarıyla sunuldu."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Geri-ileri önbelleği test et"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Test çalıştırılıyor"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Yakında Desteklenecek"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Bu nedenler için Chrome desteği beklemededir. Yani Chrome'un sonraki sürümlerinden birinde bu nedenler sayfanın geri-ileri önbelleğe alınmasını engellemeyecektir."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "kullanılamıyor"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Bilinmeyen Durum"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Arka planda getirme"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Etkinlikleri kaydetmeyi durdur"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Yalnızca GET isteği aracılığıyla yüklenen sayfalar geri-ileri önbelleğe alınmaya uygundur."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Yalnızca 2XX durum koduna sahip sayfalar önbelleğe alınabilir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome, önbellekteyken JavaScript'i yürütme girişimi tespit etti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Geri-ileri önbellek, flag'lerle devre dışı bırakılmış. Özelliği yerel olarak bu cihazda etkinleştirmek için chrome://flags/#back-forward-cache adresine gidin."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Geri-ileri önbellek, komut satırıyla devre dışı bırakılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Geri-ileri önbellek, yetersiz bellek nedeniyle devre dışı bırakılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Geri-ileri önbellek, yetki verilmiş kullanıcı tarafından desteklenmiyor."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Geri-ileri önbellek, önceden oluşturucu için devre dışı bırakılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Sayfa, kayıtlı dinleyicileri olan bir BroadcastChannel örneği içerdiğinden önbelleğe alınamıyor."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store başlığı içeren sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Önbellek kasıtlı olarak temizlenmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Sayfa, başka bir sayfanın önbelleğe alınabilmesi için önbellekten çıkarılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Eklenti içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Device Dispatcher kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Sayfadan çıkılırken medya içeriği oynatılıyormuş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API kullanan ve oynatma durumu tanımlamış olan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API kullanan ve işlem işleyicileri tanımlamış olan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Özel bir çalışan veya iş akışı kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Yüklenmesi tamamlanmadan dokümandan çıkılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Sayfa geri-ileri önbellekteyken bir hizmet çalışanı etkinleştirilmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Sayfa, başka bir sayfanın önbelleğe alınabilmesi için önbellekten çıkarılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Medya yayınına erişim izni veren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Portal kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Açık bir IndexedDB bağlantısına sahip olan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Uygun olmayan API'ler kullanılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Uzantılar aracılığıyla JavaScript'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Uzantılar aracılığıyla StyleSheet'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Dahili hata."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Klavye kilidi kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Yüklenmesi tamamlanmadan sayfadan çıkılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Ana kaynağında cache-control:no-cache bulunan sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Ana kaynağında cache-control:no-store bulunan sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Sayfa geri-ileri önbellekten geri yüklenemeden önce gezinme iptal edilmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Etkin bir ağ bağlantısı çok fazla veri aldığından sayfa önbellekten çıkarılmış. Chrome, önbellekteki bir sayfanın alabileceği veri miktarını sınırlar."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "İletim aşamasında fetch() veya XHR içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Sayfa, yönlendirmeyle ilgili etkin bir ağ isteği nedeniyle geri-ileri önbellekten çıkarılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Sayfa, çok uzun süre açık kalan bir ağ bağlantısı nedeniyle önbellekten çıkarılmış. Chrome, önbellekteki bir sayfanın veri alabileceği süreyi sınırlar."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Geçerli yanıt başlığı içermeyen sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Gezinme, ana çerçeve dışında bir çerçevede gerçekleşmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Devam etmekte olan dizine eklenmiş DB işlemleri içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "İletim aşamasında bir ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "İletim aşamasında bir getirme ağı isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "İletim aşamasında bir ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "İletim aşamasında bir XHR ağ isteği içeren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Pencere içinde pencere özelliğini kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Portal kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Yazdırma kullanıcı arayüzü görüntüleyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Sayfa, \"window.open()\" kullanılarak açılmış ve başka bir sekmede buna atıfta bulunuluyor ya da sayfa bir pencere açmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Geri-ileri önbellekteki sayfa için oluşturucu süreci kilitlenmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Geri-ileri önbellekteki sayfa için oluşturucu süreci sonlandırılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Ses kaydetme izni isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Sensör izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Arka plan senkronizasyonu veya getirme izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Bildirim izinleri isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Depolama alanına erişim isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Video kaydetme izni isteyen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Yalnızca URL şeması HTTP/HTTPS olan sayfalar önbelleğe alınabilir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Bir hizmet çalışanı, geri-ileri önbellekteyken sayfa üzerinde hak talebinde bulunmuş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Bir hizmet çalışanı, geri-ileri önbellekteki sayfaya MessageEvent gönderme girişiminde bulunmuş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Bir sayfa geri-ileri önbellekteyken ServiceWorker kaydı iptal edilmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Sayfa, bir hizmet çalışanının etkinleştirilmesi nedeniyle geri-ileri önbellekten çıkarılmış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome yeniden başlatılmış ve geri-ileri önbellek girişlerini temizlemiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Sayfadaki bir iframe'in başlattığı gezinme işlemi tamamlanmamış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Alt kaynağında cache-control:no-cache bulunan sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Alt kaynağında cache-control:no-store bulunan sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Sayfa, geri-ileri önbellekte azami süreyi aşmış ve geçerliliğini kaybetmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Sayfa, muhtemelen uzun süre çalışan sayfa gizleme işleyicileri nedeniyle, geri-ileri önbelleğe girerken zaman aşımına uğramış."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Sayfanın ana çerçevesinde kaldırma işleyicisi var."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Sayfanın alt çerçevelerinden birinde kaldırma işleyicisi var."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Tarayıcı, kullanıcı aracısını geçersiz kılma başlığını değiştirmiş."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Video veya ses kaydı erişimine izin veren sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC içeren sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket içeren sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport içeren sayfalar geri-ileri önbelleğe giremez."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Geri-ileri önbellek"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "İşlem Yapılamaz"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Bu nedenlerle ilgili işlem yapılamaz. Yani önbelleğe alma, doğrudan sayfanın kontrolünde olmayan bir nedenden ötürü engellenmiştir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Daha fazla bilgi: geri-ileri önbellek uygunluğu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Ana Bilgisayar"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Geri-ileri önbellekten sunulmadı: Geri-ileri önbelleği tetiklemek için Chrome'un geri/ileri düğmelerini kullanın veya otomatik olarak ayrılıp geri dönmek için aşağıdaki test düğmesini kullanın."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "İşlem Yapılabilir"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Bu nedenlerle ilgili işlem yapılabilir. Yani bu nedenler ortadan kaldırılarak sayfa geri-ileri önbelleğe alınmaya uygun hale getirilebilir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Geri-ileri önbellekten başarıyla sunuldu."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Geri-ileri önbelleği test et"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Test çalıştırılıyor"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Yakında Desteklenecek"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Bu nedenler için Chrome desteği beklemededir. Yani Chrome'un sonraki sürümlerinden birinde bu nedenler sayfanın geri-ileri önbelleğe alınmasını engellemeyecektir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "kullanılamıyor"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Bilinmeyen Durum"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Gösterilecek uç nokta yok"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Kaydet"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Şuna yeniden bağlan: DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Onaylamak için \"Enter\", iptal etmek için \"Escape\" tuşuna basın.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Komutları değiştirmek için Sekme'yi kullanın. Kullanılabilir komutları görmek için \"?\" yazın"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Kullanılabilir komutları görmek için \"?\" yazın"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Dosya aç"

@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Desativar o cache (enquanto o DevTools está aberto)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Desativar o modo escuro automático"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desativar JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Desativar o formato WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Desativar"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Não capturar stack traces assíncronos"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Não emular tipo de mídia CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Não emular o modo escuro automático"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Não ampliar as linhas de grade"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Ativar formatadores personalizados"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Ativar o modo escuro automático"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Ativar o JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Ativar o formato WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Ativar"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Ampliar as linhas de grade"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emular uma página em foco"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emula uma página em foco."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Ativa o modo escuro automático na página inspecionada."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Força o recurso de mídia CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Mostrar a gaveta do console"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "O esquema de cores preferencial do sistema foi mudado. Para aplicar essa mudança no DevTools, recarregue."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desafixar para uma janela separada"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Gravando arquivo…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Política de Segurança de Conteúdo: eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Não foi possível fazer o download de um ícone necessário do manifesto"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descrição"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Apenas páginas carregadas por uma solicitação GET são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Apenas páginas com um código de status de 2XX podem ser adicionadas ao cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "O Chrome detectou uma tentativa de executar o JavaScript enquanto a página estava no cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "No momento, as páginas que solicitaram um AppBanner não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "O cache de avanço e retorno foi desativado por sinalizações. Acesse chrome://flags/#back-forward-cache para ativar localmente no dispositivo."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "O cache de avanço e retorno foi desativado pela linha de comando."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "O cache de avanço e retorno foi desativado devido à memória insuficiente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "O delegado não oferece suporte ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "O cache de avanço e retorno foi desativado pelo pré-renderizador."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Não é possível adicionar a página ao cache porque ela tem uma instância BroadcastChannel com listeners registrados."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Não é possível adicionar páginas com um cabeçalho cache-control:no-store ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "O cache foi apagado intencionalmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "A página foi removida do cache para permitir que outra fosse adicionada."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "No momento, as páginas que contêm plug-ins não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "As páginas que usam a API FileChooser não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "As páginas que usam a API File System Access não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "No momento, as páginas que usam o Media Device Dispatcher não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Um player de mídia estava ativo quando o usuário saiu da página."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "As páginas que usam a API MediaSession e definiram um estado de reprodução não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "As páginas que usam a API MediaSession e definiram gerenciadores de ação não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "As páginas que usam a classe SecurityHandler não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "As páginas que usam a API Serial não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "As páginas que usam a API WebAuthetication não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "As páginas que usam a API WebBluetooth não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "As páginas que usam a API WebUSB não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "No momento, as páginas que usam um worker ou worklet dedicados não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "O documento não concluiu o carregamento antes de o usuário sair dele."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Um service worker foi ativado enquanto a página estava no cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "A página foi removida do cache para permitir que outra fosse adicionada."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "No momento, as páginas que concederam acesso ao streaming de mídia não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "No momento, as páginas que usam portais não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "No momento, as páginas que usam a classe IdleManager não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "No momento, as páginas com uma conexão IndexedDB aberta não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "APIs não qualificadas foram usadas."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "No momento, as páginas que tiveram o JavaScript injetado por extensões não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "No momento, as páginas que tiveram folhas de estilo injetadas por extensões não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Erro interno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "No momento, as páginas que usam o bloqueio de teclado não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "A página não concluiu o carregamento antes de o usuário sair dela."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Não é possível adicionar as páginas que têm recursos principais com cache-control:no-cache ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Não é possível adicionar as páginas que têm recursos principais com cache-control:no-store ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "A navegação foi cancelada antes que a página pudesse ser restaurada usando o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "A página foi removida do cache porque uma conexão de rede ativa recebeu dados demais. O Chrome limita a quantidade de dados que uma página pode receber em cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "No momento, as páginas com fetch() ou XHR em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "A página foi removida do cache de avanço e retorno porque uma solicitação de rede ativa envolveu um redirecionamento."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "A página foi removida do cache porque uma conexão de rede ficou aberta por tempo demais. O Chrome limita a quantidade de tempo pelo qual uma página pode receber dados em cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Não é possível adicionar páginas que não têm um cabeçalho de resposta válido ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "A navegação aconteceu em um frame diferente do principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "No momento, as páginas com transações de banco de dados indexado em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "No momento, as páginas com uma solicitação de rede em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "No momento, as páginas com uma solicitação de busca de rede em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "No momento, as páginas com uma solicitação de rede em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "No momento, as páginas com uma solicitação XHR de rede em andamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "No momento, as páginas que usam o PaymentManager não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "No momento, as páginas que usam o picture-in-picture não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "No momento, as páginas que usam portais não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "No momento, as páginas que usam a IU de impressão não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "A página foi aberta usando \"window.open()\" e é referenciada por outra guia, ou a página abriu uma janela."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "O processo do renderizador da página no cache de avanço e retorno falhou."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "O processo do renderizador da página no cache de avanço e retorno foi encerrado."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "No momento, as páginas que solicitaram permissões de captura de áudio não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "No momento, as páginas que solicitaram permissões de sensor não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "No momento, as páginas que solicitaram a sincronização em segundo plano ou permissões de busca não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "No momento, as páginas que solicitaram permissões de MIDI não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "No momento, as páginas que solicitaram permissões de notificação não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "No momento, as páginas que solicitaram acesso ao armazenamento não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "No momento, as páginas que solicitaram permissões de captura de vídeo não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Apenas páginas com um esquema de URL HTTP/HTTPS podem ser adicionadas ao cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "A página foi reivindicada por um service worker enquanto estava no cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Um service worker tentou enviar um MessageEvent à página no cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "A inscrição do ServiceWorker foi cancelada enquanto a página estava no cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "A página foi removida do cache de avanço e retorno devido à ativação de um service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "O Chrome foi reiniciado e apagou as entradas do cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "No momento, as páginas que usam a interface SharedWorker não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "No momento, as páginas que usam a classe SpeechRecognizer não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "No momento, as páginas que usam a SpeechSynthesis não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Um iframe na página iniciou uma navegação que não foi concluída."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Não é possível adicionar as páginas que têm recursos secundários com cache-control:no-cache ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Não é possível adicionar as páginas que têm recursos secundários com cache-control:no-store ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "A página excedeu o tempo máximo no cache de avanço e retorno e expirou."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "A página expirou ao ser adicionada ao cache de avanço e retorno, provavelmente devido aos gerenciadores pagehide abertos há muito tempo."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "A página tem um gerenciador de descarregamento no frame principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "A página tem um gerenciador de descarregamento em um frame secundário."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "O navegador mudou o cabeçalho de substituição do user agent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "No momento, as páginas que concederam acesso à gravação de vídeo ou áudio não estão qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "No momento, as páginas que usam WebDatabase não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "No momento, as páginas que usam WebHID não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "No momento, as páginas que usam WebLocks não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "No momento, as páginas que usam WebNfc não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "No momento, as páginas que usam a classe WebOTPService não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Não é possível adicionar páginas com WebRTC ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "No momento, as páginas que usam WebShare não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Não é possível adicionar páginas com WebSocket ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Não é possível adicionar páginas com WebTransport ao cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "No momento, as páginas que usam o WebXR não são qualificadas para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Cache de avanço e retorno"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Não há ações possíveis"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Esses motivos não são acionáveis, ou seja, o cache foi impedido por algo fora do controle direto da página."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Saiba mais: qualificação para cache de avanço e retorno"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Frame principal"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Não exibido do cache de avanço e retorno: para o ativar, use os botões de voltar/avançar do Chrome ou os botões de teste abaixo para automaticamente ir e voltar."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Ações possíveis"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Esses motivos são acionáveis, ou seja, podem ser apagados para tornar a página qualificada para o cache de avanço e retorno."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Exibida do cache de avanço e retorno"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Testar o cache de avanço e retorno"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Teste em execução"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Suporte pendente"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "O suporte do Chrome a esses motivos está pendente, ou seja, eles não vão impedir que a página seja qualificada para o cache de avanço e retorno em uma versão futura do navegador."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "indisponível"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Status desconhecido"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Busca em segundo plano"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Parar de gravar eventos"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Apenas páginas carregadas por uma solicitação GET são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Apenas páginas com um código de status de 2XX podem ser adicionadas ao cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "O Chrome detectou uma tentativa de executar o JavaScript enquanto a página estava no cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "No momento, as páginas que solicitaram um AppBanner não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "O cache de avanço e retorno foi desativado por sinalizações. Acesse chrome://flags/#back-forward-cache para ativar localmente no dispositivo."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "O cache de avanço e retorno foi desativado pela linha de comando."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "O cache de avanço e retorno foi desativado devido à memória insuficiente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "O delegado não oferece suporte ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "O cache de avanço e retorno foi desativado pelo pré-renderizador."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Não é possível adicionar a página ao cache porque ela tem uma instância BroadcastChannel com listeners registrados."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Não é possível adicionar páginas com um cabeçalho cache-control:no-store ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "O cache foi apagado intencionalmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "A página foi removida do cache para permitir que outra fosse adicionada."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "No momento, as páginas que contêm plug-ins não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "As páginas que usam a API FileChooser não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "As páginas que usam a API File System Access não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "No momento, as páginas que usam o Media Device Dispatcher não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Um player de mídia estava ativo quando o usuário saiu da página."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "As páginas que usam a API MediaSession e definiram um estado de reprodução não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "As páginas que usam a API MediaSession e definiram gerenciadores de ação não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "As páginas que usam a classe SecurityHandler não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "As páginas que usam a API Serial não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "As páginas que usam a API WebAuthetication não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "As páginas que usam a API WebBluetooth não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "As páginas que usam a API WebUSB não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "No momento, as páginas que usam um worker ou worklet dedicados não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "O documento não concluiu o carregamento antes de o usuário sair dele."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Um service worker foi ativado enquanto a página estava no cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "A página foi removida do cache para permitir que outra fosse adicionada."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "No momento, as páginas que concederam acesso ao streaming de mídia não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "No momento, as páginas que usam portais não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "No momento, as páginas que usam a classe IdleManager não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "No momento, as páginas com uma conexão IndexedDB aberta não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "APIs não qualificadas foram usadas."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "No momento, as páginas que tiveram o JavaScript injetado por extensões não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "No momento, as páginas que tiveram folhas de estilo injetadas por extensões não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Erro interno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "No momento, as páginas que usam o bloqueio de teclado não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "A página não concluiu o carregamento antes de o usuário sair dela."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Não é possível adicionar as páginas que têm recursos principais com cache-control:no-cache ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Não é possível adicionar as páginas que têm recursos principais com cache-control:no-store ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "A navegação foi cancelada antes que a página pudesse ser restaurada usando o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "A página foi removida do cache porque uma conexão de rede ativa recebeu dados demais. O Chrome limita a quantidade de dados que uma página pode receber em cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "No momento, as páginas com fetch() ou XHR em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "A página foi removida do cache de avanço e retorno porque uma solicitação de rede ativa envolveu um redirecionamento."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "A página foi removida do cache porque uma conexão de rede ficou aberta por tempo demais. O Chrome limita a quantidade de tempo pelo qual uma página pode receber dados em cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Não é possível adicionar páginas que não têm um cabeçalho de resposta válido ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "A navegação aconteceu em um frame diferente do principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "No momento, as páginas com transações de banco de dados indexado em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "No momento, as páginas com uma solicitação de rede em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "No momento, as páginas com uma solicitação de busca de rede em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "No momento, as páginas com uma solicitação de rede em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "No momento, as páginas com uma solicitação XHR de rede em andamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "No momento, as páginas que usam o PaymentManager não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "No momento, as páginas que usam o picture-in-picture não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "No momento, as páginas que usam portais não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "No momento, as páginas que usam a IU de impressão não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "A página foi aberta usando \"window.open()\" e é referenciada por outra guia, ou a página abriu uma janela."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "O processo do renderizador da página no cache de avanço e retorno falhou."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "O processo do renderizador da página no cache de avanço e retorno foi encerrado."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "No momento, as páginas que solicitaram permissões de captura de áudio não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "No momento, as páginas que solicitaram permissões de sensor não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "No momento, as páginas que solicitaram a sincronização em segundo plano ou permissões de busca não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "No momento, as páginas que solicitaram permissões de MIDI não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "No momento, as páginas que solicitaram permissões de notificação não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "No momento, as páginas que solicitaram acesso ao armazenamento não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "No momento, as páginas que solicitaram permissões de captura de vídeo não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Apenas páginas com um esquema de URL HTTP/HTTPS podem ser adicionadas ao cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "A página foi reivindicada por um service worker enquanto estava no cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Um service worker tentou enviar um MessageEvent à página no cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "A inscrição do ServiceWorker foi cancelada enquanto a página estava no cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "A página foi removida do cache de avanço e retorno devido à ativação de um service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "O Chrome foi reiniciado e apagou as entradas do cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "No momento, as páginas que usam a interface SharedWorker não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "No momento, as páginas que usam a classe SpeechRecognizer não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "No momento, as páginas que usam a SpeechSynthesis não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Um iframe na página iniciou uma navegação que não foi concluída."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Não é possível adicionar as páginas que têm recursos secundários com cache-control:no-cache ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Não é possível adicionar as páginas que têm recursos secundários com cache-control:no-store ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "A página excedeu o tempo máximo no cache de avanço e retorno e expirou."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "A página expirou ao ser adicionada ao cache de avanço e retorno, provavelmente devido aos gerenciadores pagehide abertos há muito tempo."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "A página tem um gerenciador de descarregamento no frame principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "A página tem um gerenciador de descarregamento em um frame secundário."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "O navegador mudou o cabeçalho de substituição do user agent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "No momento, as páginas que concederam acesso à gravação de vídeo ou áudio não estão qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "No momento, as páginas que usam WebDatabase não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "No momento, as páginas que usam WebHID não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "No momento, as páginas que usam WebLocks não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "No momento, as páginas que usam WebNfc não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "No momento, as páginas que usam a classe WebOTPService não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Não é possível adicionar páginas com WebRTC ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "No momento, as páginas que usam WebShare não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Não é possível adicionar páginas com WebSocket ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Não é possível adicionar páginas com WebTransport ao cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "No momento, as páginas que usam o WebXR não são qualificadas para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Cache de avanço e retorno"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Não há ações possíveis"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Esses motivos não são acionáveis, ou seja, o cache foi impedido por algo fora do controle direto da página."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Saiba mais: qualificação para cache de avanço e retorno"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Frame principal"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Não exibido do cache de avanço e retorno: para o ativar, use os botões de voltar/avançar do Chrome ou os botões de teste abaixo para automaticamente ir e voltar."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Ações possíveis"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Esses motivos são acionáveis, ou seja, podem ser apagados para tornar a página qualificada para o cache de avanço e retorno."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Exibida do cache de avanço e retorno"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Testar o cache de avanço e retorno"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Teste em execução"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Suporte pendente"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "O suporte do Chrome a esses motivos está pendente, ou seja, eles não vão impedir que a página seja qualificada para o cache de avanço e retorno em uma versão futura do navegador."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "indisponível"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Status desconhecido"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Não há endpoints para mostrar"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Salvar"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Reconectar DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}. Pressione Enter para confirmar ou Esc para cancelar."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Use a tecla Tab para alternar entre os comandos. Pressione \"?\" para ver os comandos disponíveis"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Digite \"?\" para ver os comandos disponíveis"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Abrir arquivo"

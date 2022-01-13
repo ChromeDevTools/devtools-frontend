@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Кешти өчүрүү (DevTools ачык болгондо)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Автоматтык караңгы теманы өчүрүү"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'ти өчүрүү"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP форматын өчүрүү"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Өчүрүү"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Шайкештирилбеген стек трассирлөөлөрү тартылбасын"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS медиа түрү эмуляцияланбасын"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Автоматтык караңгы тема эмуляцияланбасын"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Тор сызыктары узартылбасын"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Ыңгайлаштырылган форматтагычтарды иштетүү"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Автоматтык караңгы тема эмуляциялансын"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript'ти иштетүү"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматын иштетүү"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Иштетүү"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Тор сызыктарын кеңейтүү"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Тандалган баракты эмуляциялоо"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Тандалган баракты эмуляциялайт."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Текшерилген барак үчүн автоматтык караңгы теманы иштетет."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut медиа функциясын иштетет"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Консоль суурмасын көрсөтүү"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Системанын артыкчылыктуу түс схемасы өзгөрдү. Бул өзгөрүүнү DevTools'ка колдонуу үчүн кайрадан жүктөңүз."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Өзүнчө терезеге ажыратуу"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Файлга жазууда…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Мазмундун Коопсуздук саясаты – баалоо"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Талап кылынган сүрөтчө манифесттен жүктөлүп алынган жок"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Сүрөттөмө"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "жумушчу"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET сурамы аркылуу жүктөлгөн барактарды гана кештөөгө болот."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "2XX абал коду бар барактарды гана кештөөгө болот."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome кештөө учурунда JavaScript'ти аткаруу аракетин аныктады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner'ди суранган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Баракты кештөө белгилөөлөр тарабынан өчүрүлдү. Бул түзмөктө иштетүү үчүн chrome://flags/#back-forward-cache бөлүмүнө баш багыңыз."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Баракты кештөөнү буйрук сабы өчүрүп койгон."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Эстутум жетишсиз болгондуктан, баракты кештөө өчүрүлдү."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Баракты кештөө өкүл тарабынан колдоого алынбайт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Баракты кештөө алдын ала чагылдыргыч үчүн өчүрүлдү."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Катталган угуучулары бар BroadcastChannel үлгүсүнөн улам баракты кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store деген аталышы бар барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Кеш атайын тазаланган."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Плагиндерди камтыган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Device Dispatcher'ди колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Башка жерге өтүү аракетинде медиа ойноткуч ойноп жаткан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API'ни колдонгон жана ойнотуу абалы коюлган барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API'ни колдонгон жана аракет иштеткичтери коюлган барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler'ди колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API'ни колдонгон барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Дайындалган жумушчуну же жумуш топтомун колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Документ чыгуу аракетине чейин жүктөлүп бүткөн жок."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Барак кештелип жатканда, кызмат иштеткичи иштетилди."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Медианы алып ойнотууга уруксат берген барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Порталдарды колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager'ди колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "IndexedDB туташуусу ачык барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Жараксыз API'лер колдонулду."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "JavaScript кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "StyleSheet кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Ички ката."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Баскычтопту кулпулоону колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Барак башка жерге өтүү аракетине чейин жүктөлүп бүткөн жок."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Негизги булагында cache-control:no-cache бар барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Негизги булагында cache-control:no-store бар барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Өтүү аракети барак кештөөдөн калыбына келтирилгенге чейин жокко чыгарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Жигердүү тармакка туташуу өтө көп маалымат алгандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда ала турган маалыматты чектейт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "fetch() же XHR мааниси менен барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Жигердүү тармак сурамында башка дарекке багыттама болгондуктан, барак кештөөдөн чыгарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Тармакка туташуу көпкө чейин ачык тургандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда маалымат ала турган убакытты чектейт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Жообунун аталышы жараксыз барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Негизги фреймден тышкары фреймдеги элементтерге өтүү аракеттери."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Индекстелген DB транзакциялары бар баракты учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Жигердүү тармактык сурам менен барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Учурдагы XHR тармактык сурамы менен барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager'ди колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Cүрөттөгү сүрөт функциясын колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Порталдарды колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Printing UI көрсөтүлгөн барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Барак \"window.open()\" аркылуу ачылган жана башка өтмөктө ага шилтеме бар, же болбосо баракта терезе ачылган."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Баракты кештөөдө үлгүдөн алып тартуу процессинде ката кетти."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Баракты кештөөдө үлгүдөн алып тартуу процесси үзгүлтүккө учурады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Аудио жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Сенсорго уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Фондо шайкештирүү же алууга уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI'ге уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Билдирмеге уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Сактагычка кирүүгө уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Видео жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "URL cхемасы HTTP/HTTPS болгон барактарды гана кештөөгө болот."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Кештелип жаткан барак кызмат иштеткичи тарабынан талап кылынды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Кызмат иштеткич кештелип жаткан баракка MessageEvent жөнөтүүгө аракет кылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Барак кештелип жатканда, ServiceWorker каттоодон чыкты."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Кызмат иштеткичи иштетилгендиктен, барак кештөөдөн чыгарылды."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome өчүрүлүп күйгүзүлүп, баракты кештөө жазууларын тазалады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker'ни колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer'ди колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis'ти колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Барактагы iframe аягына чыга элек өтүү аракетин баштады."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Кошумча булагында cache-control:no-cache бар барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Кошумча булагында cache-control:no-store бар барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Баракты кештөө убакыты чектен ашып, мөөнөтү бүттү."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Баракты кештөөнү күтүү мөөнөтү бүттү (баракты жашыруу иштеткичтери көпкө иштегенден болушу мүмкүн)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Негизги фреймде барактын чыгарып алынган иштеткичи бар."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Кошумча фреймде барактын чыгарып алынган иштеткичи бар."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Серепчи колдонуучу агентинин аталышын өзгөрттү."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Видео же аудио жаздырууга уруксат берген барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase'ди колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID'ни колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks'ту колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc'ни колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService'ты колдогон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC менен барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare'ни колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket менен барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport менен барактарды кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR'ди колдонгон барактарды учурда кештөөгө болбойт."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Баракты кештөө"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Эч нерсе кылууга болбойт"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Бул себептерге карата чара көрүүгө болбойт, мисалы, барак түздөн-түз көзөмөлдөбөгөн нерсе кештөөгө тоскоол болууда."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Кеңири маалымат: баракты кештөөгө жарамдуулук"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Негизги фрейм"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Баракты кештөөдөн алынган жок: баракты кештөө үчүн Chrome'дун кештөө баскычтарын колдонуңуз же автоматтык түрдө чыгуу же кайтуу үчүн төмөндөгү сыноо баскычын басыңыз."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Чара көрүүгө болот"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Бул себептерге чара көрүүгө болот, мисалы, баракты кештөө үчүн аларды тазалоого болот."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Баракты кештөөдөн ийгиликтүү алынды."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Баракты кештөөнү сыноо"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Тест аткарылууда"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Колдоо күтүлүүдө"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Ушул себептерден улам Chrome'ду колдоого алуу күтүлүүдө, мисалы, Chrome'дун кийинки версиясында алар баракты кештөөгө тоскоол болбойт."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "жеткиликсиз"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Абалы белгисиз"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фондогу үлгү"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Жаздырууну токтотуу"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET сурамы аркылуу жүктөлгөн барактарды гана кештөөгө болот."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "2XX абал коду бар барактарды гана кештөөгө болот."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome кештөө учурунда JavaScript'ти аткаруу аракетин аныктады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner'ди суранган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Баракты кештөө белгилөөлөр тарабынан өчүрүлдү. Бул түзмөктө иштетүү үчүн chrome://flags/#back-forward-cache бөлүмүнө баш багыңыз."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Баракты кештөөнү буйрук сабы өчүрүп койгон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Эстутум жетишсиз болгондуктан, баракты кештөө өчүрүлдү."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Баракты кештөө өкүл тарабынан колдоого алынбайт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Баракты кештөө алдын ала чагылдыргыч үчүн өчүрүлдү."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Катталган угуучулары бар BroadcastChannel үлгүсүнөн улам баракты кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store деген аталышы бар барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Кеш атайын тазаланган."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Плагиндерди камтыган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Device Dispatcher'ди колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Башка жерге өтүү аракетинде медиа ойноткуч ойноп жаткан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API'ни колдонгон жана ойнотуу абалы коюлган барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API'ни колдонгон жана аракет иштеткичтери коюлган барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler'ди колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API'ни колдонгон барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Дайындалган жумушчуну же жумуш топтомун колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Документ чыгуу аракетине чейин жүктөлүп бүткөн жок."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Барак кештелип жатканда, кызмат иштеткичи иштетилди."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Медианы алып ойнотууга уруксат берген барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Порталдарды колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager'ди колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "IndexedDB туташуусу ачык барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Жараксыз API'лер колдонулду."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "JavaScript кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "StyleSheet кеңейтүүлөр тарабынан киргизилген барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Ички ката."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Баскычтопту кулпулоону колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Барак башка жерге өтүү аракетине чейин жүктөлүп бүткөн жок."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Негизги булагында cache-control:no-cache бар барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Негизги булагында cache-control:no-store бар барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Өтүү аракети барак кештөөдөн калыбына келтирилгенге чейин жокко чыгарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Жигердүү тармакка туташуу өтө көп маалымат алгандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда ала турган маалыматты чектейт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "fetch() же XHR мааниси менен барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Жигердүү тармак сурамында башка дарекке багыттама болгондуктан, барак кештөөдөн чыгарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Тармакка туташуу көпкө чейин ачык тургандыктан, барак кештен чыгарылды. Chrome барак кештелип жатканда маалымат ала турган убакытты чектейт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Жообунун аталышы жараксыз барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Негизги фреймден тышкары фреймдеги элементтерге өтүү аракеттери."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Индекстелген DB транзакциялары бар баракты учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Жигердүү тармактык сурам менен барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Жигердүү тармактык сурамы менен барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Учурдагы XHR тармактык сурамы менен барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager'ди колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Cүрөттөгү сүрөт функциясын колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Порталдарды колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Printing UI көрсөтүлгөн барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Барак \"window.open()\" аркылуу ачылган жана башка өтмөктө ага шилтеме бар, же болбосо баракта терезе ачылган."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Баракты кештөөдө үлгүдөн алып тартуу процессинде ката кетти."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Баракты кештөөдө үлгүдөн алып тартуу процесси үзгүлтүккө учурады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Аудио жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Сенсорго уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Фондо шайкештирүү же алууга уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI'ге уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Билдирмеге уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Сактагычка кирүүгө уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Видео жаздырууга уруксат сураган барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "URL cхемасы HTTP/HTTPS болгон барактарды гана кештөөгө болот."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Кештелип жаткан барак кызмат иштеткичи тарабынан талап кылынды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Кызмат иштеткич кештелип жаткан баракка MessageEvent жөнөтүүгө аракет кылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Барак кештелип жатканда, ServiceWorker каттоодон чыкты."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Кызмат иштеткичи иштетилгендиктен, барак кештөөдөн чыгарылды."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome өчүрүлүп күйгүзүлүп, баракты кештөө жазууларын тазалады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker'ни колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer'ди колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis'ти колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Барактагы iframe аягына чыга элек өтүү аракетин баштады."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Кошумча булагында cache-control:no-cache бар барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Кошумча булагында cache-control:no-store бар барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Баракты кештөө убакыты чектен ашып, мөөнөтү бүттү."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Баракты кештөөнү күтүү мөөнөтү бүттү (баракты жашыруу иштеткичтери көпкө иштегенден болушу мүмкүн)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Негизги фреймде барактын чыгарып алынган иштеткичи бар."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Кошумча фреймде барактын чыгарып алынган иштеткичи бар."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Серепчи колдонуучу агентинин аталышын өзгөрттү."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Видео же аудио жаздырууга уруксат берген барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase'ди колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID'ни колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks'ту колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc'ни колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService'ты колдогон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC менен барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare'ни колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket менен барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport менен барактарды кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR'ди колдонгон барактарды учурда кештөөгө болбойт."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Баракты кештөө"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Эч нерсе кылууга болбойт"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Бул себептерге карата чара көрүүгө болбойт, мисалы, барак түздөн-түз көзөмөлдөбөгөн нерсе кештөөгө тоскоол болууда."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Кеңири маалымат: баракты кештөөгө жарамдуулук"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Негизги фрейм"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Баракты кештөөдөн алынган жок: баракты кештөө үчүн Chrome'дун кештөө баскычтарын колдонуңуз же автоматтык түрдө чыгуу же кайтуу үчүн төмөндөгү сыноо баскычын басыңыз."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Чара көрүүгө болот"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Бул себептерге чара көрүүгө болот, мисалы, баракты кештөө үчүн аларды тазалоого болот."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Баракты кештөөдөн ийгиликтүү алынды."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Баракты кештөөнү сыноо"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Тест аткарылууда"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Колдоо күтүлүүдө"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Ушул себептерден улам Chrome'ду колдоого алуу күтүлүүдө, мисалы, Chrome'дун кийинки версиясында алар баракты кештөөгө тоскоол болбойт."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "жеткиликсиз"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Абалы белгисиз"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Көрсөтүлө турган аяктоо чекиттери жок"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сактоо"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools менен кайра туташтыруу"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Ырастоо үчүн \"Enter\" же жокко чыгаруу үчүн \"Escape\" баскычтарын басыңыз.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Буйруктарды которуу үчүн Өтмөктү колдонуңуз. Жеткиликтүү буйруктарды көрүү үчүн \"?\" белгисин териңиз"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Жеткиликтүү буйруктарды көрүү үчүн \"?\" белгисин териңиз"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файлды ачуу"

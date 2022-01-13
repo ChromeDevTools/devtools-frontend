@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "හැඹිලිය අබල කරන්න (DevTools විවෘතව තිබියදී)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "ස්වයං අඳුරු ප්‍රකාරය අබල කරන්න"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ජාවාස්ක්‍රිප්ට් අබල කරන්න"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ආකෘතිය අබල කරන්න"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "අබල කරන්න"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "අසමුමුහුර්ත ඇමතුම් අට්ටි අනුසාර ග්‍රහණය නොකරන්න"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS මාධ්‍ය වර්ගය අනුකරණය නොකරන්න"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "ස්වයං අඳුරු ප්‍රකාරය අනුකරණය නොකරන්න"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ජාල රේඛා දිගු නොකරන්න"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "අභිරුචි හැඩගන්වන්නන් සබල කරන්න"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "ස්වයං අඳුරු ප්‍රකාරය සබල කරන්න"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "ජාවාස්ක්‍රිප්ට් සබල කරන්න"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ආකෘතිය සබල කරන්න"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "සබල කරන්න"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ජාලක රේඛා දිගු කරන්න"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "නාභිගත කළ පිටුවක් අනුකරණය කරන්න"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "නාභිගත කළ පිටුවක් අනුකරණය කරයි."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "පරීක්ෂා කළ පිටුව සඳහා ස්වයංක්‍රීය අඳුරු ප්‍රකාරය සබල කරයි."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut මාධ්‍ය විශේෂාංගය බල කරයි"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "කොන්සෝල ලාච්චුව පෙන්වන්න"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "පද්ධතිය කැමති වර්ණ පටිපාටිය වෙනස් වී ඇත. මෙම වෙනස් කිරීම DevTools වෙත යෙදීමට, නැවත පූරණය කරන්න."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "වෙනම කවුළුවකට නොඈඳන්න"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ගොනුව ලියමින්…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "අන්තර්ගත ආරක්ෂක ප්‍රතිපත්තිය - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "මැනිෆෙස්ටයෙන් අවශ්‍ය නිරූපකයක් බාගැනීමට නොහැකි විය"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "විස්තරය"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "වැඩකරු"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET ඉල්ලීමක් හරහා පූරණය කරන ලද පිටු පමණක් පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් ලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "2XX තත්ත්ව කේතයක් සහිත පිටු පමණක් හැඹිලිගත කළ හැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome හැඹිලිය තුළ ඇති අතරතුර ජාවාස්ක්‍රිප්ට් ක්‍රියාත්මක කිරීම සඳහා වන උත්සාහයක් අනාවරණය කර ගත්තේය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner එකක් ඉල්ලූ පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "ආපසු/ඉදිරි හැඹිලිය සලකුණු කිරීම් මගින් අබල කර ඇත. එය ස්ථානීයව මෙම උපාංගයේ සබල කිරීමට chrome://flags/#back-forward-cache වෙත පිවිසෙන්න"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "ආපසු/ඉදිරි හැඹිලිය විධාන පේළිය මගින් අබල කර ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "ප්‍රමාණවත් මතකයක් නොමැති නිසා පසුපස/ඉදිරි හැඹිලිය අබල කර ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ආපසු/ඉදිරි හැඹිලිය නියෝජිතයා විසින් සහාය නොදක්වයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "ආපසු/ඉදිරි හැඹිලිය පූර්ව විදහන්නා මගින් අබල කර ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "ලියාපදිංචි සවන් දෙන්නන් සමඟ BroadcastChannel නිදර්ශනයක් ඇති බැවින් පිටුව හැඹිලිගත කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store ශීර්ෂකය සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "හැඹිලිය හිතාමතා හිස් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "වෙනත් පිටුවක් හැඹිලිගත කිරීමට ඉඩ දීම සඳහා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "ප්ලගින අඩංගු පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Device Dispatcher භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "ඉවතට සංචාලනය කිරීම මත මාධ්‍ය වාදකයක් වාදනය විය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API භාවිත කරන සහ පසුධාවන තත්ත්වයක් සකසන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API භාවිත කරන සහ ක්‍රියා හසුරුවන්නන් සකසන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial AP භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB AP භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "කැපවූ සේවකයෙකු හෝ වැඩපලක් භාවිතා කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "ලේඛනය ඉවතට සංචාලනය කිරීමට පෙර පූරණය කිරීම අවසන් නොවීය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "පිටුව පසුපස/ඉදිරි හැඹිලියේ තිබියදී සේවා සේවකයෙකු සක්‍රිය කරන ලදි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "වෙනත් පිටුවක් හැඹිලිගත කිරීමට ඉඩ දීම සඳහා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "මාධ්‍ය ප්‍රවාහ ප්‍රවේශය ලබා දී ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "ද්වාර භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "විවෘත IndexedDB සම්බන්ධතාවක් ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Ineligible API භාවිත කරන ලදි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "දිගු මගින් ජාවාස්ක්‍රිප්ට් එන්නත් කර ඇති IPages දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "දිගු මගින් StyleSheet එන්නත් කර ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "අභ්‍යන්තර දෝෂය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "යතුරු පුවරු අගුල භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "පිටුව ඉවතට සංචාලනය කිරීමට පෙර පූරණය කිරීම අවසන් නොවීය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "ප්‍රධාන සම්පත සතුව cache-control:no-cache ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "ප්‍රධාන සම්පත සතුව cache-control:no-store ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "පිටුව ආපසු/ඉදිරි හැඹිලියෙන් ප්‍රතිසාධනය කිරීමට හැකි වීමට පෙර සංචාලනය අවලංගු කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "සක්‍රිය ජාල සබැඳුමකට දත්ත ඉතා වැඩියෙන් ලැබුණු නිසා පිටුව හැඹිලිය වෙතින් ඉවත් කරන ලදි. Chrome හැඹිලිගත කිරීම අතරතුර පිටුවකට ලැබිය හැකි දත්ත ප්‍රමාණය සීමා කරයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ඉන්ෆ්ලයිට් ෆෙච්() හෝ XHR ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "සක්‍රිය ජාල ඉල්ලීමක් ප්‍රතියොමු කිරීමක් හා සම්බන්ධ වූ නිසා පිටුව පසුපස/ඉදිරි හැඹිලියෙන් ඉවත් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "ජාල සම්බන්ධතාවක් දිගු කාලයක් විවෘතව තිබූ නිසා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී. Chrome හැඹිලිගත කිරීම අතරතුර පිටුවකට ලැබිය හැකි වේලාවෙහි ප්‍රමාණය සීමා කරයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "වලංගු ප්‍රතිචාර ශීර්ෂයක් නොමැති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "ප්‍රධාන රාමුව හැර වෙනත් රාමුවක සංචාලනය සිදු විය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "දැනට කෙරෙමින් පවතින සුචිගත DB ගනුදෙනු සහිත පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා දැනට සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "පියසැරි-තුළ ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "පියසැරි-තුල යළි ලබා ගැනීම් ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "පියසැරි-තුළ ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "පියාසර XHR ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "පින්තූරයක් තුළ පින්තූරයක් භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "ද්වාර භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "මුද්‍රණ UI පෙන්වන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "පිටුව 'window.open()' භාවිතයෙන් විවෘත කරන ලද අතර වෙනත් ටැබයක එයට යොමුවක් ඇත, නැතහොත් පිටුව කවුළුවක් විවෘත කළේය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "පසුපස/ඉදිරි හැඹිලියේ ඇති පිටුව සඳහා විදැහුම්කරණ ක්‍රියාවලිය බිඳ වැටිණි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "පසුපස/ඉදිරි හැඹිලියේ ඇති පිටුව සඳහා විදැහුම්කරණ ක්‍රියාවලිය විනාශ කරන ලදි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "ශ්‍රව්‍ය ග්‍රහණ අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "සංවේදක අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "පසුබිම් සමමුහුර්ත කිරීම හෝ යළි ලබා ගැනීම් අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "දැනුම්දීම් අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "ගබඩා ප්‍රවේශය ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "වීඩියෝ ග්‍රහණ අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "HTTP / HTTPS URL යෝජනා ක්‍රමය ඇති පිටු පමණක් හැඹිලිගත කළ හැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "පිටුව පසුපස/ඉදිරි හැඹිලිය තුළ ඇති අතරතුර සේවා සේවකයෙකු විසින් එයට හිමිකම් කියන ලදි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "සේවා සේවකයෙකු ආපසු/ඉදිරි හැඹිලිය තුළ ඇති පිටුට MessageEvent යැවීමට උත්සාහ කළේය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "පිටුවක් පසුපස/ඉදිරි හැඹිලියේ තිබියදී ServiceWorker ලියාපදිංචි කිරීම ඉවත් කරන ලදි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "සේවා සේවක සක්‍රිය කිරීමක් හේතුවෙන් පිටුව පසුපස/ඉදිරි හැඹිලියෙන් ඉවත් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome යළි ආරම්භ කර ආපසු/ඉදිරි හැඹිලි ඇතුළත් කිරීම් හිස් කරන ලදී."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "පිටුවෙහි iframe එකක් සම්පූර්ණ නොවූ සංචාලනයක් ආරම්භ කළේය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "උපසම්පත සතුව cache-control:no-cache ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "උපසම්පත සතුව cache-control:no-store ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "පිටුව ආපසු/ඉදිරි හැඹිලියේ උපරිම කාලය ඉක්මවා ඇති අතර කල් ඉකුත් විය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "පිටුව පසුපස/ඉදිරි හැඹිලිය ඇතුළු කිරීමේ කාලය අවසන් විය (දීර්ඝ කාලීනව ධාවනය වන පිටු සැඟවුම් හසුරුවන්නන් නිසා විය හැකිය)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "පිටුවේ ප්‍රධාන රාමුවේ බෑමේ හසුරුවන්නෙක් ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "පිටුවේ උප රාමුවක බෑමේ හසුරුවන්නෙක් ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "බ්‍රව්සරය පරිශීලක නියෝජිත ප්‍රතික්ෂේප කරන ශීර්ෂකය වෙනස් කර ඇත."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "වීඩියෝ හෝ ශ්‍රව්‍ය පටිගත කිරීමට ප්‍රවේශය ලබා දී ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPSservice භාවිත කරන පිටු දැනට bfcache සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "පසුපසට ඉදිරියට හැඹිලිය"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "ක්‍රියාමාර්ග නොගත හැකි"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "මෙම හේතු ක්‍රියාවට නැංවිය නොහැකිය, එනම් පිටුවේ සෘජු පාලනයෙන් බැහැර යම් දෙයක් මඟින් හැඹිලිගත වීම වළක්වන ලදි."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "තව දැන ගන්න: පසුපසට ඉදිරියට හැඹිලිය සුදුසුකම් ලැබීම"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "ප්‍රධාන රාමුව"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් පිරිනොනමයි: පසුපසට ඉදිරියට හැඹිලිය ක්‍රියාරම්භ කිරීමට, Chrome හි පසුපසට/ඉදිරියට බොත්තම් භාවිත කරන්න, නැතහොත් ස්වයංක්‍රීයව ඉවතට සහ පසුපසට සංචාලනය කිරීමට පහත පරීක්ෂණ බොත්තම භාවිත කරන්න."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "ක්‍රියාමාර්ග ගත හැකි"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "මෙම හේතුවලට ක්‍රියාමාර්ග ගත හැකිය, එනම් පිටුව පසුපසට ඉදිරියට හැඹිලිය සඳහා සුදුසුකම් ලැබීමට ඒවා පිරිසිදු කළ හැකිය."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් සාර්ථකව පිරිනමන ලදි."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "පසුපසට ඉදිරියට හැඹිලිය පරීක්ෂා කරන්න"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "පරීක්ෂාව ධාවනය කරමින්"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "පොරොත්තු සහාය"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "මෙම හේතු සඳහා Chrome සහාය පොරොත්තුවෙන් පවතී, එනම් ඔවුන් Chrome හි අනාගත අනුවාදයක පසුපසට ඉදිරියට හැඹිලිය සඳහා සුදුසුකම් ලැබීමෙන් පිටුව නොවළක්වනු ඇත."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "ලබා ගත නොහැකිය"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "නොදන්නා තත්ත්වය"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "පසුබිම යළි ලබා ගැනීම"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "සිදුවීම් පටිගත කිරීම නවත්වන්න"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET ඉල්ලීමක් හරහා පූරණය කරන ලද පිටු පමණක් පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් ලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "2XX තත්ත්ව කේතයක් සහිත පිටු පමණක් හැඹිලිගත කළ හැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome හැඹිලිය තුළ ඇති අතරතුර ජාවාස්ක්‍රිප්ට් ක්‍රියාත්මක කිරීම සඳහා වන උත්සාහයක් අනාවරණය කර ගත්තේය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner එකක් ඉල්ලූ පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ආපසු/ඉදිරි හැඹිලිය සලකුණු කිරීම් මගින් අබල කර ඇත. එය ස්ථානීයව මෙම උපාංගයේ සබල කිරීමට chrome://flags/#back-forward-cache වෙත පිවිසෙන්න"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ආපසු/ඉදිරි හැඹිලිය විධාන පේළිය මගින් අබල කර ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ප්‍රමාණවත් මතකයක් නොමැති නිසා පසුපස/ඉදිරි හැඹිලිය අබල කර ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ආපසු/ඉදිරි හැඹිලිය නියෝජිතයා විසින් සහාය නොදක්වයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ආපසු/ඉදිරි හැඹිලිය පූර්ව විදහන්නා මගින් අබල කර ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "ලියාපදිංචි සවන් දෙන්නන් සමඟ BroadcastChannel නිදර්ශනයක් ඇති බැවින් පිටුව හැඹිලිගත කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store ශීර්ෂකය සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "හැඹිලිය හිතාමතා හිස් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "වෙනත් පිටුවක් හැඹිලිගත කිරීමට ඉඩ දීම සඳහා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ප්ලගින අඩංගු පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Device Dispatcher භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ඉවතට සංචාලනය කිරීම මත මාධ්‍ය වාදකයක් වාදනය විය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API භාවිත කරන සහ පසුධාවන තත්ත්වයක් සකසන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API භාවිත කරන සහ ක්‍රියා හසුරුවන්නන් සකසන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial AP භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB AP භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "කැපවූ සේවකයෙකු හෝ වැඩපලක් භාවිතා කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ලේඛනය ඉවතට සංචාලනය කිරීමට පෙර පූරණය කිරීම අවසන් නොවීය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "පිටුව පසුපස/ඉදිරි හැඹිලියේ තිබියදී සේවා සේවකයෙකු සක්‍රිය කරන ලදි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "වෙනත් පිටුවක් හැඹිලිගත කිරීමට ඉඩ දීම සඳහා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "මාධ්‍ය ප්‍රවාහ ප්‍රවේශය ලබා දී ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ද්වාර භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "විවෘත IndexedDB සම්බන්ධතාවක් ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Ineligible API භාවිත කරන ලදි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "දිගු මගින් ජාවාස්ක්‍රිප්ට් එන්නත් කර ඇති IPages දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "දිගු මගින් StyleSheet එන්නත් කර ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "අභ්‍යන්තර දෝෂය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "යතුරු පුවරු අගුල භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "පිටුව ඉවතට සංචාලනය කිරීමට පෙර පූරණය කිරීම අවසන් නොවීය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ප්‍රධාන සම්පත සතුව cache-control:no-cache ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ප්‍රධාන සම්පත සතුව cache-control:no-store ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "පිටුව ආපසු/ඉදිරි හැඹිලියෙන් ප්‍රතිසාධනය කිරීමට හැකි වීමට පෙර සංචාලනය අවලංගු කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "සක්‍රිය ජාල සබැඳුමකට දත්ත ඉතා වැඩියෙන් ලැබුණු නිසා පිටුව හැඹිලිය වෙතින් ඉවත් කරන ලදි. Chrome හැඹිලිගත කිරීම අතරතුර පිටුවකට ලැබිය හැකි දත්ත ප්‍රමාණය සීමා කරයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ඉන්ෆ්ලයිට් ෆෙච්() හෝ XHR ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "සක්‍රිය ජාල ඉල්ලීමක් ප්‍රතියොමු කිරීමක් හා සම්බන්ධ වූ නිසා පිටුව පසුපස/ඉදිරි හැඹිලියෙන් ඉවත් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ජාල සම්බන්ධතාවක් දිගු කාලයක් විවෘතව තිබූ නිසා පිටුව හැඹිලියෙන් ඉවත් කරන ලදී. Chrome හැඹිලිගත කිරීම අතරතුර පිටුවකට ලැබිය හැකි වේලාවෙහි ප්‍රමාණය සීමා කරයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "වලංගු ප්‍රතිචාර ශීර්ෂයක් නොමැති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ප්‍රධාන රාමුව හැර වෙනත් රාමුවක සංචාලනය සිදු විය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "දැනට කෙරෙමින් පවතින සුචිගත DB ගනුදෙනු සහිත පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා දැනට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "පියසැරි-තුළ ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "පියසැරි-තුල යළි ලබා ගැනීම් ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "පියසැරි-තුළ ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "පියාසර XHR ජාල ඉල්ලීමක් සහිත පිටු දැනට ආපසු/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "පින්තූරයක් තුළ පින්තූරයක් භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "ද්වාර භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "මුද්‍රණ UI පෙන්වන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "පිටුව 'window.open()' භාවිතයෙන් විවෘත කරන ලද අතර වෙනත් ටැබයක එයට යොමුවක් ඇත, නැතහොත් පිටුව කවුළුවක් විවෘත කළේය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "පසුපස/ඉදිරි හැඹිලියේ ඇති පිටුව සඳහා විදැහුම්කරණ ක්‍රියාවලිය බිඳ වැටිණි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "පසුපස/ඉදිරි හැඹිලියේ ඇති පිටුව සඳහා විදැහුම්කරණ ක්‍රියාවලිය විනාශ කරන ලදි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ශ්‍රව්‍ය ග්‍රහණ අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "සංවේදක අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "පසුබිම් සමමුහුර්ත කිරීම හෝ යළි ලබා ගැනීම් අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "දැනුම්දීම් අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ගබඩා ප්‍රවේශය ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "වීඩියෝ ග්‍රහණ අවසර ඉල්ලා ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "HTTP / HTTPS URL යෝජනා ක්‍රමය ඇති පිටු පමණක් හැඹිලිගත කළ හැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "පිටුව පසුපස/ඉදිරි හැඹිලිය තුළ ඇති අතරතුර සේවා සේවකයෙකු විසින් එයට හිමිකම් කියන ලදි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "සේවා සේවකයෙකු ආපසු/ඉදිරි හැඹිලිය තුළ ඇති පිටුට MessageEvent යැවීමට උත්සාහ කළේය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "පිටුවක් පසුපස/ඉදිරි හැඹිලියේ තිබියදී ServiceWorker ලියාපදිංචි කිරීම ඉවත් කරන ලදි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "සේවා සේවක සක්‍රිය කිරීමක් හේතුවෙන් පිටුව පසුපස/ඉදිරි හැඹිලියෙන් ඉවත් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome යළි ආරම්භ කර ආපසු/ඉදිරි හැඹිලි ඇතුළත් කිරීම් හිස් කරන ලදී."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "පිටුවෙහි iframe එකක් සම්පූර්ණ නොවූ සංචාලනයක් ආරම්භ කළේය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "උපසම්පත සතුව cache-control:no-cache ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "උපසම්පත සතුව cache-control:no-store ඇති පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "පිටුව ආපසු/ඉදිරි හැඹිලියේ උපරිම කාලය ඉක්මවා ඇති අතර කල් ඉකුත් විය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "පිටුව පසුපස/ඉදිරි හැඹිලිය ඇතුළු කිරීමේ කාලය අවසන් විය (දීර්ඝ කාලීනව ධාවනය වන පිටු සැඟවුම් හසුරුවන්නන් නිසා විය හැකිය)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "පිටුවේ ප්‍රධාන රාමුවේ බෑමේ හසුරුවන්නෙක් ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "පිටුවේ උප රාමුවක බෑමේ හසුරුවන්නෙක් ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "බ්‍රව්සරය පරිශීලක නියෝජිත ප්‍රතික්ෂේප කරන ශීර්ෂකය වෙනස් කර ඇත."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "වීඩියෝ හෝ ශ්‍රව්‍ය පටිගත කිරීමට ප්‍රවේශය ලබා දී ඇති පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPSservice භාවිත කරන පිටු දැනට bfcache සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport සහිත පිටුවලට පසුපස/ඉදිරි හැඹිලිය ඇතුළු කළ නොහැකිය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR භාවිත කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "ක්‍රියාමාර්ග නොගත හැකි"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "මෙම හේතු ක්‍රියාවට නැංවිය නොහැකිය, එනම් පිටුවේ සෘජු පාලනයෙන් බැහැර යම් දෙයක් මඟින් හැඹිලිගත වීම වළක්වන ලදි."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "තව දැන ගන්න: පසුපසට ඉදිරියට හැඹිලිය සුදුසුකම් ලැබීම"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "ප්‍රධාන රාමුව"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් පිරිනොනමයි: පසුපසට ඉදිරියට හැඹිලිය ක්‍රියාරම්භ කිරීමට, Chrome හි පසුපසට/ඉදිරියට බොත්තම් භාවිත කරන්න, නැතහොත් ස්වයංක්‍රීයව ඉවතට සහ පසුපසට සංචාලනය කිරීමට පහත පරීක්ෂණ බොත්තම භාවිත කරන්න."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ක්‍රියාමාර්ග ගත හැකි"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "මෙම හේතුවලට ක්‍රියාමාර්ග ගත හැකිය, එනම් පිටුව පසුපසට ඉදිරියට හැඹිලිය සඳහා සුදුසුකම් ලැබීමට ඒවා පිරිසිදු කළ හැකිය."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් සාර්ථකව පිරිනමන ලදි."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය පරීක්ෂා කරන්න"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "පරීක්ෂාව ධාවනය කරමින්"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "පොරොත්තු සහාය"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "මෙම හේතු සඳහා Chrome සහාය පොරොත්තුවෙන් පවතී, එනම් ඔවුන් Chrome හි අනාගත අනුවාදයක පසුපසට ඉදිරියට හැඹිලිය සඳහා සුදුසුකම් ලැබීමෙන් පිටුව නොවළක්වනු ඇත."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "ලබා ගත නොහැකිය"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "නොදන්නා තත්ත්වය"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "සංදර්ශනය කිරීමට අන්ත ලක්ෂ්‍ය නැත"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "සුරකින්න"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools යළි සම්බන්ධ කරන්න"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (තහවුරු කිරීමට 'Enter' හෝ අවලංගු කිරීමට 'Escape' ඔබන්න.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "විධාන මාරු කිරීමට ටැබය භාවිත කරන්න. තිබෙන විධාන බැලීමට '?' තට්ටු කරන්න"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "තිබෙන විධාන බැලීමට '?' තට්ටු කරන්න"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ගොනුව විවෘත කරන්න"

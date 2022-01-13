@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Завсрын санах ойг идэвхгүй болгох (DevTools-г нээлттэй үед)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Автомат бараан горимыг идэвхгүй болгох"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript-г идэвхгүй болгох"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP форматыг идэвхгүй болгох"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Идэвхгүй болгох"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Асинхрон стекийн мөрийг бүү ав"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS медиа төрлийг бүү эмуляц хий"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Автомат бараан горимыг бүү эмуляц хий"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Хүснэгтийн шугамыг бүү сунга"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Захиалгат форматлагчдыг идэвхжүүлэх"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Автомат бараан горимыг идэвхжүүлэх"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript-г идэвхжүүлэх"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP форматыг идэвхжүүлэх"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Идэвхжүүлэх"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Хүснэгтийн шугамыг дэлгэх"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Сонгосон хуудсыг эмуляц хийх"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Автомат бараан загварыг идэвхжүүлэх"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Сонгосон хуудсыг эмуляц хийнэ."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Шалгасан хуудсанд автомат бараан горимыг идэвхжүүлнэ."
+    "message": "Автомат бараан горимыг идэвхжүүлж, prefers-color-scheme-с dark болгож тохируулна."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut медиа онцлогийг хүчилнэ"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Консолын шургуулгыг харуулах"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Системийн сонгосон өнгөний схемийг өөрчилсөн. Энэ өөрчлөлтийг DevTools-д хэрэгжүүлэхийн тулд дахин ачаална уу."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Тусдаа цонх руу салгах"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Файлыг бичиж байна…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Клиентийн зааврын дэд бүтэц"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Контентын аюулгүй байдлын бодлого - Үнэлгээ"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Шаардлагатай дүрс тэмдгийг тодорхойлогч файлаас татаж чадсангүй"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Бараан дэвсгэрийн өнгө"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Бараан загварын өнгө"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Тайлбар"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ажилтан"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Зөвхөн GET хүсэлтээр ачаалсан хуудаснууд back/forward cache-г ашиглах эрхтэй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Зөвхөн 2XX статус кодтой хуудаснуудыг завсрын санах ойд хадгалах боломжтой."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome нь завсрын санах ойд байх үед JavaScript-г гүйцэтгэх гэсэн оролдлого ирлүүллээ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner-н хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Back/forward cache-г дарцгаас идэвхгүй болгосон. Энэ төхөөрөмж дээр үүнийг дотоодод идэвхжүүлэхийн тулд chrome://flags/#back-forward-cache-д зочилно уу."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Back/forward cache-г тушаалын мөрөөс идэвхгүй болгосон."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Санах ой хангалтгүй тул back/forward cache-г идэвхгүй болгосон."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Back/forward cache-г төлөөлөгчөөс дэмждэггүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Back/forward cache-г урьдчилан рэндэрлэгчид идэвхгүй болгосон."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Хуудсанд бүртгүүлсэн сонсогчидтой BroadcastChannel-н инстанс байгаа тул үүнийг завсрын санах ойд хадгалах боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Cache-control:no-store-той хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Санах ойг санаатайгаар цэвэрлэсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Өөр хуудсыг завсрын санах ойд хадгалахыг зөвшөөрөхийн тулд уг хуудсыг завсрын санах ойгоос хассан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Залгаас агуулж буй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Файлын системийн хандалтын API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Медиа төхөөрөмжийн диспетчер ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Шилжиж явах үед медиа тоглуулагчийг тоглуулж байсан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API-г ашигладаг, дахин тоглуулах төлөвийг тохируулсан хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API-г ашигладаг, үйлдэл хариуцагчийг тохируулсан хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Цуваа API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Зориулалтын ажилтан эсвэл ажлын хэсгийн ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Шилжиж явахаас өмнө документыг ачаалж дуусаагүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Хуудас back/forward cache-д байх үед үйлчилгээний ажилтныг идэвхжүүлсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Өөр хуудсыг завсрын санах ойд хадгалахыг зөвшөөрөхийн тулд уг хуудсыг завсрын санах ойгоос хассан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Медиа дамжуулалтын хандах эрх олгосон хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Порталыг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Нээлттэй IndexedDB-н холболттой хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Эрхгүй API-ууд ашигласан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Өргөтгөлөөс JavaScript оруулсан IPages одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Өргөтгөлөөс StyleSheet-г оруулсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Дотоод алдаа."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Гарын түгжээг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Шилжиж явахаас өмнө хуудсыг ачаалж дуусаагүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Үндсэн нөөц нь cache-control:no-cache-гүй хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Үндсэн нөөц нь cache-control:no-store-гүй хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Хуудсыг back/forward cache-с сэргээх боломжтой болохоос өмнө навигацыг цуцалсан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Идэвхтэй сүлжээний холболт хэт их өгөгдөл хүлээн авсан тул хуудсыг завсрын санах ойгоос хассан. Chrome нь завсрын санах ойд хадгалах үед хуудасны хүлээн авах өгөгдлийн хэмжээг хязгаарлана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Идэвхтэй дуудалт () эсвэл XHR-тай хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Идэвхтэй сүлжээний хүсэлт нь дахин чиглүүлэхийг хамаарсан тул уг хуудсыг back/forward cache-с хассан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Сүлжээний холболт хэт удаан нээлттэй байсан тул уг хуудсыг завсрын санах ойгоос хассан. Chrome нь завсрын санах ойд хадгалах үед хуудасны өгөгдөл хүлээн авч болох хугацааг хязгаарлана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Хүчинтэй хариултын толгойгүй хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Үндсэн фреймээс өөр фреймд навигац хийсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Үргэлжилж буй индексжүүлсэн DB гүйлгээтэй хуудас одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Сүлжээг дуудах идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "XHR сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Дэлгэц доторх дэлгэцийг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Порталыг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Хэвлэлийн UI ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Хуудсыг 'window.open()'-г ашиглан нээсэн бөгөөд өөр табд үүний лавлагаа байгаа эсвэл хуудас цонх нээсэн байна."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Back/forward cache дахь хуудасны рэндэрлэгч явц гэмтсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Back/forward cache дахь хуудасны рэндэрлэгч явцыг устгасан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Аудио бичих зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Мэдрэгчийн зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Дэвсгэрт синк хийх эсвэл зөвшөөрөл дуудах хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MDI-н зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Мэдэгдлийн зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Хадгалах санд хандах хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Видео бичих зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Зөвхөн URL-н схем нь HTTP / HTTPS байх хуудаснуудыг завсрын санах ойд хадгалах боломжтой."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Хуудсыг back/forward cache-д байх үед нь үйлчилгээний ажилтан авсан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Үйлчилгээний ажилтан back/forward cache-д байгаа хуудас руу MessageEvent илгээхээр оролдсон."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Хуудсыг back/forward cache-д байх үед ServiceWorker-г бүртгэлээс хассан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Үйлчилгээний ажилтны идэвхжилтийн улмаас хуудсыг back/forward cache-с хассан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome back/forward cache-н оролтуудыг дахин эхлүүлж, цэвэрлэсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Хуудсан дээрх iframe дуусаагүй навигацыг эхлүүлсэн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Дэд нөөц нь cache-control:no-cache-тай хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Дэд нөөц нь cache-control:no-store-той хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Хуудас back/forward cache-д байх цагийн хязгаараасаа давсан бөгөөд хугацаа нь дууссан."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Хуудас back/forward cache-г оруулах үед завсарласан (удаан ажиллуулсан хуудас нуугчийн хариуцагчаас үүдсэн байж магадгүй)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Хуудас үндсэн фреймд ачаалахаа болих явцыг хариуцагчтай байна."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Хуудас дэд фреймд ачаалахаа болихыг хариуцагчтай байна."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Хөтөч хэрэглэгчийн агентын дарах толгой хэсгийг өөрчилсөн."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Видео эсвэл аудио бичихэд хандах эрх олгосон хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService-г ашигладаг хуудаснууд одоогоор bfcache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC-тай хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket-той хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport-той хуудаснууд back/forward cache-д орох боломжгүй."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Back/forward cache"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Үйлдэл хийх боломжгүй"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Эдгээр шалтгаан нь үйлдэл хийх боломжгүй буюу өөрөөр хэлбэл хуудасны шууд хяналтаас гадуурх ямар нэг зүйл завсрын санах ойд хадгалахаас сэргийлсэн."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Нэмэлт мэдээлэл авах: back/forward cache-н шалгуур"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Үндсэн фрейм"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Back/forward cache-с олгоогүй: back/forward cache-г идэвхжүүлэхийн тулд Chrome-н back/forward товчлуур эсвэл автоматаар шилжиж гарах болон буцахын тулд доорх тестийн товчлуурыг ашиглана уу."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Үйлдэл хийх боломжтой"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Эдгээр шалтгаан нь үйлдэл хийх боломжтой буюу өөрөөр хэлбэл хуудсыг back/forward cache-г ашиглах эрхтэй болгохын тулд эдгээрийг арилгах боломжтой."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Back/forward cache-с амжилттай олгосон."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Тестийн back-forward cache"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Тестийг ажиллуулж байна"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Тусламж хүлээгдэж байна"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Эдгээр шалтгааны улмаас Chrome-н тусламж хүлээгдэж байгаа буюу өөрөөр хэлбэл эдгээр нь Chrome-н ирээдүйн хувилбарт хуудсыг back/forward cache-г ашиглах эрхтэй байхаас сэргийлэхгүй."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "боломжгүй"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Тодорхойгүй төлөв"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Дэвсгэрийг дуудах"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Үйл явдал бичихийг зогсоох"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Зөвхөн GET хүсэлтээр ачаалсан хуудаснууд back/forward cache-г ашиглах эрхтэй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Зөвхөн 2XX статус кодтой хуудаснуудыг завсрын санах ойд хадгалах боломжтой."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome нь завсрын санах ойд байх үед JavaScript-г гүйцэтгэх гэсэн оролдлого ирлүүллээ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner-н хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Back/forward cache-г дарцгаас идэвхгүй болгосон. Энэ төхөөрөмж дээр үүнийг дотоодод идэвхжүүлэхийн тулд chrome://flags/#back-forward-cache-д зочилно уу."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Back/forward cache-г тушаалын мөрөөс идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Санах ой хангалтгүй тул back/forward cache-г идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Back/forward cache-г төлөөлөгчөөс дэмждэггүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Back/forward cache-г урьдчилан рэндэрлэгчид идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Хуудсанд бүртгүүлсэн сонсогчидтой BroadcastChannel-н инстанс байгаа тул үүнийг завсрын санах ойд хадгалах боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Cache-control:no-store-той хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Санах ойг санаатайгаар цэвэрлэсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Өөр хуудсыг завсрын санах ойд хадгалахыг зөвшөөрөхийн тулд уг хуудсыг завсрын санах ойгоос хассан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Залгаас агуулж буй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Файлын системийн хандалтын API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Медиа төхөөрөмжийн диспетчер ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Шилжиж явах үед медиа тоглуулагчийг тоглуулж байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API-г ашигладаг, дахин тоглуулах төлөвийг тохируулсан хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API-г ашигладаг, үйлдэл хариуцагчийг тохируулсан хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache-г дэлгэц уншигчийн улмаас идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Цуваа API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Зориулалтын ажилтан эсвэл ажлын хэсгийн ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Шилжиж явахаас өмнө документыг ачаалж дуусаагүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "Шилжиж явах үед аппын баннер байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Шилжиж явах үед Chrome-н Нууц үгний менежер байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "Шилжиж явах үед DOM-г шүүж байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "Шилжиж явах үед DOM-н шүүлтүүрийн үзэгч байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Өргөтгөл нь мессеж бичих API-г ашиглаж байсан тул back/forward cache идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Удаан хугацааны холболттой өргөтгөл холболтыг back/forward cache-г оруулахаас өмнө хаах ёстой."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Удаан хугацааны холболттой өргөтгөл back/forward cache-д фрейм рүү мессеж илгээхээр оролдсон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Өргөтгөлийн улмаас back/forward cache-г идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Шилжиж явах үед маягтын дахин мэдүүлэг эсвэл http нууц үгний харилцах цонх зэрэг зайлшгүй харилцах цонхыг хуудсанд зориулан харуулсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "Шилжиж явах үед офлайн хуудсыг харуулсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Шилжиж явах үед Out-Of-Memory Intervention хэсэг байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "Шилжиж явах үед зөвшөөрлийн хүсэлт байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Шилжиж явах үед попап блоклогч байсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Шилжиж явах үед Аюулгүй хөтчийн дэлгэрэнгүйг харуулсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Аюулгүй хөтөч энэ хуудсыг зөрчилтэй гэж үзсэн бөгөөд попапыг блоклосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Хуудас back/forward cache-д байх үед үйлчилгээний ажилтныг идэвхжүүлсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Өөр хуудсыг завсрын санах ойд хадгалахыг зөвшөөрөхийн тулд уг хуудсыг завсрын санах ойгоос хассан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Медиа дамжуулалтын хандах эрх олгосон хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Порталыг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Нээлттэй IndexedDB-н холболттой хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Эрхгүй API-ууд ашигласан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Өргөтгөлөөс JavaScript оруулсан IPages одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Өргөтгөлөөс StyleSheet-г оруулсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Дотоод алдаа."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Гарын түгжээг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Шилжиж явахаас өмнө хуудсыг ачаалж дуусаагүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Үндсэн нөөц нь cache-control:no-cache-гүй хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Үндсэн нөөц нь cache-control:no-store-гүй хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Хуудсыг back/forward cache-с сэргээх боломжтой болохоос өмнө навигацыг цуцалсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Идэвхтэй сүлжээний холболт хэт их өгөгдөл хүлээн авсан тул хуудсыг завсрын санах ойгоос хассан. Chrome нь завсрын санах ойд хадгалах үед хуудасны хүлээн авах өгөгдлийн хэмжээг хязгаарлана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Идэвхтэй дуудалт () эсвэл XHR-тай хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Идэвхтэй сүлжээний хүсэлт нь дахин чиглүүлэхийг хамаарсан тул уг хуудсыг back/forward cache-с хассан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Сүлжээний холболт хэт удаан нээлттэй байсан тул уг хуудсыг завсрын санах ойгоос хассан. Chrome нь завсрын санах ойд хадгалах үед хуудасны өгөгдөл хүлээн авч болох хугацааг хязгаарлана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Хүчинтэй хариултын толгойгүй хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Үндсэн фреймээс өөр фреймд навигац хийсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Үргэлжилж буй индексжүүлсэн DB гүйлгээтэй хуудас одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Сүлжээг дуудах идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "XHR сүлжээний идэвхтэй хүсэлттэй хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Дэлгэц доторх дэлгэцийг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Порталыг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Хэвлэлийн UI ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Хуудсыг 'window.open()'-г ашиглан нээсэн бөгөөд өөр табд үүний лавлагаа байгаа эсвэл хуудас цонх нээсэн байна."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Back/forward cache дахь хуудасны рэндэрлэгч явц гэмтсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Back/forward cache дахь хуудасны рэндэрлэгч явцыг устгасан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Аудио бичих зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Мэдрэгчийн зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Дэвсгэрт синк хийх эсвэл зөвшөөрөл дуудах хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MDI-н зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Мэдэгдлийн зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Хадгалах санд хандах хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Видео бичих зөвшөөрлийн хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Зөвхөн URL-н схем нь HTTP / HTTPS байх хуудаснуудыг завсрын санах ойд хадгалах боломжтой."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Хуудсыг back/forward cache-д байх үед нь үйлчилгээний ажилтан авсан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Үйлчилгээний ажилтан back/forward cache-д байгаа хуудас руу MessageEvent илгээхээр оролдсон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Хуудсыг back/forward cache-д байх үед ServiceWorker-г бүртгэлээс хассан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Үйлчилгээний ажилтны идэвхжилтийн улмаас хуудсыг back/forward cache-с хассан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome back/forward cache-н оролтуудыг дахин эхлүүлж, цэвэрлэсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Хуудсан дээрх iframe дуусаагүй навигацыг эхлүүлсэн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Дэд нөөц нь cache-control:no-cache-тай хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Дэд нөөц нь cache-control:no-store-той хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Хуудас back/forward cache-д байх цагийн хязгаараасаа давсан бөгөөд хугацаа нь дууссан."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Хуудас back/forward cache-г оруулах үед завсарласан (удаан ажиллуулсан хуудас нуугчийн хариуцагчаас үүдсэн байж магадгүй)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Хуудас үндсэн фреймд ачаалахаа болих явцыг хариуцагчтай байна."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Хуудас дэд фреймд ачаалахаа болихыг хариуцагчтай байна."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Хөтөч хэрэглэгчийн агентын дарах толгой хэсгийг өөрчилсөн."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Видео эсвэл аудио бичихэд хандах эрх олгосон хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService-г ашигладаг хуудаснууд одоогоор bfcache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC-тай хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket-той хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport-той хуудаснууд back/forward cache-д орох боломжгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR-г ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Back/forward cache"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Үйлдэл хийх боломжгүй"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Эдгээр шалтгаан нь үйлдэл хийх боломжгүй буюу өөрөөр хэлбэл хуудасны шууд хяналтаас гадуурх ямар нэг зүйл завсрын санах ойд хадгалахаас сэргийлсэн."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Нэмэлт мэдээлэл авах: back/forward cache-н шалгуур"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Үндсэн фрейм"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Back/forward cache-с олгоогүй: back/forward cache-г идэвхжүүлэхийн тулд Chrome-н back/forward товчлуур эсвэл автоматаар шилжиж гарах болон буцахын тулд доорх тестийн товчлуурыг ашиглана уу."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Үйлдэл хийх боломжтой"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Эдгээр шалтгаан нь үйлдэл хийх боломжтой буюу өөрөөр хэлбэл хуудсыг back/forward cache-г ашиглах эрхтэй болгохын тулд эдгээрийг арилгах боломжтой."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Back/forward cache-с амжилттай олгосон."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Тестийн back-forward cache"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Тестийг ажиллуулж байна"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Тусламж хүлээгдэж байна"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Эдгээр шалтгааны улмаас Chrome-н тусламж хүлээгдэж байгаа буюу өөрөөр хэлбэл эдгээр нь Chrome-н ирээдүйн хувилбарт хуудсыг back/forward cache-г ашиглах эрхтэй байхаас сэргийлэхгүй."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "боломжгүй"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Тодорхойгүй төлөв"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Үзүүлэх эцсийн цэг байхгүй"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Хадгалах"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Дебагийн холболтыг хаасан. Шалтгаан: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools-г дахин холбох"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Баталгаажуулахын тулд 'Enter' эсвэл цуцлахын тулд 'Escape'-г дарна уу.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Тушаалыг сэлгэхийн тулд Tab-г ашиглана уу. Боломжтой тушаалыг харахын тулд '?' гэж бичнэ үү"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Боломжтой тушаалуудыг харахын тулд '?' гэж бичнэ үү"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файл нээх"

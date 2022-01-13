@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ (DevTools ತೆರೆದಿರುವಾಗ)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "ಆಟೋ ಡಾರ್ಕ್ ಮೋಡ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ಫಾರ್ಮ್ಯಾಟ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "ಅಸಿಂಕ್ರೋನಸ್ ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್‌ಗಳನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಬೇಡಿ"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS ಮಾಧ್ಯಮ ಪ್ರಕಾರವನ್ನು ಅನುಕರಿಸಬೇಡಿ"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "ಆಟೋ ಡಾರ್ಕ್ ಮೋಡ್ ಅನ್ನು ಅನುಕರಿಸಬೇಡಿ"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ಗ್ರಿಡ್ ಸಾಲುಗಳನ್ನು ವಿಸ್ತರಿಸಬೇಡಿ"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "ಕಸ್ಟಮ್ ಫಾರ್ಮ್ಯಾಟರ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "ಆಟೋ ಡಾರ್ಕ್ ಮೋಡ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript ಸಕ್ರಿಯಗೊಳಿಸಿ"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ಫಾರ್ಮ್ಯಾಟ್ ಸಕ್ರಿಯಗೊಳಿಸಿ"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "ಸಕ್ರಿಯಗೊಳಿಸಿ"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ಗ್ರಿಡ್ ಸಾಲುಗಳನ್ನು ವಿಸ್ತರಿಸಿ"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "ಫೋಕಸ್ ಮಾಡಿದ ಪುಟವನ್ನು ಅನುಕರಿಸಿ"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ಫೋಕಸ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಅನುಕರಿಸುತ್ತದೆ."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಪುಟಕ್ಕಾಗಿ ಸ್ವಯಂಚಾಲಿತ ಡಾರ್ಕ್ ಮೋಡ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut ಮಾಧ್ಯಮ ಫೀಚರ್ ಅನ್ನು ಒತ್ತಾಯಿಸುತ್ತದೆ"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "ಕನ್ಸೋಲ್ ಡ್ರಾಯರ್ ತೋರಿಸಿ"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "ಸಿಸ್ಟಂ-ಆದ್ಯತೆಯ ಬಣ್ಣದ ವ್ಯವಸ್ಥೆಯು ಬದಲಾಗಿದೆ. ಈ ಬದಲಾವಣೆಯನ್ನು DevTools ಗೆ ಅನ್ವಯಿಸಲು, ಮರುಲೋಡ್ ಮಾಡಿ."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ಪ್ರತ್ಯೇಕ ವಿಂಡೋದಲ್ಲಿ ಅನ್‌ಡಾಕ್ ಮಾಡಿ"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ಫೈಲ್ ಅನ್ನು ಬರೆಯಲಾಗುತ್ತಿದೆ…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "ಕಂಟೆಂಟ್ ಸುರಕ್ಷತೆ ನೀತಿ - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್‌ನಿಂದ ಅಗತ್ಯವಿರುವ ಐಕಾನ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "ವಿವರಣೆ"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ಕಾರ್ಮಿಕರು"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "GET ವಿನಂತಿಯ ಮೂಲಕ ಲೋಡ್ ಮಾಡಲಾದ ಪುಟಗಳು ಮಾತ್ರ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುತ್ತವೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "2XX ಸ್ಥಿತಿ ಕೋಡ್ ಹೊಂದಿರುವ ಪುಟಗಳನ್ನು ಮಾತ್ರ ಕ್ಯಾಷ್ ಮಾಡಬಹುದು."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "ಕ್ಯಾಷ್‌ನಲ್ಲಿರುವಾಗ JavaScript ಅನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸುವ ಪ್ರಯತ್ನವನ್ನು Chrome ಪತ್ತೆಹಚ್ಚಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner ಅನ್ನು ವಿನಂತಿಸುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "ಫ್ಲ್ಯಾಗ್‌ಗಳಿಂದ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಸ್ಥಳೀಯವಾಗಿ ಈ ಸಾಧನದಲ್ಲಿ ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು chrome://flags/#back-forward-cache ಗೆ ಭೇಟಿ ನೀಡಿ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಕಮಾಂಡ್ ಲೈನ್ ಮೂಲಕ ಆಫ್ ಮಾಡಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "ಸಾಕಷ್ಟು ಮೆಮೊರಿ ಇಲ್ಲದ ಕಾರಣ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ವಿನ್ಯಾಸಕಾರರು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "ಪ್ರೀರೆಂಡರ್‌ಗಾಗಿ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "ನೋಂದಾಯಿತ ಕೇಳುಗರೊಂದಿಗೆ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಚಾನೆಲ್ ನಿದರ್ಶನವನ್ನು ಹೊಂದಿರುವ ಕಾರಣ ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್ / ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "ಕ್ಯಾಷ್ ಅನ್ನು ಉದ್ದೇಶಪೂರ್ವಕವಾಗಿ ತೆರವುಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "ಮತ್ತೊಂದು ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "ಪ್ಲಗ್-ಇನ್‌ಗಳನ್ನು ಹೊಂದಿರುವ ಯಾವುದೇ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access AP ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "ಮಾಧ್ಯಮ ಸಾಧನದ ಡಿಸ್‌ಪ್ಯಾಚರ್ ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "ನೀವು ಈ ಪುಟದಿಂದ ನಿರ್ಗಮಿಸಿದಾಗ ಮೀಡಿಯಾ ಪ್ಲೇಯರ್ ಪ್ಲೇ ಆಗುತಿತ್ತು."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API ಅನ್ನು ಬಳಸುವ ಮತ್ತು ಪ್ಲೇಬ್ಯಾಕ್ ಸ್ಥಿತಿಯನ್ನು ಹೊಂದಿಸುವ ವೆಬ್‌ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API ಮತ್ತು ಸೆಟ್ ಕ್ರಿಯೆಯ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಬಳಸುವ ಯಾವುದೇ ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "ಮೀಸಲಾದ ವರ್ಕರ್ ಅಥವಾ ವರ್ಕ್‌ಲೇಟ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "ಡಾಕ್ಯುಮೆಂಟ್ ಆಚೆಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡುವ ಮೊದಲು ಪುಟದ ಲೋಡಿಂಗ್ ಪೂರ್ಣಗೊಂಡಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "ಈ ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿದ್ದಾಗ, ಸರ್ವಿಸ್ ವರ್ಕರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "ಮತ್ತೊಂದು ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "ಮಾಧ್ಯಮ ಸ್ಟ್ರೀಮಿಂಗ್‌ಗೆ ಪ್ರವೇಶವನ್ನು ಹೊಂದಿರುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "ಪೋರ್ಟಲ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "ತೆರೆದ IndexedDB ಸಂಪರ್ಕವನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "ಅನರ್ಹ API ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ JavaScript ನೊಂದಿಗೆ ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ IPages ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ StyleSheet ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "ಆಂತರಿಕ ದೋಷ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "ಕೀಬೋರ್ಡ್ ಲಾಕ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "ಪುಟದಿಂದ ಆಚೆಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡುವ ಮೊದಲು ಪುಟದ ಲೋಡಿಂಗ್ ಪೂರ್ಣಗೊಂಡಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "cache-control:no-cache ಅನ್ನು ಹೊಂದಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "cache-control:no-store ಅನ್ನು ಹೊಂದಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ಮರುಸ್ಥಾಪಿಸುವ ಮೊದಲು ನ್ಯಾವಿಗೇಷನ್ ಅನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "ಸಕ್ರಿಯ ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕವು ಹೆಚ್ಚಿನ ಡೇಟಾವನ್ನು ಸ್ವೀಕರಿಸಿದ ಕಾರಣ ಪುಟವನ್ನು ಸಂಗ್ರಹದಿಂದ ಹೊರಹಾಕಲಾಗಿದೆ. ವೆಬ್‌ಪುಟವು ಕ್ಯಾಷ್ ಮಾಡುವಾಗ ಸ್ವೀಕರಿಸಬಹುದಾದ ಡೇಟಾವನ್ನು Chrome ಮಿತಿಗೊಳಿಸುತ್ತದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "XHR ಅಥವಾ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಳ್ಳುವ ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿರುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "ಸಕ್ರಿಯ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಯು ಮರುನಿರ್ದೇಶನವನ್ನು ಒಳಗೊಂಡಿರುವ ಕಾರಣ ಪುಟವನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಹೊರಹಾಕಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕ ತುಂಬಾ ಸಮಯದಿಂದ ತೆರೆದಿರುವ ಕಾರಣದಿಂದಾಗಿ ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ಹೊರಹಾಕಲಾಗಿದೆ. ವೆಬ್‌ಪುಟವು ಕ್ಯಾಷ್ ಮಾಡುವಾಗ ಸ್ವೀಕರಿಸಬಹುದಾದ ಡೇಟಾ ಸಮಯವನ್ನು Chrome ಮಿತಿಗೊಳಿಸುತ್ತದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "ಮಾನ್ಯವಾದ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಹೊಂದಿರದ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಗೆ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "ನ್ಯಾವಿಗೇಶನ್ ಮುಖ್ಯ ಫ್ರೇಮ್ ಹೊರತುಪಡಿಸಿ ಬೇರೆ ಫ್ರೇಮ್‌ನಲ್ಲಿ ನಡೆಯುತ್ತದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಇಂಡೆಕ್ಸ್‌ ಮಾಡಲಾದ DB ವಹಿವಾಟುಗಳನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುತ್ತಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ಇನ್-ಫ್ಲೈಟ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ಇನ್‌-ಫ್ಲೈಟ್ ಪೆಚ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ಇನ್-ಫ್ಲೈಟ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ಇನ್-ಫ್ಲೈಟ್ XHR ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್ ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನ ಷರತ್ತುಗಳನ್ನು ಪೂರೈಸುತ್ತಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "ಪೋರ್ಟಲ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "ಪ್ರಿಂಟಿಂಗ್ UI ಅನ್ನು ತೋರಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "ಪುಟವನ್ನು window.open() ಬಳಸಿ ತೆರೆಯಲಾಗಿದೆ ಮತ್ತು ಇನ್ನೊಂದು ಟ್ಯಾಬ್ ಅದರ ಉಲ್ಲೇಖವನ್ನು ಹೊಂದಿದೆ ಅಥವಾ ಪುಟವು ವಿಂಡೋವನ್ನು ತೆರೆಯುತ್ತದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ವೆಬ್ ಪುಟದ ರೆಂಡರಿಂಗ್ ಪ್ರಕ್ರಿಯೆ ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ವೆಬ್ ಪುಟದ ರೆಂಡರಿಂಗ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಕೊನೆಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "ಆಡಿಯೋ ಕ್ಯಾಪ್ಚರ್ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸಿದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "ಸೆನ್ಸಾರ್‌ಶಿಪ್ ಅನುಮತಿಯನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "ಹಿನ್ನೆಲೆ ಸಿಂಕ್ರೊನೈಸೇಶನ್ ಅನ್ನು ವಿನಂತಿಸುವ ಅಥವಾ ಅನುಮತಿಗಳನ್ನು ಪಡೆಯುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "ಅಧಿಸೂಚನೆಗಳ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "ಸಂಗ್ರಹಣೆ ಸ್ಥಳದ ಬಳಕೆಯ ಹಕ್ಕುಗಳನ್ನು ವಿನಂತಿಸಿದ ವೆಬ್ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ವೀಡಿಯೊ ಕ್ಯಾಪ್ಚರ್ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸಿದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "HTTP / HTTPS URL ಸ್ಕೀಮ್ ಹೊಂದಿರುವ ಪುಟಗಳನ್ನು ಮಾತ್ರ ಕ್ಯಾಷ್ ಮಾಡಬಹುದು."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿರುವಾಗ ಸರ್ವಿಸ್ ವರ್ಕರ್ ಕ್ಲೈಮ್ ಮಾಡಿದ್ದಾರೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "MessageEvent ಅನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಯಲ್ಲಿರುವ ಪುಟಕ್ಕೆ ಕಳುಹಿಸಲು ಸರ್ವಿಸ್ ವರ್ಕರ್ ಪ್ರಯತ್ನಿಸಿದ್ದಾರೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ವೆಬ್‌ಪುಟವನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಿದಾಗ ServiceWorker ಅನ್ನು ನೋಂದಾಯಿಸಲಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "ಸರ್ವಿಸ್ ವರ್ಕರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದ ಕಾರಣ ರೌಂಡ್-ಟ್ರಿಪ್ ಸಂಗ್ರಹದಿಂದ ಪುಟವನ್ನು ಹೊರಹಾಕಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಲಾಗಿದೆ, ಹೀಗಾಗಿ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ನಮೂದುಗಳನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechSynthesis ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "ಪುಟದಲ್ಲಿ iframe ಮೂಲಕ ಆರಂಭಿಸಲಾದ ನ್ಯಾವಿಗೇಶನ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "cache-control:no-cache ಹೊಂದಿರುವ ಉಪಮೂಲಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "cache-control:no-store ಹೊಂದಿರುವ ಉಪಮೂಲಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "ಈ ಪುಟದ ಮೂಲಕ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಯಲ್ಲಿ ಗರಿಷ್ಠ ಸಮಯವನ್ನು ವ್ಯಯಿಸಲಾಗಿದೆ ಮತ್ತು ಅದರ ಅವಧಿ ಮೀರಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ ಅನ್ನು ನಮೂದಿಸುವ ಪುಟವು ಸಮಯ ಮೀರಿದೆ (ಬಹುಶಃ ದೀರ್ಘಾವಧಿಯ ಪೇಜ್‌ಹೈಡ್ ಹ್ಯಾಂಡ್ಲರ್‌ಗಳಿಂದಾಗಿ)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "ಪುಟವು ಮುಖ್ಯ ಫ್ರೇಮ್‌ನಲ್ಲಿ ಅನ್‌ಲೋಡ್ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಹೊಂದಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "ಪುಟವು ಉಪ ಫ್ರೇಮ್‌ನಲ್ಲಿ ಅನ್‌ಲೋಡ್ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಹೊಂದಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಓವರ್‌ರೈಡ್ ಹೆಡರ್ ಅನ್ನು ಬ್ರೌಸರ್‌ನಿಂದ ಬದಲಾಯಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ವೀಡಿಯೊ ಅಥವಾ ಆಡಿಯೊವನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಪ್ರವೇಶವನ್ನು ನೀಡಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ bfcache ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC ಬಳಸುವ ವೆಬ್ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಸಾಧ್ಯವಾಗದು"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "ಈ ಕಾರಣಗಳು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಲು ಯೋಗ್ಯವಾಗಿಲ್ಲ, ಅಂದರೆ ಪುಟದ ನಿಯಂತ್ರಣದಲ್ಲಿಲ್ಲದ ಕಾರಣದಿಂದ ಕ್ಯಾಷಿಂಗ್ ಅನ್ನು ಮೆಮೊರಿಗೆ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅರ್ಹತೆ"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "ಮುಖ್ಯ ಫ್ರೇಮ್"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಸೇವೆ ನೀಡಲಾಗಿಲ್ಲ: ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಟ್ರಿಗರ್ ಮಾಡಲು, Chrome ನ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಬಟನ್‌ಗಳನ್ನು ಬಳಸಿ ಅಥವಾ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ದೂರಕ್ಕೆ ಮತ್ತು ಹಿಂದಕ್ಕೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲು ಕೆಳಗಿನ ಪರೀಕ್ಷಾ ಬಟನ್ ಅನ್ನು ಬಳಸಿ."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಸಾಧ್ಯವಾಗುವುದು"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "ಈ ಕಾರಣಗಳು ಕ್ರಿಯಾಶೀಲವಾಗಿವೆ, ಅಂದರೆ, ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಪುಟವನ್ನು ಅರ್ಹವಾಗಿಸುವ ಸಮಸ್ಯೆಗಳನ್ನು ಪರಿಹರಿಸಲು ನೀವು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಯಶಸ್ವಿಯಾಗಿ ಸೇವೆ ನೀಡಲಾಗಿದೆ."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಪರೀಕ್ಷಿಸಿ"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "ಪರೀಕ್ಷೆ ರನ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "ಬೆಂಬಲ ಬಾಕಿಯಿದೆ"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome ಈ ಕಾರಣಗಳಿಗಾಗಿ ಬೆಂಬಲವನ್ನು ಒದಗಿಸುತ್ತದೆ, ಅಂದರೆ: Chrome ನ ಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ, ಈ ಕಾರಣಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಪುಟವು ಅರ್ಹವಾಗುವುದನ್ನು ತಡೆಯುವುದಿಲ್ಲ."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "ಲಭ್ಯವಿಲ್ಲ"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "ಸ್ಥಿತಿ ಕುರಿತು ತಿಳಿದಿಲ್ಲ"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಫೆಚ್ ಮಾಡುವಿಕೆ"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ಈವೆಂಟ್‌ಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET ವಿನಂತಿಯ ಮೂಲಕ ಲೋಡ್ ಮಾಡಲಾದ ಪುಟಗಳು ಮಾತ್ರ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುತ್ತವೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "2XX ಸ್ಥಿತಿ ಕೋಡ್ ಹೊಂದಿರುವ ಪುಟಗಳನ್ನು ಮಾತ್ರ ಕ್ಯಾಷ್ ಮಾಡಬಹುದು."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "ಕ್ಯಾಷ್‌ನಲ್ಲಿರುವಾಗ JavaScript ಅನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸುವ ಪ್ರಯತ್ನವನ್ನು Chrome ಪತ್ತೆಹಚ್ಚಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner ಅನ್ನು ವಿನಂತಿಸುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ಫ್ಲ್ಯಾಗ್‌ಗಳಿಂದ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಸ್ಥಳೀಯವಾಗಿ ಈ ಸಾಧನದಲ್ಲಿ ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು chrome://flags/#back-forward-cache ಗೆ ಭೇಟಿ ನೀಡಿ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಕಮಾಂಡ್ ಲೈನ್ ಮೂಲಕ ಆಫ್ ಮಾಡಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ಸಾಕಷ್ಟು ಮೆಮೊರಿ ಇಲ್ಲದ ಕಾರಣ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ವಿನ್ಯಾಸಕಾರರು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ಪ್ರೀರೆಂಡರ್‌ಗಾಗಿ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "ನೋಂದಾಯಿತ ಕೇಳುಗರೊಂದಿಗೆ ಬ್ರಾಡ್‌ಕಾಸ್ಟ್ ಚಾನೆಲ್ ನಿದರ್ಶನವನ್ನು ಹೊಂದಿರುವ ಕಾರಣ ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್ / ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ಕ್ಯಾಷ್ ಅನ್ನು ಉದ್ದೇಶಪೂರ್ವಕವಾಗಿ ತೆರವುಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "ಮತ್ತೊಂದು ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ಪ್ಲಗ್-ಇನ್‌ಗಳನ್ನು ಹೊಂದಿರುವ ಯಾವುದೇ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access AP ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "ಮಾಧ್ಯಮ ಸಾಧನದ ಡಿಸ್‌ಪ್ಯಾಚರ್ ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ನೀವು ಈ ಪುಟದಿಂದ ನಿರ್ಗಮಿಸಿದಾಗ ಮೀಡಿಯಾ ಪ್ಲೇಯರ್ ಪ್ಲೇ ಆಗುತಿತ್ತು."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API ಅನ್ನು ಬಳಸುವ ಮತ್ತು ಪ್ಲೇಬ್ಯಾಕ್ ಸ್ಥಿತಿಯನ್ನು ಹೊಂದಿಸುವ ವೆಬ್‌ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API ಮತ್ತು ಸೆಟ್ ಕ್ರಿಯೆಯ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಬಳಸುವ ಯಾವುದೇ ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ಮೀಸಲಾದ ವರ್ಕರ್ ಅಥವಾ ವರ್ಕ್‌ಲೇಟ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ಡಾಕ್ಯುಮೆಂಟ್ ಆಚೆಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡುವ ಮೊದಲು ಪುಟದ ಲೋಡಿಂಗ್ ಪೂರ್ಣಗೊಂಡಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ಈ ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿದ್ದಾಗ, ಸರ್ವಿಸ್ ವರ್ಕರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "ಮತ್ತೊಂದು ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "ಮಾಧ್ಯಮ ಸ್ಟ್ರೀಮಿಂಗ್‌ಗೆ ಪ್ರವೇಶವನ್ನು ಹೊಂದಿರುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ಪೋರ್ಟಲ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ತೆರೆದ IndexedDB ಸಂಪರ್ಕವನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "ಅನರ್ಹ API ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ JavaScript ನೊಂದಿಗೆ ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ IPages ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ StyleSheet ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "ಆಂತರಿಕ ದೋಷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ಕೀಬೋರ್ಡ್ ಲಾಕ್ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "ಪುಟದಿಂದ ಆಚೆಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡುವ ಮೊದಲು ಪುಟದ ಲೋಡಿಂಗ್ ಪೂರ್ಣಗೊಂಡಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "cache-control:no-cache ಅನ್ನು ಹೊಂದಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "cache-control:no-store ಅನ್ನು ಹೊಂದಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ಮರುಸ್ಥಾಪಿಸುವ ಮೊದಲು ನ್ಯಾವಿಗೇಷನ್ ಅನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ಸಕ್ರಿಯ ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕವು ಹೆಚ್ಚಿನ ಡೇಟಾವನ್ನು ಸ್ವೀಕರಿಸಿದ ಕಾರಣ ಪುಟವನ್ನು ಸಂಗ್ರಹದಿಂದ ಹೊರಹಾಕಲಾಗಿದೆ. ವೆಬ್‌ಪುಟವು ಕ್ಯಾಷ್ ಮಾಡುವಾಗ ಸ್ವೀಕರಿಸಬಹುದಾದ ಡೇಟಾವನ್ನು Chrome ಮಿತಿಗೊಳಿಸುತ್ತದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "XHR ಅಥವಾ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಳ್ಳುವ ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿರುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ಸಕ್ರಿಯ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಯು ಮರುನಿರ್ದೇಶನವನ್ನು ಒಳಗೊಂಡಿರುವ ಕಾರಣ ಪುಟವನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಹೊರಹಾಕಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕ ತುಂಬಾ ಸಮಯದಿಂದ ತೆರೆದಿರುವ ಕಾರಣದಿಂದಾಗಿ ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ಹೊರಹಾಕಲಾಗಿದೆ. ವೆಬ್‌ಪುಟವು ಕ್ಯಾಷ್ ಮಾಡುವಾಗ ಸ್ವೀಕರಿಸಬಹುದಾದ ಡೇಟಾ ಸಮಯವನ್ನು Chrome ಮಿತಿಗೊಳಿಸುತ್ತದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ಮಾನ್ಯವಾದ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಹೊಂದಿರದ ಪುಟಗಳನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಗೆ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್ ಮುಖ್ಯ ಫ್ರೇಮ್ ಹೊರತುಪಡಿಸಿ ಬೇರೆ ಫ್ರೇಮ್‌ನಲ್ಲಿ ನಡೆಯುತ್ತದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಇಂಡೆಕ್ಸ್‌ ಮಾಡಲಾದ DB ವಹಿವಾಟುಗಳನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುತ್ತಿರುವ ವೆಬ್ ಪುಟಗಳನ್ನು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ಇನ್-ಫ್ಲೈಟ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ಇನ್‌-ಫ್ಲೈಟ್ ಪೆಚ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ಇನ್-ಫ್ಲೈಟ್ ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ಇನ್-ಫ್ಲೈಟ್ XHR ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ಪಿಕ್ಚರ್-ಇನ್-ಪಿಕ್ಚರ್ ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನ ಷರತ್ತುಗಳನ್ನು ಪೂರೈಸುತ್ತಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "ಪೋರ್ಟಲ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "ಪ್ರಿಂಟಿಂಗ್ UI ಅನ್ನು ತೋರಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ಪುಟವನ್ನು window.open() ಬಳಸಿ ತೆರೆಯಲಾಗಿದೆ ಮತ್ತು ಇನ್ನೊಂದು ಟ್ಯಾಬ್ ಅದರ ಉಲ್ಲೇಖವನ್ನು ಹೊಂದಿದೆ ಅಥವಾ ಪುಟವು ವಿಂಡೋವನ್ನು ತೆರೆಯುತ್ತದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ವೆಬ್ ಪುಟದ ರೆಂಡರಿಂಗ್ ಪ್ರಕ್ರಿಯೆ ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ವೆಬ್ ಪುಟದ ರೆಂಡರಿಂಗ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಕೊನೆಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ಆಡಿಯೋ ಕ್ಯಾಪ್ಚರ್ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸಿದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ಸೆನ್ಸಾರ್‌ಶಿಪ್ ಅನುಮತಿಯನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ಹಿನ್ನೆಲೆ ಸಿಂಕ್ರೊನೈಸೇಶನ್ ಅನ್ನು ವಿನಂತಿಸುವ ಅಥವಾ ಅನುಮತಿಗಳನ್ನು ಪಡೆಯುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "ಅಧಿಸೂಚನೆಗಳ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ಸಂಗ್ರಹಣೆ ಸ್ಥಳದ ಬಳಕೆಯ ಹಕ್ಕುಗಳನ್ನು ವಿನಂತಿಸಿದ ವೆಬ್ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ವೀಡಿಯೊ ಕ್ಯಾಪ್ಚರ್ ಅನುಮತಿಗಳನ್ನು ವಿನಂತಿಸಿದ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "HTTP / HTTPS URL ಸ್ಕೀಮ್ ಹೊಂದಿರುವ ಪುಟಗಳನ್ನು ಮಾತ್ರ ಕ್ಯಾಷ್ ಮಾಡಬಹುದು."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿರುವಾಗ ಸರ್ವಿಸ್ ವರ್ಕರ್ ಕ್ಲೈಮ್ ಮಾಡಿದ್ದಾರೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "MessageEvent ಅನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಯಲ್ಲಿರುವ ಪುಟಕ್ಕೆ ಕಳುಹಿಸಲು ಸರ್ವಿಸ್ ವರ್ಕರ್ ಪ್ರಯತ್ನಿಸಿದ್ದಾರೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ವೆಬ್‌ಪುಟವನ್ನು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಿದಾಗ ServiceWorker ಅನ್ನು ನೋಂದಾಯಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ಸರ್ವಿಸ್ ವರ್ಕರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದ ಕಾರಣ ರೌಂಡ್-ಟ್ರಿಪ್ ಸಂಗ್ರಹದಿಂದ ಪುಟವನ್ನು ಹೊರಹಾಕಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಲಾಗಿದೆ, ಹೀಗಾಗಿ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ನಮೂದುಗಳನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechSynthesis ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "ಪುಟದಲ್ಲಿ iframe ಮೂಲಕ ಆರಂಭಿಸಲಾದ ನ್ಯಾವಿಗೇಶನ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಲಾಗಲಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "cache-control:no-cache ಹೊಂದಿರುವ ಉಪಮೂಲಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "cache-control:no-store ಹೊಂದಿರುವ ಉಪಮೂಲಗಳನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "ಈ ಪುಟದ ಮೂಲಕ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಮೆಮೊರಿಯಲ್ಲಿ ಗರಿಷ್ಠ ಸಮಯವನ್ನು ವ್ಯಯಿಸಲಾಗಿದೆ ಮತ್ತು ಅದರ ಅವಧಿ ಮೀರಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ ಅನ್ನು ನಮೂದಿಸುವ ಪುಟವು ಸಮಯ ಮೀರಿದೆ (ಬಹುಶಃ ದೀರ್ಘಾವಧಿಯ ಪೇಜ್‌ಹೈಡ್ ಹ್ಯಾಂಡ್ಲರ್‌ಗಳಿಂದಾಗಿ)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ಪುಟವು ಮುಖ್ಯ ಫ್ರೇಮ್‌ನಲ್ಲಿ ಅನ್‌ಲೋಡ್ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಹೊಂದಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ಪುಟವು ಉಪ ಫ್ರೇಮ್‌ನಲ್ಲಿ ಅನ್‌ಲೋಡ್ ಹ್ಯಾಂಡ್ಲರ್ ಅನ್ನು ಹೊಂದಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಓವರ್‌ರೈಡ್ ಹೆಡರ್ ಅನ್ನು ಬ್ರೌಸರ್‌ನಿಂದ ಬದಲಾಯಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ವೀಡಿಯೊ ಅಥವಾ ಆಡಿಯೊವನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಪ್ರವೇಶವನ್ನು ನೀಡಿರುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ bfcache ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC ಬಳಸುವ ವೆಬ್ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport ಹೊಂದಿರುವ ಪುಟಗಳು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಮೂದಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಸಾಧ್ಯವಾಗದು"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ಈ ಕಾರಣಗಳು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಲು ಯೋಗ್ಯವಾಗಿಲ್ಲ, ಅಂದರೆ ಪುಟದ ನಿಯಂತ್ರಣದಲ್ಲಿಲ್ಲದ ಕಾರಣದಿಂದ ಕ್ಯಾಷಿಂಗ್ ಅನ್ನು ಮೆಮೊರಿಗೆ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅರ್ಹತೆ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "ಮುಖ್ಯ ಫ್ರೇಮ್"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಸೇವೆ ನೀಡಲಾಗಿಲ್ಲ: ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಟ್ರಿಗರ್ ಮಾಡಲು, Chrome ನ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಬಟನ್‌ಗಳನ್ನು ಬಳಸಿ ಅಥವಾ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ದೂರಕ್ಕೆ ಮತ್ತು ಹಿಂದಕ್ಕೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲು ಕೆಳಗಿನ ಪರೀಕ್ಷಾ ಬಟನ್ ಅನ್ನು ಬಳಸಿ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಸಾಧ್ಯವಾಗುವುದು"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ಈ ಕಾರಣಗಳು ಕ್ರಿಯಾಶೀಲವಾಗಿವೆ, ಅಂದರೆ, ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಪುಟವನ್ನು ಅರ್ಹವಾಗಿಸುವ ಸಮಸ್ಯೆಗಳನ್ನು ಪರಿಹರಿಸಲು ನೀವು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಯಶಸ್ವಿಯಾಗಿ ಸೇವೆ ನೀಡಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಪರೀಕ್ಷಿಸಿ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "ಪರೀಕ್ಷೆ ರನ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "ಬೆಂಬಲ ಬಾಕಿಯಿದೆ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chrome ಈ ಕಾರಣಗಳಿಗಾಗಿ ಬೆಂಬಲವನ್ನು ಒದಗಿಸುತ್ತದೆ, ಅಂದರೆ: Chrome ನ ಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ, ಈ ಕಾರಣಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಪುಟವು ಅರ್ಹವಾಗುವುದನ್ನು ತಡೆಯುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "ಲಭ್ಯವಿಲ್ಲ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "ಸ್ಥಿತಿ ಕುರಿತು ತಿಳಿದಿಲ್ಲ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದೇ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗಳಿಲ್ಲ"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ಉಳಿಸಿ"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools ಪುನಃ ಕನೆಕ್ಟ್ ಮಾಡಿ"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (ಖಚಿತಪಡಿಸಲು 'Enter' ಒತ್ತಿ, ಅಥವಾ ರದ್ದುಪಡಿಸಲು 'Escape' ಒತ್ತಿ.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "ಕಮಾಂಡ್‌ಗಳನ್ನು ಬದಲಿಸಲು ಟ್ಯಾಬ್ ಅನ್ನು ಬಳಸಿ. ಲಭ್ಯ ಕಮಾಂಡ್‌ಗಳನ್ನು ನೋಡಲು '?' ಟೈಪ್ ಮಾಡಿ"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "ಲಭ್ಯ ಕಮಾಂಡ್‌ಗಳನ್ನು ನೋಡಲು '?' ಟೈಪ್ ಮಾಡಿ"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ಫೈಲ್ ತೆರೆಯಿರಿ"

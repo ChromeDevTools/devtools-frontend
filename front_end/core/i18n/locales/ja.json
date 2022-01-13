@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "（DevTools が開いている間に）キャッシュを無効にする"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "自動ダークモードを無効にする"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript を無効にする"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP 形式を無効にする"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "無効にする"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "非同期のスタック トレースをキャプチャしない"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS メディアタイプをエミュレートしない"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "自動ダークモードをエミュレートしない"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "グリッド線を延長しない"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "カスタム フォーマッタを有効にする"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "自動ダークモードを有効にする"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript を有効にする"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 形式を有効にする"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "有効にする"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "グリッド線を延長"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "フォーカスのあるページをエミュレートする"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "フォーカスのあるページをエミュレートします。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "検査ページで自動ダークモードを有効にする"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut メディア特性を強制します"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "コンソール ドロワーを表示"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "システム設定のカラーパターンが変更されました。この変更を DevTools に適用するには、再読み込みしてください。"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "固定を解除して別ウィンドウに表示"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ファイルを書き込んでいます…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "コンテンツ セキュリティ ポリシー - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "マ二フェストから必要なアイコンをダウンロードできませんでした"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "説明"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ワーカー"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "バックフォワード キャッシュの対象になるのは、GET リクエストで読み込まれたページのみです。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "キャッシュに保存できるのは、ステータス コードが 2XX のページのみです。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "キャッシュにある間に JavaScript を実行しようとしていることが検出されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "バックフォワード キャッシュはフラグにより無効になっています。chrome://flags/#back-forward-cache に移動して、このデバイスでローカルに有効化してください。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "バックフォワード キャッシュはコマンドラインにより無効になっています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "バックフォワード キャッシュはメモリ不足のため無効になっています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "バックフォワード キャッシュは委任には対応していません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "バックフォワード キャッシュは事前レンダリングのため無効になっています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "このページにはリスナーが登録された BroadcastChannel インスタンスがあるため、キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Cache-Control: no-store ヘッダーがあるページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "キャッシュは意図的に消去されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "別のページをキャッシュに保存できるようにするため、ページがキャッシュから削除されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "プラグインを含むページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "メディア デバイス ディスパッチャーを使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "ページから移動するときにメディア プレーヤーが再生中でした。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API を使用しており再生状態にあるページは、バックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API を使用しておりアクション ハンドラを設定するページは、バックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthentication API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API を使用するページはバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "専用のワーカーまたはワークレットを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "読み込みが終了していないドキュメントから移動しました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "ページがバックフォワード キャッシュにある間に、Service Worker が起動されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "別のページをキャッシュに保存できるようにするため、ページがキャッシュから削除されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "メディア ストリーム アクセスが可能なページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "ポータルを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "IndexedDB 接続が開いているページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "対象外の API が使用されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "拡張機能によって JavaScript が挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "拡張機能によってスタイルシートが挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "内部エラーが発生しました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "キーボード ロックを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "読み込みが終了していないページから移動しました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Cache-Control: no-cache のメインリソースがあるページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Cache-Control: no-store のメインリソースがあるページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "ページがバックフォワード キャッシュから復元される前に移動がキャンセルされました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "アクティブなネットワーク接続による受信データが多すぎたため、ページがキャッシュから削除されました。Chrome は、キャッシュに保存されたページが受信できるデータ量に上限を設けています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "処理中の fetch() または XHR があるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "アクティブなネットワーク リクエストにリダイレクトが含まれていたため、ページがバックフォワード キャッシュから削除されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "ネットワーク接続の時間が長すぎたため、ページがキャッシュから削除されました。Chrome は、キャッシュに保存されたページがデータを受信できる時間に上限を設けています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "有効なレスポンス ヘッダーのないページはバックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "メインフレーム以外のフレームで移動が行われました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "インデックス登録済み DB のトランザクションが進行中のページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "処理中のネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "処理中の fetch ネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "処理中のネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "処理中の XHR ネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "ピクチャー イン ピクチャーを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "ポータルを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "印刷 UI を表示するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "このページは、window.open() を使用して開かれ、他のタブから参照されているか、ウィンドウが開かれています。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "バックフォワード キャッシュにあるページのレンダラ プロセスに問題が発生しました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "バックフォワード キャッシュにあるページのレンダラ プロセスが強制終了されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "音声キャプチャの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "センサーの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "バックグラウンド同期またはバックグラウンド フェッチの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI の権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "通知の権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "ストレージ アクセスをリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "動画キャプチャの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "キャッシュに保存できるのは、URL スキームが HTTP または HTTPS のページのみです。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "ページがバックフォワード キャッシュにある間に Service Worker に要求されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Service Worker がバックフォワード キャッシュ内のページに MessageEvent を送信しようとしました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ページがバックフォワード キャッシュにある間に Service Worker が登録解除されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Service Worker の起動により、ページがバックフォワード キャッシュから削除されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome が再起動し、バックフォワード キャッシュの内容が消去されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "ページ上で iframe が移動を開始し、完了しませんでした。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Cache-Control: no-cache のサブリソースがあるページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Cache-Control: no-store のサブリソースがあるページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "このページは、バックフォワード キャッシュの最大保存時間を超えたため期限切れとなりました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "ページのバックフォワード キャッシュへの保存がタイムアウトしました（長時間実行中の pagehide ハンドラが原因である可能性があります）。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "ページのメインフレームにアンロード ハンドラがあります。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "ページのサブフレームにアンロード ハンドラがあります。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ブラウザによりユーザー エージェント オーバーライド ヘッダーが変更されました。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "録画や録音が可能なページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNFC を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC を使用するページは、バックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket を使用するページはバックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport を使用するページはバックフォワード キャッシュに保存できません。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "バックフォワード キャッシュ"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "対応不可"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "これらの原因は対処不可能です。つまり、ページから直接制御できない外部要因によってキャッシュ保存が妨げられました。"
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "バックフォワード キャッシュの使用に関する詳細"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "メインフレーム"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "バックフォワード キャッシュから配信されませんでした: バックフォワード キャッシュを読み込むには、Chrome の戻る / 進むボタンを使用するか、下のテストボタンを使用して、自動で前後に移動してください。"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "対応可能"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "これらの原因は対処可能です。つまり、解消してページをバックフォワード キャッシュの対象にできます。"
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "バックフォワード キャッシュから正常に配信されました。"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "バックフォワード キャッシュをテスト"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "テスト実行中"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "サポート保留中"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "これらの原因に対する Chrome のサポートは保留中です。つまり、Chrome の将来のバージョンでは、これらはページがバックフォワード キャッシュの対象から外れる原因にはなりません。"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "使用不可"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "不明なステータス"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "バックグラウンド フェッチ"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "イベントの録画を停止"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "バックフォワード キャッシュの対象になるのは、GET リクエストで読み込まれたページのみです。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "キャッシュに保存できるのは、ステータス コードが 2XX のページのみです。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "キャッシュにある間に JavaScript を実行しようとしていることが検出されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "バックフォワード キャッシュはフラグにより無効になっています。chrome://flags/#back-forward-cache に移動して、このデバイスでローカルに有効化してください。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "バックフォワード キャッシュはコマンドラインにより無効になっています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "バックフォワード キャッシュはメモリ不足のため無効になっています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "バックフォワード キャッシュは委任には対応していません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "バックフォワード キャッシュは事前レンダリングのため無効になっています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "このページにはリスナーが登録された BroadcastChannel インスタンスがあるため、キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Cache-Control: no-store ヘッダーがあるページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "キャッシュは意図的に消去されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "別のページをキャッシュに保存できるようにするため、ページがキャッシュから削除されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "プラグインを含むページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "メディア デバイス ディスパッチャーを使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ページから移動するときにメディア プレーヤーが再生中でした。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API を使用しており再生状態にあるページは、バックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API を使用しておりアクション ハンドラを設定するページは、バックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthentication API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "専用のワーカーまたはワークレットを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "読み込みが終了していないドキュメントから移動しました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ページがバックフォワード キャッシュにある間に、Service Worker が起動されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "別のページをキャッシュに保存できるようにするため、ページがキャッシュから削除されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "メディア ストリーム アクセスが可能なページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ポータルを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "IndexedDB 接続が開いているページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "対象外の API が使用されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "拡張機能によって JavaScript が挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "拡張機能によってスタイルシートが挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "内部エラーが発生しました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "キーボード ロックを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "読み込みが終了していないページから移動しました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Cache-Control: no-cache のメインリソースがあるページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Cache-Control: no-store のメインリソースがあるページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ページがバックフォワード キャッシュから復元される前に移動がキャンセルされました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "アクティブなネットワーク接続による受信データが多すぎたため、ページがキャッシュから削除されました。Chrome は、キャッシュに保存されたページが受信できるデータ量に上限を設けています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "処理中の fetch() または XHR があるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "アクティブなネットワーク リクエストにリダイレクトが含まれていたため、ページがバックフォワード キャッシュから削除されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ネットワーク接続の時間が長すぎたため、ページがキャッシュから削除されました。Chrome は、キャッシュに保存されたページがデータを受信できる時間に上限を設けています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "有効なレスポンス ヘッダーのないページはバックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "メインフレーム以外のフレームで移動が行われました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "インデックス登録済み DB のトランザクションが進行中のページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "処理中のネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "処理中の fetch ネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "処理中のネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "処理中の XHR ネットワーク リクエストがあるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ピクチャー イン ピクチャーを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "ポータルを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "印刷 UI を表示するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "このページは、window.open() を使用して開かれ、他のタブから参照されているか、ウィンドウが開かれています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "バックフォワード キャッシュにあるページのレンダラ プロセスに問題が発生しました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "バックフォワード キャッシュにあるページのレンダラ プロセスが強制終了されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "音声キャプチャの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "センサーの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "バックグラウンド同期またはバックグラウンド フェッチの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI の権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "通知の権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ストレージ アクセスをリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "動画キャプチャの権限をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "キャッシュに保存できるのは、URL スキームが HTTP または HTTPS のページのみです。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ページがバックフォワード キャッシュにある間に Service Worker に要求されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service Worker がバックフォワード キャッシュ内のページに MessageEvent を送信しようとしました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ページがバックフォワード キャッシュにある間に Service Worker が登録解除されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Service Worker の起動により、ページがバックフォワード キャッシュから削除されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome が再起動し、バックフォワード キャッシュの内容が消去されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "ページ上で iframe が移動を開始し、完了しませんでした。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Cache-Control: no-cache のサブリソースがあるページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Cache-Control: no-store のサブリソースがあるページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "このページは、バックフォワード キャッシュの最大保存時間を超えたため期限切れとなりました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ページのバックフォワード キャッシュへの保存がタイムアウトしました（長時間実行中の pagehide ハンドラが原因である可能性があります）。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ページのメインフレームにアンロード ハンドラがあります。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ページのサブフレームにアンロード ハンドラがあります。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ブラウザによりユーザー エージェント オーバーライド ヘッダーが変更されました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "録画や録音が可能なページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNFC を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC を使用するページは、バックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket を使用するページはバックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport を使用するページはバックフォワード キャッシュに保存できません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR を使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "バックフォワード キャッシュ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "対応不可"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "これらの原因は対処不可能です。つまり、ページから直接制御できない外部要因によってキャッシュ保存が妨げられました。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "バックフォワード キャッシュの使用に関する詳細"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "メインフレーム"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "バックフォワード キャッシュから配信されませんでした: バックフォワード キャッシュを読み込むには、Chrome の戻る / 進むボタンを使用するか、下のテストボタンを使用して、自動で前後に移動してください。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "対応可能"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "これらの原因は対処可能です。つまり、解消してページをバックフォワード キャッシュの対象にできます。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "バックフォワード キャッシュから正常に配信されました。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "バックフォワード キャッシュをテスト"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "テスト実行中"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "サポート保留中"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "これらの原因に対する Chrome のサポートは保留中です。つまり、Chrome の将来のバージョンでは、これらはページがバックフォワード キャッシュの対象から外れる原因にはなりません。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "使用不可"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "不明なステータス"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "表示するエンドポイントがありません"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "保存"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools を再接続"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}（確定するには Enter キー、キャンセルするには Esc キーを押します）。"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "コマンドを切り替えるには、Tab キーを使用します。使用可能なコマンドを表示するには、「?」を入力してください"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "使用可能なコマンドを表示するには、「?」を入力してください"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ファイルを開く"

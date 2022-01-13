@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Çaktivizo memorien specifike (kur është hapur DevTools)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Çaktivizo modalitetin e errët automatik"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Çaktivizo JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Çaktivizo formatin WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Çaktivizo"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Mos regjistro gjurmime stive josinkrone"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Mos imito tipin e medias CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Mos imito modalitetin e errët automatik"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Mos i zgjero vijat e rrjetës"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aktivizo formatuesit e personalizuar"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Aktivizo modalitetin e errët automatik"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktivizo JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivizo formatin WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Aktivizo"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Zgjero vijat e rrjetës"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Imito një faqe të fokusuar"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Imiton një faqe të fokusuar."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Aktivizon modalitetin e errët automatik për faqen e inspektuar."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Detyron veçorinë e medias CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Shfaq sirtarin e panelit komandues"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Skema e ngjyrave e preferuar nga sistemi ka ndryshuar. Për ta zbatuar këtë ndryshim te DevTools, ringarkoje."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Shkëput nga stacioni në dritare të veçantë"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Po shkruan skedar…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Politika e sigurisë së përmbajtjes - Vler."
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Nuk mund të shkarkohej një ikonë e kërkuar nga manifesti"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Përshkrimi"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "punëtor"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Vetëm faqet e ngarkuara nëpërmjet një kërkese me metodën GET janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Në memorien specifike mund të ruhen vetëm faqet me një kod statusi 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome zbuloi një përpjekje për të ekzekutuar JavaScript brenda memories specifike."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Faqet që kanë kërkuar një AppBanner nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Memoria specifike e faqes së plotë është çaktivizuar nga flamurët. Vizito chrome://flags/#back-forward-cache për ta aktivizuar lokalisht në këtë pajisje."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Memoria specifike e faqes së plotë është çaktivizuar nga rreshti i komandës."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Memoria specifike e faqes së plotë u çaktivizua për shkak të memories së pamjaftueshme."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Memoria specifike e faqes së plotë nuk mbështetet nga delegati."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Memoria specifike e faqes së plotë është çaktivizuar për paraqitësin paraprak."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Faqja nuk mund të ruhet në memorien specifike pasi ka një shembull të BroadcastChannel me dëgjues të regjistruar."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Faqet me kokë cache-control:no-store nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Memoria specifike u pastrua me qëllim."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Faqja u nxor jashtë memories specifike për të lejuar ruajtjen e një faqeje tjetër në memorien specifike."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Faqet që përmbajnë përbërës shtesë nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Faqet që përdorin FileChooser API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Faqet që përdorin File System Access API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Faqet që përdorin Media Device Dispatcher nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Një luajtës mediash po luante gjatë daljes."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Faqet që përdorin MediaSession API dhe caktojnë një gjendje luajtjeje nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Faqet që përdorin MediaSession API dhe caktojnë përpunues veprimesh nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Faqet që përdorin SecurityHandler nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Faqet që përdorin Serial API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Faqet që përdorin WebAuthetication API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Faqet që përdorin WebBluetooth API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Faqet që përdorin WebUSB API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Faqet që përdorin një punonjës të dedikuar ose worklet nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Dokumenti nuk e përfundoi ngarkimin përpara daljes prej tij."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Një përpunues shërbimi u aktivizua kur faqja ishte në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Faqja u nxor jashtë memories specifike për të lejuar ruajtjen e një faqeje tjetër në memorien specifike."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Faqet që kanë dhënë qasje në transmetimin e mediave nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Faqet që përdorin portale nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Faqet që përdorin IdleManager nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Faqet që kanë një lidhje të hapur IndexedDB nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Janë përdorur API të papërshtatshme."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Faqet ku JavaScript injektohet nga shtesat nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Faqet ku StyleSheet injektohet nga shtesat nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Gabim i brendshëm."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Faqet që përdorin \"Kyçjen e tastierës\" nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Faqja nuk e përfundoi ngarkimin përpara se të dilej jashtë saj."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Faqet, burimi kryesor i të cilave ka cache-control:no-cache, nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Faqet, burimi kryesor i të cilave ka cache-control:no-store, nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigimi u anulua përpara se faqja të mund të restaurohej nga memoria specifike e faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Faqja është nxjerrë jashtë memories specifike pasi një lidhje aktive rrjeti mori shumë të dhëna. Chrome e kufizon sasinë e të dhënave që mund të marrë një faqe kur është e ruajtur në memorien specifike."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Faqet që kanë një kërkesë fetch() ose XHR në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Faqja u nxor jashtë memories specifike të faqes së plotë pasi një kërkesë aktive rrjeti përmbante një ridrejtim."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Faqja u nxor jashtë memories specifike pasi një lidhje rrjeti ishte e hapur për një kohë shumë të gjatë. Chrome e kufizon sasinë e kohës gjatë së cilës mund të marrë të dhëna një faqe kur është e ruajtur në memorien specifike."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Faqet që nuk kanë një kokë përgjigjeje të vlefshme nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigimi u krye në një kornizë të ndryshme nga korniza kryesore."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Faqet me transaksione të indeksuara DB në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Faqet me një kërkesë rrjeti në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Faqet me një kërkesë rrjeti fetch() në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Faqet me një kërkesë rrjeti në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Faqet me një kërkesë rrjeti XHR në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Faqet që përdorin PaymentManager nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Faqet që përdorin \"Figurë brenda figurës\" nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Faqet që përdorin portale nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Faqet që tregojnë Printing UI nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Faqja është hapur duke përdorur \"window.open()\" dhe një skedë tjetër ka një referencë tek ajo ose faqja është hapur në një dritare."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Procesi i paraqitësit për faqen në memorien specifike të faqes së plotë pësoi një ndërprerje aksidentale."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Procesi i paraqitësit për faqen në memorien specifike të faqes së plotë u mbyll me forcë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Faqet që kanë kërkuar leje për regjistrimin e audios nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Faqet që kanë kërkuar leje për sensorin nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Faqet që kanë kërkuar sinkronizimin në sfond ose lejet e marrjes nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Faqet që kanë kërkuar leje për MIDI nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Faqet që kanë kërkuar leje për njoftime nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Faqet që kanë kërkuar qasje në hapësirën ruajtëse nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Faqet që kanë kërkuar leje për regjistrim videoje nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Në memorien specifike mund të ruhen vetëm faqet, skema e URL-së e të cilave është HTTP/HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Faqja është pretenduar nga një punonjës shërbimi ndërsa ndodhet në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Një punonjës shërbimi u përpoq t'i dërgonte një MessageEvent faqes në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ServiceWorker ishte çregjistruar ndërsa një faqe ishte në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Faqja u nxor jashtë memories specifike të faqes së plotë për shkak të aktivizimit të një punonjësi shërbimi."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome u rinis dhe i pastroi hyrjet e memories specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Faqet që përdorin SharedWorker nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Faqet që përdorin SpeechRecognizer nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Faqet që përdorin SpeechSynthesis nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Një iframe në faqe filloi një navigim që nuk u përfundua."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Faqet, nënburimi i të cilave ka cache-control:no-cache, nuk mund të hyjnë në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Faqet nënburimi i të cilave ka cache-control:no-store nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Faqja kishte tejkaluar kohën maksimale në memorien specifike të faqes së plotë dhe kishte skaduar."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Faqes i mbaroi koha gjatë vendosjes në memorien specifike të faqes së plotë (ndoshta për shkak të përpunuesve pagehide të ekzekutuar për një kohë të gjatë)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Faqja ka një përpunues shkarkimi në kornizën kryesore."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Faqja ka një përpunues shkarkimi në një nënkornizë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Shfletuesi ka ndryshuar kokën e anulimit të agjentit të përdoruesit."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Faqet që kanë dhënë qasje për regjistrimin e videos ose audios nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Faqet që përdorin WebDatabase nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Faqet që përdorin WebHID nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Faqet që përdorin WebLocks nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Faqet që përdorin WebNfc nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Faqet që përdorin WebOTPService nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Faqet me WebRTC nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Faqet që përdorin WebShare nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Faqet me WebSocket nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Faqet me WebTransport nuk mund të vendosen në memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Faqet që përdorin WebXR nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Memoria specifike e faqes së plotë"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Nuk mund të trajtohet"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Për këto arsye nuk mund të kryhen veprime, d.m.th. ruajtja në memorien specifike u parandalua nga diçka jashtë kontrollit të drejtpërdrejtë të faqes."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Mëso më shumë: përshtatshmëria e memories specifike të faqes së plotë"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Kuadri kryesor"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Nuk u ofrua nga memoria specifike e faqes së plotë: për të aktivizuar memorien specifike të faqes së plotë, përdor butonat e faqes së plotë të Chrome ose përdor butonin e testit më poshtë për t'u larguar e për t'u rikthyer automatikisht."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Mund të trajtohet"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Për këto arsye mund të kryhen veprime, d.m.th. mund të pastrohen për ta bërë faqen të përshtatshme për memorien specifike të faqes së plotë."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "U ofrua me sukses nga memoria specifike e faqes së plotë."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Testo memorien specifike të faqes së plotë"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Po ekzekutohet testi"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Në pritje të mbështetjes"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Mbështetja e Chrome për këto arsye është në pritje, d.m.th. ato nuk e parandalojnë faqen të jetë e përshtatshme për memorien specifike të faqes së plotë në një version të ardhshëm të Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "i padisponueshëm"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Status i panjohur"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL-ja:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Marrja në sfond"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Ndalo regjistrimin e ngjarjeve"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Vetëm faqet e ngarkuara nëpërmjet një kërkese me metodën GET janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Në memorien specifike mund të ruhen vetëm faqet me një kod statusi 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome zbuloi një përpjekje për të ekzekutuar JavaScript brenda memories specifike."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Faqet që kanë kërkuar një AppBanner nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Memoria specifike e faqes së plotë është çaktivizuar nga flamurët. Vizito chrome://flags/#back-forward-cache për ta aktivizuar lokalisht në këtë pajisje."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Memoria specifike e faqes së plotë është çaktivizuar nga rreshti i komandës."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Memoria specifike e faqes së plotë u çaktivizua për shkak të memories së pamjaftueshme."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Memoria specifike e faqes së plotë nuk mbështetet nga delegati."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Memoria specifike e faqes së plotë është çaktivizuar për paraqitësin paraprak."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Faqja nuk mund të ruhet në memorien specifike pasi ka një shembull të BroadcastChannel me dëgjues të regjistruar."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Faqet me kokë cache-control:no-store nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Memoria specifike u pastrua me qëllim."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Faqja u nxor jashtë memories specifike për të lejuar ruajtjen e një faqeje tjetër në memorien specifike."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Faqet që përmbajnë përbërës shtesë nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Faqet që përdorin FileChooser API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Faqet që përdorin File System Access API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Faqet që përdorin Media Device Dispatcher nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Një luajtës mediash po luante gjatë daljes."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Faqet që përdorin MediaSession API dhe caktojnë një gjendje luajtjeje nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Faqet që përdorin MediaSession API dhe caktojnë përpunues veprimesh nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Faqet që përdorin SecurityHandler nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Faqet që përdorin Serial API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Faqet që përdorin WebAuthetication API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Faqet që përdorin WebBluetooth API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Faqet që përdorin WebUSB API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Faqet që përdorin një punonjës të dedikuar ose worklet nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumenti nuk e përfundoi ngarkimin përpara daljes prej tij."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Një përpunues shërbimi u aktivizua kur faqja ishte në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Faqja u nxor jashtë memories specifike për të lejuar ruajtjen e një faqeje tjetër në memorien specifike."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Faqet që kanë dhënë qasje në transmetimin e mediave nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Faqet që përdorin portale nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Faqet që përdorin IdleManager nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Faqet që kanë një lidhje të hapur IndexedDB nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Janë përdorur API të papërshtatshme."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Faqet ku JavaScript injektohet nga shtesat nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Faqet ku StyleSheet injektohet nga shtesat nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Gabim i brendshëm."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Faqet që përdorin \"Kyçjen e tastierës\" nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Faqja nuk e përfundoi ngarkimin përpara se të dilej jashtë saj."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Faqet, burimi kryesor i të cilave ka cache-control:no-cache, nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Faqet, burimi kryesor i të cilave ka cache-control:no-store, nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigimi u anulua përpara se faqja të mund të restaurohej nga memoria specifike e faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Faqja është nxjerrë jashtë memories specifike pasi një lidhje aktive rrjeti mori shumë të dhëna. Chrome e kufizon sasinë e të dhënave që mund të marrë një faqe kur është e ruajtur në memorien specifike."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Faqet që kanë një kërkesë fetch() ose XHR në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Faqja u nxor jashtë memories specifike të faqes së plotë pasi një kërkesë aktive rrjeti përmbante një ridrejtim."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Faqja u nxor jashtë memories specifike pasi një lidhje rrjeti ishte e hapur për një kohë shumë të gjatë. Chrome e kufizon sasinë e kohës gjatë së cilës mund të marrë të dhëna një faqe kur është e ruajtur në memorien specifike."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Faqet që nuk kanë një kokë përgjigjeje të vlefshme nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigimi u krye në një kornizë të ndryshme nga korniza kryesore."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Faqet me transaksione të indeksuara DB në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Faqet me një kërkesë rrjeti në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Faqet me një kërkesë rrjeti fetch() në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Faqet me një kërkesë rrjeti në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Faqet me një kërkesë rrjeti XHR në proces nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Faqet që përdorin PaymentManager nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Faqet që përdorin \"Figurë brenda figurës\" nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Faqet që përdorin portale nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Faqet që tregojnë Printing UI nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Faqja është hapur duke përdorur \"window.open()\" dhe një skedë tjetër ka një referencë tek ajo ose faqja është hapur në një dritare."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Procesi i paraqitësit për faqen në memorien specifike të faqes së plotë pësoi një ndërprerje aksidentale."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Procesi i paraqitësit për faqen në memorien specifike të faqes së plotë u mbyll me forcë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Faqet që kanë kërkuar leje për regjistrimin e audios nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Faqet që kanë kërkuar leje për sensorin nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Faqet që kanë kërkuar sinkronizimin në sfond ose lejet e marrjes nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Faqet që kanë kërkuar leje për MIDI nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Faqet që kanë kërkuar leje për njoftime nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Faqet që kanë kërkuar qasje në hapësirën ruajtëse nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Faqet që kanë kërkuar leje për regjistrim videoje nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Në memorien specifike mund të ruhen vetëm faqet, skema e URL-së e të cilave është HTTP/HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Faqja është pretenduar nga një punonjës shërbimi ndërsa ndodhet në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Një punonjës shërbimi u përpoq t'i dërgonte një MessageEvent faqes në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker ishte çregjistruar ndërsa një faqe ishte në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Faqja u nxor jashtë memories specifike të faqes së plotë për shkak të aktivizimit të një punonjësi shërbimi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome u rinis dhe i pastroi hyrjet e memories specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Faqet që përdorin SharedWorker nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Faqet që përdorin SpeechRecognizer nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Faqet që përdorin SpeechSynthesis nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Një iframe në faqe filloi një navigim që nuk u përfundua."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Faqet, nënburimi i të cilave ka cache-control:no-cache, nuk mund të hyjnë në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Faqet nënburimi i të cilave ka cache-control:no-store nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Faqja kishte tejkaluar kohën maksimale në memorien specifike të faqes së plotë dhe kishte skaduar."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Faqes i mbaroi koha gjatë vendosjes në memorien specifike të faqes së plotë (ndoshta për shkak të përpunuesve pagehide të ekzekutuar për një kohë të gjatë)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Faqja ka një përpunues shkarkimi në kornizën kryesore."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Faqja ka një përpunues shkarkimi në një nënkornizë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Shfletuesi ka ndryshuar kokën e anulimit të agjentit të përdoruesit."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Faqet që kanë dhënë qasje për regjistrimin e videos ose audios nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Faqet që përdorin WebDatabase nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Faqet që përdorin WebHID nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Faqet që përdorin WebLocks nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Faqet që përdorin WebNfc nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Faqet që përdorin WebOTPService nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Faqet me WebRTC nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Faqet që përdorin WebShare nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Faqet me WebSocket nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Faqet me WebTransport nuk mund të vendosen në memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Faqet që përdorin WebXR nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Memoria specifike e faqes së plotë"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Nuk mund të trajtohet"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Për këto arsye nuk mund të kryhen veprime, d.m.th. ruajtja në memorien specifike u parandalua nga diçka jashtë kontrollit të drejtpërdrejtë të faqes."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Mëso më shumë: përshtatshmëria e memories specifike të faqes së plotë"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Kuadri kryesor"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Nuk u ofrua nga memoria specifike e faqes së plotë: për të aktivizuar memorien specifike të faqes së plotë, përdor butonat e faqes së plotë të Chrome ose përdor butonin e testit më poshtë për t'u larguar e për t'u rikthyer automatikisht."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Mund të trajtohet"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Për këto arsye mund të kryhen veprime, d.m.th. mund të pastrohen për ta bërë faqen të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "U ofrua me sukses nga memoria specifike e faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Testo memorien specifike të faqes së plotë"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Po ekzekutohet testi"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Në pritje të mbështetjes"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Mbështetja e Chrome për këto arsye është në pritje, d.m.th. ato nuk e parandalojnë faqen të jetë e përshtatshme për memorien specifike të faqes së plotë në një version të ardhshëm të Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "i padisponueshëm"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Status i panjohur"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL-ja:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nuk ka pika përfundimtare për të shfaqur"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Ruaj"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Rilidh DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Shtyp \"Enter\" për të konfirmuar ose \"Escape\" për të anuluar.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Përdor Tab për të ndërruar komandat. Shkruaj \"?\" për të parë komandat e ofruara"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Shkruaj \"?\" për të parë komandat e ofruara"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Hap një skedar"

@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Desactiva la memòria cau (mentre DevTools estigui obert)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Desactiva el mode fosc automàtic"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desactiva JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Desactiva el format WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Desactiva"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "No capturis traces de la pila asíncrona"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "No emulis el tipus multimèdia de CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "No emulis el mode fosc automàtic"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "No allarguis les línies de la quadrícula"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Activa els formatadors personalitzats"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Activa el mode fosc automàtic"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Activa JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Activa el format WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Activa"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Allarga les línies de la quadrícula"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emula una pàgina en què s'hagi posat el focus"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emula una pàgina en què s'hagi posat el focus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Activa el mode fosc automàtic per a la pàgina inspeccionada."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Força la funció multimèdia color-gamut de CSS"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Mostra el tauler de la consola"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "L'esquema de colors preferit pel sistema ha canviat. Per aplicar aquest canvi a DevTools, torna a carregar."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desacobla en una altra finestra"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "S'està escrivint el fitxer…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Política de seguretat del contingut - Avaluació"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "No s'ha pogut baixar una icona necessària del fitxer de manifest"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descripció"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Només les pàgines carregades mitjançant una sol·licitud GET són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Només es poden desar a la memòria cau les pàgines amb un codi d'estat 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome ha detectat un intent d'executar JavaScript a la memòria cau."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "chrome://flags ha desactivat la memòria cau back-forward. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "La línia d'ordres ha desactivat la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "La memòria cau back-forward està desactivada perquè no hi ha prou memòria."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "El delegat no admet la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "El prerenderitzador ha desactivat la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "La pàgina no es pot desar a la memòria cau perquè té una instància BroadcastChannel amb detectors registrats."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Les pàgines amb una capçalera cache-control:no-store no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "La memòria cau s'ha esborrat intencionadament."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Actualment, les pàgines que contenen connectors no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Les pàgines que utilitzen l'API FileChooser no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Les pàgines que utilitzen l'API File System Access no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Les pàgines que utilitzen Media Device Dispatcher no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Un reproductor multimèdia estava reproduint contingut en sortir de la pàgina."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurat un estat de reproducció no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurats gestors d'acció no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Les pàgines que utilitzen SecurityHandler no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Les pàgines que utilitzen l'API Serial no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Les pàgines que utilitzen l'API WebAuthentication no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Les pàgines que utilitzen l'API WebBluetooth no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Les pàgines que utilitzen l'API WebUSB no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Actualment, les pàgines que utilitzen un Service Worker o un worklet exclusius no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "El document no s'ha acabat de carregar abans de sortir-ne."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Actualment, les pàgines que han donat accés a la transmissió de contingut multimèdia no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Actualment, les pàgines que utilitzen IdleManager no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "S'han utilitzat API no aptes."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Actualment, les pàgines que s'estan injectant a JavaScript mitjançant extensions no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Actualment, les pàgines que s'estan injectant a StyleSheet mitjançant extensions no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Error intern."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Actualment, les pàgines que utilitzen el bloqueig de teclat no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "La pàgina no s'ha acabat de carregar abans de sortir-ne."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Les pàgines el recurs principal de les quals té cache-control:no-cache no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Les pàgines el recurs principal de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "La navegació s'ha cancel·lat abans que la pàgina es pogués restaurar de la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa activa ha rebut massa dades. Chrome limita la quantitat de dades que pot rebre una pàgina mentre està desada a la memòria cau."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Actualment, les pàgines que tenen un fetch() o un XHR en trànsit no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "La pàgina s'ha tret de la memòria cau back-forward perquè una sol·licitud a la xarxa activa incloïa una redirecció."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa ha estat oberta massa temps. Chrome limita la quantitat de temps durant el qual una pàgina pot rebre dades mentre està desada a la memòria cau."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Les pàgines que no tenen una capçalera de resposta vàlida no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "La navegació ha tingut lloc en un marc diferent del marc principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Actualment, les pàgines amb transaccions de base de dades indexades en curs no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa de recollida en trànsit no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Actualment, les pàgines amb una sol·licitud de xarxa XHR en trànsit no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Actualment, les pàgines que utilitzen PaymentManager no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Actualment, les pàgines que utilitzen pantalla en pantalla no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Actualment, les pàgines que mostren la IU d'impressió no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "La pàgina s'ha obert amb \"window.open()\" i una altra pestanya hi té una referència o la pàgina ha obert una finestra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "El procés renderitzador de la pàgina a la memòria cau back-forward ha fallat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "El procés renderitzador de la pàgina s'ha cancel·lat a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació d'àudio no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de sensor no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de recollida o sincronització en segon pla no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos MIDI no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de notificacions no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Actualment, les pàgines que han sol·licitat accés d'emmagatzematge no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació de vídeos no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Només es poden desar a la memòria cau les pàgines amb un esquema d'URL HTTP o HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Un Service Worker ha reclamat la pàgina mentre era a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Un Service Worker ha provat d'enviar un MessageEvent a la pàgina que era a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Service Worker s'ha donat de baixa mentre una pàgina era a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "La pàgina s'ha tret de la memòria cau back-forward per l'activació d'un Service Worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "S'ha reiniciat Chrome i s'han esborrat les entrades de la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Actualment, les pàgines que utilitzen SharedWorker no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Actualment, les pàgines que utilitzen SpeechRecognizer no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Actualment, les pàgines que utilitzen SpeechSynthesis no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Un iframe de la pàgina ha començat una navegació que no s'ha completat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "La pàgina ha excedit el temps màxim a la memòria cau back-forward i ha caducat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "La pàgina ha esgotat el temps d'espera en accedir a la memòria cau back-forward (probablement a causa de gestors que amaguen la pàgina de llarga durada)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "La pàgina té un gestor d'unload en el marc principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "La pàgina té un gestor d'unload en un submarc."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "El navegador ha canviat la capçalera de substitució de l'agent d'usuari."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Actualment, les pàgines que han donat accés a la gravació de vídeo o àudio no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Actualment, les pàgines que utilitzen WebDatabase no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Actualment, les pàgines que utilitzen WebHID no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Actualment, les pàgines que utilitzen WebLocks no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Actualment, les pàgines que utilitzen WebNfc no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Actualment, les pàgines que utilitzen WebOTPService no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Les pàgines amb WebRTC no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Actualment, les pàgines que utilitzen WebShare no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Les pàgines amb WebSocket no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Les pàgines amb WebTransport no poden accedir a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Actualment, les pàgines que utilitzen WebXR no són aptes per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Memòria cau back-forward"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Cap acció possible"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Aquests motius no són accionables, és a dir, alguna cosa fora del control directe de la pàgina ha evitat que es desi a la memòria cau."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Obtén més informació: idoneïtat de la memòria cau back-forward"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Marc principal"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "No s'ha difós des de la memòria cau back-forward: per activar la memòria cau back-forward, utilitza els botons enrere/endavant de Chrome o bé el botó Prova que hi ha més avall per navegar automàticament endavant i endarrere."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Accions possibles"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Aquests motius són accionables, és a dir, es poden esborrar per fer que la pàgina sigui apta per a la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "S'ha difós correctament des de la memòria cau back-forward."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Prova la memòria cau back-forward"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "S'està executant la prova"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Assistència pendent"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "La compatibilitat de Chrome per aquests motius està pendent, és a dir, no s'impedirà que la pàgina sigui apta per a la memòria cau back-forward en una futura versió de Chrome"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "no disponible"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Estat desconegut"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Recollida en segon pla"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Atura la gravació d'esdeveniments"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Només les pàgines carregades mitjançant una sol·licitud GET són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Només es poden desar a la memòria cau les pàgines amb un codi d'estat 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome ha detectat un intent d'executar JavaScript a la memòria cau."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Actualment, les pàgines que han sol·licitat un AppBanner no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "chrome://flags ha desactivat la memòria cau back-forward. Visita chrome://flags/#back-forward-cache per activar-la de manera local en aquest dispositiu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "La línia d'ordres ha desactivat la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "La memòria cau back-forward està desactivada perquè no hi ha prou memòria."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "El delegat no admet la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "El prerenderitzador ha desactivat la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "La pàgina no es pot desar a la memòria cau perquè té una instància BroadcastChannel amb detectors registrats."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Les pàgines amb una capçalera cache-control:no-store no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "La memòria cau s'ha esborrat intencionadament."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Actualment, les pàgines que contenen connectors no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Les pàgines que utilitzen l'API FileChooser no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Les pàgines que utilitzen l'API File System Access no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Les pàgines que utilitzen Media Device Dispatcher no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Un reproductor multimèdia estava reproduint contingut en sortir de la pàgina."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurat un estat de reproducció no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurats gestors d'acció no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Les pàgines que utilitzen SecurityHandler no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Les pàgines que utilitzen l'API Serial no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Les pàgines que utilitzen l'API WebAuthentication no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Les pàgines que utilitzen l'API WebBluetooth no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Les pàgines que utilitzen l'API WebUSB no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Actualment, les pàgines que utilitzen un Service Worker o un worklet exclusius no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "El document no s'ha acabat de carregar abans de sortir-ne."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Actualment, les pàgines que han donat accés a la transmissió de contingut multimèdia no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Actualment, les pàgines que utilitzen IdleManager no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Actualment, les pàgines que tenen una connexió IndexedDB oberta no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "S'han utilitzat API no aptes."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Actualment, les pàgines que s'estan injectant a JavaScript mitjançant extensions no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Actualment, les pàgines que s'estan injectant a StyleSheet mitjançant extensions no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Error intern."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Actualment, les pàgines que utilitzen el bloqueig de teclat no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "La pàgina no s'ha acabat de carregar abans de sortir-ne."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Les pàgines el recurs principal de les quals té cache-control:no-cache no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Les pàgines el recurs principal de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "La navegació s'ha cancel·lat abans que la pàgina es pogués restaurar de la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa activa ha rebut massa dades. Chrome limita la quantitat de dades que pot rebre una pàgina mentre està desada a la memòria cau."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Actualment, les pàgines que tenen un fetch() o un XHR en trànsit no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "La pàgina s'ha tret de la memòria cau back-forward perquè una sol·licitud a la xarxa activa incloïa una redirecció."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "La pàgina s'ha tret de la memòria cau perquè una connexió a la xarxa ha estat oberta massa temps. Chrome limita la quantitat de temps durant el qual una pàgina pot rebre dades mentre està desada a la memòria cau."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Les pàgines que no tenen una capçalera de resposta vàlida no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "La navegació ha tingut lloc en un marc diferent del marc principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Actualment, les pàgines amb transaccions de base de dades indexades en curs no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa de recollida en trànsit no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa en trànsit no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Actualment, les pàgines amb una sol·licitud de xarxa XHR en trànsit no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Actualment, les pàgines que utilitzen PaymentManager no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Actualment, les pàgines que utilitzen pantalla en pantalla no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Actualment, les pàgines que utilitzen portals no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Actualment, les pàgines que mostren la IU d'impressió no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "La pàgina s'ha obert amb \"window.open()\" i una altra pestanya hi té una referència o la pàgina ha obert una finestra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "El procés renderitzador de la pàgina a la memòria cau back-forward ha fallat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "El procés renderitzador de la pàgina s'ha cancel·lat a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació d'àudio no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos de sensor no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos de recollida o sincronització en segon pla no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos MIDI no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos de notificacions no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Actualment, les pàgines que han sol·licitat accés d'emmagatzematge no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Actualment, les pàgines que han sol·licitat permisos de gravació de vídeos no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Només es poden desar a la memòria cau les pàgines amb un esquema d'URL HTTP o HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Un Service Worker ha reclamat la pàgina mentre era a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Un Service Worker ha provat d'enviar un MessageEvent a la pàgina que era a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Service Worker s'ha donat de baixa mentre una pàgina era a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "La pàgina s'ha tret de la memòria cau back-forward per l'activació d'un Service Worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "S'ha reiniciat Chrome i s'han esborrat les entrades de la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Actualment, les pàgines que utilitzen SharedWorker no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Actualment, les pàgines que utilitzen SpeechRecognizer no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Actualment, les pàgines que utilitzen SpeechSynthesis no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Un iframe de la pàgina ha començat una navegació que no s'ha completat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Les pàgines el subrecurs de les quals té cache-control:no-store no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "La pàgina ha excedit el temps màxim a la memòria cau back-forward i ha caducat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "La pàgina ha esgotat el temps d'espera en accedir a la memòria cau back-forward (probablement a causa de gestors que amaguen la pàgina de llarga durada)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "La pàgina té un gestor d'unload en el marc principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "La pàgina té un gestor d'unload en un submarc."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "El navegador ha canviat la capçalera de substitució de l'agent d'usuari."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Actualment, les pàgines que han donat accés a la gravació de vídeo o àudio no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Actualment, les pàgines que utilitzen WebDatabase no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Actualment, les pàgines que utilitzen WebHID no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Actualment, les pàgines que utilitzen WebLocks no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Actualment, les pàgines que utilitzen WebNfc no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Actualment, les pàgines que utilitzen WebOTPService no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Les pàgines amb WebRTC no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Actualment, les pàgines que utilitzen WebShare no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Les pàgines amb WebSocket no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Les pàgines amb WebTransport no poden accedir a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Actualment, les pàgines que utilitzen WebXR no són aptes per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Memòria cau back-forward"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Cap acció possible"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Aquests motius no són accionables, és a dir, alguna cosa fora del control directe de la pàgina ha evitat que es desi a la memòria cau."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Obtén més informació: idoneïtat de la memòria cau back-forward"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Marc principal"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "No s'ha difós des de la memòria cau back-forward: per activar la memòria cau back-forward, utilitza els botons enrere/endavant de Chrome o bé el botó Prova que hi ha més avall per navegar automàticament endavant i endarrere."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Accions possibles"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Aquests motius són accionables, és a dir, es poden esborrar per fer que la pàgina sigui apta per a la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "S'ha difós correctament des de la memòria cau back-forward."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Prova la memòria cau back-forward"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "S'està executant la prova"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Assistència pendent"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "La compatibilitat de Chrome per aquests motius està pendent, és a dir, no s'impedirà que la pàgina sigui apta per a la memòria cau back-forward en una futura versió de Chrome"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "no disponible"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Estat desconegut"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No hi ha punts finals per mostrar"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Desa"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Torna a connectar DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Prem Retorn per confirmar o Escapada per cancel·lar)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Fes servir Tab per canviar d'ordre. Escriu \"?\" per veure les ordres disponibles."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Escriu \"?\" per veure les ordres disponibles"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Obre el fitxer"

@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "কেশ্ব অক্ষম কৰক (DevTools খোলা থকা অৱস্থাত)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড অক্ষম কৰক"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript অক্ষম কৰক"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ফৰ্মেট অক্ষম কৰক"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "অক্ষম কৰক"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "এছিংক ষ্টেক ট্ৰে’চ কেপচাৰ নকৰিব"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS মিডিয়াৰ ধৰণ এমুলে’ট নকৰিব"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড এমুলে’ট নকৰিব"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "গ্ৰিডৰ শাৰী বৃদ্ধি নকৰিব"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "কাষ্টম ফৰ্মেটাৰ সক্ষম কৰক"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড সক্ষম কৰক"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript সক্ষম কৰক"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ফৰ্মেট সক্ষম কৰক"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "সক্ষম কৰক"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "গ্ৰিডৰ শাৰী বৃদ্ধি কৰক"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "এটা ফ’কাছ কৰা পৃষ্ঠা এমুলে’ট কৰক"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "এখন ফ’কাছ কৰা পৃষ্ঠা এমুলে’ট কৰে।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "নিৰীক্ষণ কৰা পৃষ্ঠাখনৰ বাবে স্বয়ংক্ৰিয় গাঢ় ম’ড সক্ষম কৰে।"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut মিডিয়াৰ সুবিধা বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "কনছ’ল ড্ৰৱাৰ দেখুৱাওক"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "ছিষ্টেমে অগ্ৰাধিকাৰ দিয়া ৰঙৰ আঁচনি সলনি কৰা হৈছে। এই পৰিৱৰ্তনটো DevToolsত প্ৰয়োগ কৰিবলৈ পুনৰ ল’ড কৰক।"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "পৃথক ৱিণ্ড’লৈ আনড’ক কৰক"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ফাইল ৰাইট কৰি থকা হৈছে…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "সমলৰ সুৰক্ষা সম্পৰ্কীয় নীতি - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "মেনিফেষ্টটোৰ পৰা এটা প্ৰয়োজনীয় আইকন ডাউনল’ড কৰিব পৰা নগ’ল"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "বিৱৰণ"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "শ্ৰমিক"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "এটা GET অনুৰোধৰ জৰিয়তে ল’ড কৰা পৃষ্ঠাসমূহহে বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "কেৱল 2XX স্থিতি ক’ড থকা পৃষ্ঠাহে কেশ্ব কৰিব পাৰি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "কেশ্বত থাকোঁতে Chromeএ JavaScript কাৰ্যকৰী কৰাৰ এটা প্ৰচেষ্টা চিনাক্ত কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBannerৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "ফ্লেগে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰিছে। এই ডিভাইচটোত স্থানীয়ভাৱে এয়া সক্ষম কৰিবলৈ chrome://flags/#back-forward-cacheলৈ যাওক।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "কামাণ্ড লাইনে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "অপৰ্যাপ্ত মেম’ৰীৰ কাৰণে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "প্ৰতিনিধিয়ে বেক/ফৰৱাৰ্ড কেশ্ব সমৰ্থন নকৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "প্ৰিৰেণ্ডাৰাৰৰ বাবে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "পৃষ্ঠাখন কেশ্ব কৰিব নোৱাৰি, কাৰণ এইখনৰ পঞ্জীকৃত শ্ৰোতাৰ সৈতে এটা BroadcastChannelৰ উদাহৰণ আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "cache-control:no-store হেডাৰ থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "কেশ্বটো ইচ্ছাকৃতভাৱে পৰিষ্কাৰ কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "অন্য এখন পৃষ্ঠাক কেশ্ব কৰিবলৈ দিবলৈ পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "প্লাগইন থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "ফাইল ছিষ্টেম এক্সেছ API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "মিডিয়া ডিভাইচ ডিছপেট্‌চাৰ ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "এৰি যোৱাৰ সময়ত এটা মিডিয়া প্লে’য়াৰত কিবা প্লে’ হৈ আছিল।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API ব্যৱহাৰ কৰা আৰু প্লে’বেকৰ এটা স্থিতি ছেট কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API ব্যৱহাৰ কৰা আৰু কাৰ্যৰ নিয়ন্ত্ৰক ছেট কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "সমৰ্পিত কৰ্মী অথবা ৱৰ্কলেট ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "এৰি যোৱাৰ আগতে নথিখন সম্পূৰ্ণৰূপে ল’ড হোৱা নাছিল।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মী সক্ৰিয় কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "অন্য এখন পৃষ্ঠাক কেশ্ব কৰিবলৈ দিবলৈ পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "মিডিয়া ষ্ট্ৰীমৰ এক্সেছ প্ৰদান কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "প’ৰ্টেল ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "খোলা থকা IndexedDB সংযোগ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "অযোগ্য API ব্যৱহাৰ কৰা হৈছিল।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "এক্সটেনশ্বনৰ দ্বাৰা JavaScript ইনজেক্ট কৰি দিয়া IPages বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "এক্সটেনশ্বনৰ দ্বাৰা StyleSheet ইনজেক্ট কৰি দিয়া পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "অভ্যন্তৰীণ আসোঁৱাহ।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "কীব’ৰ্ড লক ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "এৰি যোৱাৰ আগতে পৃষ্ঠাখন সম্পূৰ্ণৰূপে ল’ড হোৱা নাছিল।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "যিসমূহ পৃষ্ঠাৰ মুখ্য উৎসত cache-control:no-cache আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "যিসমূহ পৃষ্ঠাৰ মুখ্য উৎসত cache-control:no-store আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা পুনঃস্থাপন কৰিব পৰাৰ আগতে নেভিগেশ্বন বাতিল কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "এটা সক্ৰিয় নেটৱৰ্ক সংযোগে বহুত বেছি ডেটা গ্ৰহণ কৰাৰ কাৰণে পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে। Chromeএ কেশ্ব কৰাৰ সময়ত কোনো পৃষ্ঠাই গ্ৰহণ কৰিব পৰা ডেটা সীমিত কৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "ইনফ্লাইট ফেট্‌চ() অথবা XHR থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "এটা সক্ৰিয় নেটৱৰ্কৰ অনুৰোধত এটা ৰিডাইৰেক্ট থকাৰ কাৰণে পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "এটা নেটৱৰ্ক সংযোগ দীঘলীয়া সময়ৰ বাবে খোলা থকাৰ কাৰণে পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে। Chromeএ কেশ্ব কৰাৰ সময়ত কোনো পৃষ্ঠাই ডেটা গ্ৰহণ কৰিব পৰাৰ সময় সীমিত কৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "মান্য সঁহাৰিৰ হেডাৰ নথকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "নেভিগেশ্বনটো মুখ্য ফ্ৰে’মটোৰ সলনি অন্য কোনো ফ্ৰে’মত হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "চলিত ইণ্ডেক্স কৰা DBৰ লেনদেন থকা পৃষ্ঠা বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "ইন-ফ্লাইট নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "ইন-ফ্লাইট ফেট্‌চ নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "ইন-ফ্লাইট নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "ইন-ফ্লাইট XHR নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Picture-in-Picture ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "প’ৰ্টেল ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "প্ৰিণ্টিং UI দেখুওৱা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "পৃষ্ঠাখন ’window.open()’ ব্যৱহাৰ কৰি খোলা হৈছে আৰু অন্য এটা টেবে এইখনক এটা প্ৰসংগ হিচাপে ব্যৱহাৰ কৰিছে অথবা পৃষ্ঠাখনে এখন ৱিণ্ড’ খুলিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাৰ বাবে ৰেণ্ডাৰাৰ প্ৰক্ৰিয়াটো ক্ৰেশ্ব হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাখনৰ বাবে ৰেণ্ডাৰাৰ প্ৰক্ৰিয়াটো বন্ধ কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "অডিঅ’ কেপচাৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "ছেন্সৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "নেপথ্যৰ ছিংক অথবা ফেট্‌চ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDIৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "জাননীৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "ষ্ট’ৰেজৰ এক্সেছৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "ভিডিঅ’ কেপচাৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "যিসমূহ পৃষ্ঠাৰ URL স্কীম HTTP / HTTPS, সেইসমূহহে কেশ্ব কৰিব পাৰি।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মীয়ে দাবী কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "এগৰাকী সেৱা কৰ্মীয়ে এটা বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাখনলৈ এটা MessageEvent পঠিয়াবলৈ চেষ্টা কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "এখন পৃষ্ঠা বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে ServiceWorkerৰ পঞ্জীয়ন বাতিল কৰা হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "এগৰাকী সেৱা কৰ্মীৰ সক্ৰিয়কৰণৰ কাৰণে পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chromeএ বেক/ফৰৱাৰ্ড কেশ্বৰ প্ৰবিষ্টিসমূহ ৰিষ্টাৰ্ট আৰু পৰিষ্কাৰ কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "পৃষ্ঠাখনত থকা এটা ইনফ্ৰে’মে এটা নেভিগেশ্বন আৰম্ভ কৰিছে যিটো সম্পূৰ্ণ হোৱা নাই।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "যিসমূহ পৃষ্ঠাৰ ছাবৰিছ’ৰ্চত cache-control:no-cache আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "যিসমূহ পৃষ্ঠাৰ ছাবৰিছ’ৰ্চত cache-control:no-store আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "পৃষ্ঠাখনে বেক/ফৰৱাৰ্ড কেশ্বত সৰ্বাধিক সময় অতিক্ৰম কৰিছে আৰু সেয়েহে সেইখনৰ ম্যাদ উকলিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হৈ থাকোঁতে পৃষ্ঠাখনৰ সময় উকলিছে (সম্ভৱতঃ দীৰ্ঘ সময় ধৰি চলি থকা পে’জহাইড নিয়ন্ত্ৰকৰ কাৰণে)।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "মুখ্য ফ্ৰে’মটোত পৃষ্ঠাখনৰ এটা আনল’ড নিয়ন্ত্ৰক আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "এটা ছাব ফ্ৰে’মত পৃষ্ঠাখনৰ এটা আনল’ড নিয়ন্ত্ৰক আছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "ব্ৰাউজাৰটোৱে ব্যৱহাৰকাৰী এজেণ্টৰ অ’ভাৰৰাইড হেডাৰ সলনি কৰিছে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "ভিডিঅ’ অথবা অডিঅ’ ৰেকৰ্ড কৰিবলৈ এক্সেছ প্ৰদান কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান bfcacheৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "বেক-ফৰৱাৰ্ড কেশ্ব"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব নোৱাৰি"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "এই কাৰণসমূহৰ বাবে ব্যৱস্থা গ্ৰহণ কৰিব নোৱাৰি, অৰ্থাৎ পৃষ্ঠাখনৰ পোনপটীয়া নিয়ন্ত্ৰণৰ বাহিৰৰ কিবাই কেশ্বিঙত বাধা দিছে।"
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "অধিক জানক: বেক/ফৰৱাৰ্ড কেশ্বৰ যোগ্যতা"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "মুখ্য ফ্ৰে’ম"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা আগবঢ়োৱা হোৱা নাই: বেক/ফৰৱাৰ্ড কেশ্ব ট্ৰিগাৰ কৰিবলৈ Chromeৰ বেক/ফৰৱাৰ্ড বুটাম ব্যৱহাৰ কৰক অথবা স্বয়ংক্ৰিয়ভাৱে বাহিৰলৈ যাবলৈ আৰু উভতি আহিবলৈ তলৰ পৰীক্ষা কৰক বুটামটো ব্যৱহাৰ কৰক।"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব পাৰি"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "এই কাৰণসমূহ কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব পৰা, অৰ্থাৎ পৃষ্ঠাখন বেক-ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য কৰি ল’বলৈ সেইসমূহ পৰিষ্কাৰ কৰিব পাৰি।"
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা সফলভাৱে আগবঢ়োৱা হৈছে।"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "বেক/ফৰৱাৰ্ড কেশ্ব পৰীক্ষা কৰক"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "পৰীক্ষা চলাই থকা হৈছে"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "সমৰ্থন বিবেচনাধীন হৈ আছে"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "এই কাৰণসমূহৰ বাবে Chromeৰ সহায় বিবেচনাধীন হৈ আছে, অৰ্থাৎ সেইসমূহে পৃষ্ঠাখনক Chromeৰ কোনো ভৱিষ্যতৰ সংস্কৰণত বেক-ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য হোৱাত বাধা নিদিয়ে।"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "উপলব্ধ নহয়"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "অজ্ঞাত স্থিতি"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "নেপথ্যৰ আহৰণ"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "অনুষ্ঠান ৰেকৰ্ড কৰা বন্ধ কৰক"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "এটা GET অনুৰোধৰ জৰিয়তে ল’ড কৰা পৃষ্ঠাসমূহহে বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "কেৱল 2XX স্থিতি ক’ড থকা পৃষ্ঠাহে কেশ্ব কৰিব পাৰি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "কেশ্বত থাকোঁতে Chromeএ JavaScript কাৰ্যকৰী কৰাৰ এটা প্ৰচেষ্টা চিনাক্ত কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBannerৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ফ্লেগে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰিছে। এই ডিভাইচটোত স্থানীয়ভাৱে এয়া সক্ষম কৰিবলৈ chrome://flags/#back-forward-cacheলৈ যাওক।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "কামাণ্ড লাইনে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "অপৰ্যাপ্ত মেম’ৰীৰ কাৰণে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "প্ৰতিনিধিয়ে বেক/ফৰৱাৰ্ড কেশ্ব সমৰ্থন নকৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "প্ৰিৰেণ্ডাৰাৰৰ বাবে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "পৃষ্ঠাখন কেশ্ব কৰিব নোৱাৰি, কাৰণ এইখনৰ পঞ্জীকৃত শ্ৰোতাৰ সৈতে এটা BroadcastChannelৰ উদাহৰণ আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store হেডাৰ থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "কেশ্বটো ইচ্ছাকৃতভাৱে পৰিষ্কাৰ কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "অন্য এখন পৃষ্ঠাক কেশ্ব কৰিবলৈ দিবলৈ পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "প্লাগইন থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ফাইল ছিষ্টেম এক্সেছ API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "মিডিয়া ডিভাইচ ডিছপেট্‌চাৰ ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "এৰি যোৱাৰ সময়ত এটা মিডিয়া প্লে’য়াৰত কিবা প্লে’ হৈ আছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API ব্যৱহাৰ কৰা আৰু প্লে’বেকৰ এটা স্থিতি ছেট কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API ব্যৱহাৰ কৰা আৰু কাৰ্যৰ নিয়ন্ত্ৰক ছেট কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "সমৰ্পিত কৰ্মী অথবা ৱৰ্কলেট ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "এৰি যোৱাৰ আগতে নথিখন সম্পূৰ্ণৰূপে ল’ড হোৱা নাছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মী সক্ৰিয় কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "অন্য এখন পৃষ্ঠাক কেশ্ব কৰিবলৈ দিবলৈ পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "মিডিয়া ষ্ট্ৰীমৰ এক্সেছ প্ৰদান কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "প’ৰ্টেল ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "খোলা থকা IndexedDB সংযোগ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "অযোগ্য API ব্যৱহাৰ কৰা হৈছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "এক্সটেনশ্বনৰ দ্বাৰা JavaScript ইনজেক্ট কৰি দিয়া IPages বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "এক্সটেনশ্বনৰ দ্বাৰা StyleSheet ইনজেক্ট কৰি দিয়া পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "অভ্যন্তৰীণ আসোঁৱাহ।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "কীব’ৰ্ড লক ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "এৰি যোৱাৰ আগতে পৃষ্ঠাখন সম্পূৰ্ণৰূপে ল’ড হোৱা নাছিল।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "যিসমূহ পৃষ্ঠাৰ মুখ্য উৎসত cache-control:no-cache আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "যিসমূহ পৃষ্ঠাৰ মুখ্য উৎসত cache-control:no-store আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা পুনঃস্থাপন কৰিব পৰাৰ আগতে নেভিগেশ্বন বাতিল কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "এটা সক্ৰিয় নেটৱৰ্ক সংযোগে বহুত বেছি ডেটা গ্ৰহণ কৰাৰ কাৰণে পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে। Chromeএ কেশ্ব কৰাৰ সময়ত কোনো পৃষ্ঠাই গ্ৰহণ কৰিব পৰা ডেটা সীমিত কৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ইনফ্লাইট ফেট্‌চ() অথবা XHR থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "এটা সক্ৰিয় নেটৱৰ্কৰ অনুৰোধত এটা ৰিডাইৰেক্ট থকাৰ কাৰণে পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "এটা নেটৱৰ্ক সংযোগ দীঘলীয়া সময়ৰ বাবে খোলা থকাৰ কাৰণে পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে। Chromeএ কেশ্ব কৰাৰ সময়ত কোনো পৃষ্ঠাই ডেটা গ্ৰহণ কৰিব পৰাৰ সময় সীমিত কৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "মান্য সঁহাৰিৰ হেডাৰ নথকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "নেভিগেশ্বনটো মুখ্য ফ্ৰে’মটোৰ সলনি অন্য কোনো ফ্ৰে’মত হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "চলিত ইণ্ডেক্স কৰা DBৰ লেনদেন থকা পৃষ্ঠা বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ইন-ফ্লাইট নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ইন-ফ্লাইট ফেট্‌চ নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ইন-ফ্লাইট নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ইন-ফ্লাইট XHR নেটৱৰ্কৰ অনুৰোধ থকা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Picture-in-Picture ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "প’ৰ্টেল ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "প্ৰিণ্টিং UI দেখুওৱা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "পৃষ্ঠাখন ’window.open()’ ব্যৱহাৰ কৰি খোলা হৈছে আৰু অন্য এটা টেবে এইখনক এটা প্ৰসংগ হিচাপে ব্যৱহাৰ কৰিছে অথবা পৃষ্ঠাখনে এখন ৱিণ্ড’ খুলিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাৰ বাবে ৰেণ্ডাৰাৰ প্ৰক্ৰিয়াটো ক্ৰেশ্ব হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাখনৰ বাবে ৰেণ্ডাৰাৰ প্ৰক্ৰিয়াটো বন্ধ কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "অডিঅ’ কেপচাৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ছেন্সৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "নেপথ্যৰ ছিংক অথবা ফেট্‌চ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDIৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "জাননীৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ষ্ট’ৰেজৰ এক্সেছৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ভিডিঅ’ কেপচাৰৰ অনুমতিৰ অনুৰোধ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "যিসমূহ পৃষ্ঠাৰ URL স্কীম HTTP / HTTPS, সেইসমূহহে কেশ্ব কৰিব পাৰি।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মীয়ে দাবী কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "এগৰাকী সেৱা কৰ্মীয়ে এটা বেক/ফৰৱাৰ্ড কেশ্বত থকা পৃষ্ঠাখনলৈ এটা MessageEvent পঠিয়াবলৈ চেষ্টা কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "এখন পৃষ্ঠা বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে ServiceWorkerৰ পঞ্জীয়ন বাতিল কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "এগৰাকী সেৱা কৰ্মীৰ সক্ৰিয়কৰণৰ কাৰণে পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chromeএ বেক/ফৰৱাৰ্ড কেশ্বৰ প্ৰবিষ্টিসমূহ ৰিষ্টাৰ্ট আৰু পৰিষ্কাৰ কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "পৃষ্ঠাখনত থকা এটা ইনফ্ৰে’মে এটা নেভিগেশ্বন আৰম্ভ কৰিছে যিটো সম্পূৰ্ণ হোৱা নাই।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "যিসমূহ পৃষ্ঠাৰ ছাবৰিছ’ৰ্চত cache-control:no-cache আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "যিসমূহ পৃষ্ঠাৰ ছাবৰিছ’ৰ্চত cache-control:no-store আছে সেইসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "পৃষ্ঠাখনে বেক/ফৰৱাৰ্ড কেশ্বত সৰ্বাধিক সময় অতিক্ৰম কৰিছে আৰু সেয়েহে সেইখনৰ ম্যাদ উকলিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হৈ থাকোঁতে পৃষ্ঠাখনৰ সময় উকলিছে (সম্ভৱতঃ দীৰ্ঘ সময় ধৰি চলি থকা পে’জহাইড নিয়ন্ত্ৰকৰ কাৰণে)।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "মুখ্য ফ্ৰে’মটোত পৃষ্ঠাখনৰ এটা আনল’ড নিয়ন্ত্ৰক আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "এটা ছাব ফ্ৰে’মত পৃষ্ঠাখনৰ এটা আনল’ড নিয়ন্ত্ৰক আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ব্ৰাউজাৰটোৱে ব্যৱহাৰকাৰী এজেণ্টৰ অ’ভাৰৰাইড হেডাৰ সলনি কৰিছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ভিডিঅ’ অথবা অডিঅ’ ৰেকৰ্ড কৰিবলৈ এক্সেছ প্ৰদান কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান bfcacheৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport থকা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বত অন্তৰ্ভুক্ত হ’ব নোৱাৰে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বৰ্তমান বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "বেক-ফৰৱাৰ্ড কেশ্ব"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব নোৱাৰি"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "এই কাৰণসমূহৰ বাবে ব্যৱস্থা গ্ৰহণ কৰিব নোৱাৰি, অৰ্থাৎ পৃষ্ঠাখনৰ পোনপটীয়া নিয়ন্ত্ৰণৰ বাহিৰৰ কিবাই কেশ্বিঙত বাধা দিছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "অধিক জানক: বেক/ফৰৱাৰ্ড কেশ্বৰ যোগ্যতা"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "মুখ্য ফ্ৰে’ম"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা আগবঢ়োৱা হোৱা নাই: বেক/ফৰৱাৰ্ড কেশ্ব ট্ৰিগাৰ কৰিবলৈ Chromeৰ বেক/ফৰৱাৰ্ড বুটাম ব্যৱহাৰ কৰক অথবা স্বয়ংক্ৰিয়ভাৱে বাহিৰলৈ যাবলৈ আৰু উভতি আহিবলৈ তলৰ পৰীক্ষা কৰক বুটামটো ব্যৱহাৰ কৰক।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব পাৰি"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "এই কাৰণসমূহ কাৰ্যব্যৱস্থা গ্ৰহণ কৰিব পৰা, অৰ্থাৎ পৃষ্ঠাখন বেক-ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য কৰি ল’বলৈ সেইসমূহ পৰিষ্কাৰ কৰিব পাৰি।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্বৰ পৰা সফলভাৱে আগবঢ়োৱা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "বেক/ফৰৱাৰ্ড কেশ্ব পৰীক্ষা কৰক"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "পৰীক্ষা চলাই থকা হৈছে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "সমৰ্থন বিবেচনাধীন হৈ আছে"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "এই কাৰণসমূহৰ বাবে Chromeৰ সহায় বিবেচনাধীন হৈ আছে, অৰ্থাৎ সেইসমূহে পৃষ্ঠাখনক Chromeৰ কোনো ভৱিষ্যতৰ সংস্কৰণত বেক-ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য হোৱাত বাধা নিদিয়ে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "উপলব্ধ নহয়"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "অজ্ঞাত স্থিতি"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "দেখুৱাবলৈ কোনো এণ্ডপইণ্ট নাই"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ছেভ কৰক"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools পুনৰ সংযোগ কৰক"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (নিশ্চিত কৰিবলৈ ‘এণ্টাৰ’ অথবা বাতিল কৰিবলৈ ‘এস্কে’প’ টিপক।)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "নিৰ্দেশনা সলনি কৰিবলৈ টেব ব্যৱহাৰ কৰক। উপলব্ধ নিৰ্দেশনাসমূহ চাবলৈ ‘?’ টাইপ কৰক"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "উপলব্ধ নিৰ্দেশনাসমূহ চাবলৈ ‘?’ টাইপ কৰক"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ফাইল খোলক"

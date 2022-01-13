@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "停用快取 (開發人員工具為開啟狀態)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "停用自動深色模式"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "停用 JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "停用 WebP 格式"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "停用"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "不要擷取非同步堆疊追蹤"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "不模擬 CSS 媒體類型"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "不模擬自動深色模式"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "不要延長格線"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "啟用自訂格式器"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "啟用自動深色模式"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "啟用 JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "啟用 WebP 格式"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "啟用"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "延長格線"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "模擬已聚焦的網頁"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "模擬已聚焦的網頁。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "為要檢查的頁面啟用自動深色模式。"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "強制使用 CSS color-gamut 媒體功能"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "顯示主控台導覽匣"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "系統偏好的色彩配置已變更。如要將這項變更套用到開發人員工具，請重新載入。"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "卸除至個別視窗"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "正在寫入檔案…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "內容安全政策 - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "無法從資訊清單下載必要圖示"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "說明"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "Service Worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "只有透過 GET 要求載入的網頁才適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "只能快取狀態碼為 2XX 的網頁。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome 偵測到嘗試在快取中執行 JavaScript 的作業。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "已要求 AppBanner 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "由於旗標設定的關係，往返快取功能已停用。如要在這部裝置上啟用該功能，請前往 chrome://flags/#back-forward-cache。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "由於指令列設定的關係，往返快取功能已停用。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "由於記憶體不足，往返快取功能已停用。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "委派目標不支援往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "為了執行預先轉譯器，往返快取功能已停用。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "網頁有包含已註冊事件監聽器的 BroadcastChannel 例項，因此系統無法快取網頁。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "含有 cache-control:no-store 標頭的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "有人刻意清除快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "為了讓系統能夠快取其他網頁，這個網頁已從快取中移除。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "含有外掛程式的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "使用 FileChooser API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "使用 File System Access API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "使用媒體裝置調度工具的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "使用者離開網頁時，媒體播放器正在播放內容。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "使用 MediaSession API 並設定播放狀態的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "使用 MediaSession API 並設定動作處理常式的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "使用 SecurityHandler 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "使用 Serial API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "使用 WebAuthetication API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "使用 WebBluetooth API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "使用 WebUSB API 的網頁不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "使用專屬 Worker 或 Worklet 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "文件未在使用者離開前完成載入。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Service Worker 已在網頁儲存於往返快取時啟用。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "為了讓系統能夠快取其他網頁，這個網頁已從快取中移除。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "已授予媒體串流播放權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "使用入口網站的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "使用 IdleManager 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "含有開放式 IndexedDB 連線的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "使用了不支援的 API。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "由擴充功能插入 JavaScript 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "由擴充功能插入 StyleSheet 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "內部錯誤。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "使用鍵盤鎖定功能的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "網頁未在使用者離開前完成載入。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "主要資源含有 cache-control:no-cache 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "主要資源含有 cache-control:no-store 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "瀏覽作業已在網頁從往返快取中還原前取消。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "由於某個作用中的網路連線收到太多資料，因此該網頁已從快取中移除。Chrome 會限制網頁處於快取狀態時可接收的資料量。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "含有 in-flight fetch() 或 XHR 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "由於某個作用中的網路要求涉及重新導向，因此網頁已從往返快取中移除。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "網路連線處於開放狀態太久，因此網頁已從快取中移除。Chrome 會限制網頁可在快取時接收資料的時間長度。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "不含有效回應標頭的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "瀏覽作業是在主頁框以外的頁框中執行。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "網頁含有針對已建立索引的資料庫所執行的進行中交易，目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "含有 in-flight 網路要求的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "含有 in-flight fetch 網路要求的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "含有 in-flight 網路要求的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "含有 in-flight XHR 網路要求的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "使用 PaymentManager 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "使用子母畫面的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "使用入口網站的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "顯示列印使用者介面的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "網頁已透過「window.open()」開啟且其他分頁含有該網頁的參照內容，或者網頁開啟了視窗。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "往返快取中網頁的轉譯器程序異常終止。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "往返快取中網頁的轉譯器程序已中斷。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "已要求音訊擷取權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "已要求感應器權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "已要求背景同步或擷取權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "已要求 MIDI 權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "已要求通知權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "已要求儲存空間存取權的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "已要求影片擷取權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "只能快取網址配置為 HTTP/HTTPS 的網頁。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "網頁已在儲存於往返快取時由 Service Worker 聲明擁有權。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Service Worker 已嘗試向往返快取中的網頁傳送 MessageEvent。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Service Worker 已在網頁儲存於往返快取時取消註冊。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "系統啟用了 Service Worker，因此網頁已從往返快取中移除。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome 已重新啟動，並清除往返快取項目。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "使用 SharedWorker 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "使用 SpeechRecognizer 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "使用 SpeechSynthesis 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "網頁上 iframe 啟動的瀏覽作業並未完成。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "子資源含有 cache-control:no-cache 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "子資源含有 cache-control:no-store 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "網頁超出存放在往返快取中的時間上限，因此已失效。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "將網頁儲存至往返快取的作業逾時 (可能原因為頁面隱藏事件處理常式的執行時間太長)。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "網頁在主頁框中含有卸載處理常式。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "網頁在子頁框中含有卸載處理常式。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "瀏覽器已變更使用者代理程式覆寫標頭。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "已授予影片或音訊錄製權限的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "使用 WebDatabase 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "使用 WebHID 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "使用 WebLocks 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "使用 WebNfc 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "使用 WebOTPService 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "使用 WebRTC 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "使用 WebShare 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "使用 WebSocket 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "使用 WebTransport 的網頁無法儲存至往返快取。"
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "使用 WebXR 的網頁目前不適用往返快取。"
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "往返快取"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "無法操作"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "你無法根據這些原因採取行動，也就是說，與直接控管網頁無關的原因會導致無法快取。"
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "瞭解詳情：往返快取適用資格"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "主頁框"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "未透過往返快取提供頁面：如要觸發往返快取，請使用 Chrome 的上一頁/下一頁按鈕或下方的「測試」按鈕自動前往上一下/下一頁。"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "可操作"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "你可以根據這些原因採取行動，也就是說，網頁在排除這些原因後即可使用往返快取。"
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "已成功透過往返快取提供頁面。"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "測試往返快取"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "正在執行測試"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "尚待支援"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome 預計將支援這些原因。也就是說，在日後的 Chrome 版本中，即使網頁含有這些原因仍可使用往返快取。"
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "無法使用"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "狀態不明"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "網址："
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "背景擷取"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "停止記錄事件"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "只有透過 GET 要求載入的網頁才適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "只能快取狀態碼為 2XX 的網頁。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome 偵測到嘗試在快取中執行 JavaScript 的作業。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "已要求 AppBanner 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "由於旗標設定的關係，往返快取功能已停用。如要在這部裝置上啟用該功能，請前往 chrome://flags/#back-forward-cache。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "由於指令列設定的關係，往返快取功能已停用。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "由於記憶體不足，往返快取功能已停用。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "委派目標不支援往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "為了執行預先轉譯器，往返快取功能已停用。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "網頁有包含已註冊事件監聽器的 BroadcastChannel 例項，因此系統無法快取網頁。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "含有 cache-control:no-store 標頭的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "有人刻意清除快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "為了讓系統能夠快取其他網頁，這個網頁已從快取中移除。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "含有外掛程式的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "使用 FileChooser API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "使用 File System Access API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "使用媒體裝置調度工具的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "使用者離開網頁時，媒體播放器正在播放內容。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "使用 MediaSession API 並設定播放狀態的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "使用 MediaSession API 並設定動作處理常式的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "使用 SecurityHandler 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "使用 Serial API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "使用 WebAuthetication API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "使用 WebBluetooth API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "使用 WebUSB API 的網頁不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "使用專屬 Worker 或 Worklet 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "文件未在使用者離開前完成載入。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Service Worker 已在網頁儲存於往返快取時啟用。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "為了讓系統能夠快取其他網頁，這個網頁已從快取中移除。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "已授予媒體串流播放權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "使用入口網站的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "使用 IdleManager 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "含有開放式 IndexedDB 連線的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "使用了不支援的 API。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "由擴充功能插入 JavaScript 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "由擴充功能插入 StyleSheet 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "內部錯誤。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "使用鍵盤鎖定功能的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "網頁未在使用者離開前完成載入。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "主要資源含有 cache-control:no-cache 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "主要資源含有 cache-control:no-store 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "瀏覽作業已在網頁從往返快取中還原前取消。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "由於某個作用中的網路連線收到太多資料，因此該網頁已從快取中移除。Chrome 會限制網頁處於快取狀態時可接收的資料量。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "含有 in-flight fetch() 或 XHR 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "由於某個作用中的網路要求涉及重新導向，因此網頁已從往返快取中移除。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "網路連線處於開放狀態太久，因此網頁已從快取中移除。Chrome 會限制網頁可在快取時接收資料的時間長度。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "不含有效回應標頭的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "瀏覽作業是在主頁框以外的頁框中執行。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "網頁含有針對已建立索引的資料庫所執行的進行中交易，目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "含有 in-flight 網路要求的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "含有 in-flight fetch 網路要求的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "含有 in-flight 網路要求的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "含有 in-flight XHR 網路要求的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "使用 PaymentManager 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "使用子母畫面的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "使用入口網站的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "顯示列印使用者介面的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "網頁已透過「window.open()」開啟且其他分頁含有該網頁的參照內容，或者網頁開啟了視窗。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "往返快取中網頁的轉譯器程序異常終止。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "往返快取中網頁的轉譯器程序已中斷。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "已要求音訊擷取權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "已要求感應器權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "已要求背景同步或擷取權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "已要求 MIDI 權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "已要求通知權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "已要求儲存空間存取權的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "已要求影片擷取權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "只能快取網址配置為 HTTP/HTTPS 的網頁。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "網頁已在儲存於往返快取時由 Service Worker 聲明擁有權。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service Worker 已嘗試向往返快取中的網頁傳送 MessageEvent。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Service Worker 已在網頁儲存於往返快取時取消註冊。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "系統啟用了 Service Worker，因此網頁已從往返快取中移除。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome 已重新啟動，並清除往返快取項目。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "使用 SharedWorker 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "使用 SpeechRecognizer 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "使用 SpeechSynthesis 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "網頁上 iframe 啟動的瀏覽作業並未完成。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "子資源含有 cache-control:no-cache 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "子資源含有 cache-control:no-store 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "網頁超出存放在往返快取中的時間上限，因此已失效。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "將網頁儲存至往返快取的作業逾時 (可能原因為頁面隱藏事件處理常式的執行時間太長)。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "網頁在主頁框中含有卸載處理常式。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "網頁在子頁框中含有卸載處理常式。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "瀏覽器已變更使用者代理程式覆寫標頭。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "已授予影片或音訊錄製權限的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "使用 WebDatabase 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "使用 WebHID 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "使用 WebLocks 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "使用 WebNfc 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "使用 WebOTPService 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "使用 WebRTC 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "使用 WebShare 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "使用 WebSocket 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "使用 WebTransport 的網頁無法儲存至往返快取。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "使用 WebXR 的網頁目前不適用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "往返快取"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "無法操作"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "你無法根據這些原因採取行動，也就是說，與直接控管網頁無關的原因會導致無法快取。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "瞭解詳情：往返快取適用資格"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "主頁框"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "未透過往返快取提供頁面：如要觸發往返快取，請使用 Chrome 的上一頁/下一頁按鈕或下方的「測試」按鈕自動前往上一下/下一頁。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "可操作"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "你可以根據這些原因採取行動，也就是說，網頁在排除這些原因後即可使用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "已成功透過往返快取提供頁面。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "測試往返快取"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "正在執行測試"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "尚待支援"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chrome 預計將支援這些原因。也就是說，在日後的 Chrome 版本中，即使網頁含有這些原因仍可使用往返快取。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "無法使用"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "狀態不明"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "網址："
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "沒有可顯示的端點"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "儲存"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "重新連接DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (按下「Enter 鍵」即可確認；或按下「Escape 鍵」取消)。"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "你可以使用 Tab 鍵切換指令。輸入「?」就能查看可用的指令"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "輸入「?」就能查看可用的指令"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "開啟檔案"

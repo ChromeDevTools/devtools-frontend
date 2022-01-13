@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "غیرفعال کردن حافظه پنهان (وقتی DevTools باز است)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "غیرفعال کردن حالت تاریک خودکار"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "غیرفعال کردن جاوا اسکریپت"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "غیرفعال کردن قالب WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "غیرفعال کردن"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "ردیابی پشته‌ای غیرهمگام ضبط نشود"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "نوع رسانه CSS شبیه‌سازی نشود"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "حالت تاریک خودکار شبیه‌سازی نشود"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "خط‌های جدول گسترده نشود"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "فعال کردن قالب‌دهنده سفارشی"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "فعال کردن حالت تاریک خودکار"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "فعال کردن جاوا اسکریپت"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "فعال کردن قالب WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "فعال کردن"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "گسترش خطوط جدول"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "شبیه‌سازی صفحه متمرکز"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "صفحه متمرکز را شبیه‌سازی می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "حالت تاریک خودکار را برای صفحه بازرسی‌شده فعال می‌کند."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "ویژگی رسانه color-gamut CSS را اجباری می‌کند"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "نمایش کشوی کنسول"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "رنگ‌بندی ترجیحی سیستم تغییر کرد. برای اعمال این تغییر در DevTools، آن را تازه‌سازی کنید."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "جدا کردن به‌صورت پنجره مجزا"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "درحال نوشتن فایل…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "خط‌مشی امنیتی محتوا - ارزیابی"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "نماد موردنیاز از مانیفست بارگیری نشد"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "شرح"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "عامل"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "فقط صفحه‌هایی که ازطریق «درخواست GET» بار می‌شوند واجدشرایط حافظه پنهان عقب-جلو هستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "فقط صفحه‌های دارای رمز وضعیت 2XX می‌توانند در حافظه پنهان ذخیره شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome تلاشی برای اجرای جاوا اسکریپت درحالت ذخیره‌شده در حافظه پنهان شناسایی کرد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "درحال‌حاضر، صفحه‌هایی که AppBanner درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "حافظه پنهان عقب-جلو با پرچم غیرفعال شده است. برای اینکه حافظه پنهان عقب-جلو را به‌صورت محلی در این دستگاه فعال کنید، به chrome://flags/#back-forward-cache بروید."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "حافظه پنهان عقب-جلو با خط فرمان غیرفعال شده است."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "حافظه پنهان عقب-جلو به‌دلیل حافظه ناکافی غیرفعال شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "نماینده از حافظه پنهان عقب-جلو پشتیبانی نمی‌کند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "حافظه پنهان عقب-جلو برای پیش‌تولیدکننده تصویر غیرفعال شده است."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "صفحه نمی‌تواند در حافظه پنهان ذخیره شود زیرا نمونه BroadcastChannel با شنوندگان ثبت‌شده دارد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "صفحه‌های دارای سرصفحه cache-control:no-store نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "حافظه پنهان عمداً پاک شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "صفحه از حافظه پنهان خارج شد تا صفحه دیگری بتواند در حافظه پنهان ذخیره شود."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "درحال‌حاضر، صفحه‌های حاوی افزایه واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "صفحه‌هایی که از FileChooser API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "صفحه‌هایی که از File System Access API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "صفحه‌هایی که از «توزیع‌کننده دستگاه رسانه» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "هنگام خروج، پخش‌کننده رسانه درحال اجرا بود."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "صفحه‌هایی که از MediaSession API استفاده می‌کنند و وضعیت بازپخش تنظیم کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "صفحه‌هایی که از MediaSession API استفاده می‌کنند و کنترل‌کننده‌های کنش تنظیم می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "صفحه‌هایی که از SecurityHandler استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "صفحه‌هایی که از Serial API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "صفحه‌هایی که از WebAuthetication API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "صفحه‌هایی که از WebBluetooth API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "صفحه‌هایی که از WebUSB API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از عامل یا worklet اختصاصی استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "خروج پیش‌از بارگیری کامل سند انجام شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "درحالی‌که صفحه در حافظه پنهان عقب-جلو قرار داشت، عامل خدماتی فعال شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "صفحه از حافظه پنهان خارج شد تا صفحه دیگری بتواند در حافظه پنهان ذخیره شود."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه دسترسی به جاری‌سازی رسانه داده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از پورتال استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از IdleManager استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اتصال IndexedDB دارند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "میاناهای برنامه‌سازی کاربردی استفاده‌شده واجدشرایط نبودند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "درحال‌حاضر، IPages که جاوا اسکریپت ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند"
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "درحال‌حاضر، صفحه‌هایی که «برگه سبک نگارش» ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "خطای داخلی."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از «قفل صفحه‌کلید» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "خروج از صفحه پیش‌از تکمیل بار شدن انجام شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "صفحه‌هایی که منبع اصلی‌شان cache-control:no-cache داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "صفحه‌هایی که منبع اصلی‌شان cache-control:no-store داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "پیش‌از آنکه صفحه بتواند از حافظه پنهان عقب-جلو بازیابی شود، پیمایش لغو شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "صفحه از حافظه پنهان خارج شد زیرا اتصال شبکه فعال حجم زیادی داده دریافت کرد. Chrome مقدار داده‌ای را که هر صفحه می‌تواند هنگام قرار داشتن در حافظه پنهان دریافت کند محدود می‌کند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "درحال‌حاضر، صفحه‌هایی که واکشی() یا XHR حین پرواز دارند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "صفحه از حافظه پنهان عقب-جلو خارج شد زیرا درخواست شبکه فعالی حاوی هدایت به مقصد دیگری بود."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "صفحه از حافظه پنهان خارج شد زیرا اتصال شبکه برای مدت طولانی باز بود. Chrome مدت‌زمانی را که صفحه ذخیره‌شده در حافظه پنهان می‌تواند داده دریافت کند محدود می‌کند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "صفحه‌هایی که سرصفحه پاسخ معتبر ندارند نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "پیمایش در قابی به‌جز قاب اصلی انجام شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "درحال‌حاضر، صفحه داری تراکنش‌های نمایه‌شده DB در جریان واجدشرایط حافظه پنهان عقب-جلو نیست."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه واکشی حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "درحال‌حاضر، صفحه‌های دارای شبکه XHR حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از PaymentManager استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از ویژگی تصویر در تصویر استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از پورتال استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "درحال‌حاضر، صفحه‌هایی که «رابط کاربری چاپ» نشان می‌دهند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "صفحه بااستفاده از «window.open()» باز شده است و برگه دیگری به آن ارجاع داده است، یا صفحه پنجره‌ای را باز کرده است."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "پردازش تولیدکننده تصویر برای صفحه در حافظه پنهان عقب-جلو از کار افتاد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "پردازش تولیدکننده تصویر برای صفحه موجود در حافظه پنهان عقب-جلو متوقف شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های ضبط صدا درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های حسگر درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه همگام‌سازی در پس‌زمینه یا واکشی را درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های MIDI درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه اعلان درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "درحال‌حاضر، صفحه‌هایی که دسترسی به فضای ذخیره‌سازی را درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه فیلم‌برداری درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "فقط صفحه‌هایی می‌توانند در حافظه پنهان ذخیره شوند که طرح نشانی وب HTTP / HTTPS داشته باشند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "صفحه درحالی‌که در حافظه پنهان عقب-جلو است با عامل خدماتی مطالبه شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "یک عامل خدماتی تلاش کرد به صفحه ذخیره‌شده در حافظه پنهان عقب-جلو MessageEvent ارسال کند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "درحالی‌که صفحه‌ای در حافظه پنهان عقب-جلو بود، ServiceWorker لغو ثبت‌نام شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "صفحه به‌دلیل فعال شدن عامل خدماتی، از حافظه پنهان عقب-جلو خارج شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome بازراه‌اندازی شد و ورودی‌های حافظه پنهان عقب-جلو را پاک کرد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از SharedWorker استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از SpeechRecognizer استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از SpeechSynthesis استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "یک iframe در صفحه پیمایشی را شروع کرد که کامل نشد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "صفحه‌هایی که منبع فرعی‌شان cache-control:no-cache داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "صفحه‌هایی که منبع فرعی‌شان cache-control:no-store داشته باشد نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "صفحه بیشتر از زمان مجاز در حافظه پنهان عقب-جلو ماند و منقضی شد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "مهلت زمانی صفحه برای ورود به حافظه پنهان عقب-جلو تمام شد (احتمالاً به‌دلیل کنترل‌کننده‌های پنهان کردن صفحه که زمان اجرای طولانی دارند)"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "صفحه کنترل‌کننده بی‌باری در قاب اصلی دارد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "صفحه کنترل‌کننده بی‌باری در قاب فرعی دارد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "مرورگرْ سرصفحه ملغی کردن نماینده کاربر را تغییر داد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "درحال‌حاضر، صفحه‌هایی که اجازه دسترسی به فیلم‌برداری یا ضبط صدا داده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebDatabase استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebHID استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebLocks استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebNfc استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebOTPService استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "صفحه‌های دارای WebRTC نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebShare استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "صفحه‌های دارای WebSocket نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "صفحه‌های دارای WebTransport نمی‌توانند در حافظه پنهان عقب-جلو ذخیره شوند."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "درحال‌حاضر، صفحه‌هایی که از WebXR استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "حافظه پنهان عقب-جلو"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "غیرقابل‌اقدام"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "این دلایل قابل‌اقدام نیستند، یعنی ذخیره شدن در حافظه پنهان به‌دلیلی خارج از کنترل مستقیم صفحه انجام نشد."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "بیشتر بدانید: واجدشرایط بودن برای حافظه پنهان عقب-جلو"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "قاب اصلی"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "از حافظه پنهان عقب-جلو ارائه نشد: برای راه‌اندازی حافظه پنهان عقب-جلو، از دکمه‌های عقب/ جلوی Chrome استفاده کنید، یا برای پیمایش خودکار به عقب و سوی دیگر از دکمه آزمایش زیر استفاده کنید."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "قابل‌اقدام"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "این دلایل قابل‌رسیدگی است، یعنی می‌توان آن‌ها را پاک کرد تا صفحه واجدشرایط «حافظه پنهان عقب-جلو» شود."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "باموفقیت از حافظه پنهان عقب-جلو ارائه شد."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "آزمایش حافظه پنهان عقب-جلو"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "درحال اجرای آزمایش"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "درانتظار پشتیبانی"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "پشتیبانی Chrome از این دلایل در حالت تعلیق است، یعنی این دلایل مانع از آن نمی‌شود که صفحه در نسخه‌های بعدی Chrome واجدشرایط «حافظه پنهان عقب-جلو» نباشد."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "دردسترس نیست"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "وضعیت نامشخص"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "نشانی وب:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "واکشی پس‌زمینه"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "توقف ضبط رویدادها"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "فقط صفحه‌هایی که ازطریق «درخواست GET» بار می‌شوند واجدشرایط حافظه پنهان عقب-جلو هستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "فقط صفحه‌های دارای رمز وضعیت 2XX می‌توانند در حافظه پنهان ذخیره شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome تلاشی برای اجرای جاوا اسکریپت درحالت ذخیره‌شده در حافظه پنهان شناسایی کرد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "درحال‌حاضر، صفحه‌هایی که AppBanner درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "حافظه پنهان عقب-جلو با پرچم غیرفعال شده است. برای اینکه حافظه پنهان عقب-جلو را به‌صورت محلی در این دستگاه فعال کنید، به chrome://flags/#back-forward-cache بروید."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "حافظه پنهان عقب-جلو با خط فرمان غیرفعال شده است."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "حافظه پنهان عقب-جلو به‌دلیل حافظه ناکافی غیرفعال شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "نماینده از حافظه پنهان عقب-جلو پشتیبانی نمی‌کند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "حافظه پنهان عقب-جلو برای پیش‌تولیدکننده تصویر غیرفعال شده است."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "صفحه نمی‌تواند در حافظه پنهان ذخیره شود زیرا نمونه BroadcastChannel با شنوندگان ثبت‌شده دارد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "صفحه‌های دارای سرصفحه cache-control:no-store نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "حافظه پنهان عمداً پاک شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "صفحه از حافظه پنهان خارج شد تا صفحه دیگری بتواند در حافظه پنهان ذخیره شود."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "درحال‌حاضر، صفحه‌های حاوی افزایه واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "صفحه‌هایی که از FileChooser API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "صفحه‌هایی که از File System Access API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "صفحه‌هایی که از «توزیع‌کننده دستگاه رسانه» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "هنگام خروج، پخش‌کننده رسانه درحال اجرا بود."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "صفحه‌هایی که از MediaSession API استفاده می‌کنند و وضعیت بازپخش تنظیم کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "صفحه‌هایی که از MediaSession API استفاده می‌کنند و کنترل‌کننده‌های کنش تنظیم می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "صفحه‌هایی که از SecurityHandler استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "صفحه‌هایی که از Serial API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "صفحه‌هایی که از WebAuthetication API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "صفحه‌هایی که از WebBluetooth API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "صفحه‌هایی که از WebUSB API استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از عامل یا worklet اختصاصی استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "خروج پیش‌از بارگیری کامل سند انجام شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "درحالی‌که صفحه در حافظه پنهان عقب-جلو قرار داشت، عامل خدماتی فعال شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "صفحه از حافظه پنهان خارج شد تا صفحه دیگری بتواند در حافظه پنهان ذخیره شود."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه دسترسی به جاری‌سازی رسانه داده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از پورتال استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از IdleManager استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اتصال IndexedDB دارند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "میاناهای برنامه‌سازی کاربردی استفاده‌شده واجدشرایط نبودند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "درحال‌حاضر، IPages که جاوا اسکریپت ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "درحال‌حاضر، صفحه‌هایی که «برگه سبک نگارش» ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "خطای داخلی."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از «قفل صفحه‌کلید» استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "خروج از صفحه پیش‌از تکمیل بار شدن انجام شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "صفحه‌هایی که منبع اصلی‌شان cache-control:no-cache داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "صفحه‌هایی که منبع اصلی‌شان cache-control:no-store داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "پیش‌از آنکه صفحه بتواند از حافظه پنهان عقب-جلو بازیابی شود، پیمایش لغو شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "صفحه از حافظه پنهان خارج شد زیرا اتصال شبکه فعال حجم زیادی داده دریافت کرد. Chrome مقدار داده‌ای را که هر صفحه می‌تواند هنگام قرار داشتن در حافظه پنهان دریافت کند محدود می‌کند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "درحال‌حاضر، صفحه‌هایی که واکشی() یا XHR حین پرواز دارند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "صفحه از حافظه پنهان عقب-جلو خارج شد زیرا درخواست شبکه فعالی حاوی هدایت به مقصد دیگری بود."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "صفحه از حافظه پنهان خارج شد زیرا اتصال شبکه برای مدت طولانی باز بود. Chrome مدت‌زمانی را که صفحه ذخیره‌شده در حافظه پنهان می‌تواند داده دریافت کند محدود می‌کند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "صفحه‌هایی که سرصفحه پاسخ معتبر ندارند نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "پیمایش در قابی به‌جز قاب اصلی انجام شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "درحال‌حاضر، صفحه داری تراکنش‌های نمایه‌شده DB در جریان واجدشرایط حافظه پنهان عقب-جلو نیست."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه واکشی حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "درحال‌حاضر، صفحه‌های دارای درخواست شبکه حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "درحال‌حاضر، صفحه‌های دارای شبکه XHR حین پرواز واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از PaymentManager استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از ویژگی تصویر در تصویر استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از پورتال استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "درحال‌حاضر، صفحه‌هایی که «رابط کاربری چاپ» نشان می‌دهند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "صفحه بااستفاده از «window.open()» باز شده است و برگه دیگری به آن ارجاع داده است، یا صفحه پنجره‌ای را باز کرده است."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "پردازش تولیدکننده تصویر برای صفحه در حافظه پنهان عقب-جلو از کار افتاد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "پردازش تولیدکننده تصویر برای صفحه موجود در حافظه پنهان عقب-جلو متوقف شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های ضبط صدا درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های حسگر درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه همگام‌سازی در پس‌زمینه یا واکشی را درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه‌های MIDI درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه اعلان درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "درحال‌حاضر، صفحه‌هایی که دسترسی به فضای ذخیره‌سازی را درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه فیلم‌برداری درخواست کرده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "فقط صفحه‌هایی می‌توانند در حافظه پنهان ذخیره شوند که طرح نشانی وب HTTP / HTTPS داشته باشند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "صفحه درحالی‌که در حافظه پنهان عقب-جلو است با عامل خدماتی مطالبه شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "یک عامل خدماتی تلاش کرد به صفحه ذخیره‌شده در حافظه پنهان عقب-جلو MessageEvent ارسال کند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "درحالی‌که صفحه‌ای در حافظه پنهان عقب-جلو بود، ServiceWorker لغو ثبت‌نام شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "صفحه به‌دلیل فعال شدن عامل خدماتی، از حافظه پنهان عقب-جلو خارج شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome بازراه‌اندازی شد و ورودی‌های حافظه پنهان عقب-جلو را پاک کرد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از SharedWorker استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از SpeechRecognizer استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از SpeechSynthesis استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "یک iframe در صفحه پیمایشی را شروع کرد که کامل نشد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "صفحه‌هایی که منبع فرعی‌شان cache-control:no-cache داشته باشد نمی‌توانند به حافظه پنهان عقب-جلو وارد شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "صفحه‌هایی که منبع فرعی‌شان cache-control:no-store داشته باشد نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "صفحه بیشتر از زمان مجاز در حافظه پنهان عقب-جلو ماند و منقضی شد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "مهلت زمانی صفحه برای ورود به حافظه پنهان عقب-جلو تمام شد (احتمالاً به‌دلیل کنترل‌کننده‌های پنهان کردن صفحه که زمان اجرای طولانی دارند)"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "صفحه کنترل‌کننده بی‌باری در قاب اصلی دارد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "صفحه کنترل‌کننده بی‌باری در قاب فرعی دارد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "مرورگرْ سرصفحه ملغی کردن نماینده کاربر را تغییر داد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "درحال‌حاضر، صفحه‌هایی که اجازه دسترسی به فیلم‌برداری یا ضبط صدا داده‌اند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebDatabase استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebHID استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebLocks استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebNfc استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebOTPService استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "صفحه‌های دارای WebRTC نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebShare استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "صفحه‌های دارای WebSocket نمی‌توانند وارد حافظه پنهان عقب-جلو شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "صفحه‌های دارای WebTransport نمی‌توانند در حافظه پنهان عقب-جلو ذخیره شوند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "درحال‌حاضر، صفحه‌هایی که از WebXR استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "حافظه پنهان عقب-جلو"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "غیرقابل‌اقدام"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "این دلایل قابل‌اقدام نیستند، یعنی ذخیره شدن در حافظه پنهان به‌دلیلی خارج از کنترل مستقیم صفحه انجام نشد."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "بیشتر بدانید: واجدشرایط بودن برای حافظه پنهان عقب-جلو"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "قاب اصلی"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "از حافظه پنهان عقب-جلو ارائه نشد: برای راه‌اندازی حافظه پنهان عقب-جلو، از دکمه‌های عقب/ جلوی Chrome استفاده کنید، یا برای پیمایش خودکار به عقب و سوی دیگر از دکمه آزمایش زیر استفاده کنید."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "قابل‌اقدام"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "این دلایل قابل‌رسیدگی است، یعنی می‌توان آن‌ها را پاک کرد تا صفحه واجدشرایط «حافظه پنهان عقب-جلو» شود."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "باموفقیت از حافظه پنهان عقب-جلو ارائه شد."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "آزمایش حافظه پنهان عقب-جلو"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "درحال اجرای آزمایش"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "درانتظار پشتیبانی"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "پشتیبانی Chrome از این دلایل در حالت تعلیق است، یعنی این دلایل مانع از آن نمی‌شود که صفحه در نسخه‌های بعدی Chrome واجدشرایط «حافظه پنهان عقب-جلو» نباشد."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "دردسترس نیست"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "وضعیت نامشخص"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "نشانی وب:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "نقطه پایانی برای نمایش وجود ندارد"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ذخیره"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "اتصال مجدد DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (برای تأیید کلید «Enter»، یا برای لغو کلید «گریز» را فشار دهید.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "از کلید جهش برای عوض کردن فرمان‌ها استفاده کنید. برای دیدن فرمان‌های موجود، «?» را تایپ کنید"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "برای دیدن فرمان‌های موجود، «?» را تایپ کنید"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "باز کردن فایل"

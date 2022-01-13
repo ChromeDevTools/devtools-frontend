@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "إيقاف ذاكرة التخزين المؤقت (عندما تكون أدوات مطوري البرامج مفتوحة)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "إيقاف الوضع الداكن التلقائي"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "إيقاف JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "إيقاف التنسيق WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "إيقاف"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "عدم التقاط عمليات تتبُّع تسلسل استدعاء الدوال البرمجية غير المتزامنة"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "عدم محاكاة نوع وسائط CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "عدم محاكاة الوضع الداكن التلقائي"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "عدم تمديد خطوط الشبكة"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "تفعيل أدوات التنسيق المخصّصة"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "تفعيل الوضع الداكن التلقائي"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "تفعيل JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "تفعيل التنسيق WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "تفعيل"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "تمديد خطوط الشبكة"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "محاكاة صفحة مركّز عليها"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "يتيح هذا الإعداد إمكانية محاكاة صفحة مركَّز عليها."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "تفعيل الوضع المُعتِم التلقائي للصفحة التي تم فحصها"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "يتيح هذا الإعداد فرض ميزة وسائط color-gamut لصفحات الأنماط المتتالية (CSS)."
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "إظهار درج وحدة التحكّم"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "تم تغيير الألوان التي يفضّلها النظام. أعِد التحميل لتطبيق هذا التغيير في أدوات مطوري البرامج."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "إلغاء الإرساء في نافذة منفصلة"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "جارٍ الكتابة في الملف…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "سياسة أمان المحتوى: Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "تعذَّر تنزيل رمز مطلوب من ملف البيان."
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "الوصف"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "عامل"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "الصفحات فقط التي تم تحميلها من خلال طلب استرداد بيانات باستخدام GET يمكن حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "لا يمكن إجراء تخزين مؤقت إلا للصفحات التي تتضمّن رمز الحالة 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "اكتشف Chrome محاولة لتنفيذ JavaScript أثناء التخزين المؤقت."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "الصفحات التي طلبت AppBanner يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في chrome://flags. ويمكنك الانتقال إلى الرابط chrome://flags/#back-forward-cache لتفعيلها على هذا الجهاز."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "أوقفَ سطر الأوامر ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب عدم توفّر مساحة كافية في الذاكرة."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "لا تتوفّر ميزة \"التخزين المؤقت للصفحات\" من خلال التفويض."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في العارض المسبق."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "لا يمكن تخزين الصفحة مؤقتًا لأنها تحتوي على مثال BroadcastChannel يتضمّن أدوات مسجَّلة لمعالجة الحدث."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "الصفحات التي تحتوي على عنوان cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "سيتم محو ذاكرة التخزين المؤقت عن قصد."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت للسماح بالتخزين المؤقت لصفحة أخرى."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "الصفحات التي تحتوي على مكوّنات إضافية يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "الصفحات التي تستخدِم FileChooser API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "الصفحات التي تستخدِم File System Access API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "الصفحات التي تستخدِم أداة Media Device Dispatcher يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "كان مشغّل الوسائط قيد التشغيل عند مغادرته."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "الصفحات التي تستخدِم MediaSession API وتضبط حالة للتشغيل يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "الصفحات التي تستخدِم MediaSession API وتضبط معالِجات الإجراءات يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "الصفحات التي تستخدِم SecurityHandler يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "الصفحات التي تستخدِم Serial API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "الصفحات التي تستخدِم WebAuthentication API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "الصفحات التي تستخدِم WebBluetooth API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "الصفحات التي تستخدِم WebUSB API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "الصفحات التي تستخدِم مشغّل خدمات مخصَّصًا أو وظيفة صغيرة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "تمت مغادرة المستند قبل أن ينتهي من التحميل."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "تم تفعيل مشغّل خدمات أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت للسماح بالتخزين المؤقت لصفحة أخرى."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "الصفحات التي سمحت بالوصول إلى محتوى بث الوسائط يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "الصفحات التي تستخدِم بوابات الويب يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "الصفحات التي تستخدِم IdleManager يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "الصفحات التي تحتوي على اتصال مفتوح لقاعدة بيانات مفهرسة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "تم استخدام واجهات غير مؤهَّلة لبرمجة التطبيقات."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "الصفحات التي يتم إدخال JavaScript فيها من خلال الإضافات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "الصفحات التي تم بها إدخال ورقة أنماط من خلال الإضافات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "حدث خطأ داخلي."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "الصفحات التي تستخدِم قفل لوحة المفاتيح يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "تمت مغادرة الصفحة قبل أن تنتهي من التحميل."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "الصفحات التي يحتوي موردها الرئيسي على cache-control:no-cache يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "الصفحات التي يحتوي موردها الرئيسي على cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "تم إلغاء التنقّل قبل أن تتم استعادة الصفحة من خلال ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت لأنّ الاتصال النشط بالشبكة تلقّى الكثير من البيانات، علمًا بأنّ Chrome يقيّد مقدار البيانات التي قد تتلقّاها الصفحة أثناء تخزينها مؤقتًا."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "الصفحات التي تستخدِم XHR أو fetch()‎ قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "تم إخراج الصفحة من ذاكرة \"التخزين المؤقت للصفحات\" لأنّ أحد طلبات الشبكة النشطة تضمَّن إعادة توجيه."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت لأنّ الاتصال بالشبكة كان مفتوحًا لفترة طويلة جدًا، علمًا بأنّ Chrome يقيّد مقدار الوقت الذي قد تتلقّى خلاله الصفحة البيانات أثناء تخزينها مؤقتًا."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "الصفحات التي لا تحتوي على عنوان استجابة صالح يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "حدث التنقُّل في إطار غير الإطار الرئيسي."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "الصفحات التي تتضمّن عمليات جارية لقاعدة البيانات المُفهرَسة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "الصفحات التي تستخدِم طلب شبكة قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "الصفحات التي تستخدِم طلب شبكة fetch قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "الصفحات التي تستخدِم طلب شبكة قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "الصفحات التي تستخدِم طلب شبكة XHR قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "الصفحات التي تستخدِم PaymentManager يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "الصفحات التي تستخدِم ميزة \"نافذة ضمن النافذة\" يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "الصفحات التي تستخدِم بوابات الويب يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "الصفحات التي تعرض \"واجهة مستخدم الطباعة\" يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "تم فتح الصفحة باستخدام \"window.open()\" وعلامة تبويب أخرى بها مرجع إليها، أو أنّ الصفحة فتحت نافذة."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "تعطّلت عملية العرض للصفحة خلال \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "تم إنهاء عملية العرض للصفحة خلال \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "الصفحات التي طلبت أذونات تسجيل الصوت يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "الصفحات التي طلبت أذونات جهاز الاستشعار يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "الصفحات التي طلبت أذونات الاسترجاع أو المزامنة في الخلفية يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "الصفحات التي طلبت أذونات الوصول إلى أجهزة MIDI يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "الصفحات التي طلبت أذونات الإشعارات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "الصفحات التي طلبت الوصول إلى مساحة التخزين يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "الصفحات التي طلبت أذونات تسجيل الفيديو يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "لا يمكن إجراء تخزين مؤقت إلا للصفحات التي يكون مخطَّط URL فيها هو HTTP/HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "استدعى مشغّل الخدمات الصفحة أثناء محاولة حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "حاول مشغّل خدمات إرسال MessageEvent إلى الصفحة في ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "تم إلغاء تسجيل ServiceWorkers أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "تم إخراج الصفحة من \"التخزين المؤقت للصفحات\" بسبب تنشيط مشغّل الخدمات."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "تمت إعادة تشغيل Chrome الذي محا إدخالات ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "الصفحات التي تستخدِم SharedWorker يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "الصفحات التي تستخدِم SpeechRecognizer يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "الصفحات التي تستخدِم SpeechSynthesis يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "بدأ إطار iframe على الصفحة عملية تنقُّل لم تكتمل."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "الصفحات التي يحتوي موردها الفرعي على cache-control:no-cache يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "الصفحات التي يحتوي موردها الفرعي على cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "تجاوزت الصفحة الحدّ الأقصى للوقت أثناء حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\" وانتهت صلاحيتها."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "انتهت مهلة إدراج الصفحة في \"التخزين المؤقت للصفحات\" (قد يرجع ذلك إلى معالِجات إخفاء الصفحات التي تستغرق مدة زمنية طويلة)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "تحتوي الصفحة على معالج لإلغاء التحميل في الإطار الرئيسي."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "تحتوي الصفحة على معالِج لإلغاء التحميل في إطار فرعي."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "غيَّر المتصفّح عنوان تجاوز وكيل المستخدم."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "الصفحات التي سمحت بتسجيل فيديو أو صوت يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "الصفحات التي تستخدِم WebDatabase يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "الصفحات التي تستخدِم WebHID يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "الصفحات التي تستخدِم WebLocks يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "الصفحات التي تستخدِم WebNfc يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "الصفحات التي تستخدِم خدمة WebOTPService يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "الصفحات التي تحتوي على WebRTC يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "الصفحات التي تستخدِم WebShare يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "الصفحات التي تحتوي على WebSocket يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "الصفحات التي تحتوي على WebTransport يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "الصفحات التي تستخدِم WebXR يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "ميزة \"التخزين المؤقت للصفحات\""
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "أسباب لا يمكن اتخاذ إجراء بشأنها"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "لا يمكن اتخاذ إجراء بشأن هذه العناصر، بمعنى أنه تم منع التخزين المؤقت نتيجة أسباب خارجة عن التحكّم المباشر للصفحة."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "مزيد من المعلومات: إمكانية استخدام ميزة \"التخزين المؤقت للصفحات\""
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "الإطار الأساسي"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "لم يتم عرض الصفحة من خلال ميزة \"التخزين المؤقت للصفحات\": لتفعيل ميزة \"التخزين المؤقت للصفحات\"، استخدِم أزرار الانتقال إلى الصفحة السابقة/التالية في متصفّح Chrome، أو استخدِم زر الاختبار أدناه للخروج من الصفحة الحالية والرجوع إليها تلقائيًا."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "أسباب يمكن اتخاذ إجراء بشأنها"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "يمكن اتخاذ إجراء بشأن العناصر القابلة للتنفيذ، بمعنى أنّه يمكن إزالة تلك العناصر لحفظ الصفحة باستخدام ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "تم عرض الصفحة بنجاح من خلال ميزة \"التخزين المؤقت للصفحات\"."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "اختبار ميزة \"التخزين المؤقت للصفحات\""
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "جارٍ الاختبار"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "في انتظار توفّر الميزة"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "لا يزال توافق متصفِّح Chrome مع هذه العناصر في انتظار المراجعة، أي أنّ هذه العناصر لن تمنع حفظ الصفحة باستخدام ميزة \"التخزين المؤقت للصفحات\" في إصدار مستقبلي من متصفِّح Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "غير متوفّر"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "حالة غير معروفة"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "عنوان URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "استرجاع في الخلفية"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "إيقاف تسجيل الأحداث"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "الصفحات فقط التي تم تحميلها من خلال طلب استرداد بيانات باستخدام GET يمكن حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "لا يمكن إجراء تخزين مؤقت إلا للصفحات التي تتضمّن رمز الحالة 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "اكتشف Chrome محاولة لتنفيذ JavaScript أثناء التخزين المؤقت."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "الصفحات التي طلبت AppBanner يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في chrome://flags. ويمكنك الانتقال إلى الرابط chrome://flags/#back-forward-cache لتفعيلها على هذا الجهاز."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "أوقفَ سطر الأوامر ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب عدم توفّر مساحة كافية في الذاكرة."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "لا تتوفّر ميزة \"التخزين المؤقت للصفحات\" من خلال التفويض."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في العارض المسبق."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "لا يمكن تخزين الصفحة مؤقتًا لأنها تحتوي على مثال BroadcastChannel يتضمّن أدوات مسجَّلة لمعالجة الحدث."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "الصفحات التي تحتوي على عنوان cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "سيتم محو ذاكرة التخزين المؤقت عن قصد."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت للسماح بالتخزين المؤقت لصفحة أخرى."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "الصفحات التي تحتوي على مكوّنات إضافية يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "الصفحات التي تستخدِم FileChooser API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "الصفحات التي تستخدِم File System Access API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "الصفحات التي تستخدِم أداة Media Device Dispatcher يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "كان مشغّل الوسائط قيد التشغيل عند مغادرته."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "الصفحات التي تستخدِم MediaSession API وتضبط حالة للتشغيل يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "الصفحات التي تستخدِم MediaSession API وتضبط معالِجات الإجراءات يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "الصفحات التي تستخدِم SecurityHandler يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "الصفحات التي تستخدِم Serial API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "الصفحات التي تستخدِم WebAuthentication API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "الصفحات التي تستخدِم WebBluetooth API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "الصفحات التي تستخدِم WebUSB API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "الصفحات التي تستخدِم مشغّل خدمات مخصَّصًا أو وظيفة صغيرة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "تمت مغادرة المستند قبل أن ينتهي من التحميل."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "تم تفعيل مشغّل خدمات أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت للسماح بالتخزين المؤقت لصفحة أخرى."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "الصفحات التي سمحت بالوصول إلى محتوى بث الوسائط يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "الصفحات التي تستخدِم بوابات الويب يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "الصفحات التي تستخدِم IdleManager يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "الصفحات التي تحتوي على اتصال مفتوح لقاعدة بيانات مفهرسة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "تم استخدام واجهات غير مؤهَّلة لبرمجة التطبيقات."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "الصفحات التي يتم إدخال JavaScript فيها من خلال الإضافات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "الصفحات التي تم بها إدخال ورقة أنماط من خلال الإضافات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "حدث خطأ داخلي."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "الصفحات التي تستخدِم قفل لوحة المفاتيح يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "تمت مغادرة الصفحة قبل أن تنتهي من التحميل."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "الصفحات التي يحتوي موردها الرئيسي على cache-control:no-cache يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "الصفحات التي يحتوي موردها الرئيسي على cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "تم إلغاء التنقّل قبل أن تتم استعادة الصفحة من خلال ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت لأنّ الاتصال النشط بالشبكة تلقّى الكثير من البيانات، علمًا بأنّ Chrome يقيّد مقدار البيانات التي قد تتلقّاها الصفحة أثناء تخزينها مؤقتًا."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "الصفحات التي تستخدِم XHR أو fetch()‎ قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "تم إخراج الصفحة من ذاكرة \"التخزين المؤقت للصفحات\" لأنّ أحد طلبات الشبكة النشطة تضمَّن إعادة توجيه."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت لأنّ الاتصال بالشبكة كان مفتوحًا لفترة طويلة جدًا، علمًا بأنّ Chrome يقيّد مقدار الوقت الذي قد تتلقّى خلاله الصفحة البيانات أثناء تخزينها مؤقتًا."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "الصفحات التي لا تحتوي على عنوان استجابة صالح يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "حدث التنقُّل في إطار غير الإطار الرئيسي."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "الصفحات التي تتضمّن عمليات جارية لقاعدة البيانات المُفهرَسة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "الصفحات التي تستخدِم طلب شبكة قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "الصفحات التي تستخدِم طلب شبكة fetch قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "الصفحات التي تستخدِم طلب شبكة قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "الصفحات التي تستخدِم طلب شبكة XHR قيد التقدّم يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "الصفحات التي تستخدِم PaymentManager يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "الصفحات التي تستخدِم ميزة \"نافذة ضمن النافذة\" يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "الصفحات التي تستخدِم بوابات الويب يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "الصفحات التي تعرض \"واجهة مستخدم الطباعة\" يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "تم فتح الصفحة باستخدام \"window.open()\" وعلامة تبويب أخرى بها مرجع إليها، أو أنّ الصفحة فتحت نافذة."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "تعطّلت عملية العرض للصفحة خلال \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "تم إنهاء عملية العرض للصفحة خلال \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "الصفحات التي طلبت أذونات تسجيل الصوت يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "الصفحات التي طلبت أذونات جهاز الاستشعار يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "الصفحات التي طلبت أذونات الاسترجاع أو المزامنة في الخلفية يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "الصفحات التي طلبت أذونات الوصول إلى أجهزة MIDI يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "الصفحات التي طلبت أذونات الإشعارات يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "الصفحات التي طلبت الوصول إلى مساحة التخزين يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "الصفحات التي طلبت أذونات تسجيل الفيديو يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "لا يمكن إجراء تخزين مؤقت إلا للصفحات التي يكون مخطَّط URL فيها هو HTTP/HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "استدعى مشغّل الخدمات الصفحة أثناء محاولة حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "حاول مشغّل خدمات إرسال MessageEvent إلى الصفحة في ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "تم إلغاء تسجيل ServiceWorkers أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "تم إخراج الصفحة من \"التخزين المؤقت للصفحات\" بسبب تنشيط مشغّل الخدمات."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "تمت إعادة تشغيل Chrome الذي محا إدخالات ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "الصفحات التي تستخدِم SharedWorker يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "الصفحات التي تستخدِم SpeechRecognizer يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "الصفحات التي تستخدِم SpeechSynthesis يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "بدأ إطار iframe على الصفحة عملية تنقُّل لم تكتمل."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "الصفحات التي يحتوي موردها الفرعي على cache-control:no-cache يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "الصفحات التي يحتوي موردها الفرعي على cache-control:no-store يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "تجاوزت الصفحة الحدّ الأقصى للوقت أثناء حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\" وانتهت صلاحيتها."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "انتهت مهلة إدراج الصفحة في \"التخزين المؤقت للصفحات\" (قد يرجع ذلك إلى معالِجات إخفاء الصفحات التي تستغرق مدة زمنية طويلة)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "تحتوي الصفحة على معالج لإلغاء التحميل في الإطار الرئيسي."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "تحتوي الصفحة على معالِج لإلغاء التحميل في إطار فرعي."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "غيَّر المتصفّح عنوان تجاوز وكيل المستخدم."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "الصفحات التي سمحت بتسجيل فيديو أو صوت يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "الصفحات التي تستخدِم WebDatabase يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "الصفحات التي تستخدِم WebHID يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "الصفحات التي تستخدِم WebLocks يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "الصفحات التي تستخدِم WebNfc يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "الصفحات التي تستخدِم خدمة WebOTPService يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "الصفحات التي تحتوي على WebRTC يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "الصفحات التي تستخدِم WebShare يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "الصفحات التي تحتوي على WebSocket يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "الصفحات التي تحتوي على WebTransport يتعذّر إدراجها في \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "الصفحات التي تستخدِم WebXR يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "ميزة \"التخزين المؤقت للصفحات\""
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "أسباب لا يمكن اتخاذ إجراء بشأنها"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "لا يمكن اتخاذ إجراء بشأن هذه العناصر، بمعنى أنه تم منع التخزين المؤقت نتيجة أسباب خارجة عن التحكّم المباشر للصفحة."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "مزيد من المعلومات: إمكانية استخدام ميزة \"التخزين المؤقت للصفحات\""
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "الإطار الأساسي"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "لم يتم عرض الصفحة من خلال ميزة \"التخزين المؤقت للصفحات\": لتفعيل ميزة \"التخزين المؤقت للصفحات\"، استخدِم أزرار الانتقال إلى الصفحة السابقة/التالية في متصفّح Chrome، أو استخدِم زر الاختبار أدناه للخروج من الصفحة الحالية والرجوع إليها تلقائيًا."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "أسباب يمكن اتخاذ إجراء بشأنها"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "يمكن اتخاذ إجراء بشأن العناصر القابلة للتنفيذ، بمعنى أنّه يمكن إزالة تلك العناصر لحفظ الصفحة باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "تم عرض الصفحة بنجاح من خلال ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "اختبار ميزة \"التخزين المؤقت للصفحات\""
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "جارٍ الاختبار"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "في انتظار توفّر الميزة"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "لا يزال توافق متصفِّح Chrome مع هذه العناصر في انتظار المراجعة، أي أنّ هذه العناصر لن تمنع حفظ الصفحة باستخدام ميزة \"التخزين المؤقت للصفحات\" في إصدار مستقبلي من متصفِّح Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "غير متوفّر"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "حالة غير معروفة"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "عنوان URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ما مِن نقاط نهاية لعرضها."
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "حفظ"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "إعادة توصيل DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (اضغط على مفتاح \"Enter\" للتأكيد أو مفتاح \"Escape\" للإلغاء.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "استخدِم مفتاح التبويب (Tab) للتبديل بين الأوامر. أدخِل علامة \"؟\" للاطّلاع على الأوامر المتاحة."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "أدخِل علامة \"؟\" للاطّلاع على الأوامر المتاحة."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "فتح ملف"

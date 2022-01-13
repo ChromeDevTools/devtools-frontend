@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Деактивиране на кеша (докато инструментите за програмисти са отворени)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Деактивиране на автоматичния тъмен режим"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Деактивиране на JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Деактивиране на формата WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Деактивиране"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Без записване на асинхронните проследявания на стека"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Без емулиране на медиен тип на CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Без емулиране на автоматичния тъмен режим"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Без удължаване на линиите на решетката"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Активиране на персонализираните инструменти за форматиране"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Активиране на автоматичния тъмен режим"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Активиране на JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Активиране на формата WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Активиране"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Удължаване на линиите на решетката"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Емулиране на страница, върху която е поставен фокусът"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Емулиране на страница, върху която е поставен фокусът."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Активиране на автоматичния тъмен режим за проверяваната страница."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Принудително активиране на медийната функция color-gamut на CSS"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Показване на слоя на конзолата"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Предпочитаната от системата цветова схема е променена. Презаредете DevTools, за да се приложи тази промяна."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Отделяне в самостоятелен прозорец"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Записва се файл…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Правила за сигурност на съдържанието – анализ"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Изисквана икона от манифеста не бе изтеглена"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Описание"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "На условията за кеша за назад/напред отговарят само страниците, заредени чрез заявка GET."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Могат да бъдат кеширани само страници с код на състоянието 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome откри опит за изпълнение на JavaScript от кеша."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Страниците, които са заявили AppBanner, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Кешът за назад/напред е деактивиран чрез флагове. За да го активирате локално на това устройство, отворете chrome://flags/#back-forward-cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Кешът за назад/напред е деактивиран от командния ред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Кешът за назад/напред е деактивиран поради недостатъчно памет."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Кешът за назад/напред не се поддържа от делегата."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Кешът за назад/напред е деактивиран за предварителното рендериране."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Страницата не може да бъде кеширана, защото има екземпляр на BroadcastChannel с регистрирани приематели."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Страниците със заглавка cache-control:no-store не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Кешът бе изчистен преднамерено."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Страницата бе извадена от кеша, за да може да бъде кеширана друга страница."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Страниците с приставки понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Страниците, които използват FileChooser API, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Страниците, които използват API за достъп до файловата система, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Страниците, които използват диспечера на носители, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "При излизането от страницата работеше медиен плейър."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Страниците, които използват MediaSession API и задават състояние на възпроизвеждане, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Страниците, които използват MediaSession API и задават манипулатори за действия, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Страниците, които използват SecurityHandler, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Страниците, които използват Serial API, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Страниците, които използват WebAuthetication API, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Страниците, които използват WebBluetooth API, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Страниците, които използват WebUSB API, не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Страниците, които използват worker или worklet само за себе си, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Документът не бе зареден напълно, преди потребителят да излезе от него."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Активиран бе service worker, докато страницата бе в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Страницата бе извадена от кеша, за да може да бъде кеширана друга страница."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Страниците, на които е предоставен достъп до мултимедийните потоци, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Страниците, които използват портали, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Страниците, които използват IdleManager, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Страниците, които имат отворена връзка към IndexedDB, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Използвани са неотговарящи на условията API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Страниците, в които JavaScript е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Страниците, в които стиловият лист е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Вътрешна грешка."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Страниците, които използват заключване на клавиатурата, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Страницата не бе заредена напълно, преди потребителят да излезе от нея."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Страниците, чийто основен ресурс съдържа cache-control:no-cache, не могат да бъдат добавени в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Страниците, чийто основен ресурс съдържа cache-control:no-store, не могат да бъдат добавени в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Навигацията бе анулирана, преди страницата да бъде възстановена от кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Страницата бе извадена от кеша, защото активна мрежова връзка получи твърде много данни. Chrome ограничава количеството данни, които може да получава дадена страница, докато е кеширана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Страниците с изпълняващи се fetch() или XHR, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Страницата бе извадена от кеша за назад/напред, защото активна мрежова заявка включваше пренасочване."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Страницата бе извадена от кеша, защото мрежова връзка бе отворена твърде дълго. Chrome ограничава продължителността на времето, през което дадена страница може да получава данни, докато е кеширана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Страниците, които нямат валидна заглавка на отговора, не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Навигацията бе извършена в рамка, различна от основната."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Страниците с изпълняващи се индексирани транзакции в база данни, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Страниците с изпълняваща се мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Страниците с изпълняваща се мрежова заявка за извличане понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Страниците с изпълняваща се мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Страниците с изпълняваща се XHR мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Страниците, които използват PaymentManager, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Страниците, които използват картина в картината, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Страниците, които използват портали, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Страниците, които показват потребителския интерфейс за отпечатване, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Страницата бе отворена чрез window.open() и друг раздел препраща към нея. Или страницата отвори прозорец."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Процесът за рендериране на страницата в кеша за назад/напред претърпя срив."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Процесът за рендериране на страницата в кеша за назад/напред бе прекратен."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Страниците, които са поискали разрешение за запис на аудио, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Страниците, които са поискали разрешение за достъп до сензорите, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Страниците, които са поискали разрешение за извличане или синхронизиране на заден план, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Страниците, които са поискали разрешение за достъп до MIDI, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Страниците, които са поискали разрешение за достъп до известия, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Страниците, които са поискали достъп до хранилището, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Страниците, които са поискали разрешение за запис на видео, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Могат да бъдат кеширани само страници, чиято схема на URL адреса е HTTP или HTTPS ."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Страницата бе заявена от service worker, докато е в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Service worker опита да изпрати MessageEvent до страницата в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Регистрацията на ServiceWorker бе прекратена, докато страница бе в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Страницата бе извадена от кеша за назад/напред поради активиране на service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome се рестартира и изчисти записите в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Страниците, които използват SharedWorker, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Страниците, които използват SpeechRecognizer, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Страниците, които използват SpeechSynthesis, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Вложена рамка в страницата започна навигиране, което не завърши."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Страниците, чийто подресурс съдържа cache-control:no-cache, не могат да бъдат добавени в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Страниците, чийто подресурс съдържа cache-control:no-store, не могат да бъдат добавени в кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Престоят на страницата в кеша за назад/напред надхвърли максималното време и тя бе означена като изтекла."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Времето за изчакване на страницата да бъде поставена в entering кеша за назад/напред изтече (вероятно поради изпълняващи се продължително манипулатори за скриване на страницата)"
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "В главната рамка на страницата има манипулатор за премахване."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "В подрамка на страницата има манипулатор за премахване."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Браузърът промени заглавката за замяна на потребителския агент."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Страниците, на които е предоставен достъп за запис на видео или аудио, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Страниците, които използват WebDatabase, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Страниците, които използват WebHID, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Страниците, които използват WebLocks, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Страниците, които използват WebNfc, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Страниците, които използват WebOTPService, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Страниците с WebRTC не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Страниците, които използват WebShare, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Страниците с WebSocket не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Страниците с WebTransport не могат да бъдат добавени към кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Страниците, които използват WebXR, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Кеш за назад/напред"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Няма възможност за действие"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "За тези причини не е възможно да се вземат мерки, т.е. кеширането е предотвратено от фактори извън непосредствения контрол на страницата."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Научете повече за условията за използване на кеша за назад/напред"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Основна рамка"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Не се показва от кеша за назад/напред. За да задействате този кеш, използвайте бутоните на Chrome за връщане назад/преминаване напред или бутона за тестване по-долу, така че автоматично да излезете и да се върнете назад."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "С възможност за действие"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Възможно е да бъдат взети мерки спрямо тези причини, така че те да бъдат изчистени и страницата да отговаря на условията за кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Показано успешно от кеша за назад/напред."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Тестване на кеша за назад/напред"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Провежда се тест"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Предстояща поддръжка"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Поддръжката на Chrome за тези причини предстои да бъде реализирана, т.е. те няма да попречат на страницата да отговаря на условията за кеша за назад/напред в бъдеща версия на Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "не е налице"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Неизвестно състояние"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL адрес:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Извличане на заден план"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Спиране на записването на събития"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "На условията за кеша за назад/напред отговарят само страниците, заредени чрез заявка GET."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Могат да бъдат кеширани само страници с код на състоянието 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome откри опит за изпълнение на JavaScript от кеша."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Страниците, които са заявили AppBanner, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Кешът за назад/напред е деактивиран чрез флагове. За да го активирате локално на това устройство, отворете chrome://flags/#back-forward-cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Кешът за назад/напред е деактивиран от командния ред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Кешът за назад/напред е деактивиран поради недостатъчно памет."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Кешът за назад/напред не се поддържа от делегата."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Кешът за назад/напред е деактивиран за предварителното рендериране."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Страницата не може да бъде кеширана, защото има екземпляр на BroadcastChannel с регистрирани приематели."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Страниците със заглавка cache-control:no-store не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Кешът бе изчистен преднамерено."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Страницата бе извадена от кеша, за да може да бъде кеширана друга страница."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Страниците с приставки понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Страниците, които използват FileChooser API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Страниците, които използват API за достъп до файловата система, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Страниците, които използват диспечера на носители, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "При излизането от страницата работеше медиен плейър."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Страниците, които използват MediaSession API и задават състояние на възпроизвеждане, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Страниците, които използват MediaSession API и задават манипулатори за действия, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Страниците, които използват SecurityHandler, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Страниците, които използват Serial API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Страниците, които използват WebAuthetication API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Страниците, които използват WebBluetooth API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Страниците, които използват WebUSB API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Страниците, които използват worker или worklet само за себе си, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Документът не бе зареден напълно, преди потребителят да излезе от него."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Активиран бе service worker, докато страницата бе в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Страницата бе извадена от кеша, за да може да бъде кеширана друга страница."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Страниците, на които е предоставен достъп до мултимедийните потоци, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Страниците, които използват портали, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Страниците, които използват IdleManager, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Страниците, които имат отворена връзка към IndexedDB, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Използвани са неотговарящи на условията API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Страниците, в които JavaScript е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Страниците, в които стиловият лист е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Вътрешна грешка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Страниците, които използват заключване на клавиатурата, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Страницата не бе заредена напълно, преди потребителят да излезе от нея."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Страниците, чийто основен ресурс съдържа cache-control:no-cache, не могат да бъдат добавени в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Страниците, чийто основен ресурс съдържа cache-control:no-store, не могат да бъдат добавени в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Навигацията бе анулирана, преди страницата да бъде възстановена от кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Страницата бе извадена от кеша, защото активна мрежова връзка получи твърде много данни. Chrome ограничава количеството данни, които може да получава дадена страница, докато е кеширана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Страниците с изпълняващи се fetch() или XHR, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Страницата бе извадена от кеша за назад/напред, защото активна мрежова заявка включваше пренасочване."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Страницата бе извадена от кеша, защото мрежова връзка бе отворена твърде дълго. Chrome ограничава продължителността на времето, през което дадена страница може да получава данни, докато е кеширана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Страниците, които нямат валидна заглавка на отговора, не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Навигацията бе извършена в рамка, различна от основната."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Страниците с изпълняващи се индексирани транзакции в база данни, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Страниците с изпълняваща се мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Страниците с изпълняваща се мрежова заявка за извличане понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Страниците с изпълняваща се мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Страниците с изпълняваща се XHR мрежова заявка понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Страниците, които използват PaymentManager, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Страниците, които използват картина в картината, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Страниците, които използват портали, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Страниците, които показват потребителския интерфейс за отпечатване, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Страницата бе отворена чрез window.open() и друг раздел препраща към нея. Или страницата отвори прозорец."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Процесът за рендериране на страницата в кеша за назад/напред претърпя срив."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Процесът за рендериране на страницата в кеша за назад/напред бе прекратен."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Страниците, които са поискали разрешение за запис на аудио, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Страниците, които са поискали разрешение за достъп до сензорите, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Страниците, които са поискали разрешение за извличане или синхронизиране на заден план, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Страниците, които са поискали разрешение за достъп до MIDI, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Страниците, които са поискали разрешение за достъп до известия, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Страниците, които са поискали достъп до хранилището, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Страниците, които са поискали разрешение за запис на видео, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Могат да бъдат кеширани само страници, чиято схема на URL адреса е HTTP или HTTPS ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Страницата бе заявена от service worker, докато е в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service worker опита да изпрати MessageEvent до страницата в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Регистрацията на ServiceWorker бе прекратена, докато страница бе в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Страницата бе извадена от кеша за назад/напред поради активиране на service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome се рестартира и изчисти записите в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Страниците, които използват SharedWorker, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Страниците, които използват SpeechRecognizer, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Страниците, които използват SpeechSynthesis, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Вложена рамка в страницата започна навигиране, което не завърши."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Страниците, чийто подресурс съдържа cache-control:no-cache, не могат да бъдат добавени в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Страниците, чийто подресурс съдържа cache-control:no-store, не могат да бъдат добавени в кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Престоят на страницата в кеша за назад/напред надхвърли максималното време и тя бе означена като изтекла."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Времето за изчакване на страницата да бъде поставена в entering кеша за назад/напред изтече (вероятно поради изпълняващи се продължително манипулатори за скриване на страницата)"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "В главната рамка на страницата има манипулатор за премахване."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "В подрамка на страницата има манипулатор за премахване."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Браузърът промени заглавката за замяна на потребителския агент."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Страниците, на които е предоставен достъп за запис на видео или аудио, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Страниците, които използват WebDatabase, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Страниците, които използват WebHID, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Страниците, които използват WebLocks, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Страниците, които използват WebNfc, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Страниците, които използват WebOTPService, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Страниците с WebRTC не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Страниците, които използват WebShare, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Страниците с WebSocket не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Страниците с WebTransport не могат да бъдат добавени към кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Страниците, които използват WebXR, понастоящем не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Кеш за назад/напред"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Няма възможност за действие"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "За тези причини не е възможно да се вземат мерки, т.е. кеширането е предотвратено от фактори извън непосредствения контрол на страницата."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Научете повече за условията за използване на кеша за назад/напред"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Основна рамка"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Не се показва от кеша за назад/напред. За да задействате този кеш, използвайте бутоните на Chrome за връщане назад/преминаване напред или бутона за тестване по-долу, така че автоматично да излезете и да се върнете назад."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "С възможност за действие"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Възможно е да бъдат взети мерки спрямо тези причини, така че те да бъдат изчистени и страницата да отговаря на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Показано успешно от кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Тестване на кеша за назад/напред"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Провежда се тест"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Предстояща поддръжка"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Поддръжката на Chrome за тези причини предстои да бъде реализирана, т.е. те няма да попречат на страницата да отговаря на условията за кеша за назад/напред в бъдеща версия на Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "не е налице"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Неизвестно състояние"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL адрес:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Няма крайни точки за показване"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Запазване"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Повторно свързване на DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Натиснете Enter, за да потвърдите, или Escape, за да анулирате.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Използвайте Tab, за да превключвате командите. Въведете ?, за да видите наличните"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Въведете ?, за да видите наличните команди"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Отваряне на файл"

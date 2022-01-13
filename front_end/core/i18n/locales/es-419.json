@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Inhabilitar la memoria caché (mientras Herramientas para desarrolladores está abierto)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Inhabilitar el modo oscuro automático"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Inhabilitar JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Inhabilitar el formato de WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Inhabilitar"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "No capturar seguimientos de pila asíncronos"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "No emular el tipo de medio de CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "No emular el modo oscuro automático"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "No extender las líneas de la cuadrícula"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Habilitar formateadores personalizados"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Habilitar el modo oscuro automático"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Habilitar JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Habilitar el formato de WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Habilitar"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Extender las líneas de la cuadrícula"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emular una página enfocada"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emula una página enfocada."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Habilita el modo oscuro automático para la página inspeccionada."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Fuerza la función de medios de CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Mostrar el panel lateral de la consola"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "El esquema de color de preferencia del sistema cambió. Vuelve a cargar la página para aplicar este cambio a Herramientas para desarrolladores"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desanclar en una ventana separada"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Escribiendo archivo…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Política de Seguridad del Contenido - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "No se pudo descargar un ícono requerido del manifiesto"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descripción"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "trabajador"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Solo las páginas cargadas a través de una solicitud GET son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Solo se pueden almacenar en caché las páginas que tengan el código de estado de 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome detectó un intento de ejecución de JavaScript mientras se encontraba en caché."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Las páginas que solicitaron un AppBanner no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Las funciones experimentales inhabilitaron la memoria caché atrás/adelante. Para habilitarla localmente en este dispositivo, visita chrome://flags/#back-forward-cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "La línea de comandos inhabilitó la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Se inhabilitó la memoria caché atrás/adelante debido a que no hay memoria suficiente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "El delegado no admite la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Se inhabilitó la memoria caché atrás/adelante para la prerrenderización."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "La página no puede almacenarse en caché porque tiene una instancia de BroadcastChannel con objetos de escucha registrados."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Las páginas con el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Se borró la caché de forma intencional."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Se quitó la página de la memoria caché para que otra página pueda almacenarse en caché."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Las páginas que tienen complementos no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Las páginas que utilizan la API de FileChooser no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Las páginas que utilizan la API de File System Access no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Las páginas que utilizan un despachador de dispositivos de medios no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Cuando saliste, había un reproductor multimedia reproduciendo contenido."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Las páginas que utilizan la API de MediaSession y establecen un estado de reproducción no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Las páginas que utilizan la API de MediaSession y establecen controladores de acciones no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Las páginas que utilizan SecurityHandler no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Las páginas que utilizan la API de Serial no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Las páginas que utilizan la API de WebAuthetication no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Las páginas que utilizan la API de WebBluetooth no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Las páginas que utilizan la API de WebUSB no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Las páginas que utilizan un trabajador dedicado o un worklet no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Cuando saliste del documento, este no había terminado de cargarse."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Se activó un service worker mientras la página se encontraba almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Se quitó la página de la memoria caché para que otra página pueda almacenarse en caché."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Las páginas que otorgaron acceso a la transmisión multimedia no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Las páginas que utilizan portales no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Las páginas que utilizan IdleManager no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Las páginas que tienen una conexión IndexedDB abierta no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Se utilizaron API no aptas."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Las páginas en las que se insertó JavaScript mediante extensiones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Las páginas en las que se insertó una hoja de estilo mediante extensiones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Error interno"
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Las páginas que utilizan el bloqueo del teclado no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Cuando saliste de la página, esta no había terminado de cargarse."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Las páginas cuyo recurso principal tiene el encabezado cache-control:no-cache no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Las páginas cuyo recurso principal tiene el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Se canceló la navegación antes de que se pudiera restablecer la página de la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Se quitó la página de la memoria caché porque una conexión de red activa recibió demasiados datos. Chrome limita la cantidad de datos que puede recibir una página cuando esta se encuentra almacenada en caché."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Las páginas que tienen solicitudes fetch() o XHR en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Se quitó la página de la memoria caché atrás/adelante porque una solicitud de red activa requería un redireccionamiento."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Se quitó la página de la memoria caché porque hubo una conexión de red abierta durante mucho tiempo. Chrome limita el tiempo durante el cual una página puede recibir datos cuando está almacenada en caché."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Las páginas que no tienen un encabezado de respuesta válido no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "La navegación se llevó a cabo en un marco que no es el principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Las páginas con transacciones de base de datos indexadas en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Las páginas con una solicitud de red en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Las páginas con una solicitud de red fetch() en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Las páginas con una solicitud de red en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Las páginas con una solicitud de red XHR en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Las páginas que utilizan PaymentManager no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Las páginas que utilizan la función Pantalla en pantalla no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Las páginas que utilizan portales no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Las páginas que muestran la IU de impresión no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "La página se abrió mediante \"window.open()\" y otra pestaña incluye una referencia a este elemento, o bien la página abrió una ventana."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Falló el proceso de renderización de la página que se encuentra almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Se canceló el proceso de renderización de la página que se encuentra almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Las páginas que solicitaron permisos para capturar audio no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Las páginas que solicitaron permiso de acceso a sensores no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Las páginas que solicitaron permisos de recuperación o sincronización en segundo plano no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Las páginas que solicitaron permiso de acceso a MIDI no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Las páginas que solicitaron permiso para mostrar notificaciones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Las páginas que solicitaron acceso al almacenamiento no son aptas para la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Las páginas que solicitaron permisos para capturar video no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Solo se pueden almacenar en caché las páginas cuyo esquema de URL sea HTTP o HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Un service worker reclamó la página mientras se encontraba almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Un service worker intentó enviar una propiedadMessageEvent a la página almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Se canceló el registro de ServiceWorker mientras una página estaba almacenada en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Como un service worker activó la página, se la quitó de la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Se reinició Chrome y se borraron las entradas de la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Las páginas que utilizan SharedWorker no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Las páginas que utilizan SpeechRecognizer no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Las páginas que utilizan SpeechSynthesis no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Un iframe en la página inició una navegación que no se completó."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Las páginas cuyo subrecurso tiene el encabezado cache-control:no-cache no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Las páginas cuyo subrecurso tiene el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Caducó el tiempo máximo permitido en la memoria caché atrás/adelante para la página."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Se agotó el tiempo de espera para que la página se almacene en la memoria caché atrás/adelante (probablemente, debido a la ejecución prolongada de controladores para ocultar páginas)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "La página tiene un controlador de descargas en el marco principal."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "La página tiene un controlador de descargas en un marco secundario."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "El navegador cambió el encabezado de anulación del usuario-agente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Las páginas que permitieron la grabación de audio o video no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Las páginas que utilizan WebDatabase no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Las páginas que utilizan WebHID no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Las páginas que utilizan WebLocks no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Las páginas que utilizan WebNfc no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Las páginas que utilizan WebOTPService no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Las páginas con WebRTC no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Las páginas que utilizan WebShare no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Las páginas con WebSocket no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Las páginas con WebTransport no son aptas para el almacenamiento en la memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Las páginas que utilizan WebXR no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Memoria caché atrás/adelante"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "No permite una acción"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Estos motivos no admiten la acción del usuario: un factor sobre el que la página no tiene control impide el almacenamiento en caché."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Más información: aptitud de la Memoria caché atrás/adelante"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Marco principal"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "No se recuperó de la Memoria caché atrás/adelante: para activar la Memoria caché atrás/adelante, utiliza los botones atrás/adelante de Chrome o el botón de prueba que se encuentra a continuación para salir de la página y volver a ella de forma automática."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Permite una acción"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Estos motivos admiten la acción del usuario, es decir que pueden remediarse a fin de que la página sea apta para el almacenamiento en la Memoria caché atrás/adelante."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Se recuperó la página de la Memoria caché atrás/adelante correctamente."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Probar Memoria caché atrás/adelante"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Prueba en ejecución"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Compatibilidad pendiente"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "La compatibilidad de Chrome con los motivos mencionados está pendiente; es decir que esos motivos no impedirán que la página sea apta para el almacenamiento en la Memoria caché atrás/adelante en una futura versión de Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "no disponible"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Estado desconocido"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Recuperación del fondo"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Detener la grabación de eventos"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Solo las páginas cargadas a través de una solicitud GET son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Solo se pueden almacenar en caché las páginas que tengan el código de estado de 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome detectó un intento de ejecución de JavaScript mientras se encontraba en caché."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Las páginas que solicitaron un AppBanner no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Las funciones experimentales inhabilitaron la memoria caché atrás/adelante. Para habilitarla localmente en este dispositivo, visita chrome://flags/#back-forward-cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "La línea de comandos inhabilitó la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Se inhabilitó la memoria caché atrás/adelante debido a que no hay memoria suficiente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "El delegado no admite la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Se inhabilitó la memoria caché atrás/adelante para la prerrenderización."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "La página no puede almacenarse en caché porque tiene una instancia de BroadcastChannel con objetos de escucha registrados."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Las páginas con el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Se borró la caché de forma intencional."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Se quitó la página de la memoria caché para que otra página pueda almacenarse en caché."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Las páginas que tienen complementos no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Las páginas que utilizan la API de FileChooser no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Las páginas que utilizan la API de File System Access no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Las páginas que utilizan un despachador de dispositivos de medios no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Cuando saliste, había un reproductor multimedia reproduciendo contenido."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Las páginas que utilizan la API de MediaSession y establecen un estado de reproducción no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Las páginas que utilizan la API de MediaSession y establecen controladores de acciones no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Las páginas que utilizan SecurityHandler no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Las páginas que utilizan la API de Serial no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Las páginas que utilizan la API de WebAuthetication no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Las páginas que utilizan la API de WebBluetooth no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Las páginas que utilizan la API de WebUSB no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Las páginas que utilizan un trabajador dedicado o un worklet no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Cuando saliste del documento, este no había terminado de cargarse."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Se activó un service worker mientras la página se encontraba almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Se quitó la página de la memoria caché para que otra página pueda almacenarse en caché."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Las páginas que otorgaron acceso a la transmisión multimedia no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Las páginas que utilizan portales no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Las páginas que utilizan IdleManager no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Las páginas que tienen una conexión IndexedDB abierta no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Se utilizaron API no aptas."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Las páginas en las que se insertó JavaScript mediante extensiones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Las páginas en las que se insertó una hoja de estilo mediante extensiones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Error interno"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Las páginas que utilizan el bloqueo del teclado no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Cuando saliste de la página, esta no había terminado de cargarse."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Las páginas cuyo recurso principal tiene el encabezado cache-control:no-cache no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Las páginas cuyo recurso principal tiene el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Se canceló la navegación antes de que se pudiera restablecer la página de la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Se quitó la página de la memoria caché porque una conexión de red activa recibió demasiados datos. Chrome limita la cantidad de datos que puede recibir una página cuando esta se encuentra almacenada en caché."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Las páginas que tienen solicitudes fetch() o XHR en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Se quitó la página de la memoria caché atrás/adelante porque una solicitud de red activa requería un redireccionamiento."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Se quitó la página de la memoria caché porque hubo una conexión de red abierta durante mucho tiempo. Chrome limita el tiempo durante el cual una página puede recibir datos cuando está almacenada en caché."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Las páginas que no tienen un encabezado de respuesta válido no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "La navegación se llevó a cabo en un marco que no es el principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Las páginas con transacciones de base de datos indexadas en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Las páginas con una solicitud de red en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Las páginas con una solicitud de red fetch() en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Las páginas con una solicitud de red en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Las páginas con una solicitud de red XHR en curso no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Las páginas que utilizan PaymentManager no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Las páginas que utilizan la función Pantalla en pantalla no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Las páginas que utilizan portales no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Las páginas que muestran la IU de impresión no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "La página se abrió mediante \"window.open()\" y otra pestaña incluye una referencia a este elemento, o bien la página abrió una ventana."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Falló el proceso de renderización de la página que se encuentra almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Se canceló el proceso de renderización de la página que se encuentra almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Las páginas que solicitaron permisos para capturar audio no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Las páginas que solicitaron permiso de acceso a sensores no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Las páginas que solicitaron permisos de recuperación o sincronización en segundo plano no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Las páginas que solicitaron permiso de acceso a MIDI no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Las páginas que solicitaron permiso para mostrar notificaciones no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Las páginas que solicitaron acceso al almacenamiento no son aptas para la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Las páginas que solicitaron permisos para capturar video no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Solo se pueden almacenar en caché las páginas cuyo esquema de URL sea HTTP o HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Un service worker reclamó la página mientras se encontraba almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Un service worker intentó enviar una propiedadMessageEvent a la página almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Se canceló el registro de ServiceWorker mientras una página estaba almacenada en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Como un service worker activó la página, se la quitó de la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Se reinició Chrome y se borraron las entradas de la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Las páginas que utilizan SharedWorker no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Las páginas que utilizan SpeechRecognizer no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Las páginas que utilizan SpeechSynthesis no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Un iframe en la página inició una navegación que no se completó."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Las páginas cuyo subrecurso tiene el encabezado cache-control:no-cache no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Las páginas cuyo subrecurso tiene el encabezado cache-control:no-store no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Caducó el tiempo máximo permitido en la memoria caché atrás/adelante para la página."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Se agotó el tiempo de espera para que la página se almacene en la memoria caché atrás/adelante (probablemente, debido a la ejecución prolongada de controladores para ocultar páginas)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "La página tiene un controlador de descargas en el marco principal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "La página tiene un controlador de descargas en un marco secundario."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "El navegador cambió el encabezado de anulación del usuario-agente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Las páginas que permitieron la grabación de audio o video no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Las páginas que utilizan WebDatabase no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Las páginas que utilizan WebHID no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Las páginas que utilizan WebLocks no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Las páginas que utilizan WebNfc no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Las páginas que utilizan WebOTPService no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Las páginas con WebRTC no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Las páginas que utilizan WebShare no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Las páginas con WebSocket no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Las páginas con WebTransport no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Las páginas que utilizan WebXR no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Memoria caché atrás/adelante"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "No permite una acción"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Estos motivos no admiten la acción del usuario: un factor sobre el que la página no tiene control impide el almacenamiento en caché."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Más información: aptitud de la Memoria caché atrás/adelante"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Marco principal"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "No se recuperó de la Memoria caché atrás/adelante: para activar la Memoria caché atrás/adelante, utiliza los botones atrás/adelante de Chrome o el botón de prueba que se encuentra a continuación para salir de la página y volver a ella de forma automática."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Permite una acción"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Estos motivos admiten la acción del usuario, es decir que pueden remediarse a fin de que la página sea apta para el almacenamiento en la Memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Se recuperó la página de la Memoria caché atrás/adelante correctamente."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Probar Memoria caché atrás/adelante"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Prueba en ejecución"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Compatibilidad pendiente"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "La compatibilidad de Chrome con los motivos mencionados está pendiente; es decir que esos motivos no impedirán que la página sea apta para el almacenamiento en la Memoria caché atrás/adelante en una futura versión de Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "no disponible"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Estado desconocido"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No hay extremos para mostrar"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Guardar"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Volver a conectar las DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Presiona Intro para confirmar o Escape para cancelar)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Usa la tecla Tab para cambiar de comandos. Escribe \"?\" para ver los comandos disponibles"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Escribe \"?\" para ver los comandos disponibles"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Abrir archivo"

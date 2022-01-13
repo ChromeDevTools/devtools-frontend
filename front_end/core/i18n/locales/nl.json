@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Cachegeheugen uitzetten (terwijl DevTools is geopend)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Automatische donkere modus uitzetten"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript uitzetten"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP-indeling uitzetten"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Uitzetten"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Geen asynchrone stacktraces opnemen"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Mediatype voor css niet emuleren"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Automatische donkere modus niet emuleren"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Rasterlijnen niet uitbreiden"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aangepaste indelingen aanzetten"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Automatische donkere modus aanzetten"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript aanzetten"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-indeling aanzetten"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Aanzetten"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Uitgebreide rasterlijnen"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Pagina met focus emuleren"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuleert een pagina met focus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Hiermee zet je de automatische donkere modus aan voor de geïnspecteerde pagina."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Dwingt de mediafunctie color-gamut voor css af"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Lade van console bekijken"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Het voorkeurskleurenschema van het systeem is gewijzigd Laad DevTools opnieuw om deze wijziging toe te passen."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Vastzetten ongedaan maken in een afzonderlijk venster"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Bestand schrijven…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy: eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Kan een vereist icoon niet downloaden uit het manifest"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beschrijving"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Alleen pagina's die worden geladen via een GET-verzoek, komen in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Alleen pagina's met een statuscode 2XX kunnen in het cachegeheugen worden opgeslagen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome heeft een poging waargenomen om JavaScript uit te voeren in het cachegeheugen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Back-Forward Cache is uitgezet door de opdrachtregel."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Back-Forward Cache is uitgezet vanwege onvoldoende geheugen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Back-Forward Cache wordt niet ondersteund door de gemachtigde."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Back-Forward Cache is uitgezet voor prerenderer."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "De pagina kan niet worden opgeslagen in het cachegeheugen omdat deze een BroadcastChannel-instantie met geregistreerde listeners bevat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Pagina's met de header cache-control:no-store kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Het cachegeheugen is opzettelijk gewist."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Pagina's met plug-ins komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Pagina's die de FileChooser API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Pagina's die de File System Access API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Pagina's die Media Device Dispatcher gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Een mediaspeler speelde tijdens het sluiten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Pagina's die de MediaSession API gebruiken en een afspeelstatus instellen, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Pagina's die de MediaSession API gebruiken en action-handlers instellen, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Pagina's die SecurityHandler gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Pagina's die de Serial API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Pagina's die de WebAuthetication API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Pagina's die de WebBluetooth API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Pagina's die de WebUSB API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Pagina's die een specifieke worker of worklet gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Het document was niet helemaal geladen voordat het werd gesloten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Er is een service worker geactiveerd terwijl de pagina zich in Back-Forward Cache bevond."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Pagina's die toegang tot mediastreams hebben gegeven, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Pagina's die IdleManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Pagina's met een open IndexedDB-verbinding komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Er zijn niet in aanmerking komende API's gebruikt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Pagina's waarin JavaScript is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Pagina's waarin StyleSheet is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Interne fout."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Pagina's die toetsenbordvergrendeling gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "De pagina was niet helemaal geladen voordat die werd gesloten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Pagina's waarvan de hoofdbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Pagina's waarvan de hoofdbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigatie is geannuleerd voordat de pagina kon worden hersteld vanuit Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "De pagina is verwijderd uit het cachegeheugen omdat een actieve netwerkverbinding te veel gegevens heeft ontvangen. Chrome beperkt de hoeveelheid gegevens die een pagina kan ontvangen als deze in het cachegeheugen is opgeslagen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Pagina's met inflight fetch() of XHR komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "De pagina is verwijderd uit Back-Forward Cache omdat bij een actief netwerkverzoek een omleiding betrokken was."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "De pagina is verwijderd uit het cachegeheugen omdat een netwerkverbinding te lang open was. Chrome beperkt hoelang een pagina gegevens kan ontvangen als deze in het cachegeheugen is opgeslagen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Pagina's die geen geldige reactiekop hebben, kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigatie vond plaats in een ander frame dan het hoofdframe."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Pagina's met actieve geïndexeerde DB-transacties komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Pagina's met een netwerkverzoek voor ophalen in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Pagina's met een XHR-netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Pagina's die PaymentManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Pagina's die scherm-in-scherm gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Pagina's die UI voor afdrukken tonen, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "De pagina is geopend met window.open() en een ander tabblad bevat een verwijzing ernaar, of de pagina heeft een venster geopend."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is gecrasht."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is beëindigd."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Pagina's die rechten voor audio-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Pagina's die sensorrechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Pagina's die rechten voor synchronisatie of ophalen op de achtergrond hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Pagina's die MIDI-rechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Pagina's die rechten voor meldingen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Pagina's die opslagtoegang hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Pagina's die rechten voor video-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Alleen pagina's met HTTP/HTTPS als URL-schema kunnen in het cachegeheugen worden opgeslagen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "De pagina is geclaimd door een service worker terwijl de pagina zich in Back-Forward Cache bevindt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Een service worker heeft geprobeerd de pagina in Back-Forward Cache een MessageEvent te sturen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "De registratie van ServiceWorker is ongedaan gemaakt terwijl een pagina zich in Back-Forward Cache bevond."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "De pagina is verwijderd uit Back-Forward Cache vanwege de activering van een service worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome is opnieuw opgestart en heeft de Back-Forward Cache-items gewist."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Pagina's die SharedWorker gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Pagina's die SpeechRecognizer gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Pagina's die SpeechSynthesis gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Een iframe op de pagina heeft navigatie gestart die niet is afgerond."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Pagina's waarvan de subbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Pagina's waarvan de subbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "De pagina heeft de maximale tijd in Back-Forward Cache overschreden en is verlopen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Er is een time-out voor de pagina opgetreden tijdens het opslaan in Back-Forward Cache (waarschijnlijk vanwege langdurige pagehide-handlers)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "De pagina heeft een unload-handler in het hoofdframe."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "De pagina heeft een unload-handler in een subframe."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Browser heeft de override-header voor user-agents gewijzigd."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Pagina's die toegang hebben gegeven om video of audio op te nemen, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Pagina's die WebDatabase gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Pagina's die WebHID gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Pagina's die WebLocks gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Pagina's die WebNfc gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Pagina's die WebOTPService gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Pagina's met WebRTC kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Pagina's die WebShare gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Pagina's met WebSocket kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Pagina's met WebTransport kunnen niet worden opgeslagen in Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Pagina's die WebXR gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Back-Forward Cache"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Niet actiegericht"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Er kan geen actie worden ondernomen voor deze redenen, wat betekent dat opslaan in het cachegeheugen is voorkomen door iets buiten de directe controle van de pagina."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Meer informatie: geschiktheid voor Back-Forward Cache"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Mainframe"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Niet geleverd vanuit Back-Forward Cache. Als je de Back-Forward Cache wilt activeren, gebruik je de knoppen voor terug en vooruit in Chrome of gebruik je de testknop hieronder om automatisch weg en terug te navigeren."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actiegericht"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Er kan actie worden ondernomen voor deze redenen, wat betekent dat ze kunnen worden opgelost om de pagina in aanmerking te laten komen voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Geleverd vanuit Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Back-Forward Cache testen"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Test wordt uitgevoerd"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Support in behandeling"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome-support voor deze redenen is in behandeling, wat betekent dat ze niet voorkomen dat de pagina in een toekomstige versie van Chrome in aanmerking komt voor Back-Forward Cache."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "niet beschikbaar"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Onbekende status"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ophalen op de achtergrond"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stoppen met gebeurtenissen registreren"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Alleen pagina's die worden geladen via een GET-verzoek, komen in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Alleen pagina's met een statuscode 2XX kunnen in het cachegeheugen worden opgeslagen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome heeft een poging waargenomen om JavaScript uit te voeren in het cachegeheugen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Back-Forward Cache is uitgezet door de opdrachtregel."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Back-Forward Cache is uitgezet vanwege onvoldoende geheugen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Back-Forward Cache wordt niet ondersteund door de gemachtigde."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Back-Forward Cache is uitgezet voor prerenderer."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "De pagina kan niet worden opgeslagen in het cachegeheugen omdat deze een BroadcastChannel-instantie met geregistreerde listeners bevat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Pagina's met de header cache-control:no-store kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Het cachegeheugen is opzettelijk gewist."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Pagina's met plug-ins komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Pagina's die de FileChooser API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Pagina's die de File System Access API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Pagina's die Media Device Dispatcher gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Een mediaspeler speelde tijdens het sluiten."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Pagina's die de MediaSession API gebruiken en een afspeelstatus instellen, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Pagina's die de MediaSession API gebruiken en action-handlers instellen, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Pagina's die SecurityHandler gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Pagina's die de Serial API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Pagina's die de WebAuthetication API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Pagina's die de WebBluetooth API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Pagina's die de WebUSB API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Pagina's die een specifieke worker of worklet gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Het document was niet helemaal geladen voordat het werd gesloten."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Er is een service worker geactiveerd terwijl de pagina zich in Back-Forward Cache bevond."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Pagina's die toegang tot mediastreams hebben gegeven, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Pagina's die IdleManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Pagina's met een open IndexedDB-verbinding komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Er zijn niet in aanmerking komende API's gebruikt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Pagina's waarin JavaScript is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Pagina's waarin StyleSheet is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interne fout."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Pagina's die toetsenbordvergrendeling gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "De pagina was niet helemaal geladen voordat die werd gesloten."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Pagina's waarvan de hoofdbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Pagina's waarvan de hoofdbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigatie is geannuleerd voordat de pagina kon worden hersteld vanuit Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen omdat een actieve netwerkverbinding te veel gegevens heeft ontvangen. Chrome beperkt de hoeveelheid gegevens die een pagina kan ontvangen als deze in het cachegeheugen is opgeslagen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Pagina's met inflight fetch() of XHR komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "De pagina is verwijderd uit Back-Forward Cache omdat bij een actief netwerkverzoek een omleiding betrokken was."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "De pagina is verwijderd uit het cachegeheugen omdat een netwerkverbinding te lang open was. Chrome beperkt hoelang een pagina gegevens kan ontvangen als deze in het cachegeheugen is opgeslagen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Pagina's die geen geldige reactiekop hebben, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigatie vond plaats in een ander frame dan het hoofdframe."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Pagina's met actieve geïndexeerde DB-transacties komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Pagina's met een netwerkverzoek voor ophalen in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Pagina's met een XHR-netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Pagina's die PaymentManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Pagina's die scherm-in-scherm gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Pagina's die UI voor afdrukken tonen, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "De pagina is geopend met window.open() en een ander tabblad bevat een verwijzing ernaar, of de pagina heeft een venster geopend."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is gecrasht."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is beëindigd."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Pagina's die rechten voor audio-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Pagina's die sensorrechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Pagina's die rechten voor synchronisatie of ophalen op de achtergrond hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Pagina's die MIDI-rechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Pagina's die rechten voor meldingen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Pagina's die opslagtoegang hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Pagina's die rechten voor video-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Alleen pagina's met HTTP/HTTPS als URL-schema kunnen in het cachegeheugen worden opgeslagen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "De pagina is geclaimd door een service worker terwijl de pagina zich in Back-Forward Cache bevindt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Een service worker heeft geprobeerd de pagina in Back-Forward Cache een MessageEvent te sturen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "De registratie van ServiceWorker is ongedaan gemaakt terwijl een pagina zich in Back-Forward Cache bevond."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "De pagina is verwijderd uit Back-Forward Cache vanwege de activering van een service worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome is opnieuw opgestart en heeft de Back-Forward Cache-items gewist."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Pagina's die SharedWorker gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Pagina's die SpeechRecognizer gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Pagina's die SpeechSynthesis gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Een iframe op de pagina heeft navigatie gestart die niet is afgerond."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Pagina's waarvan de subbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Pagina's waarvan de subbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "De pagina heeft de maximale tijd in Back-Forward Cache overschreden en is verlopen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Er is een time-out voor de pagina opgetreden tijdens het opslaan in Back-Forward Cache (waarschijnlijk vanwege langdurige pagehide-handlers)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "De pagina heeft een unload-handler in het hoofdframe."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "De pagina heeft een unload-handler in een subframe."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Browser heeft de override-header voor user-agents gewijzigd."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Pagina's die toegang hebben gegeven om video of audio op te nemen, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Pagina's die WebDatabase gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Pagina's die WebHID gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Pagina's die WebLocks gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Pagina's die WebNfc gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Pagina's die WebOTPService gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Pagina's met WebRTC kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Pagina's die WebShare gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Pagina's met WebSocket kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Pagina's met WebTransport kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Pagina's die WebXR gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Back-Forward Cache"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Niet actiegericht"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Er kan geen actie worden ondernomen voor deze redenen, wat betekent dat opslaan in het cachegeheugen is voorkomen door iets buiten de directe controle van de pagina."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Meer informatie: geschiktheid voor Back-Forward Cache"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Mainframe"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Niet geleverd vanuit Back-Forward Cache. Als je de Back-Forward Cache wilt activeren, gebruik je de knoppen voor terug en vooruit in Chrome of gebruik je de testknop hieronder om automatisch weg en terug te navigeren."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Actiegericht"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Er kan actie worden ondernomen voor deze redenen, wat betekent dat ze kunnen worden opgelost om de pagina in aanmerking te laten komen voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Geleverd vanuit Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Back-Forward Cache testen"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Test wordt uitgevoerd"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Support in behandeling"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chrome-support voor deze redenen is in behandeling, wat betekent dat ze niet voorkomen dat de pagina in een toekomstige versie van Chrome in aanmerking komt voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "niet beschikbaar"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Onbekende status"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Geen eindpunten om te laten zien"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Opslaan"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Opnieuw verbinding maken met DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Druk op Enter om te bevestigen of op Escape om te annuleren.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Gebruik Tab om tussen opdrachten te schakelen. Typ '?' om beschikbare opdrachten te bekijken."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Typ '?' om beschikbare opdrachten te bekijken"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Bestand openen"

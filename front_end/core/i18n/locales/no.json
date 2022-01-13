@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Slå av bufferen (mens Utviklerverktøy er åpne)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Deaktiver automatisk mørk modus"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiver JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Deaktiver WebP-formatet"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Deaktiver"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Ikke ta opp asynkroniserte stabelsporinger"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ikke emuler CSS-mediatype"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Ikke emuler automatisk mørk modus"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ikke utvid rutenettlinjer"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aktiver tilpassede formateringer"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Aktiver automatisk mørk modus"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Slå på JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivér WebP-formatet"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Aktivér"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Utvid linjer for rutenett"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emuler en fokusert side"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulerer en fokusert side."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Aktiverer automatisk mørk modus for siden som inspiseres."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Tvinger CSS color-gamut-mediafunksjon"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Vis konsollskuff"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Systemforetrukket fargevalg har endret seg. Last inn på nytt for å bruke denne endringen for utviklerverktøy."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Løsne i separat vindu"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Skriver fil …"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Sikkerhetsretningslinjer for innhold – Eval."
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Kunne ikke laste ned et obligatorisk ikon fra manifestet"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beskrivelse"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "arbeider"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Kun sider som lastes inn via GET-forespørsler, kan lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Kun sider med statuskode 2XX kan bufres."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome oppdaget et forsøk på kjøring av JavaScript mens siden var i bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert via kommandolinjen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av utilstrekkelig minne."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Frem-og-tilbake-bufferen støttes ikke av den innbyggende nettleseren."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert for forhåndsgjengivelse."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Siden kan ikke bufres, ettersom den har en BroadcastChannel-forekomst med registrerte lyttere."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Sider med hodet «cache-control:no-store» kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Bufferen ble tømt med vilje."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Sider som inneholder programtillegg, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Sider som bruker FileChooser-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Sider som bruker File System Access-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Sider som bruker Media Device Dispatcher, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "En mediespiller holdt på å spille av da nettleseren navigerte bort."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Sider som bruker MediaSession-API-et og angir en avspillingsstatus, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Sider som bruker MediaSession-API-et og angir handlingsbehandlere, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Sider som bruker SecurityHandler, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Sider som bruker Serial-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Sider som bruker WebAuthentication-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Sider som bruker WebBluetooth-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Sider som bruker WebUSB-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Sider som bruker en dedikert Service Worker eller worklet, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Dokumentet ble ikke ferdig innlastet før nettleseren navigerte bort."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "En Service Worker ble aktivert mens siden var i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Sider som har gitt mediestrømtilgang, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Sider som bruker IdleManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Sider med åpne IndexedDB-tilkoblinger kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Det ble brukt API-er som ikke er kvalifisert."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Sider som utvidelser har injisert JavaScript i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Sider som utvidelser har injisert StyleSheet i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Intern feil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Sider som bruker tastaturlås, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Siden ble ikke ferdig innlastet før nettleseren navigerte bort."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Sider som har «cache-control:no-cache» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Sider som har «cache-control:no-store» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigeringen ble avbrutt før siden kunne gjenopprettes fra frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Siden ble fjernet fra bufferen fordi en aktiv nettverkstilkobling mottok for mye data. Chrome begrenser hvor mye data sider kan motta mens de er bufret."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Sider med pågående fetch()- eller XHR-forespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen fordi en aktiv nettverksforespørsel medførte en viderekobling."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Siden ble fjernet fra bufferen fordi en nettverkstilkobling var åpen for lenge. Chrome begrenser hvor lenge sider kan motta data mens de er bufret."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Sider som ikke har noe gyldig svarhode, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigeringen skjedde i en annen ramme enn hovedrammen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Sider med pågående IndexedDB-transaksjoner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Sider med pågående fetch()-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Sider med pågående XHR-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Sider som bruker PaymentManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Sider som bruker bilde-i-bilde, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Sider som viser UI for utskrift, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Siden ble åpnet med 'window.open()', og en annen fane har en henvisning til den, eller siden åpnet et vindu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen krasjet."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen ble avsluttet."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Sider som har bedt om tillatelser til lydopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Sider som har bedt om sensortillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Sider som har bedt om bakgrunnssynkronisering eller fetch()-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Sider som har bedt om MIDI-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Sider som har bedt om varseltillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Sider som har bedt om tilgang til lagring, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Sider som har bedt om tillatelser til videoopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Kun sider med HTTP eller HTTPS som nettadresseprotokoll kan bufres."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Siden ble gjort krav på av en Service Worker mens den var i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "En Service Worker prøvde å sende en MessageEvent til siden i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ServiceWorker ble avregistrert mens en side var i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen på grunn av en Service Worker-aktivering."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome ble startet på nytt og slettet oppføringene i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Sider som bruker SharedWorker, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Sider som bruker SpeechRecognizer, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Sider som bruker SpeechSynthesis, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Et iframe-element på siden startet en navigering som ikke ble fullført."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Sider som har «cache-control:no-cache» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Sider som har «cache-control:no-store» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Siden overskred den maksimale tiden i frem-og-tilbake-bufferen og har utløpt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Siden fikk tidsavbrudd under lagring i frem-og-tilbake-bufferen (sannsynligvis på grunn av pagehide-behandlere med lang kjøretid)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Siden har en utlastingsbehandler i hovedrammen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Siden har en utlastingsbehandler i en underramme."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Nettleseren har endret hodet for overstyring av brukeragenten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Sider som har gitt tilgang til opptak av video eller lyd, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Sider som bruker WebDatabase, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Sider som bruker WebHID, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Sider som bruker WebLocks, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Sider som bruker WebNfc, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Sider som bruker WebOTPService, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Sider med WebRTC kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Sider som bruker WebShare, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Sider med WebSocket kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Sider med WebTransport kan ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Sider som bruker WebXR, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "frem-/tilbake-buffer"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Kan ikke utbedres"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Du kan ikke utføre handlinger for å løse disse problemene, ettersom bufringen ble forhindret av noe som siden ikke har direkte kontroll over."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Finn ut mer: kvalifisering for frem-og-tilbake-bufferen"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Hovedramme"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Ikke hentet fra frem-og-tilbake-bufferen: For å utløse frem-og-tilbake-bufferen, bruk frem- og tilbake-knappene i Chrome, eller bruk testknappen under for å navigere bort og tilbake automatisk."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Kan utbedres"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Du kan utføre handlinger for å løse disse problemene og gjøre det mulig å lagre siden i frem-/tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Henting fra frem-og-tilbake-bufferen var vellykket."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Test frem-og-tilbake-bufferen"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Testen kjøres"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "I påvente av støtte"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome støtter ikke disse blokkeringsårsakene ennå. Det betyr at i en fremtidig versjon av Chrome kommer de ikke til å forhindre siden fra å lagres i frem-/tilbake-bufferen."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "utilgjengelig"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Ukjent status"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "Nettadresse:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Bakgrunnshenting"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stopp opptak av hendelser"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Kun sider som lastes inn via GET-forespørsler, kan lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Kun sider med statuskode 2XX kan bufres."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome oppdaget et forsøk på kjøring av JavaScript mens siden var i bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert via kommandolinjen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av utilstrekkelig minne."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Frem-og-tilbake-bufferen støttes ikke av den innbyggende nettleseren."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert for forhåndsgjengivelse."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Siden kan ikke bufres, ettersom den har en BroadcastChannel-forekomst med registrerte lyttere."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Sider med hodet «cache-control:no-store» kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Bufferen ble tømt med vilje."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Sider som inneholder programtillegg, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Sider som bruker FileChooser-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Sider som bruker File System Access-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Sider som bruker Media Device Dispatcher, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "En mediespiller holdt på å spille av da nettleseren navigerte bort."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Sider som bruker MediaSession-API-et og angir en avspillingsstatus, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Sider som bruker MediaSession-API-et og angir handlingsbehandlere, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Sider som bruker SecurityHandler, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Sider som bruker Serial-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Sider som bruker WebAuthentication-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Sider som bruker WebBluetooth-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Sider som bruker WebUSB-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Sider som bruker en dedikert Service Worker eller worklet, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumentet ble ikke ferdig innlastet før nettleseren navigerte bort."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "En Service Worker ble aktivert mens siden var i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Sider som har gitt mediestrømtilgang, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Sider som bruker IdleManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Sider med åpne IndexedDB-tilkoblinger kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Det ble brukt API-er som ikke er kvalifisert."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Sider som utvidelser har injisert JavaScript i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Sider som utvidelser har injisert StyleSheet i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Intern feil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Sider som bruker tastaturlås, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Siden ble ikke ferdig innlastet før nettleseren navigerte bort."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Sider som har «cache-control:no-cache» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Sider som har «cache-control:no-store» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigeringen ble avbrutt før siden kunne gjenopprettes fra frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Siden ble fjernet fra bufferen fordi en aktiv nettverkstilkobling mottok for mye data. Chrome begrenser hvor mye data sider kan motta mens de er bufret."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Sider med pågående fetch()- eller XHR-forespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen fordi en aktiv nettverksforespørsel medførte en viderekobling."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Siden ble fjernet fra bufferen fordi en nettverkstilkobling var åpen for lenge. Chrome begrenser hvor lenge sider kan motta data mens de er bufret."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Sider som ikke har noe gyldig svarhode, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigeringen skjedde i en annen ramme enn hovedrammen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Sider med pågående IndexedDB-transaksjoner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Sider med pågående fetch()-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Sider med pågående XHR-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Sider som bruker PaymentManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Sider som bruker bilde-i-bilde, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Sider som viser UI for utskrift, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Siden ble åpnet med 'window.open()', og en annen fane har en henvisning til den, eller siden åpnet et vindu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen krasjet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen ble avsluttet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Sider som har bedt om tillatelser til lydopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Sider som har bedt om sensortillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Sider som har bedt om bakgrunnssynkronisering eller fetch()-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Sider som har bedt om MIDI-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Sider som har bedt om varseltillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Sider som har bedt om tilgang til lagring, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Sider som har bedt om tillatelser til videoopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Kun sider med HTTP eller HTTPS som nettadresseprotokoll kan bufres."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Siden ble gjort krav på av en Service Worker mens den var i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "En Service Worker prøvde å sende en MessageEvent til siden i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker ble avregistrert mens en side var i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen på grunn av en Service Worker-aktivering."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ble startet på nytt og slettet oppføringene i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Sider som bruker SharedWorker, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Sider som bruker SpeechRecognizer, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Sider som bruker SpeechSynthesis, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Et iframe-element på siden startet en navigering som ikke ble fullført."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Sider som har «cache-control:no-cache» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Sider som har «cache-control:no-store» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Siden overskred den maksimale tiden i frem-og-tilbake-bufferen og har utløpt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Siden fikk tidsavbrudd under lagring i frem-og-tilbake-bufferen (sannsynligvis på grunn av pagehide-behandlere med lang kjøretid)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Siden har en utlastingsbehandler i hovedrammen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Siden har en utlastingsbehandler i en underramme."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Nettleseren har endret hodet for overstyring av brukeragenten."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Sider som har gitt tilgang til opptak av video eller lyd, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Sider som bruker WebDatabase, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Sider som bruker WebHID, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Sider som bruker WebLocks, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Sider som bruker WebNfc, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Sider som bruker WebOTPService, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Sider med WebRTC kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Sider som bruker WebShare, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Sider med WebSocket kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Sider med WebTransport kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Sider som bruker WebXR, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "frem-/tilbake-buffer"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Kan ikke utbedres"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Du kan ikke utføre handlinger for å løse disse problemene, ettersom bufringen ble forhindret av noe som siden ikke har direkte kontroll over."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Finn ut mer: kvalifisering for frem-og-tilbake-bufferen"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Hovedramme"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Ikke hentet fra frem-og-tilbake-bufferen: For å utløse frem-og-tilbake-bufferen, bruk frem- og tilbake-knappene i Chrome, eller bruk testknappen under for å navigere bort og tilbake automatisk."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Kan utbedres"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Du kan utføre handlinger for å løse disse problemene og gjøre det mulig å lagre siden i frem-/tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Henting fra frem-og-tilbake-bufferen var vellykket."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Test frem-og-tilbake-bufferen"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Testen kjøres"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "I påvente av støtte"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chrome støtter ikke disse blokkeringsårsakene ennå. Det betyr at i en fremtidig versjon av Chrome kommer de ikke til å forhindre siden fra å lagres i frem-/tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "utilgjengelig"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Ukjent status"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "Nettadresse:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Ingen endepunkter å vise"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Lagre"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Koble til DevTools på nytt"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Trykk på «Enter» for å bekrefte eller «Escape» for å avbryte.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Bruk Tab for å bytte kommando. Skriv inn «?» for å se tilgjengelige kommandoer"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Skriv inn «?» for å se tilgjengelige kommandoer"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Åpne fil"

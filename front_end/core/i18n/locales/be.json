@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Адключыць кэш (пакуль DevTools адкрыты)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Адключыць аўтаматычны цёмны рэжым"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Адключыць JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Адключыць фармат WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Адключыць"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Не захопліваць асінхронныя трасіроўкі стэка"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Не эмуляваць тып мультымедыя CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Не эмуляваць аўтаматычны цёмны рэжым"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Не падаўжаць лініі сеткі"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Уключыць свае ўласныя сродкі фармаціравання"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Уключыць аўтаматычны цёмны рэжым"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Уключыць JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Уключыць фармат WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Уключыць"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Пашырыць лініі сеткі"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Эмуляваць фокус на старонцы"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Эмулюе фокус на старонцы."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Уключае аўтаматычны цёмны рэжым для старонкі, якая правяраецца"
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Прымусова задае медыяфункцыю CSS color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Паказаць высоўнае меню кансолі"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Колеравая схема, якая была зададзена ў сістэме як прыярытэтная, зменена. Каб прымяніць гэта змяненне да набору інструментаў DevTools, перазагрузіце яго."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Адмацаваць у асобнае акно"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Ідзе запіс файла…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Палітыка бяспекі змесціва – Выкананне"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Не ўдалося спампаваць неабходны значок з файла маніфеста"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Апісанне"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "працэс worker"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Толькі старонкі, загружаныя праз запыт GET, падыходзяць для кэша пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Кэшавацца могуць толькі старонкі з кодам стану 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome выявіў спробу выканання JavaScript для старонкі ў кэшы."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Старонкі, якія адправілі запыт на AppBanner, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Кэш пераходу назад і наперад адключаны эксперыментальнымі параметрамі. Каб уключыць яго на гэтай прыладзе, наведайце старонку chrome://flags/#back-forward-cache."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Кэш пераходу назад і наперад адключаны камандным радком."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Кэш пераходу назад і наперад адключаны з-за недастатковага аб'ёму памяці."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Кэш пераходу назад і наперад не падтрымліваецца прадстаўніком."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Кэш пераходу назад і наперад адключаны сродкам папярэдняй візуалізацыі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Старонку нельга дадаць у кэш, бо яна мае экзэмпляр BroadcastChannel з зарэгістраванымі слухачамі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Старонкі з загалоўкам cache-control:no-store не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Кэш быў наўмысна ачышчаны."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Старонка была выдалена з кэша, каб можна было ажыццявіць кэшаванне іншай старонкі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Старонкі, якія змяшчаюць убудовы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Старонкі, якія выкарыстоўваюць FileChooser API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Старонкі, якія выкарыстоўваюць File System Access API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Старонкі, якія выкарыстоўваюць дыспетчар носьбітаў даных, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Пры выхадзе са старонкі медыяпрайгравальнік быў актыўны."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Старонкі, якія выкарыстоўваюць MediaSession API і задалі стан прайгравання, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Старонкі, якія выкарыстоўваюць MediaSession API і задалі апрацоўшчыкаў дзеянняў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Старонкі, якія выкарыстоўваюць SecurityHandler, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Старонкі, якія выкарыстоўваюць Serial API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Старонкі, якія выкарыстоўваюць WebAuthetication API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Старонкі, якія выкарыстоўваюць WebBluetooth API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Старонкі, якія выкарыстоўваюць WebUSB API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Старонкі, якія выкарыстоўваюць вылучаны рабочы працэс або worklet, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Выхад з дакумента адбыўся да таго, як яго загрузка была завершана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Сцэнарый Service Worker быў запушчаны, калі старонка знаходзілася ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Старонка была выдалена з кэша, каб можна было ажыццявіць кэшаванне іншай старонкі."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Старонкі, якія далі доступ да перадачы медыязмесціва плынню, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Старонкі, якія выкарыстоўваюць парталы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Старонкі, якія выкарыстоўваюць IdleManager, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Старонкі з актыўным падключэннем IndexedDB не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Выкарыстоўваліся непрыдатныя API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Старонкі, у якія пашырэннямі былі ўстаўлены фрагменты JavaScript, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Старонкі, у якія пашырэннямі былі ўстаўлены фрагменты StyleSheet, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Унутраная памылка."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Старонкі, якія выкарыстоўваюць блакіроўку клавіятуры, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Выхад са старонкі адбыўся да таго, як яе загрузка была завершана."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Старонкі, рэсурсы якіх змяшчаюць cache-control:no-cache, не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Старонкі, рэсурсы якіх змяшчаюць cache-control:no-store, не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Пераход быў скасаваны да завяршэння аднаўлення старонкі з кэша пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Старонка была выдалена з кэша, бо бягучае падключэнне да сеткі атрымала зашмат даных. У Chrome дзейнічаюць абмежаванні на аб'ём даных, якія можа атрымліваць кэшаваная старонка."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Старонкі з актыўнымі запытамі fetch() або XHR не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Старонка была выдалена з кэша пераходу назад і наперад, бо актыўны сеткавы запыт патрабаваў перанакіравання."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Старонка была выдалена з кэша, бо падключэнне да сеткі было занадта доўгім. У Chrome дзейнічаюць абмежаванні адносна часу, на працягу якога кэшаваная старонка можа атрымліваць даныя."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Старонкі, якія не маюць сапраўднага загалоўка адказу, не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Пераход адбыўся не ў асноўным фрэйме, а ў іншым."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Старонкі з бягучымі індэксаванымі трансакцыямі DB не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Старонкі з актыўнымі запытамі сеткі не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Старонкі з актыўнымі запытамі сеткі fetch не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Старонкі з актыўнымі запытамі сеткі не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Старонкі з актыўнымі запытамі сеткі XHR не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Старонкі, якія выкарыстоўваюць PaymentManager, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Старонкі, якія выкарыстоўваюць функцыю \"Відарыс у відарысе\", не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Старонкі, якія выкарыстоўваюць парталы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Старонкі, якія паказваюць інтэрфейс друку, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Старонка адкрыта з дапамогай window.open(), а іншая ўкладка мае спасылку на яе, або старонка адкрыла акно."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Адбыўся збой працэсу візуалізацыі для старонкі ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Працэс візуалізацыі для старонкі ў кэшы пераходу назад і наперад спынены."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Старонкі, якія адправілі запыт на дазвол запісваць аўдыя, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Старонкі, якія адправілі запыт на доступ да датчыкаў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Старонкі, якія адправілі запыт на фонавую сінхранізацыю або на загрузку дазволаў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Старонкі, якія адправілі запыт на доступ да прылад MIDI, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Старонкі, якія адправілі запыт на доступ да апавяшчэнняў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Старонкі, якія адправілі запыт на доступ да сховішча, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Старонкі, якія адправілі запыт на дазвол здымаць відэа, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Кэшаваць можна толькі старонкі, чые схемы URL-адраса – HTTP або HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Сцэнарый Service Worker запатрабаваў гэту старонку, а яна знаходзіцца ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Сцэнарый Service Worker спрабаваў адправіць MessageEvent старонцы ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Рэгістрацыя ServiceWorker была скасавана, калі старонка была ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Старонка была выдалена з кэша пераходу назад і наперад у выніку актывацыі сцэнарыя Service Worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Адбыўся перазапуск Chrome. Запісы кэша пераходу назад і наперад выдалены."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Старонкі, якія выкарыстоўваюць SharedWorker, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Старонкі, якія выкарыстоўваюць SpeechRecognizer, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Старонкі, якія выкарыстоўваюць SpeechSynthesis, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Акно iframe на старонцы пачало пераход, які не быў завершаны."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Старонкі, субрэсурсы якіх змяшчаюць cache-control:no-cache, не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Старонкі, субрэсурсы якіх змяшчаюць cache-control:no-store, не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Максімальны час размяшчэння старонкі ў кэшы пераходу назад і наперад скончыўся, і яна была выдалена."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Час чакання дадавання старонкі ў кэш пераходу назад і наперад перавышаны (магчыма, з-за доўгай работы апрацоўшчыкаў хавання старонак)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Старонка змяшчае апрацоўшчык выгрузкі ў асноўным фрэйме."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Старонка змяшчае апрацоўшчык выгрузкі ў субфрэйме."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Браўзер змяніў загаловак перавызначэння агента карыстальніка."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Старонкі, якія далі доступ да запісу відэа або аўдыя, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Старонкі, якія выкарыстоўваюць WebDatabase, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Старонкі, якія выкарыстоўваюць WebHID, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Старонкі, якія выкарыстоўваюць WebLocks, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Старонкі, якія выкарыстоўваюць WebNfc, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Старонкі, якія выкарыстоўваюць WebOTPService, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Старонкі з WebRTC не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Старонкі, якія выкарыстоўваюць WebShare, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Старонкі з WebSocket не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Старонкі з WebTransport не могуць быць захаваны ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Старонкі, якія выкарыстоўваюць WebXR, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Кэш пераходу назад і наперад"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Дзеянні немагчымыя"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Вы не можаце ажыццявіць патрэбныя дзеянні для вырашэння гэтых праблем, паколькі кэшаванне не было выканана з-за фактараў, на якія старонка не мае ўплыву."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Даведацца больш пра магчымасць выкарыстання кэша пераходу назад і наперад"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Асноўны фрэйм"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Кэш пераходу назад і наперад не выкарыстоўваўся. Вы можаце запусціць яго з дапамогай кнопак \"Назад\" і \"Наперад\" браўзера Chrome або выкарыстаць размешчаную ніжэй кнопку праверкі для пераходу на іншую старонку і назад."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Дзеянні магчымыя"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Вы можаце ажыццявіць адпаведныя захады для вырашэння гэтых праблем, каб старонка падыходзіла для захавання ў кэшы пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Адноўлена з кэша пераходу назад і наперад."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Праверыць кэш пераходу назад і наперад"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Ідзе праверка"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Падтрымка плануецца ў больш новых версіях"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Падтрымка гэтых пунктаў у Chrome чакаецца (гэта значыць, што ў будучай версіі Chrome яны не стануць перашкодай для таго, каб старонка магла захоўвацца ў кэшы пераходу назад і наперад)."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "недаступна"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Стан невядомы"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL-адрас:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонавае атрыманне даных"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Спыніць запіс падзей"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Толькі старонкі, загружаныя праз запыт GET, падыходзяць для кэша пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Кэшавацца могуць толькі старонкі з кодам стану 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome выявіў спробу выканання JavaScript для старонкі ў кэшы."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Старонкі, якія адправілі запыт на AppBanner, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Кэш пераходу назад і наперад адключаны эксперыментальнымі параметрамі. Каб уключыць яго на гэтай прыладзе, наведайце старонку chrome://flags/#back-forward-cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Кэш пераходу назад і наперад адключаны камандным радком."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Кэш пераходу назад і наперад адключаны з-за недастатковага аб'ёму памяці."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Кэш пераходу назад і наперад не падтрымліваецца прадстаўніком."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Кэш пераходу назад і наперад адключаны сродкам папярэдняй візуалізацыі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Старонку нельга дадаць у кэш, бо яна мае экзэмпляр BroadcastChannel з зарэгістраванымі слухачамі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Старонкі з загалоўкам cache-control:no-store не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Кэш быў наўмысна ачышчаны."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Старонка была выдалена з кэша, каб можна было ажыццявіць кэшаванне іншай старонкі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Старонкі, якія змяшчаюць убудовы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Старонкі, якія выкарыстоўваюць FileChooser API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Старонкі, якія выкарыстоўваюць File System Access API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Старонкі, якія выкарыстоўваюць дыспетчар носьбітаў даных, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Пры выхадзе са старонкі медыяпрайгравальнік быў актыўны."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Старонкі, якія выкарыстоўваюць MediaSession API і задалі стан прайгравання, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Старонкі, якія выкарыстоўваюць MediaSession API і задалі апрацоўшчыкаў дзеянняў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Старонкі, якія выкарыстоўваюць SecurityHandler, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Старонкі, якія выкарыстоўваюць Serial API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Старонкі, якія выкарыстоўваюць WebAuthetication API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Старонкі, якія выкарыстоўваюць WebBluetooth API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Старонкі, якія выкарыстоўваюць WebUSB API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Старонкі, якія выкарыстоўваюць вылучаны рабочы працэс або worklet, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Выхад з дакумента адбыўся да таго, як яго загрузка была завершана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Сцэнарый Service Worker быў запушчаны, калі старонка знаходзілася ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Старонка была выдалена з кэша, каб можна было ажыццявіць кэшаванне іншай старонкі."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Старонкі, якія далі доступ да перадачы медыязмесціва плынню, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Старонкі, якія выкарыстоўваюць парталы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Старонкі, якія выкарыстоўваюць IdleManager, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Старонкі з актыўным падключэннем IndexedDB не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Выкарыстоўваліся непрыдатныя API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Старонкі, у якія пашырэннямі былі ўстаўлены фрагменты JavaScript, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Старонкі, у якія пашырэннямі былі ўстаўлены фрагменты StyleSheet, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Унутраная памылка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Старонкі, якія выкарыстоўваюць блакіроўку клавіятуры, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Выхад са старонкі адбыўся да таго, як яе загрузка была завершана."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Старонкі, рэсурсы якіх змяшчаюць cache-control:no-cache, не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Старонкі, рэсурсы якіх змяшчаюць cache-control:no-store, не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Пераход быў скасаваны да завяршэння аднаўлення старонкі з кэша пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Старонка была выдалена з кэша, бо бягучае падключэнне да сеткі атрымала зашмат даных. У Chrome дзейнічаюць абмежаванні на аб'ём даных, якія можа атрымліваць кэшаваная старонка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Старонкі з актыўнымі запытамі fetch() або XHR не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Старонка была выдалена з кэша пераходу назад і наперад, бо актыўны сеткавы запыт патрабаваў перанакіравання."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Старонка была выдалена з кэша, бо падключэнне да сеткі было занадта доўгім. У Chrome дзейнічаюць абмежаванні адносна часу, на працягу якога кэшаваная старонка можа атрымліваць даныя."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Старонкі, якія не маюць сапраўднага загалоўка адказу, не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Пераход адбыўся не ў асноўным фрэйме, а ў іншым."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Старонкі з бягучымі індэксаванымі трансакцыямі DB не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Старонкі з актыўнымі запытамі сеткі не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Старонкі з актыўнымі запытамі сеткі fetch не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Старонкі з актыўнымі запытамі сеткі не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Старонкі з актыўнымі запытамі сеткі XHR не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Старонкі, якія выкарыстоўваюць PaymentManager, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Старонкі, якія выкарыстоўваюць функцыю \"Відарыс у відарысе\", не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Старонкі, якія выкарыстоўваюць парталы, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Старонкі, якія паказваюць інтэрфейс друку, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Старонка адкрыта з дапамогай window.open(), а іншая ўкладка мае спасылку на яе, або старонка адкрыла акно."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Адбыўся збой працэсу візуалізацыі для старонкі ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Працэс візуалізацыі для старонкі ў кэшы пераходу назад і наперад спынены."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Старонкі, якія адправілі запыт на дазвол запісваць аўдыя, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Старонкі, якія адправілі запыт на доступ да датчыкаў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Старонкі, якія адправілі запыт на фонавую сінхранізацыю або на загрузку дазволаў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Старонкі, якія адправілі запыт на доступ да прылад MIDI, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Старонкі, якія адправілі запыт на доступ да апавяшчэнняў, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Старонкі, якія адправілі запыт на доступ да сховішча, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Старонкі, якія адправілі запыт на дазвол здымаць відэа, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Кэшаваць можна толькі старонкі, чые схемы URL-адраса – HTTP або HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Сцэнарый Service Worker запатрабаваў гэту старонку, а яна знаходзіцца ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Сцэнарый Service Worker спрабаваў адправіць MessageEvent старонцы ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Рэгістрацыя ServiceWorker была скасавана, калі старонка была ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Старонка была выдалена з кэша пераходу назад і наперад у выніку актывацыі сцэнарыя Service Worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Адбыўся перазапуск Chrome. Запісы кэша пераходу назад і наперад выдалены."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Старонкі, якія выкарыстоўваюць SharedWorker, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Старонкі, якія выкарыстоўваюць SpeechRecognizer, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Старонкі, якія выкарыстоўваюць SpeechSynthesis, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Акно iframe на старонцы пачало пераход, які не быў завершаны."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Старонкі, субрэсурсы якіх змяшчаюць cache-control:no-cache, не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Старонкі, субрэсурсы якіх змяшчаюць cache-control:no-store, не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Максімальны час размяшчэння старонкі ў кэшы пераходу назад і наперад скончыўся, і яна была выдалена."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Час чакання дадавання старонкі ў кэш пераходу назад і наперад перавышаны (магчыма, з-за доўгай работы апрацоўшчыкаў хавання старонак)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Старонка змяшчае апрацоўшчык выгрузкі ў асноўным фрэйме."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Старонка змяшчае апрацоўшчык выгрузкі ў субфрэйме."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Браўзер змяніў загаловак перавызначэння агента карыстальніка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Старонкі, якія далі доступ да запісу відэа або аўдыя, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Старонкі, якія выкарыстоўваюць WebDatabase, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Старонкі, якія выкарыстоўваюць WebHID, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Старонкі, якія выкарыстоўваюць WebLocks, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Старонкі, якія выкарыстоўваюць WebNfc, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Старонкі, якія выкарыстоўваюць WebOTPService, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Старонкі з WebRTC не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Старонкі, якія выкарыстоўваюць WebShare, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Старонкі з WebSocket не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Старонкі з WebTransport не могуць быць захаваны ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Старонкі, якія выкарыстоўваюць WebXR, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Кэш пераходу назад і наперад"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Дзеянні немагчымыя"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Вы не можаце ажыццявіць патрэбныя дзеянні для вырашэння гэтых праблем, паколькі кэшаванне не было выканана з-за фактараў, на якія старонка не мае ўплыву."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Даведацца больш пра магчымасць выкарыстання кэша пераходу назад і наперад"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Асноўны фрэйм"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Кэш пераходу назад і наперад не выкарыстоўваўся. Вы можаце запусціць яго з дапамогай кнопак \"Назад\" і \"Наперад\" браўзера Chrome або выкарыстаць размешчаную ніжэй кнопку праверкі для пераходу на іншую старонку і назад."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Дзеянні магчымыя"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Вы можаце ажыццявіць адпаведныя захады для вырашэння гэтых праблем, каб старонка падыходзіла для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Адноўлена з кэша пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Праверыць кэш пераходу назад і наперад"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Ідзе праверка"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Падтрымка плануецца ў больш новых версіях"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Падтрымка гэтых пунктаў у Chrome чакаецца (гэта значыць, што ў будучай версіі Chrome яны не стануць перашкодай для таго, каб старонка магла захоўвацца ў кэшы пераходу назад і наперад)."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "недаступна"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Стан невядомы"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL-адрас:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Няма канцавых пунктаў"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Захаваць"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Перападключыць DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Націсніце Enter, каб пацвердзіць, або Escape, каб скасаваць.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Пераключайце каманды з дапамогай клавішы Tab. Увядзіце \"?\", каб пабачыць даступныя каманды"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Увядзіце \"?\", каб пабачыць даступныя каманды"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Адкрыць файл"

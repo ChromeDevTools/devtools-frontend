@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Отключить кеш (пока открыты инструменты разработчика)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Отключить автоматическую тёмную тему"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Отключить JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Отключить формат WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Отключить"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Не записывать асинхронную трассировку стека"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Не эмулировать тип носителя CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Не эмулировать автоматическую тёмную тему"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Не продлевать линии сетки"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Включить пользовательские форматировщики"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Включить автоматическую тёмную тему"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Включить JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Включить формат WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Включить"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Продлить линии сетки"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Эмулировать страницу в фокусе"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Эмулирует страницу в фокусе."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Включает автоматическую тёмную тему для проверенной страницы."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Запускает медиафункцию CSS color-gamut."
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Показать выдвигающуюся панель консоли"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Установленная в системе цветовая схема изменилась. Чтобы применить ее, перезагрузите инструменты разработчика."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Перенести в отдельное окно"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Запись в файл…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy – оценка"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Не удалось скачать нужный значок из файла манифеста."
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Описание"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "обработчик"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "В возвратный кеш можно добавить только страницы, загруженные с помощью GET-запроса."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Можно кешировать только страницы с кодом статуса 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome обнаружил попытку выполнить код JavaScript в кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Страницы, которые запросили AppBanner, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Возвратный кеш отключен в разделе экспериментальных параметров Chrome. Введите chrome://flags/#back-forward-cache в адресной строке, чтобы включить кеш на этом устройстве."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Возвратный кеш отключен с помощью командной строки."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Возвратный кеш отключен, так как недостаточно памяти."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Возвратный кеш не поддерживается представителем."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Возвратный кеш отключен для системы предварительного отображения."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Страницу нельзя кешировать, так как у нее есть экземпляр BroadcastChannel с зарегистрированными прослушивателями."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Страницы с заголовком cache-control:no-store нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Кэш был намеренно очищен."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Страница удалена из кеша, чтобы освободить место для другой страницы."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Страницы с плагинами в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Страницы, которые используют FileChooser API, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Страницы, которые используют File System Access API, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Страницы, которые используют диспетчер медиаустройств, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Медиапроигрыватель воспроизводил контент во время перехода на другую страницу."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Страницы, которые используют MediaSession API и установили состояние воспроизведения, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Страницы, которые используют MediaSession API и для которых настроены обработчики действий, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Страницы, которые используют SecurityHandler, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Страницы, которые используют Serial API, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Страницы, которые используют WebAuthetication API, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Страницы, которые используют WebBluetooth API, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Страницы, которые используют WebUSB API, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Страницы, которые используют Dedicated Worker или Worklet, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Переход со страницы выполнен до завершения загрузки документа."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Скрипт Service Worker был активирован, когда страница находилась в возвратном кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Страница удалена из кеша, чтобы освободить место для другой страницы."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Страницы, которые предоставили доступ к трансляции мультимедиа, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Страницы, которые используют порталы, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Страницы, которые используют IdleManager, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Страницы с открытым подключением IndexedDB в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Использовались недопустимые API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Страницы, в которые с помощью расширений внедрен код JavaScript, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Страницы, в которые с помощью расширений внедрена таблица стилей, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Внутренняя ошибка."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Страницы, которые используют блокировку клавиатуры, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Переход со страницы выполнен до завершения ее загрузки."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Страницы, в основном ресурсе которых есть заголовок cache-control:no-cache, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Страницы, в основном ресурсе которых есть заголовок cache-control:no-store, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Страницу не удалось восстановить из возвратного кеша до отмены перехода."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Страница удалена из кеша, так как через активное сетевое подключение было получено слишком много данных. Chrome ограничивает объем данных, передаваемых на кешируемую страницу."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Страницы, которые используют событие inflight fetch() или интерфейс XHR, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Страница удалена из возвратного кеша, так как активный сетевой запрос был выполнен с переадресацией."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Страница удалена из кеша, так как подключение к сети было открыто слишком долго. Chrome ограничивает время получения данных кешируемой страницей."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Страницы без действительного заголовка ответа нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Переход выполнен в фрейме, отличном от основного."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Страницу, на которой выполняются транзакции индексированной базы данных, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Страницы с активным сетевым запросом в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Страницы с активным сетевым запросом на извлечение в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Страницы с активным сетевым запросом в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Страницы с активным сетевым запросом XHR в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Страницы, которые используют PaymentManager, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Страницы, которые используют картинку в картинке, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Страницы, которые используют порталы, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Страницы, где показан интерфейс печати, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Страница открыта с помощью window.open(), и на нее ссылается другая вкладка, или страница открыта в другом окне."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Процесс отрисовки страницы завершился ошибкой в возвратном кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Процесс отрисовки для страницы в возвратном кеше остановлен."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Страницы, которые запросили разрешения на запись аудио, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Страницы, запросившие разрешения на доступ к датчикам, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Страницы, которые запросили разрешения на фоновую синхронизацию или извлечение, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Страницы, запросившие разрешения на доступ к MIDI-устройствам, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Страницы, запросившие разрешения на доступ к уведомлениям, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Страницы, запросившие доступ к хранилищу, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Страницы, которые запросили разрешения на запись видео, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Можно кешировать только страницы со схемой URL HTTP или HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Страница была запрошена скриптом Service Worker, когда находилась в возвратном кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Скрипт Service Worker пытался отправить свойство MessageEvent на страницу в возвратном кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Регистрация Service Worker была отменена, когда страница находилась в возвратном кеше."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Страница удалена из возвратного кеша из-за активации Service Worker."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Браузер Chrome перезапущен. Все записи возвратного кеша удалены."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Страницы, которые используют SharedWorker, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Страницы, которые используют SpeechRecognizer, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Страницы, которые используют SpeechSynthesis, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Окно iframe на странице запустило переход, который не завершился."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Страницы, в подресурсе которых есть заголовок cache-control:no-cache, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Страницы, в подресурсе которых есть заголовок cache-control:no-store, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Время нахождения страницы в возвратном кеше истекло, так как превысило максимально допустимое."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Время добавления страницы в возвратный кеш истекло (возможно, обработчики событий pagehide выполняются слишком долго)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "В основном фрейме страницы есть обработчик выгрузки."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "В субфрейме страницы есть обработчик выгрузки."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Браузер изменил заголовок переопределения агента пользователя."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Страницы, которые предоставили право на запись видео или аудио, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Страницы, которые используют WebDatabase, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Страницы, которые используют WebHID, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Страницы, которые используют WebLocks, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Страницы, которые используют WebNFC, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Страницы, которые используют WebOTPService, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Страницы, которые используют WebRTC, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Страницы, которые используют WebShare, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Страницы, которые используют интерфейс WebSocket, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Страницы, которые используют WebTransport, нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Страницы, которые используют WebXR, в настоящее время нельзя добавить в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Возвратный кеш"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Не нужно принимать меры"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Причины, которые мешают кешированию, неустранимы, то есть они вне сферы прямого контроля страницы."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Подробнее о возможности использовать возвратный кеш…"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Основной фрейм"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Возвратный кеш не использовался. Вы можете запустить его с помощью кнопок \"Назад\" и \"Вперед\" в Chrome или нажать ниже кнопку проверки для автоматической навигации."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Нужно принимать меры"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Вы можете устранить эти причины, чтобы добавить страницу в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Передано из возвратного кеша"
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Проверить возвратный кеш"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Выполняется проверка"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Планируется поддержка в будущих версиях"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Это временные причины, поэтому в будущих версиях Chrome они не будут препятствовать добавлению страниц в возвратный кеш."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "недоступно"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Статус неизвестен"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фоновое извлечение"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Остановить запись событий"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "В возвратный кеш можно добавить только страницы, загруженные с помощью GET-запроса."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Можно кешировать только страницы с кодом статуса 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome обнаружил попытку выполнить код JavaScript в кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Страницы, которые запросили AppBanner, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Возвратный кеш отключен в разделе экспериментальных параметров Chrome. Введите chrome://flags/#back-forward-cache в адресной строке, чтобы включить кеш на этом устройстве."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Возвратный кеш отключен с помощью командной строки."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Возвратный кеш отключен, так как недостаточно памяти."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Возвратный кеш не поддерживается представителем."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Возвратный кеш отключен для системы предварительного отображения."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Страницу нельзя кешировать, так как у нее есть экземпляр BroadcastChannel с зарегистрированными прослушивателями."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Страницы с заголовком cache-control:no-store нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Кэш был намеренно очищен."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Страница удалена из кеша, чтобы освободить место для другой страницы."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Страницы с плагинами в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Страницы, которые используют FileChooser API, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Страницы, которые используют File System Access API, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Страницы, которые используют диспетчер медиаустройств, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Медиапроигрыватель воспроизводил контент во время перехода на другую страницу."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Страницы, которые используют MediaSession API и установили состояние воспроизведения, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Страницы, которые используют MediaSession API и для которых настроены обработчики действий, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Страницы, которые используют SecurityHandler, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Страницы, которые используют Serial API, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Страницы, которые используют WebAuthetication API, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Страницы, которые используют WebBluetooth API, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Страницы, которые используют WebUSB API, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Страницы, которые используют Dedicated Worker или Worklet, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Переход со страницы выполнен до завершения загрузки документа."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Скрипт Service Worker был активирован, когда страница находилась в возвратном кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Страница удалена из кеша, чтобы освободить место для другой страницы."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Страницы, которые предоставили доступ к трансляции мультимедиа, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Страницы, которые используют порталы, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Страницы, которые используют IdleManager, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Страницы с открытым подключением IndexedDB в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Использовались недопустимые API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Страницы, в которые с помощью расширений внедрен код JavaScript, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Страницы, в которые с помощью расширений внедрена таблица стилей, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Внутренняя ошибка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Страницы, которые используют блокировку клавиатуры, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Переход со страницы выполнен до завершения ее загрузки."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Страницы, в основном ресурсе которых есть заголовок cache-control:no-cache, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Страницы, в основном ресурсе которых есть заголовок cache-control:no-store, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Страницу не удалось восстановить из возвратного кеша до отмены перехода."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Страница удалена из кеша, так как через активное сетевое подключение было получено слишком много данных. Chrome ограничивает объем данных, передаваемых на кешируемую страницу."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Страницы, которые используют событие inflight fetch() или интерфейс XHR, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Страница удалена из возвратного кеша, так как активный сетевой запрос был выполнен с переадресацией."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Страница удалена из кеша, так как подключение к сети было открыто слишком долго. Chrome ограничивает время получения данных кешируемой страницей."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Страницы без действительного заголовка ответа нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Переход выполнен в фрейме, отличном от основного."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Страницу, на которой выполняются транзакции индексированной базы данных, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Страницы с активным сетевым запросом в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Страницы с активным сетевым запросом на извлечение в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Страницы с активным сетевым запросом в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Страницы с активным сетевым запросом XHR в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Страницы, которые используют PaymentManager, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Страницы, которые используют картинку в картинке, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Страницы, которые используют порталы, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Страницы, где показан интерфейс печати, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Страница открыта с помощью window.open(), и на нее ссылается другая вкладка, или страница открыта в другом окне."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Процесс отрисовки страницы завершился ошибкой в возвратном кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Процесс отрисовки для страницы в возвратном кеше остановлен."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Страницы, которые запросили разрешения на запись аудио, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Страницы, запросившие разрешения на доступ к датчикам, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Страницы, которые запросили разрешения на фоновую синхронизацию или извлечение, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Страницы, запросившие разрешения на доступ к MIDI-устройствам, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Страницы, запросившие разрешения на доступ к уведомлениям, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Страницы, запросившие доступ к хранилищу, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Страницы, которые запросили разрешения на запись видео, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Можно кешировать только страницы со схемой URL HTTP или HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Страница была запрошена скриптом Service Worker, когда находилась в возвратном кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Скрипт Service Worker пытался отправить свойство MessageEvent на страницу в возвратном кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Регистрация Service Worker была отменена, когда страница находилась в возвратном кеше."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Страница удалена из возвратного кеша из-за активации Service Worker."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Браузер Chrome перезапущен. Все записи возвратного кеша удалены."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Страницы, которые используют SharedWorker, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Страницы, которые используют SpeechRecognizer, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Страницы, которые используют SpeechSynthesis, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Окно iframe на странице запустило переход, который не завершился."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Страницы, в подресурсе которых есть заголовок cache-control:no-cache, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Страницы, в подресурсе которых есть заголовок cache-control:no-store, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Время нахождения страницы в возвратном кеше истекло, так как превысило максимально допустимое."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Время добавления страницы в возвратный кеш истекло (возможно, обработчики событий pagehide выполняются слишком долго)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "В основном фрейме страницы есть обработчик выгрузки."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "В субфрейме страницы есть обработчик выгрузки."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Браузер изменил заголовок переопределения агента пользователя."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Страницы, которые предоставили право на запись видео или аудио, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Страницы, которые используют WebDatabase, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Страницы, которые используют WebHID, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Страницы, которые используют WebLocks, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Страницы, которые используют WebNFC, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Страницы, которые используют WebOTPService, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Страницы, которые используют WebRTC, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Страницы, которые используют WebShare, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Страницы, которые используют интерфейс WebSocket, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Страницы, которые используют WebTransport, нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Страницы, которые используют WebXR, в настоящее время нельзя добавить в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Возвратный кеш"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Не нужно принимать меры"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Причины, которые мешают кешированию, неустранимы, то есть они вне сферы прямого контроля страницы."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Подробнее о возможности использовать возвратный кеш…"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Основной фрейм"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Возвратный кеш не использовался. Вы можете запустить его с помощью кнопок \"Назад\" и \"Вперед\" в Chrome или нажать ниже кнопку проверки для автоматической навигации."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Нужно принимать меры"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Вы можете устранить эти причины, чтобы добавить страницу в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Передано из возвратного кеша"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Проверить возвратный кеш"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Выполняется проверка"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Планируется поддержка в будущих версиях"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Это временные причины, поэтому в будущих версиях Chrome они не будут препятствовать добавлению страниц в возвратный кеш."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "недоступно"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Статус неизвестен"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Нет конечных точек."
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сохранить"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Повторно подключить DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Нажмите \"Ввод\" для подтверждения или Escape для отмены.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Чтобы переключать команды, используйте клавишу Tab. Чтобы увидеть доступные команды, введите знак вопроса (?)."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Чтобы увидеть доступные команды, введите знак вопроса (?)."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Открыть файл"

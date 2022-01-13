@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Zakázať vyrovnávaciu pamäť (kým sú otvorené nástroje pre vývojárov)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Zakázať automatický tmavý režim"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Zakázať JavaScript"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Deaktivovať formát WebP"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Vypnúť"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Nezaznamenávať asynchrónne sledovania zásobníka"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Neemulovať typ médií šablón CSS"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Neemulovať automatický tmavý režim"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Nepredlžovať čiary mriežky"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Povoliť vlastné formátovače"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Povoliť automatický tmavý režim"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Povoliť JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Aktivovať formát WebP"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Zapnúť"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Predĺžiť čiary mriežky"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Emulovať zameranú stránku"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuluje zameranú stránku."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Táto funkcia zapne na kontrolovanej stránke automatický tmavý režim."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Vynúti funkciu médií color-gamut šablón CSS"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Zobraziť vysúvací panel konzoly"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Preferovaná farebná schéma systému bola zmenená. Ak chcete túto zmenu použiť v Nástrojoch pre vývojárov, znova načítajte stránku."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Uvoľniť do samostatného okna"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Zapisuje sa súbor…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Pravidlá na zabezpečenie obsahu – ohodnotenie"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Z manifestu sa nepodarilo stiahnuť požadovanú ikonu"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Popis"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "pracovník"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Iba stránky načítané prostredníctvom požiadavky GET môžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Do vyrovnávacej pamäte sa dajú ukladať iba stránky so stavovým kódom 2XX."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome rozpoznal pokus o spustenie JavaScriptu počas uloženia vo vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Stránky, ktoré požiadali o AppBanner, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná experimentálnymi funkciami. Prejdite na chrome://flags/#back-forward-cache a aktivujte ju miestne v tomto zariadení."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná príkazovým riadkom."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná z dôvodu nedostatočnej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Delegát nepodporuje spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná pre predbežný vykresľovací modul."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Stránka sa nedá uložiť do vyrovnávacej pamäte, pretože má inštanciu BroadcastChannel s registrovanými prijímačmi."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Stránky s hlavičkou cache-control:no-store nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Vyrovnávacia pamäť bola zámerne vyčistená."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, aby bolo do nej možné uložiť inú."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Stránky s doplnkami momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Stránky s rozhraním FileChooser API nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Stránky s rozhraním File System Access API momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Stránky s nástrojom Media Device Dispatcher nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "V čase odchodu hral Prehrávač médií."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Stránky s rozhraním MediaSession API a nastaveným stavom prehrávania nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Stránky s rozhraním MediaSession API a nastavenými obslužnými nástrojmi akcií momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Stránky s nástrojom SecurityHandler nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Stránky s rozhraním Serial API nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Stránky s rozhraním WebAuthetication API nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Stránky s rozhraním WebBluetooth API nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Stránky s rozhraním WebUSB API nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Stránky s vyhradenou obsluhou alebo workletom momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Načítavanie dokumentu nebolo dokončené, kým ste odlišli preč."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Bola aktivovaná obsluha, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, aby bolo do nej možné uložiť inú."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Stránky, ktoré udelili prístup k streamu médií, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Stránky s nástrojom IdleManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Stránky s otvoreným pripojením IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Boli použité nevhodné rozhrania API."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Stránky, do ktorých rozšírenia vložili JavaScript, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Stránky, do ktorých rozšírenia vložili šablónu so štýlmi, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Interná chyba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Stránky so zámkou klávesnice momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Načítavanie stránky nebolo dokončené, kým ste odlišli preč."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache-control:no-cache, momentálne nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache-control:no-store, nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigácia bola zrušená skôr, ako došlo k obnoveniu stránky zo spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože aktívne pripojenie k sieti dostalo príliš veľa dát. Chrome obmedzuje objem dát, ktoré môže dostávať stránka vo vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Stránky s načítavaním počas prenosu() alebo XHR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Stránka bola vylúčená zo spätnej vyrovnávacej pamäte, pretože aktívna sieťová požiadavka zahŕňala presmerovanie."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože pripojenie k sieti bolo príliš dlho otvorené. Chrome obmedzuje obdobie, počas ktorého môže stránka vo vyrovnávacej pamäti dostávať dáta."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Stránky bez platnej hlavičky odpovede nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigácia sa uskutočnila v inom ako hlavnom ráme."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Stránky s prebiehajúcimi transakciami IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Stránky so sieťovou požiadavkou na načítanie počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Stránky so sieťovou požiadavkou XHR počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Stránky s nástrojom PaymentManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Stránky s obrazom v obraze momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Stránky zobrazujúce používateľské rozhranie na tlač momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Stránka bola otvorená pomocou prvku window.open() a ďalšia karta má odkaz na ňu, prípadne stránka otvorila okno."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Proces vykresľovacieho modulu pre danú stránku v spätnej vyrovnávacej pamäti spadol."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Proces vykresľovacieho modulu pre danú stránku v spätnej vyrovnávacej pamäti bol zrušený."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Stránky, ktoré požiadali o povolenia na snímanie zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Stránky, ktoré požiadali o povolenia pre senzory, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Stránky, ktoré požiadali o synchronizáciu na pozadí alebo načítanie povolení, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Stránky, ktoré požiadali o povolenia pre MIDI, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Stránky, ktoré požiadali o povolenia pre upozornenia, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Stránky, ktoré požiadali o prístup k ukladaciemu priestoru, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Stránky, ktoré požiadali o povolenia na snímanie videí, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Do vyrovnávacej pamäte sa dajú uložiť iba stránky, ktorých schéma webovej adresy je HTTP alebo HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Stránku si nárokovala obsluha počas obdobia, kedy sa nachádza v spätnej vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Obsluha sa pokúsila odoslať stránke v spätnej vyrovnávacej pamäti MessageEvent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Registrácia funkcie ServiceWorker bola zrušená, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Stránka bola vylúčená zo spätnej vyrovnávacej pamäte z dôvodu aktivácie obsluhy."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome reštartoval a vymazal záznamy v spätnej vyrovnávacej pamäti."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Stránky s rozhraním SharedWorker momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Stránky s rozhraním SpeechRecognizer momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Stránky s rozhraním SpeechSynthesis momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Prvok iframe na stránke spustil navigáciu, ktorá nebola dokončená."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Stránky, ktorých podzdroj má hlavičku cache-control:no-cache, nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Stránky, ktorých podzdroj má hlavičku cache-control:no-store, momentálne nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Stránka prekročila maximálny čas v spätnej vyrovnávacej pamäti a vypršala."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Pri zadávaní stránky do spätnej vyrovnávacej pamäte vypršal časový limit (pravdepodobne to spôsobili dlhodobo spustené obslužné nástroje skrytia stránky)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Stránka má v hlavnom ráme obslužný nástroj uvoľnenia z pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Stránka má v podráme obslužný nástroj uvoľnenia z pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Prehliadač zmenil hlavičku prepísania používateľského agenta."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Stránky, ktoré udelili prístup na nahrávanie videa alebo zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Stránky s rozhraním WebDatabase momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Stránky s rozhraním WebHID momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Stránky s rozhraním WebLocks momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Stránky s rozhraním WebNfc momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Stránky s rozhraním WebOTPService momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Stránky s rozhraním WebRTC nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Stránky s rozhraním WebShare momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Stránky s rozhraním WebSocket nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Stránky s rozhraním WebTransport nemajú prístup do spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Stránky s rozhraním WebXR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Spätná vyrovnávacia pamäť"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Nemožno vykonať akciu"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Tieto dôvody nie sú použiteľné, teda uloženiu do vyrovnávacej pamäte zabránilo niečo, nad čím stránka nemala priamu kontrolu."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Ďalšie informácie: vhodnosť spätnej vyrovnávacej pamäte"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Hlavný rám"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Nezobrazené zo spätnej vyrovnávacej pamäte: ak chcete spustiť spätnú vyrovnávaciu pamäť, použite tlačidlá Späť a Ďalej v Chrome alebo pomocou tlačidla testovania nižšie automaticky prechádzajte preč a späť."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Možno vykonať akciu"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Tieto dôvody sú použiteľné, teda dajú sa vyčistiť, aby príslušná stránka mohla používať spätnú vyrovnávaciu pamäť."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Úspešne zobrazené zo spätnej vyrovnávacej pamäte."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Testovať spätnú vyrovnávaciu pamäť"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Prebieha test"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Čaká sa na podporu"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Čaká sa na podporu týchto dôvodov v Chrome, teda nezabránia stránke používať spätnú vyrovnávaciu pamäť v budúcej verzii Chromu."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "nie je k dispozícii"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Neznámy stav"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "Webová adresa:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Načítanie na pozadí"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Zastavenie nahrávania udalostí"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Iba stránky načítané prostredníctvom požiadavky GET môžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Do vyrovnávacej pamäte sa dajú ukladať iba stránky so stavovým kódom 2XX."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome rozpoznal pokus o spustenie JavaScriptu počas uloženia vo vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Stránky, ktoré požiadali o AppBanner, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná experimentálnymi funkciami. Prejdite na chrome://flags/#back-forward-cache a aktivujte ju miestne v tomto zariadení."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná príkazovým riadkom."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná z dôvodu nedostatočnej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Delegát nepodporuje spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná pre predbežný vykresľovací modul."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Stránka sa nedá uložiť do vyrovnávacej pamäte, pretože má inštanciu BroadcastChannel s registrovanými prijímačmi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Stránky s hlavičkou cache-control:no-store nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Vyrovnávacia pamäť bola zámerne vyčistená."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, aby bolo do nej možné uložiť inú."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Stránky s doplnkami momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Stránky s rozhraním FileChooser API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Stránky s rozhraním File System Access API momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Stránky s nástrojom Media Device Dispatcher nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "V čase odchodu hral Prehrávač médií."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Stránky s rozhraním MediaSession API a nastaveným stavom prehrávania nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Stránky s rozhraním MediaSession API a nastavenými obslužnými nástrojmi akcií momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Stránky s nástrojom SecurityHandler nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Stránky s rozhraním Serial API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Stránky s rozhraním WebAuthetication API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Stránky s rozhraním WebBluetooth API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Stránky s rozhraním WebUSB API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Stránky s vyhradenou obsluhou alebo workletom momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Načítavanie dokumentu nebolo dokončené, kým ste odlišli preč."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Bola aktivovaná obsluha, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, aby bolo do nej možné uložiť inú."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Stránky, ktoré udelili prístup k streamu médií, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Stránky s nástrojom IdleManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Stránky s otvoreným pripojením IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Boli použité nevhodné rozhrania API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Stránky, do ktorých rozšírenia vložili JavaScript, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Stránky, do ktorých rozšírenia vložili šablónu so štýlmi, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interná chyba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Stránky so zámkou klávesnice momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Načítavanie stránky nebolo dokončené, kým ste odlišli preč."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache-control:no-cache, momentálne nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Stránky, ktorých hlavný zdroj má hlavičku cache-control:no-store, nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigácia bola zrušená skôr, ako došlo k obnoveniu stránky zo spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože aktívne pripojenie k sieti dostalo príliš veľa dát. Chrome obmedzuje objem dát, ktoré môže dostávať stránka vo vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Stránky s načítavaním počas prenosu() alebo XHR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Stránka bola vylúčená zo spätnej vyrovnávacej pamäte, pretože aktívna sieťová požiadavka zahŕňala presmerovanie."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Stránka bola vylúčená z vyrovnávacej pamäte, pretože pripojenie k sieti bolo príliš dlho otvorené. Chrome obmedzuje obdobie, počas ktorého môže stránka vo vyrovnávacej pamäti dostávať dáta."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Stránky bez platnej hlavičky odpovede nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigácia sa uskutočnila v inom ako hlavnom ráme."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Stránky s prebiehajúcimi transakciami IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Stránky so sieťovou požiadavkou na načítanie počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Stránky so sieťovou požiadavkou počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Stránky so sieťovou požiadavkou XHR počas prenosu momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Stránky s nástrojom PaymentManager momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Stránky s obrazom v obraze momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Stránky zobrazujúce používateľské rozhranie na tlač momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Stránka bola otvorená pomocou prvku window.open() a ďalšia karta má odkaz na ňu, prípadne stránka otvorila okno."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Proces vykresľovacieho modulu pre danú stránku v spätnej vyrovnávacej pamäti spadol."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Proces vykresľovacieho modulu pre danú stránku v spätnej vyrovnávacej pamäti bol zrušený."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Stránky, ktoré požiadali o povolenia na snímanie zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Stránky, ktoré požiadali o povolenia pre senzory, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Stránky, ktoré požiadali o synchronizáciu na pozadí alebo načítanie povolení, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Stránky, ktoré požiadali o povolenia pre MIDI, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Stránky, ktoré požiadali o povolenia pre upozornenia, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Stránky, ktoré požiadali o prístup k ukladaciemu priestoru, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Stránky, ktoré požiadali o povolenia na snímanie videí, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Do vyrovnávacej pamäte sa dajú uložiť iba stránky, ktorých schéma webovej adresy je HTTP alebo HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Stránku si nárokovala obsluha počas obdobia, kedy sa nachádza v spätnej vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Obsluha sa pokúsila odoslať stránke v spätnej vyrovnávacej pamäti MessageEvent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Registrácia funkcie ServiceWorker bola zrušená, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Stránka bola vylúčená zo spätnej vyrovnávacej pamäte z dôvodu aktivácie obsluhy."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome reštartoval a vymazal záznamy v spätnej vyrovnávacej pamäti."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Stránky s rozhraním SharedWorker momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Stránky s rozhraním SpeechRecognizer momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Stránky s rozhraním SpeechSynthesis momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Prvok iframe na stránke spustil navigáciu, ktorá nebola dokončená."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Stránky, ktorých podzdroj má hlavičku cache-control:no-cache, nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Stránky, ktorých podzdroj má hlavičku cache-control:no-store, momentálne nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Stránka prekročila maximálny čas v spätnej vyrovnávacej pamäti a vypršala."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Pri zadávaní stránky do spätnej vyrovnávacej pamäte vypršal časový limit (pravdepodobne to spôsobili dlhodobo spustené obslužné nástroje skrytia stránky)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Stránka má v hlavnom ráme obslužný nástroj uvoľnenia z pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Stránka má v podráme obslužný nástroj uvoľnenia z pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Prehliadač zmenil hlavičku prepísania používateľského agenta."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Stránky, ktoré udelili prístup na nahrávanie videa alebo zvuku, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Stránky s rozhraním WebDatabase momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Stránky s rozhraním WebHID momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Stránky s rozhraním WebLocks momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Stránky s rozhraním WebNfc momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Stránky s rozhraním WebOTPService momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Stránky s rozhraním WebRTC nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Stránky s rozhraním WebShare momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Stránky s rozhraním WebSocket nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Stránky s rozhraním WebTransport nemajú prístup do spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Stránky s rozhraním WebXR momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Spätná vyrovnávacia pamäť"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Nemožno vykonať akciu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Tieto dôvody nie sú použiteľné, teda uloženiu do vyrovnávacej pamäte zabránilo niečo, nad čím stránka nemala priamu kontrolu."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Ďalšie informácie: vhodnosť spätnej vyrovnávacej pamäte"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Hlavný rám"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Nezobrazené zo spätnej vyrovnávacej pamäte: ak chcete spustiť spätnú vyrovnávaciu pamäť, použite tlačidlá Späť a Ďalej v Chrome alebo pomocou tlačidla testovania nižšie automaticky prechádzajte preč a späť."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Možno vykonať akciu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Tieto dôvody sú použiteľné, teda dajú sa vyčistiť, aby príslušná stránka mohla používať spätnú vyrovnávaciu pamäť."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Úspešne zobrazené zo spätnej vyrovnávacej pamäte."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Testovať spätnú vyrovnávaciu pamäť"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Prebieha test"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Čaká sa na podporu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Čaká sa na podporu týchto dôvodov v Chrome, teda nezabránia stránke používať spätnú vyrovnávaciu pamäť v budúcej verzii Chromu."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "nie je k dispozícii"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Neznámy stav"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "Webová adresa:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nie sú k dispozícii žiadne koncové body"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Uložiť"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Znova pripojiť DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (potvrďte stlačením klávesa Enter alebo zrušte klávesom Escape.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Medzi príkazmi prepínajte klávesom Tab. Dostupné príkazy zobrazíte zadaním otáznika (?)"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Dostupné príkazy zobrazíte zadaním otáznika (?)"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Otvoriť súbor"

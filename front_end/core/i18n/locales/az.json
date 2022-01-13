@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Keşi deaktiv edin (DevTools açıq ikən)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Avtomatik qaranlıq rejimi deaktiv edin"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'i deaktiv edin"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP formatını deaktiv edin"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Deaktiv edin"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Asinxron yığın izlərini çəkməyin"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS media növünü emulyasiya etməyin"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Avtomatik qaranlıq rejimi emulyasiya etməyin"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Tor xətlərini genişləndirməyin"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Fərdi formatlayıcıları aktivləşdirin"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Avtomatik qaranlıq rejimi aktiv edin"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript'i aktivləşdirin"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP formatını aktivləşdirin"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Aktivləşdirin"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Tor xətlərini genişləndirin"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Fokuslanmış səhifəni emulyasiya edin"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Fokuslanmış səhifə emulyasiya edilir."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Yoxlanılan səhifə üçün avtomatik qaranlıq rejimi aktiv edir."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut media xüsusiyyətini məcburi tətbiq edir"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Konsol çəkməcəsini göstərin"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Sistemin üstünlük verdiyi rəng sxemi dəyişib. Bu dəyişikliyi DevTools'a tətbiq etmək üçün yenidən yükləyin."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ayrıca pəncərədən çıxarın"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Fayl yazılır…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Məzmun Təhlükəsizliyi Siyasəti - Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Manifestdən tələb edilən işarəni endirmək mümkün olmadı"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Təsvir"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "işçi"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Yalnız GET sorğusu ilə yüklənmiş səhifələr geri/irəli keş üçün uyğundur."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Yalnız status kodu 2XX olan səhifələr keşlənə bilər."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome keşdə olarkən JavaScript icra etmək cəhdi aşkarlayıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "AppBanner tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Geri/irəli keş işarələr vasitəsilə deaktiv edilib. Bu cihazda lokal olaraq aktiv etmək üçün chrome://flags/#back-forward-cache ünvanına keçin."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Geri/irəli keş əmr sətri vasitəsilə deaktiv edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Yaddaşda kifayət qədər yer olmadığına görə geri/irəli keş deaktiv edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Geri/irəli keş nümayəndə tərəfindən dəstəklənmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Geri/irəli keş ön vizuallaşdırıcı vasitəsilə deaktiv edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Səhifədə qeydiyyatdan keçmiş dinləyiciləri olan BroadcastChannel nümunəsi olduğuna görə onu keşləmək mümkün deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Saxlanmayan keşə nəzarət başlığı olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Keş qəsdən təmizlənib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Digər səhifənin keşlənməsinə icazə vermək üçün səhifə keşdən çıxarılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Qoşmaları olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "FileChooser API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "File System Access API istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Media Cihaz Dispetçerindən istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Uzaqlaşdıqda media pleyer oxudulurdu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "MediaSession API istifadə edən və oxutma vəziyyəti ayarlayan səhifələr geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "MediaSession API istifadə edən və əməliyyat idarəçiləri ayarlayan səhifələr geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "SecurityHandler istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Serial API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "WebAuthetication API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "WebBluetooth API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "WebUSB API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Xüsusi işçi və ya iş dəstindən istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Çıxmadan əvvəl sənəd yüklənməsi bitməyib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Səhifə geri/irəli keşdə olarkən xidmət işçisi aktivləşdirilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Digər səhifənin keşlənməsinə icazə vermək üçün səhifə keşdən çıxarılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Media yayımına giriş icazəsi vermiş səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Portallardan istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "IdleManager funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Açıq IndexedDB bağlantısı olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Uyğun olmayan API'lar istifadə edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "JavaScript'in artırmalarla daxil edildiyi səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "StyleSheet'in artırmalarla daxil edildiyi səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Daxili xəta."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Klaviatura kilidindən istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Çıxmadan əvvəl səhifənin yüklənməsi bitməyib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Əsas resursunda keşlənməyən keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Əsas resursunda saxlanmayan keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Səhifə geri/irəli keşdən bərpa edilməzdən əvvəl naviqasiya ləğv edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Aktiv şəbəkə bağlantısı həddən artıq data qəbul etdiyinə görə səhifə keşdən çıxarılıb. Chrome səhifənin keşlənərkən qəbul edə biləcəyi data miqdarını məhdudlaşdırır."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Uçuşdaxili axtarış() və ya XHR funksiyası olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Aktiv şəbəkə sorğusu yönləndirildiyinə görə səhifə geri/irəli keşdən çıxarılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Şəbəkə bağlantısı çox uzun müddət açıq olduğu üçün səhifə keşdən çıxarılıb. Chrome səhifənin keşlənərkən data qəbul edə biləcəyi vaxt miqdarını məhdudlaşdırır."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Etibarlı cavab başlığı olmayan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Naviqasiya əsas çərçivədən başqa bir çərçivədə baş verib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Davam edən indeksləşdirilmiş DB əməliyyatları olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Uçuşdaxili şəbəkə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Uçuşdaxili axtarış şəbəkəsi tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Uçuşdaxili şəbəkə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Uçuşdaxili XHR şəbəkəsi tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "PaymentManager funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Şəkildə şəkil funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Portallardan istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Çap UI funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Səhifə 'window.open()' istifadə edilərək açılıb və başqa tab ona istinad edir və ya səhifə bir pəncərə açıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Geri/irəli keşdəki səhifə üçün vizualizasiya prosesində xəta oldu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Geri/irəli keşdəki səhifə üçün vizualizasiya prosesi dayandırılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Audio çəkmək üçün icazə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Sensor icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Arxa fon sinxronizasiyası və ya əldə etmə icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "MIDI icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Bildiriş icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Yaddaşa giriş tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Video çəkmək üçün icazə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Yalnız URL sxemi HTTP / HTTPS olan səhifələr keşlənə bilər."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Səhifə geri/irəli keşdə olarkən xidmət işçisi tərəfindən tələb edilib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Xidmət işçisi geri/irəli keşdə olarkən səhifəyə MessageEvent göndərməyə cəhd edib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Səhifə geri/irəli keşdə olarkən ServiceWorker qeydiyyatdan çıxarılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Xidmət işçisinin aktiv edilməsinə görə səhifə geri/irəli keşdən çıxarılıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome yenidən başladılıb və geri/irəli keş daxiletmələrini təmizləyib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "SharedWorker funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "SpeechRecognizer funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "SpeechSynthesis funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Səhifədəki iFrame tamamlanmamış naviqasiyaya başlayıb."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Alt resursunda keşlənməyən keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Alt resursunda saxlanmayan keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Səhifə geri/irəli keşdə maksimal vaxtı keçib və vaxtı bitib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Səhifə geri/irəli keşə daxil olarkən vaxtı bitib (çox güman ki, uzun çəkən səhifə gizlətmə emalçıları səbəbindən)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Səhifənin əsas çərçivədə boşaltma emalçısı var."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Səhifənin alt çərçivəsində boşaltma emalçısı var."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Brauzer istifadəçi agentini əvəzləmə başlığını dəyişib."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Video və ya audio yazmaq icazəsi verən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "WebDatabase funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "WebHID funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "WebLocks funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "WebNfc istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "WebOTPService istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "WebRTC funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "WebShare istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "WebSocket funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "WebTransport funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "WebXR funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Geri/irəli keş"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "İcra edilə bilmir"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Bu səbəblər əlaqəli deyil, yəni səhifənin birbaşa nəzarətindən kənar nəsə keşləməyə mane olub."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Ətraflı məlumat: geri/irəli keş uyğunluğu"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Əsas Çərçivə"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Geri/irəli keşindən təmin edilmir: geri/irəli keşi işə salmaq üçün Chrome'un geri/irəli düymələrindən istifadə edin və ya avtomatik uzaqlaşma və geri getmək üçün aşağıdakı test düyməsini istifadə edin."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "İcra edilə bilir"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Bu səbəblər işləkdir, yəni səhifəni geri/irəli keşə uyğun etmək üçün onlar təmizlənə bilər."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Geri/irəli keşindən uğurla təmin edildi."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Geri/irəli keşi test edin"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Test icra edilir"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Dəstək Gözlənilir"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Bu səbəblərə görə Chrome dəstəyi gözləmədədir, yəni onlar Chrome'un gələcək versiyasında səhifənin geri/irəli keş üçün uyğun olmasına mane olmayacaq."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "əlçatan deyil"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Naməlum status"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Arxa fon sorğusu"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Hadisələrin çəkilişini dayandırın"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Yalnız GET sorğusu ilə yüklənmiş səhifələr geri/irəli keş üçün uyğundur."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Yalnız status kodu 2XX olan səhifələr keşlənə bilər."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome keşdə olarkən JavaScript icra etmək cəhdi aşkarlayıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Geri/irəli keş işarələr vasitəsilə deaktiv edilib. Bu cihazda lokal olaraq aktiv etmək üçün chrome://flags/#back-forward-cache ünvanına keçin."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Geri/irəli keş əmr sətri vasitəsilə deaktiv edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Yaddaşda kifayət qədər yer olmadığına görə geri/irəli keş deaktiv edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Geri/irəli keş nümayəndə tərəfindən dəstəklənmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Geri/irəli keş ön vizuallaşdırıcı vasitəsilə deaktiv edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Səhifədə qeydiyyatdan keçmiş dinləyiciləri olan BroadcastChannel nümunəsi olduğuna görə onu keşləmək mümkün deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Saxlanmayan keşə nəzarət başlığı olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Keş qəsdən təmizlənib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Digər səhifənin keşlənməsinə icazə vermək üçün səhifə keşdən çıxarılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Qoşmaları olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Cihaz Dispetçerindən istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Uzaqlaşdıqda media pleyer oxudulurdu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API istifadə edən və oxutma vəziyyəti ayarlayan səhifələr geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API istifadə edən və əməliyyat idarəçiləri ayarlayan səhifələr geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler istifadə edən səhifələr geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Xüsusi işçi və ya iş dəstindən istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Çıxmadan əvvəl sənəd yüklənməsi bitməyib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Səhifə geri/irəli keşdə olarkən xidmət işçisi aktivləşdirilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Digər səhifənin keşlənməsinə icazə vermək üçün səhifə keşdən çıxarılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Media yayımına giriş icazəsi vermiş səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Portallardan istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Açıq IndexedDB bağlantısı olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Uyğun olmayan API'lar istifadə edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "JavaScript'in artırmalarla daxil edildiyi səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "StyleSheet'in artırmalarla daxil edildiyi səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Daxili xəta."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Klaviatura kilidindən istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Çıxmadan əvvəl səhifənin yüklənməsi bitməyib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Əsas resursunda keşlənməyən keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Əsas resursunda saxlanmayan keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Səhifə geri/irəli keşdən bərpa edilməzdən əvvəl naviqasiya ləğv edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Aktiv şəbəkə bağlantısı həddən artıq data qəbul etdiyinə görə səhifə keşdən çıxarılıb. Chrome səhifənin keşlənərkən qəbul edə biləcəyi data miqdarını məhdudlaşdırır."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Uçuşdaxili axtarış() və ya XHR funksiyası olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Aktiv şəbəkə sorğusu yönləndirildiyinə görə səhifə geri/irəli keşdən çıxarılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Şəbəkə bağlantısı çox uzun müddət açıq olduğu üçün səhifə keşdən çıxarılıb. Chrome səhifənin keşlənərkən data qəbul edə biləcəyi vaxt miqdarını məhdudlaşdırır."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Etibarlı cavab başlığı olmayan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Naviqasiya əsas çərçivədən başqa bir çərçivədə baş verib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Davam edən indeksləşdirilmiş DB əməliyyatları olan səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Uçuşdaxili şəbəkə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Uçuşdaxili axtarış şəbəkəsi tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Uçuşdaxili şəbəkə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Uçuşdaxili XHR şəbəkəsi tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Şəkildə şəkil funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Portallardan istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Çap UI funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Səhifə 'window.open()' istifadə edilərək açılıb və başqa tab ona istinad edir və ya səhifə bir pəncərə açıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Geri/irəli keşdəki səhifə üçün vizualizasiya prosesində xəta oldu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Geri/irəli keşdəki səhifə üçün vizualizasiya prosesi dayandırılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Audio çəkmək üçün icazə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Sensor icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Arxa fon sinxronizasiyası və ya əldə etmə icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Bildiriş icazələri tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Yaddaşa giriş tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Video çəkmək üçün icazə tələb edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Yalnız URL sxemi HTTP / HTTPS olan səhifələr keşlənə bilər."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Səhifə geri/irəli keşdə olarkən xidmət işçisi tərəfindən tələb edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Xidmət işçisi geri/irəli keşdə olarkən səhifəyə MessageEvent göndərməyə cəhd edib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Səhifə geri/irəli keşdə olarkən ServiceWorker qeydiyyatdan çıxarılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Xidmət işçisinin aktiv edilməsinə görə səhifə geri/irəli keşdən çıxarılıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome yenidən başladılıb və geri/irəli keş daxiletmələrini təmizləyib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Səhifədəki iFrame tamamlanmamış naviqasiyaya başlayıb."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Alt resursunda keşlənməyən keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Alt resursunda saxlanmayan keşə nəzarət funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Səhifə geri/irəli keşdə maksimal vaxtı keçib və vaxtı bitib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Səhifə geri/irəli keşə daxil olarkən vaxtı bitib (çox güman ki, uzun çəkən səhifə gizlətmə emalçıları səbəbindən)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Səhifənin əsas çərçivədə boşaltma emalçısı var."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Səhifənin alt çərçivəsində boşaltma emalçısı var."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Brauzer istifadəçi agentini əvəzləmə başlığını dəyişib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Video və ya audio yazmaq icazəsi verən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport funksiyası olan səhifələr geri/irəli keşə daxil ola bilmir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR funksiyasından istifadə edən səhifələr hazırda geri/irəli keş üçün uyğun deyil."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Geri/irəli keş"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "İcra edilə bilmir"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Bu səbəblər əlaqəli deyil, yəni səhifənin birbaşa nəzarətindən kənar nəsə keşləməyə mane olub."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Ətraflı məlumat: geri/irəli keş uyğunluğu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Əsas Çərçivə"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Geri/irəli keşindən təmin edilmir: geri/irəli keşi işə salmaq üçün Chrome'un geri/irəli düymələrindən istifadə edin və ya avtomatik uzaqlaşma və geri getmək üçün aşağıdakı test düyməsini istifadə edin."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "İcra edilə bilir"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Bu səbəblər işləkdir, yəni səhifəni geri/irəli keşə uyğun etmək üçün onlar təmizlənə bilər."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Geri/irəli keşindən uğurla təmin edildi."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Geri/irəli keşi test edin"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Test icra edilir"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Dəstək Gözlənilir"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Bu səbəblərə görə Chrome dəstəyi gözləmədədir, yəni onlar Chrome'un gələcək versiyasında səhifənin geri/irəli keş üçün uyğun olmasına mane olmayacaq."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "əlçatan deyil"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Naməlum status"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Göstəriləcək son nöqtə yoxdur"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Saxlayın"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Yenidən qoşun DevTools"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Təsdiq etmək üçün \"Enter\", yaxud ləğv etmək üçün \"Escape\" üzərinə basın)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Əmrləri dəyişdirmək üçün Tab istifadə edin. Əlçatan əmrlərə baxmaq üçün \"?\" yazın"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Əlçatan əmrlərə baxmaq üçün \"?\" yazın"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Faylı açın"

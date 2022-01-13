@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Gyorsítótár letiltása (ha a DevTools meg van nyitva)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Automatikus sötét mód kikapcsolása"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript letiltása"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP-formátum letiltása"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Kikapcsolás"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Ne rögzítsen aszinkron veremkivonatokat"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ne emuláljon CSS-médiatípust"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Ne legyen emulálva az automatikus sötét mód"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ne legyenek kiterjesztve a rácsvonalak"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Egyéni formázók engedélyezése"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Automatikus sötét mód bekapcsolása"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript engedélyezése"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP-formátum engedélyezése"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Engedélyezés"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Rácsvonalak kiterjesztése"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Fókuszált oldal emulálása"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Fókuszált oldalt emulál."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "A vizsgált oldalon engedélyezi az automatikus sötét módot."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "color-gamut CSS-médiafüggvény kényszerítése"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Konzolfiók megjelenítése"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "A rendszer által előnyben részesített színséma módosítva lett. A módosítás DevToolsra való alkalmazáshoz töltse újra az oldalt."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Dokkolás feloldása külön ablakban"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Fájl írása…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Tartalombiztonsági irányelvek – Eval"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Nem sikerült letölteni a szükséges ikont a manifestből"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Leírás"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "dolgozó"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Kizárólag a GET metódussal betöltött oldalak alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Kizárólag a 2XX állapotkódú oldalak gyorsítótárazhatók."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "A Chrome JavaScript végrehajtására tett kísérletet észlelt, amíg az oldal a gyorsítótárban volt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Az AppBannert kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Az előre-vissza gyorsítótárazást jelzők tiltják le. Keresse fel a chrome://flags/#back-forward-cache oldalt, ahol helyileg tudja erre az eszközre vonatkozóan engedélyezni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Az előre-vissza gyorsítótárazás le van tiltva a parancssorban."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "A rendszer letiltotta az előre-vissza gyorsítótárazást, mert nem áll rendelkezésre elegendő memória."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Az előre-vissza gyorsítótárazás meghatalmazó által nem támogatott."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Az előzetes megjelenítő számára le van tiltva az előre-vissza gyorsítótárazás."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Az oldal gyorsítótárazása nem lehetséges, mert regisztrált figyelőkkel rendelkező BroadcastChannel-példánya van."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Azok az oldalak, amelyek fejléce tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "A gyorsítótár kiürítése szándékosan történt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, hogy lehetővé tegye egy másik oldal gyorsítótárazását."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "A beépülő modult tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "A FileChooser API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "A File System Access API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "A Media Device Dispatchert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Az oldal elhagyása közben médialejátszó játszott le tartalmat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "A MediaSession API-t használó és lejátszási állapotot beállító oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "A MediaSession API-t használó és műveletkezelőket beállító oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "A SecurityHandler kezelőt használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "A Serial API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "A WebAuthentication API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "A WebBluetooth API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "A WebUSB API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "A dedikált feldolgozót vagy workletet használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Nem fejeződött be a dokumentum betöltése az oldal elhagyása előtt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Egy service worker fájl aktiválódott, amíg az oldal az előre-vissza gyorsítótárban volt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, hogy lehetővé tegye egy másik oldal gyorsítótárazását."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "A médiastreamhez hozzáférést biztosító oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "A portált használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Az IdleManager jelenleg nem alkalmas az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "A nyílt IndexedDB-kapcsolattal rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Nem megfelelő API-k használata."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Az az IPage-oldalak, amelyekbe JavaScript van bővítménnyel beszúrva, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Azok az oldalak, amelyekbe bővítmény szúrja be a StyleSheet fájlt, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Belső hiba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "A Billenntyűzár funkciót használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Nem fejeződött be az oldal betöltése az oldal elhagyása előtt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Azok az oldalak, amelyek fő erőforrása tartalmazza a cache-control:no-cache paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Azok az oldalak, amelyek fő erőforrása tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "A navigációt visszavonták, mielőtt az oldal visszaállítható lett volna az előre-vissza gyorsítótárazásból."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, mivel egy aktív hálózati kapcsolat túl sok adatot fogadott. A Chrome korlátozza az egyes oldalak által gyorsítótárazásuk közben fogadható adatok mennyiségét."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "A menet közbeni fetch() lekéréssel vagy XHR-rel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Az oldalt a rendszer kizárta az előre-vissza gyorsítótárból, mert egy aktív hálózati kérés átirányítást tartalmazott."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, mert túl sokáig volt nyitva egy hálózati kapcsolat. A Chrome korlátozza azt az időt, ameddig az egyes oldalak gyorsítótárazásuk közben adatokat fogadhat."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Azok az oldalak, amelyek nem rendelkeznek érvényes válasszal, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigáció történt a fő kerettől eltérő keretben."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "A folyamatban lévő indexelt DB-tranzakciókat tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "A menet közbeni hálózati kéréssel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "A menet közbeni lekérési hálózati kérést tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "A menet közbeni hálózati kéréssel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "A menet közbeni XHR-hálózati kérést tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "A PaymentManagert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "A Kép a képben funkciót használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "A portált használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "A Nyomtatás felhasználói felületet megjelenítő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Az oldal megnyitása a „window.open()” metódussal történt, és egy másik lap rá mutató hivatkozást tartalmaz, vagy az oldal ablakot nyitott meg."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Összeomlott az előre-vissza gyorsítótárban lévő oldal megjelenítési folyamata."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Az előre-vissza gyorsítótárban lévő oldallal kapcsolatos megjelenítési folyamatot leállította a rendszer."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "A hangrögzítésre engedélyt kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Azok az oldalak, amelyek érzékelőkhoz való hozzáférési jogosultságot kértek, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "A háttérszinkronizálást kérő vagy lekérési jogosultságot kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Azok az oldalak, amelyek MIDI-eszközökhöz való hozzáférési jogosultságot kértek, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Az értesítési engedélyt kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "A tárhelyhozzáférést kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "A videórögzítési engedélyt kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Csak azok az oldalak gyorsítótárazhatók, amelyek URL-sémája HTTP vagy HTTPS."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Az oldalt service worker igényelte, amíg az előre-vissza gyorsítótárazása folyamatban volt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Service worker fájl kísérelte meg elküldeni az előre-vissza gyorsítótárban lévő oldal számára a következőt: MessageEvent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "A rendszer törölte a ServiceWorker regisztrációját, amíg az oldal az előre-vissza gyorsítótárban volt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Az oldalt egy service worker fájl aktiválása miatt zárta ki a rendszer az előre-vissza gyorsítótárazásból."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "A Chrome újraindult, és kiürítette az előre-vissza gyorsítótárazott bejegyzéseket."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "A SharedWorkert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "A SpeechRecognizer API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "A SpeechSynthesist használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "Az oldalon lévő iframe navigációt indított, amely nem fejeződött be."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Azok az oldalak, amelyek alerőforrása tartalmazza a cache-control:no-cache paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Azok az oldalak, amelyek alerőforrása tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Az oldal túllépte a előre-vissza gyorsítótárban eltölthető időt, és lejárt."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Az oldal időtúllépést okozott az előre-vissza gyorsítótárazásakor (valószínűleg a sokáig futó pagehide kezelők miatt)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Az oldal fő keretében kiürítéskezelő található."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Az oldal valamelyik alkeretében kiürítéskezelő található."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "A böngésző megváltoztatta a felhasználói ügynök felülbírálási fejlécét."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Azok az oldalak, amelyek hozzáférést adtak a videó vagy a hang rögzítéséhez, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "A WebDatabase-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "A WebHID-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "A WebLocksot használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "A WebNfc-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "A WebOTPService API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "A WebRTC-vel készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "A WebShare-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "A WebSocket használatával készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "A WebTransport API-t tartalmazó oldalak nem kerülhetnek előre-vissza gyorsítótárba."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "A WebXR-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Előre-vissza gyorsítótárazás"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Nem végrehajtható"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Nincs mód intézkedésre e problémákkal kapcsolatban, azaz a gyorsítótárazást olyasmi okozta, amelyre nincs közvetlen befolyása az oldalnak."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "További információ: az előre-vissza gyorsítótárazásra vonatkozó jogosultság"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Fő keret"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Nem történt megjelenítés az előre-vissza gyorsítótárazásból: az előre-vissza gyorsítótárazás aktiválásához használja a Chrome Előre/Vissza gombját vagy az alábbi tesztgombot az automatikus előre-vissza navigációhoz."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Végrehajtható"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Ezek a problémák megoldhatók (pl. megtisztíthatók), hogy az oldal alkalmas legyen az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Sikeres megjelenítés az előre-vissza gyorsítótárazásból."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Előre-vissza gyorsítótárazás tesztelése"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Teszt futtatása folyamatban"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Támogatás függőben"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Ezen okok miatt a Chrome általi támogatás még függőben van, azaz előfordulhat, hogy az oldal a Chrome valamelyik jövőbeni verziójában alkalmas lesz az előre-vissza gyorsítótárazásra."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "nem áll rendelkezésre"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Ismeretlen állapot"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Lekérés a háttérben"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Események rögzítésének felfüggesztése"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Kizárólag a GET metódussal betöltött oldalak alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Kizárólag a 2XX állapotkódú oldalak gyorsítótárazhatók."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "A Chrome JavaScript végrehajtására tett kísérletet észlelt, amíg az oldal a gyorsítótárban volt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Az AppBannert kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Az előre-vissza gyorsítótárazást jelzők tiltják le. Keresse fel a chrome://flags/#back-forward-cache oldalt, ahol helyileg tudja erre az eszközre vonatkozóan engedélyezni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a parancssorban."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "A rendszer letiltotta az előre-vissza gyorsítótárazást, mert nem áll rendelkezésre elegendő memória."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Az előre-vissza gyorsítótárazás meghatalmazó által nem támogatott."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Az előzetes megjelenítő számára le van tiltva az előre-vissza gyorsítótárazás."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Az oldal gyorsítótárazása nem lehetséges, mert regisztrált figyelőkkel rendelkező BroadcastChannel-példánya van."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Azok az oldalak, amelyek fejléce tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "A gyorsítótár kiürítése szándékosan történt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, hogy lehetővé tegye egy másik oldal gyorsítótárazását."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "A beépülő modult tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "A FileChooser API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "A File System Access API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "A Media Device Dispatchert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Az oldal elhagyása közben médialejátszó játszott le tartalmat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "A MediaSession API-t használó és lejátszási állapotot beállító oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "A MediaSession API-t használó és műveletkezelőket beállító oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "A SecurityHandler kezelőt használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "A Serial API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "A WebAuthentication API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "A WebBluetooth API-t használó oldalak nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "A WebUSB API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "A dedikált feldolgozót vagy workletet használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Nem fejeződött be a dokumentum betöltése az oldal elhagyása előtt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Egy service worker fájl aktiválódott, amíg az oldal az előre-vissza gyorsítótárban volt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, hogy lehetővé tegye egy másik oldal gyorsítótárazását."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "A médiastreamhez hozzáférést biztosító oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "A portált használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Az IdleManager jelenleg nem alkalmas az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "A nyílt IndexedDB-kapcsolattal rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Nem megfelelő API-k használata."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Az az IPage-oldalak, amelyekbe JavaScript van bővítménnyel beszúrva, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Azok az oldalak, amelyekbe bővítmény szúrja be a StyleSheet fájlt, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Belső hiba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "A Billenntyűzár funkciót használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Nem fejeződött be az oldal betöltése az oldal elhagyása előtt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Azok az oldalak, amelyek fő erőforrása tartalmazza a cache-control:no-cache paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Azok az oldalak, amelyek fő erőforrása tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "A navigációt visszavonták, mielőtt az oldal visszaállítható lett volna az előre-vissza gyorsítótárazásból."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, mivel egy aktív hálózati kapcsolat túl sok adatot fogadott. A Chrome korlátozza az egyes oldalak által gyorsítótárazásuk közben fogadható adatok mennyiségét."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "A menet közbeni fetch() lekéréssel vagy XHR-rel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Az oldalt a rendszer kizárta az előre-vissza gyorsítótárból, mert egy aktív hálózati kérés átirányítást tartalmazott."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Az oldalt a rendszer kizárta a gyorsítótárból, mert túl sokáig volt nyitva egy hálózati kapcsolat. A Chrome korlátozza azt az időt, ameddig az egyes oldalak gyorsítótárazásuk közben adatokat fogadhat."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Azok az oldalak, amelyek nem rendelkeznek érvényes válasszal, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigáció történt a fő kerettől eltérő keretben."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "A folyamatban lévő indexelt DB-tranzakciókat tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "A menet közbeni hálózati kéréssel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "A menet közbeni lekérési hálózati kérést tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "A menet közbeni hálózati kéréssel rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "A menet közbeni XHR-hálózati kérést tartalmazó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "A PaymentManagert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "A Kép a képben funkciót használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "A portált használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "A Nyomtatás felhasználói felületet megjelenítő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Az oldal megnyitása a „window.open()” metódussal történt, és egy másik lap rá mutató hivatkozást tartalmaz, vagy az oldal ablakot nyitott meg."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Összeomlott az előre-vissza gyorsítótárban lévő oldal megjelenítési folyamata."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Az előre-vissza gyorsítótárban lévő oldallal kapcsolatos megjelenítési folyamatot leállította a rendszer."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "A hangrögzítésre engedélyt kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Azok az oldalak, amelyek érzékelőkhoz való hozzáférési jogosultságot kértek, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "A háttérszinkronizálást kérő vagy lekérési jogosultságot kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Azok az oldalak, amelyek MIDI-eszközökhöz való hozzáférési jogosultságot kértek, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Az értesítési engedélyt kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "A tárhelyhozzáférést kérő oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "A videórögzítési engedélyt kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Csak azok az oldalak gyorsítótárazhatók, amelyek URL-sémája HTTP vagy HTTPS."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Az oldalt service worker igényelte, amíg az előre-vissza gyorsítótárazása folyamatban volt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service worker fájl kísérelte meg elküldeni az előre-vissza gyorsítótárban lévő oldal számára a következőt: MessageEvent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "A rendszer törölte a ServiceWorker regisztrációját, amíg az oldal az előre-vissza gyorsítótárban volt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Az oldalt egy service worker fájl aktiválása miatt zárta ki a rendszer az előre-vissza gyorsítótárazásból."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "A Chrome újraindult, és kiürítette az előre-vissza gyorsítótárazott bejegyzéseket."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "A SharedWorkert használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "A SpeechRecognizer API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "A SpeechSynthesist használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Az oldalon lévő iframe navigációt indított, amely nem fejeződött be."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Azok az oldalak, amelyek alerőforrása tartalmazza a cache-control:no-cache paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Azok az oldalak, amelyek alerőforrása tartalmazza a cache-control:no-store paramétert, nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Az oldal túllépte a előre-vissza gyorsítótárban eltölthető időt, és lejárt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Az oldal időtúllépést okozott az előre-vissza gyorsítótárazásakor (valószínűleg a sokáig futó pagehide kezelők miatt)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Az oldal fő keretében kiürítéskezelő található."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Az oldal valamelyik alkeretében kiürítéskezelő található."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "A böngésző megváltoztatta a felhasználói ügynök felülbírálási fejlécét."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Azok az oldalak, amelyek hozzáférést adtak a videó vagy a hang rögzítéséhez, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "A WebDatabase-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "A WebHID-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "A WebLocksot használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "A WebNfc-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "A WebOTPService API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "A WebRTC-vel készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "A WebShare-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "A WebSocket használatával készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "A WebTransport API-t tartalmazó oldalak nem kerülhetnek előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "A WebXR-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Előre-vissza gyorsítótárazás"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Nem végrehajtható"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Nincs mód intézkedésre e problémákkal kapcsolatban, azaz a gyorsítótárazást olyasmi okozta, amelyre nincs közvetlen befolyása az oldalnak."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "További információ: az előre-vissza gyorsítótárazásra vonatkozó jogosultság"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Fő keret"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Nem történt megjelenítés az előre-vissza gyorsítótárazásból: az előre-vissza gyorsítótárazás aktiválásához használja a Chrome Előre/Vissza gombját vagy az alábbi tesztgombot az automatikus előre-vissza navigációhoz."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Végrehajtható"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Ezek a problémák megoldhatók (pl. megtisztíthatók), hogy az oldal alkalmas legyen az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Sikeres megjelenítés az előre-vissza gyorsítótárazásból."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Előre-vissza gyorsítótárazás tesztelése"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Teszt futtatása folyamatban"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Támogatás függőben"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Ezen okok miatt a Chrome általi támogatás még függőben van, azaz előfordulhat, hogy az oldal a Chrome valamelyik jövőbeni verziójában alkalmas lesz az előre-vissza gyorsítótárazásra."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "nem áll rendelkezésre"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Ismeretlen állapot"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "URL:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nincsenek megjeleníthető végpontok"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Mentés"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "A(z) DevTools újracsatlakoztatása"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (A megerősítéshez nyomja meg az „Enter”, a megszakításhoz az „Escape” gombot.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "A Tab billentyűvel válthat a parancsok között. A rendelkezésre álló parancsok megtekintéséhez írja be a következőt: „?”."
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "A rendelkezésre álló parancsok megtekintéséhez írja be a következőt: „?”"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Fájl megnyitása"

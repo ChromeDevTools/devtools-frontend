@@ -644,9 +644,6 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Slökkva á skyndiminni (þegar DevTools er opið)"
   },
-  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
-    "message": "Slökkva á sjálfvirkri dökkri stillingu"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Gera JavaScript óvirkt"
   },
@@ -662,9 +659,6 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Gera WebP snið óvirkt"
   },
-  "core/sdk/sdk-meta.ts | disabledDarkMode": {
-    "message": "Slökkva"
-  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Ekki fanga ósamstilltar staflaraðir"
   },
@@ -679,9 +673,6 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ekki líkja eftir CSS-efnisgerð"
-  },
-  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
-    "message": "Ekki líkja eftir sjálfvirkri dökkri stillingu"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ekki stækka hnitalínur"
@@ -752,9 +743,6 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Virkja sérstillt snið"
   },
-  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
-    "message": "Kveikja á sjálfvirkri dökkri stillingu"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Kveikja á JavaScript"
   },
@@ -769,9 +757,6 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Virkja WebP-snið"
-  },
-  "core/sdk/sdk-meta.ts | enabledDarkMode": {
-    "message": "Virkja"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Stækka hnitalínur"
@@ -896,11 +881,14 @@
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAFocusedPage": {
     "message": "Líkja eftir síðu í fókus"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
+    "message": "Enable automatic dark mode"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Líkir eftir síðu í fókus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Virkjar sjálfvirka dökka stillingu fyrir síðuna sem skoðuð er."
+    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Þvingar fram CSS-efniseiginleika color-gamut"
@@ -1054,9 +1042,6 @@
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Sýna stjórnborðsskúffu"
-  },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "Litaval sem kerfið hefur í forgangi hefur breyst. Þú verður að endurhlaða til að þessi breyting á forritunartólunum taki gildi."
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Losa í aðskilinn glugga"
@@ -1321,6 +1306,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Skrá skrifuð…"
+  },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Efnisöryggisstefna – mat"
@@ -2078,6 +2066,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Ekki tókst að sækja nauðsynlegt tákn úr upplýsingaskránni"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "Dark background color"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "Dark theme color"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "Lýsing"
   },
@@ -2341,339 +2335,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "virki"
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Aðeins er hægt að vista síður sem er hlaðið í gegnum GET-beiðni í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Aðeins er hægt að vista síður með stöðukóða 2XX í skyndiminni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome greindi tilraun til að keyra JavaScript í skyndiminni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um AppBanner í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Flögg hafa slökkt á skyndiminni til baka/áfram. Opnaðu chrome://flags/#back-forward-cache til að virkja það staðbundið í þessu tæki."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Skipanalínan hefur slökkt á skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Slökkt er á skyndiminni til baka/áfram vegna of lítils minnis."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Fulltrúi styður ekki skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Skyndiminni til baka/áfram er óvirkt fyrir forteiknun."
-  },
-  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "Ekki er hægt að vista síðuna í skyndiminni vegna þess að hún inniheldur BroadcastChannel-tilvik með skráðum hlustendum."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Ekki er hægt að vista síður með hausinn cache-control:no-store í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "Skyndiminnið var hreinsað viljandi."
-  },
-  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "Síðan var flutt úr skyndiminninu til að koma annarri síðu fyrir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem innihalda viðbætur í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil FileChooser í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Ekki er hægt að vista síður sem nota File System Access-forritaskil í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Ekki er hægt að vista síður sem nota verkefnastjóra geymslumiðla í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "Efnisspilari var í gangi þegar flett var í burtu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil MediaSession og stilla spilunarstöðu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil MediaSession og stilla hjálparforrit aðgerða í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota SecurityHandler í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil Serial í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil WebAuthetication í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil WebBluetooth í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Ekki er hægt að vista síður sem nota forritaskil WebUSB í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota tilgreinda skriftu (dedicated worker) eða einfalda skriftu (worklet) í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "Skjalið hlóðst ekki að fullu áður en flett var í burtu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "Þjónustuskrifta (service worker) var virkjuð á meðan síðan var í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "Síðan var flutt úr skyndiminninu til að koma annarri síðu fyrir."
-  },
-  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem heimila aðgang að efnisstraumi í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota gáttir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota IdleManager í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Eins og stendur er ekki hægt að vista síður með opna IndexedDB-tengingu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Ógild forritaskil voru notuð."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "Eins og stendur er ekki hægt að vista síður þar sem JavaScript er komið fyrir með viðbótum í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Eins og stendur er ekki hægt að vista síður þar sem StyleSheet er komið fyrir með viðbótum í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Innri villa."
-  },
-  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota lyklaborðslás í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "Síðan hlóðst ekki að fullu áður en flett var í burtu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Ekki er hægt að vista síður með aðaltilfangið cache-control:no-cache í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Ekki er hægt að vista síður með aðaltilfangið cache-control:no-store í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Hætt var við flettingu áður en hægt var að endurheimta síðuna úr skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "Síðan var flutt úr skyndiminni vegna þess að virk nettenging tók við of miklu gagnamagni. Chrome takmarkar gagnamagnið sem síða getur tekið við í skyndiminni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem eru með fetch() eða XHR í vinnslu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "Síðan var flutt úr skyndiminni til baka/áfram vegna þess að virk netkerfisbeiðni fól í sér framsendingu."
-  },
-  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "Síðan var flutt úr skyndiminninu vegna þess að nettenging var opin of lengi. Chrome takmarkar tímann sem síða getur tekið við gögnum í skyndiminni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Ekki er hægt að vista síður sem eru með ógildan svarhaus í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Fletting átti sér stað í ramma sem er ekki aðalramminn."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Eins og stendur er ekki hægt að vista síður með viðvarandi, skráðar DB-færslur í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Eins og stendur er ekki hægt að vista síður með netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Eins og stendur er ekki hægt að vista síður með beiðnir um að sækja netkerfi í vinnslu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Eins og stendur er ekki hægt að vista síður með netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Eins og stendur er ekki hægt að vista síður með XHR-netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota PaymentManager í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota mynd í mynd í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota gáttir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Ekki er hægt að vista síður sem birta prentviðmót í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Síðan var opnuð með „window.open()“ og annar flipi vísar á síðuna, eða síðan opnaði glugga."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "Hrun varð við teiknunarferli síðu í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "Teiknunarferli síðu í skyndiminni til baka/áfram var stöðvað."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um heimild fyrir hljóðupptöku í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um skynjaraheimildir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um að samstilla í bakgrunni eða að sækja heimildir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um MIDI-heimildir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um tilkynningaheimildir í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um aðgang að geymslurými í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um heimild fyrir myndskeiðsupptöku í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Aðeins er hægt að vista síður með HTTP- / HTTPS-vefslóðarskema í skyndiminni."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "Þjónustuskrifta (service worker) gerði tilkall til síðunnar á meðan hún var í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "Þjónustuskrifta (service worker) reyndi að senda síðu í skyndiminni til baka/áfram MessageEvent."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "Þjónususkrifta (service worker) var afskráð á meðan síða var í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "Síðan var flutt úr skyndiminni til baka/áfram vegna virkjunar þjónustuskriftu (service worker)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome var endurræstur og hreinsaði færslur í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota SharedWorker í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota SpeechRecognizer í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota SpeechSynthesis í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "iframe á síðunni hóf flettingu sem var ekki lokið við."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Ekki er hægt að vista síður með undirtilfangið cache-control:no-cache í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Ekki er hægt að vista síður með undirtilfangið cache-control:no-store í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "Síðan fór yfir hámarkstíma í skyndiminni til baka/áfram og rann út á tíma."
-  },
-  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "Síðan rann út á tíma við vistun í skyndiminni til baka/áfram (líklega vegna langvarandi keyrslu pagehide-hjálparforrita)."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "Síðan er með hreinsunarskipun (unload handler) í aðalrammanum."
-  },
-  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "Síðan er með hreinsunarskipun (unload handler) í undirramma."
-  },
-  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Vafrinn breytti hnekkingarhaus aðgangsbúnaðar."
-  },
-  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem hafa veitt aðgang að mynd- og hljóðupptökum í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebDatabase í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebHID í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebLocks í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Ekki er hægt að vista síður sem nota WebNfc í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebOTPService í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Ekki er hægt að vista síður með WebRTC í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebShare í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Ekki er hægt að vista síður með WebSocket í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Ekki er hægt að vista síður með WebTransport í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebXR í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Skyndiminni til baka/áfram"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Ekki hægt að grípa til aðgerða"
-  },
-  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Ekki er hægt að bregðast við þessum ástæðum, þ.e. eitthvað sem síðan hefur ekki beina stjórn yfir kom í veg fyrir geymslu í skyndiminni."
-  },
-  "panels/application/BackForwardCacheView.ts | learnMore": {
-    "message": "Frekari upplýsingar um gjaldgengi skyndiminnis fyrir til baka/áfram"
-  },
-  "panels/application/BackForwardCacheView.ts | mainFrame": {
-    "message": "Aðalrammi"
-  },
-  "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Ekki endurheimt úr skyndiminni fyrir til baka/áfram: Til að ræsa skyndiminni fyrir til baka/áfram skal nota bakk-/áframhnappa Chrome eða nota prófunarhnappinn hér að neðan til að fletta sjálfkrafa í burtu og til baka."
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Hægt að grípa til aðgerða"
-  },
-  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Hægt er að grípa til aðgerða vegna þessara ástæðna, þ.e. hægt er að hreinsa þær til að hægt sé að vista síðuna í skyndiminni til baka/áfram."
-  },
-  "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Endurheimt úr skyndiminni fyrir til baka/áfram."
-  },
-  "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Prófun skyndiminnis fyrir til baka/áfram"
-  },
-  "panels/application/BackForwardCacheView.ts | runningTest": {
-    "message": "Keyrir prófun"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Þjónusta í bið"
-  },
-  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Stuðningur Chrome við þessar ástæður er í bið, þ.e. þær koma ekki í veg fyrir að hægt verði að vista síðuna í skyndiminni til baka/áfram í nýrri útgáfum af Chrome."
-  },
-  "panels/application/BackForwardCacheView.ts | unavailable": {
-    "message": "ekki í boði"
-  },
-  "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "Staða ekki þekkt"
-  },
-  "panels/application/BackForwardCacheView.ts | url": {
-    "message": "Vefslóð:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Gagnaflutningur í bakgrunni"
@@ -3232,6 +2893,387 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stöðva upptöku viðburða"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Aðeins er hægt að vista síður sem er hlaðið í gegnum GET-beiðni í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Aðeins er hægt að vista síður með stöðukóða 2XX í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome greindi tilraun til að keyra JavaScript í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um AppBanner í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Flögg hafa slökkt á skyndiminni til baka/áfram. Opnaðu chrome://flags/#back-forward-cache til að virkja það staðbundið í þessu tæki."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Skipanalínan hefur slökkt á skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Slökkt er á skyndiminni til baka/áfram vegna of lítils minnis."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Fulltrúi styður ekki skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Skyndiminni til baka/áfram er óvirkt fyrir forteiknun."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Ekki er hægt að vista síðuna í skyndiminni vegna þess að hún inniheldur BroadcastChannel-tilvik með skráðum hlustendum."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Ekki er hægt að vista síður með hausinn cache-control:no-store í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Skyndiminnið var hreinsað viljandi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Síðan var flutt úr skyndiminninu til að koma annarri síðu fyrir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem innihalda viðbætur í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil FileChooser í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Ekki er hægt að vista síður sem nota File System Access-forritaskil í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Ekki er hægt að vista síður sem nota verkefnastjóra geymslumiðla í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Efnisspilari var í gangi þegar flett var í burtu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil MediaSession og stilla spilunarstöðu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil MediaSession og stilla hjálparforrit aðgerða í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota SecurityHandler í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil Serial í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil WebAuthetication í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil WebBluetooth í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Ekki er hægt að vista síður sem nota forritaskil WebUSB í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota tilgreinda skriftu (dedicated worker) eða einfalda skriftu (worklet) í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Skjalið hlóðst ekki að fullu áður en flett var í burtu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "App Banner was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Chrome Password Manager was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "DOM distillation was in progress upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "DOM Distiller Viewer was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Back/forward cache is disabled due to extensions using messaging API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Back/forward cache is disabled due to extensions."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "The offline page was shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "There were permission requests upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Popup blocker was present upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Safe Browsing details were shown upon navigating away."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Þjónustuskrifta (service worker) var virkjuð á meðan síðan var í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Síðan var flutt úr skyndiminninu til að koma annarri síðu fyrir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem heimila aðgang að efnisstraumi í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota gáttir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota IdleManager í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Eins og stendur er ekki hægt að vista síður með opna IndexedDB-tengingu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Ógild forritaskil voru notuð."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Eins og stendur er ekki hægt að vista síður þar sem JavaScript er komið fyrir með viðbótum í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Eins og stendur er ekki hægt að vista síður þar sem StyleSheet er komið fyrir með viðbótum í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | internalError": {
+    "message": "Innri villa."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota lyklaborðslás í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | loading": {
+    "message": "Síðan hlóðst ekki að fullu áður en flett var í burtu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Ekki er hægt að vista síður með aðaltilfangið cache-control:no-cache í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Ekki er hægt að vista síður með aðaltilfangið cache-control:no-store í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Hætt var við flettingu áður en hægt var að endurheimta síðuna úr skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Síðan var flutt úr skyndiminni vegna þess að virk nettenging tók við of miklu gagnamagni. Chrome takmarkar gagnamagnið sem síða getur tekið við í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem eru með fetch() eða XHR í vinnslu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Síðan var flutt úr skyndiminni til baka/áfram vegna þess að virk netkerfisbeiðni fól í sér framsendingu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Síðan var flutt úr skyndiminninu vegna þess að nettenging var opin of lengi. Chrome takmarkar tímann sem síða getur tekið við gögnum í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Ekki er hægt að vista síður sem eru með ógildan svarhaus í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Fletting átti sér stað í ramma sem er ekki aðalramminn."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Eins og stendur er ekki hægt að vista síður með viðvarandi, skráðar DB-færslur í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Eins og stendur er ekki hægt að vista síður með netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Eins og stendur er ekki hægt að vista síður með beiðnir um að sækja netkerfi í vinnslu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Eins og stendur er ekki hægt að vista síður með netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Eins og stendur er ekki hægt að vista síður með XHR-netkerfisbeiðni í vinnslu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota PaymentManager í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota mynd í mynd í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | portal": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota gáttir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | printing": {
+    "message": "Ekki er hægt að vista síður sem birta prentviðmót í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Síðan var opnuð með „window.open()“ og annar flipi vísar á síðuna, eða síðan opnaði glugga."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Hrun varð við teiknunarferli síðu í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Teiknunarferli síðu í skyndiminni til baka/áfram var stöðvað."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um heimild fyrir hljóðupptöku í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um skynjaraheimildir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um að samstilla í bakgrunni eða að sækja heimildir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um MIDI-heimildir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um tilkynningaheimildir í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um aðgang að geymslurými í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem biðja um heimild fyrir myndskeiðsupptöku í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Aðeins er hægt að vista síður með HTTP- / HTTPS-vefslóðarskema í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Þjónustuskrifta (service worker) gerði tilkall til síðunnar á meðan hún var í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Þjónustuskrifta (service worker) reyndi að senda síðu í skyndiminni til baka/áfram MessageEvent."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Þjónususkrifta (service worker) var afskráð á meðan síða var í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Síðan var flutt úr skyndiminni til baka/áfram vegna virkjunar þjónustuskriftu (service worker)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome var endurræstur og hreinsaði færslur í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota SharedWorker í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota SpeechRecognizer í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota SpeechSynthesis í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe á síðunni hóf flettingu sem var ekki lokið við."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Ekki er hægt að vista síður með undirtilfangið cache-control:no-cache í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Ekki er hægt að vista síður með undirtilfangið cache-control:no-store í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeout": {
+    "message": "Síðan fór yfir hámarkstíma í skyndiminni til baka/áfram og rann út á tíma."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Síðan rann út á tíma við vistun í skyndiminni til baka/áfram (líklega vegna langvarandi keyrslu pagehide-hjálparforrita)."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Síðan er með hreinsunarskipun (unload handler) í aðalrammanum."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Síðan er með hreinsunarskipun (unload handler) í undirramma."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Vafrinn breytti hnekkingarhaus aðgangsbúnaðar."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem hafa veitt aðgang að mynd- og hljóðupptökum í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebDatabase í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webHID": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebHID í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebLocks í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Ekki er hægt að vista síður sem nota WebNfc í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebOTPService í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Ekki er hægt að vista síður með WebRTC í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webShare": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebShare í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Ekki er hægt að vista síður með WebSocket í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Ekki er hægt að vista síður með WebTransport í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webXR": {
+    "message": "Eins og stendur er ekki hægt að vista síður sem nota WebXR í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
+    "message": "Skyndiminni til baka/áfram"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantial": {
+    "message": "Ekki hægt að grípa til aðgerða"
+  },
+  "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Ekki er hægt að bregðast við þessum ástæðum, þ.e. eitthvað sem síðan hefur ekki beina stjórn yfir kom í veg fyrir geymslu í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheView.ts | learnMore": {
+    "message": "Frekari upplýsingar um gjaldgengi skyndiminnis fyrir til baka/áfram"
+  },
+  "panels/application/components/BackForwardCacheView.ts | mainFrame": {
+    "message": "Aðalrammi"
+  },
+  "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
+    "message": "Ekki endurheimt úr skyndiminni fyrir til baka/áfram: Til að ræsa skyndiminni fyrir til baka/áfram skal nota bakk-/áframhnappa Chrome eða nota prófunarhnappinn hér að neðan til að fletta sjálfkrafa í burtu og til baka."
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Hægt að grípa til aðgerða"
+  },
+  "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Hægt er að grípa til aðgerða vegna þessara ástæðna, þ.e. hægt er að hreinsa þær til að hægt sé að vista síðuna í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
+    "message": "Endurheimt úr skyndiminni fyrir til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheView.ts | runTest": {
+    "message": "Prófun skyndiminnis fyrir til baka/áfram"
+  },
+  "panels/application/components/BackForwardCacheView.ts | runningTest": {
+    "message": "Keyrir prófun"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPending": {
+    "message": "Þjónusta í bið"
+  },
+  "panels/application/components/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Stuðningur Chrome við þessar ástæður er í bið, þ.e. þær koma ekki í veg fyrir að hægt verði að vista síðuna í skyndiminni til baka/áfram í nýrri útgáfum af Chrome."
+  },
+  "panels/application/components/BackForwardCacheView.ts | unavailable": {
+    "message": "ekki í boði"
+  },
+  "panels/application/components/BackForwardCacheView.ts | unknown": {
+    "message": "Staða ekki þekkt"
+  },
+  "panels/application/components/BackForwardCacheView.ts | url": {
+    "message": "Vefslóð:"
   },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Engir endastaðir til að birta"
@@ -11540,6 +11582,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Vista"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "Debugging connection was closed. Reason: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Tengjast DevTools aftur"
   },
@@ -12104,8 +12149,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Ýttu á „Enter“ til að staðfesta eða „Escape“ til að hætta við)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Notaðu dálkalykilinn til að skipta á milli skipana. Sláðu inn „?“ til að sjá tiltækar skipanir"
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
+    "message": "Sláðu inn „?“ til að sjá tiltækar skipanir"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Opna skrá"

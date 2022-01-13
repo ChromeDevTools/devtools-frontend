@@ -20,7 +20,10 @@ template("node_action") {
 
     _full_script_location = devtools_location_prepend + invoker.script
 
-    inputs += [ _full_script_location ]
+    inputs += [
+      _full_script_location,
+      devtools_location_prepend + "scripts/build/ninja/write-if-changed.js",
+    ]
 
     args = [ rebase_path(_full_script_location, root_build_dir) ] + invoker.args
   }

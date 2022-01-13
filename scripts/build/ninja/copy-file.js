@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
+const {writeIfChanged} = require('./write-if-changed.js');
 const [, , src, dest] = process.argv;
 
 const srcPath = path.join(process.cwd(), src);
@@ -23,7 +24,7 @@ if (fileExists(destPath)) {
 // Force a write to the target filesystem, since by default the ninja
 // toolchain will create a hardlink, which in turn reflects changes in
 // gen and resources/inspector back to //front_end.
-fs.writeFileSync(destPath, srcContents);
+writeIfChanged(destPath, srcContents);
 
 /**
  * Case sensitive implementation of a file look up.

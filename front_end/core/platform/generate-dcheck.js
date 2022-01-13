@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs');
 const path = require('path');
+const {writeIfChanged} = require('../../../scripts/build/ninja/write-if-changed.js');
 const [, , targetGenDir] = process.argv;
 
 let functionImplementation = '';
@@ -16,6 +16,6 @@ if (process.argv.includes('--should-dcheck')) {
 `;
 }
 
-fs.writeFileSync(
+writeIfChanged(
     path.join(targetGenDir, 'dcheck.js'),
     `export function DCHECK(condition, message = 'DCHECK') {${functionImplementation}}`);

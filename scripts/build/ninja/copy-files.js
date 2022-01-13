@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
+const {writeIfChanged} = require('./write-if-changed.js');
 const [, , src, dest, files] = process.argv;
 
 for (const file of files.split(',')) {
@@ -24,7 +25,7 @@ for (const file of files.split(',')) {
   // Force a write to the target filesystem, since by default the ninja
   // toolchain will create a hardlink, which in turn reflects changes in
   // gen and resources/inspector back to //front_end.
-  fs.writeFileSync(destPath, srcContents);
+  writeIfChanged(destPath, srcContents);
 }
 
 /**

@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const {argv} = require('yargs');
+const {writeIfChanged} = require('./ninja/write-if-changed.js');
 
 const {template} = argv;
 
@@ -32,5 +33,5 @@ const templateContent = fs.readFileSync(template, 'utf-8');
 
 for (const entrypoint of entrypoints) {
   const rewrittenTemplateContent = templateContent.replace(new RegExp('%ENTRYPOINT_NAME%', 'g'), entrypoint);
-  fs.writeFileSync(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
+  writeIfChanged(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
 }

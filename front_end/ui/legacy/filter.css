@@ -65,6 +65,7 @@
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
+  line-height: 1.2;
 }
 
 .filter-bitset-filter span:focus-visible {

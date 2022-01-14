@@ -10,12 +10,12 @@ import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers
 
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
-type ProtocolCommand = keyof ProtocolMapping.Commands;
-type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
-type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
-type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
+export type ProtocolCommand = keyof ProtocolMapping.Commands;
+export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
+export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
+export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
     Omit<ProtocolResponse<C>, 'getError'>;
-type MessageCallback = (result: string|Object) => void;
+export type MessageCallback = (result: string|Object) => void;
 
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.

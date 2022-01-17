@@ -6,6 +6,7 @@ import("../../third_party/typescript/typescript.gni")
 
 node_ts_library("shared") {
   sources = [
+    "async-scope.ts",
     "config.ts",
     "helper.ts",
     "mocha-extensions.ts",

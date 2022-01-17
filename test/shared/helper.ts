@@ -9,7 +9,7 @@ import * as puppeteer from 'puppeteer';
 import {reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
-import {AsyncScope} from './mocha-extensions.js';
+import {AsyncScope} from './async-scope.js';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

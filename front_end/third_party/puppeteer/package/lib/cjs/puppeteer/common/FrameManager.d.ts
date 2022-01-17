@@ -53,7 +53,6 @@ export declare class FrameManager extends EventEmitter {
     private _contextIdToContext;
     private _isolatedWorlds;
     private _mainFrame;
-    private _disconnectPromise?;
     constructor(client: CDPSession, page: Page, ignoreHTTPSErrors: boolean, timeoutSettings: TimeoutSettings);
     private setupEventListeners;
     initialize(client?: CDPSession): Promise<void>;

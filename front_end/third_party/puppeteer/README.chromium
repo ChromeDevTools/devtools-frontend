@@ -1,7 +1,7 @@
 Name: Puppeteer
 Short Name: Puppeteer
 URL: https://github.com/puppeteer/puppeteer
-Version: 10.4.0
+Version: 13.1.0
 License: Apache-2.0
 License File: package/LICENSE
 Security Critical: no

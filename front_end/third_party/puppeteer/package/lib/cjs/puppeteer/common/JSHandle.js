@@ -46,11 +46,12 @@ function createJSHandle(context, remoteObject) {
     const frame = context.frame();
     if (remoteObject.subtype === 'node' && frame) {
         const frameManager = frame._frameManager;
-        return new ElementHandle(context, context._client, remoteObject, frameManager.page(), frameManager);
+        return new ElementHandle(context, context._client, remoteObject, frame, frameManager.page(), frameManager);
     }
     return new JSHandle(context, context._client, remoteObject);
 }
 exports.createJSHandle = createJSHandle;
+const applyOffsetsToQuad = (quad, offsetX, offsetY) => quad.map((part) => ({ x: part.x + offsetX, y: part.y + offsetY }));
 /**
  * Represents an in-page JavaScript object. JSHandles can be created with the
  * {@link Page.evaluateHandle | page.evaluateHandle} method.
@@ -256,10 +257,11 @@ class ElementHandle extends JSHandle {
     /**
      * @internal
      */
-    constructor(context, client, remoteObject, page, frameManager) {
+    constructor(context, client, remoteObject, frame, page, frameManager) {
         super(context, client, remoteObject);
         this._client = client;
         this._remoteObject = remoteObject;
+        this._frame = frame;
         this._page = page;
         this._frameManager = frameManager;
     }
@@ -364,6 +366,32 @@ class ElementHandle extends JSHandle {
         if (error)
             throw new Error(error);
     }
+    async _getOOPIFOffsets(frame) {
+        let offsetX = 0;
+        let offsetY = 0;
+        while (frame.parentFrame()) {
+            const parent = frame.parentFrame();
+            if (!frame.isOOPFrame()) {
+                frame = parent;
+                continue;
+            }
+            const { backendNodeId } = await parent._client.send('DOM.getFrameOwner', {
+                frameId: frame._id,
+            });
+            const { quads } = await parent._client.send('DOM.getContentQuads', {
+                backendNodeId: backendNodeId,
+            });
+            if (!quads || !quads.length) {
+                break;
+            }
+            const protocolQuads = quads.map((quad) => this._fromProtocolQuad(quad));
+            const topLeftCorner = protocolQuads[0][0];
+            offsetX += topLeftCorner.x;
+            offsetY += topLeftCorner.y;
+            frame = parent;
+        }
+        return { offsetX, offsetY };
+    }
     /**
      * Returns the middle point within an element unless a specific offset is provided.
      */
@@ -374,15 +402,17 @@ class ElementHandle extends JSHandle {
                 objectId: this._remoteObject.objectId,
             })
                 .catch(helper_js_1.debugError),
-            this._client.send('Page.getLayoutMetrics'),
+            this._page.client().send('Page.getLayoutMetrics'),
         ]);
         if (!result || !result.quads.length)
             throw new Error('Node is either not clickable or not an HTMLElement');
         // Filter out quads that have too small area to click into.
         // Fallback to `layoutViewport` in case of using Firefox.
         const { clientWidth, clientHeight } = layoutMetrics.cssLayoutViewport || layoutMetrics.layoutViewport;
+        const { offsetX, offsetY } = await this._getOOPIFOffsets(this._frame);
         const quads = result.quads
             .map((quad) => this._fromProtocolQuad(quad))
+            .map((quad) => applyOffsetsToQuad(quad, offsetX, offsetY))
             .map((quad) => this._intersectQuadWithViewport(quad, clientWidth, clientHeight))
             .filter((quad) => computeQuadArea(quad) > 1);
         if (!quads.length)
@@ -669,12 +699,13 @@ class ElementHandle extends JSHandle {
         const result = await this._getBoxModel();
         if (!result)
             return null;
+        const { offsetX, offsetY } = await this._getOOPIFOffsets(this._frame);
         const quad = result.model.border;
         const x = Math.min(quad[0], quad[2], quad[4], quad[6]);
         const y = Math.min(quad[1], quad[3], quad[5], quad[7]);
         const width = Math.max(quad[0], quad[2], quad[4], quad[6]) - x;
         const height = Math.max(quad[1], quad[3], quad[5], quad[7]) - y;
-        return { x, y, width, height };
+        return { x: x + offsetX, y: y + offsetY, width, height };
     }
     /**
      * This method returns boxes of the element, or `null` if the element is not visible.
@@ -688,12 +719,13 @@ class ElementHandle extends JSHandle {
         const result = await this._getBoxModel();
         if (!result)
             return null;
+        const { offsetX, offsetY } = await this._getOOPIFOffsets(this._frame);
         const { content, padding, border, margin, width, height } = result.model;
         return {
-            content: this._fromProtocolQuad(content),
-            padding: this._fromProtocolQuad(padding),
-            border: this._fromProtocolQuad(border),
-            margin: this._fromProtocolQuad(margin),
+            content: applyOffsetsToQuad(this._fromProtocolQuad(content), offsetX, offsetY),
+            padding: applyOffsetsToQuad(this._fromProtocolQuad(padding), offsetX, offsetY),
+            border: applyOffsetsToQuad(this._fromProtocolQuad(border), offsetX, offsetY),
+            margin: applyOffsetsToQuad(this._fromProtocolQuad(margin), offsetX, offsetY),
             width,
             height,
         };

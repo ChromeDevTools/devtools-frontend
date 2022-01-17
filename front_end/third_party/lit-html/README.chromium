@@ -1,9 +1,9 @@
-Name: An efficient, expressive, extensible HTML templating library for JavaScript
+Name: Lit-HTML
 Short Name: lit-html
 URL: https://github.com/polymer/lit-html
 Version: 2.0.2
 License: BSD-3
-License File: LICENSE
+License File: package/LICENSE
 Security Critical: no
 
 Description:

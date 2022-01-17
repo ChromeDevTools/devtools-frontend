@@ -1,9 +1,9 @@
-Name: CodeMirror is a versatile text editor implemented in JavaScript for the browser.
+Name: CodeMirror 5
 Short Name: CodeMirror
 URL: https://github.com/codemirror/CodeMirror/
 Version: 5.61.0
 License: MIT
-License File: LICENSE
+License File: package/LICENSE
 Security Critical: no
 
 Description:

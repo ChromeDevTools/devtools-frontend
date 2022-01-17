@@ -29,7 +29,10 @@ group("devtools_all_files") {
 
 group("devtools_frontend_resources") {
   public_deps = devtools_frontend_resources_deps
-  deps = [ ":assert_grd" ]
+  deps = [
+    ":assert_grd",
+    ":assert_third_party_readmes",
+  ]
 }
 
 group("generate_devtools_inspector_overlay_resources") {
@@ -56,6 +59,27 @@ action("assert_grd") {
   ]
 
   outputs = [ "$target_gen_dir/assert_grd.stamp" ]
+}
+
+action("assert_third_party_readmes") {
+  script = "scripts/build/assert_third_party_readmes.py"
+
+  deps = [ ":expected_grd_files" ]
+
+  inputs = [
+    "$target_gen_dir/expected_grd_files.json",
+    "front_end/third_party/additional_readme_paths.json",
+  ]
+
+  args = [
+    rebase_path("$target_gen_dir/expected_grd_files.json", root_build_dir),
+    rebase_path("front_end/third_party/additional_readme_paths.json",
+                root_build_dir),
+    rebase_path("$target_gen_dir/assert_third_party_readmes.stamp",
+                root_build_dir),
+  ]
+
+  outputs = [ "$target_gen_dir/assert_third_party_readmes.stamp" ]
 }
 
 _expected_grd_files = []

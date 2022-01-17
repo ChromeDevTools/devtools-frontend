@@ -423,6 +423,10 @@ input[is="history-input"]:not(:placeholder-shown) {
   color: var(--color-button-primary-text);
 }
 
+.toolbar-item.highlight:focus-visible {
+  background: var(--color-primary-variant);
+}
+
 .toolbar-item.highlight > .icon-mask {
   background: var(--color-button-primary-text);
 }

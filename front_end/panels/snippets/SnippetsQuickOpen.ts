@@ -63,6 +63,11 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     this.snippets = [];
   }
 
+  itemScoreAt(itemIndex: number, query: string): number {
+    // Prefer short matches over long matches
+    return query.length / this.snippets[itemIndex].name().length;
+  }
+
   itemCount(): number {
     return this.snippets.length;
   }

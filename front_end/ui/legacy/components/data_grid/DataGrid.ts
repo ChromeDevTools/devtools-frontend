@@ -869,7 +869,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       for (let i = 0; i < numColumns; i++) {
         const column = this.visibleColumnsArray[i];
         if (!column.weight) {
-          column.weight = 100 * cells[i].offsetWidth / tableWidth || 10;
+          column.weight = 100 * this.getPreferredWidth(i) / tableWidth || 10;
         }
       }
       this.columnWidthsInitialized = true;
@@ -934,6 +934,11 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   willHide(): void {
   }
 
+  private getPreferredWidth(columnIndex: number): number {
+    return elementToPreferedWidthMap.get(this.headerTableColumnGroup.children[columnIndex]) ||
+        this.headerTableBodyInternal.rows[0].cells[columnIndex].offsetWidth;
+  }
+
   private applyColumnWeights(): void {
     let tableWidth = this.element.offsetWidth - this.cornerWidth;
     if (tableWidth <= 0) {
@@ -945,9 +950,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     for (let i = 0; i < this.visibleColumnsArray.length; ++i) {
       const column = this.visibleColumnsArray[i];
       if (column.fixedWidth) {
-        const currentChild = this.headerTableColumnGroup.children[i];
-        const width =
-            elementToPreferedWidthMap.get(currentChild) || this.headerTableBodyInternal.rows[0].cells[i].offsetWidth;
+        const width = this.getPreferredWidth(i);
         fixedColumnWidths[i] = width;
         tableWidth -= width;
       } else {
@@ -1415,7 +1418,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // Constrain the dragpoint to be within the containing div of the
     // datagrid.
     let dragPoint: number = event.clientX - this.element.totalOffsetLeft();
-    const firstRowCells = this.headerTableBodyInternal.rows[0].cells;
     let leftEdgeOfPreviousColumn = 0;
     // Constrain the dragpoint to be within the space made up by the
     // column directly to the left and the column directly to the right.
@@ -1425,19 +1427,19 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     let rightCellIndex: number = leftCellIndex + 1;
     for (let i = 0; i < leftCellIndex; i++) {
-      leftEdgeOfPreviousColumn += firstRowCells[i].offsetWidth;
+      leftEdgeOfPreviousColumn += this.getPreferredWidth(i);
     }
 
     // Differences for other resize methods
     if (this.resizeMethod === ResizeMethod.Last) {
       rightCellIndex = this.resizers.length;
     } else if (this.resizeMethod === ResizeMethod.First) {
-      leftEdgeOfPreviousColumn += firstRowCells[leftCellIndex].offsetWidth - firstRowCells[0].offsetWidth;
+      leftEdgeOfPreviousColumn += this.getPreferredWidth(leftCellIndex) - this.getPreferredWidth(0);
       leftCellIndex = 0;
     }
 
     const rightEdgeOfNextColumn =
-        leftEdgeOfPreviousColumn + firstRowCells[leftCellIndex].offsetWidth + firstRowCells[rightCellIndex].offsetWidth;
+        leftEdgeOfPreviousColumn + this.getPreferredWidth(leftCellIndex) + this.getPreferredWidth(rightCellIndex);
 
     // Give each column some padding so that they don't disappear.
     const leftMinimum = leftEdgeOfPreviousColumn + ColumnResizePadding;

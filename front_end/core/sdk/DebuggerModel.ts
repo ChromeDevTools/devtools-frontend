@@ -425,7 +425,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (this.target().type() === Type.Node && url.startsWith('file://')) {
       // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
       const platformPath =
-          Common.ParsedURL.ParsedURL.capFilePrefix(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
+          Common.ParsedURL.ParsedURL.urlToRawPathString(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
       urlRegex =
           `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
     }

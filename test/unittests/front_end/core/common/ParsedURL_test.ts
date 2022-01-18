@@ -121,13 +121,13 @@ describe('Parsed URL', () => {
 
   it('converts path that starts with "file://" to a platform path', () => {
     const pathTest = 'file://usr/lib' as Platform.DevToolsPath.UrlString;
-    const convertedPath = ParsedURL.urlToRawPathString(pathTest);
+    const convertedPath = ParsedURL.capFilePrefix(pathTest);
     assert.strictEqual(convertedPath, 'usr/lib', 'URL was not converted successfully');
   });
 
   it('converts path that starts with "file:///" to a platform path on Windows', () => {
     const pathTest = 'file:///usr/lib' as Platform.DevToolsPath.UrlString;
-    const convertedPath = ParsedURL.urlToRawPathString(pathTest, true);
+    const convertedPath = ParsedURL.capFilePrefix(pathTest, true);
     assert.strictEqual(convertedPath, 'usr\\lib', 'URL was not converted successfully');
   });
 
@@ -570,33 +570,4 @@ describe('Parsed URL', () => {
     const convertedUrl = ParsedURL.relativePathToUrlString(relativePath, baseUrl);
     assert.strictEqual(convertedUrl, 'http://localhost:8080/my%20folder/new%20spaced%2520name');
   });
-
-  it('converts URL to a platform path that includes drive letter and spaces on Windows', () => {
-    const urlTest = 'file:///C:/Program%20Files/Google' as Platform.DevToolsPath.UrlString;
-    const convertedUrl = ParsedURL.urlToRawPathString(urlTest, true);
-    assert.strictEqual(convertedUrl, 'C:\\Program Files\\Google', 'URL was not converted successfully');
-  });
-
-  it('converts URL to a platform path that includes spaces and percents', () => {
-    const urlTest = 'file:///home/user/with%20space/with%2520escape' as Platform.DevToolsPath.UrlString;
-    const convertedUrl = ParsedURL.urlToRawPathString(urlTest, false);
-    assert.strictEqual(convertedUrl, '/home/user/with space/with%20escape', 'URL was not converted successfully');
-  });
-
-  it('converts Windows platform path with spaces and percents to file url', () => {
-    const urlTest = 'C:\\Program Files\\with%20escape' as Platform.DevToolsPath.RawPathString;
-    const convertedUrl = ParsedURL.rawPathToUrlString(urlTest);
-    assert.strictEqual(
-        convertedUrl, 'file:///C:/Program%20Files/with%2520escape', 'URL was not converted successfully');
-  });
-
-  it('converts platform path with variety of special characters to URL and back consistently with Chrome', () => {
-    const platformPathTest =
-        '/home/a:b@c(d, e+f)=&g;#h$' as Platform.DevToolsPath.RawPathString;  // Valid filename on unix
-    const urlTest = 'file:///home/a:b@c(d,%20e+f)=&g%3B%23h$' as
-        Platform.DevToolsPath.UrlString;  // URL in Chrome address bar if you open that file
-    assert.strictEqual(ParsedURL.rawPathToUrlString(platformPathTest), urlTest);
-    assert.strictEqual(ParsedURL.urlToRawPathString(urlTest), platformPathTest);
-  });
-
 });

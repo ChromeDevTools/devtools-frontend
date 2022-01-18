@@ -94,8 +94,8 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
       // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-      const path = Common.ParsedURL.ParsedURL.urlToRawPathString(
-          fileURL as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
+      const path =
+          Common.ParsedURL.ParsedURL.capFilePrefix(fileURL as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openInContainingFolder),
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));

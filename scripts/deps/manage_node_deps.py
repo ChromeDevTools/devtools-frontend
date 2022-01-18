@@ -81,7 +81,7 @@ DEPS = {
     "license-checker": "25.0.1",
     "mocha": "9.1.3",
     "postcss": "8.4.5",
-    "puppeteer": "13.0.1",
+    "puppeteer": "13.1.1",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup": "2.63.0",

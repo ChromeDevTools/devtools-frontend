@@ -222,12 +222,13 @@ export declare class JSHandle<HandleObjectType = unknown> {
  * @public
  */
 export declare class ElementHandle<ElementType extends Element = Element> extends JSHandle<ElementType> {
+    private _frame;
     private _page;
     private _frameManager;
     /**
      * @internal
      */
-    constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, page: Page, frameManager: FrameManager);
+    constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, frame: Frame, page: Page, frameManager: FrameManager);
     /**
      * Wait for the `selector` to appear within the element. If at the moment of calling the
      * method the `selector` already exists, the method will return immediately. If
@@ -270,6 +271,7 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
      */
     contentFrame(): Promise<Frame | null>;
     private _scrollIntoViewIfNeeded;
+    private _getOOPIFOffsets;
     /**
      * Returns the middle point within an element unless a specific offset is provided.
      */

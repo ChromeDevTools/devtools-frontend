@@ -180,7 +180,8 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         const frame = this._frames.get(event.targetInfo.targetId);
         const session = Connection_js_1.Connection.fromSession(this._client).session(event.sessionId);
-        frame._updateClient(session);
+        if (frame)
+            frame._updateClient(session);
         this.setupEventListeners(session);
         await this.initialize(session);
     }

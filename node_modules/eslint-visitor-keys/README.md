@@ -60,7 +60,7 @@ This will be used to traverse unknown nodes.
 
 For example:
 
-```
+```js
 const node = {
     type: "AssignmentExpression",
     left: { type: "Identifier", name: "foo" },
@@ -80,7 +80,7 @@ Make the union set with `evk.KEYS` and the given keys.
 
 For example:
 
-```
+```js
 console.log(evk.unionWith({
     MethodDefinition: ["decorators"]
 })) // → { ..., MethodDefinition: ["decorators", "key", "value"], ... }

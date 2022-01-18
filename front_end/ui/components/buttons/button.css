@@ -142,7 +142,6 @@ button.toolbar:focus-visible {
 
 button.toolbar:disabled,
 button.toolbar:disabled:hover {
-  border: 1px solid transparent;
   background: var(--color-background);
   color: var(--color-text-disabled);
   cursor: not-allowed;

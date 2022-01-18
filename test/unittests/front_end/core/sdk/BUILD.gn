@@ -10,7 +10,6 @@ ts_library("sdk") {
     "AccessibilityModel_test.ts",
     "CSSContainerQuery_test.ts",
     "CSSPropertyParser_test.ts",
-    "CSSProperty_test.ts",
     "ConsoleModel_test.ts",
     "CookieModel_test.ts",
     "CookieParser_test.ts",

@@ -3,13 +3,10 @@
 // found in the LICENSE file.
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Common from '../common/common.js';
+import type * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
-import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import type {Edit} from './CSSModel.js';
 import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
@@ -163,113 +160,17 @@ export class CSSProperty {
     }
 
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
-    const indentation = this.ownerStyle.cssText ?
-        this.detectIndentation(this.ownerStyle.cssText) :
-        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-    const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
-    const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));
-    const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
-    const styleText = CSSProperty.formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
-    return this.ownerStyle.setText(styleText, majorChange);
-  }
-
-  static formatStyle(
-      styleText: string, indentation: string, endIndentation: string,
-      tokenizerFactory: TextUtils.TextUtils.TokenizerFactory): string {
-    const doubleIndent = indentation.substring(endIndentation.length) + indentation;
-    if (indentation) {
-      indentation = '\n' + indentation;
+    const textBeforeInsertion =
+        text.extract(new TextUtils.TextRange.TextRange(0, 0, range.startLine, range.startColumn));
+    // If we are appending after the last property and that property doesn't have a semicolon at the end
+    // (which is only legal in the last position), then add the semicolon in front of the new text to avoid
+    // CSS parsing errors. However, we shouldn't prepend semicolons on the first line or after a comment.
+    if (textBeforeInsertion.trim().length && !/[;{\/]\s*$/.test(textBeforeInsertion)) {
+      propertyText = ';' + propertyText;
     }
-    let result = '';
-    let propertyName = '';
-    let propertyText = '';
-    let insideProperty = false;
-    let needsSemi = false;
-    const tokenize = tokenizerFactory.createTokenizer('text/css');
-
-    tokenize('*{' + styleText + '}', processToken);
-    if (insideProperty) {
-      result += propertyText;
-    }
-    result = result.substring(2, result.length - 1).trimRight();
-    return result + (indentation ? '\n' + endIndentation : '');
-
-    function processToken(token: string, tokenType: string|null, _column: number, _newColumn: number): void {
-      if (!insideProperty) {
-        const disabledProperty = tokenType && tokenType.includes('comment') && isDisabledProperty(token);
-        const isPropertyStart = tokenType &&
-            (tokenType.includes('string') || tokenType.includes('meta') || tokenType.includes('property') ||
-             tokenType.includes('variable-2'));
-        if (disabledProperty) {
-          result = result.trimRight() + indentation + token;
-        } else if (isPropertyStart) {
-          insideProperty = true;
-          propertyText = token;
-        } else if (token !== ';' || needsSemi) {
-          result += token;
-          if (token.trim() && !(tokenType && tokenType.includes('comment'))) {
-            needsSemi = token !== ';';
-          }
-        }
-        if (token === '{' && !tokenType) {
-          needsSemi = false;
-        }
-        return;
-      }
-
-      if (token === '}' || token === ';') {
-        // While `propertyText` can generally be trimmed, doing so
-        // breaks valid CSS declarations such as `--foo:  ;` which would
-        // then produce invalid CSS of the form `--foo:;`. This
-        // implementation takes special care to restore a single
-        // whitespace token in this edge case. https://crbug.com/1071296
-        const trimmedPropertyText = propertyText.trim();
-        result =
-            result.trimRight() + indentation + trimmedPropertyText + (trimmedPropertyText.endsWith(':') ? ' ' : '');
-        needsSemi = false;
-        insideProperty = false;
-        propertyName = '';
-        if (Root.Runtime.experiments.isEnabled('preciseChanges')) {
-          result += token;
-          return;
-        }
-        // We preserve the legacy behavior to always add semicolon to
-        // declarations regardless of its original text.
-        result += ';';
-        if (token === '}') {
-          result += '}';
-        }
-      } else {
-        if (cssMetadata().isGridAreaDefiningProperty(propertyName)) {
-          const rowResult = GridAreaRowRegex.exec(token);
-          if (rowResult && rowResult.index === 0 && !propertyText.trimRight().endsWith(']')) {
-            propertyText = propertyText.trimRight() + '\n' + doubleIndent;
-          }
-        }
-        if (!propertyName && token === ':') {
-          propertyName = propertyText;
-        }
-        propertyText += token;
-      }
-    }
-
-    function isDisabledProperty(text: string): boolean {
-      const colon = text.indexOf(':');
-      if (colon === -1) {
-        return false;
-      }
-      const propertyName = text.substring(2, colon).trim();
-      return cssMetadata().isCSSPropertyName(propertyName);
-    }
-  }
-
-  private detectIndentation(text: string): string {
-    const lines = text.split('\n');
-    if (lines.length < 2) {
-      return '';
-    }
-    return TextUtils.TextUtils.Utils.lineIndent(lines[1]);
+    const newStyleText = text.replaceRange(range, propertyText);
+    return this.ownerStyle.setText(newStyleText, majorChange);
   }
 
   setValue(newValue: string, majorChange: boolean, overwrite: boolean, userCallback?: ((arg0: boolean) => void)): void {
@@ -288,7 +189,18 @@ export class CSSProperty {
       return Promise.resolve(true);
     }
     const propertyText = this.text.trim();
-    const text = disabled ? '/* ' + propertyText + ' */' : this.text.substring(2, propertyText.length - 2).trim();
+    // Ensure that if we try to enable/disable a property that has no semicolon (which is only legal
+    // in the last position of a css rule), we add it. This ensures that if we then later try
+    // to re-enable/-disable the rule, we end up with legal syntax (if the user adds more properties
+    // after the disabled rule).
+    const appendSemicolonIfMissing = (propertyText: string): string =>
+        propertyText + (propertyText.endsWith(';') ? '' : ';');
+    let text: string;
+    if (disabled) {
+      text = '/* ' + appendSemicolonIfMissing(propertyText) + ' */';
+    } else {
+      text = appendSemicolonIfMissing(this.text.substring(2, propertyText.length - 2).trim());
+    }
     return this.setText(text, true, true);
   }
 

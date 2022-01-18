@@ -45,8 +45,3 @@ TextUtils.BalancedJSONTokenizer = TextUtilsModule.TextUtils.BalancedJSONTokenize
 TextUtils.TokenizerFactory = TextUtilsModule.TextUtils.TokenizerFactory;
 
 TextUtils.isMinified = TextUtilsModule.TextUtils.isMinified;
-
-TextUtils.CodeMirrorUtils = {};
-
-/** @constructor */
-TextUtils.CodeMirrorUtils.TokenizerFactory = TextUtilsModule.CodeMirrorUtils.TokenizerFactory;

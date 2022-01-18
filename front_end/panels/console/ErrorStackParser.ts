@@ -70,10 +70,6 @@ export function parseSourcePositionsFromErrorStack(
     const right = hasOpenBracket ? closeBracketIndex : line.length;
     const linkCandidate = line.substring(left, right);
     const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);
-    if (!splitResult) {
-      return null;
-    }
-
     if (splitResult.url === '<anonymous>') {
       linkInfos.push({line});
       continue;

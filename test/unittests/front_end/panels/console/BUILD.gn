@@ -12,6 +12,7 @@ ts_library("console") {
   ]
 
   deps = [
+    "../../../../../front_end/core/platform:bundle",
     "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/panels/console:bundle",
     "../../helpers",

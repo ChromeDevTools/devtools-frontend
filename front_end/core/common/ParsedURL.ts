@@ -278,10 +278,13 @@ export class ParsedURL {
       return href;
     }
 
-    // Return absolute URLs as-is.
+    // Return absolute URLs with normalized path and other components as-is.
     const parsedHref = this.fromString(trimmedHref);
     if (parsedHref && parsedHref.scheme) {
-      return trimmedHref;
+      const securityOrigin = parsedHref.securityOrigin();
+      const pathText = parsedHref.path;
+      const hrefSuffix = trimmedHref.substring(securityOrigin.length + pathText.length);
+      return securityOrigin + normalizePath(pathText) + hrefSuffix;
     }
 
     const parsedURL = this.fromString(baseURL);

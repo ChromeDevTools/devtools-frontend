@@ -249,11 +249,54 @@ describe('Parsed URL', () => {
     assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
-  it('uses the completeURL function to return absolute URLs as-is', () => {
-    const hrefTest = 'http://www.example.com';
-    const baseUrlTest = 'www.example.com';
-    const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+  describe('completeURL with absolute URLs', () => {
+    const cases = [
+      {href: 'http://www.example.com', expected: 'http://www.example.com/'},
+      {href: 'http://a/b/c/g', expected: 'http://a/b/c/g'},
+      {href: 'http://a/b/c/./g', expected: 'http://a/b/c/g'},
+      {href: 'http://a/b/c/g/', expected: 'http://a/b/c/g/'},
+      {href: 'http://a/b/c/d;p?y', expected: 'http://a/b/c/d;p?y'},
+      {href: 'http://a/b/c/g?y', expected: 'http://a/b/c/g?y'},
+      {href: 'http://a/b/c/d;p?q#s', expected: 'http://a/b/c/d;p?q#s'},
+      {href: 'http://a/b/c/g#s', expected: 'http://a/b/c/g#s'},
+      {href: 'http://a/b/c/g?y#s', expected: 'http://a/b/c/g?y#s'},
+      {href: 'http://a/b/c/;x', expected: 'http://a/b/c/;x'},
+      {href: 'http://a/b/c/g;x', expected: 'http://a/b/c/g;x'},
+      {href: 'http://a/b/c/g;x?y#s', expected: 'http://a/b/c/g;x?y#s'},
+      {href: 'http://a/b/c/d;p?q', expected: 'http://a/b/c/d;p?q'},
+      {href: 'http://a/b/c/.', expected: 'http://a/b/c/'},
+      {href: 'http://a/b/c/./', expected: 'http://a/b/c/'},
+      {href: 'http://a/b/c/..', expected: 'http://a/b/'},
+      {href: 'http://a/b/c/../', expected: 'http://a/b/'},
+      {href: 'http://a/b/c/../g', expected: 'http://a/b/g'},
+      {href: 'http://a/b/c/../..', expected: 'http://a/'},
+      {href: 'http://a/b/c/../../', expected: 'http://a/'},
+      {href: 'http://a/b/c/../../g', expected: 'http://a/g'},
+      {href: 'http://a/b/c/../../../g', expected: 'http://a/g'},
+      {href: 'http://a/b/c/../../../../g', expected: 'http://a/g'},
+      {href: 'http://a/b/c/g.', expected: 'http://a/b/c/g.'},
+      {href: 'http://a/b/c/.g', expected: 'http://a/b/c/.g'},
+      {href: 'http://a/b/c/g..', expected: 'http://a/b/c/g..'},
+      {href: 'http://a/b/c/..g', expected: 'http://a/b/c/..g'},
+      {href: 'http://a/b/c/./../g', expected: 'http://a/b/g'},
+      {href: 'http://a/b/c/./g/.', expected: 'http://a/b/c/g/'},
+      {href: 'http://a/b/c/g/./h', expected: 'http://a/b/c/g/h'},
+      {href: 'http://a/b/c/g/../h', expected: 'http://a/b/c/h'},
+      {href: 'http://a/b/c/g;x=1/./y', expected: 'http://a/b/c/g;x=1/y'},
+      {href: 'http://a/b/c/g;x=1/../y', expected: 'http://a/b/c/y'},
+      {href: 'http://a/b/c/g?y/./x', expected: 'http://a/b/c/g?y/./x'},
+      {href: 'http://a/b/c/g?y/../x', expected: 'http://a/b/c/g?y/../x'},
+      {href: 'http://a/b/c/g#s/./x', expected: 'http://a/b/c/g#s/./x'},
+      {href: 'http://a/b/c/g#s/../x', expected: 'http://a/b/c/g#s/../x'},
+    ];
+
+    for (const {href, expected} of cases) {
+      it(`can use completeURL to normalize "${href}"`, () => {
+        const baseUrlTest = 'www.example.com';
+        const completeUrl = ParsedURL.completeURL(baseUrlTest, href);
+        assert.strictEqual(completeUrl, expected, 'complete URL is not returned correctly');
+      });
+    }
   });
 
   it('uses the completeURL function to return null for invalid href and invalid base URL', () => {
@@ -487,7 +530,7 @@ describe('Parsed URL', () => {
 
     const baseURL = 'http://a/b/c/d;p?q';
 
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'http://h'), 'http://h');  // modified from RFC3986
+    assert.strictEqual(ParsedURL.completeURL(baseURL, 'http://h'), 'http://h/');  // modified from RFC3986
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g'), 'http://a/b/c/g');
     assert.strictEqual(ParsedURL.completeURL(baseURL, './g'), 'http://a/b/c/g');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/'), 'http://a/b/c/g/');

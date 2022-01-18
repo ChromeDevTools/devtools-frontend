@@ -357,7 +357,15 @@ export class TextSourceMap implements SourceMap {
       sourceRoot += '/';
     }
     for (let i = 0; i < sourceMap.sources.length; ++i) {
-      const href = sourceRoot + sourceMap.sources[i];
+      let href = sourceMap.sources[i];
+      // The source map v3 proposal says to prepend the sourceRoot to the source URL
+      // and if the resulting URL is not absolute, then resolve the source URL against
+      // the source map URL. Appending the sourceRoot (if one exists) is not likely to
+      // be meaningful or useful if the source URL is already absolute though. In this
+      // case, use the source URL as is without prepending the sourceRoot.
+      if (Common.ParsedURL.ParsedURL.isRelativeURL(href)) {
+        href = sourceRoot + href;
+      }
       let url = Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this.#compiledURLInternal && source) {

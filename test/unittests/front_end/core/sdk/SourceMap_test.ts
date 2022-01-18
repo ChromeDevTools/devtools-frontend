@@ -326,4 +326,305 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(2, 10), 'source2.js', 0, 0);
     assertMapping(sourceMap.findEntry(2, 11), 'source2.js', 2, 1);
   });
+
+  describe('source URL resolution', () => {
+    const cases = [
+      // No sourceRoot, relative sourceURL. sourceURL is normalized and resolved relative to sourceMapURL.
+      {
+        sourceRoot: '',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/a/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/b/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/./foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/./foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '/./foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '../foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '../../foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: '../../../foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+
+      // No sourceRoot, absolute sourceURL. The sourceURL is normalized and then used as-is.
+      {
+        sourceRoot: '',
+        sourceURL: 'webpack://example/src/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: 'webpack://example/src/a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/a/b/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/a/b/foo.ts',
+      },
+      {
+        sourceRoot: '',
+        sourceURL: 'webpack://example/src/a/../b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/b/foo.ts',
+      },
+
+      // Relative sourceRoot, relative sourceURL. The sourceRoot and sourceURL paths are concatenated and normalized before resolving against the sourceMapURL.
+      {
+        sourceRoot: 'src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/a/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/b/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/a/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/b/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src/',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src/',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/a/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src/',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/b/src/foo.ts',
+      },
+      {
+        sourceRoot: '/src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: '/src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: '/src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '../foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/b/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '../../foo.ts',
+        sourceMapURL: 'http://example.com/a/b/foo.js.map',
+        expected: 'http://example.com/a/foo.ts',
+      },
+      {
+        sourceRoot: 'src',
+        sourceURL: '../../../foo.ts',
+        sourceMapURL: 'http://example.com/a/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+
+      // Relative sourceRoot, absolute sourceURL. Ignore the sourceRoot, normalize the sourceURL.
+      {
+        sourceRoot: 'c/d',
+        sourceURL: 'webpack://example/src/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/foo.ts',
+      },
+      {
+        sourceRoot: 'c/d',
+        sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/a/b/foo.ts',
+      },
+
+      // Absolute sourceRoot, relative sourceURL. Append the sourceURL path into the sourceRoot path, normalize and use the resulting URL.
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: 'foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: 'a/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/a/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: 'a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/a/b/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: '/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: '/a/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/a/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: '/a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/src/a/b/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: '../foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src',
+        sourceURL: '../../foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+      {
+        sourceRoot: 'http://example.com/src/a/b',
+        sourceURL: '../../../foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'http://example.com/foo.ts',
+      },
+
+      // Absolute sourceRoot, absolute sourceURL. Ignore the sourceRoot, normalize the sourceURL.
+      {
+        sourceRoot: 'http://foo.com/src',
+        sourceURL: 'webpack://example/src/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/foo.ts',
+      },
+      {
+        sourceRoot: 'http://foo.com/src',
+        sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
+        sourceMapURL: 'http://example.com/foo.js.map',
+        expected: 'webpack://example/src/a/b/foo.ts',
+      },
+    ];
+
+    for (const {sourceRoot, sourceURL, sourceMapURL, expected} of cases) {
+      it(`can resolve sourceURL "${sourceURL}" with sourceRoot "${sourceRoot}" and sourceMapURL "${sourceMapURL}"`,
+         () => {
+           const mappingPayload = {
+             mappings: 'AAAA;;;CACA',
+             sourceRoot,
+             sources: [sourceURL],
+             version: 1,
+             file: undefined,
+             sections: undefined,
+             names: undefined,
+             sourcesContent: undefined,
+           };
+           const sourceMap =
+               new SDK.SourceMap.TextSourceMap('compiled.js', sourceMapURL, mappingPayload, fakeInitiator);
+           const sourceURLs = sourceMap.sourceURLs();
+           assert.lengthOf(sourceURLs, 1, 'unexpected number of original source URLs');
+           assert.strictEqual(sourceURLs[0], expected);
+         });
+    }
+  });
 });

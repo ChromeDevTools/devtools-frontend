@@ -56,6 +56,7 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-di
 import {format} from './ConsoleFormat.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import consoleViewStyles from './consoleView.css.js';
+import {parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
 
 const UIStrings = {
   /**
@@ -1422,100 +1423,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private tryFormatAsError(string: string): HTMLElement|null {
-    function startsWith(prefix: string): boolean {
-      return string.startsWith(prefix);
-    }
-
     const runtimeModel = this.message.runtimeModel();
-    // TODO: Consider removing these in favor of a simpler regex.
-    const errorPrefixes = [
-      'AggregateError',
-      'Error',
-      'EvalError',
-      'RangeError',
-      'ReferenceError',
-      'SyntaxError',
-      'TypeError',
-      'URIError',
-    ];
-    if (!runtimeModel || !errorPrefixes.some(startsWith) && !/^[\w.]+Error\b/.test(string)) {
+    if (!runtimeModel) {
       return null;
     }
+
+    const linkInfos = parseSourcePositionsFromErrorStack(runtimeModel, string);
+    if (!linkInfos?.length) {
+      return null;
+    }
+
     const debuggerModel = runtimeModel.debuggerModel();
-    const baseURL = runtimeModel.target().inspectedURL();
-
-    const lines = string.split('\n');
-    const linkInfos = [];
-    for (const line of lines) {
-      const isCallFrameLine = /^\s*at\s/.test(line);
-      if (!isCallFrameLine && linkInfos.length && linkInfos[linkInfos.length - 1].link) {
-        return null;
-      }
-
-      if (!isCallFrameLine) {
-        linkInfos.push({line});
-        continue;
-      }
-
-      let openBracketIndex = -1;
-      let closeBracketIndex = -1;
-      const inBracketsWithLineAndColumn = /\([^\)\(]+:\d+:\d+\)/g;
-      const inBrackets = /\([^\)\(]+\)/g;
-      let lastMatch: RegExpExecArray|null = null;
-      let currentMatch;
-      while ((currentMatch = inBracketsWithLineAndColumn.exec(line))) {
-        lastMatch = currentMatch;
-      }
-      if (!lastMatch) {
-        while ((currentMatch = inBrackets.exec(line))) {
-          lastMatch = currentMatch;
-        }
-      }
-      if (lastMatch) {
-        openBracketIndex = lastMatch.index;
-        closeBracketIndex = lastMatch.index + lastMatch[0].length - 1;
-      }
-      const hasOpenBracket = openBracketIndex !== -1;
-      let left = hasOpenBracket ? openBracketIndex + 1 : line.indexOf('at') + 3;
-      if (!hasOpenBracket && line.indexOf('async ') === left) {
-        left += 6;
-      }
-      const right = hasOpenBracket ? closeBracketIndex : line.length;
-      const linkCandidate = line.substring(left, right);
-      const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(linkCandidate);
-      if (!splitResult) {
-        return null;
-      }
-
-      if (splitResult.url === '<anonymous>') {
-        linkInfos.push({line});
-        continue;
-      }
-      let url = parseOrScriptMatch(splitResult.url);
-      if (!url && Common.ParsedURL.ParsedURL.isRelativeURL(splitResult.url)) {
-        url = parseOrScriptMatch(Common.ParsedURL.ParsedURL.completeURL(baseURL, splitResult.url));
-      }
-      if (!url) {
-        return null;
-      }
-
-      linkInfos.push({
-        line,
-        link: {
-          url,
-          enclosedInBraces: hasOpenBracket,
-          positionLeft: left,
-          positionRight: right,
-          lineNumber: splitResult.lineNumber,
-          columnNumber: splitResult.columnNumber,
-        },
-      });
-    }
-
-    if (!linkInfos.length) {
-      return null;
-    }
-
     const formattedResult = document.createElement('span');
     for (let i = 0; i < linkInfos.length; ++i) {
       const newline = i < linkInfos.length - 1 ? '\n' : '';
@@ -1565,25 +1483,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     return formattedResult;
-
-    function parseOrScriptMatch(url: string|null): string|null {
-      if (!url) {
-        return null;
-      }
-      const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-      if (parsedURL) {
-        return parsedURL.url;
-      }
-      if (debuggerModel.scriptsForSourceURL(url).length) {
-        return url;
-      }
-      // nodejs stack traces contain (absolute) file paths, but v8 reports them as file: urls.
-      const fileUrl = new URL(url, 'file://');
-      if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
-        return fileUrl.href;
-      }
-      return null;
-    }
   }
 
   private linkifyWithCustomLinkifier(

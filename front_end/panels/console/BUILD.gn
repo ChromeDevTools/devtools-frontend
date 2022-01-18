@@ -29,6 +29,7 @@ devtools_module("console") {
     "ConsoleView.ts",
     "ConsoleViewMessage.ts",
     "ConsoleViewport.ts",
+    "ErrorStackParser.ts",
   ]
 
   deps = [

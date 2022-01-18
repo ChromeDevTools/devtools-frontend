@@ -23,6 +23,7 @@ import * as ConsoleSidebar from './ConsoleSidebar.js';
 import * as ConsoleView from './ConsoleView.js';
 import * as ConsoleViewMessage from './ConsoleViewMessage.js';
 import * as ConsoleViewport from './ConsoleViewport.js';
+import * as ErrorStackParser from './ErrorStackParser.js';
 
 export {
   ConsoleContextSelector,
@@ -35,4 +36,5 @@ export {
   ConsoleView,
   ConsoleViewMessage,
   ConsoleViewport,
+  ErrorStackParser,
 };

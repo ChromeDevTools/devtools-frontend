@@ -297,6 +297,10 @@ export class MainImpl {
         'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,
         'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
 
+    // Back/forward cache
+    Root.Runtime.experiments.register(
+        'bfcacheDisplayTree', 'Show back/forward cache blocking reasons in the frame tree structure view');
+
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Root.Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);

@@ -583,7 +583,8 @@ export enum DevtoolsExperiments {
   'groupAndHideIssuesByKind' = 51,
   'cssTypeComponentLength' = 52,
   'preciseChanges' = 53,
-  'MaxValue' = 54,
+  'bfcacheDisplayTree' = 54,
+  'MaxValue' = 55,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

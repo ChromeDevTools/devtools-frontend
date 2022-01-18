@@ -372,6 +372,7 @@ export class MainImpl {
       'hideIssuesFeature',
       'cssTypeComponentLength',
       'preciseChanges',
+      'reportingApiDebugging',
       Root.Runtime.ExperimentName.SYNC_SETTINGS,
     ]);
 

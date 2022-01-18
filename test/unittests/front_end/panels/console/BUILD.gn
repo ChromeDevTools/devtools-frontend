@@ -6,9 +6,13 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("console") {
   testonly = true
-  sources = [ "ConsoleFormat_test.ts" ]
+  sources = [
+    "ConsoleFormat_test.ts",
+    "ErrorStackParser_test.ts",
+  ]
 
   deps = [
+    "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/panels/console:bundle",
     "../../helpers",
   ]

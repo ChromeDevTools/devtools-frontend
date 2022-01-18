@@ -14,18 +14,6 @@ export interface ParsedErrorFrame {
   };
 }
 
-// TODO: Consider removing these in favor of a simpler regex.
-const ERROR_PREFIXES = [
-  'AggregateError',
-  'Error',
-  'EvalError',
-  'RangeError',
-  'ReferenceError',
-  'SyntaxError',
-  'TypeError',
-  'URIError',
-];
-
 /**
  * Takes a V8 Error#stack string and extracts source position information.
  *
@@ -37,7 +25,7 @@ const ERROR_PREFIXES = [
  */
 export function parseSourcePositionsFromErrorStack(
     runtimeModel: SDK.RuntimeModel.RuntimeModel, stack: string): ParsedErrorFrame[]|null {
-  if (!ERROR_PREFIXES.some(prefix => stack.startsWith(prefix)) && !/^[\w.]+Error\b/.test(stack)) {
+  if (!/^[\w.]*Error\b/.test(stack)) {
     return null;
   }
   const debuggerModel = runtimeModel.debuggerModel();

@@ -47,11 +47,15 @@ vars = {
 allowed_hosts = [ 'chromium.googlesource.com' ]
 
 deps = {
-  'buildtools/clang_format/script':
-    Var('clang_format_url') + '@' + Var('clang_format_revision'),
+  'buildtools/clang_format/script': {
+    'url': Var('clang_format_url') + '@' + Var('clang_format_revision'),
+    'condition': 'build_with_chromium == False',
+  },
 
-  'buildtools':
-    Var('buildtools_url') + '@' + Var('buildtools_revision'),
+  'buildtools': {
+    'url': Var('buildtools_url') + '@' + Var('buildtools_revision'),
+    'condition': 'build_with_chromium == False',
+  },
 
   'buildtools/linux64': {
     'packages': [
@@ -61,7 +65,7 @@ deps = {
       }
     ],
     'dep_type': 'cipd',
-    'condition': 'host_os == "linux"',
+    'condition': 'host_os == "linux" and build_with_chromium == False',
   },
   'buildtools/mac': {
     'packages': [
@@ -71,7 +75,7 @@ deps = {
       }
     ],
     'dep_type': 'cipd',
-    'condition': 'host_os == "mac"',
+    'condition': 'host_os == "mac" and build_with_chromium == False',
   },
   'buildtools/win': {
     'packages': [
@@ -81,7 +85,7 @@ deps = {
       }
     ],
     'dep_type': 'cipd',
-    'condition': 'host_os == "win"',
+    'condition': 'host_os == "win" and build_with_chromium == False',
   },
   'buildtools/reclient': {
     'packages': [
@@ -93,12 +97,18 @@ deps = {
     'dep_type': 'cipd',
     'condition': '(host_os == "linux" or host_os == "win") and checkout_reclient',
   },
-  'build':
-    Var('build_url') + '@' + Var('build_revision'),
-  'third_party/depot_tools':
-    Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
-  'third_party/inspector_protocol':
-    Var('inspector_protocol_url') + '@' + Var('inspector_protocol_revision'),
+  'build': {
+    'url': Var('build_url') + '@' + Var('build_revision'),
+    'condition': 'build_with_chromium == False',
+  },
+  'third_party/depot_tools': {
+    'url': Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
+    'condition': 'build_with_chromium == False',
+  },
+  'third_party/inspector_protocol': {
+    'url': Var('inspector_protocol_url') + '@' + Var('inspector_protocol_revision'),
+    'condition': 'build_with_chromium == False',
+  },
 }
 
 hooks = [
@@ -147,6 +157,7 @@ hooks = [
     # disabled.
     'name': 'disable_depot_tools_selfupdate',
     'pattern': '.',
+    'condition': 'build_with_chromium == False',
     'action': [
         'python3',
         'third_party/depot_tools/update_depot_tools_toggle.py',
@@ -239,7 +250,7 @@ hooks = [
   {
     'name': 'sysroot_x64',
     'pattern': '.',
-    'condition': 'checkout_linux and checkout_x64',
+    'condition': 'checkout_linux and checkout_x64 and build_with_chromium == False',
     'action': ['python3', 'build/linux/sysroot_scripts/install-sysroot.py',
                '--arch=x64'],
   },

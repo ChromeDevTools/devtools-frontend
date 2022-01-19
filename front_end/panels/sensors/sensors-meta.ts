@@ -184,7 +184,7 @@ Common.Settings.registerSettingExtension({
       title: 'Mountain View',
       lat: 37.386052,
       long: -122.083851,
-      timezoneId: 'US/Pacific',
+      timezoneId: 'America/Los_Angeles',
       locale: 'en-US',
     },
     {
@@ -198,7 +198,7 @@ Common.Settings.registerSettingExtension({
       title: 'San Francisco',
       lat: 37.774929,
       long: -122.419416,
-      timezoneId: 'US/Pacific',
+      timezoneId: 'America/Los_Angeles',
       locale: 'en-US',
     },
     {

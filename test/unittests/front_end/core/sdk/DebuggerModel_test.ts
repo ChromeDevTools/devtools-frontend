@@ -90,6 +90,47 @@ describeWithMockConnection('DebuggerModel', () => {
       assert.strictEqual(breakpointId, breakpointId1);
     });
   });
+
+  describe('scriptsForSourceURL', () => {
+    it('returns the latest script at the front of the result for scripts with the same URL', () => {
+      const target = createTarget();
+      const url = 'http://localhost/index.html';
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: SCRIPT_ID_ONE,
+        url,
+        startLine: 0,
+        startColumn: 0,
+        endLine: 1,
+        endColumn: 10,
+        executionContextId: 1,
+        hash: '',
+        isLiveEdit: false,
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 10,
+      });
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: SCRIPT_ID_TWO,
+        url,
+        startLine: 20,
+        startColumn: 0,
+        endLine: 21,
+        endColumn: 10,
+        executionContextId: 1,
+        hash: '',
+        isLiveEdit: false,
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 10,
+      });
+
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      const scripts = debuggerModel?.scriptsForSourceURL(url) || [];
+
+      assert.strictEqual(scripts[0].scriptId, SCRIPT_ID_TWO);
+      assert.strictEqual(scripts[1].scriptId, SCRIPT_ID_ONE);
+    });
+  });
 });
 
 describeWithEnvironment('LocationRanges', () => {

@@ -548,6 +548,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return this.#scriptsInternal.get(scriptId) || null;
   }
 
+  /**
+   * Returns all `Script` objects with the same provided `sourceURL`. The
+   * resulting array is sorted by time with the newest `Script` in the front.
+   */
   scriptsForSourceURL(sourceURL: string|null): Script[] {
     if (!sourceURL) {
       return [];
@@ -770,7 +774,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       scripts = [];
       this.#scriptsBySourceURL.set(script.sourceURL, scripts);
     }
-    scripts.push(script);
+    // Newer scripts with the same URL should be preferred so we put them in
+    // the front. Consuming code usually will iterate over the array and pick
+    // the first script that works.
+    scripts.unshift(script);
   }
 
   private unregisterScript(script: Script): void {

@@ -128,6 +128,11 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  set title(title: string) {
+    this.#props.title = title;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
   set disabled(disabled: boolean) {
     this.#setDisabledProperty(disabled);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -212,7 +217,7 @@ export class Button extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <button .title=${this.#props.title} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)}>
+        <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)}>
           ${this.#props.iconUrl ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
             .data=${{
               iconPath: this.#props.iconUrl,

@@ -102,6 +102,19 @@ describe('Button', async () => {
     assert.isTrue(!innerButton.classList.contains('only-icon'));
   });
 
+  it('gets title set', async () => {
+    const button = await renderButton({
+      variant: Buttons.Button.Variant.PRIMARY,
+      title: 'Custom',
+    });
+    const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
+    assert.strictEqual(innerButton.title, 'Custom');
+
+    button.title = 'Custom2';
+    await coordinator.done();
+    assert.strictEqual(innerButton.title, 'Custom2');
+  });
+
   it('gets the text-with-icon class set for the inner button if text and icon is provided', async () => {
     const button = await renderButton(
         {

@@ -29,6 +29,7 @@ primaryButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
 };
 primaryButton.innerText = 'Click me';
+primaryButton.title = 'Custom title';
 primaryButton.onclick = () => alert('clicked');
 appendButton(primaryButton);
 

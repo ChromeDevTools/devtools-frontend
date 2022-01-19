@@ -10031,6 +10031,7 @@ declare namespace Protocol {
     export const enum PermissionsPolicyBlockReason {
       Header = 'Header',
       IframeAttribute = 'IframeAttribute',
+      InFencedFrameTree = 'InFencedFrameTree',
     }
 
     export interface PermissionsPolicyBlockLocator {

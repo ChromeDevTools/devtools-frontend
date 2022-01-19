@@ -2048,7 +2048,8 @@ export function registerCommands(inspectorBackend) {
     XrSpatialTracking: 'xr-spatial-tracking'
   });
   inspectorBackend.registerEnum(
-      'Page.PermissionsPolicyBlockReason', {Header: 'Header', IframeAttribute: 'IframeAttribute'});
+      'Page.PermissionsPolicyBlockReason',
+      {Header: 'Header', IframeAttribute: 'IframeAttribute', InFencedFrameTree: 'InFencedFrameTree'});
   inspectorBackend.registerEnum('Page.OriginTrialTokenStatus', {
     Success: 'Success',
     NotSupported: 'NotSupported',

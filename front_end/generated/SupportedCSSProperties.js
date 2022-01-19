@@ -302,7 +302,7 @@ export const generatedProperties = [
   {'name': 'clip', 'keywords': ['auto']},
   {'name': 'clip-path', 'keywords': ['none']},
   {'name': 'clip-rule', 'inherited': true, 'keywords': ['nonzero', 'evenodd']},
-  {'name': 'color', 'inherited': true, 'keywords': ['currentcolor']},
+  {'name': 'color', 'keywords': ['currentcolor'], 'inherited': true},
   {'name': 'color-interpolation', 'inherited': true, 'keywords': ['auto', 'srgb', 'linearrgb']},
   {'name': 'color-interpolation-filters', 'inherited': true, 'keywords': ['auto', 'srgb', 'linearrgb']},
   {'name': 'color-rendering', 'inherited': true, 'keywords': ['auto', 'optimizespeed', 'optimizequality']},
@@ -419,6 +419,7 @@ export const generatedProperties = [
   {'name': 'font-feature-settings', 'inherited': true, 'keywords': ['normal']},
   {'name': 'font-kerning', 'inherited': true, 'keywords': ['auto', 'normal', 'none']},
   {'name': 'font-optical-sizing', 'inherited': true, 'keywords': ['auto', 'none']},
+  {'inherited': true, 'keywords': ['normal', 'light', 'dark'], 'name': 'font-palette'},
   {
     'name': 'font-size',
     'inherited': true,
@@ -1000,6 +1001,7 @@ export const generatedPropertyValues = {
   'font-feature-settings': {'values': ['normal']},
   'font-kerning': {'values': ['auto', 'normal', 'none']},
   'font-optical-sizing': {'values': ['auto', 'none']},
+  'font-palette': {'values': ['normal', 'light', 'dark']},
   'font-size': {
     'values': [
       'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', 'xxx-large', 'larger', 'smaller',

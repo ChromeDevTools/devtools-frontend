@@ -2430,7 +2430,12 @@ export function registerCommands(inspectorBackend) {
       ],
       []);
   inspectorBackend.registerCommand(
-      'Page.setFontFamilies', [{'name': 'fontFamilies', 'type': 'object', 'optional': false}], []);
+      'Page.setFontFamilies',
+      [
+        {'name': 'fontFamilies', 'type': 'object', 'optional': false},
+        {'name': 'forScripts', 'type': 'object', 'optional': true}
+      ],
+      []);
   inspectorBackend.registerCommand(
       'Page.setFontSizes', [{'name': 'fontSizes', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
@@ -2621,13 +2626,17 @@ export function registerCommands(inspectorBackend) {
     Websql: 'websql',
     Service_workers: 'service_workers',
     Cache_storage: 'cache_storage',
+    Interest_groups: 'interest_groups',
     All: 'all',
     Other: 'other'
   });
+  inspectorBackend.registerEnum(
+      'Storage.InterestGroupAccessType', {Join: 'join', Leave: 'leave', Update: 'update', Bid: 'bid', Win: 'win'});
   inspectorBackend.registerEvent('Storage.cacheStorageContentUpdated', ['origin', 'cacheName']);
   inspectorBackend.registerEvent('Storage.cacheStorageListUpdated', ['origin']);
   inspectorBackend.registerEvent('Storage.indexedDBContentUpdated', ['origin', 'databaseName', 'objectStoreName']);
   inspectorBackend.registerEvent('Storage.indexedDBListUpdated', ['origin']);
+  inspectorBackend.registerEvent('Storage.interestGroupAccessed', ['type', 'ownerOrigin', 'name']);
   inspectorBackend.registerCommand(
       'Storage.clearDataForOrigin',
       [
@@ -2667,6 +2676,15 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Storage.getTrustTokens', [], ['tokens']);
   inspectorBackend.registerCommand(
       'Storage.clearTrustTokens', [{'name': 'issuerOrigin', 'type': 'string', 'optional': false}], ['didDeleteTokens']);
+  inspectorBackend.registerCommand(
+      'Storage.getInterestGroupDetails',
+      [
+        {'name': 'ownerOrigin', 'type': 'string', 'optional': false},
+        {'name': 'name', 'type': 'string', 'optional': false}
+      ],
+      ['details']);
+  inspectorBackend.registerCommand(
+      'Storage.setInterestGroupTracking', [{'name': 'enable', 'type': 'boolean', 'optional': false}], []);
 
   // SystemInfo.
   inspectorBackend.registerEnum('SystemInfo.SubsamplingFormat', {Yuv420: 'yuv420', Yuv422: 'yuv422', Yuv444: 'yuv444'});

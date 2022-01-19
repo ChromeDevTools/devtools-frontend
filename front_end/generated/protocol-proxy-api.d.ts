@@ -2318,7 +2318,7 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Requests that backend shows hit-test borders on layers
+     * Deprecated, no longer has any effect.
      */
     invoke_setShowHitTestBorders(params: Protocol.Overlay.SetShowHitTestBordersRequest):
         Promise<Protocol.ProtocolResponseWithError>;
@@ -3035,6 +3035,18 @@ declare namespace ProtocolProxyApi {
      */
     invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest):
         Promise<Protocol.Storage.ClearTrustTokensResponse>;
+
+    /**
+     * Gets details for a named interest group.
+     */
+    invoke_getInterestGroupDetails(params: Protocol.Storage.GetInterestGroupDetailsRequest):
+        Promise<Protocol.Storage.GetInterestGroupDetailsResponse>;
+
+    /**
+     * Enables/Disables issuing of interestGroupAccessed events.
+     */
+    invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface StorageDispatcher {
     /**
@@ -3056,6 +3068,11 @@ declare namespace ProtocolProxyApi {
      * The origin's IndexedDB database list has been modified.
      */
     indexedDBListUpdated(params: Protocol.Storage.IndexedDBListUpdatedEvent): void;
+
+    /**
+     * One of the interest groups was accessed by the associated page.
+     */
+    interestGroupAccessed(params: Protocol.Storage.InterestGroupAccessedEvent): void;
   }
 
   export interface SystemInfoApi {

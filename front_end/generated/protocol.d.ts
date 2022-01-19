@@ -10481,6 +10481,20 @@ declare namespace Protocol {
     }
 
     /**
+     * Font families collection for a script.
+     */
+    export interface ScriptFontFamilies {
+      /**
+       * Name of the script which these font families are defined for.
+       */
+      script: string;
+      /**
+       * Generic font families collection for the script.
+       */
+      fontFamilies: FontFamilies;
+    }
+
+    /**
      * Default font sizes.
      */
     export interface FontSizes {
@@ -11286,6 +11300,10 @@ declare namespace Protocol {
        * Specifies font families to set. If a font family is not specified, it won't be changed.
        */
       fontFamilies: FontFamilies;
+      /**
+       * Specifies font families to set for individual scripts.
+       */
+      forScripts?: ScriptFontFamilies[];
     }
 
     export interface SetFontSizesRequest {
@@ -12416,6 +12434,7 @@ declare namespace Protocol {
       Websql = 'websql',
       Service_workers = 'service_workers',
       Cache_storage = 'cache_storage',
+      Interest_groups = 'interest_groups',
       All = 'all',
       Other = 'other',
     }
@@ -12441,6 +12460,43 @@ declare namespace Protocol {
     export interface TrustTokens {
       issuerOrigin: string;
       count: number;
+    }
+
+    /**
+     * Enum of interest group access types.
+     */
+    export const enum InterestGroupAccessType {
+      Join = 'join',
+      Leave = 'leave',
+      Update = 'update',
+      Bid = 'bid',
+      Win = 'win',
+    }
+
+    /**
+     * Ad advertising element inside an interest group.
+     */
+    export interface InterestGroupAd {
+      renderUrl: string;
+      metadata?: string;
+    }
+
+    /**
+     * The full details of an interest group.
+     */
+    export interface InterestGroupDetails {
+      ownerOrigin: string;
+      name: string;
+      expirationTime: number;
+      joiningOrigin: string;
+      biddingUrl?: string;
+      biddingWasmHelperUrl?: string;
+      updateUrl?: string;
+      trustedBiddingSignalsUrl?: string;
+      trustedBiddingSignalsKeys: string[];
+      userBiddingSignals?: string;
+      ads: InterestGroupAd[];
+      adComponents: InterestGroupAd[];
     }
 
     export interface ClearDataForOriginRequest {
@@ -12572,6 +12628,19 @@ declare namespace Protocol {
       didDeleteTokens: boolean;
     }
 
+    export interface GetInterestGroupDetailsRequest {
+      ownerOrigin: string;
+      name: string;
+    }
+
+    export interface GetInterestGroupDetailsResponse extends ProtocolResponseWithError {
+      details: InterestGroupDetails;
+    }
+
+    export interface SetInterestGroupTrackingRequest {
+      enable: boolean;
+    }
+
     /**
      * A cache's contents have been modified.
      */
@@ -12622,6 +12691,15 @@ declare namespace Protocol {
        * Origin to update.
        */
       origin: string;
+    }
+
+    /**
+     * One of the interest groups was accessed by the associated page.
+     */
+    export interface InterestGroupAccessedEvent {
+      type: InterestGroupAccessType;
+      ownerOrigin: string;
+      name: string;
     }
   }
 

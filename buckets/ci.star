@@ -115,7 +115,7 @@ builder(
                 "liviurau@chromium.org",
             ],
             "excludes": [
-                "third_party/esbuild:infra/3pp/tools/esbuild/${{platform}}",
+                "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
             ],
             "show_commit_log": False,
             "bugs": "none",

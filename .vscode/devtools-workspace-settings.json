@@ -1,4 +1,9 @@
 {
   "eslint.runtime": "third_party/node/node.py",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "debug.javascript.terminalOptions": {
+    "skipFiles": [
+      "node_modules/typescript/**"
+    ]
+  }
 }

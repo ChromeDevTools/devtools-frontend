@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Run unit tests in VS Code debugger",
+      "preLaunchTask": "1-build_Debug",
+      "runtimeExecutable": "/usr/bin/npm",
+      "runtimeArgs": ["run", "unittest"],
+      "port": 9222,
+      "timeout": 30000,
+      "browserLaunchLocation": "workspace",
+      "outputCapture": "std",
+      "trace": true,
+      "env" : {
+        "KARMA_TIMEOUT": "3600000"
+      }
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Run end-to-end tests in VS Code debugger",
+      "preLaunchTask": "1-build_Debug",
+      "runtimeExecutable": "/usr/bin/npm",
+      "runtimeArgs": ["run", "e2etest"]
+    }
+  ]
+}

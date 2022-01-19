@@ -63,6 +63,13 @@ the "DevTools under test" this way.
 click the Node.js icon in any open DevTools window to connect to the puppeteer process. You can step through the puppeteer test
 code this way.
 
+### Debug tests with VSCode
+To debug in VSCode, open the "Run and Debug" sidebar, select "Run end-to-end tests in VS Code debugger" from the dropdown, and
+click the start button or press F5. Current limitations when using VSCode:
+
+* VSCode only attaches to the node portion of the code (mostly the test files and the test helpers), not to Chrome.
+* VSCode debugging only works with headless mode.
+
 ## Debugging flaky tests
 To see if certain tests are flaky you can use E2E stressor bot. Open a CL with your test changes and run the following command specifying your test file:
 

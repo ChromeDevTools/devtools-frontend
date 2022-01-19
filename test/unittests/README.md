@@ -43,3 +43,9 @@ However, if you want to obtain detailed reporting of a failure you are investiga
 ```bash
 npm run auto-unittest -- --expanded-reporting
 ```
+
+### Debugging with VSCode
+
+To run tests under the debugger, open the "Run and Debug" sidebar,
+select "Run unit tests in VS Code debugger" from the dropdown, and click
+the start button or press F5.

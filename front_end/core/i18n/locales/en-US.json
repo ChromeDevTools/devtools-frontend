@@ -2993,6 +2993,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Click to reveal the top-most iframe which does not allow this feature in the elements panel."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "disabled inside a fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "disabled by \"Permissions-Policy\" header"
   },

@@ -2993,6 +2993,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ t́ĥé t̂óp̂-ḿôśt̂ íf̂ŕâḿê ẃĥíĉh́ d̂óêś n̂ót̂ ál̂ĺôẃ t̂h́îś f̂éât́ûŕê ín̂ t́ĥé êĺêḿêńt̂ś p̂án̂él̂."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "d̂íŝáb̂ĺêd́ îńŝíd̂é â fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "d̂íŝáb̂ĺêd́ b̂ý \"Permissions-Policy\" ĥéâd́êŕ"
   },

@@ -52,6 +52,10 @@ const UIStrings = {
   *@description Text describing that a specific feature is blocked by a Permissions Policy specified in a request header.
   */
   disabledByHeader: 'disabled by "`Permissions-Policy`" header',
+  /**
+   *@description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.
+   */
+  disabledByFencedFrame: 'disabled inside a `fencedframe`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/PermissionsPolicySection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -144,10 +148,18 @@ export class PermissionsPolicySection extends HTMLElement {
       const resource = frame && frame.resourceForURL(frame.url);
       const linkTargetRequest =
           blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource && resource.request;
-      const blockReasonText = blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute ?
-          i18nString(UIStrings.disabledByIframe) :
-          blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header ? i18nString(UIStrings.disabledByHeader) :
-                                                                              '';
+      const blockReasonText = ((): String => {
+        switch (blockReason) {
+          case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:
+            return i18nString(UIStrings.disabledByIframe);
+          case Protocol.Page.PermissionsPolicyBlockReason.Header:
+            return i18nString(UIStrings.disabledByHeader);
+          case Protocol.Page.PermissionsPolicyBlockReason.InFencedFrameTree:
+            return i18nString(UIStrings.disabledByFencedFrame);
+          default:
+            return '';
+        }
+      })();
       const revealHeader = async(): Promise<void> => {
         if (!linkTargetRequest) {
           return;

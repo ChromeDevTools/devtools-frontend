@@ -2897,6 +2897,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "T̂h́îś f̂ŕâḿê íŝ ćôńŝíd̂ér̂éd̂ án̂ ád̂ f́r̂ám̂é b̂éĉáûśê ít̂ś p̂ár̂én̂t́ f̂ŕâḿê íŝ án̂ ád̂ f́r̂ám̂é."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "R̂éf̂ŕêśĥ"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "r̂ép̂ór̂t́îńĝ t́ô"
   },

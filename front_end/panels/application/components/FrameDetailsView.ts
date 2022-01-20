@@ -236,6 +236,10 @@ const UIStrings = {
   */
   createdByAdScriptExplanation:
       'There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.',
+  /**
+  *@description Label for a button which when clicked causes some information to be refreshed/updated.
+  */
+  refresh: 'Refresh',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -337,7 +341,7 @@ export class FrameDetailsReportView extends HTMLElement {
       groups: [
         {
           iconName: 'refresh_12x12_icon',
-          text: 'Refresh',
+          text: i18nString(UIStrings.refresh),
         } as IconButton.IconButton.IconWithTextData,
       ],
     } as IconButton.IconButton.IconButtonData}>

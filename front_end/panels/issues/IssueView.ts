@@ -30,7 +30,6 @@ import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
-import {WasmCrossOriginModuleSharingAffectedResourcesView} from './WasmCrossOriginModuleSharingAffectedResourcesView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
 
 import type {AggregatedIssue} from './IssueAggregator.js';
@@ -253,7 +252,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new GenericIssueDetailsView(this, this.#issue),
       new AffectedDocumentsInQuirksModeView(this, this.#issue),
       new AttributionReportingIssueDetailsView(this, this.#issue),
-      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this.#issue),
       new AffectedRawCookieLinesView(this, this.#issue),
     ];
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {

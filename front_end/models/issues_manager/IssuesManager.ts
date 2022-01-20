@@ -25,7 +25,6 @@ import {SameSiteCookieIssue} from './SameSiteCookieIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
-import {WasmCrossOriginModuleSharingIssue} from './WasmCrossOriginModuleSharingIssue.js';
 
 export {Events} from './IssuesManagerEvents.js';
 
@@ -92,10 +91,6 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.AttributionReportingIssue,
     AttributionReportingIssue.fromInspectorIssue,
-  ],
-  [
-    Protocol.Audits.InspectorIssueCode.WasmCrossOriginModuleSharingIssue,
-    WasmCrossOriginModuleSharingIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.GenericIssue,

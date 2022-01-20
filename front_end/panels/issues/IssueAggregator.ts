@@ -43,8 +43,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #trustedWebActivityIssues = new Set<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>();
   #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
   #attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
-  #wasmCrossOriginModuleSharingIssues =
-      new Set<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue>();
   #genericIssues = new Set<IssuesManager.GenericIssue.GenericIssue>();
   #representative?: IssuesManager.Issue.Issue;
   #aggregatedIssuesCount = 0;
@@ -124,11 +122,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getAttributionReportingIssues(): ReadonlySet<IssuesManager.AttributionReportingIssue.AttributionReportingIssue> {
     return this.#attributionReportingIssues;
-  }
-
-  getWasmCrossOriginModuleSharingIssue():
-      ReadonlySet<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue> {
-    return this.#wasmCrossOriginModuleSharingIssues;
   }
 
   getGenericIssues(): ReadonlySet<IssuesManager.GenericIssue.GenericIssue> {
@@ -222,9 +215,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.AttributionReportingIssue.AttributionReportingIssue) {
       this.#attributionReportingIssues.add(issue);
-    }
-    if (issue instanceof IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue) {
-      this.#wasmCrossOriginModuleSharingIssues.add(issue);
     }
     if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
       this.#genericIssues.add(issue);

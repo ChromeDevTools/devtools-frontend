@@ -41,7 +41,6 @@ devtools_module("issues") {
     "IssueRevealer.ts",
     "IssueView.ts",
     "IssuesPane.ts",
-    "WasmCrossOriginModuleSharingAffectedResourcesView.ts",
   ]
 
   deps = [

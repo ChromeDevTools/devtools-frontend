@@ -32,7 +32,6 @@ devtools_module("issues_manager") {
     "SharedArrayBufferIssue.ts",
     "SourceFrameIssuesManager.ts",
     "TrustedWebActivityIssue.ts",
-    "WasmCrossOriginModuleSharingIssue.ts",
   ]
 
   deps = [
@@ -119,7 +118,6 @@ devtools_issue_description_files = [
   "TwaDigitalAssetLinksFailed.md",
   "TwaHttpError.md",
   "TwaPageUnavailableOffline.md",
-  "wasmCrossOriginModuleSharing.md",
 ]
 
 devtools_pre_built("descriptions") {

@@ -1394,9 +1394,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Ĉh́âńĝéŝ t́ô q́ûál̂ít̂ý ĉŕît́êŕîá f̂ór̂ ṔŴÁŝ úŝín̂ǵ T̂ŕûśt̂éd̂ Ẃêb́ Âćt̂ív̂ít̂ý"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "R̂éŝt́r̂íĉt́îńĝ Ẃâśm̂ ḿôd́ûĺê śĥár̂ín̂ǵ t̂ó ŝám̂é-ôŕîǵîń"
-  },
   "models/logs/logs-meta.ts | clear": {
     "message": "ĉĺêár̂"
   },
@@ -5500,27 +5497,6 @@
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "b̂ĺôćk̂éd̂"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n, plural, =1 {# m̂ód̂úl̂é} other {# m̂ód̂úl̂éŝ}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Ŝóûŕĉé Ôŕîǵîń"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Ŝt́ât́ûś"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "T̂ár̂ǵêt́ Ôŕîǵîń"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "ŵár̂ńîńĝ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Ŵáŝḿ M̂ód̂úl̂é ÛŔL̂"
   },
   "panels/js_profiler/js_profiler-meta.ts | profiler": {
     "message": "P̂ŕôf́îĺêŕ"

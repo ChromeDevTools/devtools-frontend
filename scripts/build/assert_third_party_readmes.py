@@ -49,7 +49,8 @@ def main(argv):
     for listed_directory in listed_third_party_directories_json:
         if (listed_directory not in found_directories
                 # TODO(crbug.com/1287519): Remove exception for codemirror 5
-                and not listed_directory == "codemirror"):
+                and not listed_directory == "codemirror"
+                and not listed_directory == "puppeteer"):
             print(
                 "Directory `" + listed_directory + "`" +
                 " is not included in `config/gni/devtools_grd_files.gni`." +

@@ -10,5 +10,6 @@
   "lighthouse",
   "lit-html",
   "marked",
+  "puppeteer",
   "wasmparser"
 ]

@@ -5,11 +5,12 @@
 import * as Common from '../../../core/common/common.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
-import {baseConfiguration, dynamicSetting, DynamicSetting} from './config.js';
+import {baseConfiguration, dummyDarkTheme, dynamicSetting, DynamicSetting, themeSelection} from './config.js';
 import {toLineColumn, toOffset} from './position.js';
 
 declare global {
@@ -66,6 +67,12 @@ export class TextEditor extends HTMLElement {
     });
     this.#ensureSettingListeners();
     this.#startObservingResize();
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      const currentTheme = ThemeSupport.ThemeSupport.instance().themeName() === 'dark' ? dummyDarkTheme : [];
+      this.editor.dispatch({
+        effects: themeSelection.reconfigure(currentTheme),
+      });
+    });
     return this.#activeEditor;
   }
 

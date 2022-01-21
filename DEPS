@@ -11,16 +11,16 @@ vars = {
   'checkout_reclient': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '23933803a5cf2fb4cd61b84cc365bf70468adf44',
+  'build_revision': '3f93d9aba14eaa650c434079c4aaaee4cc8fadba',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'f78b4b9f33bd8ef9944d5ce643daff1c31880189',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'a657331e90e23e289e85a92af49b64829151f403',
+  'depot_tools_revision': '3dc0172a6b629edf575bf4851653ce6aa6635d8a',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '9a50beee69a31869d1f95c2c63bc3a3ffe725b97',
+  'inspector_protocol_revision': '5221cbfa7f940d56ae8b79bf34c446a56781dd56',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': 'e435ad79c17b1888b34df88d6a30a094936e3836',

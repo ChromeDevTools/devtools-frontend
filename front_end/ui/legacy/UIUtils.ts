@@ -1031,7 +1031,7 @@ export class LongClickController {
     if (!this.longClickData) {
       return;
     }
-    this.element.removeEventListener('poinerdown', this.longClickData.mouseDown, false);
+    this.element.removeEventListener('pointerdown', this.longClickData.mouseDown, false);
     this.element.removeEventListener('pointerout', this.longClickData.reset, false);
     this.element.removeEventListener('pointerup', this.longClickData.mouseUp, false);
     this.element.addEventListener('click', this.longClickData.reset, true);

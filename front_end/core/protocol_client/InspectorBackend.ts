@@ -648,6 +648,10 @@ export class TargetBase {
     return this.getAgent('EventBreakpoints');
   }
 
+  fetchAgent(): ProtocolProxyApi.FetchApi {
+    return this.getAgent('Fetch');
+  }
+
   heapProfilerAgent(): ProtocolProxyApi.HeapProfilerApi {
     return this.getAgent('HeapProfiler');
   }
@@ -802,6 +806,10 @@ export class TargetBase {
 
   registerDOMStorageDispatcher(dispatcher: ProtocolProxyApi.DOMStorageDispatcher): void {
     this.registerDispatcher('DOMStorage', dispatcher);
+  }
+
+  registerFetchDispatcher(dispatcher: ProtocolProxyApi.FetchDispatcher): void {
+    this.registerDispatcher('Fetch', dispatcher);
   }
 
   registerHeapProfilerDispatcher(dispatcher: ProtocolProxyApi.HeapProfilerDispatcher): void {

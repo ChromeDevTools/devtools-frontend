@@ -123,14 +123,17 @@ const CONNECTION_TYPES = new Map([
 
 export class NetworkManager extends SDKModel<EventTypes> {
   readonly dispatcher: NetworkDispatcher;
+  readonly fetchDispatcher: FetchDispatcher;
   readonly #networkAgent: ProtocolProxyApi.NetworkApi;
   readonly #bypassServiceWorkerSetting: Common.Settings.Setting<boolean>;
 
   constructor(target: Target) {
     super(target);
     this.dispatcher = new NetworkDispatcher(this);
+    this.fetchDispatcher = new FetchDispatcher(target.fetchAgent());
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
+    target.registerFetchDispatcher(this.fetchDispatcher);
     if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
@@ -371,6 +374,23 @@ export const Fast3GConditions: Conditions = {
 };
 
 const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
+
+export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
+  readonly #fetchAgent: ProtocolProxyApi.FetchApi;
+
+  constructor(agent: ProtocolProxyApi.FetchApi) {
+    this.#fetchAgent = agent;
+  }
+
+  requestPaused({requestId, request, resourceType, responseStatusCode, responseHeaders}:
+                    Protocol.Fetch.RequestPausedEvent): void {
+    void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
+        this.#fetchAgent, request, resourceType, requestId, responseStatusCode, responseHeaders));
+  }
+
+  authRequired({}: Protocol.Fetch.AuthRequiredEvent): void {
+  }
+}
 
 export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   readonly #manager: NetworkManager;
@@ -782,23 +802,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     networkRequest.addEventSourceMessage(time, eventName, eventId, data);
   }
 
-  requestIntercepted({
-    interceptionId,
-    request,
-    frameId,
-    resourceType,
-    isNavigationRequest,
-    isDownload,
-    redirectUrl,
-    authChallenge,
-    responseErrorReason,
-    responseStatusCode,
-    responseHeaders,
-    requestId,
-  }: Protocol.Network.RequestInterceptedEvent): void {
-    void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
-        this.#manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
-        isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
+  requestIntercepted({}: Protocol.Network.RequestInterceptedEvent): void {
   }
 
   requestWillBeSentExtraInfo({requestId, associatedCookies, headers, clientSecurityState, connectTiming}:
@@ -1070,7 +1074,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #userAgentOverrideInternal: string;
   #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null;
   #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null;
-  readonly #agents: Set<ProtocolProxyApi.NetworkApi>;
+  readonly #networkAgents: Set<ProtocolProxyApi.NetworkApi>;
+  readonly #fetchAgents: Set<ProtocolProxyApi.FetchApi>;
   readonly inflightMainResourceRequests: Map<string, NetworkRequest>;
   #networkConditionsInternal: Conditions;
   #updatingInterceptionPatternsPromise: Promise<void>|null;
@@ -1087,7 +1092,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     this.#userAgentOverrideInternal = '';
     this.#userAgentMetadataOverride = null;
     this.#customAcceptedEncodings = null;
-    this.#agents = new Set();
+    this.#networkAgents = new Set();
+    this.#fetchAgents = new Set();
     this.inflightMainResourceRequests = new Map();
     this.#networkConditionsInternal = NoThrottlingConditions;
     this.#updatingInterceptionPatternsPromise = null;
@@ -1162,6 +1168,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   modelAdded(networkManager: NetworkManager): void {
     const networkAgent = networkManager.target().networkAgent();
+    const fetchAgent = networkManager.target().fetchAgent();
     if (this.#extraHeaders) {
       void networkAgent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
     }
@@ -1173,14 +1180,15 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       void networkAgent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
     }
     if (this.isIntercepting()) {
-      void networkAgent.invoke_setRequestInterception({patterns: this.#urlsForRequestInterceptor.valuesArray()});
+      void fetchAgent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()});
     }
     if (this.#customAcceptedEncodings === null) {
       void networkAgent.invoke_clearAcceptedEncodingsOverride();
     } else {
       void networkAgent.invoke_setAcceptedEncodings({encodings: this.#customAcceptedEncodings});
     }
-    this.#agents.add(networkAgent);
+    this.#networkAgents.add(networkAgent);
+    this.#fetchAgents.add(fetchAgent);
     if (this.isThrottling()) {
       this.updateNetworkConditions(networkAgent);
     }
@@ -1194,7 +1202,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       }
       this.inflightMainResourceRequests.delete((entry[0] as string));
     }
-    this.#agents.delete(networkManager.target().networkAgent());
+    this.#networkAgents.delete(networkManager.target().networkAgent());
+    this.#fetchAgents.delete(networkManager.target().fetchAgent());
   }
 
   isThrottling(): boolean {
@@ -1208,7 +1217,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   setNetworkConditions(conditions: Conditions): void {
     this.#networkConditionsInternal = conditions;
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       this.updateNetworkConditions(agent);
     }
     this.dispatchEventToListeners(MultitargetNetworkManager.Events.ConditionsChanged);
@@ -1236,7 +1245,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   setExtraHTTPHeaders(headers: Protocol.Network.Headers): void {
     this.#extraHeaders = headers;
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       void agent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
     }
   }
@@ -1247,7 +1256,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   private updateUserAgentOverride(): void {
     const userAgent = this.currentUserAgent();
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       void agent.invoke_setUserAgentOverride(
           {userAgent: userAgent, userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
@@ -1297,7 +1306,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   private updateAcceptedEncodingsOverride(): void {
     const customAcceptedEncodings = this.#customAcceptedEncodings;
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       if (customAcceptedEncodings === null) {
         void agent.invoke_clearAcceptedEncodingsOverride();
       } else {
@@ -1348,7 +1357,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
     this.#effectiveBlockedURLs = urls;
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       void agent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
     }
   }
@@ -1381,8 +1390,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
     this.#updatingInterceptionPatternsPromise = null;
     const promises = ([] as Promise<unknown>[]);
-    for (const agent of this.#agents) {
-      promises.push(agent.invoke_setRequestInterception({patterns: this.#urlsForRequestInterceptor.valuesArray()}));
+    for (const agent of this.#fetchAgents) {
+      promises.push(agent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()}));
     }
     this.dispatchEventToListeners(MultitargetNetworkManager.Events.InterceptorsChanged);
     await Promise.all(promises);
@@ -1401,13 +1410,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   clearBrowserCache(): void {
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       void agent.invoke_clearBrowserCache();
     }
   }
 
   clearBrowserCookies(): void {
-    for (const agent of this.#agents) {
+    for (const agent of this.#networkAgents) {
       void agent.invoke_clearBrowserCookies();
     }
   }
@@ -1470,38 +1479,26 @@ export namespace MultitargetNetworkManager {
 }
 
 export class InterceptedRequest {
-  readonly #networkAgent: ProtocolProxyApi.NetworkApi;
-  readonly #interceptionId: Protocol.Network.InterceptionId;
+  readonly #fetchAgent: ProtocolProxyApi.FetchApi;
   #hasRespondedInternal: boolean;
   request: Protocol.Network.Request;
-  frameId: Protocol.Page.FrameId;
   resourceType: Protocol.Network.ResourceType;
-  isNavigationRequest: boolean;
-  isDownload: boolean;
-  redirectUrl: string|undefined;
-  authChallenge: Protocol.Network.AuthChallenge|undefined;
-  responseErrorReason: Protocol.Network.ErrorReason|undefined;
   responseStatusCode: number|undefined;
-  responseHeaders: Protocol.Network.Headers|undefined;
-  requestId: string|undefined;
+  responseHeaders: Protocol.Fetch.HeaderEntry[]|undefined;
+  requestId: Protocol.Fetch.RequestId;
 
   constructor(
-      networkAgent: ProtocolProxyApi.NetworkApi, interceptionId: Protocol.Network.InterceptionId,
-      request: Protocol.Network.Request, frameId: Protocol.Page.FrameId, resourceType: Protocol.Network.ResourceType,
-      isNavigationRequest: boolean, isDownload?: boolean, redirectUrl?: string,
-      authChallenge?: Protocol.Network.AuthChallenge, responseErrorReason?: Protocol.Network.ErrorReason,
-      responseStatusCode?: number, responseHeaders?: Protocol.Network.Headers, requestId?: string) {
-    this.#networkAgent = networkAgent;
-    this.#interceptionId = interceptionId;
+      fetchAgent: ProtocolProxyApi.FetchApi,
+      request: Protocol.Network.Request,
+      resourceType: Protocol.Network.ResourceType,
+      requestId: Protocol.Fetch.RequestId,
+      responseStatusCode?: number,
+      responseHeaders?: Protocol.Fetch.HeaderEntry[],
+  ) {
+    this.#fetchAgent = fetchAgent;
     this.#hasRespondedInternal = false;
     this.request = request;
-    this.frameId = frameId;
     this.resourceType = resourceType;
-    this.isNavigationRequest = isNavigationRequest;
-    this.isDownload = Boolean(isDownload);
-    this.redirectUrl = redirectUrl;
-    this.authChallenge = authChallenge;
-    this.responseErrorReason = responseErrorReason;
     this.responseStatusCode = responseStatusCode;
     this.responseHeaders = responseHeaders;
     this.requestId = requestId;
@@ -1513,17 +1510,9 @@ export class InterceptedRequest {
 
   async continueRequestWithContent(contentBlob: Blob): Promise<void> {
     this.#hasRespondedInternal = true;
-    const headers = [
-      'HTTP/1.1 200 OK',
-      'Date: ' + (new Date()).toUTCString(),
-      'Server: Chrome Devtools Request Interceptor',
-      'Connection: closed',
-      'Content-Length: ' + contentBlob.size,
-      'Content-Type: ' + contentBlob.type || 'text/x-unknown',
-    ];
-    const encodedResponse = await blobToBase64(new Blob([headers.join('\r\n'), '\r\n\r\n', contentBlob]));
-    void this.#networkAgent.invoke_continueInterceptedRequest(
-        {interceptionId: this.#interceptionId, rawResponse: encodedResponse});
+    const body = await blobToBase64(contentBlob);
+    void this.#fetchAgent.invoke_fulfillRequest(
+        {requestId: this.requestId, responseCode: this.responseStatusCode || 200, body});
 
     async function blobToBase64(blob: Blob): Promise<string> {
       const reader = new FileReader();
@@ -1548,18 +1537,17 @@ export class InterceptedRequest {
   continueRequestWithoutChange(): void {
     console.assert(!this.#hasRespondedInternal);
     this.#hasRespondedInternal = true;
-    void this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId});
+    void this.#fetchAgent.invoke_continueRequest({requestId: this.requestId});
   }
 
   continueRequestWithError(errorReason: Protocol.Network.ErrorReason): void {
     console.assert(!this.#hasRespondedInternal);
     this.#hasRespondedInternal = true;
-    void this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId, errorReason});
+    void this.#fetchAgent.invoke_failRequest({requestId: this.requestId, errorReason});
   }
 
   async responseBody(): Promise<ContentData> {
-    const response =
-        await this.#networkAgent.invoke_getResponseBodyForInterception({interceptionId: this.#interceptionId});
+    const response = await this.#fetchAgent.invoke_getResponseBody({requestId: this.requestId});
     const error = response.getError() || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
@@ -1714,7 +1702,7 @@ export interface Message {
 
 export interface InterceptionPattern {
   urlPattern: string;
-  interceptionStage: Protocol.Network.InterceptionStage;
+  requestStage: Protocol.Fetch.RequestStage;
 }
 
 export type RequestInterceptor = (request: InterceptedRequest) => Promise<void>;

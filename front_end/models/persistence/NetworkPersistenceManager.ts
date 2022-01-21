@@ -383,8 +383,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
       return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
           Array.from(patterns).map(
-              pattern =>
-                  ({urlPattern: pattern, interceptionStage: Protocol.Network.InterceptionStage.HeadersReceived})),
+              pattern => ({urlPattern: pattern, requestStage: Protocol.Fetch.RequestStage.Response})),
           this.interceptionHandlerBound);
     }
   }
@@ -467,8 +466,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     let mimeType = '';
     if (interceptedRequest.responseHeaders) {
-      const responseHeaders = SDK.NetworkManager.NetworkManager.lowercaseHeaders(interceptedRequest.responseHeaders);
-      mimeType = responseHeaders['content-type'];
+      for (const header of interceptedRequest.responseHeaders) {
+        if (header.name.toLowerCase() === 'content-type') {
+          mimeType = header.value;
+          break;
+        }
+      }
     }
 
     if (!mimeType) {

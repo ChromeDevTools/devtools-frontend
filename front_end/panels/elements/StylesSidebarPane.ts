@@ -40,6 +40,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
+import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -231,6 +234,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly resizeThrottler: Common.Throttler.Throttler;
   private readonly imagePreviewPopover: ImagePreviewPopover;
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
+  #changedLinesByURLs: Map<string, Set<number>> = new Map();
+  #uiSourceCodeToDiffCallbacks: Map<Workspace.UISourceCode.UISourceCode, () => void> = new Map();
 
   static instance(): StylesSidebarPane {
     if (!_stylesSidebarPaneInstance) {
@@ -834,7 +839,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const blocks = [new SectionBlock(null)];
     let sectionIdx = 0;
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
+      this.resetChangedLinesTracking();
+    }
     for (const style of matchedStyles.nodeStyles()) {
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES) && style.parentRule) {
+        await this.trackChangedLines(style.parentRule.resourceURL());
+      }
+
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
@@ -985,6 +997,61 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       sections = sections.concat(block.sections);
     }
     return sections;
+  }
+
+  resetChangedLinesTracking(): void {
+    this.#changedLinesByURLs.clear();
+    for (const [uiSourceCode, callback] of this.#uiSourceCodeToDiffCallbacks) {
+      WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(uiSourceCode, callback);
+    }
+    this.#uiSourceCodeToDiffCallbacks.clear();
+  }
+
+  async trackChangedLines(url: string): Promise<void> {
+    if (!url || this.#changedLinesByURLs.has(url)) {
+      return;
+    }
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    if (uiSourceCode) {
+      await this.refreshChangedLines(uiSourceCode);
+      const callback = this.refreshChangedLines.bind(this, uiSourceCode);
+      WorkspaceDiff.WorkspaceDiff.workspaceDiff().subscribeToDiffChange(uiSourceCode, callback);
+      this.#uiSourceCodeToDiffCallbacks.set(uiSourceCode, callback);
+    }
+  }
+
+  isPropertyChanged(property: SDK.CSSProperty.CSSProperty): boolean {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
+      return false;
+    }
+    const url = property.ownerStyle.parentRule?.resourceURL();
+    if (!url) {
+      return false;
+    }
+    const changedLines = this.#changedLinesByURLs.get(url);
+    if (!changedLines) {
+      return false;
+    }
+    const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(property, true);
+    if (!uiLocation) {
+      return false;
+    }
+    // UILocation's lineNumber starts at 0, but changedLines start at 1.
+    return changedLines.has(uiLocation.lineNumber + 1);
+  }
+
+  private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const diff = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    const changedLines = new Set<number>();
+    if (diff && diff.length > 0) {
+      const {rows} = DiffView.DiffView.buildDiffRows(diff);
+      for (const row of rows) {
+        if (row.type === DiffView.DiffView.RowType.Addition) {
+          changedLines.add(row.currentLineNumber);
+        }
+      }
+    }
+    this.#changedLinesByURLs.set(uiSourceCode.url(), changedLines);
   }
 
   private clipboardCopy(_event: Event): void {

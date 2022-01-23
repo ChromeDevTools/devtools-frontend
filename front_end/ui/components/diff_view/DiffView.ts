@@ -44,14 +44,14 @@ interface Row {
   type: RowType;
 }
 
-const enum RowType {
+export const enum RowType {
   Deletion = 'deletion',
   Addition = 'addition',
   Equal = 'equal',
   Spacer = 'spacer',
 }
 
-function buildDiffRows(diff: Diff.Diff.DiffArray): {
+export function buildDiffRows(diff: Diff.Diff.DiffArray): {
   originalLines: readonly string[],
   currentLines: readonly string[],
   rows: readonly Row[],

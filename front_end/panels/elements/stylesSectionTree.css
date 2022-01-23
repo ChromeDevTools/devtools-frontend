@@ -126,6 +126,34 @@ ol.expanded {
   opacity: 50%;
 }
 
+.changed::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  width: 2px;
+  height: 100%;
+  background-color: var(--color-accent-green);
+}
+
+.copy {
+  display: none;
+}
+
+.changed:hover {
+  background-color: var(--color-accent-green-background);
+}
+
+.changed:hover .copy {
+  position: absolute;
+  right: -4px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: inline-block;
+  cursor: pointer;
+  transform: scale(0.9);
+}
+
 .has-ignorable-error {
   color: var(--color-text-disabled);
 }

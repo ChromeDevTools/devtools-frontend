@@ -272,6 +272,8 @@ export enum ExperimentName {
   WEBAUTHN_PANE = 'webauthnPane',
   SYNC_SETTINGS = 'syncSettings',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
+  PRECISE_CHANGES = 'preciseChanges',
+  STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

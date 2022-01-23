@@ -584,7 +584,8 @@ export enum DevtoolsExperiments {
   'cssTypeComponentLength' = 52,
   'preciseChanges' = 53,
   'bfcacheDisplayTree' = 54,
-  'MaxValue' = 55,
+  'stylesPaneCSSChanges' = 55,
+  'MaxValue' = 56,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

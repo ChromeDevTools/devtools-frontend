@@ -477,6 +477,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.listItemElement.classList.remove('disabled');
     }
+
+    this.listItemElement.classList.toggle('changed', this.parentPane().isPropertyChanged(this.property));
   }
 
   node(): SDK.DOMModel.DOMNode|null {
@@ -714,6 +716,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         UI.ARIAUtils.setAccessibleName(
             enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
       }
+
+      const copyIcon = UI.Icon.Icon.create('largeicon-copy', 'copy');
+      UI.Tooltip.Tooltip.install(copyIcon, i18nString(UIStrings.copyDeclaration));
+      copyIcon.addEventListener('click', () => {
+        const propertyText = `${this.property.name}: ${this.property.value};`;
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
+      });
+      this.listItemElement.append(copyIcon);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
   }
@@ -1469,6 +1479,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
       this.styleTextAppliedForTest();
       return;
+    }
+    if (updatedProperty) {
+      this.listItemElement.classList.toggle('changed', this.parentPane().isPropertyChanged(updatedProperty));
     }
 
     this.matchedStylesInternal.resetActiveProperties();

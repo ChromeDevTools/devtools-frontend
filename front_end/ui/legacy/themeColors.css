@@ -57,6 +57,7 @@
   --color-accent-red: rgb(217 48 37);
   --color-red: rgb(238 68 47);
   --color-accent-green: rgb(24 128 56);
+  --color-accent-green-background: rgb(24 128 56 / 10%);
   --color-green: rgb(99 172 190);
   --color-link: var(--color-primary);
   --color-syntax-1: rgb(200 0 0);
@@ -219,6 +220,7 @@
   --color-accent-red: rgb(242 139 130);
   --color-red: rgb(237 78 76);
   --color-accent-green: rgb(129 201 149);
+  --color-accent-green-background: rgb(129 201 149 / 20%);
   --color-link: var(--color-primary);
   --color-syntax-1: rgb(53 212 199);
   --color-syntax-2: rgb(93 176 215);

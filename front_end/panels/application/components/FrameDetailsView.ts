@@ -342,6 +342,7 @@ export class FrameDetailsReportView extends HTMLElement {
         {
           iconName: 'refresh_12x12_icon',
           text: i18nString(UIStrings.refresh),
+          iconColor: 'var(--color-text-primary)',
         } as IconButton.IconButton.IconWithTextData,
       ],
     } as IconButton.IconButton.IconButtonData}>

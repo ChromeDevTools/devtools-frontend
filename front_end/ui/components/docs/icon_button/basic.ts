@@ -12,7 +12,7 @@ function appendComponent(data: IconButton.IconButton.IconButtonData) {
 
 appendComponent({
   clickHandler: (): void => {},
-  groups: [{iconName: 'survey_feedback_icon', text: '1 item'}],
+  groups: [{iconName: 'survey_feedback_icon', iconColor: 'var(--color-text-primary)', text: '1 item'}],
 });
 
 appendComponent({

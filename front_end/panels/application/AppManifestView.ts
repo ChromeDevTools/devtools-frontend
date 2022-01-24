@@ -617,7 +617,13 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         const copyButton = new IconButton.IconButton.IconButton();
         copyButton.title = i18nString(UIStrings.copyToClipboard);
         copyButton.data = {
-          groups: [{iconName: 'copy_icon', iconHeight: '12px', iconWidth: '12px', text: ''}],
+          groups: [{
+            iconName: 'copy_icon',
+            iconHeight: '12px',
+            iconWidth: '12px',
+            text: '',
+            iconColor: 'var(--color-text-primary)',
+          }],
           clickHandler: (): void => {
             Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
           },

@@ -164,7 +164,7 @@ template("ts_library") {
     if (devtools_skip_typecheck) {
       args += [ "--use-esbuild" ]
       _esbuild = devtools_location_prepend + "third_party/esbuild/esbuild"
-      if (is_win) {
+      if (host_os == "win") {
         inputs += [ _esbuild + ".exe" ]
       } else {
         inputs += [ _esbuild ]

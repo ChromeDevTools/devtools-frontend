@@ -97,12 +97,11 @@ deps = {
     'dep_type': 'cipd',
     'condition': '(host_os == "linux" or host_os == "win") and checkout_reclient',
   },
-  # TODO(crbug.com/1278663): remove this comment or this package after esbuild experiemnt.
   'third_party/esbuild': {
     'packages': [
       {
         'package': 'infra/3pp/tools/esbuild/${{platform}}',
-        'version': 'version:2@0.14.10',
+        'version': 'version:2@0.14.13.chromium.2',
       }
     ],
     'dep_type': 'cipd',

@@ -90,8 +90,6 @@ template("devtools_entrypoint") {
     _copy_target_name = _entrypoint_target_name + "-copy"
     _rollup_target_name = _entrypoint_target_name + "-rollup"
     _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
-    _generated_declaration_target_name =
-        _entrypoint_target_name + "-generate-declaration"
 
     node_action(_copy_target_name) {
       script = "scripts/build/ninja/copy-file.js"
@@ -146,27 +144,37 @@ template("devtools_entrypoint") {
       public_deps = [ ":$_prebundle_target_name" ] + invoker.deps
     }
 
-    # TypeScript requires a `module.d.ts` that describes
-    # the public API of the `module.js` entrypoint. To do so, we copy
-    # the generated `prebundle.d.ts` over, as the public API for a
-    # rolled up bundle remains the same.
-    node_action(_generated_declaration_target_name) {
-      script = "scripts/build/ninja/generate-declaration.js"
+    if (!devtools_skip_typecheck) {
+      _generated_declaration_target_name =
+          _entrypoint_target_name + "-generate-declaration"
 
-      args = [
-        rebase_path(target_gen_dir, root_build_dir),
-        invoker.entrypoint,
-      ]
+      # TypeScript requires a `module.d.ts` that describes
+      # the public API of the `module.js` entrypoint. To do so, we copy
+      # the generated `prebundle.d.ts` over, as the public API for a
+      # rolled up bundle remains the same.
+      node_action(_generated_declaration_target_name) {
+        script = "scripts/build/ninja/generate-declaration.js"
 
-      public_deps = [
+        args = [
+          rebase_path(target_gen_dir, root_build_dir),
+          invoker.entrypoint,
+        ]
+
+        public_deps = [
+          ":$_prebundle_target_name",
+          ":$_rollup_target_name",
+        ]
+
+        outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
+      }
+
+      _devtools_entrypoint_deps += [ ":$_generated_declaration_target_name" ]
+    } else {
+      _devtools_entrypoint_deps += [
         ":$_prebundle_target_name",
         ":$_rollup_target_name",
       ]
-
-      outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
     }
-
-    _devtools_entrypoint_deps += [ ":$_generated_declaration_target_name" ]
   }
 
   # Because we change the filename before rolling up the bundle,

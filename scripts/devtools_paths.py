@@ -75,6 +75,10 @@ def hosted_mode_script_path():
     return path.join(devtools_root_path(), 'scripts', 'hosted_mode', 'server.js')
 
 
+def esbuild_path():
+    return path.join(devtools_root_path(), 'third_party', 'esbuild', 'esbuild')
+
+
 def downloaded_chrome_binary_path():
     return path.abspath(path.join(
     *{

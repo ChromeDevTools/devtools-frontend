@@ -4,7 +4,10 @@
 
 /* eslint-disable no-console */
 
-import * as puppeteer from 'puppeteer';
+// use require here due to
+// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
+import puppeteer = require('puppeteer');
+
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';

@@ -235,14 +235,19 @@ describe('RemoteObject', () => {
       assert.deepEqual(remoteObject.subtype, undefined);
       // We can't represent an `Function` object, but we can compare its structure
       assert.deepEqual(typeof remoteObject.value, 'function');
-      assert.deepEqual(String(remoteObject.value), 'function func() { }');
-      assert.deepEqual(remoteObject.description, 'function func() { }');
+      const funcStrs = [
+        'function func() { }',
+        // esbuild produces different format.
+        'function func() {\n      }',
+      ];
+      assert.deepInclude(funcStrs, String(remoteObject.value));
+      assert.deepInclude(funcStrs, remoteObject.description);
       assert.deepEqual(remoteObject.unserializableValue(), undefined);
       assert.deepEqual(remoteObject.hasChildren, false);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(String(callArguments.value), 'function func() { }');
+      assert.deepInclude(funcStrs, String(callArguments.value));
       assert.deepEqual(callArguments.unserializableValue, undefined);
     });
 

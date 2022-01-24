@@ -62,15 +62,10 @@ const emitHeaderComments = () => {
   emitLine();
 };
 
-const emitModule = (moduleName: string, domains: Protocol.Domain[]) => {
-  moduleName = toTitleCase(moduleName);
+const emitModule = (domains: Protocol.Domain[]) => {
   emitHeaderComments();
-  emitOpenBlock(`declare namespace ${moduleName}`);
   emitGlobalTypeDefs();
   domains.forEach(emitDomain);
-  emitCloseBlock();
-  emitLine();
-  emitLine('export = Protocol;');
 };
 
 const emitGlobalTypeDefs = () => {
@@ -443,9 +438,9 @@ const flushEmitToFile = (path: string) => {
 const main = () => {
   const FRONTEND_GENERATED_DIR = path.resolve(__dirname, path.join('../../front_end/generated'));
 
-  const destProtocolFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol.d.ts');
-  const protocolModuleName = path.basename(destProtocolFilePath, '.d.ts');
-  emitModule(protocolModuleName, protocolDomains);
+  const destProtocolFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol.ts');
+  const protocolModuleName = path.basename(destProtocolFilePath, '.ts');
+  emitModule(protocolDomains);
   flushEmitToFile(destProtocolFilePath);
 
   const destMappingFilePath = path.join(FRONTEND_GENERATED_DIR, 'protocol-mapping.d.ts');

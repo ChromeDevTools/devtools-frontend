@@ -16,6 +16,7 @@ node_ts_library("network") {
   ]
 
   deps = [
+    "../../../front_end/generated",
     "../../shared",
     "../helpers",
   ]

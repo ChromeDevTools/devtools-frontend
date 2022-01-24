@@ -5,13 +5,14 @@
 // clang-format check also ignores that file
 front_end/.eslintrc.js
 front_end/diff/diff_match_patch.js
+front_end/generated/protocol.ts
 front_end/javascript_metadata/NativeFunctions.js
 front_end/third_party/
+node_modules
+scripts/migration/**/*.js
+scripts/protocol_typescript/*.js
+test/**/fixtures/
 test/e2e/**/*.js
 test/shared/**/*.js
-test/**/fixtures/
-scripts/protocol_typescript/*.js
-scripts/migration/**/*.js
-node_modules
 
 *.d.ts

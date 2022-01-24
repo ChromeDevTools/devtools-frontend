@@ -3,7 +3,7 @@
     "composite": true
   },
   "files": [
-    "protocol.d.ts",
+    "protocol.ts",
     "protocol-mapping.d.ts",
     "protocol-proxy-api.d.ts"
   ]

@@ -659,6 +659,7 @@ grd_files_debug_sources = [
   "front_end/generated/ARIAProperties.js",
   "front_end/generated/InspectorBackendCommands.js",
   "front_end/generated/SupportedCSSProperties.js",
+  "front_end/generated/protocol.js",
   "front_end/legacy_test_runner/test_runner/TestRunner.js",
   "front_end/models/bindings/BreakpointManager.js",
   "front_end/models/bindings/CSSWorkspaceBinding.js",

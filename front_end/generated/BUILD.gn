@@ -10,11 +10,13 @@ devtools_module("generated") {
     "ARIAProperties.js",
     "InspectorBackendCommands.js",
     "SupportedCSSProperties.js",
+    "protocol.ts",
   ]
 
   deps = []
 
   visibility = [
+    "../../test/e2e/network:*",
     "../core/protocol_client:*",
     "../core/sdk:*",
     "../panels/accessibility:*",
@@ -29,6 +31,5 @@ devtools_pre_built("protocol") {
     "protocol-mapping.d.ts",
     "protocol-proxy-api.d.ts",
     "protocol-tsconfig.json",
-    "protocol.d.ts",
   ]
 }

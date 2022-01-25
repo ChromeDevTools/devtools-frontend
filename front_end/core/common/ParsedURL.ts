@@ -168,16 +168,17 @@ export class ParsedURL {
   }
 
   static rawPathToUrlString(fileSystemPath: Platform.DevToolsPath.RawPathString): Platform.DevToolsPath.UrlString {
-    let rawPath: string = fileSystemPath;
-    rawPath = rawPath.replace(/\\/g, '/');
-    if (!rawPath.startsWith('file://')) {
-      if (rawPath.startsWith('/')) {
-        rawPath = 'file://' + rawPath;
+    let preEncodedPath: string = ParsedURL.preEncodeSpecialCharactersInPath(
+        fileSystemPath.replace(/\\/g, '/') as Platform.DevToolsPath.RawPathString);
+    preEncodedPath = preEncodedPath.replace(/\\/g, '/');
+    if (!preEncodedPath.startsWith('file://')) {
+      if (preEncodedPath.startsWith('/')) {
+        preEncodedPath = 'file://' + preEncodedPath;
       } else {
-        rawPath = 'file:///' + rawPath;
+        preEncodedPath = 'file:///' + preEncodedPath;
       }
     }
-    return rawPath as Platform.DevToolsPath.UrlString;
+    return new URL(preEncodedPath).toString() as Platform.DevToolsPath.UrlString;
   }
 
   static relativePathToUrlString(relativePath: string, baseURL: Platform.DevToolsPath.UrlString):
@@ -187,13 +188,14 @@ export class ParsedURL {
     return new URL(preEncodedPath, baseURL).toString() as Platform.DevToolsPath.UrlString;
   }
 
-  static capFilePrefix(fileURL: Platform.DevToolsPath.UrlString, isWindows?: boolean):
+  static urlToRawPathString(fileURL: Platform.DevToolsPath.UrlString, isWindows?: boolean):
       Platform.DevToolsPath.RawPathString {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
+    const decodedFileURL = decodeURIComponent(fileURL);
     if (isWindows) {
-      return fileURL.substr('file:///'.length).replace(/\//g, '\\') as Platform.DevToolsPath.RawPathString;
+      return decodedFileURL.substr('file:///'.length).replace(/\//g, '\\') as Platform.DevToolsPath.RawPathString;
     }
-    return fileURL.substr('file://'.length) as Platform.DevToolsPath.RawPathString;
+    return decodedFileURL.substr('file://'.length) as Platform.DevToolsPath.RawPathString;
   }
 
   static urlWithoutHash(url: string): string {

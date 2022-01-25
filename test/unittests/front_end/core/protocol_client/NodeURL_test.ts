@@ -23,15 +23,16 @@ describe('NodeURL', () => {
   });
 
   describe('patch', () => {
-    const url = Host.Platform.isWin() ? 'c:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
-    const patchedUrl = Host.Platform.isWin() ? 'file:///c:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
+    const url = Host.Platform.isWin() ? 'C:\\prog\\foobar.js' : '/usr/local/home/prog/foobar.js';
+    const validPatchedUrl =
+        Host.Platform.isWin() ? 'file:///C:/prog/foobar.js' : 'file:///usr/local/home/prog/foobar.js';
 
     it('does patch url fields', () => {
       const object = {url, result: null};
 
       ProtocolClient.NodeURL.NodeURL.patch(object);
 
-      assert.strictEqual(object.url, patchedUrl);
+      assert.strictEqual(object.url, validPatchedUrl);
     });
 
     it('does not patch the url of the result', () => {
@@ -67,8 +68,8 @@ describe('NodeURL', () => {
 
       ProtocolClient.NodeURL.NodeURL.patch(object as unknown as {url: string});
 
-      assert.strictEqual(object.exceptionDetails.url, patchedUrl);
-      assert.strictEqual(object.exceptionDetails.stackTrace.callFrames[0].url, patchedUrl);
+      assert.strictEqual(object.exceptionDetails.url, validPatchedUrl);
+      assert.strictEqual(object.exceptionDetails.stackTrace.callFrames[0].url, validPatchedUrl);
     });
   });
 });

@@ -87,3 +87,20 @@ describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
     ]);
   });
 });
+
+describe('Snippet evaluation', () => {
+  it('highlights the correct line when a snippet throws an error', async () => {
+    await openSourcesPanel();
+    await openSnippetsSubPane();
+    await createNewSnippet('throwing', `
+      (function foo() {
+        throw new Error('kaboom');
+      })();`);
+
+    await runSnippet();
+
+    const errorLine = await waitFor('.cm-waveUnderline');
+    const text = await errorLine.evaluate(el => el.textContent);
+    assert.strictEqual(text, 'throw new Error(\'kaboom\');');
+  });
+});

@@ -26,6 +26,8 @@ button.soft-dropdown > .title {
 @media (forced-colors: active) {
   button.soft-dropdown {
     border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
   }
 
   button.soft-dropdown[disabled] {

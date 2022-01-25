@@ -537,4 +537,10 @@ devtools-icon.leading-issue-icon {
   .toolbar-item .devtools-link {
     color: linktext;
   }
+
+  .toolbar-has-dropdown {
+    forced-color-adjust: none;
+    background: ButtonFace;
+    color: ButtonText;
+  }
 }

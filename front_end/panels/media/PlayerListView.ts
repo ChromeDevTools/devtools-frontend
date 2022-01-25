@@ -87,8 +87,10 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     this.mainContainer.renderMainPanel(playerID);
     if (this.currentlySelectedEntry !== null) {
       this.currentlySelectedEntry.classList.remove('selected');
+      this.currentlySelectedEntry.classList.remove('force-white-icons');
     }
     element.classList.add('selected');
+    element.classList.add('force-white-icons');
     this.currentlySelectedEntry = element;
   }
 

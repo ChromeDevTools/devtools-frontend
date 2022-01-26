@@ -174,8 +174,8 @@ const normalizRetainerName = (retainerName: string) => {
     return 'Window';
   }
   // Retainers including double-colons :: are names from the C++ implementation
-  // exposed through Chromium's gn arg `enable_additional_blink_object_names`;
-  // these should be considered implementation details, so we normalize them.
+  // exposed through V8's gn arg `cppgc_enable_object_names`; these should be
+  // considered implementation details, so we normalize them.
   if (retainerName.includes('::')) {
     if (retainerName.startsWith('Detached')) {
       return 'Detached InternalNode';

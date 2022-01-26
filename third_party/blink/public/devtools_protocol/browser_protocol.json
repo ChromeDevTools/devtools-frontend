@@ -1529,28 +1529,6 @@
                     ]
                 },
                 {
-                    "id": "WasmCrossOriginModuleSharingIssueDetails",
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "wasmModuleUrl",
-                            "type": "string"
-                        },
-                        {
-                            "name": "sourceOrigin",
-                            "type": "string"
-                        },
-                        {
-                            "name": "targetOrigin",
-                            "type": "string"
-                        },
-                        {
-                            "name": "isWarning",
-                            "type": "boolean"
-                        }
-                    ]
-                },
-                {
                     "id": "GenericIssueErrorType",
                     "type": "string",
                     "enum": [
@@ -1641,7 +1619,6 @@
                         "AttributionReportingIssue",
                         "QuirksModeIssue",
                         "NavigatorUserAgentIssue",
-                        "WasmCrossOriginModuleSharingIssue",
                         "GenericIssue",
                         "DeprecationIssue",
                         "ClientHintIssue"
@@ -1711,11 +1688,6 @@
                             "name": "navigatorUserAgentIssueDetails",
                             "optional": true,
                             "$ref": "NavigatorUserAgentIssueDetails"
-                        },
-                        {
-                            "name": "wasmCrossOriginModuleSharingIssue",
-                            "optional": true,
-                            "$ref": "WasmCrossOriginModuleSharingIssueDetails"
                         },
                         {
                             "name": "genericIssueDetails",
@@ -4868,7 +4840,20 @@
                 },
                 {
                     "name": "enable",
-                    "description": "Enables DOM agent for the given page."
+                    "description": "Enables DOM agent for the given page.",
+                    "parameters": [
+                        {
+                            "name": "includeWhitespace",
+                            "description": "Whether to include whitespaces in the children array of returned Nodes.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "all"
+                            ]
+                        }
+                    ]
                 },
                 {
                     "name": "focus",
@@ -8982,7 +8967,7 @@
                         },
                         {
                             "name": "commands",
-                            "description": "Editing commands to send with the key event (e.g., 'selectAll') (default: []).\nThese are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.\nSee https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.",
+                            "description": "Editing commands to send with the key event (e.g., 'selectAll') (default: []).\nThese are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.\nSee https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.",
                             "experimental": true,
                             "optional": true,
                             "type": "array",
@@ -15590,7 +15575,7 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
-                        "NotMainFrame",
+                        "NotPrimaryMainFrame",
                         "BackForwardCacheDisabled",
                         "RelatedActiveContentsExist",
                         "HTTPStatusNotOK",
@@ -18513,7 +18498,7 @@
                         },
                         {
                             "name": "expirationTime",
-                            "type": "number"
+                            "$ref": "Network.TimeSinceEpoch"
                         },
                         {
                             "name": "joiningOrigin",
@@ -18866,6 +18851,10 @@
                     "name": "interestGroupAccessed",
                     "description": "One of the interest groups was accessed by the associated page.",
                     "parameters": [
+                        {
+                            "name": "accessTime",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
                         {
                             "name": "type",
                             "$ref": "InterestGroupAccessType"
@@ -24765,6 +24754,25 @@
                         {
                             "name": "name",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getExceptionDetails",
+                    "description": "This method tries to lookup and populate exception details for a\nJavaScript Error object.\nNote that the stackTrace portion of the resulting exceptionDetails will\nonly be populated if the Runtime domain was enabled at the time when the\nError was thrown.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "errorObjectId",
+                            "description": "The error object for which to resolve the exception details.",
+                            "$ref": "RemoteObjectId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "exceptionDetails",
+                            "optional": true,
+                            "$ref": "ExceptionDetails"
                         }
                     ]
                 }

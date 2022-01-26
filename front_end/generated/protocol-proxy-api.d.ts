@@ -824,7 +824,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Enables DOM agent for the given page.
      */
-    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_enable(params: Protocol.DOM.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Focuses the given element.
@@ -4050,6 +4050,16 @@ declare namespace ProtocolProxyApi {
      * unsubscribes current runtime agent from Runtime.bindingCalled notifications.
      */
     invoke_removeBinding(params: Protocol.Runtime.RemoveBindingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * This method tries to lookup and populate exception details for a
+     * JavaScript Error object.
+     * Note that the stackTrace portion of the resulting exceptionDetails will
+     * only be populated if the Runtime domain was enabled at the time when the
+     * Error was thrown.
+     */
+    invoke_getExceptionDetails(params: Protocol.Runtime.GetExceptionDetailsRequest):
+        Promise<Protocol.Runtime.GetExceptionDetailsResponse>;
   }
   export interface RuntimeDispatcher {
     /**

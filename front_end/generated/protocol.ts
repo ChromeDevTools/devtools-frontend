@@ -1011,13 +1011,6 @@ export namespace Audits {
     location?: SourceCodeLocation;
   }
 
-  export interface WasmCrossOriginModuleSharingIssueDetails {
-    wasmModuleUrl: string;
-    sourceOrigin: string;
-    targetOrigin: string;
-    isWarning: boolean;
-  }
-
   export const enum GenericIssueErrorType {
     CrossOriginPortalPostMessageError = 'CrossOriginPortalPostMessageError',
   }
@@ -1086,7 +1079,6 @@ export namespace Audits {
     AttributionReportingIssue = 'AttributionReportingIssue',
     QuirksModeIssue = 'QuirksModeIssue',
     NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
-    WasmCrossOriginModuleSharingIssue = 'WasmCrossOriginModuleSharingIssue',
     GenericIssue = 'GenericIssue',
     DeprecationIssue = 'DeprecationIssue',
     ClientHintIssue = 'ClientHintIssue',
@@ -1110,7 +1102,6 @@ export namespace Audits {
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     quirksModeIssueDetails?: QuirksModeIssueDetails;
     navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
-    wasmCrossOriginModuleSharingIssue?: WasmCrossOriginModuleSharingIssueDetails;
     genericIssueDetails?: GenericIssueDetails;
     deprecationIssueDetails?: DeprecationIssueDetails;
     clientHintIssueDetails?: ClientHintIssueDetails;
@@ -3243,6 +3234,18 @@ export namespace DOM {
      * Unique search session identifier.
      */
     searchId: string;
+  }
+
+  export const enum EnableRequestIncludeWhitespace {
+    None = 'none',
+    All = 'all',
+  }
+
+  export interface EnableRequest {
+    /**
+     * Whether to include whitespaces in the children array of returned Nodes.
+     */
+    includeWhitespace?: EnableRequestIncludeWhitespace;
   }
 
   export interface FocusRequest {
@@ -5927,7 +5930,7 @@ export namespace Input {
     /**
      * Editing commands to send with the key event (e.g., 'selectAll') (default: []).
      * These are related to but not equal the command names used in `document.execCommand` and NSStandardKeyBindingResponding.
-     * See https://source.chromium.org/chromium/chromium/src/+/master:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
+     * See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h for valid command names.
      */
     commands?: string[];
   }
@@ -10597,7 +10600,7 @@ export namespace Page {
    * List of not restored reasons for back-forward cache.
    */
   export const enum BackForwardCacheNotRestoredReason {
-    NotMainFrame = 'NotMainFrame',
+    NotPrimaryMainFrame = 'NotPrimaryMainFrame',
     BackForwardCacheDisabled = 'BackForwardCacheDisabled',
     RelatedActiveContentsExist = 'RelatedActiveContentsExist',
     HTTPStatusNotOK = 'HTTPStatusNotOK',
@@ -12492,7 +12495,7 @@ export namespace Storage {
   export interface InterestGroupDetails {
     ownerOrigin: string;
     name: string;
-    expirationTime: number;
+    expirationTime: Network.TimeSinceEpoch;
     joiningOrigin: string;
     biddingUrl?: string;
     biddingWasmHelperUrl?: string;
@@ -12702,6 +12705,7 @@ export namespace Storage {
    * One of the interest groups was accessed by the associated page.
    */
   export interface InterestGroupAccessedEvent {
+    accessTime: Network.TimeSinceEpoch;
     type: InterestGroupAccessType;
     ownerOrigin: string;
     name: string;
@@ -16616,6 +16620,17 @@ export namespace Runtime {
 
   export interface RemoveBindingRequest {
     name: string;
+  }
+
+  export interface GetExceptionDetailsRequest {
+    /**
+     * The error object for which to resolve the exception details.
+     */
+    errorObjectId: RemoteObjectId;
+  }
+
+  export interface GetExceptionDetailsResponse extends ProtocolResponseWithError {
+    exceptionDetails?: ExceptionDetails;
   }
 
   /**

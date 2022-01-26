@@ -508,7 +508,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForw
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export const NotRestoredReasonDescription = {
-  'NotMainFrame': {name: i18nLazyString(UIStrings.notMainFrame)},
+  'NotPrimaryMainFrame': {name: i18nLazyString(UIStrings.notMainFrame)},
   'BackForwardCacheDisabled': {name: i18nLazyString(UIStrings.backForwardCacheDisabled)},
   'RelatedActiveContentsExist': {name: i18nLazyString(UIStrings.relatedActiveContentsExist)},
   'HTTPStatusNotOK': {name: i18nLazyString(UIStrings.HTTPStatusNotOK)},

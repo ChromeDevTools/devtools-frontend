@@ -295,7 +295,6 @@ export function registerCommands(inspectorBackend) {
     AttributionReportingIssue: 'AttributionReportingIssue',
     QuirksModeIssue: 'QuirksModeIssue',
     NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
-    WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue',
     GenericIssue: 'GenericIssue',
     DeprecationIssue: 'DeprecationIssue',
     ClientHintIssue: 'ClientHintIssue'
@@ -681,7 +680,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('DOM.disable', [], []);
   inspectorBackend.registerCommand(
       'DOM.discardSearchResults', [{'name': 'searchId', 'type': 'string', 'optional': false}], []);
-  inspectorBackend.registerCommand('DOM.enable', [], []);
+  inspectorBackend.registerEnum('DOM.EnableRequestIncludeWhitespace', {None: 'none', All: 'all'});
+  inspectorBackend.registerCommand(
+      'DOM.enable', [{'name': 'includeWhitespace', 'type': 'string', 'optional': true}], []);
   inspectorBackend.registerCommand(
       'DOM.focus',
       [
@@ -2114,7 +2115,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Page.NavigationType', {Navigation: 'Navigation', BackForwardCacheRestore: 'BackForwardCacheRestore'});
   inspectorBackend.registerEnum('Page.BackForwardCacheNotRestoredReason', {
-    NotMainFrame: 'NotMainFrame',
+    NotPrimaryMainFrame: 'NotPrimaryMainFrame',
     BackForwardCacheDisabled: 'BackForwardCacheDisabled',
     RelatedActiveContentsExist: 'RelatedActiveContentsExist',
     HTTPStatusNotOK: 'HTTPStatusNotOK',
@@ -2637,7 +2638,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Storage.cacheStorageListUpdated', ['origin']);
   inspectorBackend.registerEvent('Storage.indexedDBContentUpdated', ['origin', 'databaseName', 'objectStoreName']);
   inspectorBackend.registerEvent('Storage.indexedDBListUpdated', ['origin']);
-  inspectorBackend.registerEvent('Storage.interestGroupAccessed', ['type', 'ownerOrigin', 'name']);
+  inspectorBackend.registerEvent('Storage.interestGroupAccessed', ['accessTime', 'type', 'ownerOrigin', 'name']);
   inspectorBackend.registerCommand(
       'Storage.clearDataForOrigin',
       [
@@ -3488,6 +3489,9 @@ export function registerCommands(inspectorBackend) {
       []);
   inspectorBackend.registerCommand(
       'Runtime.removeBinding', [{'name': 'name', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Runtime.getExceptionDetails', [{'name': 'errorObjectId', 'type': 'string', 'optional': false}],
+      ['exceptionDetails']);
 
   // Schema.
   inspectorBackend.registerCommand('Schema.getDomains', [], ['domains']);

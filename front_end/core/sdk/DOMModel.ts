@@ -1038,7 +1038,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.#pendingDocumentRequestPromise = null;
 
     if (!target.suspended()) {
-      void this.agent.invoke_enable();
+      void this.agent.invoke_enable({});
     }
 
     if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
@@ -1497,7 +1497,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   async resumeModel(): Promise<void> {
-    await this.agent.invoke_enable();
+    await this.agent.invoke_enable({});
   }
 
   dispose(): void {

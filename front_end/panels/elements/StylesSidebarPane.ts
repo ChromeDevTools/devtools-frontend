@@ -165,12 +165,14 @@ const UIStrings = {
   newStyleRule: 'New Style Rule',
   /**
   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+  *@example {margin} PH1
   */
-  cssPropertyName: '`CSS` property name',
+  cssPropertyName: '`CSS` property name: {PH1}',
   /**
   *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+  *@example {10px} PH1
   */
-  cssPropertyValue: '`CSS` property value',
+  cssPropertyValue: '`CSS` property value: {PH1}',
   /**
   *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
   */
@@ -3091,7 +3093,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderName(): Element {
     const nameElement = document.createElement('span');
-    UI.ARIAUtils.setAccessibleName(nameElement, i18nString(UIStrings.cssPropertyName));
+    UI.ARIAUtils.setAccessibleName(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this.propertyName;
     nameElement.normalize();
@@ -3100,7 +3102,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderValue(): Element {
     const valueElement = document.createElement('span');
-    UI.ARIAUtils.setAccessibleName(valueElement, i18nString(UIStrings.cssPropertyValue));
+    UI.ARIAUtils.setAccessibleName(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
     valueElement.className = 'value';
     if (!this.propertyValue) {
       return valueElement;

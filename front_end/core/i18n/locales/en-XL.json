@@ -4809,10 +4809,10 @@
     "message": "Ĉóp̂ý selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS p̂ŕôṕêŕt̂ý n̂ám̂é"
+    "message": "CSS p̂ŕôṕêŕt̂ý n̂ám̂é: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS p̂ŕôṕêŕt̂ý v̂ál̂úê"
+    "message": "CSS p̂ŕôṕêŕt̂ý v̂ál̂úê: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS ŝél̂éĉt́ôŕ"

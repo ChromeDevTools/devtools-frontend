@@ -56,6 +56,7 @@ def recipe(
     use_python3 = name in [
         "chromium_trybot",
         "devtools/devtools-frontend",
+        "run_presubmit",
     ]
     return luci.recipe(
         name = name,

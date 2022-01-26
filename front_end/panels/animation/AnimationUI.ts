@@ -279,7 +279,8 @@ export class AnimationUI {
     const iterationWidth = this.duration() * this.#timeline.pixelMsRatio();
     let iteration;
     for (iteration = 1; iteration < this.#animationInternal.source().iterations() &&
-         iterationWidth * (iteration - 1) < this.#timeline.width();
+         iterationWidth * (iteration - 1) < this.#timeline.width() &&
+         (iterationWidth > 0 || this.#animationInternal.source().iterations() !== Infinity);
          iteration++) {
       this.renderIteration(this.#tailGroup, iteration);
     }

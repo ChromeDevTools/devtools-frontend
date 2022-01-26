@@ -23,6 +23,7 @@
   cursor: pointer;
   opacity: 0%;
   width: 0.8em;
+  background-color: var(--color-background);
 }
 
 .icon {

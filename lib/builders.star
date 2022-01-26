@@ -54,6 +54,9 @@ def recipe(
         cipd_version = defaults.cipd_version,
         use_python3 = False):
     """Create recipe declaration with dtf defaults"""
+    use_python3 = name in [
+        "devtools/devtools-frontend",
+    ]
     return luci.recipe(
         name = name,
         cipd_package = cipd_package,

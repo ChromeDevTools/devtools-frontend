@@ -89,6 +89,7 @@ devtools_skip_typecheck=True.""",
 try_builder(
     name = "devtools_frontend_linux_dbg_fastbuild",
     recipe_name = "devtools/devtools-frontend",
+    dimensions = dimensions.default_ubuntu,
     execution_timeout = default_timeout,
     properties = {
         "builder_config": "Debug",

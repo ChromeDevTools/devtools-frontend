@@ -263,8 +263,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return;
     }
 
-    if (this.contentInternal && 'content' in this.contentInternal &&
-        this.contentInternal.content === updatedContent.content) {
+    if (this.contentInternal?.content === updatedContent.content) {
       this.lastAcceptedContent = null;
       return;
     }
@@ -331,7 +330,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (this.isDirty()) {
       return this.workingCopyInternal as string;
     }
-    return (this.contentInternal && 'content' in this.contentInternal && this.contentInternal.content) || '';
+    return this.contentInternal?.content || '';
   }
 
   resetWorkingCopy(): void {
@@ -393,7 +392,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   content(): string {
-    return (this.contentInternal && 'content' in this.contentInternal && this.contentInternal.content) || '';
+    return this.contentInternal?.content || '';
   }
 
   loadError(): string|null {
@@ -439,7 +438,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   removeMessage(message: Message): void {
-    if (this.messagesInternal && this.messagesInternal.delete(message)) {
+    if (this.messagesInternal?.delete(message)) {
       this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
   }

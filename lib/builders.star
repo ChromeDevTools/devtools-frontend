@@ -137,7 +137,8 @@ def builder_descriptor(
         excluded_from = [],
         notification_muted = False,
         properties = None,
-        execution_timeout = default_timeout):
+        execution_timeout = default_timeout,
+        description_html = None):
     return struct(
         name = name,
         recipe_name = recipe_name,
@@ -146,6 +147,7 @@ def builder_descriptor(
         notification_muted = notification_muted,
         properties = properties,
         execution_timeout = execution_timeout,
+        description_html = description_html,
     )
 
 def generate_ci_configs(configurations, builders):
@@ -200,6 +202,7 @@ def generate_ci_configs(configurations, builders):
                     notifies = [] if b.notification_muted else c.notifiers,
                     properties = b.properties or {},
                     priority = c.priority,
+                    description_html = b.description_html,
                 )
 
         luci.console_view(

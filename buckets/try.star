@@ -74,6 +74,31 @@ try_builder(
     build_numbers = True,
 )
 
+try_builder(
+    name = "devtools_frontend_linux_blink_light_rel_fastbuild",
+    recipe_name = "chromium_trybot",
+    dimensions = dimensions.beefy_ubuntu,
+    execution_timeout = 2 * time.hour,
+    build_numbers = True,
+    description_html = """
+This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_blink_light_rel">
+devtools_frontend_linux_blink_light_rel</a> but has
+devtools_skip_typecheck=True.""",
+)
+
+try_builder(
+    name = "devtools_frontend_linux_dbg_fastbuild",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout,
+    properties = {
+        "builder_config": "Debug",
+        "devtools_skip_typecheck": True,
+    },
+    description_html = """
+This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_dbg">
+devtools_frontend_linux_dbg</a> but has devtools_skip_typecheck=True.""",
+)
+
 builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
@@ -128,16 +153,22 @@ luci.list_view(
 cq_main = struct(
     builders = [
         "devtools_frontend_linux_blink_light_rel",
+        "devtools_frontend_linux_blink_light_rel_fastbuild",
+        "devtools_frontend_linux_dbg",
+        "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
-        "devtools_frontend_linux_dbg",
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
     ],
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
+
+        # TODO(crbug.com/1278663): promote these 2 to non-experimental.
+        "devtools_frontend_linux_blink_light_rel_fastbuild",
+        "devtools_frontend_linux_dbg_fastbuild",
     ],
     includable_only_builders = [
         "devtools_frontend_mac_rel",

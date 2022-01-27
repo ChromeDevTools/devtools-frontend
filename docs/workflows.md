@@ -32,6 +32,13 @@ autoninja -C out/Default
 
 The resulting build artifacts can be found in `out/Default/gen/front_end`.
 
+If you want to have faster build by disabling typecheck, consider to use
+`devtools_skip_typecheck=true` build args like:
+
+```bash
+gn gen out/fast-build --args='devtools_skip_typecheck=true'
+```
+
 #### Update to latest
 
 To update to latest tip of tree version:

@@ -5,9 +5,9 @@
 import("./node.gni")
 import("./vars.gni")
 
-template("rollup") {
+template("bundle") {
   assert(defined(invoker.entrypoint),
-         "You must define the 'entrypoint' for a rollup target")
+         "You must define the 'entrypoint' for a bundle target")
 
   node_action(target_name) {
     script = "node_modules/rollup/dist/bin/rollup"

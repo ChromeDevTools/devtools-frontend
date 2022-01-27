@@ -4,9 +4,9 @@
 
 import("//build/toolchain/rbe.gni")
 import("../../../third_party/typescript/typescript.gni")
+import("./bundle.gni")
 import("./copy.gni")
 import("./node.gni")
-import("./rollup.gni")
 import("./vars.gni")
 
 # This defines an entrypoint for DevTools, which uses Rollup
@@ -19,7 +19,7 @@ import("./vars.gni")
 #    import in `core/root/Runtime.js`.
 template("devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
-         "You must define the 'entrypoint' for a rollup target")
+         "You must define the 'entrypoint' for a bundle target")
 
   _entrypoint_target_name = "devtools_entrypoint-" + target_name
 
@@ -79,7 +79,7 @@ template("devtools_entrypoint") {
     # make sure that the GN dependency graph correctly corresponds
     # to that. Therefore, the graph looks like so:
     #
-    #   copy -> ts_library -> fix-tsconfig -> rollup
+    #   copy -> ts_library -> fix-tsconfig -> bundle
     #
     _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
     _output_file_name =
@@ -88,7 +88,7 @@ template("devtools_entrypoint") {
     _prebundle_output_file_name = "$_output_file_name.js"
 
     _copy_target_name = _entrypoint_target_name + "-copy"
-    _rollup_target_name = _entrypoint_target_name + "-rollup"
+    _bundle_target_name = _entrypoint_target_name + "-bundle"
     _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
 
     node_action(_copy_target_name) {
@@ -127,12 +127,12 @@ template("devtools_entrypoint") {
       }
     }
 
-    rollup(_rollup_target_name) {
+    bundle(_bundle_target_name) {
       entrypoint = _prebundle_output_file_name
 
       output_file_location = _entrypoint_gen_file_location
 
-      # Since rollup bundles both the entrypoint and the files it imports,
+      # Since bundles both the entrypoint and the files it imports,
       # we have to make sure that, when you change a file it imports, we
       # retrigger Rollup. Since the `invoker.deps` is a reference to the
       # `ts_library` that compiles all of the files it imports, we have to
@@ -161,8 +161,8 @@ template("devtools_entrypoint") {
         ]
 
         public_deps = [
+          ":$_bundle_target_name",
           ":$_prebundle_target_name",
-          ":$_rollup_target_name",
         ]
 
         outputs = [ "$target_gen_dir/$_entrypoint_output_file_name.d.ts" ]
@@ -171,8 +171,8 @@ template("devtools_entrypoint") {
       _devtools_entrypoint_deps += [ ":$_generated_declaration_target_name" ]
     } else {
       _devtools_entrypoint_deps += [
+        ":$_bundle_target_name",
         ":$_prebundle_target_name",
-        ":$_rollup_target_name",
       ]
     }
   }

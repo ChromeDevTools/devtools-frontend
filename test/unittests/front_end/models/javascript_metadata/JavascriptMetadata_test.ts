@@ -41,7 +41,7 @@ describe('JavaScriptMetadata', () => {
   describe('with instance methods', () => {
     it('retrieves by name and class', () => {
       const signatures = metadata.signaturesForInstanceMethod('assign', 'HTMLSlotElement');
-      assert.deepEqual(signatures, [['nodes']]);
+      assert.deepEqual(signatures, [['...nodes']]);
     });
 
     it('does not retrieve methods that are unbound', () => {

@@ -5,6 +5,7 @@
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Console from '../../../../../front_end/panels/console/console.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 const {assert} = chai;
 const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
@@ -143,5 +144,85 @@ describe('ErrorStackParser', () => {
 
     assertNotNullOrUndefined(frames);
     assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js');
+  });
+
+  describe('augmentErrorStackWithScriptIds', () => {
+    const sid = (id: string) => id as Protocol.Runtime.ScriptId;
+
+    it('sets the scriptId for matching frames', () => {
+      const parsedFrames = parseErrorStack(`Error: some error
+          at foo (http://example.com/a.js:6:3)
+          at bar (http://example.com/b.js:43:14)`);
+      assertNotNullOrUndefined(parsedFrames);
+      const protocolFrames: Protocol.Runtime.CallFrame[] = [
+        {
+          url: 'http://example.com/a.js',
+          scriptId: sid('25'),
+          lineNumber: 5,
+          columnNumber: 2,
+          functionName: 'foo',
+        },
+        {
+          url: 'http://example.com/b.js',
+          scriptId: sid('30'),
+          lineNumber: 42,
+          columnNumber: 13,
+          functionName: 'bar',
+        },
+      ];
+
+      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+
+      assert.strictEqual(parsedFrames[1].link?.scriptId, sid('25'));
+      assert.strictEqual(parsedFrames[2].link?.scriptId, sid('30'));
+    });
+
+    it('omits the scriptId for non-matching frames', () => {
+      const parsedFrames = parseErrorStack(`Error: some error
+        at http://example.com/a.js:6:3`);
+      assertNotNullOrUndefined(parsedFrames);
+      const protocolFrames: Protocol.Runtime.CallFrame[] = [{
+        url: 'http://example.com/a.js',
+        scriptId: sid('25'),
+        lineNumber: 10,
+        columnNumber: 4,
+        functionName: 'foo',
+      }];
+
+      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+
+      assertNotNullOrUndefined(parsedFrames[1].link);
+      assert.isUndefined(parsedFrames[1].link.scriptId);
+    });
+
+    it('handles different number or frames', () => {
+      const parsedFrames = parseErrorStack(`Error: some error
+        at foo (http://example.com/a.js:6:3)
+        at Array.forEach (<anonymous>)
+        at bar (http://example.com/b.js:43:14)`);
+      assertNotNullOrUndefined(parsedFrames);
+      const protocolFrames: Protocol.Runtime.CallFrame[] = [
+        {
+          url: 'http://example.com/a.js',
+          scriptId: sid('25'),
+          lineNumber: 5,
+          columnNumber: 2,
+          functionName: 'foo',
+        },
+        {
+          url: 'http://example.com/b.js',
+          scriptId: sid('30'),
+          lineNumber: 42,
+          columnNumber: 13,
+          functionName: 'bar',
+        },
+      ];
+
+      Console.ErrorStackParser.augmentErrorStackWithScriptIds(parsedFrames, {callFrames: protocolFrames});
+
+      assert.strictEqual(parsedFrames[1].link?.scriptId, sid('25'));
+      assert.isUndefined(parsedFrames[2].link);
+      assert.strictEqual(parsedFrames[3].link?.scriptId, sid('30'));
+    });
   });
 });

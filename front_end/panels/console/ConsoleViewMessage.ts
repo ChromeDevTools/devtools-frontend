@@ -56,7 +56,7 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-di
 import {format} from './ConsoleFormat.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import consoleViewStyles from './consoleView.css.js';
-import {parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
+import {augmentErrorStackWithScriptIds, parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
 
 const UIStrings = {
   /**
@@ -236,6 +236,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private requestResolver: Logs.RequestResolver.RequestResolver;
   private issueResolver: IssuesManager.IssueResolver.IssueResolver;
 
+  /** Formatting Error#stack is asynchronous. Allow tests to wait for the result */
+  #formatErrorStackPromiseForTest = Promise.resolve();
+
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
@@ -305,6 +308,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   consoleMessage(): SDK.ConsoleModel.ConsoleMessage {
     return this.message;
+  }
+
+  formatErrorStackPromiseForTest(): Promise<void> {
+    return this.#formatErrorStackPromiseForTest;
   }
 
   protected buildMessage(): HTMLElement {
@@ -816,9 +823,26 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private formatParameterAsError(output: SDK.RemoteObject.RemoteObject): HTMLElement {
     const result = document.createElement('span');
-    const errorSpan = this.tryFormatAsError(output.description || '');
-    result.appendChild(errorSpan ? errorSpan : this.linkifyStringAsFragment(output.description || ''));
+    const errorStack = output.description || '';
+
+    // Combine the ExceptionDetails for this error object with the parsed Error#stack.
+    // The Exceptiondetails include script IDs for stack frames, which allows more accurate
+    // linking.
+    this.#formatErrorStackPromiseForTest = this.retrieveExceptionDetails(output).then(exceptionDetails => {
+      const errorSpan = this.tryFormatAsError(errorStack, exceptionDetails);
+      result.appendChild(errorSpan ?? this.linkifyStringAsFragment(errorStack));
+    });
+
     return result;
+  }
+
+  private async retrieveExceptionDetails(errorObject: SDK.RemoteObject.RemoteObject):
+      Promise<Protocol.Runtime.ExceptionDetails|undefined> {
+    const runtimeModel = this.message.runtimeModel();
+    if (runtimeModel && errorObject.objectId) {
+      return runtimeModel.getExceptionDetails(errorObject.objectId);
+    }
+    return undefined;
   }
 
   private formatAsArrayEntry(output: SDK.RemoteObject.RemoteObject): HTMLElement {
@@ -1422,7 +1446,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return true;
   }
 
-  private tryFormatAsError(string: string): HTMLElement|null {
+  private tryFormatAsError(string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
@@ -1431,6 +1455,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const linkInfos = parseSourcePositionsFromErrorStack(runtimeModel, string);
     if (!linkInfos?.length) {
       return null;
+    }
+    if (exceptionDetails?.stackTrace) {
+      augmentErrorStackWithScriptIds(linkInfos, exceptionDetails.stackTrace);
     }
 
     const debuggerModel = runtimeModel.debuggerModel();
@@ -1447,8 +1474,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const suffix = `${line.substring(link.positionRight)}${newline}`;
 
       formattedLine.appendChild(this.linkifyStringAsFragment(prefix));
-      const scriptLocationLink =
-          this.linkifier.linkifyScriptLocation(debuggerModel.target(), null, link.url, link.lineNumber, {
+      const scriptLocationLink = this.linkifier.linkifyScriptLocation(
+          debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
             columnNumber: link.columnNumber,
             className: undefined,
             tabStop: undefined,

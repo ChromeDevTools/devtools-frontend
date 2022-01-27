@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export interface ParsedErrorFrame {
   line: string;
@@ -11,6 +12,7 @@ export interface ParsedErrorFrame {
     url: string,
     lineNumber?: number,
     columnNumber?: number, enclosedInBraces: boolean, positionLeft: number, positionRight: number,
+    scriptId?: Protocol.Runtime.ScriptId,
   };
 }
 
@@ -114,4 +116,36 @@ function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel, url:
     return fileUrl.href;
   }
   return null;
+}
+
+/**
+ * Error#stack output only contains script URLs. In some cases we are able to
+ * retrieve additional exception details from V8 that we can use to augment
+ * the parsed Error#stack with script IDs.
+ * This function sets the `scriptId` field in `ParsedErrorFrame` when it finds
+ * the corresponding info in `Protocol.Runtime.StackTrace`.
+ */
+export function augmentErrorStackWithScriptIds(
+    parsedFrames: ParsedErrorFrame[], protocolStackTrace: Protocol.Runtime.StackTrace): void {
+  // Note that the number of frames between the two stack traces can differ. The
+  // parsed Error#stack can contain Builtin frames which are not present in the protocol
+  // stack. This means its easier to always search the whole protocol stack for a matching
+  // frame rather then trying to detect the Builtin frames and skipping them.
+  for (const parsedFrame of parsedFrames) {
+    const protocolFrame = protocolStackTrace.callFrames.find(frame => framesMatch(parsedFrame, frame));
+    if (protocolFrame && parsedFrame.link) {
+      parsedFrame.link.scriptId = protocolFrame.scriptId;
+    }
+  }
+}
+
+/** Returns true iff both stack frames have the same url and line/column numbers. The function name is ignored */
+function framesMatch(parsedFrame: ParsedErrorFrame, protocolFrame: Protocol.Runtime.CallFrame): boolean {
+  if (!parsedFrame.link) {
+    return false;
+  }
+
+  const {url, lineNumber, columnNumber} = parsedFrame.link;
+  return url === protocolFrame.url && lineNumber === protocolFrame.lineNumber &&
+      columnNumber === protocolFrame.columnNumber;
 }

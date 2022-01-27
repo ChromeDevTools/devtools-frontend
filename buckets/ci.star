@@ -53,7 +53,7 @@ generate_ci_configs(
         builder_descriptor(
             name = "DevTools Linux Fastbuild",
             recipe_name = "chromium_integration",
-            excluded_from = ["beta", "stable", "extended"],
+            excluded_from = ["beta", "stable", "extended", "chromium"],
             execution_timeout = 2 * time.hour,
             description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/DevTools%20Linux">
@@ -79,7 +79,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
         builder_descriptor(
             name = "Linux Compile Debug Fastbuild",
             recipe_name = "devtools/devtools-frontend",
-            excluded_from = ["chromium"],
+            excluded_from = ["beta", "stable", "extended", "chromium"],
             properties = {
                 "builder_config": "Debug",
                 "devtools_skip_typecheck": True,

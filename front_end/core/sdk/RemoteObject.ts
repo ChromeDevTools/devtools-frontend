@@ -199,7 +199,7 @@ export class RemoteObject {
       if (property.isAccessorProperty()) {
         continue;
       }
-      if (property.symbol) {
+      if (property.private || property.symbol) {
         propertySymbols.push(property);
       } else {
         propertiesMap.set(property.name, property);

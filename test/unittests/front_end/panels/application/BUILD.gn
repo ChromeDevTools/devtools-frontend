@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("application") {
   testonly = true
   sources = [
+    "InterestGroupStorageView_test.ts",
     "ReportingApiReportsView_test.ts",
     "ServiceWorkerUpdateCycleView_test.ts",
   ]

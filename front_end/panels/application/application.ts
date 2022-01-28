@@ -14,6 +14,8 @@ import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
 import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
+import * as InterestGroupStorageModel from './InterestGroupStorageModel.js';
+import * as InterestGroupStorageView from './InterestGroupStorageView.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as ReportingApiReportsView from './ReportingApiReportsView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
@@ -36,6 +38,8 @@ export {
   DOMStorageModel,
   IndexedDBModel,
   IndexedDBViews,
+  InterestGroupStorageModel,
+  InterestGroupStorageView,
   OpenedWindowDetailsView,
   ReportingApiReportsView,
   ResourcesPanel,

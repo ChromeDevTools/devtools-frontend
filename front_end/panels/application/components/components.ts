@@ -5,6 +5,7 @@
 import * as BackForwardCacheView from './BackForwardCacheView.js';
 import * as EndpointsGrid from './EndpointsGrid.js';
 import * as FrameDetailsView from './FrameDetailsView.js';
+import * as InterestGroupAccessGrid from './InterestGroupAccessGrid.js';
 import * as OriginTrialTreeView from './OriginTrialTreeView.js';
 import * as ReportsGrid from './ReportsGrid.js';
 import * as StackTrace from './StackTrace.js';
@@ -14,6 +15,7 @@ export {
   BackForwardCacheView,
   EndpointsGrid,
   FrameDetailsView,
+  InterestGroupAccessGrid,
   OriginTrialTreeView,
   ReportsGrid,
   StackTrace,

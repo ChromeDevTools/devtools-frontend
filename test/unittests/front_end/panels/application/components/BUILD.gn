@@ -9,6 +9,7 @@ ts_library("components") {
   sources = [
     "EndpointsGrid_test.ts",
     "FrameDetailsView_test.ts",
+    "InterestGroupAccessGrid_test.ts",
     "OriginTrialTreeView_test.ts",
     "ReportsGrid_test.ts",
     "StackTrace_test.ts",

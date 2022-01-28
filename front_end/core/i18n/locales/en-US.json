@@ -2951,6 +2951,21 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Yes"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "All interest group storage events."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Event Time"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Access Type"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Name"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Owner"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Expiry Time"
   },
@@ -3178,6 +3193,12 @@
   },
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Version"
+  },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Click on any interest group event to display the group's current state"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Interest Groups"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Access to opener"

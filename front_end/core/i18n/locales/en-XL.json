@@ -2951,6 +2951,21 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ŷéŝ"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Âĺl̂ ín̂t́êŕêśt̂ ǵr̂óûṕ ŝt́ôŕâǵê év̂én̂t́ŝ."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Êv́êńt̂ T́îḿê"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Âćĉéŝś T̂ýp̂é"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "N̂ám̂é"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Ôẃn̂ér̂"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Êx́p̂ír̂ý T̂ím̂é"
   },
@@ -3178,6 +3193,12 @@
   },
   "panels/application/IndexedDBViews.ts | version": {
     "message": "V̂ér̂śîón̂"
+  },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Ĉĺîćk̂ ón̂ án̂ý îńt̂ér̂éŝt́ ĝŕôúp̂ év̂én̂t́ t̂ó d̂íŝṕl̂áŷ t́ĥé ĝŕôúp̂'ś ĉúr̂ŕêńt̂ śt̂át̂é"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Îńt̂ér̂éŝt́ Ĝŕôúp̂ś"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Âćĉéŝś t̂ó ôṕêńêŕ"

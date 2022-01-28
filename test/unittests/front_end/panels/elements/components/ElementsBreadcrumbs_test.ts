@@ -7,6 +7,7 @@ import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../../helpers/DOMHelpers.js';
 import {withNoMutations} from '../../../helpers/MutationHelpers.js';
+import {initializeGlobalVars, deinitializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -41,6 +42,12 @@ const makeCrumb = (overrides: MakeCrumbOptions = {}) => {
 };
 
 describe('ElementsBreadcrumbs', () => {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
   describe('#determineElementTitle', () => {
     it('returns (text) for text nodes', () => {
       const node = makeCrumb({nodeType: Node.TEXT_NODE});

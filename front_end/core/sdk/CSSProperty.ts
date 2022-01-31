@@ -136,15 +136,15 @@ export class CSSProperty {
 
   async setText(propertyText: string, majorChange: boolean, overwrite?: boolean): Promise<boolean> {
     if (!this.ownerStyle) {
-      return Promise.reject(new Error('No ownerStyle for property'));
+      throw new Error('No ownerStyle for property');
     }
 
     if (!this.ownerStyle.styleSheetId) {
-      return Promise.reject(new Error('No owner style id'));
+      throw new Error('No owner style id');
     }
 
     if (!this.range || !this.ownerStyle.range) {
-      return Promise.reject(new Error('Style not editable'));
+      throw new Error('Style not editable');
     }
 
     if (majorChange) {
@@ -156,7 +156,7 @@ export class CSSProperty {
 
     if (overwrite && propertyText === this.propertyText) {
       this.ownerStyle.cssModel().domModel().markUndoableState(!majorChange);
-      return Promise.resolve(true);
+      return true;
     }
 
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
@@ -178,15 +178,15 @@ export class CSSProperty {
     void this.setText(text, majorChange, overwrite).then(userCallback);
   }
 
-  setDisabled(disabled: boolean): Promise<boolean> {
+  async setDisabled(disabled: boolean): Promise<boolean> {
     if (!this.ownerStyle) {
-      return Promise.resolve(false);
+      return false;
     }
     if (disabled === this.disabled) {
-      return Promise.resolve(true);
+      return true;
     }
     if (!this.text) {
-      return Promise.resolve(true);
+      return true;
     }
     const propertyText = this.text.trim();
     // Ensure that if we try to enable/disable a property that has no semicolon (which is only legal

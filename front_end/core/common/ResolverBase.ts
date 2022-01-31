@@ -25,12 +25,12 @@ export abstract class ResolverBase<Id, T> {
   /**
    * Returns a promise that resolves once the `id` can be resolved to an object.
    */
-  waitFor(id: Id): Promise<T> {
+  async waitFor(id: Id): Promise<T> {
     const obj = this.getForId(id);
     if (!obj) {
       return this.getOrCreatePromise(id);
     }
-    return Promise.resolve(obj);
+    return obj;
   }
 
   /**

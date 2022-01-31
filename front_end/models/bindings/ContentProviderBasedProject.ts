@@ -199,7 +199,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   indexContent(progress: Common.Progress.Progress): void {
-    void Promise.resolve().then(progress.done.bind(progress));
+    queueMicrotask(progress.done.bind(progress));
   }
 
   addUISourceCodeWithProvider(

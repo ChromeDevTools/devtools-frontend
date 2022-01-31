@@ -104,9 +104,7 @@ const nodeLondon = {
 const nodeUK = {
   treeNodeData: 'UK',
   id: 'UK',
-  children: async(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> =>
-      [nodeLondon,
-],
+  children: async(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => [nodeLondon],
 };
 
 const nodeEurope = {
@@ -123,9 +121,7 @@ const nodeEurope = {
 const nodeOffices = {
   treeNodeData: 'Offices',
   id: 'Offices',
-  children: async(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> =>
-      [nodeEurope,
-],
+  children: async(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> => [nodeEurope],
 };
 
 const basicTreeData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
@@ -149,8 +145,7 @@ const basicTreeData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
          {
            treeNodeData: 'Calendar',
            id: '5',
-         },
-],
+         }],
   },
 ];
 

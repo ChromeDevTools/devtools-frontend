@@ -42,41 +42,36 @@ export interface ProjectSearchConfig {
   filePathMatchesFileQuery(filePath: string): boolean;
 }
 
-export abstract class Project {
-  abstract workspace(): WorkspaceImpl;
-  abstract id(): string;
-  abstract type(): projectTypes;
-  abstract isServiceProject(): boolean;
-  abstract displayName(): string;
-  abstract requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata|null>;
-  abstract requestFileContent(uiSourceCode: UISourceCode): Promise<TextUtils.ContentProvider.DeferredContent>;
-  abstract canSetFileContent(): boolean;
-  abstract setFileContent(uiSourceCode: UISourceCode, newContent: string, isBase64: boolean): Promise<void>;
-  abstract fullDisplayName(uiSourceCode: UISourceCode): string;
-  abstract mimeType(uiSourceCode: UISourceCode): string;
-  abstract canRename(): boolean;
+export interface Project {
+  workspace(): WorkspaceImpl;
+  id(): string;
+  type(): projectTypes;
+  isServiceProject(): boolean;
+  displayName(): string;
+  requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata|null>;
+  requestFileContent(uiSourceCode: UISourceCode): Promise<TextUtils.ContentProvider.DeferredContent>;
+  canSetFileContent(): boolean;
+  setFileContent(uiSourceCode: UISourceCode, newContent: string, isBase64: boolean): Promise<void>;
+  fullDisplayName(uiSourceCode: UISourceCode): string;
+  mimeType(uiSourceCode: UISourceCode): string;
+  canRename(): boolean;
   rename(
-      _uiSourceCode: UISourceCode, _newName: string,
-      _callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void): void {
-  }
-  excludeFolder(_path: string): void {
-  }
-  abstract canExcludeFolder(path: string): boolean;
-  abstract createFile(path: string, name: string|null, content: string, isBase64?: boolean): Promise<UISourceCode|null>;
-  abstract canCreateFile(): boolean;
-  deleteFile(_uiSourceCode: UISourceCode): void {
-  }
-  remove(): void {
-  }
-  abstract searchInFileContent(uiSourceCode: UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean):
+      uiSourceCode: UISourceCode, newName: string,
+      callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void): void;
+  excludeFolder(path: string): void;
+  canExcludeFolder(path: string): boolean;
+  createFile(path: string, name: string|null, content: string, isBase64?: boolean): Promise<UISourceCode|null>;
+  canCreateFile(): boolean;
+  deleteFile(uiSourceCode: UISourceCode): void;
+  remove(): void;
+  searchInFileContent(uiSourceCode: UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]>;
-  abstract findFilesMatchingSearchRequest(
+  findFilesMatchingSearchRequest(
       searchConfig: ProjectSearchConfig, filesMathingFileQuery: string[],
       progress: Common.Progress.Progress): Promise<string[]>;
-  indexContent(_progress: Common.Progress.Progress): void {
-  }
-  abstract uiSourceCodeForURL(url: string): UISourceCode|null;
-  abstract uiSourceCodes(): UISourceCode[];
+  indexContent(progress: Common.Progress.Progress): void;
+  uiSourceCodeForURL(url: string): UISourceCode|null;
+  uiSourceCodes(): UISourceCode[];
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -90,7 +85,7 @@ export enum projectTypes {
   Service = 'service',
 }
 
-export class ProjectStore {
+export abstract class ProjectStore implements Project {
   private readonly workspaceInternal: WorkspaceImpl;
   private readonly idInternal: string;
   private readonly typeInternal: projectTypes;
@@ -100,7 +95,6 @@ export class ProjectStore {
     index: number,
   }>;
   private uiSourceCodesList: UISourceCode[];
-  private readonly project: Project;
 
   constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string) {
     this.workspaceInternal = workspace;
@@ -110,7 +104,6 @@ export class ProjectStore {
 
     this.uiSourceCodesMap = new Map();
     this.uiSourceCodesList = [];
-    this.project = (this as unknown as Project);
   }
 
   id(): string {
@@ -130,7 +123,7 @@ export class ProjectStore {
   }
 
   createUISourceCode(url: string, contentType: Common.ResourceType.ResourceType): UISourceCode {
-    return new UISourceCode(this.project, url, contentType);
+    return new UISourceCode(this, url, contentType);
   }
 
   addUISourceCode(uiSourceCode: UISourceCode): boolean {
@@ -166,7 +159,7 @@ export class ProjectStore {
   }
 
   removeProject(): void {
-    this.workspaceInternal.removeProject(this.project);
+    this.workspaceInternal.removeProject(this);
     this.uiSourceCodesMap = new Map();
     this.uiSourceCodesList = [];
   }
@@ -190,6 +183,38 @@ export class ProjectStore {
     this.uiSourceCodesMap.set(newPath, value);
     this.uiSourceCodesMap.delete(oldPath);
   }
+
+  // No-op implementation for a handfull of interface methods.
+
+  rename(
+      _uiSourceCode: UISourceCode, _newName: string,
+      _callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void): void {
+  }
+  excludeFolder(_path: string): void {
+  }
+  deleteFile(_uiSourceCode: UISourceCode): void {
+  }
+  remove(): void {
+  }
+  indexContent(_progress: Common.Progress.Progress): void {
+  }
+
+  abstract isServiceProject(): boolean;
+  abstract requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata|null>;
+  abstract requestFileContent(uiSourceCode: UISourceCode): Promise<TextUtils.ContentProvider.DeferredContent>;
+  abstract canSetFileContent(): boolean;
+  abstract setFileContent(uiSourceCode: UISourceCode, newContent: string, isBase64: boolean): Promise<void>;
+  abstract fullDisplayName(uiSourceCode: UISourceCode): string;
+  abstract mimeType(uiSourceCode: UISourceCode): string;
+  abstract canRename(): boolean;
+  abstract canExcludeFolder(path: string): boolean;
+  abstract createFile(path: string, name: string|null, content: string, isBase64?: boolean): Promise<UISourceCode|null>;
+  abstract canCreateFile(): boolean;
+  abstract searchInFileContent(uiSourceCode: UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean):
+      Promise<TextUtils.ContentProvider.SearchMatch[]>;
+  abstract findFilesMatchingSearchRequest(
+      searchConfig: ProjectSearchConfig, filesMathingFileQuery: string[],
+      progress: Common.Progress.Progress): Promise<string[]>;
 }
 
 let workspaceInstance: WorkspaceImpl|undefined;

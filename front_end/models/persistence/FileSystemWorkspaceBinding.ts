@@ -153,7 +153,7 @@ export class FileSystemWorkspaceBinding {
   }
 }
 
-export class FileSystem extends Workspace.Workspace.ProjectStore implements Workspace.Workspace.Project {
+export class FileSystem extends Workspace.Workspace.ProjectStore {
   readonly fileSystemInternal: PlatformFileSystem;
   readonly fileSystemBaseURL: string;
   private readonly fileSystemParentURL: string;

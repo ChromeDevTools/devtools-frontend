@@ -38,13 +38,13 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
     {
       treeNodeData: {cssProperty: 'margin', cssValue: '10px 5px'},
       id: '3',
-      async children() {
-        return Promise.resolve<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>[]>([
+      async children(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>[]> {
+        return [
           {treeNodeData: {cssProperty: 'margin-left', cssValue: '5px'}, id: '4'},
           {treeNodeData: {cssProperty: 'margin-right', cssValue: '5px'}, id: '5'},
           {treeNodeData: {cssProperty: 'margin-top', cssValue: '10px'}, id: '6'},
           {treeNodeData: {cssProperty: 'margin-bottom', cssValue: '10px'}, id: '7'},
-        ]);
+        ];
       },
     },
   ],

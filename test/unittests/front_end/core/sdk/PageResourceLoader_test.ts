@@ -16,14 +16,14 @@ interface LoadResult {
 
 describe('PageResourceLoader', () => {
   const loads: Array<{url: string}> = [];
-  const load = (url: string): Promise<LoadResult> => {
+  const load = async(url: string): Promise<LoadResult> => {
     loads.push({url});
 
-    return Promise.resolve({
+    return {
       success: true,
       content: `${url} - content`,
       errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
-    });
+    };
   };
 
   const initiator = {target: null, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: ''};

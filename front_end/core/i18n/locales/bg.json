@@ -882,13 +882,13 @@
     "message": "Емулиране на страница, върху която е поставен фокусът"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Активиране на автоматичния тъмен режим"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Емулиране на страница, върху която е поставен фокусът."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Активира автоматичния тъмен режим и задава dark за prefers-color-scheme."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Принудително активиране на медийната функция color-gamut на CSS"
@@ -1308,7 +1308,7 @@
     "message": "Записва се файл…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Инфраструктура за подсказки за клиентски програми"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Правила за сигурност на съдържанието – анализ"
@@ -2067,10 +2067,10 @@
     "message": "Изисквана икона от манифеста не бе изтеглена"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Цвят на тъмния фон"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Цвят на тъмната тема"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Описание"
@@ -2955,7 +2955,7 @@
     "message": "Страниците, които използват MediaSession API и задават манипулатори за действия, не отговарят на условията за кеша за назад/напред."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Кешът за назад/напред е деактивиран заради екранния четец."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Страниците, които използват SecurityHandler, не отговарят на условията за кеша за назад/напред."
@@ -2979,49 +2979,49 @@
     "message": "Документът не бе зареден напълно, преди потребителят да излезе от него."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "При излизането от страницата бе показан банер за приложение."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "При излизането от страницата работеше мениджърът на паролите в Chrome."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "При излизането от страницата се създаваше неин сбит вариант чрез DOM Distiller."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "При излизането от страницата бе показан визуализаторът на DOM Distiller."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Кешът за назад/напред е деактивиран заради разширения, използващи API за съобщения."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Разширенията с постоянна връзка трябва да я прекратят преди използване на кеша за назад/напред."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Разширения с постоянна връзка се опитаха да изпратят съобщения до рамки в кеша за назад/напред."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Кешът за назад/напред е деактивиран заради разширения."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "При излизането от страницата бе показан модален диалогов прозорец, например за повторно изпращане на формуляр или за въвеждане на парола за HTTP удостоверяване."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "При излизането от страницата бе показана офлайн версията ѝ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "При излизането от страницата бе показана лентата за недостиг на памет."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "При излизането от страницата имаше заявки за разрешения."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "При излизането от страницата работеше инструмент за блокиране на изскачащи прозорци."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "При излизането от страницата бяха показани подробностите от Безопасно сърфиране."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Безопасно сърфиране сметна тази страница за злоупотребяваща и блокира изскачащия прозорец."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Активиран бе service worker, докато страницата бе в кеша за назад/напред."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Тази рамка се смята за рекламна, защото родителската ѝ рамка е рекламна."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Опресняване"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "подава сигнали към"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Настройки на конзолата"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Страничната лента за конзолата е скрита"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Страничната лента за конзолата е показана"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Копиране на избраните видими елементи с приложен стил"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Изчислени"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Страничната лента за изчислени стилове е скрита"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Страничната лента за изчислени стилове е показана"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Преглед на DOM дървото"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Копиране на съдържанието на низа"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Страничната лента за инструмента за откриване и отстраняване на грешки е скрита"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Страничната лента за инструмента за откриване и отстраняване на грешки е показана"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Без поставяне на пауза при изключения"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Още опции"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Страничната лента за навигатора е скрита"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Страничната лента за навигатора е показана"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Отваряне в панела за източници"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Най-ресурсоемък стек"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Страничната лента за най-ресурсоемък стек е скрита"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Страничната лента за най-ресурсоемък стек е показана"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Скриване на най-ресурсоемкия стек"
@@ -11583,7 +11616,7 @@
     "message": "Запазване"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Връзката за отстраняване на грешки бе прекратена. Причина: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Повторно свързване на DevTools"

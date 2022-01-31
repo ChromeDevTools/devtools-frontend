@@ -882,13 +882,13 @@
     "message": "Fokusdagi sahifani emulyatsiya qilish"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Tungi mavzu avtomatik yoqilsin"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Fokusdagi sahifani emulyatsiya qiladi."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Tungi rejim avtomatik yoqiladi va prefers-color-scheme uchun dark qiymati belgilanadi."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut media funksiyasini majburiy yoqadi"
@@ -1308,7 +1308,7 @@
     "message": "Fayl yozilmoqda…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Mijozlarga bildirgilar infratuzilmasi"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Kontent xavfsizlik siyosati - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Manifestdagi kerakli belgi yuklab olinmadi"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tungi for rangi"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Tungi mavzu rangi"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Tavsif"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API ishlatadigan va amal bajarish vositalari belgilangan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Ortga qaytadigan kesh skrin rider uchun faolsizlantirildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler ishlatadigan sahifalarda ortga qaytadigan kesh ishlamaydi."
@@ -2979,49 +2979,49 @@
     "message": "Hujjat boshqa joyga oʻtishdan oldin oxirigacha yuklanmadi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida ilova banneri chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida Chrome Parollar menejeri faol edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida DOM distillash jarayoni faol edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida DOM Distillanishini koʻrish vositasi chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Ortga qaytadigan kesh kengaytmalar xabarlashuv APIsidan foydalangani uchun faolsizlantirildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Uzoq aloqada turuvchi kengaytmalar ortga qaytadigan keshga kirishdan avval aloqasini uzishi lozim."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Uzoq aloqada turuvchi kengaytmalar ortga qaytadigan keshdan freymlarga xabar yuborishga urindi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Ortga qaytadigan kesh kengaytmalar sababli faolsizlantirildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida http parol oynasi yoki shakl kiritish kabi modal oyna chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida oflayn sahifa chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida xotirada joy qolmaganda aralashuvchi panel chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida ruxsat soʻrovlari faol edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida pop-ap blokeri faol edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Boshqa sahifaga oʻtish vaqtida Saytlarni xavfsiz kezish tafsiloti chiqqan edi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Saytlarni xavfsiz kezish tizimi bu sahifani zararli hisobladi va undagi pop-ap oynani blokladi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Sahifa ortga qaytadigan keshdaligida service worker aktivatsiya qilinadi."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Yuqori freymi reklamali boʻlgani uchun bu freym reklama freymi deb aniqlandi."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Yangilash"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "xabar qilinadi:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Terminal sozlamalari"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Terminal yon paneli berkitildi"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Terminal yon paneli chiqarildi"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Vizual uslub tanlovini belgilash"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Hisoblashlar"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Hisoblangan stillar yon paneli berkitildi"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Hisoblangan stillar yon paneli chiqarildi"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM daraxtini varaqlash"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Qator tarkibini nusxalash"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Debager yon paneli berkitildi"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Debager yon paneli chiqarildi"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Istisnolarda pauza qilinmasin"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Yana"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigator yon paneli berkitildi"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigator yon paneli chiqarildi"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Manbalar panelida ochish"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Eng katta stek"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Eng katta stek yon paneli berkitildi"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Eng katta stek yon paneli chiqarildi"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Eng katta stekni berkitish"
@@ -11583,7 +11616,7 @@
     "message": "Saqlash"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Masofaviy debaglash yopildi. Sababi: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevToolsʼni qayta ulash"

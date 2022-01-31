@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "เฟรมนี้ได้รับการพิจารณาว่าเป็นเฟรมโฆษณาเพราะเฟรมระดับบนของเฟรมนี้เป็นเฟรมโฆษณา"
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "รีเฟรช"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "กำลังรายงานไปยัง"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "การตั้งค่าคอนโซล"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "แถบด้านข้างของคอนโซลซ่อนอยู่"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "แถบด้านข้างของคอนโซลแสดงอยู่"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "คัดลอกตัวเลือกซึ่งมีรูปแบบที่มองเห็นได้"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "คำนวณแล้ว"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "แถบด้านข้างของรูปแบบที่คำนวณแล้วซ่อนอยู่"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "แถบด้านข้างของรูปแบบที่คำนวณแล้วแสดงอยู่"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "เครื่องมือสำรวจแผนผัง DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "คัดลอกเนื้อหาสตริง"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "แถบด้านข้างของโปรแกรมแก้ไขข้อบกพร่องซ่อนอยู่"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "แถบด้านข้างของโปรแกรมแก้ไขข้อบกพร่องแสดงอยู่"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ไม่ต้องหยุดชั่วคราวเมื่อพบข้อยกเว้น"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ตัวเลือกเพิ่มเติม"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "แถบด้านข้างของตัวนำทางซ่อนอยู่"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "แถบด้านข้างของตัวนำทางแสดงอยู่"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "เปิดในแผงแหล่งที่มา"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "สแต็กที่ใช้เวลาดำเนินการสูงสุด"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "แถบด้านข้างของสแต็กที่ใช้เวลาดำเนินการสูงสุดซ่อนอยู่"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "แถบด้านข้างของสแต็กที่ใช้เวลาดำเนินการสูงสุดแสดงอยู่"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "ซ่อนสแต็กที่ใช้เวลาดำเนินการสูงสุด"

@@ -882,13 +882,13 @@
     "message": "Emulasikan halaman terfokus"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Aktifkan mode gelap otomatis"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Mengemulasi halaman terfokus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Mengaktifkan mode gelap otomatis dan menyetel prefers-color-scheme ke dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Memaksa fitur media color-gamut CSS"
@@ -1308,7 +1308,7 @@
     "message": "Menulis file…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Infrastruktur Petunjuk Klien"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Kebijakan Keamanan Konten - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Tidak dapat mendownload ikon yang diperlukan dari manifes"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Warna latar gelap"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Warna tema gelap"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Deskripsi"
@@ -2955,7 +2955,7 @@
     "message": "Halaman yang menggunakan MediaSession API dan menyetel pengendali tindakan tidak dapat disimpan dengan benar dalam back-forward cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Back-forward cache dinonaktifkan karena pembaca layar."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Halaman yang menggunakan SecurityHandler tidak dapat disimpan dengan benar dalam back-forward cache."
@@ -2979,49 +2979,49 @@
     "message": "Dokumen belum selesai dimuat sebelum pengguna menutupnya."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Ada Banner Aplikasi saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Ada Pengelola Sandi Chrome saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Distilasi DOM sedang berlangsung saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Ada Penampil DOM Distiller saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Back-forward cache dinonaktifkan karena ekstensi menggunakan API pesan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Ekstensi yang memiliki koneksi persisten harus memutuskan koneksi tersebut sebelum disimpan dalam back-forward cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Ekstensi yang memiliki koneksi persisten mencoba mengirim pesan ke frame dalam back-forward cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Back-forward cache dinonaktifkan karena ekstensi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Dialog modal seperti pengiriman ulang formulir atau dialog sandi HTTP ditampilkan untuk halaman saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Halaman offline ditampilkan saat pengguna menutupnya."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Ada panel Intervensi Memori Habis saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Ada permintaan izin saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Ada pemblokir pop-up saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Detail Safe Browsing ditampilkan saat pengguna menutup halaman."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing menganggap halaman ini melanggar dan memblokir pop-up."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Pekerja layanan diaktifkan saat halaman berada dalam back-forward cache."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Frame ini dianggap sebagai frame iklan karena frame induknya adalah frame iklan."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Refresh"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "melaporkan ke"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Setelan konsol"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Sidebar konsol disembunyikan"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Sidebar konsol ditampilkan"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Salin pilihan dengan gaya yang terlihat"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Dikomputasi"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Sidebar Gaya yang Dikomputasi disembunyikan"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Sidebar Gaya yang Dikomputasi ditampilkan"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Penjelajah hierarki DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Salin konten string"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Sidebar debugger disembunyikan"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Sidebar debugger ditampilkan"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Jangan jeda pada pengecualian"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Opsi lainnya"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Sidebar navigator disembunyikan"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Sidebar navigator ditampilkan"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Buka di panel Sumber"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Stack Heaviest"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Sidebar stack dengan waktu eksekusi terlama disembunyikan"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Sidebar stack dengan waktu eksekusi terlama ditampilkan"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Sembunyikan stack Heaviest"
@@ -11583,7 +11616,7 @@
     "message": "Simpan"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Koneksi proses debug terputus. Alasan: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Hubungkan kembali DevTools"

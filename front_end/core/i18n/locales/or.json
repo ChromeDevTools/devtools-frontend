@@ -882,13 +882,13 @@
     "message": "ଏକ ଫୋକସ୍ କରାଯାଇଥିବା ପୃଷ୍ଠାକୁ ଏମ୍ୟୁଲେଟ୍ କରନ୍ତୁ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "ସ୍ୱଚାଳିତ ଡାର୍କ ମୋଡକୁ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ଏକ ଫୋକସ୍ କରାଯାଇଥିବା ପୃଷ୍ଠାକୁ ଏମ୍ୟୁଲେଟ୍ କରନ୍ତୁ।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "ସ୍ୱଚାଳିତ ଡାର୍କ ମୋଡକୁ ସକ୍ଷମ କରେ ଏବଂ prefers-color-schemeକୁ darkରେ ସେଟ କରେ।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut ମିଡିଆ ଫିଚରକୁ ଲାଗୁ କରେ"
@@ -1308,7 +1308,7 @@
     "message": "ଫାଇଲ୍ ଲେଖାଯାଉଛି…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "କ୍ଲାଏଣ୍ଟ ହିଣ୍ଟସ ଇନଫ୍ରାଷ୍ଟ୍ରକଚର"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "ବିଷୟବସ୍ତୁ ସୁରକ୍ଷା ନୀତି - Eval"
@@ -2067,10 +2067,10 @@
     "message": "ମାନିଫେଷ୍ଟରୁ ଏକ ଆବଶ୍ୟକ ଆଇକନ୍ ଡାଉନଲୋଡ୍ କରାଯାଇପାରିଲା ନାହିଁ"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "ପୃଷ୍ଠପଟର ଗାଢ଼ା ରଙ୍ଗ"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "ଗାଢ଼ା ଥିମର ରଙ୍ଗ"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "ବର୍ଣ୍ଣନା"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API ବ୍ୟବହାର କରୁଥିବା ଏବଂ କାର୍ଯ୍ୟ ହ୍ୟାଣ୍ଡଲର ସେଟ କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ପାଇଁ ଯୋଗ୍ୟ ନୁହେଁ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "ସ୍କ୍ରିନ ରିଡର ଯୋଗୁଁ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler ବ୍ୟବହାର କରୁଥିବା ପୃଷ୍ଠାଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶ ପାଇଁ ଯୋଗ୍ୟ ନୁହେଁ।"
@@ -2979,49 +2979,49 @@
     "message": "ନାଭିଗେଟ କରିବା ପୂର୍ବରୁ ଡକ୍ୟୁମେଣ୍ଟଟିକୁ ସମ୍ପୂର୍ଣ୍ଣ ଭାବରେ ଲୋଡ କରାଯାଇନଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ଆପ ବ୍ୟାନର ଦେଖାଯାଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ Chrome ପାସୱାର୍ଡ ମ୍ୟାନେଜର ଦେଖାଯାଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ DOM ଡିଷ୍ଟିଲେସନ ପ୍ରକ୍ରିୟା ଚାଲିଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ DOM ଡିଷ୍ଟିଲର ଭ୍ୟୁଅର ଦେଖାଯାଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "ଏକ୍ସଟେନସନ, ମେସେଜିଂ API ବ୍ୟବହାର କରିଥିବା ଯୋଗୁଁ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶରେ ଏଣ୍ଟର କରିବା ପୂର୍ବରୁ ଦୀର୍ଘ-ସ୍ଥାୟୀ ସଂଯୋଗ ଥିବା ଏକ୍ସଟେନସନଗୁଡ଼ିକ ଦ୍ୱାରା ସଂଯୋଗକୁ ବନ୍ଦ କରାଯିବା ଉଚିତ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "ଦୀର୍ଘ-ସ୍ଥାୟୀ ସଂଯୋଗ ଥିବା ଏକ୍ସଟେନସନଗୁଡ଼ିକ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶରେ ଥିବା ଫ୍ରେମଗୁଡ଼ିକୁ ମେସେଜ ପଠାଇବାକୁ ଚେଷ୍ଟା କରିଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "ଏକ୍ସଟେନସନଗୁଡ଼ିକ ଯୋଗୁଁ ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ପୃଷ୍ଠା ପାଇଁ ଫର୍ମ ପୁଣି ଦାଖଲ କରିବା କିମ୍ବା HTTP ପାସୱାର୍ଡ ଡାଏଲଗ ପରି ମୋଡାଲ ଡାଏଲଗ ପ୍ରଦର୍ଶିତ ହୋଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ଅଫଲାଇନ ପୃଷ୍ଠାଟି ପ୍ରଦର୍ଶିତ ହୋଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ଆଉଟ-ଅଫ-ମେମୋରୀ ଇଣ୍ଟରଭେନସନ ବାର ଦେଖାଯାଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ଅନୁମତି ଅନୁରୋଧ ପ୍ରକ୍ରିୟା ଚାଲିଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ପପଅପ ବ୍ଲକର ଦେଖାଯାଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ନାଭିଗେଟ କରି ବାହାରି ଯିବା ସମୟରେ ସେଫ ବ୍ରାଉଜିଂର ବିବରଣୀ ପ୍ରଦର୍ଶିତ ହୋଇଥିଲା।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "ସେଫ ବ୍ରାଉଜିଂ ଏହି ପୃଷ୍ଠାକୁ ଅପମାନଜନକ ବୋଲି ବିଚାର କରି ପପଅପକୁ ବ୍ଲକ କରିଛି।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ପୃଷ୍ଠାଟି ବ୍ୟାକ/ଫରୱାର୍ଡ କ୍ୟାଶରେ ଥିବା ସମୟରେ ଜଣେ ସର୍ଭିସ ୱାର୍କର ସକ୍ରିୟ ଥିଲେ।"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ଏହି ଫ୍ରେମର ପ୍ୟାରେଣ୍ଟ୍ ଫ୍ରେମ୍ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ହୋଇଥିବା ଯୋଗୁଁ ଏହାକୁ ଏକ ବିଜ୍ଞାପନ ଫ୍ରେମ୍ ଭାବେ ବିଚାର କରାଯାଏ।"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ରିଫ୍ରେସ କରନ୍ତୁ"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ଏହାକୁ ରିପୋର୍ଟ କରେ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "କନସୋଲ୍ ସେଟିଂସ୍"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "କନସୋଲ ସାଇଡବାର ଲୁକ୍କାୟିତ ଅଛି"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "କନସୋଲ ସାଇଡବାର ଦେଖାଯାଇଛି"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "ଚୟନ କରାଯାଇଥିବା ଭିଜିବୁଲ୍ ଷ୍ଟାଇଲଗୁଡ଼ିକୁ କପି କରନ୍ତୁ"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "ଗଣନା କରାଯାଇଥିବା ଷ୍ଟାଇଲ୍"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "ଗଣନା କରାଯାଇଥିବା ଷ୍ଟାଇଲ ସାଇଡବାର ଲୁକ୍କାୟିତ ଅଛି"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "ଗଣନା କରାଯାଇଥିବା ଷ୍ଟାଇଲ ସାଇଡବାର ଦେଖାଯାଇଛି"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ଟ୍ରି ଏକ୍ସପ୍ଲୋରର"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "ଷ୍ଟ୍ରିଂ ବିଷୟବସ୍ତୁକୁ କପି କରନ୍ତୁ"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ଡିବଗର ସାଇଡବାର ଲୁକ୍କାୟିତ ଅଛି"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ଡିବଗର ସାଇଡବାର ଦେଖାଯାଇଛି"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ବ୍ୟତିକ୍ରମରେ ବିରତ କରନ୍ତୁ ନାହିଁ"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ଅଧିକ ବିକଳ୍ପ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "ନାଭିଗେଟର ସାଇଡବାର ଲୁକ୍କାୟିତ ଅଛି"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "ନାଭିଗେଟର ସାଇଡବାର ଦେଖାଯାଇଛି"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ସୋର୍ସ ପ୍ୟାନେଲରେ ଖୋଲନ୍ତୁ"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "ସବୁଠାରୁ ଅଧିକ ସମୟ ନେଉଥିବା ଷ୍ଟାକ୍"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "ସବୁଠାରୁ ଅଧିକ ଷ୍ଟାକ ଥିବା ସାଇଡବାର ଲୁକ୍କାୟିତ ଅଛି"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "ସବୁଠାରୁ ଅଧିକ ଷ୍ଟାକ ଥିବା ସାଇଡବାର ଦେଖାଯାଇଛି"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "ସବୁଠାରୁ ଅଧିକ ସମୟ ନେଉଥିବା ଷ୍ଟାକକୁ ଲୁଚାନ୍ତୁ"
@@ -11583,7 +11616,7 @@
     "message": "ସେଭ୍ କରନ୍ତୁ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "ଡିବଗିଂ ସଂଯୋଗକୁ ବନ୍ଦ କରାଯାଇଥିଲା। କାରଣ: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevToolsକୁ ପୁଣି ସଂଯୋଗ କରନ୍ତୁ"

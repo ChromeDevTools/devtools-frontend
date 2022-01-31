@@ -882,13 +882,13 @@
     "message": "Lingisa ikhasi eligxile kulo"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Nika amandla imodi emnyama"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "I-emulator ikhasi okugxilwe kulo."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Kunika amandla imodi emnyama ezenzekelayo futhi kusetha i-prefers-color-scheme ibe ku-dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Imidiya yesakhi samandla we-CSS color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Ibhala ifayela…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "I-Client Hints Infrastructure"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Inqubomgomo Yokuphepha Kokuqukethwe - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Ayikwazanga ukulanda i-aykhoni elidingekayo kusuka ku-manifest"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Umbala wangemuva omnyama"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Umbala wetimu emnyama"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Incazelo"
@@ -2955,7 +2955,7 @@
     "message": "Amakhasi asebenzisa i-MediaSession API futhi asetha izibambi zesenzo awafaneleki kwinqolobane yasemuva/phambili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Inqolobane yasemuva-phambili ikhutshaziwe ngenxa yesifundi sesikrini."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Amakhasi asebenzisa i-SecurityHandler awakufanelekeli ukuthola inqolobane yasemuva/phambili."
@@ -2979,49 +2979,49 @@
     "message": "Idokhumenti aliqedanga ukulayisha ngaphambi kokuthi lizulazulele ekuhambeni."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Isibhengezo se-App besikhona ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Isiphathi sephasiwedi ye-Chrome besikhona ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "I-DOM distillation kade iqhubeka ngenkathi kokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Isibukeli se-DOM Distiller besikhona ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Inqolobane yasemuva-phambili ikhutshaziwe ngenxa yazandiso ezisebenzisa i-API yokulayeza."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Izandiso ezinoxhumano lwesikhathi eside kufanele zivale uxhumano ngaphambi kokungena kwinqolobane yasemuva phambili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Izandiso ezinoxhumano lwesikhathi eside zizame ukuthumela imiyalezo kwizinhlaka kwinqolobane yasemuva-phambili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Inqolobane yasemuva-phambili ikhutshaziwe ngenxa yezandiso."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Ibhokisi le-Modal njengokuthumela kabusha ifomu noma ibhokisi lephasiwedi ye-http kuboniswe ekhasini ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Ikhasi lokungaxhunyiwe kwi-inthanethi liboniswe ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Ibha ye-Out-Of-Memory Intervention beyikhona ngenkathi yokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Kube khona izicelo zemvuma ngemva kokuzulazula kude."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Isivimbeli se-popup besikhona ngenkathi yokuzulazula kude"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Imininingwane Yokubhrawuza Okuphephile iboniswe ngenkathi yokuzulazula kude"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Ukubhrawuza Okuphephile kubheke leli khasi njengelihlukumezayo futhi kuvimbele i-popup."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Isisebenzi sesevisi senziwe sasebenza ngenkathi ikhasi likwinqolobane yasemuva/phambili."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Lo zimele unakwa njengozimele wesikhangiso ngoba uzimele ongumzali unguzimele wesikhangiso."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Vuselela"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ibika ku-"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Amasethingi we-Console"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Ibha eseceleni yekhonsoli ifihliwe"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Ibha eseceleni yekhonsoli ibonisiwe"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopisha ukukhetha okustayiliwe okubonakalayo"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Ukubalwa"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Ibha eseceleni yesitayela zekhompyutha ifihliwe"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Ibha eseceleni yesitayela zekhompyutha ibonisiwe"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "I-DOM tree explorer"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopisha okuqukethwe kochungechunge"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Ibha eseceleni yokulungisa amaphutha ifihliwe"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Ibha eseceleni yokulungisa amaphutha ibonisiwe"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ungakuphumuzi okungafakwanga"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Ezinye izinketho"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Ibha eseceleni yokuzulazula ifihliwe"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Ibha eseceleni yokuzula ibonisiwe"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Vula kuphaneli Yemithombo"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Isitaki Esisinda kakhulu"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Ibha eseceleni yezitaki ezisindayo ifihliwe"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Ibha eseceleni yezitaki ezisindayo ibonisiwe"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Fihla izitaki ze-Heaviest"
@@ -11583,7 +11616,7 @@
     "message": "Londoloza"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Uxhumano lokulungisa amaphutha luvaliwe. Isizathu: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Xhuma kabusha i-DevTools"

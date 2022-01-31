@@ -882,13 +882,13 @@
     "message": "மையப்படுத்தப்பட்ட பக்கத்தைச் செயல்படுத்து"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "தானியங்கு டார்க் பயன்முறையை இயக்கு"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "மையப்படுத்தப்பட்ட பக்கத்தைச் செயல்படுத்தும்."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "தானியங்கு டார்க் பயன்முறையை இயக்கி prefers-color-scheme ஐ darkக்கு அமைக்கும்."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut மீடியா அம்சத்தை இயக்கும்"
@@ -1308,7 +1308,7 @@
     "message": "ஃபைலை எழுதுகிறது…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "கிளையண்ட் குறிப்புகள் உள்கட்டமைப்பு"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "உள்ளடக்கப் பாதுகாப்புக் கொள்கை - Eval"
@@ -2067,10 +2067,10 @@
     "message": "மெனிஃபெஸ்ட்டில் இருந்து அவசியமான ஐகானைப் பதிவிறக்க முடியவில்லை"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "அடர் பின்புல வண்ணம்"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "டார்க் தீம் வண்ணம்"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "விளக்கம்"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession APIயைப் பயன்படுத்தி செயல்பாட்டு ஹேண்ட்லர்களை அமைக்கும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் சேமிக்க முடியாது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "ஸ்கிரீன் ரீடர் காரணமான 'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandlerரைப் பயன்படுத்தும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் சேமிக்க முடியாது."
@@ -2979,49 +2979,49 @@
     "message": "வெளியேறுவதற்கு முன் ஆவணம் ஏற்றப்படவில்லை."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "வெளியேறும்போது ஆப்ஸ் பேனர் காட்டப்பட்டது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "வெளியேறும்போது Chrome கடவுச்சொல் நிர்வாகி திறந்திருந்தது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "வெளியேறும்போது DOM டிஸ்டிலேஷன் நடைபெற்றுக் கொண்டிருந்தன."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "வெளியேறும்போது DOM டிஸ்டில்லர் வியூவர் திறந்திருந்தது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "மெசேஜிங் APIஐ நீட்டிப்புகள் பயன்படுத்தியதால் 'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சத்தைப் பயன்படுத்துவதற்கு முன்பு, நீண்ட கால இணைப்பைக் கொண்டிருக்கும் நீட்டிப்புகள் அவற்றின் இணைப்பைத் துண்டிக்க வேண்டும்."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "நீண்ட கால இணைப்பைக் கொண்டிருக்கும் நீட்டிப்புகள், 'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சத்தில் ஃபிரேம்களுக்கு மெசேஜ் அனுப்ப முயன்றன."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "நீட்டிப்புகள் காரணமாக, 'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "வெளியேறும்போது பக்கத்திற்கான படிவ மறுசமர்ப்பிப்பு, HTTP கடவுச்சொல் உரையாடல் போன்ற மோடல் உரையாடல் காட்டப்பட்டது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "வெளியேறும்போது ஆஃப்லைன் பக்கம் காட்டப்பட்டது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "வெளியேறும்போது நினைவகப் பற்றாக்குறை இடையீட்டுப் பட்டி திறந்திருந்தது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "வெளியேறும்போது அனுமதிக் கோரிக்கைகள் இருந்தன."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "வெளியேறும்போது பாப்-அப் தடுப்பான் இயங்கிக் கொண்டிருந்தது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "வெளியேறும்போது பாதுகாப்பு உலாவல் விவரங்கள் காட்டப்பட்டன."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "இந்தப் பக்கம் தவறான பயன்பாட்டில் ஈடுபடக்கூடியது என்பதைப் ‘பாதுகாப்பு உலாவல்’ அறிந்து, பாப்-அப்பைத் தடுத்துள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் பக்கம் சேமிக்கப்பட்டிருந்தபோது service worker இயக்கப்பட்டுள்ளது."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "இதன் முதல்நிலை ஃபிரேம் ஒரு விளம்பர ஃபிரேம் என்பதால் இது விளம்பர ஃபிரேமாகக் கருதப்படுகிறது."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ரெஃப்ரெஷ் செய்"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "இதற்கு அனுப்பப்படும்:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "கன்சோல் அமைப்புகள்"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "கன்சோல் பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "கன்சோல் பக்கப்பட்டி காட்டப்படுகிறது"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "தெரியும் நடையிலான தேர்வை நகலெடு"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "கணக்கிடப்பட்ட ஸ்டைல்கள்"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "கணக்கிடப்பட்ட ஸ்டைல்கள் பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "கணக்கிடப்பட்ட ஸ்டைல்கள் பக்கப்பட்டி காட்டப்படுகிறது"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ட்ரீ எக்ஸ்ப்ளோரர்"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "வார்த்தை உள்ளடக்கத்தை நகலெடு"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "பிழைதிருத்தி பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "பிழைதிருத்தி பக்கப்பட்டி காட்டப்படுகிறது"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "எக்ஸெப்ஷன்களில் இடைநிறுத்தாதே"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "மேலும் விருப்பங்கள்"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "வழிச்செலுத்தல் பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "வழிச்செலுத்தல் பக்கப்பட்டி காட்டப்படுகிறது"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ஆதாரங்கள் பேனலில் திற"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "அதிக நேரம் எடுத்துக்கொண்ட ஸ்டாக்"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "அதிக நேரம் எடுத்துக்கொண்ட ஸ்டாக் பக்கப்பட்டி மறைக்கப்பட்டுள்ளது"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "அதிக நேரம் எடுத்துக்கொண்ட ஸ்டாக் பக்கப்பட்டி காட்டப்படுகிறது"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "அதிக நேரம் எடுத்துக்கொண்ட ஸ்டாக்கை மறை"
@@ -11583,7 +11616,7 @@
     "message": "சேமி"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "பிழைதிருத்த இணைப்பு மூடப்பட்டது. காரணம்: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools ஐ மீண்டும் இணை"

@@ -882,13 +882,13 @@
     "message": "Efelychu tudalen y ffocysir arni"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Galluogi'r modd tywyll awtomatig"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Yn efelychu tudalen y ffocysir arni."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Yn galluogi'r modd tywyll awtomatig ac yn gosod prefers-color-scheme i dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Mae'n gorfodi'r nodwedd cyfryngau color-gamut CSS"
@@ -1308,7 +1308,7 @@
     "message": "Wrthi'n ysgrifennu ffeil…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Seilwaith Awgrymiadau Cleient"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Polisi Diogelwch Cynnwys - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Methu â lawrlwytho eicon gofynnol o'r maniffest"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Lliw cefndir tywyll"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Lliw thema dywyll"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Disgrifiad"
@@ -2955,7 +2955,7 @@
     "message": "Nid yw tudalennau sy'n defnyddio API MediaSession ac sy'n gosod trinyddion gweithredu yn gymwys ar gyfer storfa yn ôl/ymlaen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Mae storfa yn ôl/ymlaen wedi'i hanalluogi oherwydd darllenydd sgrîn."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Nid yw tudalennau sy'n defnyddio SecurityHandler yn gymwys ar gyfer storfa yn ôl/ymlaen."
@@ -2979,49 +2979,49 @@
     "message": "Ni wnaeth y ddogfen orffen llwytho cyn llywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Roedd Baner Ap yn bresennol wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Roedd Rheolwr Cyfrineiriau Google yn bresennol wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Roedd distylliad DOM ar y gweill wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Roedd Gwyliwr Distylliad DOM yn bresennol wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Mae'r storfa yn ôl/ymlaen wedi'i analluogi oherwydd estyniadau sy'n defnyddio negeseuon API."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Dylai estyniadau gyda chysylltiad hirhoedlog gau'r cysylltiad cyn cael mynediad at storfa yn ôl/ymlaen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Gwnaeth estyniadau gyda chysylltiad hirhoedlog geisio anfon negeseuon i fframiau mewn storfa yn ôl/ymlaen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Mae storfa yn ôl/ymlaen wedi'i analluogi oherwydd estyniadau."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Dangoswyd deialog moddol megis ailgyflwyno ffurflen neu ddeialog cyfrinair http ar gyfer y dudalen wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Dangoswyd y dudalen all-lein wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Roedd bar Ymyrraeth Allan o Gof yn bresennol wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Bu ceisiadau am ganiatâd wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Roedd rhwystrwr ffenestri naid yn bresennol wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Dangoswyd manylion am Bori'n Ddiogel wrth lywio i ffwrdd."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Gwnaeth Pori'n Ddiogel ystyried y dudalen hon i fod yn ymosodol a rhwystro ffenestr naid."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Cafodd gweithiwr gwasanaeth ei weithredu tra roedd y dudalen mewn storfa yn ôl/ymlaen."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Mae'r ffrâm hon yn cael ei hystyried yn ffrâm hysbyseb oherwydd bod ei ffrâm rhiant yn ffrâm hysbyseb."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Ail-lwytho"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "yn adrodd i"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Gosodiadau consol"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Mae'r bar ochr consol wedi'i guddio"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Mae'r bar ochr consol wedi'i ddangos"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copïo'r detholiad sydd ag arddull gweladwy"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Wedi'u Cyfrifo"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Mae'r bar ochr Arddulliau sydd wedi'u Cyfrifo wedi'i guddio"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Mae'r bar ochr Arddulliau sydd wedi'u Cyfrifo wedi'i ddangos"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Archwiliwr coeden DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copïo cynnwys llinynnau"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Mae'r bar ochr dadfygiwr wedi'i guddio"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Mae'r bar ochr dadfygiwr wedi'i ddangos"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Peidio â seibio ar eithriadau"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Rhagor o ddewisiadau"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Mae'r bar ochr llywio wedi'i guddio"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Mae'r bar ochr llywio wedi'i ddangos"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Agor mewn panel Ffynonellau"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Pentwr trymaf"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Mae'r bar ochr pentwr trymaf wedi'i guddio"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Mae'r bar ochr pentwr trymaf wedi'i ddangos"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Cuddio'r pentwr Trymaf"
@@ -11583,7 +11616,7 @@
     "message": "Cadw"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Cafodd y cysylltiad dadfygio ei gau. Rheswm: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Ailgysylltu DevTools"

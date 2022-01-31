@@ -882,13 +882,13 @@
     "message": "Эмулировать страницу в фокусе"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Автоматически включать тёмную тему"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Эмулирует страницу в фокусе."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Автоматически включает тёмную тему и меняет prefers-color-scheme на dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Запускает медиафункцию CSS color-gamut."
@@ -1308,7 +1308,7 @@
     "message": "Запись в файл…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Инфраструктура клиентских подсказок"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy – оценка"
@@ -2067,10 +2067,10 @@
     "message": "Не удалось скачать нужный значок из файла манифеста."
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Темный цвет фона"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Цвет тёмной темы"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Описание"
@@ -2955,7 +2955,7 @@
     "message": "Страницы, которые используют MediaSession API и для которых настроены обработчики действий, нельзя добавить в возвратный кеш."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Возвратный кеш отключен, так как работает программа чтения с экрана."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Страницы, которые используют SecurityHandler, нельзя добавить в возвратный кеш."
@@ -2979,49 +2979,49 @@
     "message": "Переход со страницы выполнен до завершения загрузки документа."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "При переходе на другую страницу был показан баннер приложения."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "При переходе на другую страницу работал Диспетчер паролей Chrome."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "При переходе на другую страницу выполнялся процесс DOM Distiller."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "При переходе на другую страницу работало средство просмотра DOM Distiller."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Возвратный кеш отключен, так как расширения используют API для обмена сообщениями."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Расширения должны закрывать долговременные подключения перед записью возвратного кеша."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Расширения с долговременными подключениями попытались отправлять сообщения в фреймы в возвратном кеше."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Возвратный кеш отключен из-за работы расширений."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "При переходе на другую страницу было показано модальное диалоговое окно (например, связанное с повторной отправкой формы или паролем в протоколе HTTP)."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "При переходе на другую страницу была показана ее офлайн-версия."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "При переходе на другую страницу была показана строка с сообщением о нехватке памяти."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "При переходе на другую страницу обнаружены запросы разрешений."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "При переходе на другую страницу работал блокировщик всплывающих окон."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "При переходе на другую страницу были показаны данные Безопасного просмотра."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Сервис \"Безопасный просмотр\" заблокировал всплывающее окно, так как страница содержит недопустимый контент."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Скрипт Service Worker был активирован, когда страница находилась в возвратном кеше."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Считается, что это фрейм объявлений, так как его родительский фрейм относится к такому типу."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Обновить"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "отправляет отчеты"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Настройки консоли"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Боковая панель консоли скрыта"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Боковая панель консоли показана"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Копировать видимое выделение со стилем"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Вычисленные"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Боковая панель вычисленных стилей скрыта"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Боковая панель вычисленных стилей показана"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Обозреватель дерева DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Копировать содержимое строки"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Боковая панель отладчика скрыта"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Боковая панель отладчика показана"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Не останавливаться при исключениях"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Больше вариантов"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Боковая панель навигатора скрыта"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Боковая панель навигатора показана"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Открыть на панели \"Источники\""
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Самый тяжелый стек"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Боковая панель самого тяжелого стека скрыта"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Боковая панель самого тяжелого стека показана"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Скрыть самый тяжелый стек"
@@ -11583,7 +11616,7 @@
     "message": "Сохранить"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Подключение, используемое для отладки, закрыто. Причина: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Повторно подключить DevTools"

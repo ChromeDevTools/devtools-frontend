@@ -882,13 +882,13 @@
     "message": "Émuler une page sélectionnée"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Activer le mode sombre automatique"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "La page sélectionnée est émulée."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Active le mode sombre automatique et configure la caractéristique prefers-color-scheme pour dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Forcer la caractéristique média CSS color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Écriture du fichier en cours…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Infrastructure Client Hints"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Politique de sécurité du contenu, évaluation"
@@ -2067,10 +2067,10 @@
     "message": "Impossible de télécharger une icône requise dans le fichier de configuration"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Couleur d'arrière-plan sombre"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Couleur du thème sombre"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Description"
@@ -2955,7 +2955,7 @@
     "message": "Les pages qui utilisent l'API MediaSession et des modules de traitement d'actions définies ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "La mise en cache complète bidirectionnelle est désactivée en raison du lecteur d'écran."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Les pages qui utilisent SecurityHandler ne peuvent pas être enregistrées dans la mise en cache complète bidirectionnelle."
@@ -2979,49 +2979,49 @@
     "message": "Le chargement du document ne s'est pas terminé avant que l'utilisateur la quitte."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Une bannière d'application était présente lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Le gestionnaire de mots de passe Chrome était présent lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Le processus d'extraction de DOM Distiller était en cours lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Le lecteur DOM Distiller était présent lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "La mise en cache complète bidirectionnelle est désactivée en raison d'extensions utilisant Messaging API."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Les extensions ayant une connexion de longue durée devraient fermer la connexion avant d'utiliser la mise en cache complète bidirectionnelle."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Des extensions ayant une connexion de longue durée ont tenté d'envoyer des messages aux cadres dans la mise en cache complète bidirectionnelle."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "La mise en cache complète bidirectionnelle est désactivée en raison d'extensions."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "La boîte de dialogue modale comme le nouvel envoi d'un formulaire ou la boîte de dialogue du mot de passe du protocole http était affichée lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "La page hors ligne était affichée lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "La barre d'intervention concernant la mémoire insuffisante était présente lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Des demandes d'autorisation étaient présentes lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Un bloqueur de fenêtre contextuelle était présent lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Les détails de la navigation sécurisée étaient affichés lorsque l'utilisateur a quitté la page."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "La navigation sécurisée considère que cette page est abusive et a bloqué la fenêtre contextuelle."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Un script de service a été activé alors que la page était en mise en cache complète bidirectionnelle."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Ce cadre est considéré comme un cadre publicitaire puisque son cadre d'origine est un cadre publicitaire."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Actualiser"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "rapport envoyé à"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Paramètres de la console"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Barre latérale de la console masquée"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Barre latérale de la console affichée"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copier la sélection visible stylisée"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Calculés"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Barre latérale des styles calculés masquée"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Barre latérale des styles calculés affichée"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Explorateur arborescence DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copier le contenu de la chaîne"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Barre latérale du débogueur masquée"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Barre latérale du débogueur affichée"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ne pas suspendre en cas d'exceptions"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Autres options"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Barre latérale du navigateur masquée"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Barre latérale du navigateur affichée"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Ouvrir dans le panneau Sources"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Pile la plus longue"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Barre latérale de la pile la plus volumineuse masquée"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Barre latérale de la pile la plus volumineuse affichée"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Masquer la pile la plus longue"
@@ -11583,7 +11616,7 @@
     "message": "Enregistrer"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Le débogage de la connexion a été fermé. Motif : "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Reconnecter DevTools"

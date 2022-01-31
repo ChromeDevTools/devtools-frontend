@@ -882,13 +882,13 @@
     "message": "フォーカスのあるページをエミュレートする"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "自動ダークモードを有効にする"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "フォーカスのあるページをエミュレートします。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "自動ダークモードを有効にして、prefers-color-scheme を dark に設定します。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut メディア特性を強制します"
@@ -1308,7 +1308,7 @@
     "message": "ファイルを書き込んでいます…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints インフラストラクチャ"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "コンテンツ セキュリティ ポリシー - Eval"
@@ -2067,10 +2067,10 @@
     "message": "マ二フェストから必要なアイコンをダウンロードできませんでした"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "暗い背景の色"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "ダークモードの色"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "説明"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API を使用しておりアクション ハンドラを設定するページは、バックフォワード キャッシュの対象になりません。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "バックフォワード キャッシュはスクリーン リーダーが原因で無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler を使用するページはバックフォワード キャッシュの対象になりません。"
@@ -2979,49 +2979,49 @@
     "message": "読み込みが終了していないドキュメントから移動しました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ページから移動するときにアプリバナーが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ページから移動するときに Chrome パスワード マネージャーが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ページから移動するときに DOM 抽出の処理が実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ページから移動するときに DOM Distiller ビューアが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "バックフォワード キャッシュは、Messaging API を使用している拡張機能が原因で無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "バックフォワード キャッシュを使用する前に、持続的に接続している拡張機能の接続を終了する必要があります。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "持続的に接続している拡張機能で、バックフォワード キャッシュのフレームへのメッセージ送信が試行されていました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "バックフォワード キャッシュは拡張機能が原因で無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ページから移動するときにフォームの再送信や HTTP パスワード ダイアログなどのモーダル ダイアログがページに表示されていました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ページから移動するときにオフラインのページが表示されていました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ページから移動するときにメモリ不足介入バーが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ページから移動するときに権限リクエストが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ページから移動するときにポップアップ ブロッカーが実行中でした。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ページから移動するときにセーフ ブラウジングのメッセージが表示されていました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "セーフ ブラウジングでこのページが不正と判断され、ポップアップがブロックされました。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ページがバックフォワード キャッシュにある間に、Service Worker が起動されました。"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "このフレームは、親フレームが広告フレームのため、広告フレームと考えられます。"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "更新"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "報告先:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "コンソールの設定"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "コンソールのサイドバーが非表示になっています"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "コンソールのサイドバーが表示されています"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "表示されているスタイル設定済みの選択項目をコピー"
@@ -4101,16 +4110,16 @@
     "message": "カバレッジ"
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
-    "message": "インストルメントのカバレッジ"
+    "message": "計測のカバレッジ"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "カバレッジを表示"
   },
   "panels/coverage/coverage-meta.ts | startInstrumentingCoverageAnd": {
-    "message": "カバレッジのインストルメント化を開始してページを再読み込み"
+    "message": "カバレッジの計測を開始してページを再読み込み"
   },
   "panels/coverage/coverage-meta.ts | stopInstrumentingCoverageAndShow": {
-    "message": "カバレッジのインストルメント化を停止して結果を表示"
+    "message": "カバレッジの計測を停止して結果を表示"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | aa": {
     "message": "AA"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "計算済み"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "計算済みスタイルのサイドバーが非表示になっています"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "計算済みスタイルのサイドバーが表示されています"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ツリー エクスプローラ"
@@ -7725,7 +7740,7 @@
     "message": "メソッド「{PH1}」の呼び出し中にエラーが発生しました"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
-    "message": "割り当てタイムラインには、インストルメント化された JavaScript メモリ割り当ての推移が表示されます。プロファイルを記録したら、プロファイル内に割り当てられ、記録終了時点でも有効だったオブジェクトを表示する時間間隔を選択します。このプロファイルを使用して、メモリリークを隔離します。"
+    "message": "割り当てタイムラインには、計測された JavaScript メモリ割り当ての推移が表示されます。プロファイルを記録したら、プロファイル内に割り当てられ、記録終了時点でも有効だったオブジェクトを表示する時間間隔を選択します。このプロファイルを使用して、メモリリークを隔離します。"
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "すべてのオブジェクト"
@@ -7734,7 +7749,7 @@
     "message": "割り当て"
   },
   "panels/profiler/HeapSnapshotView.ts | allocationInstrumentationOn": {
-    "message": "タイムラインのインストルメンテーション割り当て"
+    "message": "タイムラインの計測手法割り当て"
   },
   "panels/profiler/HeapSnapshotView.ts | allocationStack": {
     "message": "割り当てスタック"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "文字列をそのままコピー"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "デバッガのサイドバーが非表示になっています"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "デバッガのサイドバーが表示されています"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "例外で一時停止しない"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "その他のオプション"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "ナビゲーターのサイドバーが非表示になっています"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "ナビゲーターのサイドバーが表示されています"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "[ソース] パネルで開く"
@@ -10104,7 +10131,7 @@
     "message": "- ネットワーク スロットリングが有効です"
   },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
-    "message": "- ペイント インストルメンテーションによる重大なオーバーヘッド"
+    "message": "- 描画パフォーマンスの計測による重大なオーバーヘッド"
   },
   "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
     "message": "記録後、ドラッグして概要内で関心のある範囲を選択します。選択したら、マウスホイールまたは {PH1} キーでタイムラインのズーム、パンを行います。{PH2}"
@@ -10119,7 +10146,7 @@
     "message": "キャプチャの設定"
   },
   "panels/timeline/TimelinePanel.ts | capturesAdvancedPaint": {
-    "message": "高度なペイント インストルメンテーションをキャプチャし、重大なパフォーマンス オーバーヘッドを提示します"
+    "message": "高度な描画パフォーマンス計測により、重大なパフォーマンスオーバーヘッドが生じます"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
     "message": "消去"
@@ -10152,7 +10179,7 @@
     "message": "タイムラインのファイルまたは URL をここにドロップ"
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
-    "message": "高度なペイント インストルメンテーション（低速）を有効にする"
+    "message": "高度な描画パフォーマンスの計測（低速）を有効にする"
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
     "message": "タイムフレームの保存に失敗しました（{PH1}（{PH2}、{PH3}））"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "最も時間がかかったスタック"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "最も時間がかかったスタックのサイドバーが非表示になっています"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "最も時間がかかったスタックのサイドバーが表示されています"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "最も時間がかかったスタックを非表示にします"
@@ -11583,7 +11616,7 @@
     "message": "保存"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "デバッグ接続を終了しました。理由: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools を再接続"

@@ -882,13 +882,13 @@
     "message": "የትኩረት ገጽን አስመስል"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "ራስ-ሰር የጨለማ ሁነታን አንቃ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "የትኩረት ገጽን ያስመስላል"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "ራስ-ሰር የጨለማ ሁነታን ያነቃል እና prefers-color-schemeን ወደ dark ያቀናብራል።"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "የሲኤስኤስ color-gamut ሚዲያ ባህሪን ያስገድዳል"
@@ -1308,7 +1308,7 @@
     "message": "ፋይልን በመጻፍ ላይ…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "የደንበኛ ፍንጮች መሠረተ ልማት"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "የይዘት የደህንነት መመሪያ - Eval"
@@ -2067,10 +2067,10 @@
     "message": "አንድ የሚያስፈልግ አዶ ከዝርዝር ሰነዱ ማውረድ አልተቻለም"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "ጥቁር የዳራ ቀለም"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "ጠቆር ያለ ገጽታ ቀለም"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "መግለጫ"
@@ -2955,7 +2955,7 @@
     "message": "የMediaSession ኤፒአይን የሚጠቀሙ እና የመልሶ ማጫወት ሁኔታን ያቀናበሩ ገጾች ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "በማያ ገጽ አንባቢ ምክንያት የጀርባ/ፊት መሸጎጫ ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandlerን የሚጠቀሙ ገጾች ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -2979,49 +2979,49 @@
     "message": "ሰነዱ ወደ ሌላ ከመዳሰሱ በፊት ጭኖ አልጨረሰልም።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ የመተግበሪያ ሰንደቅ ይገኝ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ የChrome የይለፍ ቃል አስተዳዳሪ ይገኝ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ የDOM ማጣሪያ በሂደት ላይ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ የDOM ማጣሪያ ማሳያ ይገኝ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "የመልዕክት መላላኪያ ኤፒአይን በሚጠቀሙ ቅጥያዎች ምክንያት የጀርባ/ፊት መሸጎጫ ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "ረጅም ጊዜ የኖረ ግንኙነት ያላቸው ቅጥያዎች ወደ የጀርባ/ፊት መሸጎጫ ከመግባታቸው በፊት ግንኙነቱን መዝጋት አለባቸው።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "የረጅም ጊዜ ግንኙነት ያላቸው ቅጥያዎች መልዕክቶችን ወደ የጀርባ/ፊት መሸጎጫ ውስጥ ወዳሉ ክፈፎች ለመላክ ሞክረዋል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "በቅጥያዎች ምክንያት የጀርባ/ፊት መሸጎጫው ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ እንደ ቅጽ ዳግም ማስገባት ወይም ኤችቲቲፒ የይለፍ ቃል መገናኛ ያለ የሞዳል መገናኛ ታይቷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ ከመስመር ውጭ ገጹ ታይቷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ ከማህደረ ትውስታ ውጭ ጣልቃ መግቢያ አሞሌ ይገኝ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ የፈቃድ ጥያቄዎች ነበሩ።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ወደ ሌላ ሲያስሱ ብቅ-ባይ ማገጃው ይገኝ ነበር።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ወደ ሌላ ሲያሰሱ ደህንነታቸው የተጠበቁ የአሰሳ ዝርዝሮች ታይተዋል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "ደህንነቱ የተጠበቀ አሰሳ ይህን ገጽ እንደ አላግባብ ጥቅም ላይ የሚውል ቆጥሮታል እና ብቅ-ባይን አግዷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ገጹ በጀርባ/ፊት መሸጎጫ ላይ ሳለ የአገልግሎት ሰራተኛ ገቢር ተደርጓል።"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ይህ ክፈፍ የወላጅ ክፈፉ የማስታወቂያ ክፈፍ ስለሆነ እንደ አንድ የማስታወቂያ ክፈፍ ተደርጎ ይወሰዳል።"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "አድስ"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ሪፖርት በማድረግ ላይ ለ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "የኮንሶል ቅንብሮች"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "የመሥሪያ የጎን አሞሌ ተደብቋል"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "የመስሪያ የጎን አሞሌ ታይቷል።"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "የሚታይ የቅጥ ምርጫን ይቅዱ"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "የተሰላ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "የተሰሉ ቅጦች የጎን አሞሌ ተደብቋል"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "የተሰሉ ቅጦች የጎን አሞሌ ታይቷል"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "የDOM የዛፍ አሳሽ"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "የሕብረቁምፊ ይዘቶችን ይቅዱ"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "የአራሚ የጎን አሞሌ ተደብቋል"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "የአራሚ የጎን አሞሌ ታይቷል"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ለየት ባሉ ላይ ባለበት አታቁም"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ተጨማሪ አማራጮች"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "የአሳሽ የጎን አሞሌ ተደብቋል"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "የአሳሽ የጎን አሞሌ ታይቷል"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "በምንጮች ፓነል ውስጥ ክፈት"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "በጣም ከባድ ቁልል"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "በጣም ከባድ ቁልል የጎን አሞሌ ተደብቋል"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "በጣም ከባድ ቁልል የጎን አሞሌ ታይቷል"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "በጣም ከባዱን ቁልል ደብቅ"
@@ -11583,7 +11616,7 @@
     "message": "አስቀምጥ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "የእርማት ግንኙነት ተዘግቷል። ምክንያት፦ "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevToolsን ዳግም አገናኝ"

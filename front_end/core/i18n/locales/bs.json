@@ -882,13 +882,13 @@
     "message": "Emuliraj fokusiranu stranicu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Omogućivanje automatskog tamnog načina rada"
+    "message": "Omogući automatski tamni način rada"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulira fokusiranu stranicu."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Onemogućuje automatski tamni način rada i postavlja prefers-color-scheme na dark."
+    "message": "Omogućava automatski tamni način rada i postavlja šemu prefers-color-scheme u šemu dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Nameće CSS medijsku funkciju color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Pisanje fajla…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Infrastruktura prilagodbi klijenta"
+    "message": "Infrastruktura savjeta klijenta"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Pravila za sigurnost sadržaja – procjena"
@@ -2955,7 +2955,7 @@
     "message": "Stranice koje koriste MediaSession API i postavljaju obrađivače radnji trenutno ne ispunjavaju uslove za keširanje cijele stranice."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Predmemoriranje cijele stranice onemogućeno je zbog čitača zaslona."
+    "message": "Keširanje cijele stranice je onemogućeno zbog čitača ekrana."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Stranice koje koriste SecurityHandler ne ispunjavaju uslove za keširanje cijele stranice."
@@ -2979,49 +2979,49 @@
     "message": "Učitavanje dokumenta nije završeno prije odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "Tijekom napuštanja stranice bio je prisutan natpis aplikacije."
+    "message": "Baner aplikacije je bio prisutan prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Tijekom napuštanja stranice bio je prisutan Chromeov Upravitelj zaporki."
+    "message": "Chrome upravitelj lozinki je bio prisutan prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "Tijekom napuštanja stranice u tijeku je bilo sažimanje DOM-a."
+    "message": "DOM destilacija je bila u toku prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "Tijekom napuštanja stranice bio je prisutan preglednik za sažimanje DOM-a."
+    "message": "Prikazivač DOM destilatora je bio prisutan prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Predmemoriranje cijele stranice onemogućeno je zbog proširenja koja koriste API za slanje poruka."
+    "message": "Keširanje cijele stranice je onemogućeno zbog ekstenzija koje koriste API razmjenu poruka."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Proširenja s dugotrajnijom vezom trebaju zatvoriti vezu prije pristupanja predmemoriranju cijele stranice."
+    "message": "Ekstenzije s dugoročnom vezom trebaju zatvoriti vezu prije ulaska u keširanje cijele stranice."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Proširenja s dugotrajnijom vezom pokušala su poslati poruke okvirima u predmemoriranju cijele stranice."
+    "message": "Ekstenzije s dugoročnom vezom pokušale su poslati poruke do okvira u keširanju cijele stranice."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Predmemoriranje cijele stranice onemogućeno je zbog proširenja."
+    "message": "Keširanje cijele stranice je onemogućeno zbog ekstenzija."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modalni dijalog, kao što je ponovno slanje obrasca ili dijalog sa zaporkom za http prikazao se za stranicu tijekom napuštanja stranice."
+    "message": "Modalni dijaloški okvir poput ponovnog slanja obrasca ili dijaloškog okvira lozinke za http prikazao se za stranicu prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "Tijekom napuštanja stranice prikazala se offline stranica."
+    "message": "Offline stranica je prikazana prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Tijekom napuštanja stranice bila je prisutna traka za intervenciju zbog nedovoljno memorije."
+    "message": "Traka intervencije izvan memorije je bila prisutna prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "Tijekom napuštanja stranice postojali su zahtjevi za dopuštenja."
+    "message": "Bilo je zahtjeva za odobrenje prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Tijekom napuštanja stranice bio je prisutan alat za blokiranje skočnih prozora."
+    "message": "Blokator skočnih prozora je bio prisutan prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Pojedinosti o sigurnom pregledavanju prikazale su se tijekom napuštanja stranice."
+    "message": "Detalji Sigurnog pregledanja su prikazani prilikom odlazne navigacije."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Sigurno pregledavanje ovu je stranicu smatralo zlonamjernom i blokiralo je skočne prozore."
+    "message": "Sigurno pregledanje smatra ovu stranicu uvredljivom i blokiralo je skočni prozor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Skripta usluge se aktivirala dok je stranica bila keširana u cjelini."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Ovaj okvir se smatra okvirom oglasa jer njegov glavni okvir predstavlja okvir oglasa."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Osvježi"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "prijavljuje krajnjim tačkama"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Postavke konzole"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Bočna traka konzole je skrivena"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Bočna traka konzole je prikazana"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopiraj vidljivi stilizirani odabir"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Izračunato"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Bočna traka izračunatih stilova je skrivena"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Bočna traka izračunatih stilova je prikazana"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Istraživač DOM stabla"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopiraj sadržaj niza"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bočna traka programa za otklanjanje grešaka je skrivena"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bočna traka programa za otklanjanje grešaka je prikazana"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Bez pauziranja na izuzecima"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Više opcija"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bočna traka navigatora je skrivena"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bočna traka navigatora je prikazana"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otvori u ploči Izvori"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Najzahtjevniji stek"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Bočna traka najzahtjevnijeg steka je skrivena"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Bočna traka najzahtjevnijeg steka je prikazana"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Sakrij najzahtjevniji stek"
@@ -11583,7 +11616,7 @@
     "message": "Pohranjivanje"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Zatvorena je veza za otklanjanje pogrešaka. Razlog: "
+    "message": "Zatvorena je veza za otklanjanje grešaka. Razlog: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Poveži ponovo: DevTools"

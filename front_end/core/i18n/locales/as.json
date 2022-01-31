@@ -882,13 +882,13 @@
     "message": "এটা ফ’কাছ কৰা পৃষ্ঠা এমুলে’ট কৰক"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড সক্ষম কৰক"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "এখন ফ’কাছ কৰা পৃষ্ঠা এমুলে’ট কৰে।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড সক্ষম কৰে আৰু prefers-color-schemeক dark হিচাপে ছেট কৰে।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut মিডিয়াৰ সুবিধা বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
@@ -1308,7 +1308,7 @@
     "message": "ফাইল ৰাইট কৰি থকা হৈছে…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "ক্লায়েণ্টৰ ইংগিতৰ আন্তঃগাঁথনি"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "সমলৰ সুৰক্ষা সম্পৰ্কীয় নীতি - Eval"
@@ -2067,10 +2067,10 @@
     "message": "মেনিফেষ্টটোৰ পৰা এটা প্ৰয়োজনীয় আইকন ডাউনল’ড কৰিব পৰা নগ’ল"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "নেপথ্যৰ ৰং গাঢ়"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "গাঢ় ৰঙৰ থীম"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "বিৱৰণ"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API ব্যৱহাৰ কৰা আৰু কাৰ্যৰ নিয়ন্ত্ৰক ছেট কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "স্ক্ৰীন ৰীডাৰৰ বাবে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler ব্যৱহাৰ কৰা পৃষ্ঠাসমূহ বেক/ফৰৱাৰ্ড কেশ্বৰ বাবে যোগ্য নহয়।"
@@ -2979,49 +2979,49 @@
     "message": "এৰি যোৱাৰ আগতে নথিখন সম্পূৰ্ণৰূপে ল’ড হোৱা নাছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত এপৰ বেনাৰ দেখুৱাই থকা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত Chromeৰ পাছৱৰ্ডৰ পৰিচালকক খুলি ৰখা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত DOM ডিষ্টিলে’শ্বন চলি আছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত DOMৰ ডিষ্টিলাৰ ভিউৱাৰটো দেখুৱাই থকা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "এক্সটেনশ্বনে বাৰ্তা আদান-প্ৰদানৰ API ব্যৱহাৰ কৰি থকাৰ কাৰণে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "দীৰ্ঘস্থায়ী সংযোগৰ সুবিধা লাভ কৰা এক্সটেনশ্বনসমূহে বেক/ফৰৱাৰ্ড কেশ্বলৈ যোৱাৰ পূৰ্বে সংযোগটো বন্ধ কৰা উচিত।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "দীৰ্ঘস্থায়ী সংযোগৰ সুবিধা লাভ কৰা এক্সটেনশ্বনসমূহে বেক/ফৰৱাৰ্ড কেশ্বত থকা ফ্ৰে’মলৈ বাৰ্তা পঠিয়াবলৈ প্ৰয়াস কৰিছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "এক্সটেনশ্বনৰ কাৰণে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত ফ’ৰ্ম পুনৰ দাখিল কৰা অথবা http পাছৱৰ্ডৰ ডায়লগৰ দৰে মডেল ডায়লগ দেখুওৱা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত অফলাইন পৃষ্ঠাখন দেখুওৱা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত আউট-অফ-মেম’ৰিৰ ইণ্টাৰভেনশ্বনৰ দণ্ডডাল দেখুৱাই থকা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত অনুমতিৰ অনুৰোধৰ প্ৰক্ৰিয়াকৰণ হৈ আছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত পপআপ অৱৰোধকাৰীটো দেখুওৱা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "পৃষ্ঠা এৰি যোৱাৰ সময়ত সুৰক্ষিত ব্ৰাউজিঙৰ সবিশেষ দেখুওৱা হৈছিল।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "সুৰক্ষিত ব্ৰাউজিঙে এই পৃষ্ঠাখন অপব্যৱহাৰকাৰী বুলি গণ্য কৰি পপআপটো অৱৰোধ কৰিছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মী সক্ৰিয় কৰা হৈছে।"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "এই ফ্ৰে’মটোক এটা বিজ্ঞাপনৰ ফ্ৰে’ম হিচাপে বিবেচনা কৰা হৈছে কাৰণ ইয়াৰ মূল ফ্ৰে’মটো এটা বিজ্ঞাপনৰ ফ্ৰে’ম।"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ৰিফ্ৰেশ্ব কৰক"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ইয়াত ৰিপ’ৰ্ট কৰে"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "কনছ'লৰ ছেটিং"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "কনছ’ল ছাইডবাৰ লুকুওৱা হৈছে"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "কনছ’ল ছাইডবাৰ দেখুওৱা হৈছে"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "দৃশ্যমান শৈলীগত বাছনিৰ প্ৰতিলিপি কৰক"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "গণনা কৰা শৈলী"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "গণনা কৰা শৈলীৰ ছাইডবাৰ লুকুওৱা হৈছে"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "গণনা কৰা শৈলীৰ ছাইডবাৰ দেখুওৱা হৈছে"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ট্ৰী অন্বেষণকৰ্তা"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "ষ্ট্ৰিঙৰ সমল প্ৰতিলিপি কৰক"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ডিবাগাৰ ছাইডবাৰ লুকুওৱা হৈছে"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ডিবাগাৰ ছাইডবাৰ দেখুওৱা হৈছে"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ব্যতিক্ৰমত পজ নকৰিব"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "অধিক বিকল্প"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "নেভিগে’টৰ ছাইডবাৰ লুকুওৱা হৈছে"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "নেভিগে’টৰ ছাইডবাৰ দেখুওৱা হৈছে"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "উৎস পেনেলত খোলক"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "সকলোতকৈ বেছি ওজন থকা ষ্টেক"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "হেভিয়েষ্ট ষ্টেক ছাইডবাৰ লুকুওৱা হৈছে"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "হেভিয়েষ্ট ষ্টেক ছাইডবাৰ দেখুওৱা হৈছে"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "হেভিয়েষ্ট ষ্টেক লুকুৱাওক"
@@ -11583,7 +11616,7 @@
     "message": "ছেভ কৰক"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "ডিবাগ কৰাৰ সংযোগটো বন্ধ কৰা হৈছে। কাৰণ: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools পুনৰ সংযোগ কৰক"

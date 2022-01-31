@@ -882,13 +882,13 @@
     "message": "Emulēt izceltu lapu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Iespējot automātisku tumšo režīmu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulē izceltu lapu."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Tiek iespējots automātisks tumšais režīms un iestatīta prefers-color-scheme vērtība dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Piespiedu kārtā lieto CSS datu nesēju funkciju color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Notiek rakstīšana failā…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints infrastruktūra"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Satura drošības politika — novērtēšana"
@@ -2067,10 +2067,10 @@
     "message": "Nevarēja lejupielādēt obligātu ikonu no manifesta"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tumša fona krāsa"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Tumšā motīva krāsa"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Apraksts"
@@ -2955,7 +2955,7 @@
     "message": "Lapas, kurās tiek izmantota saskarne MediaSession API un kurās ir iestatīti darbību apdarinātāji, nav piemērotas pilnīgai saglabāšanai kešatmiņā."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota ekrāna lasītāja dēļ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Lapas, kurās tiek izmantots apdarinātājs SecurityHandler, nav piemērotas pilnīgai saglabāšanai kešatmiņā."
@@ -2979,49 +2979,49 @@
     "message": "Dokuments tika aizvērts vēl pirms bija pabeigta tā ielāde."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Pārejot prom, tika rādīts lietotnes reklāmkarogs."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Pārejot prom, bija aktīvs Chrome paroļu pārvaldnieks."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Pārejot prom, notika DOM attīrīšana."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Pārejot prom, bija aktīvs DOM attīrītāja skatītājs."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo paplašinājumi izmantoja ziņojumapmaiņas API."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Paplašinājumiem ar ilgstošu savienojumu jāpārtrauc savienojums pirms pilnīgas saglabāšanas kešatmiņā."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Izmantojot paplašinājumus ar ilgstošu savienojumu, tika mēģināts sūtīt ziņojumus uz ietvariem, kas pilnīgi saglabāti kešatmiņā."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota paplašinājumu dēļ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Pārejot prom, tika parādīts modāls lapas dialoglodziņš, piemēram, veidlapas atkārtotas iesniegšanas vai http paroļu dialoglodziņš."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Pārejot prom, tika rādīta bezsaistes lapa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Pārejot prom, tika rādīta iejaukšanās josla par atmiņas trūkumu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Pārejot prom, bija atļauju pieprasījumi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Pārejot prom, bija aktīvs uznirstošo elementu bloķētājs."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Pārejot prom, tika parādīta drošas pārlūkošanas informācija."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Funkcijā “Droša pārlūkošana” šī lapa tika identificēta kā ļaunprātīga un tika bloķēts uznirstošais logs."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Kamēr noritēja lapas pilnīga saglabāšana kešatmiņā, tika aktivizēts pakalpojuma skripts."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Šis ietvars tiek uzskatīts par reklāmu ietvaru, jo tā vecākietvars ir reklāmu ietvars."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Atsvaidzināt"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ziņo gala punktam"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsoles iestatījumi"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsoles sānjosla ir paslēpta"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsoles sānjosla tiek rādīta"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopēt redzamo atlasīto saturu kopā ar stilu"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Aprēķinātie"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Aprēķināto stilu sānjosla ir paslēpta"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Aprēķināto stilu sānjosla tiek rādīta"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM koka pārlūks"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopēt virknes saturu"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Atkļūdotāja sānjosla ir paslēpta"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Atkļūdotāja sānjosla tiek rādīta"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Nepārtraukt, sasniedzot izņēmumus"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Citas opcijas"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigatora sānjosla ir paslēpta"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigatora sānjosla tiek rādīta"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Atvērt panelī Avoti"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Lielākā kopa"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Lielākās kopas sānjosla ir paslēpta"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Lielākās kopas sānjosla tiek rādīta"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Paslēpt sānjoslu Lielākā kopa"
@@ -11583,7 +11616,7 @@
     "message": "Saglabāt"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Atkļūdošanas savienojums tika pārtraukts. Iemesls: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Atkārtoti izveidot savienojumu ar DevTools"

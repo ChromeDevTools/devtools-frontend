@@ -882,13 +882,13 @@
     "message": "Emula una pagina con lo stato attivo"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Attiva modalità Buio automatica"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emula una pagina con lo stato attivo."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Attiva la modalità Buio automatica e imposta prefers-color-scheme su dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Forza la funzionalità dei contenuti multimediali color-gamut del CSS"
@@ -1308,7 +1308,7 @@
     "message": "Scrittura file in corso…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Infrastruttura Client Hints"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Criteri di sicurezza del contenuto - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Impossibile scaricare un'icona richiesta dal file manifest"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Colore sfondo scuro"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Colore tema scuro"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descrizione"
@@ -2955,7 +2955,7 @@
     "message": "Le pagine che utilizzano l'API MediaSession e impostano gestori per le azioni non possono essere memorizzate nella cache back-forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "La cache back/forward è stata disattivata a causa dello screen reader."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Le pagine che utilizzano SecurityHandler non possono essere memorizzate nella cache back-forward."
@@ -2979,49 +2979,49 @@
     "message": "L'utente è uscito dal documento prima che venisse completato il caricamento."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Era presente App Banner al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Era presente Gestore delle password di Chrome al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Era in corso la distillazione DOM al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Era presente il visualizzatore DOM Distiller al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "La cache back/forward è stata disattivata a causa di estensioni che usano l'API Messaging."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Le estensioni con connessione di lunga durata devono chiudere la connessione prima di poter essere memorizzate nella cache back/forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Le estensioni con connessione di lunga durata hanno cercato di inviare messaggi ai frame nella cache back/forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "La cache back/forward è stata disattivata a causa delle estensioni."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Al momento dell'uscita era mostrata una finestra di dialogo modale come un nuovo invio di un modulo o la finestra di dialogo di una password http."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Era mostrata la pagina offline al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Era presente la barra Out-Of-Memory Intervention al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Erano presenti richieste di autorizzazione al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Era presente il blocco popup al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Erano mostrati dettagli di Navigazione sicura al momento dell'uscita."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Navigazione sicura ha considerato illecita questa pagina e ha bloccato il popup."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "È stato attivato un service worker mentre la pagina si trovava nella cache back-forward."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Questo frame è considerato un frame dell'annuncio perché il relativo frame principale è un frame dell'annuncio."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Aggiorna"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "segnalazione a"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Impostazioni della console"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Barra laterale della console nascosta"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Barra laterale della console visualizzata"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copia la selezione visibile con lo stile applicato"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Elaborati"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Barra laterale Stili elaborati nascosta"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Barra laterale Stili elaborati visualizzata"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Esplorazione albero DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copia contenuti stringa"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Barra laterale Debugger nascosta"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Barra laterale Debugger visualizzata"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Non mettere in pausa su eccezioni"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Altre opzioni"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Barra laterale Controllo di navigazione nascosta"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Barra laterale Controllo di navigazione visualizzata"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Apri nel riquadro Origini"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Stack più pesante"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Barra laterale Stack più pesante nascosta"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Barra laterale Stack più pesante visualizzata"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Nascondi lo stack più pesante"
@@ -11583,7 +11616,7 @@
     "message": "Salva"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "La connessione durante il debug è stata chiusa. Motivo: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Riconnetti DevTools"

@@ -882,13 +882,13 @@
     "message": "फोकस गरिएको पेज अनुकरण गर्नुहोस्"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "अँध्यारो मोड स्वतः अन गरियोस्"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "फोकस गरिएको पेज अनुकरण गर्छ।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "यसले अँध्यारो मोड स्वतः अन गर्छ र prefers-color-scheme को मान dark सेट गर्छ।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut मिडिया सुविधाका लागि बाध्य पार्छ"
@@ -2067,10 +2067,10 @@
     "message": "म्यानिफेेस्टबाट डाउनलोड गर्नै पर्ने एउटा आइकन डाउनलोड गर्न सकिएन"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "अध्याँरो ब्याकग्राउन्ड कलर"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "अँध्यारो थिमको रङ"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "विवरण"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API प्रयोग गर्ने तथा कारबाहीका ह्यान्ड्लरहरू सेट गर्ने पेजहरूका हकमा ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "स्क्रिन रिडरका कारण ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler प्रयोग गर्ने पेजहरूका हकमा ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
@@ -2979,49 +2979,49 @@
     "message": "तपाईं यो डकुमेन्ट पूर्ण रूपमा लोड नहुँदै यसबाट बाहिरिनुभयो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा एप ब्यानर देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा Chrome पासवर्ड म्यानेजर देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा DOM डिस्टिलेसनको प्रक्रिया पूरा भइसकेको थिएन।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा DOM Distiller Viewer देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "एक्स्टेन्सनहरूले म्यासेजिङ API प्रयोग गरिरहेकाले ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "लामो समयदेखि कनेक्ट भएका एक्स्टेन्सनहरू ब्याक/फर्वार्ड क्यासमा सेभ गर्नुअघि कनेक्सन बन्द गर्नु पर्ने हुन्छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "लामो समयदेखि कनेक्ट भएका एक्स्टेन्सनहरूले ब्याक/फर्वार्ड क्यासमा भएका फ्रेमहरूमा म्यासेज पठाउने प्रयास गरे।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "एक्स्टेन्सनहरूका कारण ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा फाराम पुनः पेस गर्ने डायलग वा http पासवर्ड हाल्ने डायलग जस्ता मोडल डायलग देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा अफलाइन पेज देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा मेमोरी सकिएका खण्डमा देखाइने इन्टरभेन्सन बार देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा अनुमति मागिएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा पपअप ब्लकर देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "तपाईं यो पेजबाट निस्कँदा Safe Browsing सम्बन्धी विवरणहरू देखाइएको थियो।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing ले यो पेज दुर्व्यवहारपूर्ण भएको ठहर गरेको छ र पपअप ब्लक गरेको छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "यो पेज ब्याक/फर्वार्ड क्यासमा भएका बेला कुनै सर्भिस वर्कर एक्टिभेट गरिएको थियो।"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "यो फ्रेमको प्यारेन्ट फ्रेम विज्ञापनसम्बन्धी फ्रेम भएकाले यो फ्रेमलाई विज्ञापनसम्बन्धी फ्रेम मानिन्छ।"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "रिफ्रेस गर्नुहोस्"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "यसलाई रिपोर्ट गर्छ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "कन्सोलसम्बन्धी सेटिङ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "कन्सोल साइडबार लुकाइएको छ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "कन्सोल साइडबार देखाइएको छ"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "देखिने खाले स्टाइल भएको चयन गरिएको वस्तु कपी गर्नुहोस्"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "कम्प्युटेड"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "कम्प्युटेड स्टाइल साइडबार लुकाइएको छ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "कम्प्युटेड स्टाइल साइडबार देखाइएको छ"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ट्री एक्स्प्लोरर"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "स्ट्रिङमा भएका सामग्री कपी गर्नुहोस्"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "डिबगर साइडबार लुकाइएको छ"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "डिबगर साइडबार देखाइएको छ"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "अपवादहरू आउँदा पज नगरियोस्"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "थप विकल्पहरू"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "नेभिगेटर साइडबार लुकाइएको छ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "नेभिगेटर साइडबार देखाइएको छ"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "सोर्स प्यानलमा खोल्नुहोस्"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "सबैभन्दा बढी समय लाग्ने स्ट्याक"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "सबैभन्दा बढी समय लाग्ने स्ट्याक साइडबार लुकाइएको छ"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "सबैभन्दा बढी समय लाग्ने स्ट्याक साइडबार देखाइएको छ"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "सबैभन्दा ठुलो स्ट्याक लुकाइयोस्"
@@ -11583,7 +11616,7 @@
     "message": "सेभ गर्नुहोस्"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "डिबग गर्न प्रयोग गरिएको कनेक्सन बन्द गरिएको छ। कारण: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools रिकनेक्ट गर्नुहोस्"

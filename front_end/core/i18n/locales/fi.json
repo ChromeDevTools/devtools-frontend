@@ -882,13 +882,13 @@
     "message": "Emuloi kohdistettua sivua"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Ota automaattinen tumma tila käyttöön"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuloi keskitettyä sivua."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Ottaa automaattisen tumman tilan käyttöön ja prefers-color-scheme saa arvon dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Pakottaa käyttöön CSS:n mediaominaisuuden color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Kirjoitetaan tiedostoa…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints ‑infrastruktuuri"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy ‑käytäntö – Eval"
@@ -2067,10 +2067,10 @@
     "message": "Tarvittavan kuvakkeen lataaminen teknisistä tiedoista ei onnistunut"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tumma taustaväri"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Tumman teeman väri"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Kuvaus"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession APIa käyttävät ja toimintokäsittelijöitä asettavat sivut eivät voi käyttää siirtymisvälimuistia."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Näytönlukuohjelma estää siirtymisvälimuistin käytön."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandleria käyttävät sivut eivät voi käyttää siirtymisvälimuistia."
@@ -2979,49 +2979,49 @@
     "message": "Dokumentti ei latautunut kokonaan ennen pois siirtymistä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Sovellusbanneri oli päällä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Chromen Salasanojen ylläpito oli päällä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM-tislaus oli kesken pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "DOM Distiller Viewer oli näkyvissä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Messaging APIa käyttävät laajennukset estävät siirtymisvälimuistin käytön."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Pitkään yhdistettyinä olleiden laajennusten pitäisi katkaista yhteys ennen siirtymisvälimuistiin siirtymistä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Pitkään yhdistettynä ollut laajennus yritti lähettää viestejä siirtymisvälimuistissa oleville kehyksille."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Laajennukset estävät siirtymisvälimuistin käytön."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Sivun modaalivalintaikkuna (esim. lomakkeen uudelleenlähetys tai http-salasanavalintaikkuna) oli näkyvissä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Offline-sivu oli näkyvissä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Muistin loppumisen muistutuspalkki oli näkyvissä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Lupapyyntöjä oli aktiivisena pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Ponnahdusikkunoiden estotoiminto oli päällä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Selaussuojan tiedot olivat näkyvissä pois siirryttäessä."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Selaussuoja katsoi sivun haitalliseksi ja esti ponnahdusikkunan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service worker aktivoitiin, kun sivu oli siirtymisvälimuistissa."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Tätä kehystä pidetään mainoskehyksenä, koska sen ylätason kehys on mainoskehys."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Päivitä"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "raportoi kohteelle"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsolin asetukset"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsolin sivupalkki piilotettu"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsolin sivupalkki näkyvissä"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopioi näkyvä tyylivalinta"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Laskettu"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Laskettujen tyylien sivupalkki piilotettu"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Laskettujen tyylien sivupalkki näkyvissä"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM-puun tutustumisnäkymä"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopioi merkkijonon sisältö"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Virheenkorjauksen sivupalkki piilotettu"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Virheenkorjauksen sivupalkki näkyvissä"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Älä keskeytä kohdattaessa poikkeuksia"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Lisäasetukset"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigoinnin sivupalkki piilotettu"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigoinnin sivupalkki näkyvissä"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Avaa lähdepaneelissa"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Raskain pino"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Raskaimman pinon sivupalkki piilotettu"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Raskaimman pinon sivupalkki näkyvissä"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Piilota raskain pino"
@@ -11583,7 +11616,7 @@
     "message": "Tallenna"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Virheenkorjausyhteys katkaistiin. Syy: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Yhdistä DevTools uudelleen"

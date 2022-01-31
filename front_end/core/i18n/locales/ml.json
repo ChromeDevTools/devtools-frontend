@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ഈ ഫ്രെയിമിന്റെ പാരന്റ് ഫ്രെയിം ഒരു പരസ്യ ഫ്രെയിം ആയതിനാൽ അതിനെ ഒരു പരസ്യ ഫ്രെയിമായി കണക്കാക്കുന്നു."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "റീഫ്രഷ് ചെയ്യുക"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ഇനിപ്പറയുന്നതിലേക്ക് റിപ്പോർട്ട് ചെയ്യുന്നു"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "കൺസോൾ ക്രമീകരണം"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "കൺസോൾ സൈഡ്ബാർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "കൺസോൾ സൈഡ്ബാർ കാണിച്ചിരിക്കുന്നു"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "കാണാവുന്ന ശെെലിയിലുള്ള തിരഞ്ഞെടുക്കൽ പകർത്തുക"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "കമ്പ്യൂട്ട് ചെയ്‌തത്"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "കമ്പ്യൂട്ട് ചെയ്ത സ്റ്റൈലുകൾ സൈഡ്ബാർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "കമ്പ്യൂട്ട് ചെയ്ത സ്റ്റൈലുകൾ സൈഡ്ബാർ കാണിച്ചിരിക്കുന്നു"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ട്രീ എക്സ്പ്ലോറർ"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "സ്ട്രിംഗ് ഉള്ളടക്കങ്ങൾ പകർത്തുക"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ഡീബഗ്ഗർ സൈഡ്ബാർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ഡീബഗ്ഗർ സൈഡ്ബാർ കാണിച്ചിരിക്കുന്നു"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ഒഴിവാക്കലുകൾ കാരണം താൽക്കാലികമായി നിർത്തരുത്"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "കൂടുതൽ ഓപ്ഷനുകൾ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "നാവിഗേറ്റർ സൈഡ്ബാർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "നാവിഗേറ്റർ സൈഡ്ബാർ കാണിച്ചിരിക്കുന്നു"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ഉറവിടങ്ങളുടെ പാനലിൽ തുറക്കുക"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "ഹെവിയസ്റ്റ് സ്റ്റാക്ക്"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "ഹെവിയസ്റ്റ് സ്റ്റാക്ക് സൈഡ്ബാർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "ഹെവിയസ്റ്റ് സ്റ്റാക്ക് സൈഡ്ബാർ കാണിച്ചിരിക്കുന്നു"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "ഹെവിയസ്റ്റ് സ്റ്റാക്ക് മറയ്ക്കുക"

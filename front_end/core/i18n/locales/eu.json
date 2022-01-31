@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Marko hau iragarki-markotzat jotzen da, haren marko nagusia iragarki-marko bat delako."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Freskatu"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "honi jakinarazten:"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Kontsolaren ezarpenak"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Kontsolaren alboko barra ezkutatu da"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Kontsolaren alboko barra erakutsi da"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopiatu ikusgai dagoen hautapen estiloduna"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Kalkulatutakoak"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Kalkulatutako estiloen alboko barra ezkutatu da"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Kalkulatutako estiloen alboko barra erakutsi da"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOMaren zuhaitz moduko esploratzailea"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopiatu katearen edukia"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Araztailearen alboko barra ezkutatu da"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Araztailearen alboko barra erakutsi da"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ez pausatu salbuespenetan"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Aukera gehiago"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Nabigatzailearen alboko barra ezkutatu da"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Nabigatzailearen alboko barra erakutsi da"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Ireki Iturburuak panelean"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Sorta astunena"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Sortarik astunenaren alboko barra ezkutatu da"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Sortarik astunenaren alboko barra erakutsi da"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ezkutatu sortarik astunena"

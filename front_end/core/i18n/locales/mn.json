@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Энэ фреймийн эх фрейм нь зарын фрейм тул үүнийг зарын фрейм гэж үзсэн."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Сэргээх"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "дараахад мэдээлж байна"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Консолын тохиргоо"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Консолын хажуугийн цэсийг нуусан"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Консолын хажуугийн цэсийг харуулсан"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Харагдаж буй загварын сонголтыг хуулах"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Тооцоолсон"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Тооцоолсон загварын хажуугийн цэсийг нуусан"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Тооцоолсон загварын хажуугийн цэсийг харуулсан"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM-н мод судлагч"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Мөрийн контентыг хуулах"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Дебаг хийгчийн хажуугийн цэсийг нуусан"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Дебаг хийгчийн хажуугийн цэсийг харуулсан"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Гажиг дээр бүү түр зогс"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Бусад сонголт"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Чиглүүлэгчийн хажуугийн цэсийг нуусан"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Чиглүүлэгчийн хажуугийн цэсийг харуулсан"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Эх сурвалжийн түр зуурын самбарт нээх"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Хамгийн их хугацаа зарцуулсан стек"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Хамгийн их хугацаа зарцуулсан стекийн хажуугийн цэсийг нуусан"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Хамгийн их хугацаа зарцуулсан стекийн хажуугийн цэсийг харуулсан"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Хамгийн их хугацаа зарцуулсан стекийг нууна уу"

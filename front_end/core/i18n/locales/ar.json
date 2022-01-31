@@ -882,13 +882,13 @@
     "message": "محاكاة صفحة مركّز عليها"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "تفعيل الوضع الداكن التلقائي"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "يتيح هذا الإعداد إمكانية محاكاة صفحة مركَّز عليها."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "يؤدي هذا الإعداد إلى تفعيل الوضع الداكن التلقائي وضبط prefers-color-scheme على dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "يتيح هذا الإعداد فرض ميزة وسائط color-gamut لصفحات الأنماط المتتالية (CSS)."
@@ -1308,7 +1308,7 @@
     "message": "جارٍ الكتابة في الملف…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints Infrastructure (البنية الأساسية لتعديلات البرامج)"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "سياسة أمان المحتوى: Eval"
@@ -2067,10 +2067,10 @@
     "message": "تعذَّر تنزيل رمز مطلوب من ملف البيان."
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "لون الخلفية الداكنة"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "لون المظهر الداكن"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "الوصف"
@@ -2955,7 +2955,7 @@
     "message": "الصفحات التي تستخدِم MediaSession API وتضبط معالِجات الإجراءات يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب استخدام قارئ الشاشة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "الصفحات التي تستخدِم SecurityHandler يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
@@ -2979,49 +2979,49 @@
     "message": "تمت مغادرة المستند قبل أن ينتهي من التحميل."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "كان بانر التطبيق قيد الاستخدام أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "كان مدير كلمات المرور في Chrome قيد الاستخدام أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "كانت عملية تصفية \"نموذج العناصر في المستند\" قيد التقدُّم أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "كان عارض DOM Distiller Viewer قيد الاستخدام أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" لأنّ الإضافات تستخدم واجهة برمجة تطبيقات خدمة المراسلة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "الإضافات ذات الاتصال الطويل الأمد يجب أن تُغلِق الاتصال قبل تخزينها مؤقتًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "حاولت الإضافات ذات الاتصال الطويل الأمد إرسال رسائل إلى الإطارات المدرَجة في ميزة \"التخزين المؤقت للصفحات\"."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب استخدام الإضافات."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "تم عرض مربع حوار نمطي، مثل مربع حوار إعادة إرسال النموذج أو مربع حوار مصادقة HTTP باستخدام كلمة مرور، في الصفحة أثناء مغادرتها."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "تم عرض الصفحة المتوفّرة بلا اتصال بالإنترنت أثناء المغادرة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "كان شريط Out-Of-Memory Intervention قيد الاستخدام أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "كانت طلبات الأذونات قيد التقدُّم أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "كان حاجب النوافذ المنبثقة قيد الاستخدام أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "تم عرض تفاصيل \"التصفُّح الآمن\" أثناء مغادرة الصفحة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "رصدت ميزة \"التصفُّح الآمن\" أنّ هذه الصفحة تتضمن محتوى مسيئًا وحظرت نافذة منبثقة."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "تم تفعيل مشغّل خدمات أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "يعدّ هذا إطارًا إعلانيًا تبعًا للرئيسي."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "إعادة تحميل"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "يتم إرسال التقارير إلى"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "إعدادات وحدة التحكم"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "تم إخفاء الشريط الجانبي لوحدة التحكّم."
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "تم إظهار الشريط الجانبي لوحدة التحكّم."
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "نسخ الاختيار المرئي ذي النمط"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "الأنماط التي تم احتسابها"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "تم إخفاء الشريط الجانبي للأنماط المحتسَبة."
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "تم إظهار الشريط الجانبي للأنماط المحتسَبة."
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "مستكشِف شجرة نموذج العناصر في المستند"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "نسخ محتوى السلسلة"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "تم إخفاء الشريط الجانبي لبرنامج تصحيح الأخطاء."
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "تم إظهار الشريط الجانبي لبرنامج تصحيح الأخطاء."
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "عدم الإيقاف المؤقت عند الاستثناءات"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "خيارات إضافية"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "تم إخفاء الشريط الجانبي للمتصفح."
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "تم إظهار الشريط الجانبي للمتصفح."
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "فتح في لوحة المصادر"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "حزمة الاستدعاء التي استغرقت معظم الوقت"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "تم إخفاء الشريط الجانبي لحزمة التنفيذ التي استغرقت معظم الوقت."
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "تم إظهار الشريط الجانبي لحزمة التنفيذ التي استغرقت معظم الوقت."
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "إخفاء الحزمة التي استغرقت معظم الوقت"
@@ -11583,7 +11616,7 @@
     "message": "حفظ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "تم إنهاء الاتصال الخاص بعملية تصحيح الأخطاء. السبب: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "إعادة توصيل DevTools"

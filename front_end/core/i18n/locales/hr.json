@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Taj se okvir smatra okvirom oglasa jer je njegov nadređeni okvir također okvir oglasa."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Osvježi"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "prijavljuje krajnjim točkama"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Postavke konzole"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Bočna traka konzole je skrivena"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Bočna traka konzole je prikazana"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopiraj vidljivi stilizirani odabir"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Izračunato"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Bočna traka izračunatih stilova je skrivena"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Bočna traka izračunatih stilova je prikazana"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Istraživač DOM stabla"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopiraj sadržaj niza"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bočna traka programa za ispravljanje pogrešaka je skrivena"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bočna traka programa za ispravljanje pogrešaka je prikazana"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ne pauziraj zbog iznimki"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Više opcija"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bočna traka navigatora je skrivena"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bočna traka navigatora je prikazana"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otvori na ploči izvora"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Najteži stog"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Bočna traka najtežeg stoga je skrivena"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Bočna traka najtežeg stoga je prikazana"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Sakrij najteži stog"

@@ -882,13 +882,13 @@
     "message": "Էմուլացնել ընտրված էջը"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Միացնել ավտոմատ մուգ ռեժիմը"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Էմուլացնում է ֆոկուսի միջի էջը։"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Միացնում է ավտոմատ մուգ ռեժիմը և prefers-color-scheme պարամետրի համար սահմանում է «dark» արժեքը։"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Գործարկում է CSS-ի color-gamut մեդիա գործառույթը"
@@ -1308,7 +1308,7 @@
     "message": "Տվյալների մուտքագրում ֆայլում…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Հաճախորդների հուշումների ենթակառուցվածք"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy – Eval"
@@ -2067,10 +2067,10 @@
     "message": "Չհաջողվեց պահանջվող պատկերակը ներբեռնել մանիֆեստից"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Մուգ ֆոնի գույնը"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Մուգ թեմայի գույնը"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Նկարագրություն"
@@ -2955,7 +2955,7 @@
     "message": "Էջերը, որոնք օգտագործում են MediaSession API-ը և որոնց համար կարգավորված են գործողությունների մշակիչներ, հնարավոր չէ ամբողջությամբ քեշավորել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Ամբողջ էջի քեշավորումն անջատված է էկրանի ընթերցիչի պատճառով։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Էջերը, որոնք օգտագործում են SecurityHandler, հնարավոր չէ ամբողջությամբ քեշավորել։"
@@ -2979,49 +2979,49 @@
     "message": "Դուք դուրս եք եկել փաստաթղթից, նախքան այն կբեռնվեր։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Ելքի ժամանակ Հավելվածների ազդերիզը ցուցադրված է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Ելքի ժամանակ Chrome-ի Գաղտնաբառերի կառավարիչը ցուցադրված է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Ելքի ժամանակ DOM-ի թորումը դեռ ավարտված չի եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Ելքի ժամանակ DOM-ի թորիչի դիտակն աշխատելիս է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Ամբողջ էջի քեշավորումն անջատված է Messaging API օգտագործող .ընդլայնման պատճառով։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Նախքան ամբողջ էջի քեշ մտնելը երկարաժամկետ միացումով ընդլայնումները պետք է ընդհատեն միացումը։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Երկարաժամկետ միացումով ընդլայնումները փորձել են հաղորդագրություններ ուղարկել շրջանակներին ամբողջ էջի քեշում։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Ամբողջ էջի քեշավորումն անջատված է ընդլայնումների պատճառով։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Ելքի ժամանակ էջի համար ցուցադրված է եղել մոդալ երկխոսության պատուհան (օր․՝ ձևաթղթի վերաուղարկման կամ http գաղտնաբառի պատուհան)։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Ելքի ժամանակ օֆլայն էջը ցուցադրված է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Ելքի ժամանակ «Հիշողության սպառման դեպքում միջամտություն» գոտին ցուցադրված է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Ելքի ժամանակ թույլտվության հարցումներ են եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Ելքի ժամանակ ելնող տարրերի արգելափակիչն աշխատելիս է եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Ելքի ժամանակ Ապահով դիտարկման տվյալները ցուցադրված են եղել։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Ապահով դիտարկումը հայտնաբերել է, որ այս էջը խախտում է պարունակում, և արգելափակել է ելնող պատուհանը։"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service Worker սկրիպտն ակտիվացվել է, երբ էջը ամբողջությամբ քեշավորված էր։"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Այս շրջանակը համարվում է գովազդի շրջանակ, քանի որ դրա գլխավոր շրջանակը գովազդի շրջանակ է։"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Թարմացնել"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ուղարկում է հաշվետվություններ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Վահանակի կարգավորումներ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Վահանակի կողագոտին թաքցված է"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Վահանակի կողագոտին ցուցադրված է"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Պատճենել տեսանելի ոճավորված հավաքածուն"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Հաշվարկված է"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Հաշվարկված ոճերի կողագոտին թաքցված է"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Հաշվարկված ոճերի կողագոտին ցուցադրված է"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM-ի ծառի հետազոտում"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Պատճենել տողի բովանդակությունը"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Վրիպազերծիչի կողագոտին թաքցված է"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Վրիպազերծիչի կողագոտին ցուցադրված է"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Չդադարել բացառությունների վրա։"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Այլ ընտրանքներ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Նավիգատորի կողագոտին թաքցված է"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Նավիգատորի կողագոտին ցուցադրված է"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Բացել «Աղբյուրներ» վահանակում"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Ամենածանր սթեքը"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Ամենածանր սթեքի կողագոտին թաքցված է"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Ամենածանր սթեքի կողագոտին ցուցադրված է"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Թաքցնել «Ամենածանր սթեքը» կողագոտին"
@@ -11583,7 +11616,7 @@
     "message": "Պահել"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Վրիպազերծման միացումն ընդհատվել է։ Պատճառը՝ "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Նորից միացնել՝ DevTools"

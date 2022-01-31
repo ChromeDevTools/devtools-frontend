@@ -882,13 +882,13 @@
     "message": "Fókuszált oldal emulálása"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Automatikus sötét mód bekapcsolása"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Fókuszált oldalt emulál."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Bekapcsolja az automatikus sötét módot, és a következőre állítja a(z) prefers-color-scheme értékét: dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "color-gamut CSS-médiafüggvény kényszerítése"
@@ -1308,7 +1308,7 @@
     "message": "Fájl írása…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints-infrastruktúra"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Tartalombiztonsági irányelvek – Eval"
@@ -2067,10 +2067,10 @@
     "message": "Nem sikerült letölteni a szükséges ikont a manifestből"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Sötét háttér színe"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Sötét téma színe"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Leírás"
@@ -2955,7 +2955,7 @@
     "message": "A MediaSession API-t használó és műveletkezelőket beállító oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a képernyőolvasó miatt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "A SecurityHandler kezelőt használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
@@ -2979,49 +2979,49 @@
     "message": "Nem fejeződött be a dokumentum betöltése az oldal elhagyása előtt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Alkalmazásszalag volt jelen az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Jelen volt a Chrome Jelszókezelő az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "A DOM Distiller működésben volt az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "A DOM Distiller Viewer jelen volt az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva üzenetkezelési API-t használó bővítmények miatt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "A hosszú élettartamú kapcsolattal rendelkező bővítményeknek be kell zárniuk a kapcsolatot az előre-vissza gyorsítótárazás megkezdése előtt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Hosszú élettartamú kapcsolattal rendelkező bővítményeknek próbáltak üzeneteket küldeni az előre-vissza gyorsítótárban található keretekhez."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a bővítmények miatt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Modális párbeszédpanel (pl. űrlap újraküldésével vagy http-jelszóval kapcsolatos párbeszédpanel) volt látható az oldalhoz az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Az offline oldal volt látható az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Az elfogyó memória miatti beavatkozás sávja jelen volt az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Engedélykérések jelentek meg az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Jelen volt előugró ablakokat blokkoló szoftver az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "A Biztonságos Böngészés részletei láthatók voltak az oldal elhagyásakor."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "A Biztonságos Böngészés visszaélésszerűnek ítélte ezt az oldalt, és letiltotta az előugró ablakokat."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Egy service worker fájl aktiválódott, amíg az oldal az előre-vissza gyorsítótárban volt."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Ez a keret hirdetéskeretnek minősül, mivel a fölérendelt kerete hirdetéskeret."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Frissítés"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "jelentés a következőnek:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konzolbeállítások"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konzol oldalsávja elrejtve"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konzol oldalsávja megjelenítve"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Látható stílusú kijelölés másolása"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Számított"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Számított stílus oldalsávja elrejtve"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Számított stílus oldalsávja megjelenítve"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "A DOM-fa felfedező nézete"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Karakterlánc tartalmának másolása"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Hibaelhárító oldalsáv elrejtve"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Hibaelhárító oldalsáv megjelenítve"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ne szüneteljen a kivételeknél"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "További lehetőségek"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigációs oldalsáv elrejtve"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigációs oldalsáv megjelenítve"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Megnyitás a Források panelben"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Legnagyobb verem"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Legnagyobb verem oldalsávja elrejtve"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Legnagyobb verem oldalsávja megjelenítve"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Legnagyobb verem elrejtése"
@@ -11583,7 +11616,7 @@
     "message": "Mentés"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Hibaelhárító kapcsolat megszakítva. Ok: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "A(z) DevTools újracsatlakoztatása"

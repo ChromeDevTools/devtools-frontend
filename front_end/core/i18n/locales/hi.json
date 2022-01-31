@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "इस फ़्रेम को विज्ञापन फ़्रेम के तौर पर माना जाता है, क्योंकि इसका पैरंट फ़्रेम एक विज्ञापन फ़्रेम है."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "रीफ़्रेश करें"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "इसे रिपोर्ट करता है"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "कंसोल की सेटिंग"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "कंसोल साइडबार को छिपाया गया"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "कंसोल साइडबार को दिखाया गया"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "बेहतर दिखने वाली स्टाइल कॉपी करें"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "कंप्यूट किए गए"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "कंप्यूटेड स्टाइल्स साइडबार को छिपाया गया"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "कंप्यूटेड स्टाइल्स साइडबार को दिखाया गया"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "डीओएम ट्री एक्सप्लोरर"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "स्ट्रिंग के कॉन्टेंट कॉपी करें"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "डीबगर साइडबार को छिपाया गया"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "डीबगर साइडबार को दिखाया गया"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "अपवादों पर न रुकें"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ज़्यादा विकल्प"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "नेविगेटर साइडबार को छिपाया गया"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "नेविगेटर साइडबार को दिखाया गया"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "सोर्स पैनल में खोलें"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "सबसे ज़्यादा स्टैक वाला साइडबार"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "सबसे ज़्यादा स्टैक वाले साइडबार को छिपाया गया"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "सबसे ज़्यादा स्टैक वाले साइडबार को दिखाया गया"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "सबसे ज़्यादा स्टैक वाला साइडबार छिपाएं"

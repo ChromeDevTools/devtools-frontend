@@ -168,9 +168,12 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this.#contentEncodedInternal;
   }
 
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
+  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     if (typeof this.#contentInternal !== 'undefined') {
-      return Promise.resolve({content: (this.#contentInternal as string), isEncoded: this.#contentEncodedInternal});
+      return {
+        content: (this.#contentInternal as string),
+        isEncoded: this.#contentEncodedInternal,
+      };
     }
 
     return new Promise(resolve => {

@@ -882,13 +882,13 @@
     "message": "Ерекшеленген бетті эмуляциялау"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Автоматты қараңғы режимді қосу"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Фокусталған бетті эмуляциялайды."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Автоматты қараңғы режимді қосады және prefers-color-scheme параметріне dark мәнін тағайындайды."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut мультимедиа функциясын іске қосады."
@@ -1308,7 +1308,7 @@
     "message": "Файл жазылуда…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints жинағының инфрақұрылымы"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Мазмұн қауіпсіздігі саясаты – бағалау"
@@ -2067,10 +2067,10 @@
     "message": "Манифестен қажетті белгіше жүктеп алынбады."
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Қара фон түсі"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Қараңғы тақырып түсі"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Сипаттама"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API-ын пайдаланатын және әрекет өңдегіштерді тағайындайтын беттер алға-артқа өту кэшіне жарамайды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Алға-артқа өту кэші экранды оқу құралына байланысты өшірілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler-ді пайдаланатын беттер алға-артқа өту кэшіне жарамайды."
@@ -2979,49 +2979,49 @@
     "message": "Құжат одан шыққанға дейін жүктеуді аяқтамады."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Шығу кезінде қолданба баннері көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Шығу кезінде Chrome Құпия сөздер реттегіші көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Шығу кезінде DOM дистилляциясы орындалып жатты."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Шығу кезінде DOM дистилляциясы функциясының көру құралы көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Алға-артқа өту кэші хабар алмасу API-ын қолданатын кеңейтімдерге байланысты өшірілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Алға-артқа өту кэшіне сақтау кезінде тұрақты кеңейтімдер байланысты үзуі тиіс."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Тұрақты кеңейтімдер алға-артқа өту кэшіндегі кадрларға хабарлар жібермекші болды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Алға-артқа өту кэші кеңейтімдерге байланысты өшірілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Шығу кезінде бет үшін үлгіні қайта жіберу немесе http құпия сөзі диалогтік терезесі сияқты модальді диалогтік терезе көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Шығу кезінде офлайн бет көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Шығу кезінде жадтың жеткіліксіздігін білдіретін тақта көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Шығу кезінде рұқсат сұралды."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Шығу кезінде қалқымалы терезе бөгегіші көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Шығу кезінде Safe Browsing мәліметтері көрсетілді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing функциясы бұл бетті ереже бұзушы деп есептеп, қалқымалы терезені бөгеді."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Бет алға-артқа өту кэшінде болған кезде, Service Worker іске қосылды."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Бұл жиектеу жарнама болып есептеледі, себебі оның негізгі жиектеуі жарнамалық жиектеу болып табылады."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Жаңарту"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "хабарлама беру нүктелері:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Консоль параметрлері"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Консольдің жылжыту жолағы жасырылды."
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Консольдің жылжыту жолағы көрсетілді."
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Көрінетін стильдегі таңдауды көшіру"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Есептелген"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Есептелген стильдердің жылжыту жолағы жасырылды."
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Есептелген стильдердің жылжыту жолағы көрсетілді."
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ағашын зерттеуші"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Жол мазмұнын көшіру"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Түзеткіштің жылжыту жолағы жасырылды."
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Түзеткіштің жылжыту жолағы көрсетілді."
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ерекше жағдайларда кідірмеу"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Басқа опциялар"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Навигатордың жылжыту жолағы жасырылды."
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Навигатордың жылжыту жолағы көрсетілді."
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "\"Дереккөздер\" панелінде ашу"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Ең ауыр стэк"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Ең ауыр стэктің жылжыту жолағы жасырылды."
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Ең ауыр стэктің жылжыту жолағы көрсетілді."
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ең ауыр стэкті жасыру"
@@ -11583,7 +11616,7 @@
     "message": "Сақтау"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Түзету байланысы үзілді. Себебі: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools құралдарына қайта қосылу"

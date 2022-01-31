@@ -882,13 +882,13 @@
     "message": "නාභිගත කළ පිටුවක් අනුකරණය කරන්න"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "ස්වයංක්‍රිය අඳුරු ප්‍රකාරය සබල කරන්න"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "නාභිගත කළ පිටුවක් අනුකරණය කරයි."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "ස්වයංක්‍රීය අඳුරු ප්‍රකාරය සබල කරන අතර prefers-color-scheme dark ලෙස සකසයි."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut මාධ්‍ය විශේෂාංගය බල කරයි"
@@ -1308,7 +1308,7 @@
     "message": "ගොනුව ලියමින්…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "සේවාලාභී ඉඟි යටිතල පහසුකම්"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "අන්තර්ගත ආරක්ෂක ප්‍රතිපත්තිය - Eval"
@@ -2067,10 +2067,10 @@
     "message": "මැනිෆෙස්ටයෙන් අවශ්‍ය නිරූපකයක් බාගැනීමට නොහැකි විය"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "අඳුරු පසුබිම් වර්ණය"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "අඳුරු තේමා වර්ණය"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "විස්තරය"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API භාවිත කරන සහ ක්‍රියා හසුරුවන්නන් සකසන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "තිර කියවනය නිසා පසුපසට/ඉදිරියට හැඹිලිය අබල කර ඇත."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
@@ -2979,49 +2979,49 @@
     "message": "ලේඛනය ඉවතට සංචාලනය කිරීමට පෙර පූරණය කිරීම අවසන් නොවීය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත යෙදුම් බැනරය විද්‍යාමාන විය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත Chrome මුරපද කළමනාකරු විද්‍යාමාන විය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත DOM පෙරීම සිදු වෙමින් පැවතුණි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත DOM Distiller දක්වනය විද්‍යාමාන විය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "දිගු පණිවිඩ යැවීම් API භාවිත කිරීම නිසා පසුපසට/ඉදිරියට හැඹිලිය අබල කර ඇත."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "දිගුකාලීන සම්බන්ධතාවක් සහිත දිගු පසුපසට ඉදිරියට හැඹිලියට ඇතුළු වීමට පෙර සම්බන්ධතාව අවසන් කළ යුතුය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "දිගුකාලීන සම්බන්ධතාවක් සහිත දිගු පසුපසට ඉදිරියට හැඹිලිය තුළ රාමු වෙත පණිවිඩ යැවීමට උත්සාහ කළේය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "දිගු නිසා පසුපසට/ඉදිරියට හැඹිලිය අබල කර ඇත."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ඉවතට සංචාලනය මත පිටුව සඳහා පෝරමය නැවත යොමු කිරීම හෝ http මුරපද සංවාදය වැනි ආකෘති සංවාදයක් පෙන්වන ලදි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ඉවතට සංචාලනය මත නොබැඳි පිටුව පෙන්වන ලදි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත මතකයෙන් බැහැර මැදිහත්වීම් තීරුව විද්‍යාමාන විය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත අවසර ඉල්ලීම් තිබුණි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ඉවතට සංචාලනය කිරීම මත උත්පතන අවහිරකය විද්‍යාමාන විය."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ආරක්ෂිත බ්‍රවුස් කිරීම් විස්තර ඉවතට සංචාලනය මත පෙන්වන ලදි."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "ආරක්ෂිත බ්‍රවුස් කිරීම මෙම පිටුව අපයෝජනාත්මක සහ උත්පතන අවහිර කරන ලද ලෙස සැලකේ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "පිටුව පසුපස/ඉදිරි හැඹිලියේ තිබියදී සේවා සේවකයෙකු සක්‍රිය කරන ලදි."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "මෙහි මව් රාමුව වෙළඳ දැන්වීම් රාමුවක් වන බැවින් මෙම රාමුව වෙළඳ දැන්වීම් රාමුවක් ලෙස සැලකේ."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "නැවුම් කරන්න"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "වාර්තා කරන්නේ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "කොන්සෝල සැකසීම්"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "කොන්සෝල පැති තීරුව සඟවා ඇත"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "කොන්සෝල පැති තීරුව පෙන්වා ඇත"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "දෘශ්‍යමාන සැලසුම් කළ තේරීම පිටපත් කරන්න"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "ගණනය කළ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "පරිගණන මෝස්තර පැති තීරුව සඟවා ඇත"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "පරිගණන මෝස්තර පැති තීරුව පෙන්වා ඇත"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM රුක් ගවේෂකය"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "අනුලකුණු වැල් අන්තර්ගතය පිටපත් කරන්න"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "නිදොස් කිරීමේ පැති තීරුව සඟවා ඇත"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "නිදොස් කිරීමේ පැති තීරුව පෙන්වා ඇත"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ව්‍යතිරේකවලට විරාමයක් නොදෙන්න"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "තවත් විකල්ප"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "සංචාලන පැති තීරුව සඟවා ඇත"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "සංචාලක පැති තීරුව පෙන්වා ඇත"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "මූලාශ්‍ර පැනලය තුළ විවෘත කරන්න"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "බරම අට්ටිය"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "බරම අට්ටි පැති තීරුව සඟවා ඇත"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "බරම අට්ටි පැති තීරුව පෙන්වා ඇත"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "බරම අට්ටිය සඟවන්න"
@@ -11583,7 +11616,7 @@
     "message": "සුරකින්න"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "නිදොස් කිරීමේ සම්බන්ධතාව අවසන් කරන ලදි. හේතුව: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools යළි සම්බන්ධ කරන්න"

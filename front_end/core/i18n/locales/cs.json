@@ -882,13 +882,13 @@
     "message": "Emulovat vybranou stránku"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Povolit automatický tmavý režim"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuluje vybranou stránku."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Zapne automatický tmavý režim a nastaví prefers-color-scheme na dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Vynucuje funkci média CSS color-gamut"
@@ -2067,10 +2067,10 @@
     "message": "Z manifestu nelze stáhnout požadovanou ikonu"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tmavá barva pozadí"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Tmavá barva motivu"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Popis"
@@ -2955,7 +2955,7 @@
     "message": "Stránky, které používají rozhraní MediaSession API a nastavují obslužné nástroje akcí, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je kvůli čtečce obrazovky deaktivována."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Stránky, které používají SecurityHandler, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
@@ -2979,49 +2979,49 @@
     "message": "Dokument byl opuštěn dříve, než bylo dokončeno načítání."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Při opuštění stránky byl zobrazen banner aplikace."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Při opuštění stránky byl používán Správce hesel Chrome"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Při opuštění stránky probíhal výtah modelu DOM."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Při opuštění stránky byl používán nástroj DOM Distiller Viewer."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána, protože rozšíření používají rozhraní API pro odesílání zpráv."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Rozšíření s dlouhodobým připojením musí toto připojení nejdřív zavřít, až pak mohou použít mezipaměť pro přechod zpět nebo vpřed."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Rozšíření s dlouhodobým připojením se pokoušela odesílat zprávy do rámců v mezipaměti pro přechod zpět nebo vpřed"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je kvůli rozšířením deaktivována."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Při opuštění stránky bylo zobrazeno modální dialogové okno, například okno s opětovným odesláním formuláře nebo s ověřením přes HTTP."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Při opuštění stránky byla zobrazena offline stránka."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Při opuštění stránky byl zobrazen intervenční panel o nedostatku paměti."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Při opuštění stránky probíhaly žádosti o oprávnění."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Při opuštění stránky bylo aktivní blokování vyskakovacích oken."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Při opuštění stránky byly zobrazeny podrobnosti Bezpečného prohlížení."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Bezpečné prohlížení tuto stránku vyhodnotilo jako nebezpečnou a zablokovalo vyskakovací okno."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byl aktivován skript service worker."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Tento rámec je považován za rámec reklamy, protože jeho nadřazený rámec je rámec reklamy."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Obnovit"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "hlášení se odesílají na adresu"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Nastavení konzole"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Postranní panel konzole je skrytý"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Zobrazuje se postranní panel konzole"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Zkopírovat viditelný naformátovaný výběr"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Vypočteno"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Postranní panel s vypočtenými styly je skrytý"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Zobrazuje se postranní panel s vypočtenými styly"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Průzkumník stromu modelu DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Zkopírovat obsah řetězce"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Postranní panel ladění je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Zobrazuje se postranní panel ladění"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Nepozastavovat při výjimkách"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Další možnosti"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Postranní panel navigace je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Zobrazuje se postranní panel navigace"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otevřít na panelu Zdroje"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Nejobsáhlejší zásobník"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Postranní panel největší sady je skrytý"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Zobrazuje se postranní panel největší sady"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Skrýt nejobsáhlejší zásobník"
@@ -11583,7 +11616,7 @@
     "message": "Uložit"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Ladicí připojení bylo zavřeno. Důvod: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Znovu připojit DevTools"

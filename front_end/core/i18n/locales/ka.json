@@ -882,13 +882,13 @@
     "message": "ფოკუსში მოქცეული გვერდის ემულაცია"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "ავტომატური მუქი რეჟიმის ჩართვა"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "შეასრულებს ფოკუსში მოქცეული გვერდის ემულაციას."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "ჩართავს ავტომატურ მუქ რეჟიმს, რის შემდეგაც prefers-color-scheme გახდება dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "იძულებით გაააქტიურებს CSS მედიაფუნქციას color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "მიმდინარეობს ფაილის ჩაწერა…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "კლიენტთან დაკავშირებული მინიშნებების ინფრასტრუქტურა"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "კონტენტის უსაფრთხოების დებულება — Eval"
@@ -2067,10 +2067,10 @@
     "message": "აღწერის ფაილიდან საჭირო ხატულის ჩამოტვირთვა ვერ მოხერხდა"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "ფონის მუქი ფერი"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "მუქი თემის ფერი"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "აღწერილობა"
@@ -2955,7 +2955,7 @@
     "message": "გვერდები, რომლებიც იყენებს MediaSession API-ს და დაყენებული აქვს მოქმედების დამმუშავებლები, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია ეკრანის წამკითხველის გამო."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "გვერდები, რომლებიც იყენებს SecurityHandler-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
@@ -2979,49 +2979,49 @@
     "message": "გვერდის ჩატვირთვა არ დასრულებულა მისგან გამოსვლამდე."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო აპის ბანერი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო Chrome პაროლების მმართველი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "სხვაგან გადასვლისას მიმდინარეობდა DOM დისტილაცია."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო DOM დისტილატორის მნახველი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია, რადგან გაფართოებები იყენებს შეტყობინებების მიმოცვლის API-ს."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "უკან-წინ გადასვლის ქეშში შესვლამდე გაფართოებებმა, რომელთა კავშირიც დიდი ხნის განმავლობაში იყო აქტიური, უნდა დახურონ კავშირი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "გაფართოებებმა, რომელთა კავშირიც დიდი ხნის განმავლობაში იყო აქტიური, ცადეთ შეტყობინებების გაგზავნა ფრეიმებისთვის უკან-წინ გადასვლის ქეშში."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია გაფართოებების გამო."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "სხვაგან გადასვლისას ნაჩვენები იყო მოდალური დიალოგი, მაგ., ფორმის ხელახლა გადაგზავნა ან HTTPS პაროლთან დაკავშირებული დიალოგი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "სხვაგან გადასვლისას ნაჩვენები იყო ხაზგარეშე გვერდი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო მეხსიერების ამოწურვასთან დაკავშირებული ჩარევის ზოლი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო ნებართვების მოთხოვნები."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "სხვაგან გადასვლისას წარმოდგენილი იყო ამომხტარი ფანჯრების მბლოკავი."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "სხვაგან გადასვლისას ნაჩვენები იყო Safe Browsing-ის დეტალები."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing-მა ეს გვერდი არასათანადოდ მიიჩნია და ამომხტარი ფანჯარა დაბლოკა."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "სერვისის დამმუშავებელი გააქტიურდა გვერდის უკან-წინ გადასვლის ქეშშში ყოფნისას."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ეს ფრეიმი ითვლება სარეკლამო ფრეიმად, რადგან მისი ზედა ფრეიმი სარეკლამო ფრეიმია."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "განახლება"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "მოხსენების ადრესატი:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "კონსოლის პარამეტრები"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "კონსოლის გვერდითი ზოლი დამალულია"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "კონსოლის გვერდითი ზოლი ნაჩვენებია"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "სტილის მქონე ხილული არჩევანის კოპირება"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "გამოთვლილი"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "გამოთვლილი სტილების გვერდითი ზოლი დამალულია"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "გამოთვლილი სტილების გვერდითი ზოლი ნაჩვენებია"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ხის დამთვალიერებელი"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "ფრაზის კონტენტის კოპირება"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "შეცდომების გამართვის გვერდითი ზოლი დამალულია"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "შეცდომების გამართვის გვერდითი ზოლი ნაჩვენებია"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "არ დაპაუზდეს გამონაკლისებზე"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "სხვა ვარიანტები"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "ნავიგატორის გვერდითი ზოლი დამალულია"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "ნავიგატორის გვერდითი ზოლი ნაჩვენებია"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "წყაროების პანელში გახსნა"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "ყველაზე მძიმე დასტა"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "ყველაზე მძიმე დასტის გვერდითი ზოლი დამალულია"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "ყველაზე მძიმე დასტის გვერდითი ზოლი ნაჩვენებია"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "ყველაზე მძიმე გროვის დამალვა"
@@ -11583,7 +11616,7 @@
     "message": "შენახვა"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "შეცდომების გამართვის კავშირი დაიხურა. მიზეზი: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools-თან ხელახლა დაკავშირება"

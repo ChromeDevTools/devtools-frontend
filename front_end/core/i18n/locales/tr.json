@@ -882,13 +882,13 @@
     "message": "Odaklanılmış sayfa emülasyonu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Otomatik koyu temayı etkinleştir"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Odaklanılmış bir sayfa emüle eder"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Otomatik koyu modu etkinleştirir ve prefers-color-scheme değerini dark olarak ayarlar."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut medya özelliğini zorunlu kılar"
@@ -1308,7 +1308,7 @@
     "message": "Dosya yazılıyor…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "İstemci İpuçları Altyapısı"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "İçerik Güvenliği Politikası - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Gereken bir simge manifest'ten indirilemedi"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Koyu arka plan rengi"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Koyu tema rengi"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Açıklama"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API kullanan ve işlem işleyicileri tanımlamış olan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Geri-ileri önbellek, ekran okuyucu nedeniyle devre dışı bırakılmış."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
@@ -2979,49 +2979,49 @@
     "message": "Yüklenmesi tamamlanmadan dokümandan çıkılmış."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Sayfadan çıktıktan sonra uygulama banner'ı görüntülendi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Sayfadan çıktıktan sonra Chrome Şifre Yöneticisi görüntülendi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Sayfadan çıktıktan sonra DOM ayrıştırma süreci devam etti."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Sayfadan çıktıktan sonra DOM Ayrıştırıcı Görünümü görüntülendi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Messaging API'yi kullanan uzantılar nedeniyle geri-ileri önbellek devre dışı bırakıldı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Uzun süreli bağlantısı olan uzantılar geri-ileri önbelleğe girmeden önce bağlantıyı kapatmalıdır."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Uzun süreli bağlantısı olan uzantılar geri-ileri önbellekteki çerçevelere mesaj göndermeyi denedi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Geri-ileri önbellek uzantılar nedeniyle devre dışı bırakıldı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Sayfadan çıktıktan sonra yeniden form gönderme veya http şifre iletişimi gibi bir modal iletişim gösterildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Sayfadan çıktıktan sonra çevrimdışı sayfa gösterildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Sayfadan çıktıktan sonra Yetersiz Bellek Müdahalesi çubuğu görüntülendi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Sayfadan çıktıktan sonra izin istekleri alındı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Sayfadan çıktıktan sonra pop-up engelleyici görüntülendi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Sayfadan çıktıktan sonra Güvenli Tarama ayrıntıları gösterildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Güvenli Tarama bu sayfayı kötüye kullanım amaçlı olarak değerlendirdi ve pop-up'ı engelledi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Sayfa geri-ileri önbellekteyken bir hizmet çalışanı etkinleştirilmiş."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Üst çerçevesi bir reklam çerçevesi olduğu için bu çerçeve, reklam çerçevesi olarak kabul edilir."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Yenile"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "şuna raporluyor:"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsol ayarları"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsol kenar çubuğu gizlendi"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsol kenar çubuğu gösteriliyor"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Stil verilmiş görünür seçimi kopyala"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Hesaplandı"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Hesaplanan stiller kenar çubuğu gizlendi"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Hesaplanan stiller kenar çubuğu gösteriliyor"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ağacı gezgini"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Dize içeriklerini kopyala"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Hata ayıklayıcı kenar çubuğu gizlendi"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Hata ayıklayıcı kenar çubuğu gösteriliyor"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "İstisnalarda duraklanmasın"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Diğer seçenekler"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Gezinme paneli kenar çubuğu gizlendi"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Gezinme paneli kenar çubuğu gösteriliyor"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Kaynak panelinde aç"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "En ağır yığın"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "En ağır yığın kenar çubuğu gizlendi"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "En ağır yığın kenar çubuğu gösteriliyor"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "En Ağır yığın kenar çubuğunu gizle"
@@ -11583,7 +11616,7 @@
     "message": "Kaydet"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Hata ayıklama bağlantısı kapatıldı. Neden: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Şuna yeniden bağlan: DevTools"

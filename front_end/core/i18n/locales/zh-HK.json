@@ -882,13 +882,13 @@
     "message": "模擬焦點頁面"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "啟用自動暗光模式"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "模擬焦點頁面。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "啟用自動暗光模式並將 prefers-color-scheme 設定為 dark。"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "強制執行 CSS color-gamut 媒體功能"
@@ -1308,7 +1308,7 @@
     "message": "正在寫入檔案…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "用戶端提示基礎架構"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "內容安全政策 - Eval"
@@ -2067,10 +2067,10 @@
     "message": "無法從資訊清單下載必要圖示"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "深色背景顏色"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "深色主題背景顏色"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "描述"
@@ -2955,7 +2955,7 @@
     "message": "使用 MediaSession API 並設定動作處理常式的網頁不符合向前/返回快取的資格。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "由於螢幕閱讀器的關係，系統已停用向前/返回快取。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "使用 SecurityHandler 的網頁不符合向前/返回快取的資格。"
@@ -2979,49 +2979,49 @@
     "message": "文件未在使用者離開前完成載入。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示應用程式橫額。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示 Chrome 密碼管理工具。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "使用者離開網頁時，DOM distillation 正在處理中。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示 DOM Distiller Viewer。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "由於擴充程式使用訊息 API，因此系統已停用向前/返回快取。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "在儲存至往向前/返回快取前，可持續連線的擴充程式應中斷連線。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "可持續連線的擴充程式嘗試在向前/返回快取中傳送訊息給頁框。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "由於擴充程式的關係，系統已停用向前/返回快取。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "使用者離開網頁時，系統會在該頁面顯示強制回應對話方塊，例如重新提交表格或 HTTP 密碼對話框。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示離線頁面。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示 Out-Of-Memory Intervention。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "使用者離開網頁時，系統會要求權限。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示彈出式視窗封鎖器。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "使用者離開網頁時，系統會顯示安全瀏覽詳細資料。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "安全瀏覽功能將此網頁視為濫用，並已封鎖彈出式視窗。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service Worker 已在網頁儲存於向前/返回快取時啟用。"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "由於此頁框的父頁框是廣告頁框，因此系統將此頁框視作廣告頁框。"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "重新整理"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "回報端點"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "控制器設定"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "隱藏咗控制器側欄"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "顯示咗控制器側欄"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "複製可顯示樣式選項"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "計算樣式"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "隱藏咗計算樣式側欄"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "顯示咗計算樣式側欄"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM 樹狀結構探索模式"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "複製字串內容"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "隱藏咗偵錯工具側欄"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "顯示咗偵錯工具側欄"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "不要在例外情況時暫停"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "更多選項"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "隱藏咗導覽工具側欄"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "顯示咗導覽工具側欄"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "在「來源」面板中開啟"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "最耗時的堆疊"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "隱藏咗最耗時嘅堆疊側欄"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "顯示咗最耗時嘅堆疊側欄"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "隱藏「最耗時的堆疊」側欄"
@@ -11583,7 +11616,7 @@
     "message": "儲存"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "偵錯連線功能已關閉。原因： "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "重新連接DevTools"

@@ -882,13 +882,13 @@
     "message": "Emuleeri esiletõstetud lehte"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Luba automaatne tume režiim"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuleerib esiletõstetud lehte."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Lubab automaatse tumeda režiimi ja määrab atribuudi prefers-color-scheme olekule dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Jõustab CSS-i meediafunktsiooni color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Faili kirjutamine …"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Kliendivihjete infrastruktuur"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Sisu turvalisuse eeskirjad – hindamine"
@@ -2067,10 +2067,10 @@
     "message": "Manifestist ei saanud nõutavat ikooni alla laadida"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tumeda tausta värv"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Tumeda teema värv"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Kirjeldus"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API-d kasutavad ja toimingutöötlejaid määravad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Tagasi-edasiliikumise vahemälu on ekraanilugeja tõttu keelatud."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Objekti SecurityHandler kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
@@ -2979,49 +2979,49 @@
     "message": "Dokumendi laadimine ei jõudnud enne eemale navigeerimist lõpule."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Eemale navigeerimise ajal oli rakenduse bänner aktiivne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Eemale navigeerimise ajal oli Chrome'i paroolihaldur aktiivne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Eemale navigeerimise ajal oli DOM-destilleerimine pooleli."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Eemale navigeerimise ajal oli DOM-destilleerija vaatur aktiivne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Tagasi-edasiliikumise vahemälu on keelatud, kuna laiendused kasutavad sõnumside API-t."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Pikaajalise ühendusega laiendused peaksid enne tagasi-edasiliikumise vahemälu aktiveerimist ühenduse katkestama."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Pikaajalise ühendusega laiendused üritasid tagasi-edasiliikumise vahemälus saata kaadritele sõnumeid."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Tagasi-edasiliikumise vahemälu on laienduste tõttu keelatud."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Eemale navigeerimise ajal kuvati lehe puhul modaaldialoog, nt vormi uuesti esitamise või http-parooli dialoog."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Eemale navigeerimise ajal kuvati võrguühenduseta leht."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Eemale navigeerimise ajal oli teaberiba Mälu on otsas aktiivne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Eemale navigeerimise ajal esitati lubade taotlused."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Eemale navigeerimise ajal oli kasutusel hüpikakende blokeerija."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Eemale navigeerimise ajal kuvati Google'i ohutu sirvimise üksikasjad."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Google'i ohutu sirvimine luges selle lehe pahatahtlikuks ja blokeeris hüpikakna."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Teenuse töötleja aktiveeriti ajal, mil leht oli tagasi-edasiliikumise vahemälus."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Seda raami loetakse reklaamiraamiks, sest selle ülemraam on reklaami ressurss."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Värskenda"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "esitamine asukohta"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsooli seaded"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsooli külgriba on peidetud"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsooli külgriba on kuvatud"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopeeri nähtav stiliseeritud valik"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Arvutatud"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Arvutatud stiilide külgriba on peidetud"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Arvutatud stiilide külgriba on kuvatud"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM-puu avastaja"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopeeri stringi sisu"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Siluri külgriba on peidetud"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Siluri külgriba on kuvatud"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ära peatu erandite puhul"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Rohkem valikuid"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigeerimise külgriba on peidetud"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigeerimise külgriba on kuvatud"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Ava allikate paneelil"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Raskeim virn"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Raskeima virna külgriba on peidetud"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Raskeima virna külgriba on kuvatud"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Peida raskeim virn"
@@ -11583,7 +11616,7 @@
     "message": "Salvesta"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Silumise ühendus suleti. Põhjus: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Ühendage DevTools uuesti"

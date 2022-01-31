@@ -882,13 +882,13 @@
     "message": "کسی فوکس کردہ صفحے کو ایمولیٹ کریں"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "خودکار تاریک وضع کو فعال کریں"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "فوکس کردہ صفحے کو ایمولیٹ کرتا ہے۔"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "خودکار تاریک وضع کو فعال کرتی ہے اور prefers-color-scheme کو dark پر سیٹ کرتی ہے۔"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut‎ میڈیا کی خصوصیت کو فورس کرتا ہے"
@@ -1308,7 +1308,7 @@
     "message": "فائل میں لکھا جا رہا ہے…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "کلائنٹ کے اشاروں کا انفراسٹرکچر"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "مواد کی سیکیورٹی کی پالیسی - Eval"
@@ -2067,10 +2067,10 @@
     "message": "مینی فیسٹ سے درکار آئیکن ڈاؤن لوڈ نہیں ہو سکا"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "تاریک پس منظر کا رنگ"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "گہری تھیم کا رنگ"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "تفصیل"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API استعمال کرنے اور ایکشن ہینڈلر سیٹ کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "اسکرین قاری کی وجہ سے بیک/فارورڈ کیش غیر فعال ہے۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
@@ -2979,49 +2979,49 @@
     "message": "صفحے سے دور نیویگیٹ کرنے سے پہلے دستاویز کے لوڈ ہونے کا عمل پورا نہیں ہوا تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر ایپ بینر موجود تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر Chrome پاس ورڈ مینیجر موجود تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر DOM کی کشید جاری تھی۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر DOM ڈسٹلر ناظر موجود تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "پیغام رسانی API کا استعمال کر کے ایکسٹینشنز کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا ہے۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "دیرپا کنکشن والی ایکسٹینشنز کو بیک/فارورڈ کیش میں داخل ہونے سے پہلے کنکشن کو بند کر دینا چاہیے۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "دیرپا کنکشن والی ایکسٹینشنز نے فریموں کو بیک/فارورڈ کیش میں پیغامات بھیجنے کی کوشش کی۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "ایکسٹینشنز کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا ہے۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ماڈل ڈائیلاگ جیسے کہ فارم دوبارہ جمع کرانا یا http پاس ورڈ ڈائیلاگ دور نیویگیٹ کرنے پر صفحہ کیلئے دکھایا گیا تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "آف لائن صفحہ دور نیویگیٹ کرنے پر دکھایا گیا تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر آؤٹ آف میموری انٹروینشن بار موجود تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر اجازت کی درخواستیں تھیں۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر پاپ اپ بلاکر موجود تھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "دور نیویگیٹ کرنے پر محفوظ براؤزنگ کی تفصیلات دکھائی گئیں۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "محفوظ براؤزنگ نے اس صفحہ کو ناگوار اور مسدود کردہ پاپ اپ سمجھا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "صفحے کے بیک/فارورڈ کیش میں ہونے کے دوران ایک سروس ورکر فعال کیا گیا تھا۔"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "اس فریم کو اشتہاراتی فریم سمجھا جاتا ہے کیونکہ اس کا پیرنٹ فریم ایک اشتہاراتی فریم ہے۔"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ریفریش کریں"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "اس کو رپورٹ کرتا ہے"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "کونسول کی ترتیبات"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "کونسول سائیڈ بار پوشیدہ ہے"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "کونسول سائیڈ بار دکھایا گیا ہے"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "مرئی طرز کے انتخاب کو کاپی کریں"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "شمار کردہ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "شمار کردہ اسٹائلز کے سائیڈ بار پوشیدہ ہے"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "شمار کردہ اسٹائلز کے سائیڈ بار دکھایا گیا ہے"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ٹری ایکسپلورر"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "اسٹرنگ کے مواد کو کاپی کریں"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ڈیبگر سائیڈ بار پوشیدہ ہے"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ڈیبگر سائیڈ بار دکھایا گیا ہے"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "مستثنیات پر موقوف نہ کریں"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "مزید اختیارات"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "نیویگیٹر سائیڈ بار پوشیدہ ہے"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "نیویگیٹر سائیڈ بار دکھایا گیا ہے"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ماخذات کے پینل میں کھولیں"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "سب سے بھاری اسٹیک"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "سب سے بھاری اسٹیک سائیڈ بار پوشیدہ ہے"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "سب سے بھاری اسٹیک سائیڈ بار دکھایا گیا ہے"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "سب سے بھاری اسٹیک چھپائيں"
@@ -11583,7 +11616,7 @@
     "message": "محفوظ کریں"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "ڈیبگنگ کنکشن بند تھا۔ وجہ: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools سے دوبارہ منسلک ہوں"

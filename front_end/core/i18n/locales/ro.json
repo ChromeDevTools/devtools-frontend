@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Acest cadru este considerat cadru de anunț, deoarece documentul său părinte este un cadru de anunțuri."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Actualizează"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "raportează către"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Setările consolei"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Bara laterală a consolei este ascunsă"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Bara laterală a consolei este afișată"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copiază selecția personalizată vizibilă"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Calculate"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Bara laterală Stiluri calculate este ascunsă"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Bara laterală Stiluri calculate este afișată"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Explorator pentru structura arbore DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copiază conținutul șirului"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bara laterală a depanatorului este ascunsă"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bara laterală a depanatorului este afișată"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Nu întrerupe la excepții"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Mai multe opțiuni"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bara laterală a navigatorului este ascunsă"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bara laterală a navigatorului este afișată"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Deschide în panoul Surse"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Stiva care consumă cele mai multe resurse"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Bara laterală a stivei care consumă cele mai multe resurse este ascunsă"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Bara laterală a stivei care consumă cele mai multe resurse este afișată"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ascunde stiva care consumă cele mai multe resurse"

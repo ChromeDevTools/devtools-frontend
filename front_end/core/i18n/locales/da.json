@@ -882,13 +882,13 @@
     "message": "Emuler en fokuseret side"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Aktivér automatisk mørk tilstand"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulerer en fokuseret side."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Aktiverer automatisk mørk tilstand og indstiller prefers-color-scheme til dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Gennemtvinger CSS color-gamut-mediefunktionen"
@@ -2067,10 +2067,10 @@
     "message": "Et påkrævet ikon blev ikke downloadet fra manifestet"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Mørk baggrundsfarve"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Farve for Mørkt tema"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beskrivelse"
@@ -2955,7 +2955,7 @@
     "message": "Sider, der anvender MediaSession API og angiver handlingshandlere, er ikke kvalificeret til back/forward-cachen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Back/forward-cachen er deaktiveret pga. skærmlæseren."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Sider, der anvender SecurityHandler, er ikke kvalificeret til back/forward-cachen i øjeblikket."
@@ -2979,49 +2979,49 @@
     "message": "Der blev navigeret væk, før dokumentet blev indlæst."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Appbanneret kørte, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Chrome Adgangskodeadministrator kørte, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM-destillation var i gang, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "DOM Distiller Viewer kørte, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Back/forward-cachen er deaktiveret på grund af udvidelser, der anvender Messaging API."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Udvidelser med langvarig forbindelse skal afbryde forbindelsen, før de kan gemmes i back/forward-cachen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Udvidelser med langvarig forbindelse forsøgte at sende meddelelser til rammer i back/forward-cachen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Back/forward-cachen er deaktiveret på grund af udvidelser."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "En modal dialogboks som f.eks. dialogboksen for genindsendelse af en formular eller http-adgangskoder blev vist for siden, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Offlinesiden blev vist, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Bjælken til indgriben ved manglende hukommelse kørte, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Der var tilladelsesanmodninger, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Pop op-blokering var aktiv, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Der blev vist oplysninger for Beskyttet browsing, da der blev navigeret væk."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Beskyttet browsing vurderede, at denne side udgør misbrug, og blokerede pop op-vinduet."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "En scripttjeneste blev aktiveret, mens siden var i back/forward-cachen."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Denne ramme betragtes som en annonceramme, da dens overordnede ramme er en annonceramme."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Opdater"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "rapporterer til"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsolindstillinger"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsolsidebjælken er skjult"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsolsidebjælken vises"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopiér synlig typograferet markering"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Beregnede"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Sidebjælken for behandlede typografier er skjult"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Sidebjælken for behandlede typografier vises"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Udforskning af DOM-træ"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopiér strengens indhold"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Debugger-sidebjælken er skjult"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Debugger-sidebjælken vises"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Sæt ikke på pause ved undtagelser"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Flere muligheder"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Sidebjælken for navigationsværktøjet er skjult"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Sidebjælken for navigationsværktøjet vises"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Åbn i panelet Kilder"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Tungeste stak"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Sidebjælken med den tungeste stak er skjult"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Sidebjælken med den tungeste stak vises"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Skjul tungeste stak"
@@ -11583,7 +11616,7 @@
     "message": "Gem"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Fejlretningsforbindelsen blev afbrudt. Årsag: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Genopret forbindelse til DevTools"

@@ -882,13 +882,13 @@
     "message": "Emulovať zameranú stránku"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Povoliť automatický tmavý režim"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuluje zameranú stránku."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Aktivuje automatický tmavý režim a nastaví parameter prefers-color-scheme na dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Vynúti funkciu médií color-gamut šablón CSS"
@@ -1308,7 +1308,7 @@
     "message": "Zapisuje sa súbor…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Infraštruktúra tipov v súvislosti s klientom"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Pravidlá na zabezpečenie obsahu – ohodnotenie"
@@ -2067,10 +2067,10 @@
     "message": "Z manifestu sa nepodarilo stiahnuť požadovanú ikonu"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Tmavá farba pozadia"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Farba tmavého motívu"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Popis"
@@ -2955,7 +2955,7 @@
     "message": "Stránky s rozhraním MediaSession API a nastavenými obslužnými nástrojmi akcií momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Čítačka obrazovky spôsobila deaktiváciu spätnej vyrovnávacej pamäte."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Stránky s nástrojom SecurityHandler nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -2979,49 +2979,49 @@
     "message": "Načítavanie dokumentu nebolo dokončené, kým ste odlišli preč."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "V čase odchodu bol zobrazený banner aplikácie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "V čase odchodu bol zobrazený správca hesiel Chromu"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "V čase odchodu prebiehala extrakcia pomocou nástroja DOM."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "V čase odchodu bol otvorený zobrazovač nástroja DOM Distiller."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Rozšírenia používajúce rozhranie Messaging API spôsobili deaktiváciu spätnej vyrovnávacej pamäte."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Rozšírenia s dlhotrvajúcim pripojením by mali pred získaním prístupu k spätnej vyrovnávacej pamäti pripojenie ukončiť."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Rozšírenia s dlhotrvajúcim pripojením sa pokúsili odoslať správy snímkam v spätnej vyrovnávacej pamäti."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Rozšírenia spôsobili deaktiváciu spätnej vyrovnávacej pamäte."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "V čase odchodu bolo na stránke zobrazené modálne dialógové okno, ktoré sa mohlo napríklad týkať opätovného odoslania formulára alebo hesla HTTP."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "V čase odchodu bola zobrazená offline stránka."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "V čase odchodu bol zobrazený intervenčný pruh znamenajúci nedostatok pamäte."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "V čase odchodu bola odoslaná žiadosť o povolenie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "V čase odchodu bola zobrazená možnosť blokovania vyskakovacích okien."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "V čase odchodu boli zobrazené podrobnosti Bezpečného prehliadania."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Bezpečné prehliadanie považuje túto stránku sa obťažujúcu a zablokovalo vyskakovacie okno."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Bola aktivovaná obsluha, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Tento rám sa považuje za rám reklamy, pretože má nadradený rám reklamy."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Obnoviť"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "nahlasuje na"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Nastavenia konzoly"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Bočný panel konzoly je skrytý"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Bočný panel konzoly je zobrazený"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopírovať viditeľný štylizovaný výber"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Vypočítané"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Bočný panel vypočítaných štýlov je skrytý"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Bočný panel vypočítaných štýlov je zobrazený"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Prieskumník stromu modelu DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopírovať obsah reťazca"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Bočný panel ladiaceho nástroja je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Bočný panel ladiaceho nástroja je zobrazený"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Nepozastavovať na výnimkách"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Ďalšie možnosti"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Bočný panel navigačného nástroja je skrytý"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Bočný panel navigačného nástroja je zobrazený"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otvoriť v paneli Zdroje"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Najväčší zásobník"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Bočný panel najplnšieho zásobníka je skrytý"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Bočný panel najplnšieho zásobníka je zobrazený"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Skryť najväčší zásobník"
@@ -11583,7 +11616,7 @@
     "message": "Uložiť"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Pripojenie ladenia bolo ukončené. Dôvod: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Znova pripojiť DevTools"

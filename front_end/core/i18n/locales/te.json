@@ -2175,7 +2175,7 @@
     "message": "పేజీని సురక్షిత ఆరిజిన్ నుండి అందించలేదు"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
-    "message": "prefer_related_applicationsకు Chrome బీటాలో, స్థిర ఛానెల్‌లకు Androidలో మాత్రమే సపోర్ట్ ఉంది."
+    "message": "prefer_related_applicationsకు Chrome బీటాలో, స్థిర ఛానెళ్లకు Androidలో మాత్రమే సపోర్ట్ ఉంది."
   },
   "panels/application/AppManifestView.ts | presentation": {
     "message": "ప్రెజెంటేషన్"
@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ఈ ఫ్రేమ్ యాడ్ ఫ్రేమ్‌గా పరిగణించబడింది, ఎందుకంటే దాని పేరెంట్ ఫ్రేమ్ ఒక యాడ్ ఫ్రేమ్."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "రిఫ్రెష్ చేయండి"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "దీనికి రిపోర్ట్ చేస్తుంది"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "కన్సోల్ సెట్టింగ్‌లు"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "కన్సోల్ సైడ్‌బార్ దాచబడింది"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "కన్సోల్ సైడ్‌బార్ చూపబడింది"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "విజిబుల్‌గా స్టయిల్‌గా ఉన్న ఎంపికను కాపీ చేయి"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "కంప్యూట్ చేయబడింది"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "లెక్కించిన స్టయిల్స్ గల సైడ్‌బార్ దాచబడింది"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "లెక్కించిన స్టయిల్స్ గల సైడ్‌బార్ చూపబడింది"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ట్రీ ఎక్స్‌ప్లోరర్"
@@ -6192,7 +6207,7 @@
     "message": "ప్రతిస్పందన సమయం అనేది తప్పనిసరిగా {PH1} ms నుండి {PH2} ms (వీటిని కలుపుకుని) మధ్య ఉన్న పూర్ణాంకం అయి ఉండాలి"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
-    "message": "నెట్‌వర్క్ త్రోట్లింగ్ ప్రొఫైల్‌లు"
+    "message": "నెట్‌వర్క్ త్రోట్లింగ్ ప్రొఫైళ్లు"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | optional": {
     "message": "ఆప్షనల్"
@@ -7518,10 +7533,10 @@
     "message": "పూర్తి సమగ్ర సమయం"
   },
   "panels/profiler/CPUProfileView.ts | cpuProfiles": {
-    "message": "CPU ప్రొఫైల్‌లు"
+    "message": "CPU ప్రొఫైళ్లు"
   },
   "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "మీ పేజీ JavaScript ఫంక్షన్‌లలో ఎగ్జిక్యూషన్ సమయం ఎక్కడ వెచ్చించబడిందో CPU ప్రొఫైల్‌లు చూపుతాయి."
+    "message": "మీ పేజీ JavaScript ఫంక్షన్‌లలో ఎగ్జిక్యూషన్ సమయం ఎక్కడ వెచ్చించబడిందో CPU ప్రొఫైళ్లు చూపుతాయి."
   },
   "panels/profiler/CPUProfileView.ts | fms": {
     "message": "{PH1} మి.సె."
@@ -7584,7 +7599,7 @@
     "message": "{PH1} బైట్‌లు"
   },
   "panels/profiler/HeapProfileView.ts | samplingProfiles": {
-    "message": "శాంపిల్ ప్రొఫైల్‌లు"
+    "message": "శాంపిల్ ప్రొఫైళ్లు"
   },
   "panels/profiler/HeapProfileView.ts | selectedSizeS": {
     "message": "ఎంచుకున్న సైజ్: {PH1}"
@@ -7773,7 +7788,7 @@
     "message": "హీప్ స్నాప్‌షాట్"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
-    "message": "హీప్ స్నాప్‌షాట్ ప్రొఫైల్‌లు, మీ పేజీ JavaScript ఆబ్జెక్ట్‌లు, సంబంధిత DOM నోడ్‌ల మధ్య మెమరీ పంపిణీని చూపుతాయి."
+    "message": "హీప్ స్నాప్‌షాట్ ప్రొఫైళ్లు, మీ పేజీ JavaScript ఆబ్జెక్ట్‌లు, సంబంధిత DOM నోడ్‌ల మధ్య మెమరీ పంపిణీని చూపుతాయి."
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "హీప్ స్నాప్‌షాట్‌లు"
@@ -8088,7 +8103,7 @@
     "message": "ప్రొఫైల్ లోడింగ్ విఫలమైంది: {PH1}."
   },
   "panels/profiler/ProfilesPanel.ts | profiles": {
-    "message": "ప్రొఫైల్‌లు"
+    "message": "ప్రొఫైళ్లు"
   },
   "panels/profiler/ProfilesPanel.ts | runD": {
     "message": "{PH1}ను రన్ చేయి"
@@ -8862,7 +8877,7 @@
     "message": "షార్ట్‌కట్‌ను తీసివేయండి"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutModified": {
-    "message": "సవరించిన షార్ట్‌కట్"
+    "message": "ఎడిట్ చేసిన షార్ట్‌కట్"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcuts": {
     "message": "షార్ట్‌కట్‌లు"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "స్ట్రింగ్ కంటెంట్‌లను కాపీ చేయండి"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "డీబగ్గర్ సైడ్‌బార్ దాచబడింది"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "డీబగ్గర్ సైడ్‌బార్ చూపబడింది"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "మినహాయింపుల కారణంగా పాజ్ చేయకండి"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "మరిన్ని ఆప్షన్‌లు"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "నావిగేటర్ సైడ్‌బార్ దాచబడింది"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "నావిగేటర్ సైడ్‌బార్ చూపబడింది"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "సోర్స్‌ల ప్యానెల్‌లో తెరవండి"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "బరువైన స్ట్యాక్"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "అత్యధిక వస్తువులు గల స్ట్యాక్ సైడ్‌బార్ దాచబడింది"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "అత్యధిక వస్తువులు గల స్ట్యాక్ సైడ్‌బార్ చూపబడింది"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "బరువైన స్ట్యాక్‌ను దాచండి"
@@ -11229,7 +11262,7 @@
     "message": "ప్రస్తుత సమయం"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | maxOutputChannels": {
-    "message": "గరిష్ఠ అవుట్‌పుట్ ఛానెల్‌లు"
+    "message": "గరిష్ఠ అవుట్‌పుట్ ఛానెళ్లు"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | renderCapacity": {
     "message": "రెండరింగ్ సామర్థ్యం"

@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "এই ফ্রেমটি বিজ্ঞাপনের ফ্রেম হিসেবে বিবেচনা করা হয়, এর পেরেন্ট ফ্রেম হল একটি বিজ্ঞাপনের ফ্রেম।"
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "রিফ্রেশ করুন"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "এখানে রিপোর্ট করা হচ্ছে"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "কনসোল সেটিংস"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "কনসোল সাইডবার লুকানো হয়েছে"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "কনসোল সাইডবার দেখানো হচ্ছে"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "দৃশ্যমান স্টাইল লাগানো সিলেকশন কপি করুন"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "কম্পিউট করা স্টাইল"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "কম্পিউটেড স্টাইল সাইডবার লুকানো হয়েছে"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "কম্পিউটেড স্টাইল সাইডবার দেখানো হচ্ছে"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ট্রি এক্সপ্লোরার"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "স্ট্রিংয়ের কন্টেন্ট কপি করুন"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ডিবাগার সাইডবার লুকানো হয়েছে"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ডিবাগার সাইডবার দেখানো হচ্ছে"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "এক্সেপশনে পজ করবেন না"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "আরও বিকল্প"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "নেভিগেটর সাইডবার লুকানো হয়েছে"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "নেভিগেটর সাইডবার দেখানো হচ্ছে"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "সোর্স প্যানেলে খুলুন"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "সবচেয়ে ভারি স্ট্যাক"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "সবচেয়ে ভারি স্ট্যাক সাইডবার লুকানো হয়েছে"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "সবচেয়ে ভারি স্ট্যাক সাইডবার দেখানো হচ্ছে"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "সবচেয়ে ভারি স্ট্যাক লুকান"

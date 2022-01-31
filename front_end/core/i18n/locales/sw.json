@@ -882,13 +882,13 @@
     "message": "Iga ukurasa ulioangaziwa"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Washa hali nyeusi ya kiotomatiki"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Huiga ukurasa ulioangaziwa."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Huwasha hali nyeusi ya kiotomatiki na kuweka prefers-color-scheme iwe dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Hulazimisha kipengele cha maudhui cha CSS cha color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Inaadika kwenye faili…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Muundo wa Vidokezo vya Programu Teja"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Sera ya Usalama wa Maudhui - Eval"
@@ -2067,10 +2067,10 @@
     "message": "Imeshindwa kupakua aikoni inayohitajika kutoka kwenye faili ya maelezo"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Rangi nyeusi ya mandharinyuma"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Rangi ya mandhari meusi"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Maelezo"
@@ -2955,7 +2955,7 @@
     "message": "Kurasa zinazotumia API ya MediaSession na ziwe zimeweka vidhibiti vya vitendo haziwezi kuwekwa kwenye kipengele cha kuakibisha ukurasa kamili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Kipengele cha kuakibisha ukurasa kamili kimezimwa kwa sababu ya kisoma skrini."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Kurasa zinazotumia SecurityHandler haziwezi kuwekwa kwenye kipengele cha kuakibisha ukurasa kamili."
@@ -2979,49 +2979,49 @@
     "message": "Hati haikumaliza kupakiwa kabla ya kuondolewa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Bango la programu lilikuwepo wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Kidhibiti cha Manenosiri cha Chrome kilikuwepo wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Utenganishaji wa DOM ulikuwa unaendelea wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Kitazamaji cha Zana ya Kutenganisha DOM kilikuwepo wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Kipengele cha kuakibisha ukurasa kamili kimezimwa kwa sababu kuna viendelezi vinavyotumia API ya ujumbe."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Viendelezi vyenye muunganisho uliofunguliwa kwa muda mrefu vinapaswa kufunga muunganisho huo kabla ya kuwekwa kwenye kipengele cha kuakibisha ukurasa kamili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Viendelezi vyenye muunganisho uliofunguliwa kwa muda mrefu vilijaribu kutuma ujumbe kwa fremu katika kipengele cha kuakibisha ukurasa kamili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Kipengele cha kuakibisha ukurasa kamili kimezimwa kwa sababu ya viendelezi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Kidirisha cha hali kama vile kidirisha cha kutuma fomu tena au kidirisha cha nenosiri cha http kilionyeshwa kwa ajili ya ukurasa wakati wa kuuondoa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Ukurasa wa nje ya mtandao ulionyeshwa wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Upau wa Kuonyesha kuwa Hifadhi Imejaa ulikuwepo wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Kulikuwa na maombi ya ruhusa wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Kizuia dirisha ibukizi kilikuwepo wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Maelezo ya kipengele cha Kuvinjari Salama yalionyeshwa wakati wa kuondoa ukurasa."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Kipengele cha Kuvinjari Salama kimechukulia ukurasa huu kuwa wa matumizi mabaya na kimezuia dirisha ibukizi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Kitoa huduma (SW) kiliwashwa ukurasa ulipokuwa kwenye kipengele cha kuakibisha ukurasa kamili."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Fremu hii inachukuliwa kwamba ni fremu ya tangazo kwa sababu fremu yake kuu ni fremu ya tangazo."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Onyesha upya"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "inaripoti kwenye"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Mipangilio ya dashibodi"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Utepe wa dashibodi umefichwa"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Utepe wa dashibodi unaonyeshwa"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Nakili sehemu uliyochagua iliyowekwa mitindo, inayoonekana"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Iliyokokotolewa"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Utepe wa Miundo Iliyokokotolewa umefichwa"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Utepe wa Miundo Iliyokokotolewa unaonyeshwa"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Kigunduzi cha mfumo wa DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Nakili maudhui ya mfuatano"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Utepe wa kitatuzi umefichwa"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Utepe wa kitatuzi unaonyeshwa"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Usisitishe kwa sababu ya matukio yasiyofuata kanuni"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Chaguo nyingine"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Utepe wa kusogeza umefichwa"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Utepe wa kusogeza unaonyeshwa"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Fungua katika kidirisha cha Vyanzo"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Rafu ya msimbo unaotekelezwa polepole zaidi"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Utepe wa rafu ya msimbo unaotekelezwa polepole zaidi umefichwa"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Utepe wa rafu ya msimbo unaotekelezwa polepole zaidi unaonyeshwa"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ficha rafu ya Msimbo unaotekelezwa polepole zaidi"
@@ -11583,7 +11616,7 @@
     "message": "Hifadhi"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Muunganisho wa utatuzi umefungwa. Sababu: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Unganisha DevTools tena"

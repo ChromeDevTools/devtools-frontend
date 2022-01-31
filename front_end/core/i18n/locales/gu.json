@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "આ ફ્રેમને જાહેરાત ફ્રેમ માનવામાં આવે છે કારણ કે તેની પેરેંટ ફ્રેમ એક જાહેરાત ફ્રેમ છે."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "રિફ્રેશ કરો"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "આને જાણ કરવામાં આવે છે"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "કન્સોલ સેટિંગ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "કન્સોલ સાઇડબાર છુપાવ્યો"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "કન્સોલ સાઇડબાર બતાવ્યો"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "જોઈ શકાય એવી શૈલીવાળી પસંદગીને કૉપિ કરો"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "ગણતરી કરવામાં આવેલી"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "ગણતરી કરેલી શૈલીઓનો સાઇડબાર છુપાવ્યો"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "ગણતરી કરેલી શૈલીઓનો સાઇડબાર બતાવ્યો"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ટ્રી એક્સપ્લોરર"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "સ્ટ્રિંગના કન્ટેન્ટ કૉપિ કરો"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ડિબગર સાઇડબાર છુપાવ્યો"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ડિબગર સાઇડબાર બતાવ્યો"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "અપવાદો પર થોભાવશો નહીં"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "વધુ વિકલ્પો"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "નૅવિગેટર સાઇડબાર છુપાવ્યો"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "નૅવિગેટર સાઇડબાર બતાવ્યો"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "સૉર્સ પૅનલમાં ખોલો"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "સૌથી વધુ સ્ટૅકવાળો સાઇડબાર"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "સૌથી વધુ સ્ટૅકવાળો સાઇડબાર છુપાવ્યો"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "સૌથી વધુ સ્ટૅકવાળો સાઇડબાર બતાવ્યો"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "સૌથી વધુ સ્ટૅક ધરાવતો સાઇડબાર છુપાવો"

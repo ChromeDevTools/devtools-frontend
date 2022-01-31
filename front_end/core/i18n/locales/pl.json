@@ -3362,6 +3362,9 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Ta ramka jest uważana za ramkę reklamy, ponieważ ramką reklamy jest jej ramka nadrzędna."
   },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Odśwież"
+  },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "wysyła raporty do:"
   },
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Ustawienia konsoli"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Pasek boczny konsoli jest ukryty"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Pasek boczny konsoli jest widoczny"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Skopiuj widoczne zaznaczenie ze stylem"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Wynikowe"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Pasek boczny stylów wynikowych jest ukryty"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Pasek boczny stylów wynikowych jest widoczny"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Eksplorator drzewa DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopiuj zawartość ciągu znaków"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Pasek boczny debugera jest ukryty"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Pasek boczny debugera jest widoczny"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Nie wstrzymuj przy wyjątkach"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Więcej opcji"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Pasek boczny nawigacji jest ukryty"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Pasek boczny nawigacji jest widoczny"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Otwórz w panelu Źródła"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Najbardziej obciążający stos"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Pasek boczny najbardziej obciążającego stosu jest ukryty"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Pasek boczny najbardziej obciążającego stosu jest widoczny"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ukryj najbardziej obciążający stos"

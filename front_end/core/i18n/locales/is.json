@@ -882,13 +882,13 @@
     "message": "Líkja eftir síðu í fókus"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Kveikja sjálfkrafa á dökkri stillingu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Líkir eftir síðu í fókus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Kveikir sjálfkrafa á dökkri stillingu og stillir prefers-color-scheme á dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Þvingar fram CSS-efniseiginleika color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Skrá skrifuð…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Uppbygging Client Hints"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Efnisöryggisstefna – mat"
@@ -2067,10 +2067,10 @@
     "message": "Ekki tókst að sækja nauðsynlegt tákn úr upplýsingaskránni"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Litur fyrir dökkan bakgrunn"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Litur fyrir dökkt þema"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Lýsing"
@@ -2955,7 +2955,7 @@
     "message": "Ekki er hægt að vista síður sem nota forritaskil MediaSession og stilla hjálparforrit aðgerða í skyndiminni til baka/áfram."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Slökkt er á skyndiminni til baka / áfram vegna skjálesara."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Eins og stendur er ekki hægt að vista síður sem nota SecurityHandler í skyndiminni til baka/áfram."
@@ -2979,49 +2979,49 @@
     "message": "Skjalið hlóðst ekki að fullu áður en flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Forritaborði var opinn þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Aðgangsorðastjórnun Chrome var opin þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM-samantekt var í gangi þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Skoðun DOM-samantektar var opin þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Slökkt er á skyndiminni til baka / áfram vegna viðbóta sem nota forritaskil skilaboða."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Viðbætur með langlífa tengingu ættu að loka tengingunni áður en þær eru vistaðar í skyndiminni til baka / áfram."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Viðbætur með langlífa tengingu reyndu að senda skilaboð til ramma í skyndiminni til baka / áfram."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Slökkt er á skyndiminni til baka / áfram vegna viðbóta."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Viðbragðsgluggi á borð við endursendingu eyðublaðs eða HTTP-aðgangsorðsgluggi var birtur á síðunni þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Síða án nettengingar var birt þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Aðgerðastikan „Minni fullt“ var opin þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Heimildabeiðnir voru til staðar þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Sprettigluggavörn var til staðar þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Upplýsingar öruggrar vefskoðunar voru birtar þegar flett var í burtu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Örugg vefskoðun tengdi þessa síðu við misnotkun og lokaði á sprettiglugga."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Þjónustuskrifta (service worker) var virkjuð á meðan síðan var í skyndiminni til baka/áfram."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Þessi rammi telst vera auglýsingarammi vegna þess að yfirrammi hans er auglýsingarammi."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Endurnýja"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "tilkynnir til"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Stillingar stjórnborðs"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Hliðarstika stjórnborðs falin"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Hliðarstika stjórnborðs sýnd"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Afrita sýnilegt val með stíl"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Reiknað"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Hliðarstika reiknaðra stíla falin"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Hliðarstika reiknaðra stíla sýnd"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Kanna DOM tré"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Afrita efni strengs"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Hliðarstika villuleitar falin"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Hliðarstika villuleitar sýnd"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Ekki gera hlé við undantekningar"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Fleiri valkostir"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Hliðarstika flettingar falin"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Hliðarstika flettingar sýnd"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Opna í tilfangaglugga"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Þyngsti staflinn"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Hliðarstika þyngsta stafla falin"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Hliðarstika þyngsta stafla sýnd"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Fela þyngsta staflann"
@@ -11583,7 +11616,7 @@
     "message": "Vista"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Tenging rofnaði við villuleit. Ástæða: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Tengjast DevTools aftur"

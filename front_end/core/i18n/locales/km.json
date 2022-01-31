@@ -882,13 +882,13 @@
     "message": "ត្រាប់តាម​ទំព័រ​ដែលបានផ្ដោត"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "បើក​មុខងារងងឹត​ស្វ័យប្រវត្តិ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ត្រាប់តាម​ទំព័រ​ដែលបានផ្ដោត។"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "បើកមុខងារងងឹតស្វ័យប្រវត្តិ និងកំណត់ prefers-color-scheme ទៅ dark។"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "បង្ខំ​មុខងារ​មេឌៀ color-gamut CSS"
@@ -1308,7 +1308,7 @@
     "message": "កំពុងសរសេរឯកសារ…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "ហេដ្ឋារចនាសម្ព័ន្ធ Client Hints"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "គោលការណ៍​ស្ដីពី​សុវត្ថិភាព​ខ្លឹមសារ - Eval"
@@ -2067,10 +2067,10 @@
     "message": "មិនអាច​ទាញយក​រូបតំណាង​ដែលចាំបាច់ពី​មេនីហ្វេសថ៍​បានទេ"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "ពណ៌នៃផ្ទៃខាងក្រោយងងឹត"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "ពណ៌នៃរចនាប័ទ្មងងឹត"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "ការពណ៌នា"
@@ -2955,7 +2955,7 @@
     "message": "មិនអាចទុកទំព័រដែលប្រើ MediaSession API និងកំណត់ឧបករណ៍ដោះស្រាយសកម្មភាព នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយសារកម្មវិធីអានអេក្រង់។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "មិនអាចទុកទំព័រដែលប្រើ SecurityHandler នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
@@ -2979,49 +2979,49 @@
     "message": "ឯកសារនេះមិនបានបញ្ចប់ការផ្ទុក មុនពេលចាកចេញទេ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "បដាកម្មវិធីបានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "កម្មវិធីគ្រប់គ្រង​ពាក្យសម្ងាត់ Chrome បានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ការសម្រាំង DOM កំពុងដំណើរការ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "កម្មវិធីអាន DOM Distiller បានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយសារកម្មវិធីបន្ថែមដែលប្រើ API ផ្ញើសារ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "កម្មវិធីបន្ថែមដែលមានការតភ្ជាប់រយៈពេលយូរគួរតែបិទការតភ្ជាប់ មុនពេលរក្សាទុកក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "កម្មវិធីបន្ថែមដែលមានការតភ្ជាប់រយៈពេលយូរបានព្យាយាមផ្ញើសារទៅគ្រោងនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយសារកម្មវិធីបន្ថែម។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ប្រអប់ម៉ូដលដូចជា ប្រអប់ពាក្យសម្ងាត់ http ឬប្រអប់ដាក់បញ្ជូនទម្រង់បែបបទឡើងវិញបានបង្ហាញសម្រាប់ទំព័រនេះ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ទំព័រគ្មានអ៊ីនធឺណិតបានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "របារអន្តរាគមន៍ការអស់អង្គចងចាំបានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "មានសំណើសុំការអនុញ្ញាត នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "កម្មវិធីទប់ស្កាត់ផ្ទាំងលោតឡើងបានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ព័ត៌មានលម្អិតអំពីការរុករកដោយសុវត្ថិភាពបានបង្ហាញ នៅពេលចាកចេញ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "ការរុករកដោយសុវត្ថិភាពបានចាត់ទុកទំព័រនេះថាមានលក្ខណៈបំពាន និងបានទប់ស្កាត់ផ្ទាំងលោតឡើង។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ស្គ្រីបជំនួយផ្ទៃខាងក្រោយត្រូវបានបើកដំណើរការ ខណៈពេលដែលទំព័រនេះស្ថិតនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ស៊ុមនេះ​ត្រូវបានចាត់ទុកថាជា​ស៊ុមនៃការផ្សាយពាណិជ្ជកម្ម ដោយសារ​ស៊ុមមេ​របស់វា​គឺជាស៊ុមនៃ​ការផ្សាយពាណិជ្ជកម្ម។"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ផ្ទុកឡើងវិញ"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "កំពុង​រាយការណ៍ទៅ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ការកំណត់កុងសូល"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "បានលាក់​របារចំហៀង​នៃកុងសូល"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "បានបង្ហាញ​របារចំហៀង​នៃកុងសូល"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "ចម្លងការជ្រើសរើសរចនាប័ទ្មដែលអាចមើលឃើញ"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "រចនាប័ទ្ម​ដែលបាន​គណនា"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "បានលាក់​របារចំហៀង​នៃរចនាប័ទ្ម​ដែលបាន​គណនា"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "បានបង្ហាញ​របារចំហៀង​នៃរចនាប័ទ្ម​ដែលបាន​គណនា"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "កម្មវិធីរុករក​មែកធាង DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "ចម្លង​ខ្លឹមសារ​ក្នុងជួរអក្សរ"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "បានលាក់​របារចំហៀង​នៃកម្មវិធី​ជួសជុល"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "បានបង្ហាញ​របារចំហៀង​នៃកម្មវិធី​ជួសជុល"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "កុំផ្អាក នៅពេលមាន​ការលើកលែង"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ជម្រើសច្រើនទៀត"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "បានលាក់​របារចំហៀង​នៃឧបករណ៍​រុករក"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "បានបង្ហាញ​របារចំហៀង​នៃឧបករណ៍​រុករក"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "បើក​នៅក្នុង​ផ្ទាំង​ប្រភព"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "គំនរ​ដែលចំណាយពេល​ច្រើនបំផុត"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "បានលាក់​របារចំហៀង​នៃបង្គរ​ដែលធ្ងន់បំផុត"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "បានបង្ហាញ​របារចំហៀង​នៃបង្គរ​ដែលធ្ងន់បំផុត"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "លាក់គំនរ​ដែលចំណាយពេល​ច្រើនបំផុត"
@@ -11583,7 +11616,7 @@
     "message": "រក្សាទុក"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "ការជួសជុលការតភ្ជាប់ត្រូវបានបិទ។ មូលហេតុ៖ "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "ភ្ជាប់​ DevTools ឡើងវិញ"

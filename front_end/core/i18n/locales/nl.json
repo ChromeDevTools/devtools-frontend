@@ -882,13 +882,13 @@
     "message": "Pagina met focus emuleren"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Automatische donkere modus aanzetten"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuleert een pagina met focus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Zet de automatische donkere modus aan en stelt prefers-color-scheme in op dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Dwingt de mediafunctie color-gamut voor css af"
@@ -1308,7 +1308,7 @@
     "message": "Bestand schrijven…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints-infrastructuur"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy: eval"
@@ -2067,10 +2067,10 @@
     "message": "Kan een vereist icoon niet downloaden uit het manifest"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Donkere achtergrondkleur"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Kleur voor donker thema"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beschrijving"
@@ -2955,7 +2955,7 @@
     "message": "Pagina's die de MediaSession API gebruiken en action-handlers instellen, komen niet in aanmerking voor Back-Forward Cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Back-Forward Cache is uitgezet vanwege schermlezer."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Pagina's die SecurityHandler gebruiken, komen niet in aanmerking voor Back-Forward Cache."
@@ -2979,49 +2979,49 @@
     "message": "Het document was niet helemaal geladen voordat het werd gesloten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "App-banner was geopend tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Chrome Wachtwoordmanager was geopend tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM-distillatie was bezig tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "DOM Distiller Viewer was geopend tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Back-Forward Cache is uitgezet vanwege extensies die de API voor berichten gebruiken."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Extensies met een langdurige verbinding moeten de verbinding sluiten voordat Back-Forward Cache wordt geopend."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Extensies met een langdurige verbinding hebben geprobeerd berichten te sturen naar frames in de Back-Forward Cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Back-Forward Cache is uitgezet vanwege extensies."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Modaal dialoogvenster, zoals dialoogvenster voor formulier opnieuw indienen of HTTP-wachtwoord, is getoond voor de pagina tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "De offline pagina werd getoond tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Interventiebalk voor geheugen vol was geopend tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Er waren rechtenverzoeken tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Pop-up blocker was geopend tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Safe Browsing-gegevens zijn getoond tijdens het sluiten."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing beschouwt deze pagina als misleidend en heeft de pop-up geblokkeerd"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Er is een service worker geactiveerd terwijl de pagina zich in Back-Forward Cache bevond."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Dit frame wordt beschouwd als een advertentieframe omdat het bovenliggende frame een advertentieframe is."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Vernieuwen"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "rapporteren aan"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Console-instellingen"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Zijbalk voor console is verborgen"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Zijbalk voor console wordt getoond"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Zichtbare gestileerde selectie kopiëren"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Berekend"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Zijbalk voor berekende stijlen is verborgen"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Zijbalk voor berekende stijlen wordt getoond"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Verkenner voor DOM-boomstructuur"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Inhoud van tekenreeks kopiëren"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Zijbalk voor foutopsporing is verborgen"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Zijbalk voor debugger wordt getoond"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Niet onderbreken bij uitzonderingen"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Meer opties"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Zijbalk voor navigator is verborgen"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Zijbalk voor navigator wordt getoond"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Openen in deelvenster Bronnen"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Zwaarste stack"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Zijbalk voor zwaarste stack is verborgen"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Zijbalk voor zwaarste stack wordt getoond"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Zwaarste stack verbergen"
@@ -11583,7 +11616,7 @@
     "message": "Opslaan"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Verbinding voor foutopsporing is gesloten. Reden: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Opnieuw verbinding maken met DevTools"

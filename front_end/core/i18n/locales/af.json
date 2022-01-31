@@ -882,13 +882,13 @@
     "message": "Emuleer 'n gefokusde bladsy"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Aktiveer outomatiese donkermodus"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emuleer 'n gefokusde bladsy."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Aktiveer outomatiese donkermodus en stel prefers-color-scheme na dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Verplig CSS color-gamut-mediakenmerk"
@@ -1308,7 +1308,7 @@
     "message": "Skryf tans lêer …"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Client Hints-infrastruktuur"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Inhoudsekuriteitbeleid – eval"
@@ -2067,10 +2067,10 @@
     "message": "Kon nie 'n ikoon wat vereis word uit die manifes aflaai nie"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Donker agtergrondkleur"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Donkertemakleur"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Beskrywing"
@@ -2955,7 +2955,7 @@
     "message": "Bladsye wat MediaSession API gebruik en handelinghanteerders stel, kwalifiseer nie vir terug-vorentoe-kasgeheue nie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Terug-vorentoe-kasgeheue is weens skermleser gedeaktiveer."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Bladsye wat SecurityHandler gebruik, kwalifiseer nie vir terug-vorentoe-kasgeheue nie."
@@ -2979,49 +2979,49 @@
     "message": "Die dokument het nie klaar gelaai voordat daar weggenavigeer is nie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Programbanier was teenwoordig terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Chrome Wagwoordbestuurder was teenwoordig terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM-distillering was aan die gang terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "DOM Distiller-bekyker was teenwoordig terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Terug-vorentoe-kasgeheue is gedeaktiveer omdat uitbreidings boodskappe-API gebruik."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Uitbreidings met langdurige verbindings moet die verbinding toemaak voordat dit by terug-vorentoe-kasgeheue ingaan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Uitbreidings met langdurige verbindings het probeer om boodskappe na rame in terug-vorentoe-kasgeheue toe te stuur."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Terug-vorentoe-kasgeheue is weens uitbreidings gedeaktiveer."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Modale dialoog, soos herindiening van 'n vorm of http-wagwoorddialoog, is gewys vir die bladsy terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Die vanlyn bladsy is gewys terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Geen-Meer-Geheue-ingrypingbalk was teenwoordig terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Daar was toestemmingversoeke terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Opspringblokkeerder was teenwoordig terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Veiligblaaibesonderhede is gewys terwyl daar weggenavigeer is."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Veiligblaai het hierdie bladsy as misbruikend beskou en opspringer geblokkeer."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "'n Dienswerker is geaktiveer terwyl die bladsy in terug-vorentoe-kasgeheue was."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Hierdie raam word as 'n advertensieraam beskou omdat sy ouerraam 'n advertensieraam is."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Herlaai"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "doen verslag aan"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsole-instellings"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Konsolekantbalk word versteek"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Konsolekantbalk word gewys"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Kopieer sigbare gestileerde keuse"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Bereken"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Berekende Style-kantbalk word versteek"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Berekende Style-kantbalk word gewys"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM-boomverkenner"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Kopieer stringinhoud"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Ontfouterkantbalk word versteek"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Ontfouterkantbalk word versteek"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Moenie onderbreek met uitsonderings nie"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Meer opsies"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Navigatorkantbalk word versteek"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Navigatorkantbalk word gewys"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Maak oop in Bronne-paneel"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Swaarste stapel"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Swaarste Stapel-kantbalk word versteek"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Swaarste Stapel-kantbalk word gewys"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Versteek swaarste stapel"
@@ -11583,7 +11616,7 @@
     "message": "Stoor"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Ontfoutingverbinding is toegemaak. Rede: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Herkoppel DevTools"

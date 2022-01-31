@@ -882,13 +882,13 @@
     "message": "Емулирај фокусирану страницу"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Омогући аутоматску тамну тему"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Емулира фокусирану страницу."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Омогућава аутоматску тамну тему и подешава prefers-color-scheme на dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Намеће CSS функцију медија color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "Пише се у фајл…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Инфраструктура за савете клијента"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Смернице за безбедност садржаја – процена"
@@ -2067,10 +2067,10 @@
     "message": "Преузимање обавезне иконе из манифеста није успело"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Боја тамне позадине"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Боја тамне теме"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Опис"
@@ -2955,7 +2955,7 @@
     "message": "Странице које користе MediaSession API и подешавају обрађиваче радњи не испуњавају услове за кеширање целе странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "Читач екрана је онемогућио кеширање целе странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Странице које користе SecurityHandler тренутно не испуњавају услове за кеширање целе странице."
@@ -2979,49 +2979,49 @@
     "message": "Документ није довршио учитавање пре напуштања документа."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "App Banner је био активан при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Chrome менаџер лозинки је био активан при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "DOM дестилација је била у току при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "DOM Distiller Viewer је био активан при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "Кеширање целе странице је онемогућено јер су додаци користили API за размену порука."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Додаци са трајном везом треба да затворе везу пре кеширања целе странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Додаци са трајном везом су покушали да шаљу поруке оквирима у кеширању целе странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "Кеширање целе странице је онемогућено због додатака."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "Модални дијалог као што је поновно слање обрасца или дијалог за HTTP лозинку је приказан при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Офлајн страница је приказана при напуштању."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Трака за интервенцију у вези са недостатком меморије је била присутна при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Дошло је до слања захтева за дозволе при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Откривен је блокатор искачућих прозора при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Приказани су детаљи о Безбедном прегледању при напуштању странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Безбедно прегледање је октрило да ова страница садржи злоупотребу и блокирало је искачући прозор."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Сервисер је активиран док је страница била у процесу кеширања целе странице."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Овај оквир се сматра оквиром огласа јер је оквир огласа његов надређени оквир."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Освежи"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "пријављује"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Подешавања конзоле"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Бочна трака за конзолу је скривена"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Бочна трака за конзолу је приказана"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Копирај видљив стилизован избор"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Израчунато"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Бочна трака израчунатих стилова је скривена"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Бочна трака израчунатих стилова је приказана"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Истраживач DOM стабла"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Копирај садржај стринга"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "Бочна трака за отклањање грешака је скривена"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Бочна трака за отклањање грешака је приказана"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "Не паузирај због изузетака"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Још опција"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "Бочна трака навигатора је скривена"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Бочна трака навигатора је приказана"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Отвори у окну Извори"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Најтежи стек"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Бочна трака за најтежи стек је скривена"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Бочна трака за најтежи стек је приказана"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Сакриј најтежи стек"
@@ -11583,7 +11616,7 @@
     "message": "Сачувај"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "Затворена је веза за отклањање грешака. Разлог: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Поново повежи DevTools"

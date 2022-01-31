@@ -882,13 +882,13 @@
     "message": "شبیه‌سازی صفحه متمرکز"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "فعال کردن حالت تاریک خودکار"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "صفحه متمرکز را شبیه‌سازی می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "حالت تاریک خودکار را فعال می‌کند و prefers-color-scheme را روی dark تنظیم می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "ویژگی رسانه color-gamut CSS را اجباری می‌کند"
@@ -1308,7 +1308,7 @@
     "message": "درحال نوشتن فایل…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "زیرساخت نکات کارخواه"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "خط‌مشی امنیتی محتوا - ارزیابی"
@@ -2067,10 +2067,10 @@
     "message": "نماد موردنیاز از مانیفست بارگیری نشد"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "رنگ پس‌زمینه تیره"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "رنگ طرح زمینه تیره"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "شرح"
@@ -2955,7 +2955,7 @@
     "message": "صفحه‌هایی که از MediaSession API استفاده می‌کنند و کنترل‌کننده‌های کنش تنظیم می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "حافظه پنهان عقب/جلو به‌دلیل صفحه‌خوان غیرفعال است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "صفحه‌هایی که از SecurityHandler استفاده می‌کنند واجدشرایط حافظه پنهان عقب-جلو نیستند."
@@ -2979,49 +2979,49 @@
     "message": "خروج پیش‌از بارگیری کامل سند انجام شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "برنمای برنامه هنگام خروج حضور داشت."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "«مدیر گذرواژه Chrome» هنگام خروج حضور داشت."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "هنگام خارج شدن، تقطیر DOM درحال انجام بود."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "«نظاره‌گر تقطیرکننده DOM» هنگام خروج حضور داشت."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "حافظه پنهان عقب/جلو به‌دلیل افزونه‌هایی که از میانای برنامه‌سازی کاربردی پیام‌رسانی استفاده می‌کنند غیرفعال است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "افزونه‌هایی که اتصال ماندگار دارند باید اتصال را پیش‌از وارد شدن به حافظه پنهان عقب/جلو ببندند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "افزونه‌هایی با اتصال ماندگار تلاش کردند پیام‌هایی به قاب‌های حافظه پنهان عقب/جلو ارسال کنند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "حافظه پنهان عقب/جلو به‌دلیل افزونه‌ها غیرفعال است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "هنگام خارج شدن، کادر گفتگوی کیفیتی مثل کادر گفتگوی گذرواژه http یا ارسال مجدد فرم برای صفحه نشان داده شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "صفحه آفلاین هنگام خروج نشان داده شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "نوار «مداخله حافظه کافی نیست» هنگام خروج حضور داشت."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "هنگام خارج شدن، اجازه‌هایی درخواست شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "هنگام خارج شدن، مسدودکننده بالاپر حضور داشت."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "جزئیات «مرور ایمن» هنگام خروج نشان داده شد."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "«مرور ایمن» این صفحه را سوءاستفاده‌گر تشخیص داده است و بالاپر را مسدود کرده است."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "درحالی‌که صفحه در حافظه پنهان عقب-جلو قرار داشت، عامل خدماتی فعال شد."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "این قاب به‌عنوان قاب آگهی درنظر گرفته می‌شود زیرا قاب ولی آن قاب آگی است."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "بازخوانی"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "گزارش دادن به"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "تنظیمات کنسول"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "نوار کناری «کنسول» پنهان است"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "نوار کناری «کنسول» نمایان است"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "کپی کردن انتخاب سبک‌دار نمایان"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "محاسبه‌شده"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "نوار کناری «سبک‌های محاسبه‌شده» پنهان است"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "نوار کناری «سبک‌های محاسبه‌شده» نمایان است"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "کاوشگر درخت DOM"
@@ -8016,7 +8031,7 @@
     "message": "ذخیره"
   },
   "panels/profiler/ProfileSidebarTreeElement.ts | saveWithEllipsis": {
-    "message": "ذخیره…"
+    "message": "ذخیره کردن…"
   },
   "panels/profiler/ProfileView.ts | chart": {
     "message": "نمودار"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "کپی کردن محتوای رشته"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "نوار کناری اشکال‌زدا پنهان است"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "نوار کناری اشکال‌زدا نمایان است"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "در موارد استثنا متوقف نشود"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "گزینه‌های بیشتر"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "نوار کناری ابزار پیمایش پنهان است"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "نوار کناری ابزار پیمایش نمایان است"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "باز کردن در پانل «منابع»"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "سنگین‌ترین پشته"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "نوار کناری سنگین‌ترین پشته پنهان است"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "نوار کناری سنگین‌ترین پشته نمایان است"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "پنهان کردن سنگین‌ترین پشته"
@@ -11583,7 +11616,7 @@
     "message": "ذخیره"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "اتصال اشکال‌زدایی بسته شد. دلیل: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "اتصال مجدد DevTools"

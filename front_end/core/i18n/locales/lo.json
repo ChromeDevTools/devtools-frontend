@@ -882,13 +882,13 @@
     "message": "ຈຳລອງໜ້າທີ່ໂຟກັສໄວ້"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "ເປີດການນຳໃຊ້ໂໝດມືດອັດຕະໂນມັດ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ຈຳລອງໜ້າທີ່ໂຟກັສແລ້ວ."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "ເປີດການນຳໃຊ້ໂໝດມືດອັດຕະໂນມັດ ແລະ ຕັ້ງ prefers-color-scheme ເປັນ dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "ບັງຄັບຄຸນສົມບັດມີເດຍ CSS color-gamut"
@@ -1308,7 +1308,7 @@
     "message": "ກຳລັງຂຽນໄຟລ໌…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "ໂຄງລ່າງພື້ນຖານ Hints ລູກຂ່າຍ"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວເນື້ອຫາ - Eval"
@@ -2067,10 +2067,10 @@
     "message": "ບໍ່ສາມາດດາວໂຫຼດໄອຄອນທີ່ຈຳເປັນຈາກໄຟລ໌ manifest ໄດ້"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "ສີພື້ນຫຼັງມືດ"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "ສີຮູບແບບສີສັນມືດ"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "ລາຍລະອຽດ"
@@ -2955,7 +2955,7 @@
     "message": "ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງຕົວຈັດການຄຳສັ່ງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກໂປຣແກຣມອ່ານໜ້າຈໍ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "ໜ້າທີ່ໃຊ້ SecurityHandler ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
@@ -2979,49 +2979,49 @@
     "message": "ການໂຫຼດເອກະສານບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ພົບແບນເນີແອັບຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ພົບຕົວຈັດການລະຫັດຜ່ານ Chrome ຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ກຳລັງແຍກອົງປະກອບ DOM ຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ພົບໂປຣແກຣມອ່ານຕົວແຍກອົງປະກອບ DOM ຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກສ່ວນຂະຫຍາຍກຳລັງໃຊ້ API ການຮັບສົ່ງຂໍ້ຄວາມຢູ່."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "ສ່ວນຂະຫຍາຍທີ່ມີການເຊື່ອມຕໍ່ໄລຍະເວລາດົນຄວນປິດການເຊື່ອມຕໍ່ກ່ອນທີ່ຈະຈັດເກັບໄວ້ໃນແຄສຍ້ອນຫຼັງ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "ສ່ວນຂະຫຍາຍທີ່ມີການເຊື່ອມຕໍ່ໄລຍະເວລາດົນພະຍາຍາມສົ່ງຂໍ້ຄວາມຫາເຟຣມໃນແຄສຍ້ອນຫຼັງ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກສ່ວນຂະຫຍາຍ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ກ່ອງໂຕ້ຕອບ Modal ເຊັ່ນ: ການສົ່ງແບບຟອມອີກເທື່ອໜຶ່ງ ຫຼື ລະຫັດຜ່ານ HTTP ສະແດງຂຶ້ນຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ໜ້າອອບລາຍສະແດງຂຶ້ນມາຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ພົບແຖບການແຊກແຊງ \"ໜ່ວຍຄວາມຈຳບໍ່ພຽງພໍ\" ຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ມີຄຳຮ້ອງຂໍການອະນຸຍາດຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ພົບຕົວບລັອກປັອບອັບຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ພົບລາຍລະອຽດ Safe Browsing ຂະນະທີ່ມີການອອກຈາກໜ້າ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Safe Browsing ພິຈາລະນາໜ້ານີ້ວ່າມີການລະເມີດ ແລະ ບລັອກປັອບອັບໄວ້ແລ້ວ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ຕົວເຮັດວຽກບໍລິການຖືກເປີດໃຊ້ໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ເຟຣມນີ້ຖືວ່າເປັນເຟຣມໂຄສະນາເນື່ອງຈາກເຟຣມຫຼັກຂອງມັນເປັນເຟຣມໂຄສະນາ."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ໂຫຼດຂໍ້ມູນຄືນໃໝ່"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "ກຳລັງລາຍງານຫາ"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ການຕັ້ງຄ່າຄອນໂຊ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງຄອນໂຊແລ້ວ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງຄອນໂຊແລ້ວ"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "ສຳເນົາການເລືອກທີ່ມີຮູບແບບທີ່ເບິ່ງເຫັນໄດ້"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "ຄຳນວນແລ້ວ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງຮູບແບບທີ່ຄຳນວນແລ້ວ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງຮູບແບບທີ່ຄຳນວນແລ້ວ"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "ຕົວສຳຫຼວດແຜນຜັງ DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "ສຳເນົາເນື້ອຫາສະຕຣິງ"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງຕົວດີບັກແລ້ວ"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງຕົວດີບັກແລ້ວ"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ຢ່າຢຸດຊົ່ວຄາວເມື່ອພົບຂໍ້ຍົກເວັ້ນ"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "ຕົວເລືອກເພີ່ມເຕີມ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງຕົວນຳທາງແລ້ວ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງຕົວນຳທາງແລ້ວ"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "ເປີດໃນແຜງແຫຼ່ງຂໍ້ມູນ"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "ການວາງຊ້ອນກັນທີ່ໜັກທີ່ສຸດ"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "ເຊື່ອງແຖບດ້ານຂ້າງແບບວາງຊ້ອນກັນທີ່ໜັກທີ່ສຸດແລ້ວ"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "ສະແດງແຖບດ້ານຂ້າງແບບວາງຊ້ອນໜັກທີ່ສຸດແລ້ວ"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "ເຊື່ອງການວາງຊ້ອນກັນທີ່ໜັກທີ່ສຸດ"
@@ -11583,7 +11616,7 @@
     "message": "ບັນທຶກ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "ປິດການເຊື່ອມຕໍ່ການດີບັກ​ແລ້ວ. ເຫດ​ຜົນ​: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "ເຊື່ອມຕໍ່ຫາ DevTools ຄືນໃໝ່"

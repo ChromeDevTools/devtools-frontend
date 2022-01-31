@@ -882,13 +882,13 @@
     "message": "အထူးပြသထားသော စာမျက်နှာကို ပုံတူထုတ်လုပ်ရန်"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "အလိုအလျောက် အမှောင်မုဒ် ဖွင့်ရန်"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "အထူးပြသထားသော စာမျက်နှာကို ပုံတူထုတ်လုပ်သည်။"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "အလိုအလျောက် အမှောင်မုဒ်ဖွင့်ပြီး prefers-color-scheme မှ dark သို့ သတ်မှတ်သည်။"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut မီဒီယာဝန်ဆောင်မှုကို မဖြစ်မနေအသုံးပြုစေသည်"
@@ -1308,7 +1308,7 @@
     "message": "ဖိုင်ကို ရေးနေသည်…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "ကလိုင်းယင့်၏ အချက်အလက်မေးစနစ်"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "အကြောင်းအရာ လုံခြုံရေးမူဝါဒ - Eval"
@@ -2067,10 +2067,10 @@
     "message": "သတ်မှတ်ထားသောသင်္ကေတကို မန်နီးဖက်စ်မှ ဒေါင်းလုဒ်လုပ်၍မရပါ"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "မှောင်သည့် နောက်ခံအရောင်"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "မှောင်သည့်အရောင် အပြင်အဆင်"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "ဖော်ပြချက်"
@@ -2955,7 +2955,7 @@
     "message": "MediaSession API သုံးပြီး လုပ်ဆောင်ချက်စီမံသူများ သတ်မှတ်ထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "ဖန်သားပြင်ဖတ် အက်ပ်ကြောင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandler သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
@@ -2979,49 +2979,49 @@
     "message": "မှတ်တမ်းသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ‘အက်ပ်နဖူးစည်း’ ကို ဖွင့်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ‘Chrome စကားဝှက်မန်နေဂျာ’ ကို ဖွင့်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် DOM ရှင်းလင်းခြင်းကို ဆောင်ရွက်နေဆဲဖြစ်သည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ‘DOM ရှင်းလင်းစွာ ကြည့်ရှုရေးစနစ်’ ကို ဖွင့်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "မက်ဆေ့ဂျ်ပို့ခြင်း API သုံးသော နောက်ဆက်တွဲများကြောင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "ရှေ့-နောက် ကက်ရှ်သို့ မဝင်မီ ကြာရှည်ဖွင့်ထားသော ချိတ်ဆက်မှုရှိသည့် နောက်ဆက်တွဲများသည် ချိတ်ဆက်မှုကို ပိတ်သင့်သည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "ကြာရှည်ဖွင့်ထားသော ချိတ်ဆက်မှုရှိသည့် နောက်ဆက်တွဲများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဖရိမ်များသို့ မက်ဆေ့ဂျ်ပို့ရန် ကြိုးပမ်းထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "နောက်ဆက်တွဲများကြောင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ဖောင်ပြန်လည်တင်ခြင်းကဲ့သို့ မိုဒယ်ဒိုင်ယာလော့ခ် (သို့) http စကားဝှက် ဒိုင်ယာလော့ခ်ကို ဝဘ်စာမျက်နှာအတွက် ပြထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် အော့ဖ်လိုင်းစာမျက်နှာကို ပြထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ‘မှတ်ဉာဏ်ကုန်ဆုံးကြောင်း အသိပေးဘား’ ကို ဖွင့်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ခွင့်ပြုချက်တောင်းဆိုချက်များ ရှိသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ပေါ့ပ်အပ် ပိတ်စနစ် ဖွင့်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "ထွက်သွားချိန်တွင် ‘လုံခြုံစွာ ကြည့်ရှုခြင်း’ အသေးစိတ်ကို ပြထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "‘လုံခြုံစွာ ကြည့်ရှုခြင်း’ က ဤစာမျက်နှာကို အလွဲသုံးစားပြုသည်ဟု မှတ်ယူပြီး ပေါ့ပ်အပ်ကို ပိတ်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker ကို စတင်ထားသည်။"
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ဤဖရိမ်၏ ပင်မဖရိမ်သည် ကြော်ငြာဖရိမ် ဖြစ်သောကြောင့် ၎င်းကို ကြော်ငြာဖရိမ်အဖြစ် သတ်မှတ်သည်။"
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "ပြန်လည် စတင်ရန်"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "အောက်ပါသို့ အစီရင်ခံနေသည်"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ကွန်ဆိုးလ် ဆက်တင်များ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "ကွန်ဆိုးလ်ဆိုက်ဘား ဖျောက်ပြီးပြီ"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "ကွန်ဆိုးလ်ဆိုက်ဘား ဖော်ပြီးပြီ"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "မြင်သာသော ပုံစံထည့်သွင်းထားသည့် ရွေးချယ်မှုကို မိတ္တူကူးရန်"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "တွက်ချက်ထားသည်များ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "‘တွက်ချက်ထားသော ပုံစံများ’ ဆိုက်ဘားကို ဖျောက်ပြီးပြီ"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "‘တွက်ချက်ထားသော ပုံစံများ’ ဆိုက်ဘားကို ဖော်ပြီးပြီ"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ဖွဲ့စည်းပုံ စစ်ဆေးစနစ်"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "လိုင်းအကြောင်းအရာများ မိတ္တူကူးရန်"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "အမှားရှာပြင်ဆိုက်ဘား ဖျောက်ပြီးပြီ"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "အမှားရှာပြင်ဆိုက်ဘား ဖော်ပြီးပြီ"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "ခြွင်းချက်ပြဿနာများတွင် ခဏမရပ်ပါနှင့်"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "နောက်ထပ် ရွေးစရာများ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "လမ်းညွှန်ဆိုက်ဘား ဖျောက်ပြီးပြီ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "လမ်းညွှန်ဆိုက်ဘား ဖော်ပြီးပြီ"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "‘ရင်းမြစ်များ’ အကန့်တွင် ဖွင့်ရန်"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "အကြီးဆုံး ဒေတာဖွဲ့စည်းပုံ"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "မီနူးအများဆုံးဆိုက်ဘားကို ဖျောက်ပြီးပြီ"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "မီနူးအများဆုံးဆိုက်ဘားကို ဖော်ပြီးပြီ"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "အကြီးဆုံး ဒေတာဖွဲ့စည်းပုံကို ဖျောက်ထားရန်"
@@ -11583,7 +11616,7 @@
     "message": "သိမ်းရန်"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "အမှားရှာပြင်ခြင်းဆိုင်ရာ ချိတ်ဆက်မှု ပိတ်ထားသည်။ အကြောင်းပြချက်- "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "DevTools ပြန်လည်ချိတ်ဆက်ရန်"

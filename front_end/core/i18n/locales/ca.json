@@ -882,13 +882,13 @@
     "message": "Emula una pàgina en què s'hagi posat el focus"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulateAutoDarkMode": {
-    "message": "Enable automatic dark mode"
+    "message": "Activa el mode fosc automàtic"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emula una pàgina en què s'hagi posat el focus."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
-    "message": "Enables automatic dark mode and sets prefers-color-scheme to dark."
+    "message": "Activa el mode fosc automàtic i estableix prefers-color-scheme com a dark."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Força la funció multimèdia color-gamut de CSS"
@@ -1308,7 +1308,7 @@
     "message": "S'està escrivint el fitxer…"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
-    "message": "Client Hints Infrastructure"
+    "message": "Infraestructura de Client Hints"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Política de seguretat del contingut - Avaluació"
@@ -2067,10 +2067,10 @@
     "message": "No s'ha pogut baixar una icona necessària del fitxer de manifest"
   },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
-    "message": "Dark background color"
+    "message": "Color de fons fosc"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "Dark theme color"
+    "message": "Color de tema fosc"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "Descripció"
@@ -2955,7 +2955,7 @@
     "message": "Les pàgines que utilitzen l'API MediaSession i tenen configurats gestors d'acció no són aptes per a la memòria cau back-forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "Back/forward cache is disabled due to screen reader."
+    "message": "La memòria cau back-forward està desactivada a causa d'un lector de pantalla."
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Les pàgines que utilitzen SecurityHandler no són aptes per a la memòria cau back-forward."
@@ -2979,49 +2979,49 @@
     "message": "El document no s'ha acabat de carregar abans de sortir-ne."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "App Banner was present upon navigating away."
+    "message": "Hi havia el bàner d'aplicacions en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Chrome Password Manager was present upon navigating away."
+    "message": "Hi havia el gestor de contrasenyes de Chrome en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "DOM distillation was in progress upon navigating away."
+    "message": "Hi havia en curs un procés de DOM Distiller en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "DOM Distiller Viewer was present upon navigating away."
+    "message": "Hi havia el lector de DOM Distiller en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Back/forward cache is disabled due to extensions using messaging API."
+    "message": "La memòria cau back-forward està desactivada perquè hi ha extensions que utilitzen l'API de missatges."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Extensions with long-lived connection should close the connection before entering back/forward cache."
+    "message": "Les extensions amb una connexió de llarga durada haurien de tancar la connexió abans d'entrar a la memòria cau back-forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Extensions with long-lived connection attempted to send messages to frames in back/forward cache."
+    "message": "Les extensions amb una connexió de llarga durada provaven d'enviar missatges a marcs de la memòria cau back-forward."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Back/forward cache is disabled due to extensions."
+    "message": "La memòria cau back-forward està desactivada a causa de les extensions."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Modal dialog such as form resubmission or http password dialog was shown for the page upon navigating away."
+    "message": "S'ha mostrat un quadre de diàleg modal (per exemple, de reenviament d'un formulari o d'autenticació HTTP) en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "The offline page was shown upon navigating away."
+    "message": "Es mostrava la pàgina corresponent a dispositius sense connexió en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Out-Of-Memory Intervention bar was present upon navigating away."
+    "message": "Hi havia la barra d'intervenció per falta de memòria en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "There were permission requests upon navigating away."
+    "message": "Hi havia sol·licituds de permisos en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Popup blocker was present upon navigating away."
+    "message": "Hi havia un bloquejador de finestres emergents en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Safe Browsing details were shown upon navigating away."
+    "message": "Els detalls de Navegació segura es mostraven en sortir de la pàgina."
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Safe Browsing considered this page to be abusive and blocked popup."
+    "message": "Navegació segura ha considerat que aquesta pàgina era abusiva i ha bloquejat la finestra emergent."
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau back-forward."
@@ -3361,6 +3361,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Aquest marc es considera un marc publicitari perquè el seu marc superior és publicitari."
+  },
+  "panels/application/components/FrameDetailsView.ts | refresh": {
+    "message": "Actualitza"
   },
   "panels/application/components/FrameDetailsView.ts | reportingTo": {
     "message": "informa a"
@@ -3718,6 +3721,12 @@
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Configuració de la consola"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "S'ha amagat la barra lateral de la consola"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Es mostra la barra lateral de la consola"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Copia la selecció visible amb estil"
@@ -4375,6 +4384,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Calculats"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "S'ha amagat la barra lateral dels estils calculats"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Es mostra la barra lateral dels estils calculats"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "Explorador de l'arbre DOM"
@@ -9533,6 +9548,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Copia el contingut de la cadena"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "S'ha amagat la barra lateral del depurador"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "Es mostra la barra lateral del depurador"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "No posis en pausa a les excepcions"
   },
@@ -9550,6 +9571,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "Més opcions"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "S'ha amagat la barra lateral del navegador"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "Es mostra la barra lateral del navegador"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Obre al tauler Fonts"
@@ -10267,6 +10294,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Pila més pesada"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "S'ha amagat la barra lateral de la pila més pesada"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Es mostra la barra lateral de la pila més pesada"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Amaga la pila més pesada"
@@ -11583,7 +11616,7 @@
     "message": "Desa"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Debugging connection was closed. Reason: "
+    "message": "S'ha tancat la connexió de depuració. Motiu: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Torna a connectar DevTools"

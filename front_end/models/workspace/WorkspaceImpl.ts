@@ -45,7 +45,7 @@ export interface ProjectSearchConfig {
 export abstract class Project {
   abstract workspace(): WorkspaceImpl;
   abstract id(): string;
-  abstract type(): string;
+  abstract type(): projectTypes;
   abstract isServiceProject(): boolean;
   abstract displayName(): string;
   abstract requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata|null>;
@@ -117,7 +117,7 @@ export class ProjectStore {
     return this.idInternal;
   }
 
-  type(): string {
+  type(): projectTypes {
     return this.typeInternal;
   }
 

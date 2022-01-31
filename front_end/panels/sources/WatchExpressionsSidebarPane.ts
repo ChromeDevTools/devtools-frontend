@@ -171,7 +171,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.createWatchExpression(null).startEditing();
   }
 
-  doUpdate(): Promise<void> {
+  async doUpdate(): Promise<void> {
     this.linkifier.reset();
     this.contentElement.removeChildren();
     this.treeOutline.removeChildren();
@@ -191,7 +191,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
 
       this.createWatchExpression(expression);
     }
-    return Promise.resolve();
   }
 
   private createWatchExpression(expression: string|null): WatchExpression {

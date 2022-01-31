@@ -3,7 +3,7 @@
     "message": "सभी रिपोर्ट"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "कैटगरी"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "सुलभता"
@@ -24,40 +24,40 @@
     "message": "डेस्कटॉप"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "लाइटहाउस फ़्लो रिपोर्ट को समझें"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "फ़्लो रिपोर्ट को समझें"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "इसके लिए नेविगेशन रिपोर्ट का इस्तेमाल करें..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "इसके लिए स्नैपशॉट रिपोर्ट का इस्तेमाल करें..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "इसके लिए टाइमस्पैन रिपोर्ट का इस्तेमाल करें..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "लाइटहाउस परफ़ॉर्मेंस स्कोर हासिल करें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट और स्पीड इंडेक्स जैसी पेज लोड की परफ़ॉर्मेंस मेट्रिक का आकलन करें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "प्रोग्रेसिव वेब ऐप्लिकेशन की क्षमताओं का आकलन करें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "एक पेज के ऐप्लिकेशन या जटिल फ़ॉर्म में, सुलभता से जुड़ी समस्याएं ढूंढें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "इंटरैक्शन के पीछे छिपे हुए मेन्यू और यूज़र इंटरफ़ेस (यूआई) एलिमेंट के सबसे सही तरीकों का आकलन करें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "कई इंटरैक्शन पर, लेआउट में हुए बदलाव और JavaScript लागू होने का समय मापें."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "लंबे समय तक इस्तेमाल किए वाले पेजों और एक पेज के ऐप्लिकेशन के अनुभव को बेहतर बनाने के लिए, परफ़ॉर्मेंस से जुड़े अवसरों के बारे में जानें."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "सबसे असरदार ऑडिट"
@@ -72,7 +72,7 @@
     "message": "पेज लोड"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "नेविगेशन रिपोर्ट, मूल लाइटहाउस रिपोर्ट की तरह ही एक पेज लोड का विश्लेषण करती है."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "नेविगेशन रिपोर्ट"
@@ -99,13 +99,13 @@
     "message": "अच्छी"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "सेव करें"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "पेज की कैप्चर की गई स्थिति"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "स्नैपशॉट रिपोर्ट किसी खास स्थिति में, खास तौर पर उपयोगकर्ता इंटरैक्शन के बाद पेज का विश्लेषण करती है."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "किसी खास समय पर, वेब पेज की स्थिति बताने वाली रिपोर्ट"
@@ -120,7 +120,7 @@
     "message": "उपयोगकर्ता के इंटरैक्शन"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "टाइमस्पैन रिपोर्ट किसी भी समय अवधि का, खास तौर पर उपयोगकर्ता इंटरैक्शन वाली समय अवधि का विश्लेषण करती है."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "पेज पर उपयोगकर्ता के इंटरैक्शन की जानकारी देने वाली रिपोर्ट"
@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` का इस्तेमाल `<meta name=\"viewport\">` एलिमेंट में नहीं किया जाता और `[maximum-scale]`विशेषता पाँच से कम नहीं है."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "स्क्रीन रीडर ऐसी सामग्री का अनुवाद नहीं कर सकते जिसमें टेक्स्ट नहीं है. `<object>` एलिमेंट में वैकल्पिक टेक्स्ट जोड़ने से, स्क्रीन रीडर आसानी से उपयोगकर्ताओं को बात का मतलब समझा सकते हैं. [ज़्यादा जानें](https://web.dev/object-alt/)."
+    "message": "स्क्रीन रीडर, बिना टेक्स्ट वाले कॉन्टेंट का अनुवाद नहीं कर सकते. `<object>` एलिमेंट में वैकल्पिक टेक्स्ट जोड़ने से, स्क्रीन रीडर आसानी से उपयोगकर्ताओं को कॉन्टेंट का मतलब समझा सकते हैं. [ज़्यादा जानें](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` एलिमेंट में `[alt]` टेक्स्ट नहीं है"
+    "message": "`<object>` एलिमेंट में वैकल्पिक टेक्स्ट नहीं है"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` एलिमेंट में`[alt]` टेक्स्ट है"
+    "message": "`<object>` एलिमेंट में वैकल्पिक टेक्स्ट है"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "0 से ज़्यादा मान साफ़ तौर पर नेविगेशन क्रम को लागू करता है. हालांकि, यह तकनीकी रूप से सही है, लेकिन यह अक्सर उन इस्तेमाल करने वालों को निराश करता है जो सहायक तकनीकों पर भरोसा करते हैं. [ज़्यादा जानें](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "यह पेज, ऑफ़लाइन मोड में काम नहीं करता"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA को अनइंस्टॉल कर दिया गया है और इंस्टॉल होने की स्थिति को रीसेट किया जा रहा है."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "बताया गया ऐप्लिकेशन प्लैटफ़ॉर्म, Android पर काम नहीं करता"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications सिर्फ़ Chrome बीटा और Android पर स्थिर चैनलों पर काम करता है."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse यह पता नहीं कर सका कि कोई सर्विस वर्कर था या नहीं. Chrome के नए वर्शन के साथ इस्तेमाल करें."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "दिया गया मेनिफ़ेस्ट स्टार्ट यूआरएल मान्य नहीं है"
@@ -1212,7 +1218,7 @@
     "message": "सर्वर बैकएंड के इंतज़ार का समय"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` इवेंट भरोसेमंद तरीके से नहीं होता और इसे सुनने की वजह से, ब्राउज़र ऑप्टिमाइज़ेशन की कुछ सुविधाएं रुक सकती हैं. जैसे, बैक-फ़ॉरवर्ड कैश मेमोरी. इसके बजाय, `pagehide` या `visibilitychange` इवेंट इस्तेमाल करें. [ज़्यादा जानें](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` इवेंट भरोसेमंद तरीके से नहीं होता. इसे सुनने की वजह से, बैक-फ़ॉरवर्ड कैश मेमोरी जैसी ब्राउज़र ऑप्टिमाइज़ेशन की कुछ सुविधाएं रुक सकती हैं. इसके बजाय, `pagehide` या `visibilitychange` इवेंट का इस्तेमाल करें. [ज़्यादा जानें](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "एक `unload` लिसनर रजिस्टर करता है"
@@ -2145,7 +2151,7 @@
     "message": "किसी ऐसी सेवा में अपनी GIF अपलोड करें जो उसे HTML5 वीडियो में जोड़ने के लिए तैयार रख सके."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "ऐसे [प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) या सेवा का इस्तेमाल करें जो आपकी अपलोड की गई इमेज को अपने-आप ही सबसे सही फ़ॉर्मैट में बदल दे."
+    "message": "किसी ऐसे [प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) या सेवा का इस्तेमाल करें जो आपकी अपलोड की गई इमेज को अपने-आप ही सबसे सही फ़ॉर्मैट में बदल दे."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "[धीमी रफ़्तार से लोड करने वाला ऐसा Joomla प्लग इन](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) इंस्टॉल करें जिसमें किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा हो या किसी ऐसे टेंप्लेट का इस्तेमाल करें जो यह सुविधा मुहैया कराता हो. Joomla 4.0 से शुरू करते हुए, सभी नई इमेज में `loading` एट्रिब्यूट [अपने-आप](https://github.com/joomla/joomla-cms/pull/30748) शामिल हो जाएगा."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` टैग, [किसी थीम के लेआउट में बदलाव करके](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) जोड़े जा सकते हैं."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "इमेज को `WebP` और `AVIF` जैसे मॉडर्न फ़ॉर्मैट में बदलने के लिए, `Next.js` इमेज ऑप्टिमाइज़ेशन एपीआई का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "`loading=\"lazy\"` को डिफ़ॉल्ट रूप से लागू करने के लिए `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "तीसरे पक्ष के गै़र-ज़रूरी स्क्रिप्ट को उसी समय लोड होने से रोकने के लिए, `next/script` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "जिन नियमों का इस्तेमाल न किया गया हो उन्हें स्टाइलशीट से हटाने के लिए, `Next.js` कॉन्फ़िगरेशन में `PurgeCSS` को सेट अप करें. [ज़्यादा जानें](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "ऐसे JavaScript कोड का पता लगाने के लिए `Webpack Bundle Analyzer` का इस्तेमाल करें जिसका इस्तेमाल न किया गया हो. [ज़्यादा जानें](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "आपका ऐप्लिकेशन असल में कैसा परफ़ॉर्म कर रहा है, यह मापने के लिए `Next.js Analytics` का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "ऐसी एसेट और `Server-side Rendered` एसएसआर पेजों को कैश मेमोरी में सेव करने की सुविधा चालू करें जिनमें बदलाव न होता हो. [ज़्यादा जानें](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "इमेज को ऑप्टिमाइज़ करने के लिए, `<img>` की जगह `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "सही `sizes` को सेट करने के लिए, `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "अपने Next.js सर्वर पर कंप्रेस करने की सुविधा चालू करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "वेब पेजों को तेज़ी से लोड करने के लिए, [ऐनिमेट किए गए GIF की जगह वीडियो का इस्तेमाल करें](https://web.dev/replace-gifs-with-videos/). साथ ही, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) या [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) जैसे मॉडर्न फ़ाइल फ़ॉर्मैट इस्तेमाल करें, ताकि कंप्रेस करने पर क्वालिटी, मौजूदा state-of-the-art वीडियो कोडेक VP9 के मुकाबले 30% से ज़्यादा हो."
   },
@@ -2286,7 +2322,7 @@
     "message": "किसी ऐसी सेवा में अपनी GIF अपलोड करें जो उसे HTML5 वीडियो में जोड़ने के लिए तैयार रख सके."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "ऐसे [प्लग इन](https://wordpress.org/plugins/search/convert+webp/) या सेवा का इस्तेमाल करें जो आपकी अपलोड की गई इमेज को अपने-आप ही सबसे सही फ़ॉर्मैट में बदल दे."
+    "message": "किसी ऐसे [प्लग इन](https://wordpress.org/plugins/search/convert+webp/) या सेवा का इस्तेमाल करें जो आपकी अपलोड की गई इमेज को अपने-आप ही सबसे सही फ़ॉर्मैट में बदल दे."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "ऐसा [धीमे लोड होने वाले WordPress प्लग इन](https://wordpress.org/plugins/search/lazy+load/) इंस्टॉल करें जिसमें किसी भी ऑफ़स्क्रीन इमेज को अलग करने की सुविधा हो. अगर नहीं, तो किसी ऐसी थीम पर जाएं जो यह सुविधा मुहैया कराती हो. साथ ही, [एएमपी प्लग इन](https://wordpress.org/plugins/amp/) का इस्तेमाल करें."

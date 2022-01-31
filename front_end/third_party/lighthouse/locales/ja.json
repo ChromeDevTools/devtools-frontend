@@ -480,10 +480,10 @@
     "message": "スクリーン リーダーは、テキスト以外のコンテンツを解釈できません。`<object>` 要素に代替テキストを追加すると、スクリーン リーダーを使用するユーザーが意味を把握するのに役立ちます。[詳細](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` 要素に `[alt]` テキストが指定されていません"
+    "message": "`<object>` 要素に代替テキストが指定されていません"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` 要素に `[alt]` テキストが指定されています"
+    "message": "`<object>` 要素に代替テキストが指定されています"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "値が 0 より大きい場合は、明示的なナビゲーション順序を示します。技術的には有効ですが、多くの場合、支援技術を使用しているユーザーにとって利便性が低下します。[詳細](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "ページがオフラインに対応していません"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA のアンインストールを完了し、インストール可能チェックマークをリセットしています。"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "指定されたアプリ プラットフォームは Android でサポートされていません"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Android の Chrome の Beta チャンネルと Stable チャンネルでサポートされるのは、prefer_related_applications のみです。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse は Service Worker の有無を確認できませんでした。新しいバージョンの Chrome でお試しください。"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "マニフェストの開始 URL が無効です"
@@ -1212,7 +1218,7 @@
     "message": "サーバーのバックエンド待ち時間"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` イベントの発生は安定していないため、これをリッスンするとブラウザの最適化機能（バックフォワード キャッシュなど）が妨げられる可能性があります。代わりに `pagehide` または `visibilitychange` イベントの使用をご検討ください。[詳細](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` イベントの発生は安定していないため、これをリッスンするとブラウザの最適化機能（バックフォワード キャッシュなど）が妨げられる可能性があります。代わりに `pagehide` または `visibilitychange` イベントを使用してください。[詳細](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` リスナーの登録"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[テーマのレイアウトを編集](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)して、`<link rel=preload>` タグを追加できます。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "`WebP` や `AVIF` などの最新のファイル形式で配信するには、`Next.js` の Image Optimization API を使用してください。[詳細](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "`next/image` コンポーネント（デフォルトは `loading=\"lazy\"`）を使用してください。[詳細](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "重要でない第三者スクリプトの読み込みを遅らせるには、`next/script` コンポーネントを使用してください。[詳細](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "使用されていないルールをスタイルシートから削除するには、`Next.js` で `PurgeCSS` を設定することをご検討ください。[詳細](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "使用されていない JavaScript コードを検出するには、`Webpack Bundle Analyzer` を使用してください。[詳細](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "アプリの実際のパフォーマンスを測定するには、`Next.js Analytics` の使用をご検討ください。[詳細](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "不変アセットと `Server-side Rendered`（SSR）ページのキャッシュを設定してください。[詳細](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "画像を最適化するには、`<img>` ではなく `next/image` コンポーネントを使用してください。[詳細](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "適切な `sizes` を設定するには、`next/image` コンポーネントを使用してください。[詳細](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Next.js サーバーで圧縮を有効にしてください。[詳細](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[アニメーション GIF を動画に置き換えて](https://web.dev/replace-gifs-with-videos/)ウェブページの読み込みを速くし、[WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos)、[AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) などの最先端のファイル形式を使用して、圧縮効率を現在の最新の動画コーデック VP9 より 30% 以上改善することをご検討ください。"

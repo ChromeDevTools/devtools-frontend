@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` is not used in the `<meta name=\"viewport\">` element and the `[maximum-scale]` attribute is not less than 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Screen readers cannot translate non-text content. Adding alt text to `<object>` elements helps screen readers convey meaning to users. [Learn more](https://web.dev/object-alt/)."
+    "message": "Screen readers cannot translate non-text content. Adding alternative text to `<object>` elements helps screen readers convey meaning to users. [Learn more](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` elements do not have `[alt]` text"
+    "message": "`<object>` elements do not have alternative text"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` elements have `[alt]` text"
+    "message": "`<object>` elements have alternative text"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "A value greater than 0 implies an explicit navigation ordering. Although technically valid, this often creates frustrating experiences for users who rely on assistive technologies. [Learn more](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Page does not work offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA has been uninstalled and installability checks resetting."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "The specified application platform is not supported on Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications is only supported on Chrome Beta and Stable channels on Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse could not determine if there was a service worker. Please try with a newer version of Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifest start URL is not valid"
@@ -1212,7 +1218,7 @@
     "message": "Server Back-end Latencies"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "The `unload` event does not fire reliably and listening for it can prevent browser optimisations like the back-forward cache. Consider using the `pagehide` or `visibilitychange` events instead. [Learn more](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "The `unload` event does not fire reliably and listening for it can prevent browser optimisations like the back-forward cache. Use `pagehide` or `visibilitychange` events instead. [Learn more](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registers an `unload` listener"
@@ -2097,7 +2103,7 @@
     "message": "Consider using the `BreakpointObserver` utility in the Component Dev Kit (CDK) to manage image breakpoints. [Learn more](https://material.angular.io/cdk/layout/overview)."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "Consider uploading your GIF to a service which will make it available to embed as an HTML5 video."
+    "message": "Consider uploading your GIF to a service that will make it available to embed as an HTML5 video."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Specify `@font-display` when defining custom fonts in your theme."
@@ -2142,7 +2148,7 @@
     "message": "Ensure that you are using the native [Responsive Image Styles](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) provided from Drupal (available in Drupal 8 and above). Use the Responsive Image Styles when rendering image fields through view modes, views or images uploaded through the WYSIWYG editor."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
-    "message": "Consider uploading your GIF to a service which will make it available to embed as an HTML5 video."
+    "message": "Consider uploading your GIF to a service that will make it available to embed as an HTML5 video."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
     "message": "Consider using a [plug-in](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) or service that will automatically convert your uploaded images to the optimal formats."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` tags can be added by [modifying a themes's layout](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Use the `Next.js` Image optimisation API to serve modern formats like `WebP` and `AVIF`. [Learn more](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Use the `next/image` component, which defaults to `loading=\"lazy\"`. [Learn more](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Use the `next/script` component to defer loading of non-critical third-party scripts. [Learn more](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Consider setting up `PurgeCSS` in `Next.js` configuration to remove unused rules from stylesheets. [Learn more](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn mode](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Consider using `Next.js Analytics` to measure your app's real-world performance. [Learn more](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets and `Server-side Rendered` (SSR) pages. [Learn more](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Use the `next/image` component instead of `<img>` to optimise images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Use the `next/image` component to set the appropriate `sizes`. [Learn more](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Enable compression on your Next.js server. [Learn more](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Replace animated GIFs with video](https://web.dev/replace-gifs-with-videos/) for faster web page loads, and consider using modern file formats, such as [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) or [AV1,](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) to improve compression efficiency by greater than 30% over the current state-of-the-art video codec, VP9."
   },
@@ -2283,7 +2319,7 @@
     "message": "Use the React DevTools Profiler, which makes use of the Profiler API, to measure the rendering performance of your components. [Learn more.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
-    "message": "Consider uploading your GIF to a service which will make it available to embed as an HTML5 video."
+    "message": "Consider uploading your GIF to a service that will make it available to embed as an HTML5 video."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
     "message": "Consider using a [plug-in](https://wordpress.org/plugins/search/convert+webp/) or service that will automatically convert your uploaded images to the optimal formats."

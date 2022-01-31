@@ -480,10 +480,10 @@
     "message": "Los lectores de pantalla no pueden traducir contenido que no sea texto. El agregado de texto alternativo a los elementos `<object>` ayuda a los lectores de pantalla a transmitir el significado correspondiente a los usuarios. [Obtén más información](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Los elementos `<object>` no tienen texto `[alt]`"
+    "message": "Los elementos `<object>` no tienen texto alternativo"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Los elementos `<object>` tienen texto `[alt]`"
+    "message": "Los elementos `<object>` tienen texto alternativo"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Si el valor es superior a 0, el orden de navegación es explícito. Aunque técnicamente esta es una posibilidad válida, suele producir experiencias frustrantes en los usuarios que necesitan las tecnologías de asistencia. [Obtén más información](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "La página no funciona sin conexión"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Se desisntaló AWP y se están restableciendo las verificaciones de instalabilidad."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "La plataforma de aplicaciones especificada no es compatible con Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications solo es compatible en Chrome Beta y en canales estables de Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse no pudo determinar si había un service worker. Prueba con una nueva versión de Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "La URL de inicio del manifiesto no es válida"
@@ -1212,7 +1218,7 @@
     "message": "Latencias de backend del servidor"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "El evento `unload` no se ejecuta de forma confiable y su escucha puede impedir las optimizaciones del navegador, como la Memoria caché atrás/adelante. En su lugar, considera usar los eventos `pagehide` o `visibilitychange`. [Más información](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "El evento `unload` no se ejecuta de forma confiable y su escucha puede impedir las optimizaciones del navegador, como la Memoria caché atrás/adelante. Usa los eventos `pagehide` o `visibilitychange` en su lugar. [Más información](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un objeto de escucha de `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Para agregar las etiquetas de `<link rel=preload>`, [modifica el diseño de los temas](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Utiliza la API de optimización de imagen de `Next.js` para publicar formatos modernos como `WebP` y `AVIF`. [Obtén más información](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Utiliza el componente `next/image`, cuya configuración predeterminada es `loading=\"lazy\"`. [Obtén más información](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Utiliza el componente `next/script` para posponer la carga de secuencias de comandos no críticas de terceros. [Obtén más información](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Puedes configurar `PurgeCSS` en la configuración de `Next.js` para quitar las reglas que no se usan de las hojas de estilo. [Obtén más información](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Utiliza `Webpack Bundle Analyzer` para detectar códigos de JavaScript sin uso. [Obtén más información](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Puedes utilizar `Next.js Analytics` para calcular el rendimiento real de tu app. [Obtén más información](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configura el almacenamiento en caché para elementos inmutables y páginas `Server-side Rendered` (SSR). [Obtén más información](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Utiliza el componente `next/image` en lugar de `<img>` para optimizar las imágenes. [Obtén más información](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Utiliza el componente `next/image` para establecer las `sizes` correspondientes. [Obtén más información](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Habilita la compresión en tu servidor Next.js. [Obtén más información](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Reemplaza los GIF animados con video](https://web.dev/replace-gifs-with-videos/) para que se cargue la página web más rápido y considera utilizar formatos de archivo modernos, como [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mejorar la eficiencia de la compresión en más de un 30% con respecto al VP9, el códec de video de vanguardia actual."

@@ -3,7 +3,7 @@
     "message": "Kaikki raportit"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Kategoriat"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Esteettömyys"
@@ -24,40 +24,40 @@
     "message": "Tietokone"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Lighthousen käyttökulkuraportin tulkitseminen"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Tietoja käyttökuluista"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Käytä navigointiraportteja näihin tarkoituksiin:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Käytä Snapshotia näihin tarkoituksiin:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Käytä aikajanaraportteja näihin tarkoituksiin:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Nouda Lighthouse-suorituskykyprosentti."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Mittaa sivulatauksia sivun latautumisajan ja nopeusindeksin kaltaisilla mittareilla."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Arvioi progressiivisten web-sovellusten ominaisuuksia."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Löydä esteettömyysongelmia yhden sivun sovelluksista tai monimutkaisista muodoista."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "Arvioi toiminnan taakse piilotettujen valikoiden ja UI-elementtien parhaita käytäntöjä."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "Mittaa asettelun muutoksia ja JavaScriptin suoritusaikoja toimintasarjoissa."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "Tutustu tapoihin, joilla voit parantaa pitkäaikaisten sivujen ja yhden sivun sovellusten käyttökokemusta."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Suurin vaikutus"
@@ -72,7 +72,7 @@
     "message": "Sivun lataaminen"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Navigointiraporteissa analysoidaan yksi sivun lataus, aivan kuten alkuperäisissä Lighthouse-raporteissa."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Navigointiraportti"
@@ -99,13 +99,13 @@
     "message": "Hyvä"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Tallenna"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Sivun kuvakaappaustila"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Snapshot-raporteissa analysoidaan sivua tietyssä tilassa, yleensä käyttäjien toiminnan jälkeen."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Tilannekuvaraportti"
@@ -120,7 +120,7 @@
     "message": "Käyttäjän toiminta"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Aikaväliraporteissa analysoidaan satunnainen ajanjakso, joka yleensä sisältää käyttäjien toimintaa."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Aikaväliraportti"
@@ -480,10 +480,10 @@
     "message": "Näytönlukuohjelmat eivät voi kääntää sisältöä, joka ei ole tekstiä. Vaihtoehtoisen tekstin lisääminen `<object>`-elementteihin auttaa näytönlukuohjelmia esittämään sisällön merkityksen käyttäjille. [Lue lisää](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>`-elementeissä ei ole `[alt]`-tekstiä"
+    "message": "`<object>`-elementeissä ei ole vaihtoehtoista tekstiä."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>`-elementeissä on `[alt]`-teksti"
+    "message": "`<object>`-elementeissä on vaihtoehtoista tekstiä."
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Navigointijärjestys on eksplisiittinen, jos arvo on suurempi kuin 0. Vaikka ratkaisu on teknisesti käypä, se tekee usein kokemuksesta turhauttavan avustustekniikkaa tarvitseville käyttäjille. [Lue lisää](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Sivu ei toimi ilman verkkoyhteyttä"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA on poistettu ja asennettavuustarkistuksia nollataan."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Määritettyä sovellusalustaa ei tueta Androidilla"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications on tuettu vain Chromen betaversioissa ja vakaissa versioissa Androidilla."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse ei havainnut service workeria. Yritä uudelleen Chromen uudemmalla versiolla."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifestin aloitus-URL ei kelpaa"
@@ -1212,7 +1218,7 @@
     "message": "Palvelimen taustaviiveet"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. Back-Forward-välimuistin toiminnan. Harkitse sen sijaan näiden tapahtumien käyttämistä: `pagehide` tai `visibilitychange`. [Lue lisää](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` ei käynnisty luotettavasti, ja sen kuuntelu voi estää selaimen optimoinnin, esim. siirtymisvälimuistin toiminnan. Käytä sen sijaan `pagehide`- tai `visibilitychange`-tapahtumia. [Lue lisää](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Rekisteröi (`unload`) kuuntelijan"
@@ -1665,7 +1671,7 @@
     "message": "Nämä tarkistukset tuovat esiin kohtia, joissa voit [parantaa verkkosovelluksesi esteettömyyttä](https://developers.google.com/web/fundamentals/accessibility). Vain pieni joukko esteettömyysongelmia voidaan havaita automaattisesti, joten myös manuaalista testaamista suositellaan."
   },
   "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
-    "message": "Nämä kohteet koskevat alueita, joita automaattinen testaustyökalu ei voi testata. Lue lisää [esteettömyystarkistuksen tekemisen](https://developers.google.com/web/fundamentals/accessibility/how-to-review) oppaastamme."
+    "message": "Nämä kohteet koskevat alueita, joita automaattinen testaustyökalu ei voi testata. Lue lisää [saavutettavuustarkistuksen tekemisen](https://developers.google.com/web/fundamentals/accessibility/how-to-review) oppaastamme."
   },
   "lighthouse-core/config/default-config.js | a11yCategoryTitle": {
     "message": "Esteettömyys"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tagit voidaan lisätä [muuttamalla teeman asettelua](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Jos haluat jaella moderneissa muodoissa (esim. `WebP` ja `AVIF`), käytä `Next.js` Image Optimization APIa. [Lue lisää](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Valitse `next/image`, jonka oletusarvo on `loading=\"lazy\"`. [Lue lisää](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Lykkää ei-kriittisten kolmannen osapuolen skriptien lataamista suorittamalla `next/script`. [Lue lisää](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Ota `PurgeCSS` käyttöön määrityksessä (`Next.js`), jotta voit poistaa tyyliarkkien käyttämättömät säännöt. [Lue lisää](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Valitse `Webpack Bundle Analyzer`, jotta voit havaita käyttämättömän JavaScript-ohjelmakoodin. [Lue lisää](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Sinun kannattaa ehkä valita `Next.js Analytics`, jotta voit mitata sovelluksen todellista toimivuutta. [Lue lisää](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Määritä muuttumattomien kohteiden ja `Server-side Rendered` (SSR) ‑sivujen välimuistiin siirtäminen. [Lue lisää](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Jos haluat optimoida kuvat, valitse `next/image` (ei `<img>`). [Lue lisää](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Suorita `next/image`, jotta `sizes` voi saada sopivan arvon. [Lue lisää](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Salli pakkaus Next.js-palvelimellasi. [Lue lisää](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Korvaa animoidut GIFit videoilla](https://web.dev/replace-gifs-with-videos/), mikä nopeuttaa verkkosivujen latautumista. Kannattaa myös käyttää nykyaikaisia tiedostomuotoja (esim. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) tai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)), jotka voivat pakata yli 30 % tehokkaammin kuin VP9."

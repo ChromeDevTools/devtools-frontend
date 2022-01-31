@@ -8,6 +8,10 @@
 
   await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
+  await TestRunner.RuntimeAgent.invoke_evaluate({
+    expression: 'webSqlPromise',
+    awaitPromise: true,
+  });
 
   const containerElement = LighthouseTestRunner.getContainerElement();
   const checkboxes = containerElement.querySelectorAll('.checkbox');

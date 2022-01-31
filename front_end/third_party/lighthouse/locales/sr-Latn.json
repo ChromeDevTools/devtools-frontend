@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` se ne koristi u elementu `<meta name=\"viewport\">`, a vrednost atributa `[maximum-scale]` nije manja od 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Čitači ekrana ne mogu da prevode sadržaj koji nije tekst. Dodavanje alt teksta elementima `<object>` omogućava da čitači ekrana lakše prenesu značenje korisnicima. [Saznajte više](https://web.dev/object-alt/)."
+    "message": "Čitači ekrana ne mogu da prevode sadržaj koji nije tekst. Dodavanje alternativnog teksta elementima `<object>` omogućava da čitači ekrana lakše prenesu značenje korisnicima. [Saznajte više](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementi `<object>` ne sadrže tekst `[alt]`"
+    "message": "Elementi `<object>` nemaju alternativni tekst"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementi `<object>` sadrže tekst `[alt]`"
+    "message": "Elementi `<object>` imaju alternativni tekst"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Vrednost veća od 0 označava eksplicitno naručivanje navigacije. Iako je tehnički ispravno, to često frustrira korisnike koji se oslanjaju na tehnologije za pomoć osobama sa invaliditetom. [Saznajte više](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Stranica ne radi oflajn"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA je deinstalirana i provere nestabilnosti se resetuju."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Navedena platforma za aplikacije nije podržana na Android-u"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Stavka prefer_related_applications je podržana samo u Chrome-u beta i na Stabilnim kanalima na Android-u."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse nije uspeo da utvrdi da li je postojao serviser. Probajte sa novijom verzijom Chrome-a."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Početni URL manifesta nije važeći"
@@ -1212,7 +1218,7 @@
     "message": "Pozadinska kašnjenja servera"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Događaj `unload` se ne pokreće pouzdano i ako se on obrađuje, to može da spreči optimizacije pregledača poput keša za kretanje unazad i unapred. Predlažemo vam da koristite događaje `pagehide` ili `visibilitychange` umesto njega. [Saznajte više](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Događaj `unload` se ne pokreće pouzdano i ako se on obrađuje, to može da spreči optimizacije pregledača poput keša za kretanje unazad i unapred. Bolje da koristite događaje`pagehide` ili `visibilitychange`. [Saznajte više](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registruje obrađivača događaja `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Oznake `<link rel=preload>` mogu da se dodaju [izmenom izgleda teme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Koristite API za optimizaciju slike `Next.js` da biste prikazivali moderne formate poput `WebP` i `AVIF`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Koristite komponentu `next/image`, koja je podrazumevano podešena na `loading=\"lazy\"`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Koristite komponentu `next/script` da biste odložili učitavanje skripta treće strane koje nisu toliko važne. [Saznajte više](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Preporučujemo vam da podesite `PurgeCSS` u konfiguraciji komponente `Next.js` da biste uklonili neiskorišćena pravila iz opisa stilova. [Saznajte više](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Koristite `Webpack Bundle Analyzer` da biste otkrili neiskorišćeni JavaScript kôd. [Saznajte više](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Preporučujemo vam da koristite `Next.js Analytics` za merenje učinka aplikacije u stvarnom svetu. [Saznajte više](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurišite keširanje za nepromenljive elemente i `Server-side Rendered` (SSR) stranice. [Saznajte više](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Koristite komponentu `next/image`, a ne `<img>`, da biste optimizovali slike. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Koristite komponentu `next/image` da biste podesili odgovarajuće `sizes`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Omogućite komprimovanje na Next.js serveru. [Saznajte više](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Zamenite animirane GIF-ove video sadržajem](https://web.dev/replace-gifs-with-videos/) da bi se veb-stranice brže učitavale, a predlažemo i da koristite moderne formate fajlova, kao što je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ili [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), da biste poboljšali efikasnost komprimovanja za više od 30% u odnosu na aktuelni najsavremeniji video kodek, VP9."

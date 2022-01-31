@@ -420,7 +420,7 @@
     "message": "Los elementos `<input type=\"image\">` no tienen texto `[alt]`"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
-    "message": "Los elementos `<input type=\"image\">` contienen texto `[alt]`"
+    "message": "Los elementos `<input type=\"image\">` tienen texto `[alt]`"
   },
   "lighthouse-core/audits/accessibility/label.js | description": {
     "message": "Las etiquetas facilitan que las tecnologías de asistencia, como los lectores de pantalla, puedan leer los controles de los formularios de forma correcta. [Más información](https://web.dev/label/)"
@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` no se utiliza en el elemento `<meta name=\"viewport\">` y el valor del atributo `[maximum-scale]` no es inferior a 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Los lectores de pantalla no pueden traducir contenido que no sea texto. Al añadir texto alternativo a los elementos `<object>`, los lectores de pantalla podrán transmitir su significado a los usuarios. [Más información](https://web.dev/object-alt/)"
+    "message": "Los lectores de pantalla no pueden traducir contenido que no sea texto. Si añades texto alternativo a los elementos `<object>`, los lectores de pantalla podrán transmitir su significado a los usuarios. [Más información](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Los elementos `<object>` no tienen texto `[alt]`"
+    "message": "Los elementos `<object>` no tienen texto alternativo"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Los elementos `<object>` contienen texto `[alt]`"
+    "message": "Los elementos `<object>` tienen texto alternativo"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Si el valor es superior a 0, significa que el orden de navegación es explícito. Aunque técnicamente es válido, esto suele producir experiencias frustrantes para los usuarios que necesitan usar tecnologías de asistencia. [Más información](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "La página no funciona sin conexión"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "La PWA se ha desinstalado y las comprobaciones de inestabilidad se están restableciendo."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "La plataforma de aplicaciones especificada no es compatible con Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "\"prefer_related_applications\" solo es compatible con Chrome Beta y con canales estables de Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse no ha podido determinar si había un service worker. Inténtalo con una versión más reciente de Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "La URL de inicio del archivo de manifiesto no es válida"
@@ -1212,7 +1218,7 @@
     "message": "Latencias de backend del servidor"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "El evento `unload` no se activa de manera fiable y esperar a que se detecte puede impedir optimizaciones del navegador, como la caché de páginas completas. Considera usar los eventos `pagehide` o `visibilitychange` en su lugar. [Más información](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "El evento `unload` no se activa de manera fiable y esperar a que se detecte puede impedir optimizaciones del navegador, como la caché de páginas completas. Usa los eventos `pagehide` o `visibilitychange` en su lugar. [Más información](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un procesador `unload`"
@@ -1341,7 +1347,7 @@
     "message": "El {decimalProportion, number, extendedPercent} del texto es legible"
   },
   "lighthouse-core/audits/seo/font-size.js | explanationViewport": {
-    "message": "El texto es ilegible porque no hay metaetiquetas de viewport optimizadas para pantallas de dispositivos móviles."
+    "message": "El texto es ilegible porque no hay etiquetas meta de viewport optimizadas para pantallas de dispositivos móviles."
   },
   "lighthouse-core/audits/seo/font-size.js | failureTitle": {
     "message": "El documento no usa tamaños de fuente legibles"
@@ -1449,7 +1455,7 @@
     "message": "El {decimalProportion, number, percent} de los elementos táctiles tiene un tamaño adecuado"
   },
   "lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized": {
-    "message": "Los elementos táctiles son demasiado pequeños porque no hay metaetiquetas de viewport optimizadas para pantallas de dispositivos móviles"
+    "message": "Los elementos táctiles son demasiado pequeños porque no hay etiquetas meta de viewport optimizadas para pantallas de dispositivos móviles"
   },
   "lighthouse-core/audits/seo/tap-targets.js | failureTitle": {
     "message": "El tamaño de los elementos táctiles no es el adecuado"
@@ -1632,7 +1638,7 @@
     "message": "La página tiene mapas de origen válidos"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Una metaetiqueta `<meta name=\"viewport\">` no solo optimiza tu aplicación para los tamaños de pantalla de los dispositivos móviles, sino que también evita [el retraso de 300 milisegundos de las entradas del usuario](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Más información](https://web.dev/viewport/)"
+    "message": "Una etiqueta meta `<meta name=\"viewport\">` no solo optimiza tu aplicación para los tamaños de pantalla de los dispositivos móviles, sino que también evita [el retraso de 300 milisegundos de las entradas del usuario](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Más información](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "No se ha encontrado ninguna etiqueta `<meta name=\"viewport\">`"
@@ -2145,7 +2151,7 @@
     "message": "Considera subir tu GIF a un servicio que permita insertarlo como un vídeo HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "Considera utilizar un [complemento](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) o servicio que convierta automáticamente las imágenes que subas a los formatos óptimos."
+    "message": "Considera usar un [complemento](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) o servicio que convierta automáticamente las imágenes que subas a los formatos óptimos."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Instala un [complemento de carga en diferido de Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) con la capacidad de posponer imágenes que no aparecen en pantalla, o cambia a una plantilla que incluya esa función. A partir de Joomla 4.0, todas las imágenes nuevas obtendrán el atributo `loading` [automáticamente](https://github.com/joomla/joomla-cms/pull/30748) del núcleo."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Es posible añadir etiquetas `<link rel=preload>` [cambiando el diseño de un tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Usa la API Image Optimization de `Next.js` para publicar formatos modernos, como `WebP` y `AVIF`. [Más información](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Usa el componente `next/image`, cuyo valor predeterminado es `loading=\"lazy\"`. [Más información](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Usa el componente `next/script` para posponer la carga de secuencias de comandos de terceros que no sean esenciales. [Más información](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Considera usar `PurgeCSS` en la configuración de `Next.js` para quitar las reglas que no se usen de las hojas de estilo. [Más información](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Usa `Webpack Bundle Analyzer` para detectar código de JavaScript sin usar. [Más información](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Considera usar `Next.js Analytics` para medir el rendimiento real de tu aplicación. [Más información](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configura el almacenamiento en caché de recursos que no se pueden modificar y páginas `Server-side Rendered` (SSR). [Más información](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Usa el componente `next/image` en lugar de `<img>` para optimizar las imágenes. [Más información](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Usa el componente `next/image` para establecer `sizes` de manera adecuada. [Más información](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Habilita la compresión en tu servidor Next.js. [Más información](https://nextjs.org/docs/api-reference/next.config.js/compression)"
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Sustituye los GIF animados por vídeos](https://web.dev/replace-gifs-with-videos/) para cargar las páginas web más rápidamente. También puedes usar formatos de archivo modernos como [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mejorar la eficiencia de compresión más de un 30 % en comparación con VP9, el códec de vídeo de última generación."
   },
@@ -2286,7 +2322,7 @@
     "message": "Considera subir tu GIF a un servicio que permita insertarlo como un vídeo HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "Considera utilizar un [complemento](https://wordpress.org/plugins/search/convert+webp/) o servicio que convierta automáticamente las imágenes que subas a los formatos óptimos."
+    "message": "Considera usar un [complemento](https://wordpress.org/plugins/search/convert+webp/) o servicio que convierta automáticamente las imágenes que subas a los formatos óptimos."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Instala un [complemento de carga en diferido de WordPress](https://wordpress.org/plugins/search/lazy+load/) con la capacidad de posponer imágenes que no aparecen en la pantalla, o cambia a un tema con esa función. También puedes usar el [complemento de AMP](https://wordpress.org/plugins/amp/)."

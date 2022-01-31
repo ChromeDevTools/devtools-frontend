@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` wordt niet gebruikt in het `<meta name=\"viewport\">`-element en het `[maximum-scale]`-kenmerk is niet minder dan 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Schermlezers kunnen alleen tekstcontent vertalen. Als je alt-tekst aan `<object>`-elementen toevoegt, kunnen schermlezers de betekenis overbrengen aan gebruikers. [Meer informatie](https://web.dev/object-alt/)"
+    "message": "Schermlezers kunnen geen andere content dan tekst vertalen. Als je alternatieve tekst aan `<object>`-elementen toevoegt, kunnen schermlezers de betekenis overbrengen aan gebruikers. [Meer informatie](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>`-elementen bevatten geen `[alt]`-tekst"
+    "message": "`<object>`-elementen bevatten geen alternatieve tekst"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>`-elementen bevatten `[alt]`-tekst"
+    "message": "`<object>`-elementen bevatten alternatieve tekst"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Een waarde groter dan 0 impliceert een expliciete navigatievolgorde. Hoewel dit technisch geldig is, is dit vaak vervelend voor gebruikers die afhankelijk zijn van hulptechnologieën. [Meer informatie](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "De pagina werkt niet offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA is verwijderd en de installeerbaarheidschecks worden gereset."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Het opgegeven app-platform wordt niet ondersteund op Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications wordt alleen ondersteund op bèta- en stabiele kanalen van Chrome op Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse kan niet bepalen of er een service worker is. Probeer het met een nieuwere versie van Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "De start-URL voor het manifest is ongeldig"
@@ -1212,7 +1218,7 @@
     "message": "Wachttijden van server-backend"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "De gebeurtenis `unload` wordt niet op een betrouwbare manier geactiveerd en hierop wachten kan ervoor zorgen dat browseroptimalisaties zoals de Back-Forward Cache niet worden uitgevoerd. Overweeg in plaats daarvan de gebeurtenissen `pagehide` of `visibilitychange` te gebruiken. [Meer informatie](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "De gebeurtenis `unload` wordt niet op een betrouwbare manier geactiveerd en hierop wachten kan ervoor zorgen dat browseroptimalisaties zoals de Back-Forward Cache niet worden uitgevoerd. Gebruik in plaats daarvan de gebeurtenis `pagehide` of `visibilitychange`. [Meer informatie](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registreert een `unload`-listener"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tags kunnen worden toegevoegd door [de lay-out van een thema te wijzigen](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Gebruik de Image Optimization API van `Next.js` om moderne indelingen zoals `WebP` en `AVIF` weer te geven. [Meer informatie](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Gebruik de component `next/image`. Deze is standaard ingesteld op `loading=\"lazy\"`. [Meer informatie](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Gebruik de component `next/script` om het laden van niet-kritieke scripts van derden uit te stellen. [Meer informatie](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Je kunt eventueel `PurgeCSS` instellen in de `Next.js`-instellingen om niet-gebruikte regels uit stylesheets te verwijderen. [Meer informatie](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Gebruik `Webpack Bundle Analyzer` om ongebruikte JavaScript-code te detecteren. [Meer informatie](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Je kunt eventueel `Next.js Analytics` gebruiken om de daadwerkelijke prestaties van je app te meten. [Meer informatie](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Opslaan in het cachegeheugen instellen voor onveranderbare items en `Server-side Rendered`-pagina's (SSR). [Meer informatie](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Gebruik in plaats van `<img>` de component `next/image` om afbeeldingen te optimaliseren. [Meer informatie](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Gebruik de component `next/image` om de juiste `sizes` in te stellen. [Meer informatie](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Zet de compressie op je Next.js-server aan. [Meer informatie](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Vervang geanimeerde gif's door video](https://web.dev/replace-gifs-with-videos/) zodat de webpagina sneller laadt en overweeg moderne bestandsindelingen zoals [webm](https://web.dev/replace-gifs-with-videos/#create-webm-videos) of [av1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) te gebruiken voor een tot 30% efficiëntere compressie vergeleken met de huidige geavanceerde videocodec, vp9."

@@ -477,13 +477,13 @@
     "message": "Атрибут `[user-scalable=\"no\"]` не используется в элементе `<meta name=\"viewport\">`, и значение атрибута `[maximum-scale]` больше или равно 5"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Чтобы программы чтения с экрана могли озвучивать содержимое элементов `<object>`, добавьте к ним атрибут alt. [Подробнее…](https://web.dev/object-alt/)"
+    "message": "Чтобы программы чтения с экрана могли зачитывать содержимое элементов `<object>`, добавьте к ним альтернативный текст. [Подробнее…](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Атрибут `[alt]` задан не для всех элементов `<object>`"
+    "message": "У элементов `<object>` нет альтернативного текста"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Элементы `<object>` содержат атрибут `[alt]`"
+    "message": "У элементов `<object>` есть альтернативный текст"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Значение больше 0 подразумевает определенный порядок навигации. Это может создавать трудности для пользователей с ограниченными возможностями. [Подробнее…](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Эта страница не поддерживается в офлайн-режиме."
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Условия установки сброшены после удаления PWA."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Указанная платформа приложения не поддерживается на устройствах Android."
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Атрибут prefer_related_applications поддерживается только в бета-версии Chrome и стабильной версии на устройствах Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse не удалось проверить наличие файла service worker. Повторите попытку в более новой версии Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Недействительный URL стартовой страницы манифеста."
@@ -1212,7 +1218,7 @@
     "message": "Задержка со стороны сервера"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Событие `unload` активируется не всегда. Если ожидать его, это может привести к ошибкам средств оптимизации браузера, например функции возвратного кеша. Рекомендуем вместо него использовать событие `pagehide` или `visibilitychange`. [Подробнее…](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Событие `unload` активируется не всегда. Если ожидать его, это может привести к ошибкам средств оптимизации браузера, например функции возвратного кеша. Мы рекомендуем использовать события `pagehide` или `visibilitychange`. [Подробнее…](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Регистрируется прослушиватель для события `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Чтобы добавить теги `<link rel=preload>`, [измените разметку темы](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Преобразуйте изображения в современные форматы (например, `WebP` и `AVIF`) с помощью `Next.js` Image Optimization API. [Подробнее…](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Используйте компонент `next/image`, который по умолчанию принимает значение `loading=\"lazy\"`. [Подробнее…](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Используйте компонент `next/script`, чтобы отложить загрузку несущественных сторонних скриптов. [Подробнее…](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Настройте плагин `PurgeCSS` в конфигурации `Next.js`, чтобы удалить неиспользуемые правила из таблицы стилей. [Подробнее…](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Используйте `Webpack Bundle Analyzer` для обнаружения неиспользуемого кода JavaScript. [Подробнее…](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Используйте `Next.js Analytics`, чтобы измерять фактическую эффективность приложения. [Подробнее…](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Включите кеширование для неизменяемых объектов и страниц `Server-side Rendered` (SSR). [Подробнее…](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Чтобы оптимизировать изображения, используйте компонент `next/image` вместо `<img>`. [Подробнее…](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Используйте компонент `next/image`, чтобы задавать подходящие размеры `sizes`. [Подробнее…](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Включите сжатие на сервере Next.js. [Подробнее…](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Смените анимированные GIF-файлы на видео](https://web.dev/replace-gifs-with-videos/), чтобы ускорить загрузку страниц. Также рекомендуем использовать современные форматы файлов, такие как [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) и [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder). Это позволит повысить эффективность сжатия более чем на 30 % по сравнению с показателями новейшего видеокодека VP9."

@@ -417,7 +417,7 @@
     "message": "如果 `<input>` 按鈕是以圖片呈現，提供替代文字可協助螢幕閱讀器使用者瞭解該按鈕的用途。[瞭解詳情](https://web.dev/input-image-alt/)。"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "`<input type=\"image\">` 元素未設定 `[alt]` 文字"
+    "message": "`<input type=\"image\">` 元素沒有 `[alt]` 文字"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` 元素具有 `[alt]` 文字"
@@ -480,10 +480,10 @@
     "message": "螢幕閱讀器無法解讀非文字內容。為 `<object>` 元素新增替代文字，可協助螢幕閱讀器向使用者傳達該元素的意義。[瞭解詳情](https://web.dev/object-alt/)。"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` 元素未設定 `[alt]` 文字"
+    "message": "`<object>` 元素沒有替代文字"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` 元素具有 `[alt]` 文字"
+    "message": "`<object>` 元素具有替代文字"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "如果值大於 0，表示採用的是明確的瀏覽排序。雖然這在技術上可行，但經常會對仰賴輔助技術的使用者造成困擾。[瞭解詳情](https://web.dev/tabindex/)。"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "網頁無法離線運作"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA 已解除安裝並將重設安裝規定檢查。"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Android 不支援指定的應用程式平台"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications 僅適用於 Android 上的 Chrome Beta 版和穩定版。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse 無法判斷是否有 service worker。請嘗試使用較新的 Chrome 版本。"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "資訊清單開始網址無效"
@@ -1212,7 +1218,7 @@
     "message": "伺服器後端延遲時間"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` 事件無法穩定觸發，監聽該事件可能會妨礙系統進行某些瀏覽器最佳化作業 (例如往返快取)。建議改用 `pagehide` 或 `visibilitychange` 事件。[瞭解詳情](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` 事件無法穩定觸發，監聽該事件可能會造成系統無法進行某些瀏覽器最佳化調整作業 (例如往返快取)。請改用 `pagehide` 或 `visibilitychange` 事件。[瞭解詳情](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "註冊 `unload` 事件監聽器"
@@ -2097,7 +2103,7 @@
     "message": "建議你使用元件開發套件 (CDK) 中的 `BreakpointObserver` 公用程式來管理圖片中斷點。[瞭解詳情](https://material.angular.io/cdk/layout/overview)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "建議你將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
+    "message": "建議您將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "在主題中定義自訂字型時，指定 `@font-display`。"
@@ -2142,10 +2148,10 @@
     "message": "請確保你使用的是 Drupal 內建的[回應式圖片樣式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (Drupal 8 及以上版本提供)。藉由檢視模式、檢視畫面或透過 WYSIWYG 編輯器上傳的圖片轉譯圖片欄位時，請使用回應式圖片樣式。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
-    "message": "建議你將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
+    "message": "建議您將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "建議你使用會自動將上傳圖片轉換成最佳格式的[外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)或服務。"
+    "message": "建議您使用會自動將上傳圖片轉換成最佳格式的[外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)或服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "安裝可延遲載入所有畫面外圖片的[延遲載入 Joomla 外掛程式](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading)，或是改用提供這項功能的範本。自 Joomla 4.0 開始，所有新圖片都會[自動](https://github.com/joomla/joomla-cms/pull/30748)從系統核心取得 `loading` 屬性。"
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "你可以透過[修改主題版面配置](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)來新增 `<link rel=preload>` 標記。"
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "請使用 `Next.js` Image Optimization API 提供新型格式，例如 `WebP` 和 `AVIF`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "請使用 `next/image` 元件，預設為 `loading=\"lazy\"`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#loading)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "請使用 `next/script` 元件延遲載入非關鍵的第三方指令碼。[瞭解詳情](https://nextjs.org/docs/basic-features/script)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "建議您在 `Next.js` 設定中設定 `PurgeCSS` 以從樣式表中移除未使用的規則。[瞭解詳情](https://purgecss.com/guides/next.html)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "請使用 `Webpack Bundle Analyzer` 偵測未使用的 JavaScript 程式碼。[瞭解詳情](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "建議您使用 `Next.js Analytics` 評估應用程式的實際效能。[瞭解詳情](https://nextjs.org/docs/advanced-features/measuring-performance)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "請設定不可變動資產和 `Server-side Rendered` (SSR) 頁面的快取。[瞭解詳情](https://nextjs.org/docs/going-to-production#caching)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "請使用 `next/image` 元件最佳化圖片，而非 `<img>`。[瞭解詳情](https://nextjs.org/docs/basic-features/image-optimization)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "請使用 `next/image` 元件設定適當的 `sizes`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#sizes)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "請為您的 Next.js 伺服器啟用壓縮功能。[瞭解詳情](https://nextjs.org/docs/api-reference/next.config.js/compression)。"
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[用影片取代 GIF 動畫](https://web.dev/replace-gifs-with-videos/)以加快載入網頁，並考慮使用 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) 等新型檔案格式，這樣可讓目前最先進的影片轉碼器 VP9 的壓縮效率再提高超過 30%。"
   },
@@ -2283,10 +2319,10 @@
     "message": "使用 React DevTools Profiler，這項工具會採用 Profiler API 來測量你的元件轉譯效能。[瞭解詳情](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
-    "message": "建議你將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
+    "message": "建議您將 GIF 上傳到可將 GIF 做為 HTML5 影片嵌入的服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "建議你使用會自動將上傳圖片轉換成最佳格式的[外掛程式](https://wordpress.org/plugins/search/convert+webp/)或服務。"
+    "message": "建議您使用會自動將上傳圖片轉換成最佳格式的[外掛程式](https://wordpress.org/plugins/search/convert+webp/)或服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "安裝可延遲載入所有畫面外圖片的[延遲載入 WordPress 外掛程式](https://wordpress.org/plugins/search/lazy+load/)，或改用提供這項功能的主題。你也可以考慮使用 [AMP 外掛程式](https://wordpress.org/plugins/amp/)。"

@@ -417,10 +417,10 @@
     "message": "将图片用作 `<input>` 按钮时，提供替代文字有助于屏幕阅读器用户了解该按钮的用途。[了解详情](https://web.dev/input-image-alt/)。"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "`<input type=\"image\">` 元素缺少 `[alt]` 文字"
+    "message": "`<input type=\"image\">` 元素无对应的 `[alt]` 文字"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
-    "message": "`<input type=\"image\">` 元素包含 `[alt]` 文字"
+    "message": "`<input type=\"image\">` 元素有对应的 `[alt]` 文字"
   },
   "lighthouse-core/audits/accessibility/label.js | description": {
     "message": "标签可确保辅助技术（如屏幕阅读器）正确读出表单控件。[了解详情](https://web.dev/label/)。"
@@ -480,10 +480,10 @@
     "message": "屏幕阅读器无法转换非文字内容。向 `<object>` 元素添加替代文字可帮助屏幕阅读器将含义传达给用户。[了解详情](https://web.dev/object-alt/)。"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` 元素缺少 `[alt]` 文字"
+    "message": "`<object>` 元素无对应的替代文字"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` 元素包含 `[alt]` 文字"
+    "message": "`<object>` 元素有对应的替代文字"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "值大于 0 意味着明确的导航顺序。尽管这在技术上可行，但往往会让依赖辅助技术的用户感到沮丧。[了解详情](https://web.dev/tabindex/)。"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "该网页无法离线使用"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA 已卸载完毕，正在重置可安装性检查。"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "指定的应用平台在 Android 设备上不受支持"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications 仅适用于 Android 设备上的 Chrome Beta 版和稳定版。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse 无法确定是否有 Service Worker。请在更新版本的 Chrome 中重试。"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "清单起始网址无效"
@@ -1212,7 +1218,7 @@
     "message": "服务器后端延迟"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "“`unload`”事件不会可靠地触发，而且监听该事件可能会妨碍系统实施“往返缓存”之类的浏览器优化策略。建议您改用“`pagehide`”或“`visibilitychange`”事件。[了解详情](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "“`unload`”事件不会可靠地触发，而且监听该事件可能会妨碍系统实施“往返缓存”之类的浏览器优化策略。请改用“`pagehide`”或“`visibilitychange`”事件。[了解详情](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "注册“`unload`”事件监听器"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 `<link rel=preload>` 标记。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "请使用 `Next.js` Image Optimization API 提供现代格式，例如 `WebP` 和 `AVIF`。[了解详情](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "请使用 `next/image` 组件，该组件的默认设置是 `loading=\"lazy\"`。[了解详情](https://nextjs.org/docs/api-reference/next/image#loading)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "请使用 `next/script` 组件推迟加载非关键第三方脚本。[了解详情](https://nextjs.org/docs/basic-features/script)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "建议您在 `Next.js` 配置中设置 `PurgeCSS` 以从样式表中移除未使用的规则。[了解详情](https://purgecss.com/guides/next.html)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "请使用 `Webpack Bundle Analyzer` 检测未使用的 JavaScript 代码。[了解详情](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "建议您使用 `Next.js Analytics` 衡量应用的实际性能。[了解详情](https://nextjs.org/docs/advanced-features/measuring-performance)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "请为不可变资源和`Server-side Rendered` (SSR) 网页配置缓存。[了解详情](https://nextjs.org/docs/going-to-production#caching)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "请使用 `next/image` 组件（而非 `<img>`）优化图片。[了解详情](https://nextjs.org/docs/basic-features/image-optimization)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "请使用 `next/image` 组件设置适当的 `sizes`。[了解详情](https://nextjs.org/docs/api-reference/next/image#sizes)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "请在您的 Next.js 服务器上启用压缩功能。[了解详情](https://nextjs.org/docs/api-reference/next.config.js/compression)。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[将 GIF 动画替换为视频](https://web.dev/replace-gifs-with-videos/)以提高网页加载速度，并考虑使用现代文件格式（例如 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)），通过目前最先进的 VP9 视频编解码器将压缩效率提高 30% 以上。"

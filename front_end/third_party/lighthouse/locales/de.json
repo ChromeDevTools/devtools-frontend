@@ -417,10 +417,10 @@
     "message": "Wenn ein Bild als `<input>`-Schaltfläche verwendet wird, kann die Angabe von alternativem Text Screenreader-Nutzern helfen, den Zweck der Schaltfläche besser zu verstehen. [Weitere Informationen.](https://web.dev/input-image-alt/)"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "`<input type=\"image\">`-Elemente verfügen nicht über `[alt]`-Text"
+    "message": "`<input type=\"image\">`-Elemente haben keinen `[alt]`-Text"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
-    "message": "`<input type=\"image\">`-Elemente verfügen über `[alt]`-Text"
+    "message": "`<input type=\"image\">`-Elemente haben `[alt]`-Text"
   },
   "lighthouse-core/audits/accessibility/label.js | description": {
     "message": "Durch Labels wird gewährleistet, dass Steuerelemente für Formulare von Hilfstechnologien wie Screenreadern richtig angesagt werden. [Weitere Informationen.](https://web.dev/label/)"
@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` wird nicht im `<meta name=\"viewport\">`-Element verwendet und das `[maximum-scale]`-Attribut ist nicht kleiner als 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Screenreader können lediglich Textinhalte interpretieren. Wenn Sie `<object>`-Elementen Alt-Text hinzufügen, können Screenreader-Nutzer besser verstehen, was diese Elemente darstellen. [Weitere Informationen.](https://web.dev/object-alt/)"
+    "message": "Screenreader können lediglich Textinhalte interpretieren. Wenn Sie `<object>`-Elementen alternativen Text hinzufügen, können Screenreader-Nutzer besser verstehen, was diese Elemente darstellen. [Weitere Informationen](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>`-Elemente verfügen nicht über `[alt]`-Text"
+    "message": "`<object>`-Elemente haben keinen alternativen Text"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>`-Elemente verfügen über `[alt]`-Text"
+    "message": "`<object>`-Elemente haben alternativen Text"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Ein Wert größer als 0 impliziert eine explizite Navigationsanordnung. Das ist zwar technisch möglich; aber für Nutzer, die auf Hilfstechnologien angewiesen sind, ist dies häufig frustrierend. [Weitere Informationen.](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Seite kann offline nicht geladen werden"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA wurde installiert und die Überprüfungen zur Installierbarkeit wurden zurückgesetzt."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Die angegebene Anwendungsplattform wird nicht von Android unterstützt"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "„prefer_related_applications“ wird nur in Chrome Beta und stabilen Versionen von Android unterstützt."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse konnte nicht feststellen, ob es einen Service Worker gibt. Bitte versuchen Sie es mit einer neueren Version von Chrome noch einmal."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Start-URL des Manifests ist nicht gültig"
@@ -1212,7 +1218,7 @@
     "message": "Server-Back-End-Latenzen"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Das `unload`-Ereignis wird nicht zuverlässig ausgelöst. Wenn der Listener darauf wartet, kann das Browseroptimierungen wie den Back-Forward-Cache beeinträchtigen. Möglicherweise ist es sinnvoll, stattdessen das `pagehide`- oder das `visibilitychange`-Ereignis zu verwenden. [Weitere Informationen](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Das `unload`-Ereignis wird nicht zuverlässig ausgelöst. Wenn der Listener darauf wartet, kann das Browseroptimierungen wie den Back-Forward-Cache beeinträchtigen. Verwenden Sie stattdessen `pagehide`- oder `visibilitychange`-Ereignisse. [Weitere Informationen](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registriert einen `unload`-Listener"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Sie können \"`<link rel=preload>`\"-Tags hinzufügen, indem Sie [das Layout eines Designs ändern](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Sie können die `Next.js` Image Optimization API verwenden, um moderne Formate wie „`WebP`“ und „`AVIF`“ bereitzustellen. [Weitere Informationen](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Sie können die Komponente „`next/image`“ verwenden, die standardmäßig auf „`loading=\"lazy\"`“ festgelegt ist. [Weitere Informationen](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Sie können die Komponente „`next/script`“ verwenden, um das Laden von unkritischen Drittanbieter-Skripts zu verzögern. [Weitere Informationen](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Sie können „`PurgeCSS`“ in der`Next.js`-Konfiguration einrichten, um nicht verwendete Regeln aus Stylesheets zu entfernen. [Weitere Informationen](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Sie können „`Webpack Bundle Analyzer`“ verwenden, um nicht verwendeten JavaScript-Code zu entdecken. [Weitere Informationen](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Sie können „`Next.js Analytics`“ verwenden, um die Leistung Ihrer App in der Praxis zu messen. [Weitere Informationen](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurieren Sie das Caching von unveränderlichen Assets und `Server-side Rendered`-Seiten (SSR). [Weitere Informationen](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Sie können statt „`<img>`“ die Komponente „`next/image`“ verwenden, um Bilder zu optimieren. [Weitere Informationen](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Sie können die Komponente „`next/image`“ verwenden, um den geeigneten Wert für „`sizes`“ festzulegen. [Weitere Informationen](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Aktivieren Sie die Komprimierung auf Ihrem Next.js-Server. [Weitere Informationen](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Ersetzen Sie animierte GIFs durch Videos](https://web.dev/replace-gifs-with-videos/), damit die Webseite schneller lädt, und verwenden Sie moderne Dateiformate wie [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) oder [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), um die Kompressionseffizienz um mehr als 30 % gegenüber dem neuesten Video-Codec bzw. VP9 zu verbessern."

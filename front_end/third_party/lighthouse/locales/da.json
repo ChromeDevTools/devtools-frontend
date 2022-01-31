@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` anvendes ikke i `<meta name=\"viewport\">`-elementet, og attributten `[maximum-scale]` er ikke mindre end 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Skærmlæsere kan ikke oversætte indhold, som ikke er tekst. Du kan føje alternativ tekst til `<object>`-elementer for at hjælpe skærmlæsere med at formidle meningen til brugerne. [Få flere oplysninger](https://web.dev/object-alt/)."
+    "message": "Skærmlæsere kan ikke oversætte indhold, som ikke er tekst Du kan føje alternativ tekst til `<object>`-elementer for at hjælpe skærmlæsere med at formidle meningen til brugerne. [Få flere oplysninger](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>`-elementerne har ikke `[alt]`-tekst"
+    "message": "`<object>`-elementerne har ikke alternativ tekst"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>`-elementerne har `[alt]`-tekst"
+    "message": "`<object>`-elementerne har alternativ tekst"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "En værdi over 0 antyder en utvetydig sortering af navigation. Selvom dette teknisk er gyldigt, skaber det ofte en frustrerende oplevelse for brugere, der anvender hjælpeteknologier. [Få flere oplysninger](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Siden fungerer ikke offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA'en er blevet afinstalleret, og installerbarhedstjek nulstilles."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Den angivne app-platform understøttes ikke i Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications understøttes kun i betaversionen af Chrome og stabile kanaler i Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse kunne ikke fastslå, om der var en scripttjeneste. Prøv med en nyere version af Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifestets startwebadresse er ikke gyldig"
@@ -1212,7 +1218,7 @@
     "message": "Forsinkelser for serverens backend"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Hændelsen `unload` starter ikke stabilt, og hvis der ventes på den, kan det forhindre browseroptimeringer som f.eks. back/forward-cache. Du bør i stedet overveje at bruge hændelserne `pagehide` eller `visibilitychange`. [Få flere oplysninger](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Hændelsen `unload` starter ikke stabilt, og hvis der ventes på den, kan det forhindre browseroptimeringer som f.eks. back/forward-cache. Anvend hændelsen `pagehide` eller `visibilitychange` i stedet. [Få flere oplysninger](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerer en hændelsesfunktion for `unload`"
@@ -2097,7 +2103,7 @@
     "message": "Du kan også vælge at bruge værktøjet `BreakpointObserver` i Component Dev Kit (CDK) til at administrere skillepunkter for billeder. [Få flere oplysninger](https://material.angular.io/cdk/layout/overview)."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan integreres som en HTML5-video."
+    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Angiv `@font-display`, når du definerer tilpassede skrifttyper i dit tema."
@@ -2142,7 +2148,7 @@
     "message": "Sørg for at bruge de indbyggede [responsive billedformater](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) fra Drupal (tilgængelig i Drupal 8 og nyere versioner). Brug de responsive billedformater, når du gengiver billedfelter gennem visningstilstande, visninger eller billeder, der uploades via WYSIWYG-editoren."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
-    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan integreres som en HTML5-video."
+    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
     "message": "Overvej at bruge et [plugin](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) eller en tjeneste, der automatisk konverterer dine uploadede billeder til deres optimale formater."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tags kan tilføjes ved at [ændre layoutet for et tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Brug `Next.js` Image Optimization API til at vise moderne formater som f.eks. `WebP` og `AVIF`. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Brug komponenten `next/image`, der som standard anvender `loading=\"lazy\"`. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Brug komponenten `next/script` til at udskyde indlæsning af tredjepartsscripts, som ikke er kritiske. [Få flere oplysninger](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Overvej at konfigurere `PurgeCSS` i `Next.js`-konfigurationen for at fjerne ubrugte regler fra typografiark. [Få flere oplysninger](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Brug `Webpack Bundle Analyzer` til at registrere ubrugt JavaScript-kode. [Få flere oplysninger](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Overvej at bruge `Next.js Analytics` til at måle din apps ydeevne i den virkelige verden. [Få flere oplysninger](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurer cachelagring for uforanderlige aktiver og SSR-sider (`Server-side Rendered`). [Få flere oplysninger](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Brug komponenten `next/image` i stedet for `<img>` til at optimere billeder. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Brug komponenten `next/image` til at angive de rigtige `sizes`. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Aktivér komprimering på din Next.js-server. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Udskift animerede giffer med video](https://web.dev/replace-gifs-with-videos/) for at få hurtigere websideindlæsning, og overvej at bruge moderne filformater som f.eks. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) for at forbedre effektiviteten af komprimering med mere end 30 % i forhold til det topmoderne videocodec VP9."
   },
@@ -2283,7 +2319,7 @@
     "message": "Brug React DevTools Profiler, som anvender Profiler API til at måle effektiviteten og gengivelsen af dine komponenter. [Få flere oplysninger.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
-    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan integreres som en HTML5-video."
+    "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
     "message": "Overvej at bruge et [plugin](https://wordpress.org/plugins/search/convert+webp/) eller en tjeneste, der automatisk konverterer dine uploadede billeder til deres optimale formater."

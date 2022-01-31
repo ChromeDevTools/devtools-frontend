@@ -480,10 +480,10 @@
     "message": "Os leitores de tela não traduzem conteúdo não textual. A adição de texto alternativo aos elementos `<object>` ajuda os leitores de tela a transmitir o significado para os usuários. [Saiba mais](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Os elementos `<object>` não têm texto `[alt]`"
+    "message": "Os elementos `<object>` não têm texto alternativo"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Os elementos `<object>` têm texto `[alt]`"
+    "message": "Os elementos `<object>` têm texto alternativo"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Um valor maior que 0 indica uma ordem explícita de navegação. Embora tecnicamente válido, isso costuma gerar experiências frustrantes para os usuários que utilizam tecnologias assistivas. [Saiba mais](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "A página não funciona off-line"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "O PWA foi desinstalado e as verificações de estabilidade estão sendo redefinidas."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "A plataforma de aplicativo especificada não é compatível com o Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications só é compatível no Android com Canais Beta e Stable do Chrome."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "O Lighthouse não conseguiu determinar se havia um service worker. Tente de novo com uma versão mais recente do Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "O URL de início do manifesto não é válido"
@@ -1212,7 +1218,7 @@
     "message": "Latências do back-end do servidor"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "O evento `unload` não é acionado de maneira confiável, e a detecção dele pode evitar otimizações do navegador, como o cache de avanço e retorno. Recomendamos o uso dos eventos `pagehide` ou `visibilitychange`. [Saiba mais](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "O evento `unload` não é acionado de maneira confiável, e a detecção dele pode evitar otimizações do navegador, como o cache de avanço e retorno. Use `pagehide` ou `visibilitychange`. [Saiba mais](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra um listener `unload`"
@@ -2145,7 +2151,7 @@
     "message": "Faça upload do seu GIF para um serviço que o disponibilizará para incorporação como um vídeo HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "Use um [plug-in](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) ou serviço que converta automaticamente as imagens enviadas nos formatos ideais."
+    "message": "Use um [plug-in](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) ou serviço que converta automaticamente as imagens enviadas para os formatos ideais."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "Instale um [plug-in de carregamento lento do Joomla](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading), que permite adiar imagens fora da tela, ou alterne para um modelo que ofereça essa funcionalidade. A partir do Joomla 4.0, todas as novas imagens receberão o atributo `loading` [automaticamente](https://github.com/joomla/joomla-cms/pull/30748) do núcleo."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "As tags `<link rel=preload>` podem ser adicionadas [modificando o layout de um tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Use a API Image Optimization do `Next.js` para veicular formatos modernos como `WebP` e `AVIF`. [Saiba mais](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Use o componente `next/image`, que tem `loading=\"lazy\"` como valor padrão. [Saiba mais](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Use o componente `next/script` para adiar o carregamento de scripts terceirizados não essenciais. [Saiba mais](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Configure o plug-in `PurgeCSS` com `Next.js` para remover regras não usadas das folhas de estilo. [Saiba mais](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Use o `Webpack Bundle Analyzer` para detectar códigos JavaScript não usados. [Saiba mais](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Use o `Next.js Analytics` para medir o desempenho do seu app no mundo real. [Saiba mais](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configure o armazenamento em cache para recursos e páginas `Server-side Rendered` (SSR) imutáveis. [Saiba mais](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Use o componente `next/image` em vez de `<img>` para otimizar imagens. [Saiba mais](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Use o componente `next/image` para configurar o valor de `sizes` adequado. [Saiba mais](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Ative a compressão no seu servidor Next.js. [Saiba mais](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Substitua GIFs animados por vídeos](https://web.dev/replace-gifs-with-videos/) para acelerar o carregamento de páginas da Web e considere usar formatos de arquivo modernos, como [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ou [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), para melhorar a eficiência de compactação em mais de 30% em relação ao codec de vídeo mais avançado atualmente, o VP9."
   },
@@ -2286,7 +2322,7 @@
     "message": "Faça upload do seu GIF para um serviço que o disponibilizará para incorporação como um vídeo HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "Use um [plug-in](https://wordpress.org/plugins/search/convert+webp/) ou serviço que converta automaticamente as imagens enviadas nos formatos ideais."
+    "message": "Use um [plug-in](https://wordpress.org/plugins/search/convert+webp/) ou serviço que converta automaticamente as imagens enviadas para os formatos ideais."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Instale um [plug-in de carregamento lento do WordPress](https://wordpress.org/plugins/search/lazy+load/), que permite adiar imagens fora da tela, ou alterne para um tema que ofereça essa funcionalidade. Também recomendamos o uso do [plug-in de AMP](https://wordpress.org/plugins/amp/)."

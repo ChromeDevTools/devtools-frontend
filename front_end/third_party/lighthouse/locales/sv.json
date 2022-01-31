@@ -480,10 +480,10 @@
     "message": "En skärmläsare kan inte tolka innehåll som inte är text. Om du lägger till alt-text i `<object>`-elementen kan skärmläsarna förmedla ett meningsfullt innehåll till användaren. [Läs mer](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Vissa `<object>`-element saknar `[alt]`-text"
+    "message": "`<object>` element saknar alt-text"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Alla `<object>`-element har `[alt]`-text"
+    "message": "`<object>` element har alt-text"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Med värden större än noll anges en explicit ordningsföljd för navigeringen. Även om detta inte är fel rent tekniskt leder det ofta till en frustrerande upplevelse för den som är beroende av tekniska hjälpmedel. [Läs mer](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Sidan fungerar inte offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA har avinstallerats. Kontrollen av om PWA kan installeras återställs."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Applattformen som anges stöds inte på Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications stöds bara i Chrome Beta och Chrome Stable på Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse kunde inte avgöra om en tjänstefunktion används. Testa med en senare version av Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Startwebbadressen i manifestet är ogiltig"
@@ -1212,7 +1218,7 @@
     "message": "Serverlatens"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt och att lyssna efter den kan förhindra webbläsaroptimeringar, t.ex. vilocacheminne. Vi rekommenderar att du använder händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Händelsen `unload` aktiveras inte på ett tillförlitligt sätt. Att lyssna efter den kan därför förhindra optimeringar i webbläsaren, som att använda vilocacheminnet. Använd händelserna `pagehide` eller `visibilitychange` i stället. [Läs mer](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerar en lyssnare för `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-taggar kan läggas till genom att [ändra ett temas layout](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Använd Image Optimization API i `Next.js` för moderna format som `WebP` och `AVIF`. [Läs mer](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Använd komponenten `next/image`, som har `loading=\"lazy\"` som standardinställning. [Läs mer](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Skjut upp inläsningen av mindre viktiga skript från tredje part med komponenten `next/script`. [Läs mer](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Ställ in `PurgeCSS` i `Next.js`-konfigurationen så att regler som inte används tas bort från formatmallarna. [Läs mer](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Identifiera JavaScript-kod som inte används med `Webpack Bundle Analyzer`. [Läs mer](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Du kan mäta appens faktiska prestanda med `Next.js Analytics`. [Läs mer](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurera cachning av tillgångar och SSR-sidor (`Server-side Rendered`) som inte förändras. [Läs mer](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Optimera bilder med komponenten `next/image` i stället för `<img>`. [Läs mer](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Ställ in `sizes` med komponenten `next/image`. [Läs mer](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Aktivera komprimering på Next.js-servern. [Läs mer](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Ersätt animerade GIF-bilder med videor](https://web.dev/replace-gifs-with-videos/) så att webbsidan läses in snabbare. Du kan även använda moderna filformat som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) för att förbättra komprimeringens effektivitet med mer än 30 % jämfört med den nuvarande toppmoderna videokodeken VP9."

@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]`, `<meta name=\"viewport\">` öğesinde kullanılmamış ve `[maximum-scale]` özelliği 5'ten küçük değil."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Ekran okuyucular metin dışı içeriği çeviremez. `<object>` öğelerine alternatif metin eklemek, ekran okuyucuların ilgili öğenin ne anlama geldiğini kullanıcılara söylemesine yardımcı olur. [Daha fazla bilgi](https://web.dev/object-alt/)."
+    "message": "Ekran okuyucular metin dışı içeriği çeviremez. `<object>` öğelerine alternatif metin eklemek, ekran okuyucuların ilgili öğenin ne anlama geldiğini kullanıcılara söylemesine yardımcı olur. [Daha fazla bilgi](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` öğelerinin `[alt]` metni yok"
+    "message": "`<object>` öğelerinin alternatif metni yok"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` öğelerinin `[alt]` metni var"
+    "message": "`<object>` öğelerinin alternatif metni var"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "0'dan büyük bir değer, açık bir gezinme sıralamasını belirtir. Bu durum teknik olarak geçerli olsa da yardımcı teknolojilerden yararlanan kullanıcıların genellikle sinir bozucu deneyimler yaşamalarına neden olur. [Daha fazla bilgi](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Sayfa çevrimdışı çalışmıyor"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA (Progresif Web Uygulaması) kaldırıldı ve yüklenebilirlik kontrolleri sıfırlanıyor."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Belirtilen uygulama platformu, Android'de desteklenmiyor"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications, Android'de yalnızca Chrome Beta ve Mevcut ürün kanallarında desteklenir."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse bir hizmet çalışanının mevcut olup olmadığını belirleyemedi. Lütfen Chrome'un daha yeni bir sürümüyle deneyin."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifest başlangıç URL'si geçerli değil"
@@ -1212,7 +1218,7 @@
     "message": "Sunucunun Arka Uç Gecikmeleri"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` etkinliği güvenilir bir şekilde tetiklenmez ve etkinliğin dinlenmesi, Geri-İleri Önbelleği gibi tarayıcı optimizasyonlarını engelleyebilir. Bunun yerine `pagehide` veya `visibilitychange` etkinliklerini kullanabilirsiniz. [Daha Fazla Bilgi](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` etkinliği güvenilir bir şekilde tetiklenmez ve etkinliğin dinlenmesi, Geri-İleri Önbelleği gibi tarayıcı optimizasyonlarını engelleyebilir. Bunun yerine `pagehide` veya `visibilitychange` etkinliklerini kullanın. [Daha fazla bilgi](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Bir `unload` işleyicisi bulunuyor"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` etiketleri, [bir temanın düzeni değiştirilerek](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) eklenebilir."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "`WebP` ve `AVIF` gibi modern biçimler sunmak için `Next.js` Image Optimization API'sini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Varsayılan şekilde `loading=\"lazy\"` olan `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Kritik olmayan üçüncü taraf komut dosyalarının yüklenmesini ertelemek için `next/script` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Kullanılmayan kuralları stil sayfalarından kaldırmak için `Next.js` içerisinde `PurgeCSS` kurma seçeneğini değerlendirin. [Daha fazla bilgi](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Kullanılmayan JavaScript kodunu belirlemek için `Webpack Bundle Analyzer` kullanın. [Daha fazla bilgi](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Uygulamanızın gerçek dünya performansını ölçmek için `Next.js Analytics` kullanma seçeneğini değerlendirin. [Daha fazla bilgi](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Sabit öğeler ve `Server-side Rendered` (SSR) sayfaları için önbelleğe almayı yapılandırın. [Daha fazla bilgi](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Resimleri optimize etmek için `<img>` yerine `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Uygun `sizes` kurulumu için `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Next.js sunucunuzda sıkıştırmayı etkinleştirin. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "Web sayfalarının daha hızlı yüklenmesi için [animasyonlu GIF'lerin yerine video koyun](https://web.dev/replace-gifs-with-videos/) ve mevcut son teknoloji video codec'i VP9'da sıkıştırma etkinliğini %30'dan fazla artırmak için [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) veya [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) gibi modern dosya biçimlerini kullanın."

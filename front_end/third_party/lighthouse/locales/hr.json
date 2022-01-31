@@ -3,7 +3,7 @@
     "message": "Sva izvješća"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Kategorije"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Pristupačnost"
@@ -24,40 +24,40 @@
     "message": "Računalo"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Razumijevanje Lighthouseovog izvješća o putovima"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Razumijevanje putova"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Upotrijebite izvješća o kretanju za..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Upotrijebite izvješća o snimkama za..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Upotrijebite izvješća o razdoblju za..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "dobivanje rezultata izvedbe za Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "mjerenje pokazatelja izvedbe učitavanja stranica kao što su najveće renderiranje sadržaja i indeks brzine"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "procjenu mogućnosti progresivne web-aplikacije"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "pronalaženje problema s pristupačnošću u jednostraničnim aplikacijama ili složenim obrascima"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "procjenu najboljih primjera iz prakse za izbornike i elemente korisničkog sučelja skrivene iza interakcije"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "mjerenje pomaka izgleda i vremena izvršavanja JavaScripta u nizu interakcija"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "otkrivanje prilika za izvedbu radi poboljšanja doživljaja za dugotrajne stranice i jednostranične aplikacije"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Najviši utjecaj"
@@ -72,7 +72,7 @@
     "message": "Učitavanje stranice"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Izvješća o kretanju analiziraju učitavanje jedne stranice, jednako kao i izvorna Lighthouseova izvješća."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Izvješće o kretanju"
@@ -99,13 +99,13 @@
     "message": "Dobro"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Spremi"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Snimljeno stanje stranice"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Izvješća o snimkama analiziraju stranicu u određenom stanju, obično nakon interakcija korisnika."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Izvješće o snimci"
@@ -120,7 +120,7 @@
     "message": "Korisničke interakcije"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Izvješća o razdoblju analiziraju proizvoljno razdoblje, koje obično obuhvaća korisničke interakcije."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Izvješće o razdoblju"
@@ -417,7 +417,7 @@
     "message": "Kada se slika upotrebljava kao gumb `<input>`, navođenje zamjenskog teksta može pomoći korisnicima čitača zaslona da shvate svrhu gumba. [Saznajte više](https://web.dev/input-image-alt/)."
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "Elementi `<input type=\"image\">` nemaju tekst`[alt]`"
+    "message": "Elementi `<input type=\"image\">` nemaju `[alt]` tekst"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
     "message": "Elementi `<input type=\"image\">` sadrže `[alt]` tekst"
@@ -480,10 +480,10 @@
     "message": "Čitači zaslona ne mogu prevesti sadržaj osim teksta. Dodavanje zamjenskog teksta elementima `<object>` pomaže čitačima zaslona u prenošenju značenja korisnicima. [Saznajte više](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementi `<object>` nemaju tekst`[alt]`"
+    "message": "Elementi `<object>` nemaju zamjenski tekst"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementi `<object>` sadrže `[alt]` tekst"
+    "message": "Elementi `<object>` imaju zamjenski tekst"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Vrijednost viša od 0 podrazumijeva eksplicitno naređivanje kretanja. Iako je tehnički valjano, to često frustrira korisnike koji se oslanjaju na pomoćne tehnologije. [Saznajte više](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Stranica ne radi izvanmrežno"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA je deinstaliran i provjere instalabilnosti vraćaju se na zadano."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Navedena platforma za aplikacije nije podržana na Androidu"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications podržan je samo na beta i stabilnom kanalu Chromea na Androidu."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse nije mogao odrediti je li bilo uslužnog alata. Pokušajte s novijom verzijom Chromea."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Početni URL manifesta nije važeći"
@@ -1212,7 +1218,7 @@
     "message": "Pozadinske latencije poslužitelja"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Događaj `unload` ne aktivira se na pouzdan način i njegovo osluškivanje može spriječiti optimizacije preglednika kao što je predmemoriranje cijele stranice. Umjesto toga savjetujemo vam upotrebu događaja `pagehide` ili `visibilitychange`. [Saznajte više](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Događaj `unload` ne aktivira se na pouzdan način i njegovo osluškivanje može spriječiti optimizacije preglednika kao što je predmemoriranje cijele stranice. Umjesto toga upotrijebite događaj `pagehide` ili `visibilitychange`. [Saznajte više](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrira se kao slušatelj za događaj `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` oznake mogu se dodati [promjenom izgleda tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Koristite `Next.js` Image Optimization API za posluživanje modernih formata kao što su `WebP` i `AVIF`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Koristite komponentu `next/image`, za koju je zadana vrijednost `loading=\"lazy\"`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Pomoću komponente `next/script` odgodite učitavanje nekritičnih skripti trećih strana. [Saznajte više](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Savjetujemo vam da postavite `PurgeCSS` u `Next.js` konfiguraciji da biste uklonili nekorištena pravila s listova stilova. [Saznajte više](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Koristite `Webpack Bundle Analyzer` za otkrivanje nekorištenog JavaScript koda. [Saznajte više](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Savjetujemo vam da koristite `Next.js Analytics` radi mjerenja izvedbe aplikacije u stvarnom svijetu. [Saznajte više](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurirajte predmemoriranje za nepromjenjive elemente i stranice `Server-side Rendered` (SSR). [Saznajte više](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Koristite komponentu `next/image` umjesto komponente `<img>` radi optimizacije slika. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Koristite komponentu `next/image` da biste postavili odgovarajuće `sizes`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Omogućite kompresiju na Next.js poslužitelju. [Saznajte više](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Zamijenite animirane GIF-ove videozapisima](https://web.dev/replace-gifs-with-videos/) za brže učitavanje web-stranice i razmislite o upotrebi modernih formata datoteka kao što su [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ili [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) kako biste poboljšali učinkovitost kompresije za više od 30% u odnosu na trenutačno najnapredniji videokodek, VP9."

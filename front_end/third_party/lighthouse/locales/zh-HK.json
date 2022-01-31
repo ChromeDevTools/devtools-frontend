@@ -477,13 +477,13 @@
     "message": "`<meta name=\"viewport\">` 元素中未有使用 `[user-scalable=\"no\"]` 元素，而且 `[maximum-scale]` 屬性少於 5。"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "螢幕閱讀器無法翻譯非文字內容。為 `<object>` 元素新增替代文字，可協助螢幕閱讀器向使用者傳達其意義。[瞭解詳情](https://web.dev/object-alt/)。"
+    "message": "螢幕閱讀器無法翻譯非文字內容。為 `<object>` 元素新增替代文字，可協助螢幕閱讀器向使用者傳達其意思。[瞭解詳情](https://web.dev/object-alt/)。"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` 元素未設定 `[alt]` 文字"
+    "message": "`<object>` 元素未設定替代文字"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` 元素具有 `[alt]` 文字"
+    "message": "`<object>` 元素具有替代文字"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "如果值大於 0，表示採用的是明確的瀏覽排序。雖然此做法在技術上可行，但通常會對依賴輔助技術的使用者造成困擾。[瞭解詳情](https://web.dev/tabindex/)。"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "頁面無法離線工作"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA 已解除安裝並將重設安裝規定檢查。"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Android 不支援此指定的應用平台"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications 僅支援 Android 裝置上的 Chrome Beta 版本和穩定版。"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse 無法判斷是否有 Service Worker。請試使較新的 Chrome 版本。"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "資訊清單起始網址無效"
@@ -1212,7 +1218,7 @@
     "message": "伺服器後端延遲時間"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` 事件無法保證觸發，而偵聽此事件可能會防礙瀏覽器優化項目操作，例如往返快取。請考慮改為使用 `pagehide` 或 `visibilitychange` 事件。[瞭解詳情](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` 事件無法保證觸發，而偵聽此事件可能會防礙瀏覽器優化項目操作，例如向前/返回快取。請改為使用 `pagehide` 或 `visibilitychange` 事件。[瞭解詳情](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "發現 `unload` 偵聽器"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "您可透過[修改主題版面配置](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)來新增 `<link rel=preload>` 標籤。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "請使用 `Next.js` Image Optimization API 提供新型格式，例如 `WebP` 和 `AVIF`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "請使用 `next/image` 組件，預設為 `loading=\"lazy\"`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#loading)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "請使用 `next/script` 組件延遲載入非關鍵的第三方指令碼。[瞭解詳情](https://nextjs.org/docs/basic-features/script)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "建議您在 `Next.js` 設定中設定 `PurgeCSS` 以從樣式表中移除未使用的規則。[瞭解詳情](https://purgecss.com/guides/next.html)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "請使用 `Webpack Bundle Analyzer` 偵測未使用的 JavaScript 程式碼。[瞭解詳情](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "建議您使用 `Next.js Analytics` 評估應用程式的實際效能。[瞭解詳情](https://nextjs.org/docs/advanced-features/measuring-performance)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "請設定不可變動資產和 `Server-side Rendered` (SSR) 頁面的快取。[瞭解詳情](https://nextjs.org/docs/going-to-production#caching)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "請使用 `next/image` 組件優化圖片，而非 `<img>`。[瞭解詳情](https://nextjs.org/docs/basic-features/image-optimization)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "請使用 `next/image` 組件設定適當的 `sizes`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#sizes)。"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "請為您的 Next.js 伺服器啟用壓縮功能。[瞭解詳情](https://nextjs.org/docs/api-reference/next.config.js/compression)。"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[以影片取代動態 GIF](https://web.dev/replace-gifs-with-videos/) 以加快網頁載入速度，並考慮使用新型檔案格式，例如 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 或 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)，以將壓縮效率提升 30% 以上 (與目前最先進的影片編解碼器 VP9 相比)。"

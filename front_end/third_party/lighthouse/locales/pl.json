@@ -3,7 +3,7 @@
     "message": "Wszystkie raporty"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Kategorie"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Ułatwienia dostępu"
@@ -24,40 +24,40 @@
     "message": "Wersja komputerowa"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Omówienie raportu dotyczącego procesu Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Omówienie procesów"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Używaj raportów dotyczących nawigacji do tych celów:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Używaj raportów dotyczących określonego momentu do tych celów:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Używaj raportów dotyczących okresu do tych celów:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "uzyskiwanie danych o wydajności Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "sprawdzanie parametrów szybkości ładowania strony, takich jak największe wyrenderowanie treści czy indeks szybkości"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "ocena możliwości progresywnej aplikacji internetowej"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "znajdowanie problemów dotyczących ułatwień dostępu w aplikacjach jednostronicowych lub złożonych formularzach"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "ocena sprawdzonych metod dotyczących elementów menu i interfejsu ukrytych za interakcją"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "pomiar czasu wykonywania przesunięć układu i JavaScriptu w serii interakcji"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "odkrywanie możliwości poprawy wydajności w celu usprawnienia działania istniejących od dawna stron i aplikacji jednostronicowych"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Największy wpływ"
@@ -72,7 +72,7 @@
     "message": "Wczytywanie strony"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Raporty dotyczące nawigacji analizują ładowanie pojedynczej strony – dokładnie tak jak oryginalne raporty Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Raport dotyczący nawigacji"
@@ -99,13 +99,13 @@
     "message": "Dobra"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Zapisz"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Zarejestrowany stan strony"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Raporty dotyczące określonego momentu analizują strony w konkretnym stanie, zwykle po interakcji z użytkownikiem."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Raport dotyczący określonego momentu"
@@ -120,7 +120,7 @@
     "message": "Interakcje użytkownika"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Raporty dotyczące okresu analizują dowolne okresy, zwykle obejmujące interakcje z użytkownikiem."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Raport dotyczący okresu"
@@ -480,10 +480,10 @@
     "message": "Czytniki ekranu nie potrafią tłumaczyć treści innych niż tekst. Dodanie do elementów `<object>` tekstu zastępczego pomaga czytnikom ekranu w przekazywaniu użytkownikom właściwego znaczenia. [Więcej informacji](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementy `<object>` nie mają tekstu `[alt]`"
+    "message": "Elementy `<object>` nie mają tekstu zastępczego"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementy `<object>` mają tekst `[alt]`"
+    "message": "Elementy `<object>` mają tekst zastępczy"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Wartość większa niż 0 implikuje określoną wprost kolejność nawigacji. Chociaż takie rozwiązanie jest technicznie poprawne, często powoduje frustrację użytkowników technologii wspomagających. [Więcej informacji](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Strona nie działa offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Odinstalowano PWA. Trwa resetowanie sprawdzania możliwości zainstalowania."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Wskazana platforma aplikacji nie jest obsługiwana na Androidzie"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Atrybut prefer_related_applications jest obsługiwany tylko w wersjach beta i stabilnej Chrome na Androida."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Narzędzie Lighthouse nie mogło określić, czy był dostępny skrypt service worker. Spróbuj użyć nowszej wersji Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "URL początkowy pliku manifestu jest nieprawidłowy"
@@ -1212,7 +1218,7 @@
     "message": "Opóźnienia backendu serwera"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Zdarzenie `unload` nie zawsze jest uruchamiane prawidłowo, a wykrywanie go może uniemożliwić działanie mechanizmów optymalizujących pracę przeglądarki takich jak pamięć podręczna stanu strony internetowej. Rozważ używanie zdarzeń `pagehide` lub `visibilitychange`. [Więcej informacji](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Zdarzenie `unload` nie zawsze jest uruchamiane prawidłowo, a wykrywanie go może uniemożliwić działanie mechanizmów optymalizujących pracę przeglądarki takich jak np. Back-Forward Cache. Zamiast tego użyj zdarzenia `pagehide` lub `visibilitychange`. [Więcej informacji](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Zarejestrowanie detektora zdarzeń `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Tagi `<link rel=preload>` można dodać, [modyfikując układ motywu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Użyj interfejsu Image Optimization API `Next.js` do wyświetlania nowoczesnych formatów, takich jak `WebP` i `AVIF`. [Więcej informacji](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Użyj komponentu `next/image` który ustawia domyślną wartość `loading=\"lazy\"`. [Więcej informacji](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Użyj komponentu `next/script`, aby opóźnić wczytywanie niekrytycznych skryptów spoza witryny. [Więcej informacji](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Możesz skonfigurować wtyczkę `PurgeCSS` w konfiguracji `Next.js`, aby usunąć nieużywane reguły z arkuszy stylów. [Więcej informacji](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Użyj narzędzia `Webpack Bundle Analyzer`, aby wykryć nieużywany kod JavaScript. [Więcej informacji](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Możesz użyć narzędzia `Next.js Analytics`, żeby zmierzyć rzeczywistą szybkość aplikacji. [Więcej informacji](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Skonfiguruj buforowanie zasobów niezmiennych i stron `Server-side Rendered` (SSR). [Więcej informacji](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Użyj komponentu `next/image` zamiast `<img>` do optymalizowania obrazów. [Więcej informacji](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Użyj komponentu `next/image`, aby ustawić odpowiednią wartość `sizes`. [Więcej informacji](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Włącz na swoim serwerze Next.js kompresję. [Więcej informacji](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Zastąp animowane GIF-y filmami](https://web.dev/replace-gifs-with-videos/), aby strony ładowały się szybciej, i rozważ użycie nowoczesnych formatów plików, takich jak [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) lub [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), aby poprawić kompresję o ponad 30% w stosunku do kodeka wideo VP9."

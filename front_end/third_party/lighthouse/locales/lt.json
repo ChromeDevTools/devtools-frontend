@@ -477,13 +477,13 @@
     "message": "Atributas „`[user-scalable=\"no\"]`“ nenaudojamas elemente „`<meta name=\"viewport\">`“, o atributas „`[maximum-scale]`“ yra ne mažesnis nei 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Ekrano skaitytuvai negali išversti turinio, kuris nėra tekstas. Prie elementų „`<object>`“ pridėjus alternatyviojo teksto, ekrano skaitytuvai naudotojams geriau perteikia reiškmę. [Sužinokite daugiau](https://web.dev/object-alt/)."
+    "message": "Ekrano skaitytuvai negali išversti turinio, kuris nėra tekstas. Pridėję alternatyviojo teksto prie elementų „`<object>`“, padėsite ekrano skaitytuvams geriau perteikti reikšmę naudotojams. [Sužinokite daugiau](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementuose „`<object>`“ nėra „`[alt]`“ teksto"
+    "message": "Elementuose „`<object>`“ nėra alternatyviojo teksto"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementuose „`<object>`“ yra „`[alt]`“ teksto"
+    "message": "Elementuose „`<object>`“ yra alternatyviojo teksto"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Didesnė nei 0 vertė aiškiai nurodo naršymo tvarką. Iš tiesų tai yra tinkamas sprendimas, tačiau tai dažnai gali erzinti pagalbinių technologijų naudotojus. [Sužinokite daugiau](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Puslapis neveikia neprisijungus"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "LŽP pašalinta ir diegimo patikros nustatomos iš naujo."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Nurodyta programų platforma nepalaikoma sistemoje „Android“"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "„prefer_related_applications“ palaikoma tik beta versijos „Chrome“ ir pastoviuose kanaluose sistemoje „Android“."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "„Lighthouse“ nepavyko nustatyti, ar buvo pagalbinis „JavaScript“ failas. Bandykite naudodami naujesnės versijos „Chrome“."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Aprašo pradžios URL netinkamas"
@@ -1212,7 +1218,7 @@
     "message": "Serverio vidinės pusės delsa"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Įvykis „`unload`“ patikimai nesuaktyvinamas ir jį apdorojant gali būti neleidžiama optimizuoti naršyklės, pvz., persiuntimo atgal ir pirmyn talpyklos. Apsvarstykite galimybę naudoti įvykius „`pagehide`“ arba „`visibilitychange`“. [Sužinokite daugiau](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Įvykis „`unload`“ patikimai nesuaktyvinamas ir jį apdorojant gali būti neleidžiama optimizuoti naršyklės, pvz., persiuntimo atgal ir pirmyn talpyklos. Vietoj to naudokite įvykį „`pagehide`“ arba „`visibilitychange`“. [Sužinokite daugiau](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Užregistruojama „`unload`“ apdorojimo priemonė"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Žymas „`<link rel=preload>`“ galima pridėti [keičiant temos išdėstymą](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Naudokite „`Next.js`“ vaizdų optimizavimo API šiuolaikiškiems formatams, pvz., „`WebP`“ ir „`AVIF`“, teikti. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Naudokite komponentą „`next/image`“, kuris pagal numatytuosius nustatymus yra „`loading=\"lazy\"`“. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Naudokite komponentą „`next/script`“, kad atidėtumėte neesminių trečiosios šalies scenarijų įkėlimą. [Sužinokite daugiau](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Apsvarstykite galimybę nustatyti „`PurgeCSS`“ konfigūruodami „`Next.js`“, kad pašalintumėte nenaudojamas taisykles iš stiliaus aprašų. [Sužinokite daugiau](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Naudokite „`Webpack Bundle Analyzer`“, kad aptiktumėte nenaudojamą „JavaScript“ kodą. [Sužinokite daugiau](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Apsvarstykite galimybę naudoti „`Next.js Analytics`“ norėdami įvertinti programos realų našumą. [Sužinokite daugiau](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigūruokite nekintamų išteklių ir „`Server-side Rendered`“ (SSR) puslapių saugojimą talpykloje. [Sužinokite daugiau](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Naudokite komponentą „`next/image`“ vietoj „`<img>`“ vaizdams optimizuoti. [Sužinokite daugiau](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Naudokite komponentą „`next/image`“ atitinkamam „`sizes`“ nustatyti. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Įgalinkite glaudinimą Next.js serveryje. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Pakeiskite animuotus GIF failus vaizdo įrašu](https://web.dev/replace-gifs-with-videos/), taip tinklalapis bus įkeliamas greičiau. Taip pat apsvarstykite galimybę naudoti modernius failų formatus, pvz., [„WebM“](https://web.dev/replace-gifs-with-videos/#create-webm-videos) arba [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), taip pagerinsite glaudinimo efektyvumą daugiau nei 30 proc., palyginti su dabartiniu naujausiu vaizdo kodeku – VP9."

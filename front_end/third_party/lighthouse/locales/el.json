@@ -3,7 +3,7 @@
     "message": "Όλες οι αναφορές"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Κατηγορίες"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Προσβασιμότητα"
@@ -24,40 +24,40 @@
     "message": "Υπολογιστής"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Κατανόηση της αναφοράς ροής του Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Κατανόηση των ροών"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Χρησιμοποιήστε τις αναφορές των αναφορών πλοήγησης για να..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Χρησιμοποιήστε τις αναφορές Snapshot για να..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Χρησιμοποιήστε τις αναφορές χρονικού διαστήματος για να..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Λάβετε μια βαθμολογία απόδοσης του Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Υπολογίσετε τις μετρήσεις απόδοσης φόρτωσης σελίδας, όπως Μεγαλύτερη σχεδίαση με περιεχόμενο και Ευρετήριο ταχύτητας."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Αξιολογήσετε τις δυνατότητες προηγμένων εφαρμογών ιστού."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Εντοπίσετε ζητήματα προσβασιμότητας σε εφαρμογές μίας σελίδας ή σύνθετες φόρμες."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "Αξιολογήσετε τις βέλτιστες πρακτικές των μενού και στοιχείων διεπαφής χρήστη που κρύβονται πίσω από αλληλεπιδράσεις."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "Μετρήσετε τις αλλαγές διάταξης και τον χρόνο εκτέλεσης JavaScript σε μια σειρά αλληλεπιδράσεων."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "Ανακαλύψετε ευκαιρίες απόδοσης για να βελτιώσετε την εμπειρία για σελίδες μεγάλης διάρκειας και εφαρμογές μίας σελίδας."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Υψηλότερος αντίκτυπος"
@@ -72,7 +72,7 @@
     "message": "Φόρτωση σελίδας"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Οι αναφορές πλοήγησης αναλύουν τη φόρτωση μίας σελίδας, ακριβώς όπως οι πρωτότυπες αναφορές του Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Αναφορά πλοήγησης"
@@ -99,13 +99,13 @@
     "message": "Καλή"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Αποθήκευση"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Καταγεγραμμένη κατάσταση σελίδας"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Οι αναφορές Snapshot αναλύουν τη σελίδα σε μια συγκεκριμένη κατάσταση, συνήθως μετά από αλληλεπιδράσεις χρηστών."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Αναφορά σύνοψης"
@@ -120,7 +120,7 @@
     "message": "Αλληλεπιδράσεις χρήστη"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Οι αναφορές χρονικού διαστήματος αναλύουν μια τυχαία χρονική περίοδο, η οποία συνήθως περιέχει αλληλεπιδράσεις χρηστών."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Αναφορά χρονικού διαστήματος"
@@ -480,10 +480,10 @@
     "message": "Οι αναγνώστες οθόνης δεν μπορούν να μεταφράσουν περιεχόμενο που δεν είναι κείμενο. Η προσθήκη εναλλακτικού κειμένου στα στοιχεία `<object>` βοηθά τους αναγνώστες οθόνης να αποδίδουν το νόημα στους χρήστες. [Μάθετε περισσότερα](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Τα στοιχεία `<object>` δεν έχουν κείμενο `[alt]`"
+    "message": "Τα στοιχεία `<object>` δεν έχουν εναλλακτικό κείμενο"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Τα στοιχεία `<object>` έχουν κείμενο `[alt]`"
+    "message": "Τα στοιχεία `<object>` έχουν εναλλακτικό κείμενο"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Μια τιμή μεγαλύτερη από 0 υποδηλώνει μια ρητή σειρά πλοήγησης. Εάν και ορθό από τεχνικής άποψης, αυτό συχνά επηρεάζει αρνητικά την εμπειρία των χρηστών που βασίζονται στις τεχνολογίες υποβοήθησης. [Μάθετε περισσότερα](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Η σελίδα δεν λειτουργεί εκτός σύνδεσης."
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Το PWA έχει απεγκατασταθεί και γίνεται επαναφορά των ελέγχων δυνατότητας εγκατάστασης."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Η καθορισμένη πλατφόρμα εφαρμογών δεν υποστηρίζεται σε Android."
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Η παράμετρος prefer_related_applications υποστηρίζεται μόνο σε κανάλια Chrome Beta και κανάλια σταθερής έκδοσης σε Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Το Lighthouse δεν κατόρθωσε να ανιχνεύσει service worker. Δοκιμάστε με μια νεότερη έκδοση του Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Το URL έναρξης μανιφέστου δεν είναι έγκυρο"
@@ -1212,7 +1218,7 @@
     "message": "Λανθάνοντες χρόνοι συστημάτων υποστήριξης διακομιστή"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Το συμβάν `unload` δεν ενεργοποιείται με αξιοπιστία και η ακρόαση για το συμβάν μπορεί να αποτρέψει τις βελτιστοποιήσεις προγράμματος περιήγησης, όπως την κρυφή μνήμη Πίσω/Εμπρός. Αντ΄ αυτού, εξετάστε το ενδεχόμενο χρήσης των συμβάντων `pagehide` ή `visibilitychange`. [Μάθετε περισσότερα](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Το συμβάν `unload` δεν ενεργοποιείται με αξιοπιστία και η ακρόαση για το συμβάν μπορεί να αποτρέψει τις βελτιστοποιήσεις προγράμματος περιήγησης, όπως την κρυφή μνήμη πίσω/εμπρός. Αντ' αυτού, χρησιμοποιήστε τα συμβάντα `pagehide` ή `visibilitychange`. [Μάθετε περισσότερα](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Εγγράφει μια λειτουργία αναμονής `unload`"
@@ -2097,7 +2103,7 @@
     "message": "Μπορείτε να χρησιμοποιήσετε το βοηθητικό πρόγραμμα `BreakpointObserver` στο Component Dev Kit (CDK) για να διαχειρίζεστε τα σημεία διακοπής εικόνας. [Μάθετε περισσότερα](https://material.angular.io/cdk/layout/overview)."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "Εξετάστε το ενδεχόμενο μεταφόρτωσης του GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
+    "message": "Εξετάστε το ενδεχόμενο να ανεβάσετε το GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "Καθορίστε τη `@font-display` κατά τον προσδιορισμό προσαρμοσμένων γραμματοσειρών στο θέμα σας."
@@ -2142,7 +2148,7 @@
     "message": "Βεβαιωθείτε ότι χρησιμοποιείτε τα εγγενή [Στιλ αποκριτικών εικόνων](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) που παρέχονται από το Drupal (διατίθενται στο Drupal 8 και σε νεότερες εκδόσεις). Χρησιμοποιήστε Στιλ αποκριτικών εικόνων κατά την απόδοση πεδίων εικόνων μέσω λειτουργιών προβολής, προβολών ή εικόνων που μεταφορτώθηκαν μέσω του εργαλείου επεξεργασίας WYSIWYG."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
-    "message": "Εξετάστε το ενδεχόμενο μεταφόρτωσης του GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
+    "message": "Εξετάστε το ενδεχόμενο να ανεβάσετε το GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
     "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε μια [προσθήκη](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) ή μια υπηρεσία που θα μετατρέπει αυτόματα τις μεταφορτωμένες εικόνες σας στη βέλτιστη μορφή."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Οι ετικέτες `<link rel=preload>` μπορούν να προστεθούν [τροποποιώντας τη διάταξη ενός θέματος](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Χρησιμοποιήστε το API βελτιστοποίησης εικόνας `Next.js` για να προβάλετε σύγχρονες μορφές όπως `WebP` και `AVIF`. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image`, για το οποίο η προεπιλογή είναι `loading=\"lazy\"`. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Χρησιμοποιήστε το στοιχείο `next/script` για να αναβάλετε τη φόρτωση των σεναρίων τρίτου μέρους δευτερεύουσας σημασίας. [Μάθετε περισσότερα](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Εξετάστε το ενδεχόμενο να ρυθμίσετε το στοιχείο `PurgeCSS` στη διαμόρφωση `Next.js` για να καταργήσετε τους κανόνες που δεν χρησιμοποιούνται από τα φύλλα στιλ. [Μάθετε περισσότερα](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Χρησιμοποιήστε το στοιχείο `Webpack Bundle Analyzer` για ανίχνευση κώδικα JavaScript που δεν χρησιμοποιείται. [Μάθετε περισσότερα](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε το στοιχείο `Next.js Analytics` για να μετράτε την πραγματική απόδοση της εφαρμογής σας. [Μάθετε περισσότερα](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Διαμόρφωση κρυφής μνήμης για αμετάβλητα στοιχεία και σελίδες `Server-side Rendered` (SSR). [Μάθετε περισσότερα](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image` αντί για το στοιχείο `<img>` για να βελτιστοποιήσετε τις εικόνες. [Μάθετε περισσότερα](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image` για να ρυθμίσετε το κατάλληλο `sizes`. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Ενεργοποιήστε τη συμπίεση στον διακομιστή Next.js. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Αντικαταστήστε τις κινούμενες εικόνες GIF με βίντεο](https://web.dev/replace-gifs-with-videos/) για ταχύτερη φόρτωση ιστοσελίδας, ενώ μπορείτε επίσης να χρησιμοποιήσετε σύγχρονες μορφές αρχείων όπως [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ή [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) για τη βελτίωση της απόδοσης συμπίεσης κατά περισσότερο από 30% σε σχέση με τον τρέχοντα υπερσύγχρονο κωδικοποιητή βίντεο, VP9."
   },
@@ -2283,7 +2319,7 @@
     "message": "Χρησιμοποιήστε το React DevTools Profiler, το οποίο χρησιμοποιεί το API του Profiler, για να μετρήσετε τις επιδόσεις απόδοσης των στοιχείων σας. [Μάθετε περισσότερα.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
-    "message": "Εξετάστε το ενδεχόμενο μεταφόρτωσης του GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
+    "message": "Εξετάστε το ενδεχόμενο να ανεβάσετε το GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
     "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε μια [προσθήκη](https://wordpress.org/plugins/search/convert+webp/) ή μια υπηρεσία που θα μετατρέπει αυτόματα τις μεταφορτωμένες εικόνες σας στη βέλτιστη μορφή."

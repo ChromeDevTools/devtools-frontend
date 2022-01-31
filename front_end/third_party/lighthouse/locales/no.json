@@ -3,7 +3,7 @@
     "message": "Alle rapporter"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Kategorier"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Tilgjengelighet"
@@ -24,40 +24,40 @@
     "message": "Datamaskin"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Forstå Lighthouse-flytrapporten"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Forstå flyter"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Bruk navigasjonsrapporter for å …"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Bruk oversiktsrapporter for å …"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Bruk tidsromrapporter for å …"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "skaffe en Lighthouse-ytelsespoengsum"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "måle ytelsesverdier knyttet til sideinnlasting, for eksempel Største innholdsrike opptegning (LCP) og Hastighetsindeks"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "vurdere egenskapene til progressive nettprogrammer"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "finne tilgjengelighetsproblemer i enkeltsideapper (SPA-er) og komplekse skjemaer"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "evaluere anbefalte fremgangsmåter for menyer og elementer i brukergrensesnittet som er skjult bak interaksjon"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "måle utseendeforskyvninger og JavaScript-kjøretid for en interaksjonsserie"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "oppdage muligheter til å oppnå bedre ytelse og brukeropplevelse for sider og enkeltsideapper (SPA-er) med lang levetid"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Høyest effekt"
@@ -72,7 +72,7 @@
     "message": "Sideinnlasting"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Navigasjonsrapporter analyserer en enkelt sideinnlasting, akkurat som de opprinnelige Lighthouse-rapportene."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Navigasjonsrapport"
@@ -99,13 +99,13 @@
     "message": "God"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Lagre"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Registrert sidetilstand"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Oversiktsrapporter analyserer siden i bestemte tilstander, vanligvis etter brukerinteraksjoner."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Øyeblikksbilde-rapport"
@@ -120,7 +120,7 @@
     "message": "Brukerinteraksjoner"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Tidsromrapporter analyserer en vilkårlig tidsperiode, vanligvis med brukerinteraksjoner."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Tidsspennrapport"
@@ -480,10 +480,10 @@
     "message": "Skjermlesere kan ikke oversette innhold som ikke er tekst. Ved å legge til alternativ tekst i `<object>`-elementer hjelper du skjermlesere med å formidle mening til brukerne. [Finn ut mer](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>`-elementer har ikke `[alt]`-tekst"
+    "message": "`<object>`-elementer har ikke alternativ tekst"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>`-elementer har `[alt]`-tekst"
+    "message": "`<object>`-elementer har alternativ tekst"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Større verdier enn 0 antyder en eksplisitt navigeringsrekkefølge. Selv om dette teknisk sett er gyldig, kan det ofte være frustrerende for brukere som er avhengige av assisterende teknologi. [Finn ut mer](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Siden fungerer ikke uten nett"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Det progressive nettprogrammet er avinstallert, og kontrollene knyttet til om apper kan installeres, blir tilbakestilt."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Den angitte applikasjonsplattformen støttes ikke på Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications støttes kun i Chrome Beta- og Stable-kanalene på Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse kunne ikke fastslå om det fantes noen Service Worker. Prøv med en nyere versjon av Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Start-nettadressen til manifestet er ikke gyldig"
@@ -1212,7 +1218,7 @@
     "message": "Forsinkelser i tjenerdelen"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer, for eksempel frem-og-tilbake-bufferen. Vurder å bruke hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload`-hendelsen utløses ikke på en pålitelig måte. Å lytte til den kan forhindre nettleseroptimaliseringer som for eksempel frem-og-tilbake-bufferen. Bruk hendelsene `pagehide` eller `visibilitychange` i stedet. [Finn ut mer](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrerer en `unload`-lytter"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>`-tagger kan legges til ved å [endre temalayouten](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Bruk `Next.js`-API-et for bildeoptimalisering for å vise moderne formater som `WebP` og `AVIF`. [Finn ut mer](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Bruk `next/image`-komponenten, som bruker `loading=\"lazy\"` som standard. [Finn ut mer](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Bruk `next/script`-komponenten til å utsette innlasting av ikke-kritiske tredjepartsskript. [Finn ut mer](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Vurder å konfigurere `PurgeCSS` i `Next.js`-konfigurasjonen for å fjerne ubrukte regler fra stilark. [Finn ut mer](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Bruk `Webpack Bundle Analyzer` for å oppdage ubrukt JavaScript-kode. [Finn ut mer](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Vurder å bruke `Next.js Analytics` for å måle appens ytelse i reelle situasjoner. [Finn ut mer](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurer bufring for uforanderlige ressurser og `Server-side Rendered` (SSR)-sider. [Finn ut mer](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Bruk `next/image`-komponenten i stedet for `<img>` for å optimalisere bilder. [Finn ut mer](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Bruk `next/image`-komponenten for å angi riktig verdi for `sizes`. [Finn ut mer](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Slå på komprimering på Next.js-tjeneren din. [Finn ut mer](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Erstatt animerte GIF-er med video](https://web.dev/replace-gifs-with-videos/) for raskere nettsideinnlasteringer, og vurder å bruke moderne filformater, som [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) eller [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), for å øke komprimeringseffektiviteten med mer enn 30 % sammenlignet med den mest avanserte videokodeken, VP9."

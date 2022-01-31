@@ -480,10 +480,10 @@
     "message": "Cititoarele de ecran nu pot traduce conținut în alt format decât text. Adăugarea de text alternativ la elementele `<object>` ajută cititoarele de ecran să le transmită utilizatorilor înțelesul. [Află mai multe](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementele `<object>` nu au text `[alt]`"
+    "message": "Elementele `<object>` nu au text alternativ"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementele `<object>` au text `[alt]`"
+    "message": "Elementele `<object>` au text alternativ"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "O valoare mai mare decât 0 implică o ordine explicită de navigare. Deși valid din punct de vedere tehnic, acest lucru creează adesea frustrări utilizatorilor care se bazează pe tehnologii care oferă asistență. [Află mai multe](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Pagina nu funcționează offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA a fost dezinstalată și se resetează instalarea."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Platforma aplicației indicată nu este acceptată pe Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Proprietatea prefer_related_applications este acceptată numai în Chrome Beta și pe canale stabile de pe Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse nu a putut stabili dacă este vorba despre un service worker. Încearcă folosind o versiune mai nouă de Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Adresa URL inițială a manifestului nu este validă"
@@ -1212,7 +1218,7 @@
     "message": "Latențe ale backendului serverului"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Evenimentul `unload` nu se declanșează într-un mod fiabil și ascultarea lui poate împiedica optimizări de browser cum ar fi Back-Forward Cache. Îți recomandăm să folosești evenimentele `pagehide` sau `visibilitychange`. [Află mai multe](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Evenimentul `unload` nu se declanșează într-un mod fiabil și ascultarea lui poate împiedica optimizări de browser cum ar fi Memoria cache înainte-înapoi. Folosește evenimente `pagehide` sau `visibilitychange` în loc. [Află mai multe](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Înregistrează un listener `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Etichetele `<link rel=preload>` se pot adăuga prin [modificarea aspectului unei teme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Folosește API-ul Image Optimization pentru `Next.js` pentru a difuza formate moderne, cum ar fi `WebP` și `AVIF`. [Află mai multe](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Folosește componenta `next/image`, care are ca valoare prestabilită `loading=\"lazy\"`. [Află mai multe](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Folosește componenta `next/script` pentru a amâna încărcarea scripturilor terță parte neesențiale. [Află mai multe](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Este recomandat să setezi `PurgeCSS` în configurația `Next.js` pentru a elimina regulile nefolosite din foile de stil. [Află mai multe](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Folosește `Webpack Bundle Analyzer` pentru a detecta cod JavaScript nefolosit. [Află mai multe](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Este recomandat să folosești `Next.js Analytics` pentru a măsura performanța reală a aplicației. [Află mai multe](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configurează stocarea în memoria cache a elementelor și a paginilor `Server-side Rendered` (SSR) invariabile. [Află mai multe](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Folosește componenta `next/image` în loc de `<img>` pentru a optimiza imagini. [Află mai multe](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Folosește componenta `next/image` pentru a seta `sizes` potrivite. [Află mai multe](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Activează comprimarea pe serverul Next.js. [Află mai multe](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Înlocuiește GIF-urile animate cu videoclipuri](https://web.dev/replace-gifs-with-videos/) pentru încărcarea mai rapidă a paginilor web și folosește formate de fișiere moderne, cum ar fi [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) sau [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), pentru a îmbunătăți eficiența comprimării cu până la 30 % față de cea a codecului video actual de ultimă generație, VP9."

@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]`은(는) `<meta name=\"viewport\">` 요소에 사용되지 않으며 `[maximum-scale]` 속성이 5보다 작지 않음"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "스크린 리더는 텍스트가 아닌 콘텐츠를 번역할 수 없습니다. `<object>` 요소에 Alt 텍스트를 추가하면 스크린 리더에서 사용자에게 텍스트의 의미를 전달하는 데 도움이 됩니다. [자세히 알아보기](https://web.dev/object-alt/)"
+    "message": "스크린 리더는 텍스트가 아닌 콘텐츠를 번역할 수 없습니다. `<object>` 요소에 대체 텍스트를 추가하면 스크린 리더에서 사용자에게 텍스트의 의미를 전달하는 데 도움이 됩니다. [자세히 알아보기](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` 요소에 `[alt]` 텍스트가 없음"
+    "message": "`<object>` 요소에 대체 텍스트가 없음"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` 요소에 `[alt]` 텍스트가 있음"
+    "message": "`<object>` 요소에 대체 텍스트가 있음"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "0보다 큰 값은 명시적인 탐색 순서를 나타냅니다. 기술적으로는 유효하나 보조 기술에 의존하는 사용자에게 불편한 환경이 생기는 경우가 많습니다. [자세히 알아보기](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "페이지가 오프라인에서 작동하지 않습니다."
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA가 제거되었으며 설치 가능 여부 확인이 재설정되었습니다."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "지정된 애플리케이션 플랫폼이 Android에서 지원되지 않습니다."
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications는 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse에서 서비스 워커의 유무를 판단할 수 없습니다. 최신 버전의 Chrome을 사용해 시도해 보세요."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "잘못된 매니페스트 시작 URL입니다."
@@ -1212,7 +1218,7 @@
     "message": "서버 백엔드 지연 시간"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` 이벤트는 안정적으로 실행되지 않으며 이 이벤트를 리스닝하면 '뒤로-앞으로' 캐시와 같은 브라우저 최적화 기능을 사용하지 못할 수 있습니다. `pagehide` 또는 `visibilitychange` 이벤트를 대신 사용해 보세요. [자세히 알아보기](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "`unload` 이벤트는 안정적으로 실행되지 않으며 이 이벤트를 리스닝하면 뒤로-앞으로 캐시와 같은 브라우저 최적화 기능을 사용하지 못할 수 있습니다. `pagehide` 또는 `visibilitychange` 이벤트를 대신 사용하세요. [자세히 알아보기](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` 리스너 등록"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[테마의 레이아웃을 수정](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)하여 `<link rel=preload>` 태그를 추가할 수 있습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "`Next.js` Image Optimization API를 사용해 `WebP` 및 `AVIF`와 같은 최신 형식을 제공하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "기본값이 `loading=\"lazy\"`로 설정된 `next/image` 구성요소를 사용하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "`next/script` 구성요소를 사용하여 중요하지 않은 타사 스크립트의 로드를 지연하세요. [자세히 알아보기](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "`Next.js` 구성에 `PurgeCSS`를 설정하여 스타일시트에서 사용되지 않는 규칙을 삭제해 보세요. [자세히 알아보기](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "`Webpack Bundle Analyzer`를 사용하여 사용되지 않는 자바스크립트 코드를 감지하세요. [자세히 알아보기](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "`Next.js Analytics`를 사용하여 앱의 실제 성능을 측정해 보세요. [자세히 알아보기](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "변경 불가능한 애셋 및 `Server-side Rendered`(SSR) 페이지의 캐싱을 구성하세요. [자세히 알아보기](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "`<img>` 대신 `next/image` 구성요소를 사용하여 이미지를 최적화하세요. [자세히 알아보기](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "`next/image` 구성요소를 사용해 적절한 `sizes`를 설정하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Next.js 서버에서 압축 기능을 사용하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "빠른 웹페이지 로딩을 위해서는 [애니메이션 GIF를 동영상으로 대체](https://web.dev/replace-gifs-with-videos/)하고 [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) 또는 [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)과 같은 최신 파일 형식을 사용하여 압축 효율성을 현재 최첨단으로 여겨지는 동영상 코덱 VP9 대비 30% 이상 높여 보세요."

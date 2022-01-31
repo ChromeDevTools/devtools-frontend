@@ -1398,7 +1398,7 @@ function createTopbarComponent(dom) {
   el40.setAttribute('href', '#');
   el40.setAttribute('data-i18n', 'dropdownCopyJSON');
   el40.setAttribute('data-action', 'copy');
-  const el41 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
+  const el41 = dom.createElement('a', 'lh-report-icon lh-report-icon--download lh-hidden');
   el41.setAttribute('role', 'menuitem');
   el41.setAttribute('tabindex', '-1');
   el41.setAttribute('href', '#');
@@ -1428,7 +1428,7 @@ function createTopbarComponent(dom) {
   el45.setAttribute('href', '#');
   el45.setAttribute('data-i18n', 'dropdownDarkTheme');
   el45.setAttribute('data-action', 'toggle-dark');
-  el37.append(' ', el38, ' ', el39, ' ', el40, ' ', el41, ' ', el42, ' ', el43, ' ', el44, ' ', el45, ' ');
+  el37.append(' ', el38, ' ', el39, ' ', el40, ' ', ' ', el41, ' ', el42, ' ', el43, ' ', el44, ' ', el45, ' ');
   el26.append(' ', el27, ' ', el33, ' ', el37, ' ');
   el2.append(' ', ' ', el3, ' ', el25, ' ', el26, ' ');
   el0.append(el2);
@@ -2260,7 +2260,7 @@ class CategoryRenderer {
    * @return {boolean}
    */
   _auditHasWarning(audit) {
-    return Boolean(audit.result.warnings && audit.result.warnings.length);
+    return Boolean(audit.result.warnings?.length);
   }
 
   /**
@@ -4176,8 +4176,8 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     // Filmstrip
     const timelineEl = this.dom.createChildOf(element, 'div', 'lh-filmstrip-container');
     const thumbnailAudit = category.auditRefs.find(audit => audit.id === 'screenshot-thumbnails');
-    const thumbnailResult = thumbnailAudit && thumbnailAudit.result;
-    if (thumbnailResult && thumbnailResult.details) {
+    const thumbnailResult = thumbnailAudit?.result;
+    if (thumbnailResult?.details) {
       timelineEl.id = thumbnailResult.id;
       const filmstripEl = this.detailsRenderer.render(thumbnailResult.details);
       filmstripEl && timelineEl.appendChild(filmstripEl);
@@ -4252,7 +4252,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const budgetTableEls = [];
     ['performance-budget', 'timing-budget'].forEach((id) => {
       const audit = category.auditRefs.find(audit => audit.id === id);
-      if (audit && audit.result.details) {
+      if (audit?.result.details) {
         const table = this.detailsRenderer.render(audit.result.details);
         if (table) {
           table.id = id;
@@ -4298,7 +4298,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
       const labelEl = this.dom.createChildOf(metricFilterEl, 'label', 'lh-metricfilter__label');
       labelEl.htmlFor = elemId;
-      labelEl.title = metric.result && metric.result.title;
+      labelEl.title = metric.result?.title;
       labelEl.textContent = metric.acronym || metric.id;
 
       if (metric.acronym === 'All') {
@@ -4773,7 +4773,7 @@ class ReportRenderer {
     Util.reportJson = report;
 
     const fullPageScreenshot =
-      report.audits['full-page-screenshot'] && report.audits['full-page-screenshot'].details &&
+      report.audits['full-page-screenshot']?.details &&
       report.audits['full-page-screenshot'].details.type === 'full-page-screenshot' ?
       report.audits['full-page-screenshot'].details : undefined;
     const detailsRenderer = new DetailsRenderer(this._dom, {
@@ -5767,6 +5767,10 @@ class ReportUIFeatures {
       });
     }
 
+    if (this._opts.getStandaloneReportHTML) {
+      this._dom.find('a[data-action="save-html"]', this._dom.rootEl).classList.remove('lh-hidden');
+    }
+
     // Fill in all i18n data.
     for (const node of this._dom.findAll('[data-i18n]', this._dom.rootEl)) {
       // These strings are guaranteed to (at least) have a default English string in Util.UIStrings,
@@ -5801,15 +5805,23 @@ class ReportUIFeatures {
     return buttonEl;
   }
 
+  resetUIState() {
+    if (this._topbar) {
+      this._topbar.resetUIState();
+    }
+  }
+
   /**
    * Returns the html that recreates this report.
    * @return {string}
    */
   getReportHtml() {
-    if (this._topbar) {
-      this._topbar.resetUIState();
+    if (!this._opts.getStandaloneReportHTML) {
+      throw new Error('`getStandaloneReportHTML` is not set');
     }
-    return `<!doctype html><body style="margin: 0">${this._dom.rootEl.outerHTML}`;
+
+    this.resetUIState();
+    return this._opts.getStandaloneReportHTML();
   }
 
   /**

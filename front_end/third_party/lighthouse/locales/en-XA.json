@@ -477,13 +477,13 @@
     "message": "[ᐅ`[user-scalable=\"no\"]`ᐊ îš ñöţ ûšéð îñ ţĥé ᐅ`<meta name=\"viewport\">`ᐊ éļéméñţ åñð ţĥé ᐅ`[maximum-scale]`ᐊ åţţŕîбûţé îš ñöţ ļéšš ţĥåñ 5. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "[Šçŕééñ ŕéåðéŕš çåññöţ ţŕåñšļåţé ñöñ-ţéxţ çöñţéñţ. Åððîñĝ åļţ ţéxţ ţö ᐅ`<object>`ᐊ éļéméñţš ĥéļþš šçŕééñ ŕéåðéŕš çöñvéý méåñîñĝ ţö ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/object-alt/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+    "message": "[Šçŕééñ ŕéåðéŕš çåññöţ ţŕåñšļåţé ñöñ-ţéxţ çöñţéñţ. Åððîñĝ åļţéŕñåţé ţéxţ ţö ᐅ`<object>`ᐊ éļéméñţš ĥéļþš šçŕééñ ŕéåðéŕš çöñvéý méåñîñĝ ţö ûšéŕš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/object-alt/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "[ᐅ`<object>`ᐊ éļéméñţš ðö ñöţ ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six seven]"
+    "message": "[ᐅ`<object>`ᐊ éļéméñţš ðö ñöţ ĥåvé åļţéŕñåţé ţéxţ one two three four five six seven eight]"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "[ᐅ`<object>`ᐊ éļéméñţš ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six]"
+    "message": "[ᐅ`<object>`ᐊ éļéméñţš ĥåvé åļţéŕñåţé ţéxţ one two three four five six seven]"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "[Å våļûé ĝŕéåţéŕ ţĥåñ 0 îmþļîéš åñ éxþļîçîţ ñåvîĝåţîöñ öŕðéŕîñĝ. Åļţĥöûĝĥ ţéçĥñîçåļļý våļîð, ţĥîš öƒţéñ çŕéåţéš ƒŕûšţŕåţîñĝ éxþéŕîéñçéš ƒöŕ ûšéŕš ŵĥö ŕéļý öñ åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/tabindex/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "[Þåĝé ðöéš ñöţ ŵöŕķ öƒƒļîñé one two three four five six]"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "[ÞŴÅ ĥåš бééñ ûñîñšţåļļéð åñð îñšţåļļåбîļîţý çĥéçķš ŕéšéţţîñĝ. one two three four five six seven eight nine ten eleven twelve]"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "[Ţĥé šþéçîƒîéð åþþļîçåţîöñ þļåţƒöŕm îš ñöţ šûþþöŕţéð öñ Åñðŕöîð one two three four five six seven eight nine ten eleven twelve]"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "[þŕéƒéŕ_ŕéļåţéð_åþþļîçåţîöñš îš öñļý šûþþöŕţéð öñ Çĥŕömé Бéţå åñð Šţåбļé çĥåññéļš öñ Åñðŕöîð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "[Ļîĝĥţĥöûšé çöûļð ñöţ ðéţéŕmîñé îƒ ţĥéŕé ŵåš å šéŕvîçé ŵöŕķéŕ. Þļéåšé ţŕý ŵîţĥ å ñéŵéŕ véŕšîöñ öƒ Çĥŕömé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "[Måñîƒéšţ šţåŕţ ÛŔĻ îš ñöţ våļîð one two three four five six seven]"
@@ -1212,7 +1218,7 @@
     "message": "[Šéŕvéŕ Бåçķéñð Ļåţéñçîéš one two three]"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "[Ţĥé ᐅ`unload`ᐊ évéñţ ðöéš ñöţ ƒîŕé ŕéļîåбļý åñð ļîšţéñîñĝ ƒöŕ îţ çåñ þŕévéñţ бŕöŵšéŕ öþţîmîžåţîöñš ļîķé ţĥé Бåçķ-Föŕŵåŕð Çåçĥé. Çöñšîðéŕ ûšîñĝ ţĥé ᐅ`pagehide`ᐊ öŕ ᐅ`visibilitychange`ᐊ évéñţš îñšţéåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+    "message": "[Ţĥé ᐅ`unload`ᐊ évéñţ ðöéš ñöţ ƒîŕé ŕéļîåбļý åñð ļîšţéñîñĝ ƒöŕ îţ çåñ þŕévéñţ бŕöŵšéŕ öþţîmîžåţîöñš ļîķé ţĥé Бåçķ-Föŕŵåŕð Çåçĥé. Ûšé ᐅ`pagehide`ᐊ öŕ ᐅ`visibilitychange`ᐊ évéñţš îñšţéåð. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://web.dev/bfcache/#never-use-the-unload-event)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "[Ŕéĝîšţéŕš åñ ᐅ`unload`ᐊ ļîšţéñéŕ one two three four five six]"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[ᐅ`<link rel=preload>`ᐊ ţåĝš çåñ бé åððéð бý ᐅ[ᐊmöðîƒýîñĝ å ţĥéméš'š ļåýöûţᐅ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "[Ûšé ţĥé ᐅ`Next.js`ᐊ Îmåĝé Öþţîmîžåţîöñ ÅÞÎ ţö šéŕvé möðéŕñ ƒöŕmåţš ļîķé ᐅ`WebP`ᐊ åñð ᐅ`AVIF`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ, ŵĥîçĥ ðéƒåûļţš ţö ᐅ`loading=\"lazy\"`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next/image#loading)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "[Ûšé ţĥé ᐅ`next/script`ᐊ çömþöñéñţ ţö ðéƒéŕ ļöåðîñĝ öƒ ñöñ-çŕîţîçåļ ţĥîŕð-þåŕţý šçŕîþţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/basic-features/script)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "[Çöñšîðéŕ šéţţîñĝ ûþ ᐅ`PurgeCSS`ᐊ îñ ᐅ`Next.js`ᐊ çöñƒîĝûŕåţîöñ ţö ŕémövé ûñûšéð ŕûļéš ƒŕöm šţýļéšĥééţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://purgecss.com/guides/next.html)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "[Ûšé ᐅ`Webpack Bundle Analyzer`ᐊ ţö ðéţéçţ ûñûšéð ĴåvåŠçŕîþţ çöðé. ᐅ[ᐊĻéåŕñ möðéᐅ](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)ᐊ one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "[Çöñšîðéŕ ûšîñĝ ᐅ`Next.js Analytics`ᐊ ţö méåšûŕé ýöûŕ åþþ'š ŕéåļ-ŵöŕļð þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/advanced-features/measuring-performance)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "[Çöñƒîĝûŕé çåçĥîñĝ ƒöŕ îmmûţåбļé åššéţš åñð ᐅ`Server-side Rendered`ᐊ (ŠŠŔ) þåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/going-to-production#caching)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö öþţîmîžé îmåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/basic-features/image-optimization)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ ţö šéţ ţĥé åþþŕöþŕîåţé ᐅ`sizes`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next/image#sizes)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "[Éñåбļé çömþŕéššîöñ öñ ýöûŕ Ñéxţ.ĵš šéŕvéŕ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next.config.js/compression)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[ᐅ[ᐊŔéþļåçé åñîmåţéð ĜÎFš ŵîţĥ vîðéöᐅ](https://web.dev/replace-gifs-with-videos/)ᐊ ƒöŕ ƒåšţéŕ ŵéб þåĝé ļöåðš åñð çöñšîðéŕ ûšîñĝ möðéŕñ ƒîļé ƒöŕmåţš šûçĥ åš ᐅ[ᐊŴéбMᐅ](https://web.dev/replace-gifs-with-videos/#create-webm-videos)ᐊ öŕ ᐅ[ᐊÅV1ᐅ](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)ᐊ ţö îmþŕövé çömþŕéššîöñ éƒƒîçîéñçý бý ĝŕéåţéŕ ţĥåñ 30% ovéŕ ţĥé çûŕŕéñţ šţåţé-öƒ-ţĥé-åŕţ vîðéö çöðéç, VÞ9. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone]"

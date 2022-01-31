@@ -60,10 +60,10 @@
     "message": "Atklājiet veiktspējas iespējas, lai uzlabotu pieredzi ilgi atvērtās lapās un vienas lapas lietojumprogrammās."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Vislielākā ietekme"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informatīva pārbaude}zero{{numInformative} informatīvu pārbaužu}one{{numInformative} informatīva pārbaude}other{{numInformative} informatīvas pārbaudes}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobilajām ierīcēm"
@@ -78,13 +78,13 @@
     "message": "Navigācijas pārskats"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigācijas pārskats}zero{{numNavigation} navigācijas pārskatu}one{{numNavigation} navigācijas pārskats}other{{numNavigation} navigācijas pārskati}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} izpildāma pārbaude}zero{{numPassableAudits} izpildāmu pārbaužu}one{{numPassableAudits} izpildāma pārbaude}other{{numPassableAudits} izpildāmas pārbaudes}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{Izpildīta {numPassed} pārbaude}zero{Izpildītas {numPassed} pārbaudes}one{Izpildīta {numPassed} pārbaude}other{Izpildītas {numPassed} pārbaudes}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Viduvējs līmenis"
@@ -111,7 +111,7 @@
     "message": "Momentuzņēmuma pārskats"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} momentuzņēmuma pārskats}zero{{numSnapshot} momentuzņēmumu pārskatu}one{{numSnapshot} momentuzņēmumu pārskats}other{{numSnapshot} momentuzņēmumu pārskati}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Kopsavilkums"
@@ -126,7 +126,7 @@
     "message": "Laika posma pārskats"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} laika posma pārskats}zero{{numTimespan} laika posmu pārskatu}one{{numTimespan} laika posmu pārskats}other{{numTimespan} laika posmu pārskati}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse lietotāju plūsmas pārskats"
@@ -480,10 +480,10 @@
     "message": "Ekrāna lasītāji nevar tulkot saturu, kas nav teksts. Ja elementiem `<object>` pievienosiet alternatīvo tekstu, ekrāna lasītāji varēs lietotājiem paziņot teksta nozīmi. [Uzziniet vairāk](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementiem `<object>` nav teksta `[alt]`"
+    "message": "Elementiem `<object>` nav alternatīvā teksta"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementi `<object>` ietver tekstu `[alt]`"
+    "message": "Elementi `<object>` ietver alternatīvo tekstu"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Ja vērtība ir lielāka par “0”, navigācijas secība ir noteikta. Lai gan tehniski šis risinājums ir derīgs, bieži vien tas mulsina lietotājus, kuri izmanto palīgtehnoloģijas. [Uzziniet vairāk](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Lapa nedarbojas bezsaistē"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PTL ir atinstalēta, un notiek instalējamības pārbaužu atiestatīšana."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Norādītā lietojumprogrammu platforma netiek atbalstīta operētājsistēmā Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Rekvizīts “prefer_related_applications” tiek atbalstīts tikai pārlūkprogrammas Chrome beta un stabilās versijās operētājsistēmā Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse nevarēja noteikt, vai ir pieejams pakalpojumu skripts. Pamēģiniet izmantot jaunāku pārlūka Chrome versiju."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifesta sākuma URL nav derīgs"
@@ -1212,7 +1218,7 @@
     "message": "Servera aizmugursistēmas latentums"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Notikums “`unload`” nenodrošināja uzticamu aktivizēšanu, un tā uztveršana var liegt pārlūkprogrammas optimizāciju, piemēram, pilnīgu saglabāšanu kešatmiņā. Tā vietā izvērtējiet iespēju izmantot notikumus “`pagehide`” vai “`visibilitychange`”. [Uzziniet vairāk](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)."
+    "message": "Notikums “`unload`” nenodrošināja uzticamu aktivizēšanu, un tā uztveršana var liegt pārlūkprogrammas optimizāciju, piemēram, pilnīgu saglabāšanu kešatmiņā. Tā vietā izmantojiet notikumu “`pagehide`” vai “`visibilitychange`”. [Uzziniet vairāk](https://web.dev/bfcache/#never-use-the-unload-event)."
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Reģistrē notikuma “`unload`” uztvērēju"
@@ -1758,7 +1764,7 @@
     "message": "Šīs pārbaudes ir vajadzīgas saskaņā ar standarta [PWA kontrolsarakstu](https://developers.google.com/web/progressive-web-apps/checklist), taču Lighthouse neveic tās automātiski. Tās neietekmē jūsu rezultātu, taču ir svarīgi pārbaudīt šos lietotnes aspektus manuāli."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
+    "message": "PTL"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Instalēšana"
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Varat pievienot `<link rel=preload>` tagus, [modificējot motīva izkārtojumu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Mūsdienīgu formātu (piemēram, `WebP` un `AVIF`) rādīšanai izmantojiet `Next.js` saskarni Image Optimization API. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Izmantojiet komponentu `next/image`, kurš pēc noklusējuma izmanto `loading=\"lazy\"`. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Izmantojiet komponentu `next/script`, lai atliktu mazāk svarīgu trešās puses skriptu ielādi. [Uzziniet vairāk](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Lai noņemtu neizmantotas stilu lapu kārtulas, `Next.js` konfigurācijā ieteicams iestatīt spraudni `PurgeCSS`. [Uzziniet vairāk](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Lai noteiktu neizmantotu JavaScript kodu, izmantojiet `Webpack Bundle Analyzer`. [Uzzināt vairāk](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Lai novērtētu lietotnes faktisko veiktspēju ieteicams izmantot `Next.js Analytics`. [Uzziniet vairāk](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurējiet nemainīgu līdzekļu un `Server-side Rendered` (SSR) lapu saglabāšanu kešatmiņā. [Uzziniet vairāk](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Attēlu optimizēšanai izmantojiet komponentu `next/image`, nevis `<img>`. [Uzziniet vairāk](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Lai iestatītu atbilstošās elementa `sizes` vērtības, izmantojiet komponentu `next/image`. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Iespējojiet saspiešanu savā Next.js serverī. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Aizstājiet animētus GIF attēlus ar videoklipiem](https://web.dev/replace-gifs-with-videos/), lai paātrinātu tīmekļa lapas ielādi, un apsveriet iespēju izmantot modernus failu formātus, piemēram, [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vai [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), lai uzlabotu saspiešanas efektivitāti par vairāk nekā 30%, salīdzinot ar pašreizējo nozarē vadošo video kodeku VP9."
   },
@@ -2328,7 +2364,7 @@
     "message": "Skatiet kalkulatoru."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Sakļaut skatu"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Sākotnējā navigācija"
@@ -2367,13 +2403,13 @@
     "message": "Pārskata kļūda: nav pārbaudes informācijas"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Izvērst skatu"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Iesniegt problēmu"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Paslēpt"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratorijas dati"
@@ -2397,10 +2433,10 @@
     "message": "Izpildītās pārbaudes"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Sākotnējā lapas ielāde"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Pielāgota ierobežošana"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulēts dators"
@@ -2430,19 +2466,19 @@
     "message": "Lietotāja aģents (tīkls)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Vienreizēja lapas ielāde"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Šie dati ir iegūti no vienas lapas ielādes atšķirībā no lauka datiem, kas tiek apkopoti par daudzām sesijām."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Lēna 4G savienojuma ierobežošana"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nezināms"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Rādīt"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Rādīt pārbaudes, kas atbilst:"

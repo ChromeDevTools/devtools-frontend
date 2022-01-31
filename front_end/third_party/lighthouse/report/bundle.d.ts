@@ -257,6 +257,7 @@ export class ReportUIFeatures {
         icon?: string;
         onClick: () => void;
     }): HTMLElementByTagName;
+    resetUIState(): void;
     /**
      * Returns the html that recreates this report.
      * @return {string}

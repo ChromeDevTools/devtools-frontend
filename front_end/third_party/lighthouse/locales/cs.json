@@ -480,10 +480,10 @@
     "message": "Čtečky obrazovek nedokážou přeložit obsah jiného typu, než je text. Když k prvkům `<object>` přidáte alternativní text, čtečky obrazovek budou moci předat uživatelům význam. [Další informace](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Prvky `<object>` nemají text `[alt]`"
+    "message": "Prvky `<object>` nemají alternativní text"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Prvky `<object>` mají text `[alt]`"
+    "message": "Prvky `<object>` mají alternativní text"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Hodnota větší než 0 naznačuje explicitní řazení navigace. Ačkoli je platná, často vede k chování, které je pro uživatele závislé na asistenčních technologiích nepříjemné. [Další informace](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Stránka nefunguje offline"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Progresivní webová aplikace byla odinstalována a probíhá resetování kontrol instalovatelnosti."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Zadaná aplikační platforma v systému Android není podporována"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Parametr prefer_related_applications je podporován pouze v beta verzi Chromu a ve stabilních verzích v systému Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Nástroj Lighthouse nedokázal zjistit, zda byl spuštěn skript service worker. Zkuste to s novější verzí Chromu."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Počáteční URL (start_url) v manifestu není platná"
@@ -1212,7 +1218,7 @@
     "message": "Latence backendu na serveru"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Zvažte namísto toho použití události `pagehide` nebo `visibilitychange`. [Další informace](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Událost `unload` se nespouští spolehlivě. Naslouchání této události může zabránit optimalizacím v prohlížečích, jako je mezipaměť pro přechod zpět nebo vpřed. Použijte místo ní událost `pagehide` nebo `visibilitychange`. [Další informace](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registruje posluchač události `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Značky `<link rel=preload>` lze přidat [úpravou rozvržení motivů](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Používejte rozhraní Image Optimization API platformy `Next.js` k zobrazování moderních formátů, jako jsou `WebP` a `AVIF`. [Další informace](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Použijte komponentu `next/image`, která ve výchozím nastavení používá `loading=\"lazy\"`. [Další informace](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Odložte načítání nekritických skriptů třetích stran pomocí komponenty `next/script`. [Další informace](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Zvažte nastavení pluginu `PurgeCSS` v konfiguraci platformy `Next.js` k odstranění nepoužívaných pravidel ze šablon stylů. [Další informace](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Vyhledejte pomocí nástroje `Webpack Bundle Analyzer` nepoužívaný kód JavaScript. [Další informace](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Zvažte změření výkonu aplikace v reálném světě pomocí nástroje `Next.js Analytics`. [Další informace](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Nakonfigurujte ukládání neměnných podkladů a stránek vykreslovaných na serveru (`Server-side Rendered` – SSR) do mezipaměti. [Další informace](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Optimalizujte obrázky tím, že namísto značky `<img>` použijete komponentu `next/image`. [Další informace](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Pomocí komponenty `next/image` nastavte vhodné velikosti (`sizes`). [Další informace](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Zapněte na serveru Next.js kompresi. [Další informace](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Když animované obrázky GIF nahradí video](https://web.dev/replace-gifs-with-videos/), budou se webové stránky načítat rychleji. Zvažte použití moderních formátů, jako je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) nebo [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), které v porovnání se současným videokodekem VP9 zvýší efektivitu komprese o více než 30 %."

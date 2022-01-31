@@ -480,10 +480,10 @@
     "message": "Bralniki zaslona ne morejo prevesti vsebine, ki ni besedilna. Če elementom `<object>` dodate nadomestno besedilo, bralnikom zaslona pomagate prenesti pomen uporabnikom. [Več o tem](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Elementi `<object>` nimajo besedila `[alt]`"
+    "message": "Elementi `<object>` nimajo nadomestnega besedila"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Elementi `<object>` imajo besedilo `[alt]`"
+    "message": "Elementi `<object>` imajo nadomestno besedilo"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Vrednost, večja od 0, kaže na izrecno razporeditev pomikanja. Čeprav je načeloma veljavna, pogosto vodi v zoprne izkušnje za uporabnike, ki se zanašajo na pomožne tehnologije. [Več o tem](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Stran ne deluje brez povezave"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Aplikacija MSA je odmeščena in preverjanja namestljivosti se ponastavljajo."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Navedeno okolje aplikacije ni podprto v sistemu Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Vrednost »prefer_related_applications« je podprta samo v Chromu Beta in stabilnih različicah Chroma v sistemu Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse ni uspel zaznati procesa storitve. Poskusite z novejšo različico Chroma."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Začetni URL manifesta ni veljaven"
@@ -1212,7 +1218,7 @@
     "message": "Zakasnitve strežnikovega zaledja"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Dogodek `unload` se ne aktivira zanesljivo in poslušanje, kdaj se aktivira, lahko prepreči optimizacije brskalnika, kot je predpomnjenje pomikanja naprej in nazaj. Razmislite o uporabi dogodka `pagehide` ali `visibilitychange`. [Več o tem](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Dogodek `unload` se ne aktivira zanesljivo in poslušanje, kdaj se aktivira, lahko prepreči optimizacije brskalnika, kot je predpomnjenje pomikanja naprej in nazaj. Uporabite dogodke `pagehide` ali `visibilitychange`. [Več o tem](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registrira poslušalca dogodka `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Oznake `<link rel=preload>` lahko dodate tako, da [spremenite postavitev teme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Uporabite API za optimizacijo slik `Next.js` za prikazovanje sodobnih oblik datotek, kot sta `WebP` in `AVIF`. [Več o tem](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Uporabite komponento `next/image` s privzeto vrednostjo `loading=\"lazy\"`. [Več o tem](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "S komponento `next/script` odložite nalaganje manj pomembnih skriptov drugih ponudnikov. [Več o tem](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Razmislite o nastavitvi elementa `PurgeCSS` v konfiguraciji `Next.js`, če želite iz datotek s slogi odstraniti neuporabljena pravila. [Več o tem](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Uporabite `Webpack Bundle Analyzer` za zaznavanje neuporabljene kode JavaScript. [Več o tem](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Razmislite o uporabi elementa `Next.js Analytics` za merjenje dejanskega delovanja aplikacije. [Več o tem](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurirajte predpomnjenje za nespremenljive elemente in strani `Server-side Rendered` (SSR). [Več o tem](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Za optimizacijo slik uporabite komponento `next/image` namesto komponente `<img>`. [Več o tem](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Uporabite komponento `next/image` za nastavitev ustreznega nabora `sizes`. [Več o tem](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Omogočite stiskanje v strežniku Next.js. [Več o tem](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "Za hitrejše nalaganje spletnih strani lahko [animirane slike GIF nadomestite z videoposnetki](https://web.dev/replace-gifs-with-videos/), razmislite pa tudi o uporabi sodobnih oblik datotek, kot je [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ali [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), da učinkovitost stiskanja izboljšate za več kot 30 % v primerjavi s trenutno najboljšim videokodekom VP9."

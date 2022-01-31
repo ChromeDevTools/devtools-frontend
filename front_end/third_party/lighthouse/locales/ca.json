@@ -480,10 +480,10 @@
     "message": "Els lectors de pantalla no poden traduir contingut que no sigui text. Si afegeixes text alternatiu als elements `<object>`, ajudes els lectors de pantalla a transmetre el significat als usuaris. [Obtén més informació](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Els elements `<object>` no tenen text `[alt]`"
+    "message": "Els elements `<object>` no tenen text alternatiu"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Els elements `<object>` tenen text `[alt]`"
+    "message": "Els elements `<object>` tenen text alternatiu"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Un valor superior a 0 implica una ordenació explícita de navegació. Tècnicament és vàlid, però sol suposar experiències frustrants per als usuaris que depenen de les tecnologies d'assistència. [Obtén més informació](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "La pàgina no funciona sense connexió"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "S'ha desinstal·lat la PWA i s'estan restablint les comprovacions d'instal·labilitat."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "La plataforma de l'aplicació especificada no s'admet a Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications només s'admet a Chrome beta i als canals estables a Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse no ha pogut determinar si hi havia un Service Worker. Prova-ho amb una versió més recent de Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "L'URL d'inici del manifest no és vàlid"
@@ -1212,7 +1218,7 @@
     "message": "Latències dorsals del servidor"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau back-forward. També pots fer servir els esdeveniments `pagehide` o `visibilitychange`. [Més informació](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "L'esdeveniment `unload` no es pot activar amb fiabilitat i detectar-lo pot impedir optimitzacions del navegador, com ara la memòria cau back-forward. Utilitza els esdeveniments `pagehide` o `visibilitychange`. [Més informació](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Registra un detector de `unload`"
@@ -1257,7 +1263,7 @@
     "message": "Pressupost de rendiment"
   },
   "lighthouse-core/audits/preload-fonts.js | description": {
-    "message": "Carrega prèviament els tipus de lletra `optional` perquè els visitants nous puguin utilitzar-los. [Més informació](https://web.dev/preload-optional-fonts/)"
+    "message": "Precarrega els tipus de lletra `optional` perquè els visitants nous puguin utilitzar-los. [Més informació](https://web.dev/preload-optional-fonts/)"
   },
   "lighthouse-core/audits/preload-fonts.js | failureTitle": {
     "message": "No s'han carregat prèviament els tipus de lletra `font-display: optional`"
@@ -1266,10 +1272,10 @@
     "message": "S'han carregat prèviament els tipus de lletra `font-display: optional`"
   },
   "lighthouse-core/audits/preload-lcp-image.js | description": {
-    "message": "Carrega prèviament la imatge utilitzada per l'element LCP per millorar el teu temps LCP. [Obtén més informació](https://web.dev/optimize-lcp/#preload-important-resources)."
+    "message": "Precarrega la imatge utilitzada per l'element LCP per millorar el teu temps LCP. [Obtén més informació](https://web.dev/optimize-lcp/#preload-important-resources)."
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
-    "message": "Carrega prèviament la imatge de renderització de l'element més gran amb contingut"
+    "message": "Precarrega la imatge de renderització de l'element més gran amb contingut"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "La mètrica Redireccions introdueix retards addicionals abans de poder carregar la pàgina. [Obtén més informació](https://web.dev/redirects/)."
@@ -1605,13 +1611,13 @@
     "message": "S'ha trobat un element `<link rel=preconnect>` per a \"{securityOrigin}\", però el navegador no l'ha utilitzat. Utilitza `preconnect` només per a orígens importants que la pàgina sol·licitarà de segur."
   },
   "lighthouse-core/audits/uses-rel-preload.js | crossoriginWarning": {
-    "message": "S'ha trobat un element `<link>` de càrrega prèvia per a \"{preloadURL}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
+    "message": "S'ha trobat un element `<link>` de precàrrega per a \"{preloadURL}\", però el navegador no l'ha utilitzat. Comprova que estiguis utilitzant correctament l'atribut `crossorigin`."
   },
   "lighthouse-core/audits/uses-rel-preload.js | description": {
     "message": "Et recomanem que utilitzis `<link rel=preload>` per prioritzar l'obtenció de recursos que en aquests moments se sol·liciten en un moment posterior de la càrrega de pàgines. [Obtén més informació](https://web.dev/uses-rel-preload/)."
   },
   "lighthouse-core/audits/uses-rel-preload.js | title": {
-    "message": "Carrega prèviament les sol·licituds de clau"
+    "message": "Precarrega les sol·licituds de clau"
   },
   "lighthouse-core/audits/valid-source-maps.js | columnMapURL": {
     "message": "URL del mapa"
@@ -2091,7 +2097,7 @@
     "message": "Si utilitzes Angular CLI, inclou mapes d'origen a la compilació de producció per inspeccionar els teus paquets. [Obtén més informació](https://angular.io/guide/deployment#inspect-the-bundles)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | uses-rel-preload": {
-    "message": "Carrega rutes amb antelació per accelerar la navegació. [Obtén més informació](https://web.dev/route-preloading-in-angular/)."
+    "message": "Precarrega rutes amb antelació per accelerar la navegació. [Obtén més informació](https://web.dev/route-preloading-in-angular/)."
   },
   "node_modules/lighthouse-stack-packs/packs/angular.js | uses-responsive-images": {
     "message": "Pots optar per fer servir la utilitat `BreakpointObserver` del Component Dev Kit (CDK) per gestionar els punts de ruptura de la imatge. [Obtén més informació](https://material.angular.io/cdk/layout/overview)."
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Es poden afegir etiquetes `<link rel=preload>` [modificant el disseny dels temes](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Utilitza l'API Image Optimization de `Next.js` per difondre formats moderns, com ara `WebP` i `AVIF`. [Obtén més informació](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Utilitza el component `next/image`, que s'estableix en `loading=\"lazy\"` de manera predeterminada. [Obtén més informació](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Utilitza el component `next/script` per ajornar la càrrega de scripts de tercers que no siguin essencials. [Obtén més informació](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Pots establir `PurgeCSS` a la configuració de `Next.js` per suprimir regles sense utilitzar dels fulls d'estil. [Obtén més informació](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Utilitza `Webpack Bundle Analyzer` per detectar codi JavaScript sense utilitzar. [Obtén més informació](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Pots utilitzar `Next.js Analytics` per mesurar el rendiment de la teva aplicació al món real. [Obtén més informació](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Configura l'emmagatzematge a la memòria cau per a recursos invariables i pàgines `Server-side Rendered` (SSR). [Obtén més informació](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Utilitza el component `next/image` (i no `<img>`) per optimitzar imatges. [Obtén més informació](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Utilitza el component `next/image` per establir les `sizes` adequades. [Obtén més informació](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Activa la compressió al teu servidor de Next.js. [Obtén més informació](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Suprimeix els GIF animats amb vídeo](https://web.dev/replace-gifs-with-videos/) per carregar les pàgines web més ràpidament i planteja't l'opció d'utilitzar formats de fitxer moderns, com ara [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), per millorar l'eficàcia de compressió en més d'un 30% respecte al còdec de vídeo actual més avançat, VP9."

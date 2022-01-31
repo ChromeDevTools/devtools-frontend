@@ -93,7 +93,7 @@ Gathering in-page: SourceMaps
 Gathering in-page: FullPageScreenshot
 Gathering trace
 Gathering devtoolsLog & network records
-Computing artifact: NetworkRecords$L
+Computing artifact: NetworkRecords$M
 Running afterPass methods
 Gathering: CSSUsage
 Gathering: JsUsage
@@ -141,7 +141,7 @@ Navigating to http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-bas
 Running pass methods
 Gathering in-page: ServiceWorker
 Gathering devtoolsLog & network records
-Computing artifact: NetworkRecords$L
+Computing artifact: NetworkRecords$M
 Running afterPass methods
 Gathering: ServiceWorker
 Disconnecting from browser...
@@ -274,7 +274,7 @@ Auditing: Lists contain only `<li>` elements and script supporting elements (`<s
 Auditing: List items (`<li>`) are contained within `<ul>` or `<ol>` parent elements
 Auditing: The document does not use `<meta http-equiv="refresh">`
 Auditing: `[user-scalable="no"]` is not used in the `<meta name="viewport">` element and the `[maximum-scale]` attribute is not less than 5.
-Auditing: `<object>` elements have `[alt]` text
+Auditing: `<object>` elements have alternate text
 Auditing: No element has a `[tabindex]` value greater than 0
 Auditing: Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table.
 Auditing: `<th>` elements and elements with `[role="columnheader"/"rowheader"]` have data cells they describe.
@@ -369,7 +369,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 9.2.0
+Version: 9.3.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,
@@ -504,7 +504,7 @@ password-inputs-can-be-pasted-into: pass
 performance-budget: notApplicable
 plugins: pass
 preload-fonts: notApplicable
-preload-lcp-image: notApplicable
+preload-lcp-image: numeric
 pwa-cross-browser: manual
 pwa-each-page-has-url: manual
 pwa-page-transitions: manual

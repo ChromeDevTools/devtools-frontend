@@ -477,13 +477,13 @@
     "message": "Hindi ginagamit ang `[user-scalable=\"no\"]` sa element na `<meta name=\"viewport\">` at hindi mas mababa sa 5 ang attribute na `[maximum-scale]`."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "Hindi makakapag-translate ng hindi text na content ang mga screen reader. Kapag nagdagdag ng alt text sa mga element na `<object>`, matutulungan ang mga screen reader sa pagpaparating ng kahulugan sa mga user. [Matuto pa](https://web.dev/object-alt/)."
+    "message": "Hindi makakapagsalin ng hindi text na content ang mga screen reader. Kapag nagdagdag ng alternatibong text sa mga element na `<object>`, matutulungan ang mga screen reader sa pagpaparating ng kahulugan sa mga user. [Matuto pa](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Walang text na `[alt]` ang mga element na `<object>`"
+    "message": "Walang alternatibong text ang mga element na `<object>`"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "May text na `[alt]` ang mga element na `<object>`"
+    "message": "May alternatibong text ang mga element na `<object>`"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Nagpapahiwatig ng tahasang pagsasaayos ng navigation ang value na mas mataas sa 0. Bagama't kung tutuusin ay valid ito, madalas itong nagdudulot ng mga nakakainis na karanasan para sa mga user na umaasa sa mga nakakatulong na teknolohiya. [Matuto pa](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Hindi gumagana offline ang page"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Na-uninstall ang PWA, at nire-reset ang mga pagsusuri sa installability."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Hindi sinusuportahan ang tinukoy na platform ng application sa Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Sinusuportahan lang ang prefer_related_applications sa Chrome Beta at mga Stable na channel sa Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Hindi matukoy ng Lighthouse kung nagkaroon ng service worker. Pakisubukan sa mas bagong bersyon ng Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Hindi valid ang start URL ng manifest"
@@ -1212,7 +1218,7 @@
     "message": "Mga Latency sa Backend ng Server"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Hindi maaasahan ang paggana ng event na `unload` at puwedeng mahadlangan ng paghihintay dito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Pag-isipang gamitin na lang ang event na `pagehide` o `visibilitychange`. [Matuto pa](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Hindi palaging gumagana nang maayos ang event na `unload` at puwedeng mahadlangan ng pag-listen dito ang mga pag-optimize ng browser tulad ng Back-Forward Cache. Gamitin na lang ang event na `pagehide` o `visibilitychange`. [Matuto pa](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Nagrerehistro ng listener na `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Maidaragdag ang mga tag ng `<link rel=preload>` sa pamamagitan ng [pagbabago ng layout ng tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Gamitin ang Image Optimization API ng `Next.js` para maghatid ng mga modernong format gaya ng `WebP` at `AVIF`. [Matuto pa](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Gamitin ang bahaging `next/image`, na nagde-default sa `loading=\"lazy\"`. [Matuto pa](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Gamitin ang bahaging `next/script` para ipagpaliban ang pag-load ng hindi mahahalagang third-party na script. [Matuto pa](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Pag-isipang i-set up ang `PurgeCSS` sa configuration ng `Next.js` para mag-alis ng mga hindi ginagamit na panuntunan sa mga stylesheet. [Matuto pa](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Gamitin ang `Webpack Bundle Analyzer` para mag-detect ng hindi ginagamit na JavaScript code. [Matuto pa](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Pag-isipang gamitin ang `Next.js Analytics` para sukatin ang aktwal na performance ng iyong app. [Matuto pa](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "I-configure ang pag-cache para sa mga hindi nababagong asset at `Server-side Rendered` (SSR) page. [Matuto pa](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Gamitin ang bahaging `next/image` sa halip na `<img>` para mag-optimize ng mga larawan. [Matuto pa](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Gamitin ang bahaging `next/image` para itakda ang naaangkop na `sizes`. [Matuto pa](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "I-enable ang pag-compress sa iyong Next.js server. [Matuto pa](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Palitan ang mga animated na GIF ng video](https://web.dev/replace-gifs-with-videos/) para sa mas mabibilis na pag-load ng web page at pag-isipang gumamit ng mga modernong format ng file gaya ng [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) o [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) para mapahusay ang efficiency ng pag-compress nang mahigit 30% kaysa sa kasalukuyang state-of-the-art na video codec na VP9."

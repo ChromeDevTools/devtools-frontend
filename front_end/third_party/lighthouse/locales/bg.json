@@ -417,7 +417,7 @@
     "message": "Когато за бутон от тип `<input>` се използва изображение, предоставянето на алтернативен текст помага на потребителите на екранни четци да разберат за какво служи бутонът. [Научете повече](https://web.dev/input-image-alt/)."
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "Някои елементи `<input type=\"image\">` нямат алтернативен текст `[alt]`"
+    "message": "Някои елементи `<input type=\"image\">` нямат алтернативен текст (`[alt]`)"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
     "message": "Елементите `<input type=\"image\">` имат алтернативен текст (`[alt]`)"
@@ -480,10 +480,10 @@
     "message": "Екранните четци не могат да интерпретират нетекстово съдържание. Добавянето на алтернативен текст към елементите `<object>` помага на екранните четци да предават смисъла им на потребителите. [Научете повече](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "Някои елементи `<object>` нямат алтернативен текст `[alt]`"
+    "message": "`<object>` елемента нямат алтернативен текст"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "Елементите `<object>` имат алтернативен текст (`[alt]`)"
+    "message": "`<object>` елемента имат алтернативен текст"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "Ако стойността е по-голяма от 0, значи се използва изричен ред на навигиране. Въпреки че е технически валидно, това често създава неудобства за потребителите, които разчитат на помощни технологии. [Научете повече](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Страницата не работи офлайн"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA бе деинсталирано и проверките на възможността за инсталиране се нулират."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "Посочената платформа за приложения не се поддържа от Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications се поддържа само в бета- и стабилния канал на Chrome за Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse не успя да установи дали е налице service worker. Опитайте с по-нова версия на Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "URL адресът за стартиране в манифеста не е валиден"
@@ -1212,7 +1218,7 @@
     "message": "Забавяния в задния слой на сървъра"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например кеш за назад/напред. Вместо това можете да използвате събитията `pagehide` или `visibilitychange`. [Научете повече](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "Събитието `unload` не се задейства надеждно и приемането му може да попречи на оптимизациите на браузъра, като например кеш за назад/напред. Вместо това използвайте събитията `pagehide` или `visibilitychange`. [Научете повече](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "Регистрира приемател за `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "Можете да добавите маркери `<link rel=preload>`, като [промените оформлението на дадената тема](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Използвайте API на `Next.js` за оптимизиране на изображенията, за да се показват в съвременни формати, като например `WebP` и `AVIF`. [Научете повече](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Използвайте компонента `next/image`, който по подразбиране задава `loading=\"lazy\"`. [Научете повече](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Използвайте компонента `next/script`, за да отложите зареждането на некритични скриптове от трети страни. [Научете повече](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Добре е да настроите `PurgeCSS` в конфигурацията с `Next.js`, за да премахнете неизползваните правила от стиловите листове. [Научете повече](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Използвайте `Webpack Bundle Analyzer`, за да откриете неизползван JavaScript код. [Научете повече](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Добре е да използвате `Next.js Analytics`, за да измервате действителната ефективност на приложението си. [Научете повече](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Конфигурирайте кеширането на непроменливите активи и SSR (`Server-side Rendered`) страници. [Научете повече](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Използвайте компонента `next/image` вместо `<img>`, за да оптимизирате изображенията. [Научете повече](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Използвайте компонента `next/image`, за да зададете подходяща стойност за `sizes`. [Научете повече](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Активирайте компресирането в Next.js сървъра си. [Научете повече](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Заменете анимираните GIF файлове с видеосъдържание](https://web.dev/replace-gifs-with-videos/), за да ускорите зареждането на уеб страницата, и помислете за използването на съвременни файлови формати, като [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) или [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder), за да подобрите ефективността при компресиране с повече от 30% спрямо най-модерния понастоящем видеокодек VP9."

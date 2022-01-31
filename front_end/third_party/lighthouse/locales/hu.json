@@ -480,10 +480,10 @@
     "message": "A képernyőolvasók nem tudják lefordítani a nem szövegalapú tartalmakat. Ha alternatív szöveget helyez el a(z) `<object>` elemekben, a képernyőolvasók kommunikálhatják az elemek jelentését a felhasználóknak. [További információ](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "A(z) `<object>` elemekhez nem tartozik `[alt]` szöveg"
+    "message": "A(z) `<object>` elemekhez nem tartozik alternatív szöveg"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "A(z) `<object>` elemek rendelkeznek `[alt]` szöveggel"
+    "message": "A(z) `<object>` elemek rendelkeznek alternatív szöveggel"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "A 0-nál nagyobb érték explicit navigációs sorrendet jelent. Ez ugyan technikailag érvényes, azonban gyakran problémát jelent a kisegítő technológiákra hagyatkozó felhasználók számára. [További információ](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "Az oldal nem működik offline állapotban"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "Megtörtént a PWA eltávolítása, visszaállnak a telepíthetőségi ellenőrzések."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "A megadott alkalmazásplatform nem támogatott Androidon."
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "A prefer_related_applications csak a Chrome bétaverziójában és a Stabil csatornákon támogatott Androidon."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "A Lighthouse nem tudta meghatározni, hogy volt-e service worker. Próbálja újra a Chrome újabb verziójával."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "A manifest kezdési URL-je érvénytelen"
@@ -1212,7 +1218,7 @@
     "message": "Várakozási idő a háttérszervereknél"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "A(z) `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például az előre-vissza gyorsítótárazást). Vegye fontolóra helyette a(z) `pagehide` vagy a(z) `visibilitychange` esemény használatát. [További információ](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)."
+    "message": "A(z) `unload` esemény működése nem megbízható, és figyelése megakadályozhatja a böngésző optimalizálását (például az előre-vissza gyorsítótárazást). Használja helyette a következő események valamelyikét: `pagehide` vagy `visibilitychange`. [További információ](https://web.dev/bfcache/#never-use-the-unload-event)."
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload`-figyelőt regisztrál"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` címkéket [valamelyik téma elrendezésének módosításával](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) adhat hozzá."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Használja a(z) `Next.js` Image Optimization API-t modern formátumok (pl. `WebP` és `AVIF`) megjelenítéséhez. [További információ](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Használja a(z) `next/image` összetevőt, amely alapértelmezés szerint a következőt alkalmazza: `loading=\"lazy\"`. [További információ](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Használja a(z) `next/script` összetevőt a nem kritikus fontosságú, harmadik félhez tartozó szkriptek késleltetéséhez. [További információ](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Fontolja meg a(z) `PurgeCSS` beállítását a(z) `Next.js` konfigurációban a nem használt szabályok stíluslapokból való eltávolításához. [További információ](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Használja a(z) `Webpack Bundle Analyzer` eszközt nem használt JavaScript-kód észleléséhez. [További információ](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Fontolja meg a(z) `Next.js Analytics` használatát az alkalmazás valós teljesítményének méréséhez. [További információ](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Konfigurálja a gyorsítótárazást állandó tartalmakhoz és `Server-side Rendered` (SSR) oldalakhoz. [További információ](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Használja a(z) `next/image` összetevőt a(z) `<img>` helyett a képek optimalizálásához. [További információ](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Használja a(z) `next/image` összetevőt a megfelelő `sizes` beállításához. [További információ](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Engedélyezze a tömörítést a Next.js szerveren. [További információ](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Cserélje le az animált GIF-eket videókra](https://web.dev/replace-gifs-with-videos/) a gyorsabban betöltődő weboldalak érdekében, és fontolja meg modern fájlformátumok (pl. [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) vagy [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder)) használatát, amelyekkel a tömörítési hatékonyságot több mint 30%-kal javíthatja a jelenlegi legmodernebb videokodekkel, a VP9-cel szemben."

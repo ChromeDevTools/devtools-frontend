@@ -417,10 +417,10 @@
     "message": "`<input>` பட்டனாக ஒரு படத்தைப் பயன்படுத்தும்போது அந்த பட்டனுக்கான மாற்று உரையை வழங்குவது அதன் செயல்பாட்டை ஸ்க்ரீன் ரீடர் பயனர்கள் புரிந்துகொள்ள உதவியாக இருக்கும். [மேலும் அறிக](https://web.dev/input-image-alt/)."
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | failureTitle": {
-    "message": "`<input type=\"image\">` உறுப்புகளில் `[alt]` உரை இல்லை"
+    "message": "`<input type=\"image\">` உறுப்புகளில் `[alt]` வார்த்தைகள் இல்லை"
   },
   "lighthouse-core/audits/accessibility/input-image-alt.js | title": {
-    "message": "`<input type=\"image\">` உறுப்புகள் `[alt]` உரையைக் கொண்டுள்ளன"
+    "message": "`<input type=\"image\">` உறுப்புகளில் `[alt]` வார்த்தைகள் உள்ளன"
   },
   "lighthouse-core/audits/accessibility/label.js | description": {
     "message": "ஸ்க்ரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்களால் சரியாக அறிவிக்கப்படும் வகையில் படிவக் கட்டுப்பாடுகள் இருப்பதை லேபிள்கள் உறுதிசெய்கின்றன. [மேலும் அறிக](https://web.dev/label/)."
@@ -477,13 +477,13 @@
     "message": "`<meta name=\"viewport\">` உறுப்பில் `[user-scalable=\"no\"]` பயன்படுத்தப்படவில்லை, `[maximum-scale]` பண்புக்கூறு 5க்குக் குறைவாக இல்லை."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "உரை அல்லாதவற்றை ஸ்க்ரீன் ரீடர்களால் மொழிபெயர்க்க முடியாது. `<object>` உறுப்புகளுக்கு மாற்று உரையை சேர்த்தால் அவற்றுக்கான அர்த்தத்தை ஸ்க்ரீன் ரீடர்கள் பயனர்களுக்குத் தெரிவிக்கும். [மேலும் அறிக](https://web.dev/object-alt/)."
+    "message": "வார்த்தைகளாக இல்லாதவற்றை ஸ்கிரீன் ரீடர்களால் மொழிபெயர்க்க முடியாது. `<object>` உறுப்புகளில் மாற்று வார்த்தைகளைச் சேர்ப்பதன் மூலம் ஸ்கிரீன் ரீடர்களால் சரியான அர்த்தத்தைப் பயனர்களுக்குத் தெரிவிக்க முடியும். [மேலும் அறிக](https://web.dev/object-alt/)."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "`<object>` உறுப்புகளில் `[alt]` உரை இல்லை"
+    "message": "`<object>` உறுப்புகளில் மாற்று வார்த்தைகள் இல்லை"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "`<object>` உறுப்புகள் `[alt]` உரையைக் கொண்டுள்ளன"
+    "message": "`<object>` உறுப்புகளில் மாற்று வார்த்தைகள் உள்ளன"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "0க்கு அதிகமான மதிப்பானது வெளிப்படையான ஒரு வழிசெலுத்தல் வரிசை முறையைக் குறிப்பிடுகிறது. முறைப்படி செல்லுபடியாகும் என்றாலும் தொழில்நுட்பங்களை சார்ந்திருக்கும் மாற்றுத்திறன் பயனர்களுக்கு இது பெரும்பாலும் குழப்பமான அனுபவத்தையே உருவாக்கும். [மேலும் அறிக](https://web.dev/tabindex/)."
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "பக்கம் ஆஃப்லைனில் காட்டப்படாது"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "PWA நிறுவல் நீக்கப்பட்டது. நிறுவலுக்கான சரிபார்ப்புகள் மீட்டமைக்கப்படுகின்றன."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "குறிப்பிடப்பட்ட ஆப்ஸ் பிளாட்ஃபார்ம், Androidல் ஆதரிக்கப்படவில்லை"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "Chrome பீட்டாவிலும் Androidல் நிலையான சேனல்களிலும் மட்டுமே prefer_related_applications ஆதரிக்கப்படும்."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse கருவியால் service worker இருந்ததா என்பதைத் தீர்மானிக்க முடியவில்லை. Chromeமின் புதிய பதிப்பில் முயலவும்."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "மெனிஃபெஸ்ட் ஸ்டார்ட் URL தவறானது"
@@ -1212,7 +1218,7 @@
     "message": "சேவையக பேக்எண்ட் தாமதங்கள்"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "`unload` நிகழ்வு நம்பத்தகுந்த வகையில் தொடங்கவில்லை, பக்கங்கள் மேற்கொண்டு இதைக் கையாண்டால் உலாவியின் மேம்பட்ட திறன்கள் தடுக்கப்படலாம். எ.கா. முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் போன்றவை. இதற்குப் பதிலாக `pagehide`/`visibilitychange` நிகழ்வுகளைப் பயன்படுத்திப் பார்க்கவும். [மேலும் அறிக](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "நம்பகமான வகையில் `unload` நிகழ்வு தொடங்கவில்லை, எனவே பக்கங்கள் இதைப் பயன்படுத்தினால் உலாவியின் மேம்பட்ட திறன்கள் பாதிக்கப்படலாம். எ.கா. முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் போன்றவை. இதற்குப் பதிலாக `pagehide` அல்லது `visibilitychange` நிகழ்வுகளைப் பயன்படுத்தவும். [மேலும் அறிக](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "`unload` நிகழ்வு லிசனரைப் பதிவுசெய்கிறது"
@@ -2097,7 +2103,7 @@
     "message": "பட பிரேக்பாயிண்ட்டுகளை நிர்வகிக்க Component Dev Kitடில் (CDK) `BreakpointObserver` உபகரணத்தைப் பயன்படுத்துவதைப் பரிசீலிக்கவும். [மேலும் அறிக](https://material.angular.io/cdk/layout/overview)."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "GIFஃபை HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
+    "message": "GIFஐ HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | font-display": {
     "message": "உங்கள் தீமில் பிரத்தியேக எழுத்துருக்களை வரையறுக்கும்போது `@font-display` ஐக் குறிப்பிடவும்."
@@ -2142,10 +2148,10 @@
     "message": "Drupalலில் வழங்கப்பட்டுள்ள இயல்பான [திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களை](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (Drupal 8 & அதற்குப் பிந்தைய பதிப்பில் கிடைக்கும்) பயன்படுத்துவதை உறுதிசெய்துகொள்ளவும். காட்சிப் பயன்முறைகள், காட்சிகள் ஆகியவற்றின் மூலமாகவோ WYSIWYG எடிட்டரைப் பயன்படுத்திப் பதிவேற்றப்பட்ட படங்களின் மூலமாகவோ படப் புலங்களை ரெண்டர் செய்யும்போது திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
-    "message": "GIFஃபை HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
+    "message": "GIFஐ HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "நீங்கள் பதிவேற்றிய படங்களை மேம்படுத்தப்பட்ட வடிவமைப்புகளுக்குத் தானாக மாற்றும் ஒரு [செருகுநிரல்](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp)/சேவையைப் பயன்படுத்தவும்."
+    "message": "நீங்கள் பதிவேற்றிய படங்களை மேம்பட்ட வடிவமைப்புகளுக்குத் தானாக மாற்றும் [செருகுநிரல்](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) அல்லது சேவையைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகிற [தேவையுள்ளபோது ஏற்றும் Joomla செருகுநிரலை](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) நிறுவவும் அல்லது அந்த வசதியை வழங்கும் டெம்ப்ளேட்டிற்கு மாறவும். Joomla 4.0 ஐப் பயன்படுத்தித் தொடங்குவதன் மூலம் புதிய படங்கள் அனைத்தும் `loading` பண்புக்கூறு முழுவதையும் [தானாகவே](https://github.com/joomla/joomla-cms/pull/30748) பெறும்."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "[தீம்களின் தளவமைப்பை மாற்றுவதன்](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) மூலம் `<link rel=preload>` குறியிடல்களைச் சேர்க்க முடியும்."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "`WebP`, `AVIF` போன்ற நவீன வடிவமைப்புகளுக்கு மேம்படுத்த, `Next.js` Image Optimization APIயைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "இயல்பாக `loading=\"lazy\"` என அமைக்கப்பட்டிருக்கும் `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "முக்கியமில்லாத மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகள் ஏற்றப்படுவதைத் தாமதப்படுத்த, `next/script` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "பயன்படுத்தப்படாத விதிகளை ஸ்டைல்ஷீட்டுகளில் இருந்து அகற்ற, `Next.js` உள்ளமைவில் `PurgeCSS` செருகுநிரலை அமைக்கவும். [மேலும் அறிக](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "பயன்படுத்தப்படாத JavaScript குறியீட்டைக் கண்டறிய, `Webpack Bundle Analyzer` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "உங்கள் ஆப்ஸின் நிகழ்நேரச் செயல்திறனை அளவிட, `Next.js Analytics` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "இம்மியூட்டபிள் அசெட்டுகள், `Server-side Rendered` (SSR) பக்கங்கள் ஆகியவற்றுக்கான தற்காலிகச் சேமிப்பை உள்ளமைக்கவும். [மேலும் அறிக](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "படங்களை மேம்படுத்த `<img>` காம்பனென்ட்டிற்குப் பதிலாக `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "பொருத்தமான `sizes` ஐ அமைக்க, `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "உங்கள் Next.js சேவையகத்தில் சுருக்குதலை இயக்கவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "இணையப் பக்கம் விரைவாக ஏற்றப்படுவதற்கு, [வீடியோவிற்குப் பதிலாக அனிமேஷன் செய்யப்பட்ட GIFகளைப் பயன்படுத்தவும்](https://web.dev/replace-gifs-with-videos/). மேலும் சுருக்குதல் செயல்திறனைத் தற்போதைய அதிநவீன VP9 வீடியோ கோடெக்கை விட 30% கூடுதலாக மேம்படுத்த [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos), [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) போன்ற நவீன ஃபைல் வடிவமைப்புகளைப் பயன்படுத்தவும்."
   },
@@ -2283,10 +2319,10 @@
     "message": "உங்கள் கூறுகளின் ரெண்டரிங் செயல்திறனை அளவிட Profiler APIயைப் பயன்படுத்தும் React DevTools Profilerரைப் பயன்படுத்தவும். [மேலும் அறிக.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
-    "message": "GIFஃபை HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
+    "message": "GIFஐ HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "நீங்கள் பதிவேற்றிய படங்களை மேம்படுத்தப்பட்ட வடிவமைப்புகளுக்குத் தானாக மாற்றும் ஒரு [செருகுநிரல்](https://wordpress.org/plugins/search/convert+webp/)/சேவையைப் பயன்படுத்தவும்."
+    "message": "நீங்கள் பதிவேற்றிய படங்களை மேம்பட்ட வடிவமைப்புகளுக்குத் தானாக மாற்றும் [செருகுநிரல்](https://wordpress.org/plugins/search/convert+webp/) அல்லது சேவையைப் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "[lazy-load WordPress செருகுநிரலை](https://wordpress.org/plugins/search/lazy+load/) நிறுவி திரைக்கு வெளியிலுள்ள படங்களைத் தேவையான போது ஏற்றும் திறனைப் பெறலாம் அல்லது அந்தத் திறன் கொண்ட தீமிற்கு மாறலாம். [AMP செருகுநிரலையும்](https://wordpress.org/plugins/amp/) பயன்படுத்திப் பார்க்கவும்."

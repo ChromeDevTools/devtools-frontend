@@ -3,7 +3,7 @@
     "message": "كل التقارير"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "الفئات"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "إمكانية الوصول"
@@ -24,40 +24,40 @@
     "message": "سطح المكتب"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "فهم تقرير مسار Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "فهم المسارات"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "يمكنك استخدام تقارير التنقُّل من أجل..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "يمكنك استخدام التقارير الخاصة بلحظات معيّنة من أجل..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "يمكنك استخدام تقارير الفترات الزمنية من أجل..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "الحصول على نتيجة أداء أداة Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "التعرّف على قيم مقاييس أداء تحميل الصفحة، مثل سرعة عرض أكبر جزء من المحتوى على الصفحة ومؤشر السرعة"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "تقييم إمكانات تطبيقات الويب التقدّمية"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "التعرّف على المشاكل التي تحول دون سهولة الاستخدام في التطبيقات المكوّنة من صفحة واحدة أو النماذج المُعقَّدة"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "تقييم أفضل الممارسات المتعلّقة بالقوائم وعناصر واجهة المستخدم المخفية خلف التفاعلات"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "قياس متغيّرات التصميم ووقت تنفيذ JavaScript على سلسلة من التفاعلات"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "التعرّف على فرص تحسين الأداء من أجل تحسين تجربة استخدام الصفحات التي يفتحها المستخدم لمدة طويلة والتطبيقات المكوّنة من صفحة واحدة"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "عمليات التدقيق الأعلى تأثيرًا"
@@ -72,7 +72,7 @@
     "message": "تحميل الصفحة"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "تحلِّل تقارير التنقُّل أداء تحميل صفحة واحدة، تمامًا مثل تقارير Lighthouse الأصلية."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "تقرير التنقُّل في الصفحة"
@@ -99,13 +99,13 @@
     "message": "جيد"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "حفظ"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "الحالة التي تم تسجيلها للصفحة"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "تُجري التقارير الخاصة بلحظات معيّنة تحليلاً للصفحة في حالة مُحدَّدة، عادةً ما بعد تفاعلات المستخدم."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "التقرير الخاص بالصفحة في لحظة معيَّنة"
@@ -120,7 +120,7 @@
     "message": "تفاعلات المستخدمين"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "تحلِّل تقارير الفترات الزمنية أداء صفحة خلال فترات زمنية عشوائية، وعادةً ما تتضمّن تفاعلات المستخدم."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "تقرير الإطار الزمني"
@@ -477,13 +477,13 @@
     "message": "`[user-scalable=\"no\"]` غير مستخدم في العنصر `<meta name=\"viewport\">` والسمة `[maximum-scale]` لا تقلّ عن 5."
   },
   "lighthouse-core/audits/accessibility/object-alt.js | description": {
-    "message": "لا يمكن لبرامج قراءة الشاشة ترجمة المحتوى غير النصي. تؤدي إضافة نص بديل إلى عناصر `<object>` إلى مساعدة برامج قراءة الشاشة على نقل المعنى إلى المستخدمين. [مزيد من المعلومات](https://web.dev/object-alt/)"
+    "message": "لا يمكن لبرامج قراءة الشاشة ترجمة المحتوى غير النصي. وتؤدي إضافة نص بديل إلى عناصر `<object>` إلى مساعدة برامج قراءة الشاشة على إيضاح المعنى للمستخدمين. [مزيد من المعلومات](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "عناصر `<object>` لا تحتوي على نص `[alt]`"
+    "message": "عناصر `<object>` لا تحتوي على نص بديل"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "عناصر `<object>` تحتوي على نص `[alt]`"
+    "message": "عناصر `<object>` تحتوي على نص بديل"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "تشير القيمة الأكبر من 0 إلى وجود طلب تنقل صريح. على الرغم من أن ذلك صحيح تقنيًّا، غالبًا ما يؤدي ذلك إلى إنشاء تجارب محبطة للمستخدمين الذين يعتمدون على التقنيات المساعدة. [مزيد من المعلومات](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "لا تعمل هذه الصفحة بلا إنترنت."
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "تم إلغاء تثبيت تطبيق الويب التقدّمي (PWA) وتتم حاليًا إعادة ضبط عمليات التحقّق من قابلية التثبيت."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "لا تتوفّر منصة التطبيقات المحدّدة على Android."
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "لا يتوافق حقل الإدخال prefer_related_applications إلا مع الإصدار التجريبي من متصفِّح Chrome والقنوات الثابتة على Android."
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "تعذَّر على أداة Lighthouse تحديد ما إذا كان يتوفّر مشغّل خدمات. يُرجى إعادة المحاولة باستخدام إصدار أحدث من متصفّح Chrome."
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "عنوان URL البداية لملف البيان غير صالح."
@@ -1212,7 +1218,7 @@
     "message": "أوقات الاستجابة لواجهة الخادم الخلفية"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "لا يعمل حدث `unload` بفعالية ويمكن أن تؤدي معالجته إلى منع تحسينات المتصفّح، مثل ميزة \"التخزين المؤقت للصفحات\". بدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "لا يعمل حدث `unload` بفاعلية ويمكن أن تؤدي معالجته إلى عدم تنفيذ عمليات تحسين المتصفّح، مثل عملية \"التخزين المؤقت للصفحات\". وبدلاً من هذا الحدث، يمكنك استخدام `pagehide` أو `visibilitychange`. [مزيد من المعلومات](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "يتم استخدام أدوات معالجة حدث `unload`"
@@ -2145,7 +2151,7 @@
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | modern-image-formats": {
-    "message": "يمكنك استخدام [مكوّن إضافي](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
+    "message": "يمكنك استخدام [مكوِّن إضافي](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=webp) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | offscreen-images": {
     "message": "يمكنك تثبيت [مكوِّن Joomla الإضافي المُساعِد في التحميل البطيء](https://extensions.joomla.org/instant-search/?jed_live%5Bquery%5D=lazy%20loading) والذي يتيح لك إمكانية تأجيل أي صور خارج الشاشة، أو يمكنك الانتقال إلى نموذج يوفّر هذه الوظيفة. وبدءًا من الإصدار Joomla 4.0، تحصل كل الصور الجديدة [تلقائيًا](https://github.com/joomla/joomla-cms/pull/30748) على السمة `loading` من الحزمة الأساسية."
@@ -2219,6 +2225,36 @@
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "يمكن إضافة علامات `<link rel=preload>` عن طريق [تعديل تنسيق التصميمات](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "يمكنك استخدام Image Optimization API `Next.js` لعرض تنسيقات حديثة مثل `WebP` و`AVIF`. [مزيد من المعلومات](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "يمكنك استخدام المكوِّن `next/image` الذي يتم تلقائيًا ضبطه على `loading=\"lazy\"`. [مزيد من المعلومات](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "يمكنك استخدام المكوِّن `next/script` لتأجيل تحميل النصوص البرمجية غير المهمة التابعة لجهات خارجية. [مزيد من المعلومات](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "يمكنك إعداد `PurgeCSS` في عملية ضبط `Next.js` لإزالة أي قواعد غير مستخدَمة من أوراق الأنماط. [مزيد من المعلومات](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "يمكنك استخدام `Webpack Bundle Analyzer` لرصد رمز JavaScript غير المستخدَم. [مزيد من المعلومات](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "يمكنك استخدام `Next.js Analytics` لقياس الأداء الفعلي العالمي لتطبيقك. [مزيد من المعلومات](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "يمكنك ضبط ميزة التخزين المؤقت لمواد العرض وصفحات `Server-side Rendered` (SSR) الثابتة. [مزيد من المعلومات](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "يمكنك استخدام المكوِّن `next/image` بدلاً من `<img>` لتحسين الصور. [مزيد من المعلومات](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "يمكنك استخدام المكوِّن `next/image` لضبط `sizes` المناسبة. [مزيد من المعلومات](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "يمكنك تفعيل ميزة ضغط البيانات في خادم Next.js الخاص بك. [مزيد من المعلومات](https://nextjs.org/docs/api-reference/next.config.js/compression)"
+  },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[يمكنك استخدام الفيديو بدلاً من صور GIF المتحركة](https://web.dev/replace-gifs-with-videos/) لتحميل صفحات الويب بشكل أسرع، بالإضافة إلى استخدام تنسيقات ملفات حديثة، مثل [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) أو [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) لتحسين كفاءة الضغط بنسبة تزيد عن 30% على برنامج ترميز الفيديو المتطوّر الحالي، VP9."
   },
@@ -2286,7 +2322,7 @@
     "message": "يمكنك تحميل ملف GIF إلى خدمة ستتيح تضمينه في شكل فيديو HTML5."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "يمكنك استخدام [مكوّن إضافي](https://wordpress.org/plugins/search/convert+webp/) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
+    "message": "يمكنك استخدام [مكوِّن إضافي](https://wordpress.org/plugins/search/convert+webp/) أو خدمة تتيح لك تحويل صورك المحمَّلة إلى أفضل التنسيقات تلقائيًا."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "يمكنك تثبيت [مكون WordPress الإضافي للتحميل الكسول](https://wordpress.org/plugins/search/lazy+load/) الذي يوفر القدرة على تأجيل أي صور خارج الشاشة، أو التبديل إلى تصميم يوفِّر هذه القدرة الوظيفية. يمكنك أيضًا استخدام [مكون AMP الإضافي](https://wordpress.org/plugins/amp/)."

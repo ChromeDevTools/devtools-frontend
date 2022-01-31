@@ -480,10 +480,10 @@
     "message": "โปรแกรมอ่านหน้าจอแปลเนื้อหาที่ไม่ใช่ข้อความไม่ได้ การเพิ่มข้อความแสดงแทนลงในองค์ประกอบ `<object>` ช่วยโปรแกรมอ่านหน้าจอถ่ายทอดความหมายให้แก่ผู้ใช้ [ดูข้อมูลเพิ่มเติม](https://web.dev/object-alt/)"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | failureTitle": {
-    "message": "องค์ประกอบ `<object>` ไม่มีข้อความ `[alt]`"
+    "message": "องค์ประกอบ `<object>` ไม่มีข้อความแสดงแทน"
   },
   "lighthouse-core/audits/accessibility/object-alt.js | title": {
-    "message": "องค์ประกอบ `<object>` มีข้อความ `[alt]`"
+    "message": "องค์ประกอบ `<object>` มีข้อความแสดงแทน"
   },
   "lighthouse-core/audits/accessibility/tabindex.js | description": {
     "message": "ค่าที่มากกว่า 0 หมายความว่ามีการจัดเรียงการนำทางที่ชัดเจน แม้ว่าการทำงานนี้จะไม่มีปัญหาในทางเทคนิค แต่มักก่อให้เกิดประสบการณ์การใช้งานที่น่าหงุดหงิดสำหรับผู้ใช้เทคโนโลยีอำนวยความสะดวก [ดูข้อมูลเพิ่มเติม](https://web.dev/tabindex/)"
@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "หน้าใช้งานแบบออฟไลน์ไม่ได้"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "ถอนการติดตั้ง PWA แล้วและกำลังรีเซ็ตการตรวจสอบความสามารถในการติดตั้ง"
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "แพลตฟอร์มแอปพลิเคชันที่ระบุไว้ใช้ไม่ได้ใน Android"
   },
@@ -1060,6 +1063,9 @@
   },
   "lighthouse-core/audits/installable-manifest.js | prefer-related-applications-only-beta-stable": {
     "message": "prefer_related_applications ใช้ได้เฉพาะใน Chrome เบต้า และเวอร์ชันเสถียรใน Android เท่านั้น"
+  },
+  "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
+    "message": "Lighthouse ระบุไม่ได้ว่ามี Service Worker หรือไม่ โปรดลองใช้ Chrome เวอร์ชันใหม่กว่านี้"
   },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "URL เริ่มต้นของไฟล์ Manifest ไม่ถูกต้อง"
@@ -1212,7 +1218,7 @@
     "message": "เวลาในการตอบสนองจากแบ็กเอนด์ของเซิร์ฟเวอร์"
   },
   "lighthouse-core/audits/no-unload-listeners.js | description": {
-    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่างแคชย้อนหลังไม่ทำงาน ลองพิจารณาใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติม](https://developers.google.com/web/updates/2018/07/page-lifecycle-api#the-unload-event)"
+    "message": "เหตุการณ์ `unload` เริ่มทำงานโดยไม่มีความเสถียร และการ Listen อาจทำให้การเพิ่มประสิทธิภาพเบราว์เซอร์อย่างแคชย้อนหลังไม่ทำงาน ใช้เหตุการณ์ `pagehide` หรือ `visibilitychange` แทน [ดูข้อมูลเพิ่มเติม](https://web.dev/bfcache/#never-use-the-unload-event)"
   },
   "lighthouse-core/audits/no-unload-listeners.js | failureTitle": {
     "message": "ลงทะเบียน Listener `unload`"
@@ -2218,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "เพิ่มแท็ก `<link rel=preload>` ได้โดย[แก้ไขเลย์เอาต์ของธีม](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "ใช้ `Next.js` Image Optimization API ซึ่งจะให้รูปแบบที่ทันสมัย เช่น `WebP` และ `AVIF` [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "ใช้คอมโพเนนต์ `next/image` ซึ่งมีค่าเริ่มต้นเป็น `loading=\"lazy\"` [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next/image#loading)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "ใช้คอมโพเนนต์ `next/script` เพื่อเลื่อนการโหลดสคริปต์บุคคลที่สามที่ไม่สำคัญ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/basic-features/script)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "พิจารณาตั้งค่า `PurgeCSS` ในการกำหนดค่า `Next.js` เพื่อนำกฎที่ไม่ได้ใช้ออกจากสไตล์ชีต [ดูข้อมูลเพิ่มเติม](https://purgecss.com/guides/next.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "ใช้ `Webpack Bundle Analyzer` เพื่อตรวจหาโค้ด JavaScript ที่ไม่ได้ใช้ [ดูข้อมูลเพิ่มเติม](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "พิจารณาใช้ `Next.js Analytics` เพื่อวัดประสิทธิภาพแอปในการใช้งานจริง [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/advanced-features/measuring-performance)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "กำหนดค่าการแคชสำหรับเนื้อหาและหน้า `Server-side Rendered` (SSR) ที่เปลี่ยนแปลงไม่ได้ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/going-to-production#caching)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "ใช้คอมโพเนนต์ `next/image` แทน `<img>` เพื่อเพิ่มประสิทธิภาพรูปภาพ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/basic-features/image-optimization)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "ใช้คอมโพเนนต์ `next/image` เพื่อกำหนด `sizes` ที่เหมาะสม [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next/image#sizes)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "เปิดใช้การบีบอัดในเซิร์ฟเวอร์ Next.js ของคุณ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[นำวิดีโอมาแทนที่ GIF แบบภาพเคลื่อนไหว](https://web.dev/replace-gifs-with-videos/)เพื่อให้หน้าเว็บโหลดเร็วขึ้น และลองใช้รูปแบบไฟล์สมัยใหม่ เช่น [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) หรือ [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) เพื่อปรับปรุงประสิทธิภาพในการบีบอัดมากกว่า 30% เมื่อเทียบกับ VP9 ซึ่งเป็นตัวแปลงรหัสวิดีโอที่ทันสมัยซึ่งใช้อยู่ในปัจจุบัน"

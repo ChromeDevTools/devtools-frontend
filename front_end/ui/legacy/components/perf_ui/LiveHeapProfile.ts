@@ -36,8 +36,8 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
     return liveHeapProfileInstance;
   }
 
-  run(): Promise<void> {
-    return Promise.resolve();
+  async run(): Promise<void> {
+    return;
   }
 
   modelAdded(model: SDK.HeapProfilerModel.HeapProfilerModel): void {

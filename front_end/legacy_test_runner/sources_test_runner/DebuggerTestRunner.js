@@ -198,31 +198,31 @@ SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, opti
 };
 
 SourcesTestRunner.stepOver = function() {
-  Promise.resolve().then(function() {
+  queueMicrotask(function() {
     UI.panels.sources.stepOver();
   });
 };
 
 SourcesTestRunner.stepInto = function() {
-  Promise.resolve().then(function() {
+  queueMicrotask(function() {
     UI.panels.sources.stepInto();
   });
 };
 
 SourcesTestRunner.stepIntoAsync = function() {
-  Promise.resolve().then(function() {
+  queueMicrotask(function() {
     UI.panels.sources.stepIntoAsync();
   });
 };
 
 SourcesTestRunner.stepOut = function() {
-  Promise.resolve().then(function() {
+  queueMicrotask(function() {
     UI.panels.sources.stepOut();
   });
 };
 
 SourcesTestRunner.togglePause = function() {
-  Promise.resolve().then(function() {
+  queueMicrotask(function() {
     UI.panels.sources.togglePause();
   });
 };

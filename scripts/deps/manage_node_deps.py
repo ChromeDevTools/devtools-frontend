@@ -34,6 +34,7 @@ LICENSES = [
     "ISC",
     "MPL-2.0",
     "Python-2.0",
+    "W3C",
 ]
 
 # List all DEPS here.

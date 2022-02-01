@@ -116,13 +116,13 @@ export class EventListenersView extends UI.Widget.VBox {
       frameworkEventListenersObject = result;
     }
 
-    function markInternalEventListeners(): Promise<void> {
+    async function markInternalEventListeners(): Promise<void> {
       if (!frameworkEventListenersObject) {
-        return Promise.resolve();
+        return;
       }
 
       if (!frameworkEventListenersObject.internalHandlers) {
-        return Promise.resolve();
+        return;
       }
       return frameworkEventListenersObject.internalHandlers.object()
           .callFunctionJSON(isInternalEventListener as (this: Object) => boolean[], eventListeners.map(handlerArgument))

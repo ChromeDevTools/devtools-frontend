@@ -2,13 +2,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../third_party/typescript/typescript.gni")
 import("./node.gni")
 import("./vars.gni")
 
 declare_args() {
   # If this is enabled, devtools build uses esbuild instead of rollup.js to
   # bundle JavaScript files.
-  devtools_fast_bundle = false
+  devtools_fast_bundle = devtools_skip_typecheck
 }
 
 assert(!(devtools_fast_bundle && is_official_build),

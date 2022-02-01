@@ -105,9 +105,9 @@ export class UISourceCodeFrame extends
 
     this.initializeUISourceCode();
 
-    function workingCopy(): Promise<TextUtils.ContentProvider.DeferredContent> {
+    async function workingCopy(): Promise<TextUtils.ContentProvider.DeferredContent> {
       if (uiSourceCode.isDirty()) {
-        return Promise.resolve({content: uiSourceCode.workingCopy(), isEncoded: false});
+        return {content: uiSourceCode.workingCopy(), isEncoded: false};
       }
       return uiSourceCode.requestContent();
     }
@@ -494,9 +494,9 @@ export class UISourceCodeFrame extends
     return {
       box: anchor,
       hide(): void{},
-      show: (popover: UI.GlassPane.GlassPane): Promise<true> => {
+      show: async(popover: UI.GlassPane.GlassPane): Promise<true> => {
         popover.contentElement.append(element);
-        return Promise.resolve(true);
+        return true;
       },
     };
   }

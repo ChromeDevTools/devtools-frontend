@@ -5,10 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
-export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): Promise<FrameworkEventListenersObject> {
+export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject):
+    Promise<FrameworkEventListenersObject> {
   const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
   if (!domDebuggerModel) {
-    return Promise.resolve({eventListeners: [], internalHandlers: null} as FrameworkEventListenersObject);
+    return {eventListeners: [], internalHandlers: null} as FrameworkEventListenersObject;
   }
 
   const listenersResult = {internalHandlers: null, eventListeners: []} as FrameworkEventListenersObject;

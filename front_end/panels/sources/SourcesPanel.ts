@@ -1153,12 +1153,11 @@ export class UILocationRevealer implements Common.Revealer.Revealer {
     return uILocationRevealerInstance;
   }
 
-  reveal(uiLocation: Object, omitFocus?: boolean): Promise<void> {
+  async reveal(uiLocation: Object, omitFocus?: boolean): Promise<void> {
     if (!(uiLocation instanceof Workspace.UISourceCode.UILocation)) {
-      return Promise.reject(new Error('Internal error: not a ui location'));
+      throw new Error('Internal error: not a ui location');
     }
     SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
-    return Promise.resolve();
   }
 }
 
@@ -1203,12 +1202,11 @@ export class UISourceCodeRevealer implements Common.Revealer.Revealer {
     return uISourceCodeRevealerInstance;
   }
 
-  reveal(uiSourceCode: Object, omitFocus?: boolean): Promise<void> {
+  async reveal(uiSourceCode: Object, omitFocus?: boolean): Promise<void> {
     if (!(uiSourceCode instanceof Workspace.UISourceCode.UISourceCode)) {
-      return Promise.reject(new Error('Internal error: not a ui source code'));
+      throw new Error('Internal error: not a ui source code');
     }
     SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, undefined, omitFocus);
-    return Promise.resolve();
   }
 }
 
@@ -1226,11 +1224,10 @@ export class DebuggerPausedDetailsRevealer implements Common.Revealer.Revealer {
     return debuggerPausedDetailsRevealerInstance;
   }
 
-  reveal(_object: Object): Promise<void> {
-    if (!Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
-      return Promise.resolve();
+  async reveal(_object: Object): Promise<void> {
+    if (Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
+      return SourcesPanel.instance().setAsCurrentPanel();
     }
-    return SourcesPanel.instance().setAsCurrentPanel();
   }
 }
 

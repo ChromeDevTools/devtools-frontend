@@ -142,7 +142,7 @@ export class DebuggerPausedMessage {
     }
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
-    mainElement.appendChild(UI.Icon.Icon.create('smallicon-info', 'status-icon'));
+    mainElement.appendChild(UI.Icon.Icon.create('smallicon-clear-info', 'status-icon'));
     const breakpointType = BreakpointTypeNouns.get(data.type);
     mainElement.appendChild(document.createTextNode(
         i18nString(UIStrings.pausedOnS, {PH1: breakpointType ? breakpointType() : String(null)})));
@@ -256,7 +256,7 @@ export class DebuggerPausedMessage {
     function buildWrapper(mainText: string, subText?: string, title?: string): Element {
       const messageWrapper = document.createElement('span');
       const mainElement = messageWrapper.createChild('div', 'status-main');
-      const icon = UI.Icon.Icon.create(errorLike ? 'smallicon-error' : 'smallicon-info', 'status-icon');
+      const icon = UI.Icon.Icon.create(errorLike ? 'smallicon-clear-error' : 'smallicon-clear-info', 'status-icon');
       mainElement.appendChild(icon);
       mainElement.appendChild(document.createTextNode(mainText));
       if (subText) {

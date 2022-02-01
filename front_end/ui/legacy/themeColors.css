@@ -267,7 +267,7 @@
   --color-input-text-disabled: rgba(128 134 139 / 70%);
   /* Colors for styling buttons */
   --color-button-outline-focus: rgb(138 180 248 / 75%);
-  --color-button-primary-background-hovering: rgb(174 203 250 / 100%);
+  --color-button-primary-background-hovering: rgb(128 167 229 / 100%);
   --color-button-primary-background-pressed: rgb(210 227 252 / 100%);
   --color-button-primary-text: rgb(0 0 0);
   --color-button-secondary-background-hovering: rgb(138 180 248 / 15%);

@@ -624,14 +624,13 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
   const snapshot = generator();
   const profileType = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType;
 
-  function pushGeneratedSnapshot(reportProgress) {
+  async function pushGeneratedSnapshot(reportProgress) {
     if (reportProgress) {
       profileType.reportHeapSnapshotProgress({data: {done: 50, total: 100, finished: false}});
       profileType.reportHeapSnapshotProgress({data: {done: 100, total: 100, finished: true}});
     }
     snapshot.snapshot.typeId = 'HEAP';
     profileType.addHeapSnapshotChunk({data: JSON.stringify(snapshot)});
-    return Promise.resolve();
   }
 
   HeapProfilerTestRunner.takeAndOpenSnapshotCallback = callback;

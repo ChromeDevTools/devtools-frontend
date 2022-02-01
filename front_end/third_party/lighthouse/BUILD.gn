@@ -68,8 +68,8 @@ devtools_pre_built("lighthouse-javascript-sources-debug") {
   sources_are_release = false
 
   sources = [
-    "report-assets/report-generator.d.ts",
-    "report-assets/report-generator.js",
+    "report-assets/report-generator.mjs",
+    "report-assets/report-generator.mjs.d.ts",
   ]
 
   deps = [ "./report:report" ]

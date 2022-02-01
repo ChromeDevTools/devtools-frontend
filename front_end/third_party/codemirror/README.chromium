@@ -20,3 +20,8 @@ wget -qO- https://registry.npmjs.org/codemirror/-/codemirror-5.61.0.tgz | tar xz
 Local changes applied:
 - Run `wget -qOpackage/mode/wast/wast.js https://raw.githubusercontent.com/codemirror/CodeMirror/0bf9231f90925acc7b273ef9aaf89730ddf6e07b/mode/wast/wast.js` to synchronize unreleased changes for WebAssembly disassembly syntax highlighting.
 - Some files have a `.d.ts` file added, as they are used during TypeScript compilation
+- Change extension of following files from `.js` to `.mjs`.
+  - package/addon/runmode/runmode-standalone.js
+  - package/mode/css/css.js
+  - package/mode/javascript/javascript.js
+  - package/mode/xml/xml.js

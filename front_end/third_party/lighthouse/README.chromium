@@ -6,3 +6,5 @@ Security Critical: no
 
 This directory contains Chromium's version of the lighthouse report assets, including renderer.
 
+Local changes applied:
+- Change extension of `report-assets/report-generator.mjs` from `.js` to `.mjs`.

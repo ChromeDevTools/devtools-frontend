@@ -42,6 +42,16 @@ function devtoolsPlugin(source, importer) {
   if (!importer) {
     return null;
   }
+
+  if (source === '../../lib/codemirror' || source === 'fs') {
+    // These are imported via require(...), but we don't use
+    // @rollup/plugin-commonjs. So this check is not necessary for rollup. But
+    // need to have this for esbuild as it doesn't ignore require(...).
+    return {
+      external: true,
+    };
+  }
+
   const currentDirectory = path.normalize(dirnameWithSeparator(importer));
   const importedFilelocation = path.normalize(path.join(currentDirectory, source));
   const importedFileDirectory = dirnameWithSeparator(importedFilelocation);

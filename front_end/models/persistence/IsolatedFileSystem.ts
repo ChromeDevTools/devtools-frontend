@@ -98,12 +98,12 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     this.fileLocks = new Map();
   }
 
-  static create(
+  static async create(
       manager: IsolatedFileSystemManager, path: string, embedderPath: string, type: string, name: string,
       rootURL: string): Promise<IsolatedFileSystem|null> {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
-      return Promise.resolve(null as IsolatedFileSystem | null);
+      return null as IsolatedFileSystem | null;
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);

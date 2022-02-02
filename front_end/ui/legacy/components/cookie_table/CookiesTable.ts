@@ -677,7 +677,7 @@ export class CookiesTable extends UI.Widget.VBox {
       cookie.addAttribute(
           SDK.Cookie.Attributes.SourcePort, Number.parseInt(data[SDK.Cookie.Attributes.SourcePort], 10) || undefined);
     }
-    if (SDK.Cookie.Attributes.PartitionKey in data) {
+    if (data[SDK.Cookie.Attributes.PartitionKey]) {
       cookie.addAttribute(SDK.Cookie.Attributes.PartitionKey, data[SDK.Cookie.Attributes.PartitionKey]);
     }
     cookie.setSize(data[SDK.Cookie.Attributes.Name].length + data[SDK.Cookie.Attributes.Value].length);

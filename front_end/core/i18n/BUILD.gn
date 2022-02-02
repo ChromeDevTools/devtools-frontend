@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../../../scripts/build/ninja/minify_json.gni")
 
 devtools_module("i18n") {
   sources = [
@@ -23,7 +24,7 @@ devtools_module("i18n") {
 
   public_deps = [
     ":i18n_bundled_locales",
-    ":i18n_remote_locales",
+    ":i18n_locales",
   ]
 }
 
@@ -122,19 +123,25 @@ bundled_devtools_locale_files = [
   "zh.json",
 ]
 
-copy_to_gen("i18n_remote_locales") {
+minify_json("i18n_locales") {
   sources = []
-  foreach(locale, remote_devtools_locale_files) {
+  foreach(locale,
+          remote_devtools_locale_files + bundled_devtools_locale_files) {
     sources += [ "locales/$locale" ]
   }
 }
 
-devtools_pre_built("i18n_bundled_locales") {
-  sources = []
+group("i18n_bundled_locales") {
+  public_deps = [ ":i18n_locales" ]
+
   data = []
+
   foreach(locale, bundled_devtools_locale_files) {
-    sources += [ "locales/$locale" ]
     data += [ "$target_gen_dir/locales/$locale" ]
+  }
+
+  metadata = {
+    grd_files = data
   }
 }
 

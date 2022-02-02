@@ -10,11 +10,14 @@ import * as WebIDL2 from 'webidl2';
 
 import {parseTSFunction, postProcess, walkRoot} from './helpers.js';
 
-const program = ts.createProgram(
-    [
-      new URL('node_modules/typescript/lib/lib.esnext.d.ts', import.meta.url).pathname,
-    ],
-    {noLib: false, types: []});
+if (process.argv.length !== 4) {
+  throw new Error('Please provide path to chromium/src and devtools-frontend');
+}
+
+const chromiumSource = process.argv[2];
+const typescriptSource = process.argv[3] + 'node_modules/typescript/lib/lib.esnext.d.ts';
+
+const program = ts.createProgram([typescriptSource], {noLib: false, types: []});
 
 for (const file of program.getSourceFiles()) {
   ts.forEachChild(file, node => {
@@ -36,7 +39,7 @@ for (const file of program.getSourceFiles()) {
 // `devtools/devtools-frontend`, where `devtools` is on the same level
 // as `chromium`. This matches `scripts/npm_test.js`.
 const files =
-    glob.sync('../../../../chromium/src/third_party/blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD});
+    glob.sync(`${chromiumSource}/third_party/blink/renderer/+(core|modules)/**/*.idl`, {cwd: process.env.PWD});
 
 for (const file of files) {
   if (file.includes('testing')) {

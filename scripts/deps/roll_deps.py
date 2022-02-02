@@ -13,6 +13,17 @@ import shutil
 import subprocess
 import sys
 
+
+def node_path(options):
+    try:
+        old_sys_path = sys.path[:]
+        sys.path.append(
+            os.path.join(options.devtools_dir, 'third_party', 'node'))
+        import node
+    finally:
+        sys.path = old_sys_path
+    return node.GetBinaryPath()
+
 # Files whose location within devtools-frontend matches the upstream location.
 FILES = [
     'v8/include/js_protocol.pdl',
@@ -59,7 +70,19 @@ def copy_files(options):
                     os.path.join(options.devtools_dir, to_path))
 
 
+def generate_signatures(options):
+    print(
+        'generating JavaScript native functions signatures from .idl and typescript definitions'
+    )
+    subprocess.check_call([
+        node_path(options),
+        os.path.join(options.devtools_dir, 'scripts', 'javascript_natives',
+                     'index.js'), options.chromium_dir, options.devtools_dir
+    ])
+
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     update(OPTIONS)
     copy_files(OPTIONS)
+    generate_signatures(OPTIONS)

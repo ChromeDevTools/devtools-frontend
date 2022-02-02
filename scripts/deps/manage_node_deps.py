@@ -55,6 +55,7 @@ DEPS = {
     "@types/mocha": "9.0.0",
     "@types/rimraf": "3.0.2",
     "@types/sinon": "10.0.6",
+    "@types/webidl2": "23.13.6",
     "@typescript-eslint/parser": "5.9.0",
     "@typescript-eslint/eslint-plugin": "5.9.0",
     "@web/rollup-plugin-import-meta-assets": "1.0.7",
@@ -100,6 +101,8 @@ DEPS = {
     "typescript": "4.5.4",
     "ws": "8.4.0",
     "yargs": "17.3.1",
+    "glob": "7.1.7",
+    "webidl2": "24.2.0",
 }
 
 ADDITIONAL_NPM_ARGS = [

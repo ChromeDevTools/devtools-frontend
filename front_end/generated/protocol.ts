@@ -1052,6 +1052,38 @@ export namespace Audits {
     MetaTagModifiedHTML = 'MetaTagModifiedHTML',
   }
 
+  export interface FederatedAuthRequestIssueDetails {
+    federatedAuthRequestIssueReason: FederatedAuthRequestIssueReason;
+  }
+
+  /**
+   * Represents the failure reason when a federated authentication reason fails.
+   * Should be updated alongside RequestIdTokenStatus in
+   * third_party/blink/public/mojom/webid/federated_auth_request.mojom to include
+   * all cases except for success.
+   */
+  export const enum FederatedAuthRequestIssueReason {
+    ApprovalDeclined = 'ApprovalDeclined',
+    TooManyRequests = 'TooManyRequests',
+    WellKnownHttpNotFound = 'WellKnownHttpNotFound',
+    WellKnownNoResponse = 'WellKnownNoResponse',
+    WellKnownInvalidResponse = 'WellKnownInvalidResponse',
+    ClientIdMetadataHttpNotFound = 'ClientIdMetadataHttpNotFound',
+    ClientIdMetadataNoResponse = 'ClientIdMetadataNoResponse',
+    ClientIdMetadataInvalidResponse = 'ClientIdMetadataInvalidResponse',
+    ErrorFetchingSignin = 'ErrorFetchingSignin',
+    InvalidSigninResponse = 'InvalidSigninResponse',
+    AccountsHttpNotFound = 'AccountsHttpNotFound',
+    AccountsNoResponse = 'AccountsNoResponse',
+    AccountsInvalidResponse = 'AccountsInvalidResponse',
+    IdTokenHttpNotFound = 'IdTokenHttpNotFound',
+    IdTokenNoResponse = 'IdTokenNoResponse',
+    IdTokenInvalidResponse = 'IdTokenInvalidResponse',
+    IdTokenInvalidRequest = 'IdTokenInvalidRequest',
+    ErrorIdToken = 'ErrorIdToken',
+    Canceled = 'Canceled',
+  }
+
   /**
    * This issue tracks client hints related issues. It's used to deprecate old
    * features, encourage the use of new ones, and provide general guidance.
@@ -1082,6 +1114,7 @@ export namespace Audits {
     GenericIssue = 'GenericIssue',
     DeprecationIssue = 'DeprecationIssue',
     ClientHintIssue = 'ClientHintIssue',
+    FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
   }
 
   /**
@@ -1105,6 +1138,7 @@ export namespace Audits {
     genericIssueDetails?: GenericIssueDetails;
     deprecationIssueDetails?: DeprecationIssueDetails;
     clientHintIssueDetails?: ClientHintIssueDetails;
+    federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
   }
 
   /**
@@ -1885,6 +1919,11 @@ export namespace CSS {
      * The array enumerates container queries starting with the innermost one, going outwards.
      */
     containerQueries?: CSSContainerQuery[];
+    /**
+     * @supports CSS at-rule array.
+     * The array enumerates @supports at-rules starting with the innermost one, going outwards.
+     */
+    supports?: CSSSupports[];
   }
 
   /**
@@ -2125,6 +2164,25 @@ export namespace CSS {
      * Optional name for the container.
      */
     name?: string;
+  }
+
+  /**
+   * CSS Supports at-rule descriptor.
+   */
+  export interface CSSSupports {
+    /**
+     * Supports rule text.
+     */
+    text: string;
+    /**
+     * The associated rule header range in the enclosing stylesheet (if
+     * available).
+     */
+    range?: SourceRange;
+    /**
+     * Identifier of the stylesheet containing this object (if exists).
+     */
+    styleSheetId?: StyleSheetId;
   }
 
   /**
@@ -7958,6 +8016,7 @@ export namespace Network {
     SameOriginAllowPopups = 'SameOriginAllowPopups',
     UnsafeNone = 'UnsafeNone',
     SameOriginPlusCoep = 'SameOriginPlusCoep',
+    SameOriginAllowPopupsPlusCoep = 'SameOriginAllowPopupsPlusCoep',
   }
 
   export interface CrossOriginOpenerPolicyStatus {
@@ -9984,10 +10043,12 @@ export namespace Page {
     ChUaPlatform = 'ch-ua-platform',
     ChUaModel = 'ch-ua-model',
     ChUaMobile = 'ch-ua-mobile',
+    ChUaFull = 'ch-ua-full',
     ChUaFullVersion = 'ch-ua-full-version',
     ChUaFullVersionList = 'ch-ua-full-version-list',
     ChUaPlatformVersion = 'ch-ua-platform-version',
     ChUaReduced = 'ch-ua-reduced',
+    ChUaWow64 = 'ch-ua-wow64',
     ChViewportHeight = 'ch-viewport-height',
     ChViewportWidth = 'ch-viewport-width',
     ChWidth = 'ch-width',

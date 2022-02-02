@@ -1588,6 +1588,42 @@
                     ]
                 },
                 {
+                    "id": "FederatedAuthRequestIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "federatedAuthRequestIssueReason",
+                            "$ref": "FederatedAuthRequestIssueReason"
+                        }
+                    ]
+                },
+                {
+                    "id": "FederatedAuthRequestIssueReason",
+                    "description": "Represents the failure reason when a federated authentication reason fails.\nShould be updated alongside RequestIdTokenStatus in\nthird_party/blink/public/mojom/webid/federated_auth_request.mojom to include\nall cases except for success.",
+                    "type": "string",
+                    "enum": [
+                        "ApprovalDeclined",
+                        "TooManyRequests",
+                        "WellKnownHttpNotFound",
+                        "WellKnownNoResponse",
+                        "WellKnownInvalidResponse",
+                        "ClientIdMetadataHttpNotFound",
+                        "ClientIdMetadataNoResponse",
+                        "ClientIdMetadataInvalidResponse",
+                        "ErrorFetchingSignin",
+                        "InvalidSigninResponse",
+                        "AccountsHttpNotFound",
+                        "AccountsNoResponse",
+                        "AccountsInvalidResponse",
+                        "IdTokenHttpNotFound",
+                        "IdTokenNoResponse",
+                        "IdTokenInvalidResponse",
+                        "IdTokenInvalidRequest",
+                        "ErrorIdToken",
+                        "Canceled"
+                    ]
+                },
+                {
                     "id": "ClientHintIssueDetails",
                     "description": "This issue tracks client hints related issues. It's used to deprecate old\nfeatures, encourage the use of new ones, and provide general guidance.",
                     "type": "object",
@@ -1621,7 +1657,8 @@
                         "NavigatorUserAgentIssue",
                         "GenericIssue",
                         "DeprecationIssue",
-                        "ClientHintIssue"
+                        "ClientHintIssue",
+                        "FederatedAuthRequestIssue"
                     ]
                 },
                 {
@@ -1703,6 +1740,11 @@
                             "name": "clientHintIssueDetails",
                             "optional": true,
                             "$ref": "ClientHintIssueDetails"
+                        },
+                        {
+                            "name": "federatedAuthRequestIssueDetails",
+                            "optional": true,
+                            "$ref": "FederatedAuthRequestIssueDetails"
                         }
                     ]
                 },
@@ -2827,6 +2869,16 @@
                             "items": {
                                 "$ref": "CSSContainerQuery"
                             }
+                        },
+                        {
+                            "name": "supports",
+                            "description": "@supports CSS at-rule array.\nThe array enumerates @supports at-rules starting with the innermost one, going outwards.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSSupports"
+                            }
                         }
                     ]
                 },
@@ -3148,6 +3200,31 @@
                             "description": "Optional name for the container.",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSSupports",
+                    "description": "CSS Supports at-rule descriptor.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "text",
+                            "description": "Supports rule text.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "range",
+                            "description": "The associated rule header range in the enclosing stylesheet (if\navailable).",
+                            "optional": true,
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "Identifier of the stylesheet containing this object (if exists).",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
                         }
                     ]
                 },
@@ -11766,7 +11843,8 @@
                         "SameOrigin",
                         "SameOriginAllowPopups",
                         "UnsafeNone",
-                        "SameOriginPlusCoep"
+                        "SameOriginPlusCoep",
+                        "SameOriginAllowPopupsPlusCoep"
                     ]
                 },
                 {
@@ -14714,10 +14792,12 @@
                         "ch-ua-platform",
                         "ch-ua-model",
                         "ch-ua-mobile",
+                        "ch-ua-full",
                         "ch-ua-full-version",
                         "ch-ua-full-version-list",
                         "ch-ua-platform-version",
                         "ch-ua-reduced",
+                        "ch-ua-wow64",
                         "ch-viewport-height",
                         "ch-viewport-width",
                         "ch-width",

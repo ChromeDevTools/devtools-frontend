@@ -282,6 +282,27 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Audits.ClientHintIssueReason',
       {MetaTagAllowListInvalidOrigin: 'MetaTagAllowListInvalidOrigin', MetaTagModifiedHTML: 'MetaTagModifiedHTML'});
+  inspectorBackend.registerEnum('Audits.FederatedAuthRequestIssueReason', {
+    ApprovalDeclined: 'ApprovalDeclined',
+    TooManyRequests: 'TooManyRequests',
+    WellKnownHttpNotFound: 'WellKnownHttpNotFound',
+    WellKnownNoResponse: 'WellKnownNoResponse',
+    WellKnownInvalidResponse: 'WellKnownInvalidResponse',
+    ClientIdMetadataHttpNotFound: 'ClientIdMetadataHttpNotFound',
+    ClientIdMetadataNoResponse: 'ClientIdMetadataNoResponse',
+    ClientIdMetadataInvalidResponse: 'ClientIdMetadataInvalidResponse',
+    ErrorFetchingSignin: 'ErrorFetchingSignin',
+    InvalidSigninResponse: 'InvalidSigninResponse',
+    AccountsHttpNotFound: 'AccountsHttpNotFound',
+    AccountsNoResponse: 'AccountsNoResponse',
+    AccountsInvalidResponse: 'AccountsInvalidResponse',
+    IdTokenHttpNotFound: 'IdTokenHttpNotFound',
+    IdTokenNoResponse: 'IdTokenNoResponse',
+    IdTokenInvalidResponse: 'IdTokenInvalidResponse',
+    IdTokenInvalidRequest: 'IdTokenInvalidRequest',
+    ErrorIdToken: 'ErrorIdToken',
+    Canceled: 'Canceled'
+  });
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
@@ -297,7 +318,8 @@ export function registerCommands(inspectorBackend) {
     NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
     GenericIssue: 'GenericIssue',
     DeprecationIssue: 'DeprecationIssue',
-    ClientHintIssue: 'ClientHintIssue'
+    ClientHintIssue: 'ClientHintIssue',
+    FederatedAuthRequestIssue: 'FederatedAuthRequestIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -1647,7 +1669,8 @@ export function registerCommands(inspectorBackend) {
     SameOrigin: 'SameOrigin',
     SameOriginAllowPopups: 'SameOriginAllowPopups',
     UnsafeNone: 'UnsafeNone',
-    SameOriginPlusCoep: 'SameOriginPlusCoep'
+    SameOriginPlusCoep: 'SameOriginPlusCoep',
+    SameOriginAllowPopupsPlusCoep: 'SameOriginAllowPopupsPlusCoep'
   });
   inspectorBackend.registerEnum(
       'Network.CrossOriginEmbedderPolicyValue',
@@ -2001,10 +2024,12 @@ export function registerCommands(inspectorBackend) {
     ChUaPlatform: 'ch-ua-platform',
     ChUaModel: 'ch-ua-model',
     ChUaMobile: 'ch-ua-mobile',
+    ChUaFull: 'ch-ua-full',
     ChUaFullVersion: 'ch-ua-full-version',
     ChUaFullVersionList: 'ch-ua-full-version-list',
     ChUaPlatformVersion: 'ch-ua-platform-version',
     ChUaReduced: 'ch-ua-reduced',
+    ChUaWow64: 'ch-ua-wow64',
     ChViewportHeight: 'ch-viewport-height',
     ChViewportWidth: 'ch-viewport-width',
     ChWidth: 'ch-width',

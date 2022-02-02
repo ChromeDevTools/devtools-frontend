@@ -15,7 +15,7 @@
           return;
         }
         wrapper = eval('(function call' + depth + '() { callWithAsyncStack(f, depth - 1) }) //# sourceURL=wrapper.js');
-        Promise.resolve().then(wrapper);
+        queueMicrotask(wrapper);
       }
       function testFunction() {
         callWithAsyncStack(() => {debugger}, 5);

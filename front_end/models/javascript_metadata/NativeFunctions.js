@@ -4145,10 +4145,6 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
-    name: 'WindowControlsOverlayGeometryChangeEvent',
-    signatures: [['type','eventInitDict']]
-  },
-  {
     name: 'stop',
     signatures: [['?when']],
     receiver: 'AudioScheduledSourceNode'
@@ -5298,6 +5294,10 @@ export const NativeFunctions = [
     signatures: [['numComponents']]
   },
   {
+    name: 'deprecatedURNToURL',
+    signatures: [['uuid_url']]
+  },
+  {
     name: 'createAdRequest',
     signatures: [['config']]
   },
@@ -5877,23 +5877,8 @@ export const NativeFunctions = [
     receiver: 'DirectoryEntry'
   },
   {
-    name: 'rename',
-    signatures: [['new_entry_name']],
-    receiver: 'FileSystemFileHandle'
-  },
-  {
-    name: 'rename',
-    signatures: [['new_entry_name']],
-    receiver: 'FileSystemHandle'
-  },
-  {
-    name: 'rename',
-    signatures: [['old_name','new_name']],
-    receiver: 'NativeIOFileManager'
-  },
-  {
     name: 'move',
-    signatures: [['destination_directory','?new_entry_name']]
+    signatures: [['new_entry_name'],['destination_directory','?new_entry_name']]
   },
   {
     name: 'queryPermission',
@@ -6397,6 +6382,10 @@ export const NativeFunctions = [
     receiver: 'WebGL2RenderingContextBase'
   },
   {
+    name: 'rename',
+    signatures: [['old_name','new_name']]
+  },
+  {
     name: 'renameSync',
     signatures: [['old_name','new_name']]
   },
@@ -6678,6 +6667,10 @@ export const NativeFunctions = [
   {
     name: 'PictureInPictureEvent',
     signatures: [['type','eventInitDict']]
+  },
+  {
+    name: 'requestPictureInPictureWindow',
+    signatures: [['options']]
   },
   {
     name: 'refresh',
@@ -8401,7 +8394,7 @@ export const NativeFunctions = [
   },
   {
     name: 'dispatch',
-    signatures: [['x','?y','?z']]
+    signatures: [['workgroupCountX','?workgroupCountY','?workgroupCountZ']]
   },
   {
     name: 'dispatchIndirect',
@@ -8682,6 +8675,10 @@ export const NativeFunctions = [
   {
     name: 'USBOutTransferResult',
     signatures: [['status','?bytesWritten']]
+  },
+  {
+    name: 'WindowControlsOverlayGeometryChangeEvent',
+    signatures: [['type','eventInitDict']]
   },
   {
     name: 'getPose',

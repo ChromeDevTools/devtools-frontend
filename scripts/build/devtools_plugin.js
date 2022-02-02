@@ -48,6 +48,7 @@ function devtoolsPlugin(source, importer) {
     // @rollup/plugin-commonjs. So this check is not necessary for rollup. But
     // need to have this for esbuild as it doesn't ignore require(...).
     return {
+      id: source,
       external: true,
     };
   }

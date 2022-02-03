@@ -166,10 +166,6 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
-
-        # TODO(crbug.com/1278663): promote these 2 to non-experimental.
-        "devtools_frontend_linux_blink_light_rel_fastbuild",
-        "devtools_frontend_linux_dbg_fastbuild",
     ],
     includable_only_builders = [
         "devtools_frontend_mac_rel",

@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "F̂éd̂ér̂át̂éd̂ Ćr̂éd̂én̂t́îál̂ Ḿâńâǵêḿêńt̂ ÁP̂Í"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "P̂ór̂t́âĺŝ - Śâḿê-ór̂íĝín̂ ćôḿm̂ún̂íĉát̂íôń ĉh́âńn̂él̂ś"
   },

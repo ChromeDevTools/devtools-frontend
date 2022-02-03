@@ -27,16 +27,17 @@ const plugin = {
         return null;
       }
 
-      if (res.external && res.id) {
+      if (res.external) {
+        // res.id can be both of absolutized local JavaScript path or node's
+        // builtin module (e.g. 'fs', 'path'), and only relativize the path in
+        // former case.
+        if (path.isAbsolute(res.id)) {
+          res.id = './' + path.relative(outdir, res.id);
+        }
+
         return {
           external: res.external,
-          path: './' + path.relative(outdir, res.id),
-        };
-      }
-
-      if (res.external) {
-        return {
-          external: true,
+          path: res.id,
         };
       }
 

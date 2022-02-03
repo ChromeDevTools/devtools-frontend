@@ -1481,42 +1481,6 @@
       installObjectObserve();
     }
 
-    if (majorVersion <= 45) {
-      /**
-       * @param {string} property
-       * @return {!CSSValue|null}
-       * @this {CSSStyleDeclaration}
-       */
-      function getValue(property) {
-        // Note that |property| comes from another context, so we can't use === here.
-        // eslint-disable-next-line eqeqeq
-        if (property == 'padding-left') {
-          return /** @type {!CSSValue} */ ({
-            /**
-             * @return {number}
-             * @this {!{__paddingLeft: number}}
-             */
-            getFloatValue: function() {
-              return this.__paddingLeft;
-            },
-            __paddingLeft: parseFloat(this.paddingLeft)
-          });
-        }
-        throw new Error('getPropertyCSSValue is undefined');
-      }
-
-      window.CSSStyleDeclaration.prototype.getPropertyCSSValue = getValue;
-
-      function CSSPrimitiveValue() {
-      }
-      CSSPrimitiveValue.CSS_PX = 5;
-      window.CSSPrimitiveValue = CSSPrimitiveValue;
-    }
-
-    if (majorVersion <= 45) {
-      styleRules.push('* { min-width: 0; min-height: 0; }');
-    }
-
     if (majorVersion <= 71) {
       styleRules.push(
           '.coverage-toolbar-container, .animation-timeline-toolbar-container, .computed-properties { flex-basis: auto; }');

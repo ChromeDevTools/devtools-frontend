@@ -1023,9 +1023,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   isPropertyChanged(property: SDK.CSSProperty.CSSProperty): boolean {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
-      return false;
-    }
     const url = property.ownerStyle.parentRule?.resourceURL();
     if (!url) {
       return false;

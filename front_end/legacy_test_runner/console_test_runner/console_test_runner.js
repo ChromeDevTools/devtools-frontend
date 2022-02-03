@@ -364,6 +364,7 @@ ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages, 
     let messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     if (trimMessages) {
       messageText = messageText.replace(/[ ]+/g, ' ');
+      messageText = messageText.replace(/\s+\n\s+/g, ' ');
     }
     result.push(messageText + ' ' + element.getAttribute('class') + ' > ' + contentElement.getAttribute('class'));
   }

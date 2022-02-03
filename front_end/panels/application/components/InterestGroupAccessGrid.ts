@@ -32,6 +32,10 @@ const UIStrings = {
    *@description Text in InterestGroupStorage Items View of the Application panel
   */
   groupName: 'Name',
+  /**
+   *@description Text shown instead of a table when the table would be empty.
+  */
+  noEvents: 'No interest group events recorded.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/InterestGroupAccessGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -62,13 +66,17 @@ export class InterestGroupAccessGrid extends HTMLElement {
             {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
             IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}>
-        ${this.#renderGrid()}
+        ${this.#renderGridOrNoDataMessage()}
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  #renderGrid(): LitHtml.TemplateResult {
+  #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
+    if (this.#datastores.length === 0) {
+      return LitHtml.html`<div class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
+    }
+
     const gridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {

@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+devtools-interest-group-access-grid {
+  overflow: auto;
+}
+
 .placeholder {
   display: flex;
   align-items: center;

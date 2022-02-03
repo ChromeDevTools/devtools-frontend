@@ -2966,6 +2966,9 @@
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Ôẃn̂ér̂"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "N̂ó îńt̂ér̂éŝt́ ĝŕôúp̂ év̂én̂t́ŝ ŕêćôŕd̂éd̂."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Êx́p̂ír̂ý T̂ím̂é"
   },

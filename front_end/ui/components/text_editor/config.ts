@@ -188,6 +188,7 @@ function detectLineSeparator(text: string): CM.Extension {
 
 const baseKeymap = CM.keymap.of([
   {key: 'Tab', run: CM.acceptCompletion},
+  {key: 'End', run: CM.acceptCompletion},
   {key: 'Ctrl-m', run: CM.cursorMatchingBracket, shift: CM.selectMatchingBracket},
   {key: 'Mod-/', run: CM.toggleComment},
   {key: 'Mod-d', run: CM.selectNextOccurrence},

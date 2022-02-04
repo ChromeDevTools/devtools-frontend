@@ -12,7 +12,7 @@ declare_args() {
   # TODO(crbug.com/1139220): Remove the flag once we are confident.
   devtools_use_rbe = false
 
-  devtools_skip_typecheck = false
+  devtools_skip_typecheck = build_with_chromium && !is_official_build
 }
 
 assert(!devtools_skip_typecheck || !is_official_build,

@@ -39,6 +39,7 @@
     "debug-unittest": "DEBUG_TEST=1 npm run unittest",
     "e2etest": "third_party/node/node.py --output scripts/test/run_test_suite.js --config=test/e2e/test-runner-config.json",
     "eslint-test": "third_party/node/node.py --output node_modules/mocha/bin/mocha \"./scripts/eslint_rules/tests/*_test.js\"",
+    "build-test": "third_party/node/node.py --output node_modules/mocha/bin/mocha \"./scripts/build/tests/*_test.js\"",
     "generate-dark-mode-styles": "third_party/node/node.py --output scripts/dark_mode/generate_dark_theme_sheet.js",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",
     "install-deps": "scripts/deps/manage_node_deps.py",

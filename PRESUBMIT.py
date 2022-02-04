@@ -227,6 +227,40 @@ def _CheckDevToolsRunESLintTests(input_api, output_api):
     return results
 
 
+def _CheckDevToolsRunBuildTests(input_api, output_api):
+    # Check for changes in the build/tests directory, and run the tests if so.
+    # We don't do this on every CL as most do not touch the rules, but if we do
+    # change them we need to make sure all the tests are passing.
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+        ]
+        import devtools_paths
+    finally:
+        sys.path = original_sys_path
+    scripts_build_dir_path = input_api.os_path.join(
+        input_api.PresubmitLocalPath(), 'scripts', 'build')
+    scripts_build_affected_files = _getAffectedFiles(input_api,
+                                                     [scripts_build_dir_path],
+                                                     [], [])
+
+    if len(scripts_build_affected_files) == 0:
+        return []
+
+    mocha_path = devtools_paths.mocha_path()
+    build_tests_path = input_api.os_path.join(scripts_build_dir_path, 'tests',
+                                              '*_test.js')
+
+    results = [output_api.PresubmitNotifyResult('Build plugins unit tests')]
+    results.extend(
+        # The dot reporter is more concise which is useful to not get LOADS of
+        # output when just one test fails.
+        _checkWithNodeScript(input_api, output_api, mocha_path,
+                             ['--reporter', 'dot', build_tests_path]))
+    return results
+
+
 def _CheckDevToolsStyleJS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('JS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -528,6 +562,7 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
     results.extend(_CheckDevToolsRunESLintTests(input_api, output_api))
+    results.extend(_CheckDevToolsRunBuildTests(input_api, output_api))
     results.extend(_CheckDevToolsNonJSFileLicenseHeaders(
         input_api, output_api))
 

@@ -34,6 +34,7 @@ import * as CSSQuery from './CSSQuery.js';
 import * as CSSRule from './CSSRule.js';
 import * as CSSStyleDeclaration from './CSSStyleDeclaration.js';
 import * as CSSStyleSheetHeader from './CSSStyleSheetHeader.js';
+import * as CSSSupports from './CSSSupports.js';
 import * as DebuggerModel from './DebuggerModel.js';
 import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
@@ -101,6 +102,7 @@ export {
   CSSRule,
   CSSStyleDeclaration,
   CSSStyleSheetHeader,
+  CSSSupports,
   DebuggerModel,
   DOMDebuggerModel,
   DOMModel,

@@ -1840,6 +1840,12 @@ export class StylePropertiesSection {
     this.updateRuleOrigin();
   }
 
+  protected createAtRuleLists(rule: SDK.CSSRule.CSSStyleRule): void {
+    this.createMediaList(rule.media);
+    this.createContainerQueryList(rule.containerQueries);
+    this.createSupportsList(rule.supports);
+  }
+
   protected createMediaList(mediaRules: SDK.CSSMedia.CSSMedia[]): void {
     for (let i = mediaRules.length - 1; i >= 0; --i) {
       const media = mediaRules[i];
@@ -1907,6 +1913,28 @@ export class StylePropertiesSection {
     }
   }
 
+  protected createSupportsList(supportsList: SDK.CSSSupports.CSSSupports[]): void {
+    for (let i = supportsList.length - 1; i >= 0; --i) {
+      const supports = supportsList[i];
+      if (!supports.text) {
+        continue;
+      }
+
+      let onQueryTextClick;
+      if (supports.styleSheetId) {
+        onQueryTextClick = this.handleQueryRuleClick.bind(this, supports);
+      }
+
+      const supportsElement = new ElementsComponents.CSSQuery.CSSQuery();
+      supportsElement.data = {
+        queryPrefix: '@supports',
+        queryText: supports.text,
+        onQueryTextClick,
+      };
+      this.queryListElement.append(supportsElement);
+    }
+  }
+
   private async addContainerForContainerQuery(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery): Promise<void> {
     const container = await containerQuery.getContainerForNode(this.matchedStyles.node().id);
     if (!container) {
@@ -1937,8 +1965,7 @@ export class StylePropertiesSection {
   private updateQueryList(): void {
     this.queryListElement.removeChildren();
     if (this.styleInternal.parentRule && this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
-      this.createMediaList(this.styleInternal.parentRule.media);
-      this.createContainerQueryList(this.styleInternal.parentRule.containerQueries);
+      this.createAtRuleLists(this.styleInternal.parentRule);
     }
   }
 
@@ -2210,8 +2237,7 @@ export class StylePropertiesSection {
     event.consume(true);
   }
 
-  private handleQueryRuleClick(query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, event: Event):
-      void {
+  private handleQueryRuleClick(query: SDK.CSSQuery.CSSQuery, event: Event): void {
     const element = event.currentTarget as Element;
     if (UI.UIUtils.isBeingEdited(element)) {
       return;
@@ -2273,8 +2299,8 @@ export class StylePropertiesSection {
   }
 
   private editingMediaCommitted(
-      query: SDK.CSSMedia.CSSMedia|SDK.CSSContainerQuery.CSSContainerQuery, element: Element, newContent: string,
-      _oldContent: string, _context: Context|undefined, _moveDirection: string): void {
+      query: SDK.CSSQuery.CSSQuery, element: Element, newContent: string, _oldContent: string,
+      _context: Context|undefined, _moveDirection: string): void {
     this.parentPane.setEditingStyle(false);
     this.editingMediaFinished(element);
 
@@ -2560,8 +2586,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
         cssModel, this.parentPane.linkifier, styleSheetId, this.actualRuleLocation()));
     if (insertAfterStyle && insertAfterStyle.parentRule &&
         insertAfterStyle.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
-      this.createMediaList(insertAfterStyle.parentRule.media);
-      this.createContainerQueryList(insertAfterStyle.parentRule.containerQueries);
+      this.createAtRuleLists(insertAfterStyle.parentRule);
     }
     this.element.classList.add('blank-section');
   }

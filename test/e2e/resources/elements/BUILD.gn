@@ -16,6 +16,7 @@ copy_to_gen("elements") {
     "css-grid-ua-shadow.html",
     "css-grid.html",
     "css-module.css",
+    "css-supports.html",
     "css-variables-many.html",
     "css-variables.html",
     "element-breadcrumbs.html",

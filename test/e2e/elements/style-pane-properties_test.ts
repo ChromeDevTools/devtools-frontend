@@ -347,4 +347,18 @@ describe('The Styles pane', async () => {
     assert.strictEqual(
         queriedSizeDetailsContent, '(size) width: 200px height: 0px', 'container queried details does not match');
   });
+
+  it('can display @supports at-rules', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-supports.html');
+
+    // Select the child that has @supports rules.
+    await frontend.keyboard.press('ArrowDown');
+    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B');
+
+    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
+    const supportsQuery = await waitFor('.query.editable', rule1PropertiesSection);
+    const supportsQueryText = await supportsQuery.evaluate(node => (node as HTMLElement).innerText as string);
+    assert.deepEqual(supportsQueryText, '@supports (width: 10px)', 'incorrectly displayed @supports rule');
+  });
 });

@@ -576,6 +576,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/CSSRule.js",
   "front_end/core/sdk/CSSStyleDeclaration.js",
   "front_end/core/sdk/CSSStyleSheetHeader.js",
+  "front_end/core/sdk/CSSSupports.js",
   "front_end/core/sdk/CategorizedBreakpoint.js",
   "front_end/core/sdk/ChildTargetManager.js",
   "front_end/core/sdk/CompilerSourceMappingContentProvider.js",

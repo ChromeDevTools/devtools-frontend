@@ -23,6 +23,7 @@ devtools_module("sdk") {
     "CSSRule.ts",
     "CSSStyleDeclaration.ts",
     "CSSStyleSheetHeader.ts",
+    "CSSSupports.ts",
     "CategorizedBreakpoint.ts",
     "ChildTargetManager.ts",
     "CompilerSourceMappingContentProvider.ts",

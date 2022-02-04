@@ -7,6 +7,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSMedia} from './CSSMedia.js';
+import {CSSSupports} from './CSSSupports.js';
 
 import type {CSSModel, Edit} from './CSSModel.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
@@ -99,6 +100,7 @@ export class CSSStyleRule extends CSSRule {
   selectors!: CSSValue[];
   media: CSSMedia[];
   containerQueries: CSSContainerQuery[];
+  supports: CSSSupports[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
     // TODO(crbug.com/1011811): Replace with spread operator or better types once Closure is gone.
@@ -108,6 +110,7 @@ export class CSSStyleRule extends CSSRule {
     this.containerQueries = payload.containerQueries ?
         CSSContainerQuery.parseContainerQueriesPayload(cssModel, payload.containerQueries) :
         [];
+    this.supports = payload.supports ? CSSSupports.parseSupportsPayload(cssModel, payload.supports) : [];
     this.wasUsed = wasUsed || false;
   }
 
@@ -191,12 +194,9 @@ export class CSSStyleRule extends CSSRule {
         this.selectors[i].rebase(edit);
       }
     }
-    for (const media of this.media) {
-      media.rebase(edit);
-    }
-    for (const containerQuery of this.containerQueries) {
-      containerQuery.rebase(edit);
-    }
+    this.media.forEach(media => media.rebase(edit));
+    this.containerQueries.forEach(cq => cq.rebase(edit));
+    this.supports.forEach(supports => supports.rebase(edit));
 
     super.rebase(edit);
   }

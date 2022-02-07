@@ -30,28 +30,3 @@
 .object-popover-container {
   display: inline-block;
 }
-
-.function-popover-title {
-  border-bottom: 1px solid var(--color-details-hairline);
-  margin-bottom: 3px;
-  padding-bottom: 2px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.function-popover-title .function-name {
-  font-weight: bold;
-}
-
-.function-title-link-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin-left: 10px;
-}
-
-.function-title-link-container .devtools-link {
-  white-space: nowrap;
-  overflow: hidden;
-}

@@ -260,7 +260,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     return UI.Fragment.html`<span class="name">${name}</span>`;
   }
 
-  static valueElementForFunctionDescription(description?: string|null, includePreview?: boolean, defaultName?: string):
+  static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string):
       Element {
     const valueElement = document.createElement('span');
     valueElement.classList.add('object-value-function');

@@ -34,16 +34,6 @@ const os = require('os');
  */
 const PATH_TO_EXECUTED_FILE = process.argv[1];
 
-function pathIsMostTopLevelPath(filePath) {
-  /**
-   * On Linux/Mac, if we do path.dirname(X) as many times as possible, it will
-   * eventually equal `/`. On Windows, it will end up equalling C:\, and
-   * path.dirname('C:\') === 'C:\', so we use that to figure out if we've made
-   * it as far up the tree as we can.
-   */
-  return filePath === path.sep || path.dirname(filePath) === filePath;
-}
-
 const _lookUpCaches = new Map(
     [['chromium', null]],
 );
@@ -73,25 +63,7 @@ function isInChromiumDirectory() {
  * If it's standalone, it will be /path/to/devtools-frontend
  */
 function devtoolsRootPath() {
-  const nodeScriptFileThatIsBeingExecuted = PATH_TO_EXECUTED_FILE;
-  let devtoolsRootFolder = nodeScriptFileThatIsBeingExecuted;
-  while (path.basename(devtoolsRootFolder) !== 'devtools-frontend') {
-    devtoolsRootFolder = path.dirname(devtoolsRootFolder);
-    // We reached the end and can't find devtools-frontend.
-    if (pathIsMostTopLevelPath(devtoolsRootFolder)) {
-      throw new Error(
-          'Could not find devtools-frontend in path. If you have cloned the repository to a different directory name, it will not work.');
-    }
-  }
-  // In Chromium the path to the source code for devtools-frontend is:
-  // third_party/devtools-frontend/src
-  const {isInChromium} = isInChromiumDirectory();
-  if (isInChromium) {
-    return path.join(devtoolsRootFolder, 'src');
-  }
-
-  // But if you're in a standalone repo it's just the devtools-frontend folder.
-  return devtoolsRootFolder;
+  return path.dirname(path.dirname(__filename));
 }
 
 /**

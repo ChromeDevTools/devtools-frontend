@@ -3200,6 +3200,9 @@
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
     "message": "Click on any interest group event to display the group's current state"
   },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "No details available for the selected interest group. The browser may have left the group."
+  },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "Interest Groups"
   },

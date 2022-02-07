@@ -3200,6 +3200,9 @@
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
     "message": "Ĉĺîćk̂ ón̂ án̂ý îńt̂ér̂éŝt́ ĝŕôúp̂ év̂én̂t́ t̂ó d̂íŝṕl̂áŷ t́ĥé ĝŕôúp̂'ś ĉúr̂ŕêńt̂ śt̂át̂é"
   },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "N̂ó d̂ét̂áîĺŝ áv̂áîĺâb́l̂é f̂ór̂ t́ĥé ŝél̂éĉt́êd́ îńt̂ér̂éŝt́ ĝŕôúp̂. T́ĥé b̂ŕôẃŝér̂ ḿâý ĥáv̂é l̂éf̂t́ t̂h́ê ǵr̂óûṕ."
+  },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "Îńt̂ér̂éŝt́ Ĝŕôúp̂ś"
   },

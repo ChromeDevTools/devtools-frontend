@@ -18,8 +18,10 @@ const UIStrings = {
   */
   clickToDisplayBody: 'Click on any interest group event to display the group\'s current state',
   /**
-  interestGroupStorageItems: 'InterestGroup Storage Items',
+  *@description Placeholder text telling the user no details are available for
+  *the selected interest group.
   */
+  noDataAvailable: 'No details available for the selected interest group. The browser may have left the group.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupStorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -37,24 +39,33 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
   private readonly interestGroupGrid = new ApplicationComponents.InterestGroupAccessGrid.InterestGroupAccessGrid();
   private events: Protocol.Storage.InterestGroupAccessedEvent[] = [];
   private detailsGetter: InterestGroupDetailsGetter;
+  private noDataView: UI.Widget.VBox;
+  private noDisplayView: UI.Widget.VBox;
 
   constructor(detailsGetter: InterestGroupDetailsGetter) {
     super(/* isVertical */ false, /* secondIsSidebar: */ true);
     this.detailsGetter = detailsGetter;
 
     const topPanel = new UI.Widget.VBox();
-    const bottomPanel = new UI.Widget.VBox();
+    this.noDisplayView = new UI.Widget.VBox();
+    this.noDataView = new UI.Widget.VBox();
+
     topPanel.setMinimumSize(0, 80);
     this.setMainWidget(topPanel);
-    bottomPanel.setMinimumSize(0, 40);
-    this.setSidebarWidget(bottomPanel);
+    this.noDisplayView.setMinimumSize(0, 40);
+    this.setSidebarWidget(this.noDisplayView);
+    this.noDataView.setMinimumSize(0, 40);
 
     topPanel.contentElement.appendChild(this.interestGroupGrid);
     this.interestGroupGrid.addEventListener('cellfocused', this.onFocus.bind(this));
 
-    bottomPanel.contentElement.classList.add('placeholder');
-    const centered = bottomPanel.contentElement.createChild('div');
-    centered.textContent = i18nString(UIStrings.clickToDisplayBody);
+    this.noDisplayView.contentElement.classList.add('placeholder');
+    const noDisplayDiv = this.noDisplayView.contentElement.createChild('div');
+    noDisplayDiv.textContent = i18nString(UIStrings.clickToDisplayBody);
+
+    this.noDataView.contentElement.classList.add('placeholder');
+    const noDataDiv = this.noDataView.contentElement.createChild('div');
+    noDataDiv.textContent = i18nString(UIStrings.noDataAvailable);
   }
 
   wasShown(): void {
@@ -77,6 +88,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
   clearEvents(): void {
     this.events = [];
     this.interestGroupGrid.data = this.events;
+    this.setSidebarWidget(this.noDisplayView);
   }
 
   private async onFocus(event: Event): Promise<void> {
@@ -99,6 +111,8 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
       if (jsonView) {
         this.setSidebarWidget(jsonView);
       }
+    } else {
+      this.setSidebarWidget(this.noDataView);
     }
   }
 

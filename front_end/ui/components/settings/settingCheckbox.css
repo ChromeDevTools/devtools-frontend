@@ -12,6 +12,8 @@
 input {
   height: 12px;
   width: 12px;
+  min-height: 12px;
+  min-width: 12px;
 }
 
 label {

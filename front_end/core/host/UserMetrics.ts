@@ -585,7 +585,8 @@ export enum DevtoolsExperiments {
   'preciseChanges' = 53,
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
-  'MaxValue' = 56,
+  'headerOverrides' = 56,
+  'MaxValue' = 57,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

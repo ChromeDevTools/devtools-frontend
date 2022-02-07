@@ -274,6 +274,7 @@ export enum ExperimentName {
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
   PRECISE_CHANGES = 'preciseChanges',
   STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
+  HEADER_OVERRIDES = 'headerOverrides',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

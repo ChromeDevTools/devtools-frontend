@@ -372,6 +372,10 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES, 'Sync CSS changes in the Styles pane');
 
+    // Local overrides for response headers
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.HEADER_OVERRIDES, 'Local overrides for response headers');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'hideIssuesFeature',

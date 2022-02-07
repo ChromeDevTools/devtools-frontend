@@ -1470,10 +1470,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         continue;
       }
       const formattedLine = document.createElement('span');
-      const prefix = line.substring(0, link.positionLeft);
-      const suffix = `${line.substring(link.positionRight)}${newline}`;
-
-      formattedLine.appendChild(this.linkifyStringAsFragment(prefix));
+      const suffix = `${link.suffix}${newline}`;
+      formattedLine.appendChild(this.linkifyStringAsFragment(link.prefix));
       const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
             columnNumber: link.columnNumber,
@@ -1492,7 +1490,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         continue;
       }
 
-      const prefixWithoutFunction = prefix.substring(0, prefix.lastIndexOf(' ', prefix.length - 3));
+      const prefixWithoutFunction = link.prefix.substring(0, link.prefix.lastIndexOf(' ', link.prefix.length - 3));
 
       // If we were able to parse the function name from the stack trace line, try to replace it with an expansion of
       // any inline frames.

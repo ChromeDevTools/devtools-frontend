@@ -10,8 +10,10 @@ export interface ParsedErrorFrame {
   line: string;
   link?: {
     url: string,
+    prefix: string,
+    suffix: string,
     lineNumber?: number,
-    columnNumber?: number, enclosedInBraces: boolean, positionLeft: number, positionRight: number,
+    columnNumber?: number, enclosedInBraces: boolean,
     scriptId?: Protocol.Runtime.ScriptId,
   };
 }
@@ -88,9 +90,9 @@ export function parseSourcePositionsFromErrorStack(
       line,
       link: {
         url,
+        prefix: line.substring(0, left),
+        suffix: line.substring(right),
         enclosedInBraces: hasOpenBracket,
-        positionLeft: left,
-        positionRight: right,
         lineNumber: splitResult.lineNumber,
         columnNumber: splitResult.columnNumber,
       },

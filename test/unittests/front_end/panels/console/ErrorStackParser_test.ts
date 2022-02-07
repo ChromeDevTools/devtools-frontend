@@ -85,11 +85,11 @@ describe('ErrorStackParser', () => {
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: 'file:///testing.js',
+      prefix: '        at foo (',
+      suffix: ')',
       lineNumber: 9,    // 0-based.
       columnNumber: 2,  // 0-based.
       enclosedInBraces: true,
-      positionLeft: 16,
-      positionRight: 39,
     });
   });
 
@@ -100,11 +100,11 @@ describe('ErrorStackParser', () => {
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: 'file:///testing.js',
+      prefix: '        at foo (',
+      suffix: ')',
       lineNumber: undefined,
       columnNumber: undefined,
       enclosedInBraces: true,
-      positionLeft: 16,
-      positionRight: 34,
     });
   });
 
@@ -115,11 +115,11 @@ describe('ErrorStackParser', () => {
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: 'file:///testing.js',
+      prefix: '        at ',
+      suffix: '',
       lineNumber: 41,   // 0-based.
       columnNumber: 2,  // 0-based.
       enclosedInBraces: false,
-      positionLeft: 11,
-      positionRight: 34,
     });
   });
 
@@ -130,11 +130,11 @@ describe('ErrorStackParser', () => {
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
       url: 'file:///testing.js',
+      prefix: '        at async ',
+      suffix: '',
       lineNumber: 41,   // 0-based.
       columnNumber: 2,  // 0-based.
       enclosedInBraces: false,
-      positionLeft: 17,
-      positionRight: 40,
     });
   });
 

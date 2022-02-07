@@ -607,7 +607,7 @@ export class DebuggerPlugin extends Plugin {
         return null;
       }
       while (
-          node && node.name !== 'VariableDefinition' && node.name !== 'VariableName' &&
+          node && node.name !== 'this' && node.name !== 'VariableDefinition' && node.name !== 'VariableName' &&
           node.name !== 'MemberExpression' &&
           !(node.name === 'PropertyName' && node.parent?.name === 'PatternProperty' &&
             node.nextSibling?.name !== ':') &&

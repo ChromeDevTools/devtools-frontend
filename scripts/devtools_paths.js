@@ -63,7 +63,7 @@ function isInChromiumDirectory() {
  * If it's standalone, it will be /path/to/devtools-frontend
  */
 function devtoolsRootPath() {
-  return path.dirname(path.dirname(__filename));
+  return path.dirname(__dirname);
 }
 
 /**

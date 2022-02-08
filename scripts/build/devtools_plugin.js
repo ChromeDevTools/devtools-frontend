@@ -111,4 +111,35 @@ function devtoolsPlugin(source, importer) {
   };
 }
 
-module.exports = {devtoolsPlugin};
+function esbuildPlugin(outdir) {
+  return args => {
+    // args.importer is absolute path in esbuild.
+    const res = devtoolsPlugin(args.path, args.importer);
+    if (!res) {
+      return null;
+    }
+
+    if (res.external) {
+      // res.id can be both of absolutized local JavaScript path or node's
+      // builtin module (e.g. 'fs', 'path'), and only relativize the path in
+      // former case.
+      if (path.isAbsolute(res.id)) {
+        res.id = './' + path.relative(outdir, res.id);
+      }
+
+      return {
+        external: res.external,
+        path: res.id,
+      };
+    }
+
+    return {
+      path: res.id,
+    };
+  };
+}
+
+module.exports = {
+  devtoolsPlugin,
+  esbuildPlugin
+};

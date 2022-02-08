@@ -21,30 +21,7 @@ const plugin = {
   name: 'devtools-plugin',
   setup(build) {
     // https://esbuild.github.io/plugins/#on-resolve
-    build.onResolve({filter: /.*/}, args => {
-      const res = devtools_plugin.devtoolsPlugin(args.path, args.importer);
-      if (!res) {
-        return null;
-      }
-
-      if (res.external) {
-        // res.id can be both of absolutized local JavaScript path or node's
-        // builtin module (e.g. 'fs', 'path'), and only relativize the path in
-        // former case.
-        if (path.isAbsolute(res.id)) {
-          res.id = './' + path.relative(outdir, res.id);
-        }
-
-        return {
-          external: res.external,
-          path: res.id,
-        };
-      }
-
-      return {
-        path: res.id,
-      };
-    });
+    build.onResolve({filter: /.*/}, devtools_plugin.esbuildPlugin(outdir));
   },
 };
 

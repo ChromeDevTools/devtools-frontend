@@ -273,7 +273,7 @@ export class CSSMatchedStyles {
   async recomputeMatchingSelectors(rule: CSSStyleRule): Promise<void> {
     const node = this.nodeForStyle(rule.style);
     if (!node) {
-      return Promise.resolve();
+      return;
     }
     const promises = [];
     for (const selector of rule.selectors) {

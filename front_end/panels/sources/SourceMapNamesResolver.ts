@@ -10,9 +10,14 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
 
-const scopeToCachedIdentifiersMap = new WeakMap<SDK.DebuggerModel.ScopeChainEntry, Promise<Map<string, string>>>();
+interface CachedScopeMap {
+  sourceMap: SDK.SourceMap.SourceMap|null;
+  identifiersPromise: Promise<Map<string, string>>;
+}
 
+const scopeToCachedIdentifiersMap = new WeakMap<SDK.DebuggerModel.ScopeChainEntry, CachedScopeMap>();
 const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string>>();
+
 export class Identifier {
   name: string;
   lineNumber: number;
@@ -79,17 +84,17 @@ export const resolveScopeChain =
 };
 
 export const resolveScope = async(scope: SDK.DebuggerModel.ScopeChainEntry): Promise<Map<string, string>> => {
-  let identifiersPromise = scopeToCachedIdentifiersMap.get(scope);
-  if (!identifiersPromise) {
+  let cachedScopeMap = scopeToCachedIdentifiersMap.get(scope);
+  const script = scope.callFrame().script;
+  const sourceMap = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(script);
+
+  if (!cachedScopeMap || cachedScopeMap.sourceMap !== sourceMap) {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    identifiersPromise = (async(): Promise<Map<any, any>> => {
+    const identifiersPromise = (async(): Promise<Map<any, any>> => {
       const namesMapping = new Map<string, string>();
-      const script = scope.callFrame().script;
-      const sourceMap =
-          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(script);
       if (sourceMap) {
         const textCache = new Map<string, TextUtils.Text.Text>();
         // Extract as much as possible from SourceMap and resolve
@@ -111,9 +116,10 @@ export const resolveScope = async(scope: SDK.DebuggerModel.ScopeChainEntry): Pro
       }
       return namesMapping;
     })();
-    scopeToCachedIdentifiersMap.set(scope, identifiersPromise);
+    cachedScopeMap = {sourceMap, identifiersPromise};
+    scopeToCachedIdentifiersMap.set(scope, {sourceMap, identifiersPromise});
   }
-  return await identifiersPromise;
+  return await cachedScopeMap.identifiersPromise;
 
   async function resolveSourceName(
       script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap, id: Identifier,

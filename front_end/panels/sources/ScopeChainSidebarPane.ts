@@ -90,6 +90,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
   private readonly linkifier: Components.Linkifier.Linkifier;
   private infoElement: HTMLDivElement;
+  #scopesScript: SDK.Script.Script|null = null;
+
   private constructor() {
     super(true);
 
@@ -126,6 +128,34 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     }
   }
 
+  private sourceMapAttached(
+      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
+      void {
+    if (event.data.client === this.#scopesScript) {
+      void this.update();
+    }
+  }
+
+  private setScopeSourceMapSubscription(callFrame: SDK.DebuggerModel.CallFrame|null): void {
+    const oldScript = this.#scopesScript;
+    this.#scopesScript = callFrame?.script ?? null;
+
+    // Shortcut for the case when we are listening to the same model.
+    if (oldScript?.debuggerModel === this.#scopesScript?.debuggerModel) {
+      return;
+    }
+
+    if (oldScript) {
+      oldScript.debuggerModel.sourceMapManager().removeEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    }
+
+    if (this.#scopesScript) {
+      this.#scopesScript.debuggerModel.sourceMapManager().addEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    }
+  }
+
   private async update(): Promise<void> {
     // The `resolveThisObject(callFrame)` and `resolveScopeChain(callFrame)` calls
     // below may take a while to complete, so indicate to the user that something
@@ -137,6 +167,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     this.linkifier.reset();
 
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
+    this.setScopeSourceMapSubscription(callFrame);
     const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
     // By now the developer might have moved on, and we don't want to show stale
     // scope information, so check again that we're still on the same CallFrame.

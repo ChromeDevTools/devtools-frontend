@@ -3,11 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {click, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent, waitForFunctionWithTries} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, getBreakpointDecorators, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   // Flaky test.
@@ -133,6 +132,43 @@ describe('The Sources Tab', async () => {
 
       const stepLocation = await waitForStackTopMatch(stepLocationRegExp);
       assert.match(stepLocation, stepLocationRegExp);
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    });
+  });
+
+  it('shows unminified identifiers in scopes', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-minified.js', 'sourcemap-minified.html');
+
+    let scriptEvaluation: Promise<unknown>;
+    const breakLocationRegExp = /sourcemap-minified\.js:1$/;
+
+    await step('Run to debugger statement', async () => {
+      scriptEvaluation = target.evaluate('sayHello();');
+
+      const scriptLocation = await waitForStackTopMatch(breakLocationRegExp);
+      assert.match(scriptLocation, breakLocationRegExp);
+    });
+
+    await step('Check local variable is eventually un-minified', async () => {
+      const unminifiedVariable = 'element: div';
+      await clickOnContextMenu('.cm-line', 'Add source map…');
+
+      // Enter the source map URL into the appropriate input box.
+      await waitFor('.add-source-map');
+      await click('.add-source-map');
+      await typeText('sourcemap-minified.map');
+      await frontend.keyboard.press('Enter');
+
+      const scopeValues = await waitForFunction(async () => {
+        const values = await getValuesForScope('Local', 0, 0);
+        return (values && values.includes(unminifiedVariable)) ? values : undefined;
+      });
+      assert.include(scopeValues, unminifiedVariable);
     });
 
     await step('Resume', async () => {

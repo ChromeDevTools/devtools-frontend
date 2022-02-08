@@ -16,3 +16,13 @@ To update this package, adjust the version ranges in package.json if necessary, 
 ```
 
 It will use npm to locally install the necessary packages and their dependencies, and bundle them into a single file (codemirror.js and codemirror.d.ts) with rollup.
+
+If you want to easily obtain all the latest versions of the packages, run the following:
+
+```
+npm i
+npm outdated
+```
+
+This will show you a table with all the latest versions of each package.
+You will need to manually update the versions in the `package.json` file.

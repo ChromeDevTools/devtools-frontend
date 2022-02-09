@@ -238,12 +238,14 @@ function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
             changes: text === active.text ? undefined :
                                             {from: active.pos, to: active.pos + text.length, insert: active.text},
           });
+          widget.hideWidget();
           view.focus();
         }
       });
       widget.element.addEventListener('focusout', event => {
         if (event.relatedTarget && !widget.element.contains(event.relatedTarget as Node)) {
           view.dispatch({effects: setTooltip.of(null)});
+          widget.hideWidget();
         }
       }, false);
       widget.element.addEventListener('mousedown', event => event.consume());

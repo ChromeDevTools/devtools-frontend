@@ -578,8 +578,10 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.lineToScrollTo !== null) {
       if (this.loaded && this.isShowing()) {
         const {textEditor} = this;
-        const position = textEditor.toOffset({lineNumber: this.lineToScrollTo, columnNumber: 0});
-        textEditor.dispatch({effects: CodeMirror.EditorView.scrollTo.of(CodeMirror.EditorSelection.cursor(position))});
+        // DevTools history items are 0-based, but CodeMirror is 1-based, so we have to increment the
+        // line we want to scroll to by 1.
+        const position = textEditor.toOffset({lineNumber: this.lineToScrollTo + 1, columnNumber: 0});
+        textEditor.dispatch({effects: CodeMirror.EditorView.scrollIntoView(position, {y: 'start'})});
         this.lineToScrollTo = null;
       }
     }

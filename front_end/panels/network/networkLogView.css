@@ -124,10 +124,6 @@
   color: inherit;
 }
 
-.network-log-grid.data-grid .name-column {
-  cursor: pointer;
-}
-
 .network-log-grid.data-grid .waterfall-column {
   padding: 1px 0;
 }

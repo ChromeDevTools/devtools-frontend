@@ -15,7 +15,7 @@
 
 .tree-outline li:hover {
   background-color: var(--legacy-focus-bg-color);
-  cursor: pointer;
+  cursor: text;
 }
 
 .tree-outline li::before {
@@ -35,7 +35,7 @@
   margin: 1px 0 0;
   padding: 1em 0;
   width: 100%;
-  cursor: pointer;
+  cursor: text;
   color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 400;

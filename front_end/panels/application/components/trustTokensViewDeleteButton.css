@@ -12,7 +12,6 @@
   border: none;
   padding: 0;
   outline: none;
-  cursor: pointer;
 }
 
 .delete-button:hover devtools-icon {

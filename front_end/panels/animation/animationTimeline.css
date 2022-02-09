@@ -338,7 +338,6 @@ text.animation-timeline-grid-label {
   background: var(--color-background-elevation-2);
   opacity: 0%;
   border-right: 1px solid var(--color-details-hairline);
-  cursor: pointer;
 }
 
 .animation-buffer-preview:focus-visible {
@@ -410,7 +409,6 @@ text.animation-timeline-grid-label {
   background-color: transparent;
   flex: 1 0 auto;
   text-align: center;
-  cursor: pointer;
 }
 
 .animation-playback-rate-button:first-child {
@@ -454,7 +452,6 @@ text.animation-timeline-grid-label {
   box-shadow: 0 1px 4px 0 var(--color-background-highlight);
   z-index: 100;
   display: none;
-  cursor: pointer;
   font-weight: 700;
   color: var(--color-background);
 }

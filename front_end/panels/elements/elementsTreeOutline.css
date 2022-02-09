@@ -203,7 +203,6 @@ select {
   border-radius: 5px;
   border: 1px solid var(--issue-color-yellow);
   background-color: var(--issue-color-yellow);
-  cursor: pointer;
 }
 
 .elements-gutter-decoration.elements-has-decorated-children {
@@ -278,7 +277,6 @@ select {
   position: absolute;
   top: 0;
   left: 0;
-  cursor: pointer;
   width: 15px;
   height: 15px;
 }

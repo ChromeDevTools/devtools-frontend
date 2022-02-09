@@ -61,7 +61,6 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-row:hover {
-  cursor: pointer;
   background: var(--color-background-hover-overlay);
 }
 

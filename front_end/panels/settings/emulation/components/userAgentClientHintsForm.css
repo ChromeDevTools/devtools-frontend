@@ -75,10 +75,6 @@
   margin-right: 5px;
 }
 
-.delete-icon {
-  cursor: pointer;
-}
-
 .brand-row {
   display: flex;
   align-items: center;

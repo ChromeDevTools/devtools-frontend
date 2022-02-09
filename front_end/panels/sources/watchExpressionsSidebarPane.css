@@ -7,7 +7,6 @@
 .watch-expression-delete-button {
   position: absolute;
   top: 5px;
-  cursor: pointer;
   opacity: 0%;
 }
 

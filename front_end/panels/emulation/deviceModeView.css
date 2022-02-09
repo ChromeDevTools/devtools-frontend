@@ -90,7 +90,6 @@
   pointer-events: auto;
   text-align: center;
   flex: none;
-  cursor: pointer;
   color: var(--color-text-primary);
   display: flex;
   align-items: center;

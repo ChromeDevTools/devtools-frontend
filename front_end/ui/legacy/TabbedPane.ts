@@ -1144,7 +1144,7 @@ export class TabbedPaneTab {
       if (this.tabbedPane.allowTabReorder) {
         installDragHandle(
             tabElement, this.startTabDragging.bind(this), this.tabDragging.bind(this), this.endTabDragging.bind(this),
-            '-webkit-grabbing', 'pointer', 200);
+            null, null, 200);
       }
     }
 

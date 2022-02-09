@@ -16,7 +16,7 @@
 
 .computed-style-trace:hover {
   background-color: var(--legacy-focus-bg-color);
-  cursor: pointer;
+  cursor: text;
 }
 
 .goto {

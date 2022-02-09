@@ -269,10 +269,6 @@
   align-items: center;
 }
 
-.tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab:not(.selected) {
-  cursor: pointer !important; /* stylelint-disable-line declaration-no-important */
-}
-
 /* stylelint-disable no-descending-specificity */
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {
   --override-vertical-tab-selected-border-color: #666;

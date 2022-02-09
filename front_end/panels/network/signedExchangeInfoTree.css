@@ -69,7 +69,6 @@
   --override-header-hover-color: rgb(20% 20% 45%);
 
   color: var(--override-header-hover-color);
-  cursor: pointer;
 }
 
 .-theme-with-dark-background .tree-outline .header-toggle:hover,

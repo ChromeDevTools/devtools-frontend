@@ -21,7 +21,6 @@
 }
 
 .icon-button.with-click-handler {
-  cursor: pointer;
   border: 1px solid var(--color-details-hairline);
   border-radius: 2px;
 }

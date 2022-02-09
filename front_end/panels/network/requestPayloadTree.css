@@ -71,7 +71,6 @@
 
 .tree-outline li .header-toggle:hover {
   color: var(--color-text-secondary);
-  cursor: pointer;
 }
 
 .tree-outline .payload-name {
@@ -105,7 +104,6 @@
   display: inline-block;
   font-size: 12px;
   font-family: sans-serif;
-  cursor: pointer;
   margin: 0 4px;
   padding: 2px 4px;
 }

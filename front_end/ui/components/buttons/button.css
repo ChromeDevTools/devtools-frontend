@@ -49,10 +49,6 @@ button:focus-visible {
   box-shadow: 0 0 0 2px var(--color-button-outline-focus);
 }
 
-button:hover {
-  cursor: pointer;
-}
-
 button.toolbar {
   background: transparent;
   border-radius: 2px;

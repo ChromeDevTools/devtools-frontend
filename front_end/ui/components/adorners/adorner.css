@@ -12,10 +12,6 @@
   display: none;
 }
 
-:host(.clickable) {
-  cursor: pointer;
-}
-
 slot {
   display: inline-flex;
   box-sizing: border-box;

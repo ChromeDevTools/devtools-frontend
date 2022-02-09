@@ -71,23 +71,6 @@
   overflow: hidden;
 }
 
-.console-delete-pin {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  opacity: 70%;
-  cursor: pointer;
-}
-
-.console-delete-pin:hover,
-.console-delete-pin:focus-visible {
-  opacity: 100%;
-}
-
-:host-context(.-theme-with-dark-background) .console-delete-pin {
-  filter: brightness(2);
-}
-
 .console-pin-name:focus-within {
   background: var(--color-background);
   box-shadow: var(--legacy-focus-ring-active-shadow) inset;

@@ -115,10 +115,6 @@ th.firstVisibleColumn {
   padding: 1px;
 }
 
-[aria-sort]:hover {
-  cursor: pointer;
-}
-
 [aria-sort="descending"]::after {
   content: "";
   width: 0;

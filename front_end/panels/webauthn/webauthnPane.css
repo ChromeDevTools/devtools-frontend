@@ -120,18 +120,6 @@
   padding: 5px 10px 0 0;
 }
 
-.text-button {
-  float: right;
-  white-space: nowrap;
-  overflow: hidden;
-  min-width: 28px;
-  background: transparent;
-  border: none;
-  color: var(--color-link);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 td .text-button {
   min-width: 20px;
   margin: auto;

@@ -80,7 +80,6 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   min-width: 28px;
   background: transparent;
   border-radius: 0;
-  cursor: pointer;
 }
 
 .toolbar-text {

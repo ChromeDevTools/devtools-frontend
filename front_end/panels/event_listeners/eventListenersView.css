@@ -56,7 +56,6 @@
   border: 1px solid var(--color-details-hairline);
   margin-left: 5px;
   display: block;
-  cursor: pointer;
   opacity: 80%;
   flex-shrink: 0;
 }

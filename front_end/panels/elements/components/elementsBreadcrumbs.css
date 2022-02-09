@@ -73,7 +73,6 @@
 .overflow:not(:disabled):hover {
   background-color: var(--color-background-elevation-2);
   color: var(--color-text-primary);
-  cursor: pointer;
 }
 
 .crumb-link {

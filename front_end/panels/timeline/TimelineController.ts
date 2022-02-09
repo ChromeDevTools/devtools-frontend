@@ -82,22 +82,14 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     }
     const categoriesArray = [
       '-*',
+      'devtools.timeline',
+      disabledByDefault('devtools.timeline'),
+      disabledByDefault('devtools.timeline.frame'),
+      'v8.execute',
+      disabledByDefault('v8.compile'),
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
       TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
-      'devtools.timeline',
-      disabledByDefault('devtools.screenshot'),
-      disabledByDefault('devtools.timeline'),
-      disabledByDefault('devtools.timeline.invalidationTracking'),
-      disabledByDefault('devtools.timeline.frame'),
-      disabledByDefault('devtools.timeline.stack'),
-      disabledByDefault('v8.compile'),
-      disabledByDefault('v8.cpu_profiler'),
-      disabledByDefault('v8.cpu_profiler.hires'),
-      'latencyInfo',
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading,
-      disabledByDefault('lighthouse'),
-      'v8.execute',
-      'v8',
     ];
     categoriesArray.push(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo);
 

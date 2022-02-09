@@ -16,6 +16,8 @@ copy_to_gen("sources") {
     "error-with-sourcemap.js",
     "error-with-sourcemap.js.map",
     "inline-script.html",
+    "live-edit-moving-breakpoint.html",
+    "live-edit-moving-breakpoint.js",
     "memory-worker1.js",
     "memory-worker2.js",
     "memory-workers.html",

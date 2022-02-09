@@ -18,6 +18,7 @@ node_ts_library("sources") {
     "debug-raw-wasm_test.ts",
     "icon-row-bucket_test.ts",
     "link-to-correct-source-line_test.ts",
+    "live-edit-moving-breakpoint_test.ts",
     "navigation_test.ts",
     "popover_test.ts",
     "script-in-multiple-workers_test.ts",

@@ -388,8 +388,8 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   reset(): void {
   }
 
-  overviewInfoPromise(_x: number): Promise<Element|null> {
-    return Promise.resolve((null as Element | null));
+  async overviewInfoPromise(_x: number): Promise<Element|null> {
+    return null;
   }
 
   setCalculator(calculator: TimelineOverviewCalculator): void {

@@ -1,9 +1,9 @@
 #!/usr/bin/env -S bash -xc 'lucicfg format && lucicfg "$0"'
 
-lucicfg.check_version("1.29.1", "Please update depot_tools")
+lucicfg.check_version("1.30.9", "Please update depot_tools")
 
-# Launch 100% of Swarming tasks for builds in "realms-aware mode"
-luci.builder.defaults.experiments.set({"luci.use_realms": 100})
+# Use LUCI Scheduler BBv2 names and add Scheduler realms configs.
+lucicfg.enable_experiment("crbug.com/1182002")
 
 # Tell lucicfg what files it is allowed to touch
 lucicfg.config(

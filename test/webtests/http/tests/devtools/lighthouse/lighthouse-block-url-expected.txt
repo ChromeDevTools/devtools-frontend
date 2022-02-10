@@ -8,6 +8,7 @@ Tests that Lighthouse block requests specified in DevTools BlockedURLsPane.
 [ ] Accessibility
 [ ] SEO
 [ ] Publisher Ads
+[x] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
 Generate report: enabled visible

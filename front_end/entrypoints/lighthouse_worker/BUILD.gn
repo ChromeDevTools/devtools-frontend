@@ -10,6 +10,8 @@ devtools_module("lighthouse_worker") {
 
   deps = [
     "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../services/puppeteer:bundle",
     "../../third_party/lighthouse",
   ]
 }

@@ -126,6 +126,14 @@ const UIStrings = {
   */
   clearStorage: 'Clear storage',
   /**
+   * @description Text of checkbox to use the legacy Lighthouse navigation mode
+   */
+  legacyNavigation: 'Legacy navigation',
+  /**
+   * @description Tooltip text that appears when hovering over the 'Legacy navigation' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel
+   */
+  useLegacyNavigation: 'Audit the page using classic Lighthouse when in navigation mode.',
+  /**
   * @description Tooltip text of checkbox to reset storage features prior to running audits in
   * Lighthouse. Resetting the storage clears/empties it to a neutral state.
   */
@@ -277,7 +285,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return navigationEntry.url;
   }
 
-  getFlags(): {internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)} {
+  getFlags(): {
+    internalDisableDeviceScreenEmulation: boolean,
+    emulatedFormFactor: (string|undefined),
+    legacyNavigation: boolean,
+  } {
     const flags = {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
       internalDisableDeviceScreenEmulation: true,
@@ -288,6 +300,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return flags as {
       internalDisableDeviceScreenEmulation: boolean,
       emulatedFormFactor: (string | undefined),
+      legacyNavigation: boolean,
     };
   }
 
@@ -429,6 +442,17 @@ export const RuntimeSettings: RuntimeSetting[] = [
     description: i18nLazyString(UIStrings.resetStorageLocalstorage),
     setFlags: (flags: Flags, value: string|boolean): void => {
       flags.disableStorageReset = !value;
+    },
+    options: undefined,
+    learnMore: undefined,
+  },
+  {
+    setting: Common.Settings.Settings.instance().createSetting(
+        'lighthouse.legacy_navigation', true, Common.Settings.SettingStorageType.Synced),
+    title: i18nLazyString(UIStrings.legacyNavigation),
+    description: i18nLazyString(UIStrings.useLegacyNavigation),
+    setFlags: (flags: Flags, value: string|boolean): void => {
+      flags.legacyNavigation = value;
     },
     options: undefined,
     learnMore: undefined,

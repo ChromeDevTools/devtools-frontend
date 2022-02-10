@@ -1,0 +1,23 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("puppeteer_connection") {
+  sources = [ "PuppeteerConnection.ts" ]
+
+  deps = [
+    "../../core/sdk:bundle",
+    "../../third_party/puppeteer:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "puppeteer.ts"
+
+  deps = [ ":puppeteer_connection" ]
+
+  visibility = [ "*" ]
+}

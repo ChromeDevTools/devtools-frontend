@@ -5765,6 +5765,9 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Is this page usable by people with disabilities or impairments"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Legacy navigation"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Local Storage"
   },
@@ -5800,6 +5803,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Audit the page using classic Lighthouse when in navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"

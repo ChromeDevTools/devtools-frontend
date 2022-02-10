@@ -11,6 +11,11 @@ import type * as ReportRenderer from './LighthouseReporterTypes.js';
 let lastId = 1;
 
 export class ProtocolService {
+  private targetInfo?: {
+    mainSessionId: string,
+    mainTargetId: string,
+    mainFrameId: string,
+  };
   private rawConnection?: ProtocolClient.InspectorBackend.Connection;
   private lighthouseWorkerPromise?: Promise<Worker>;
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
@@ -19,26 +24,53 @@ export class ProtocolService {
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
-      throw new Error('Unable to find main target required for LightHouse');
+      throw new Error('Unable to find main target required for Lighthouse');
     }
     const childTargetManager = mainTarget.model(SDK.ChildTargetManager.ChildTargetManager);
     if (!childTargetManager) {
-      throw new Error('Unable to find child target manager required for LightHouse');
+      throw new Error('Unable to find child target manager required for Lighthouse');
     }
-    this.rawConnection = await childTargetManager.createParallelConnection(message => {
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel) {
+      throw new Error('Unable to find resource tree model required for Lighthouse');
+    }
+    const mainFrame = resourceTreeModel.mainFrame;
+    if (!mainFrame) {
+      throw new Error('Unable to find main frame required for Lighthouse');
+    }
+
+    const {connection, sessionId} = await childTargetManager.createParallelConnection(message => {
       if (typeof message === 'string') {
         message = JSON.parse(message);
       }
       this.dispatchProtocolMessage(message);
     });
+
+    this.rawConnection = connection;
+    this.targetInfo = {
+      mainTargetId: await childTargetManager.getParentTargetId(),
+      mainFrameId: mainFrame.id,
+      mainSessionId: sessionId,
+    };
   }
 
   getLocales(): readonly string[] {
     return [i18n.DevToolsLocale.DevToolsLocale.instance().locale];
   }
 
-  startLighthouse(auditURL: string, categoryIDs: string[], flags: Object): Promise<ReportRenderer.RunnerResult> {
-    return this.sendWithResponse('start', {url: auditURL, categoryIDs, flags, locales: this.getLocales()});
+  async startLighthouse(auditURL: string, categoryIDs: string[], flags: Record<string, Object|undefined>):
+      Promise<ReportRenderer.RunnerResult> {
+    if (!this.targetInfo) {
+      throw new Error('Unable to get target info required for Lighthouse');
+    }
+    const mode = flags.legacyNavigation ? 'start' : 'navigate';
+    return this.sendWithResponse(mode, {
+      url: auditURL,
+      categoryIDs,
+      flags,
+      locales: this.getLocales(),
+      target: this.targetInfo,
+    });
   }
 
   async detach(): Promise<void> {

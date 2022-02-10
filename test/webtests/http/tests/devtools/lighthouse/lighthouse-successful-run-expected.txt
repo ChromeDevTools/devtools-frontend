@@ -8,6 +8,7 @@ Tests that audits panel works.
 [x] Accessibility
 [x] SEO
 [x] Publisher Ads
+[x] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
 Generate report: enabled visible

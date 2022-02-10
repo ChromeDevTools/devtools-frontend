@@ -213,7 +213,12 @@ export class StubConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 }
 
-export class ParallelConnection implements ProtocolClient.InspectorBackend.Connection {
+export interface ParallelConnectionInterface extends ProtocolClient.InspectorBackend.Connection {
+  getSessionId: () => string;
+  getOnDisconnect: () => ((arg0: string) => void) | null;
+}
+
+export class ParallelConnection implements ParallelConnectionInterface {
   readonly #connection: ProtocolClient.InspectorBackend.Connection;
   #sessionId: string;
   onMessage: ((arg0: Object) => void)|null;

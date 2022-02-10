@@ -5765,6 +5765,9 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Îś t̂h́îś p̂áĝé ûśâb́l̂é b̂ý p̂éôṕl̂é ŵít̂h́ d̂íŝáb̂íl̂ít̂íêś ôŕ îḿp̂áîŕm̂én̂t́ŝ"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "L̂éĝáĉý n̂áv̂íĝát̂íôń"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "L̂óĉál̂ Śt̂ór̂áĝé"
   },
@@ -5800,6 +5803,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Âúd̂ít̂ t́ĥé p̂áĝé ûśîńĝ ćl̂áŝśîć L̂íĝh́t̂h́ôúŝé ŵh́êń îń n̂áv̂íĝát̂íôń m̂ód̂é."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Ŵéb̂ ŚQ̂Ĺ"

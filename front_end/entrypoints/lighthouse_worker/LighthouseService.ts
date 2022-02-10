@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as Root from '../../core/root/root.js';
+import * as Puppeteer from '../../services/puppeteer/puppeteer.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 
 function disableLoggingForTest(): void {
   console.log = (): void => undefined;  // eslint-disable-line no-console
@@ -33,10 +35,49 @@ class LighthousePort {
   }
 }
 
+class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
+  sessionId: string;
+  onMessage: ((arg0: Object) => void)|null;
+  onDisconnect: ((arg0: string) => void)|null;
+
+  constructor(sessionId: string) {
+    this.sessionId = sessionId;
+    this.onMessage = null;
+    this.onDisconnect = null;
+  }
+
+  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+    this.onMessage = onMessage;
+  }
+
+  setOnDisconnect(onDisconnect: (arg0: string) => void): void {
+    this.onDisconnect = onDisconnect;
+  }
+
+  getOnDisconnect(): (((arg0: string) => void)|null) {
+    return this.onDisconnect;
+  }
+
+  getSessionId(): string {
+    return this.sessionId;
+  }
+
+  sendRawMessage(message: string): void {
+    notifyFrontendViaWorkerMessage('sendProtocolMessage', {message});
+  }
+
+  async disconnect(): Promise<void> {
+    this.onDisconnect?.('force disconnect');
+    this.onDisconnect = null;
+    this.onMessage = null;
+  }
+}
+
 const port = new LighthousePort();
+let rawConnection: ConnectionProxy|undefined;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function start(params: any): Promise<unknown> {
+async function start(method: string, params: any): Promise<unknown> {
   if (Root.Runtime.Runtime.queryParam('isUnderTest')) {
     disableLoggingForTest();
     params.flags.maxWaitForLoad = 2 * 1000;
@@ -47,6 +88,9 @@ async function start(params: any): Promise<unknown> {
     notifyFrontendViaWorkerMessage('statusUpdate', {message: message[1]});
   });
 
+  let puppeteerConnection: Awaited<ReturnType<typeof Puppeteer.PuppeteerConnection['getPuppeteerConnection']>>|
+      undefined;
+
   try {
     const locale = await fetchLocaleData(params.locales);
     const flags = params.flags;
@@ -55,19 +99,38 @@ async function start(params: any): Promise<unknown> {
     flags.locale = locale;
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    const connection = self.setUpWorkerConnection(port);
-    // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
     const url = params.url;
 
+    // Handle legacy Lighthouse runner path.
+    if (method === 'start') {
+      // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
+      const connection = self.setUpWorkerConnection(port);
+      // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
+      return await self.runLighthouse(url, flags, config, connection);
+    }
+
+    const {mainTargetId, mainFrameId, mainSessionId} = params.target;
+    rawConnection = new ConnectionProxy(mainSessionId);
+    puppeteerConnection =
+        await Puppeteer.PuppeteerConnection.getPuppeteerConnection(rawConnection, mainFrameId, mainTargetId);
+
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouse(url, flags, config, connection);
+    const result = await self.runLighthouseNavigation({
+      url,
+      config,
+      page: puppeteerConnection.page,
+    });
+
+    return result;
   } catch (err) {
     return ({
       fatal: true,
       message: err.message,
       stack: err.stack,
     });
+  } finally {
+    puppeteerConnection?.browser.disconnect();
   }
 }
 
@@ -115,20 +178,28 @@ function notifyFrontendViaWorkerMessage(method: string, params: any): void {
 
 self.onmessage = async(event: MessageEvent): Promise<void> => {
   const messageFromFrontend = JSON.parse(event.data);
-  if (messageFromFrontend.method === 'start') {
-    const result = await start(messageFromFrontend.params);
-    self.postMessage(JSON.stringify({id: messageFromFrontend.id, result}));
-  } else if (messageFromFrontend.method === 'dispatchProtocolMessage') {
-    if (port.onMessage) {
-      port.onMessage(messageFromFrontend.params.message);
+  switch (messageFromFrontend.method) {
+    case 'navigate':
+    case 'start': {
+      const result = await start(messageFromFrontend.method, messageFromFrontend.params);
+      self.postMessage(JSON.stringify({id: messageFromFrontend.id, result}));
+      break;
     }
-  } else {
-    throw new Error(`Unknown event: ${event.data}`);
+    case 'dispatchProtocolMessage': {
+      rawConnection?.onMessage?.(
+          JSON.parse(messageFromFrontend.params.message),
+      );
+      port.onMessage?.(messageFromFrontend.params.message);
+      break;
+    }
+    default: {
+      throw new Error(`Unknown event: ${event.data}`);
+    }
   }
 };
 
 // Make lighthouse and traceviewer happy.
-// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global = self;
 // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.isVinn = true;

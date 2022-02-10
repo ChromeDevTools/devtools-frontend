@@ -321,7 +321,7 @@ export class StatusView {
   }
 
   private getPhaseForMessage(message: string): StatusPhase|null {
-    return StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix)) || null;
+    return StatusPhases.find(phase => phase.statusMessageRegex.test(message)) || null;
   }
 
   private resetProgressBarClasses(): void {
@@ -457,7 +457,7 @@ export interface StatusPhase {
   id: string;
   progressBarClass: string;
   message: () => Common.UIString.LocalizedString;
-  statusMessagePrefix: string;
+  statusMessageRegex: RegExp;
 }
 
 export const StatusPhases: StatusPhase[] = [
@@ -465,19 +465,19 @@ export const StatusPhases: StatusPhase[] = [
     id: 'loading',
     progressBarClass: 'loading',
     message: i18nLazyString(UIStrings.lighthouseIsLoadingThePage),
-    statusMessagePrefix: 'Loading page',
+    statusMessageRegex: /^(Loading page|Navigating to)/,
   },
   {
     id: 'gathering',
     progressBarClass: 'gathering',
     message: i18nLazyString(UIStrings.lighthouseIsGatheringInformation),
-    statusMessagePrefix: 'Gathering',
+    statusMessageRegex: /^(Gathering|Computing artifact)/,
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
     message: i18nLazyString(UIStrings.almostThereLighthouseIsNow),
-    statusMessagePrefix: 'Auditing',
+    statusMessageRegex: /^Auditing/,
   },
 ];
 

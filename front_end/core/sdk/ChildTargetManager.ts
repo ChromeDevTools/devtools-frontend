@@ -171,7 +171,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   async createParallelConnection(onMessage: (arg0: (Object|string)) => void):
-      Promise<ProtocolClient.InspectorBackend.Connection> {
+      Promise<{connection: ProtocolClient.InspectorBackend.Connection, sessionId: string}> {
     // The main Target id is actually just `main`, instead of the real targetId.
     // Get the real id (requires an async operation) so that it can be used synchronously later.
     const targetId = await this.getParentTargetId();
@@ -179,7 +179,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
         await this.createParallelConnectionAndSessionForTarget(this.#parentTarget, targetId);
     connection.setOnMessage(onMessage);
     this.#parallelConnections.set(sessionId, connection);
-    return connection;
+    return {connection, sessionId};
   }
 
   private async createParallelConnectionAndSessionForTarget(target: Target, targetId: Protocol.Target.TargetID):

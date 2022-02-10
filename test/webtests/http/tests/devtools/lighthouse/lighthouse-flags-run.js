@@ -12,9 +12,10 @@
   const dialogElement = LighthouseTestRunner.getContainerElement();
   dialogElement.querySelector('input[name="lighthouse.device_type"][value="desktop"]').click();
   // Turn off simulated throttling.
-  dialogElement.querySelector('.lighthouse-settings-pane > div').shadowRoot
-               .querySelectorAll('span')[1].shadowRoot
-               .querySelector('input').click();
+  dialogElement.querySelector('.lighthouse-settings-pane > div')
+      .shadowRoot.querySelectorAll('span')[2]
+      .shadowRoot.querySelector('input')
+      .click();
 
   LighthouseTestRunner.dumpStartAuditState();
   LighthouseTestRunner.getRunButton().click();

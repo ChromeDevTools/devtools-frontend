@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {$textContent, assertNotNullOrUndefined, getBrowserAndPages, pressKey, step, waitFor} from '../../shared/helper.js';
+import {$textContent, assertNotNullOrUndefined, click, getBrowserAndPages, pressKey, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {addBreakpointForLine, isBreakpointSet, openSourceCodeEditorForFile, reloadPageAndWaitForSourceFile} from '../helpers/sources-helpers.js';
 
@@ -18,12 +18,11 @@ describe('Live edit', async () => {
       const markerLine = await $textContent('// Insertion marker for newline.', editorContent);
       assertNotNullOrUndefined(markerLine);
 
-      const bb = await markerLine.boundingBox();
-      assertNotNullOrUndefined(bb);
+      // Place the caret at the end of the marker line by clicking in the middle of the
+      // line element and then pressing 'End'.
+      await click(markerLine);
+      await frontend.keyboard.press('End');
 
-      // Click a few pixels after the comment, to make sure the input carrot
-      // is really after the last character.
-      await frontend.mouse.click(bb.x + bb.width + 5, bb.y + (bb.height * 0.5));
       await frontend.keyboard.press('Enter');
       await frontend.keyboard.press('Enter');
     });

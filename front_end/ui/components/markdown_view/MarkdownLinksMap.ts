@@ -37,8 +37,8 @@ export const markdownLinks = new Map<string, string>([
   ],
   ['https://developer.chrome.com/docs/extensions/mv3/', 'https://developer.chrome.com/docs/extensions/mv3/'],
   [
-    'https://developer.chrome.com/blog/immutable-document-domain',
-    'https://developer.chrome.com/blog/immutable-document-domain',
+    'https://developer.chrome.com/blog/immutable-document-domain/',
+    'https://developer.chrome.com/blog/immutable-document-domain/',
   ],
 ]);
 

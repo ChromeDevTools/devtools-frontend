@@ -3029,8 +3029,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "D̂éŝt́îńât́îón̂"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Ĝén̂ér̂át̂éd̂ át̂"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "N̂ó r̂ép̂ór̂t́ŝ t́ô d́îśp̂ĺâý"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Ŝt́ât́ûś"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"

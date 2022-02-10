@@ -78,7 +78,7 @@ describeWithEnvironment('ReportsGrid', async () => {
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
     const values = Array.from(headerCells, getHeaderText);
-    assert.deepEqual(values, ['URL', 'Type', 'Status', 'Destination', 'Timestamp', 'Body']);
+    assert.deepEqual(values, ['URL', 'Type', 'Status', 'Destination', 'Generated at', 'Body']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.strictEqual(rowValues[0][0], 'https://example.com/script.js', 'URL does not match');
@@ -117,7 +117,7 @@ describeWithEnvironment('ReportsGrid', async () => {
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
     const values = Array.from(headerCells, getHeaderText);
-    assert.deepEqual(values, ['ID', 'URL', 'Type', 'Status', 'Destination', 'Timestamp', 'Body']);
+    assert.deepEqual(values, ['ID', 'URL', 'Type', 'Status', 'Destination', 'Generated at', 'Body']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.strictEqual(rowValues[0][0], 'some_id', 'ID does not match');

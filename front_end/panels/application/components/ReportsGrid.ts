@@ -19,6 +19,21 @@ const UIStrings = {
   *(https://developers.google.com/web/updates/2018/09/reportingapi#sending)
   */
   noReportsToDisplay: 'No reports to display',
+  /**
+  *@description Column header for a table displaying Reporting API reports.
+  *Status is one of 'Queued', 'Pending', 'MarkedForRemoval' or 'Success'.
+  */
+  status: 'Status',
+  /**
+  *@description Column header for a table displaying Reporting API reports.
+  *Destination is the name of the endpoint the report is being sent to.
+  */
+  destination: 'Destination',
+  /**
+  *@description Column header for a table displaying Reporting API reports.
+  *The column contains the timestamp of when a report was generated.
+  */
+  generatedAt: 'Generated at',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/ReportsGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -38,7 +53,7 @@ export class ReportsGridStatusHeader extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      ${i18n.i18n.lockedString('Status')}
+      ${i18nString(UIStrings.status)}
       <x-link href="https://web.dev/reporting-api/#report-status">
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
           iconName: 'help_outline',
@@ -93,7 +108,7 @@ export class ReportsGrid extends HTMLElement {
         },
         {
           id: 'status',
-          title: i18n.i18n.lockedString('Status'),
+          title: i18nString(UIStrings.status),
           widthWeighting: 20,
           hideable: false,
           visible: true,
@@ -103,14 +118,14 @@ export class ReportsGrid extends HTMLElement {
         },
         {
           id: 'destination',
-          title: i18n.i18n.lockedString('Destination'),
+          title: i18nString(UIStrings.destination),
           widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
           id: 'timestamp',
-          title: i18n.i18n.lockedString('Timestamp'),
+          title: i18nString(UIStrings.generatedAt),
           widthWeighting: 20,
           hideable: false,
           visible: true,

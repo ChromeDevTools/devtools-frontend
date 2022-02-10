@@ -138,10 +138,10 @@ export class TimelineFrameModel {
     }
     this.lastBeginFrame = startTime;
 
-    this.beginFrameQueue.addFrameIfNotExists(seqId, startTime, false);
+    this.beginFrameQueue.addFrameIfNotExists(seqId, startTime, false, false);
   }
 
-  handleDroppedFrame(startTime: number, seqId: number): void {
+  handleDroppedFrame(startTime: number, seqId: number, isPartial: boolean): void {
     if (!this.lastFrame) {
       this.startFrame(startTime);
     }
@@ -149,8 +149,9 @@ export class TimelineFrameModel {
     // This line handles the case where no BeginFrame event is issued for
     // the dropped frame. In this situation, add a BeginFrame to the queue
     // as if it actually occurred.
-    this.beginFrameQueue.addFrameIfNotExists(seqId, startTime, true);
+    this.beginFrameQueue.addFrameIfNotExists(seqId, startTime, true, isPartial);
     this.beginFrameQueue.setDropped(seqId, true);
+    this.beginFrameQueue.setPartial(seqId, isPartial);
   }
 
   handleDrawFrame(startTime: number, seqId: number): void {
@@ -186,6 +187,9 @@ export class TimelineFrameModel {
         }
         if (frame.isDropped) {
           this.lastFrame.dropped = true;
+        }
+        if (frame.isPartial) {
+          this.lastFrame.isPartial = true;
         }
       }
     }
@@ -318,7 +322,7 @@ export class TimelineFrameModel {
     } else if (event.name === RecordType.NeedsBeginFrameChanged) {
       this.handleNeedFrameChanged(timestamp, event.args['data'] && event.args['data']['needsBeginFrame']);
     } else if (event.name === RecordType.DroppedFrame) {
-      this.handleDroppedFrame(timestamp, event.args['frameSeqId']);
+      this.handleDroppedFrame(timestamp, event.args['frameSeqId'], event.args['hasPartialUpdate']);
     }
   }
 
@@ -426,6 +430,7 @@ export class TimelineFrame {
   cpuTime: number;
   idle: boolean;
   dropped: boolean;
+  isPartial: boolean;
   layerTree: TracingFrameLayerTree|null;
   paints: LayerPaintEvent[];
   mainFrameId: number|undefined;
@@ -439,6 +444,7 @@ export class TimelineFrame {
     this.cpuTime = 0;
     this.idle = false;
     this.dropped = false;
+    this.isPartial = false;
     this.layerTree = null;
     this.paints = [];
     this.mainFrameId = undefined;
@@ -545,10 +551,12 @@ class BeginFrameInfo {
   seqId: number;
   startTime: number;
   isDropped: boolean;
-  constructor(seqId: number, startTime: number, isDropped: boolean) {
+  isPartial: boolean;
+  constructor(seqId: number, startTime: number, isDropped: boolean, isPartial: boolean) {
     this.seqId = seqId;
     this.startTime = startTime;
     this.isDropped = isDropped;
+    this.isPartial = isPartial;
   }
 }
 
@@ -570,9 +578,9 @@ export class TimelineFrameBeginFrameQueue {
   }
 
   // Add a BeginFrame to the queue, if it does not already exit.
-  addFrameIfNotExists(seqId: number, startTime: number, isDropped: boolean): void {
+  addFrameIfNotExists(seqId: number, startTime: number, isDropped: boolean, isPartial: boolean): void {
     if (!(seqId in this.mapFrames)) {
-      this.mapFrames[seqId] = new BeginFrameInfo(seqId, startTime, isDropped);
+      this.mapFrames[seqId] = new BeginFrameInfo(seqId, startTime, isDropped, isPartial);
       this.queueFrames.push(seqId);
     }
   }
@@ -581,6 +589,12 @@ export class TimelineFrameBeginFrameQueue {
   setDropped(seqId: number, isDropped: boolean): void {
     if (seqId in this.mapFrames) {
       this.mapFrames[seqId].isDropped = isDropped;
+    }
+  }
+
+  setPartial(seqId: number, isPartial: boolean): void {
+    if (seqId in this.mapFrames) {
+      this.mapFrames[seqId].isPartial = isPartial;
     }
   }
 

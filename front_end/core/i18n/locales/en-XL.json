@@ -10154,6 +10154,9 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Ôń îǵn̂ór̂é l̂íŝt́"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "P̂ár̂t́îál̂ĺŷ Ṕr̂éŝén̂t́êd́ F̂ŕâḿê"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "R̂áŝt́êŕ"
   },

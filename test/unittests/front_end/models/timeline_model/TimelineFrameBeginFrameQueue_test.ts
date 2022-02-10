@@ -16,9 +16,9 @@ describe('TimelineFrameBeginFrameQueue', () => {
 
   it('visualizes zero frames when no BeginFrame in queue matches DrawFrame', () => {
     const beginFrameQueue = new TimelineModel.TimelineFrameModel.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, 1000000, false);
-    beginFrameQueue.addFrameIfNotExists(101, 1000016, false);
-    beginFrameQueue.addFrameIfNotExists(102, 1000032, false);
+    beginFrameQueue.addFrameIfNotExists(100, 1000000, false, false);
+    beginFrameQueue.addFrameIfNotExists(101, 1000016, false, false);
+    beginFrameQueue.addFrameIfNotExists(102, 1000032, false, false);
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(103);
 
     assert.isEmpty(framesToVisualize);
@@ -26,10 +26,10 @@ describe('TimelineFrameBeginFrameQueue', () => {
 
   it('ignores BeginFrames without corresponding DrawFrames', () => {
     const beginFrameQueue = new TimelineModel.TimelineFrameModel.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, 1000000, false);
-    beginFrameQueue.addFrameIfNotExists(101, 1000016, false);
-    beginFrameQueue.addFrameIfNotExists(102, 1000032, false);
-    beginFrameQueue.addFrameIfNotExists(103, 1000048, false);
+    beginFrameQueue.addFrameIfNotExists(100, 1000000, false, false);
+    beginFrameQueue.addFrameIfNotExists(101, 1000016, false, false);
+    beginFrameQueue.addFrameIfNotExists(102, 1000032, false, false);
+    beginFrameQueue.addFrameIfNotExists(103, 1000048, false, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(102);
 
@@ -44,13 +44,13 @@ describe('TimelineFrameBeginFrameQueue', () => {
 
   it('visualizes dropped BeginFrames before a presented frame', () => {
     const beginFrameQueue = new TimelineModel.TimelineFrameModel.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, 1000000, false);
-    beginFrameQueue.addFrameIfNotExists(101, 1000016, true);
-    beginFrameQueue.addFrameIfNotExists(102, 1000032, false);
-    beginFrameQueue.addFrameIfNotExists(103, 1000048, true);
-    beginFrameQueue.addFrameIfNotExists(104, 1000064, false);
-    beginFrameQueue.addFrameIfNotExists(105, 1000080, false);
-    beginFrameQueue.addFrameIfNotExists(106, 1000096, false);
+    beginFrameQueue.addFrameIfNotExists(100, 1000000, false, false);
+    beginFrameQueue.addFrameIfNotExists(101, 1000016, true, false);
+    beginFrameQueue.addFrameIfNotExists(102, 1000032, false, false);
+    beginFrameQueue.addFrameIfNotExists(103, 1000048, true, false);
+    beginFrameQueue.addFrameIfNotExists(104, 1000064, false, false);
+    beginFrameQueue.addFrameIfNotExists(105, 1000080, false, false);
+    beginFrameQueue.addFrameIfNotExists(106, 1000096, false, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(105);
 
@@ -74,14 +74,14 @@ describe('TimelineFrameBeginFrameQueue', () => {
 
   it('changes dropped status of specified frames via setDropped()', () => {
     const beginFrameQueue = new TimelineModel.TimelineFrameModel.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, 1000000, false);
+    beginFrameQueue.addFrameIfNotExists(100, 1000000, false, false);
     beginFrameQueue.setDropped(100, true);
-    beginFrameQueue.addFrameIfNotExists(101, 1000016, true);
-    beginFrameQueue.addFrameIfNotExists(102, 1000032, false);
-    beginFrameQueue.addFrameIfNotExists(103, 1000048, true);
-    beginFrameQueue.addFrameIfNotExists(104, 1000064, false);
-    beginFrameQueue.addFrameIfNotExists(105, 1000080, false);
-    beginFrameQueue.addFrameIfNotExists(106, 1000096, true);
+    beginFrameQueue.addFrameIfNotExists(101, 1000016, true, false);
+    beginFrameQueue.addFrameIfNotExists(102, 1000032, false, false);
+    beginFrameQueue.addFrameIfNotExists(103, 1000048, true, false);
+    beginFrameQueue.addFrameIfNotExists(104, 1000064, false, false);
+    beginFrameQueue.addFrameIfNotExists(105, 1000080, false, false);
+    beginFrameQueue.addFrameIfNotExists(106, 1000096, true, false);
     beginFrameQueue.setDropped(101, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(105);
@@ -106,13 +106,13 @@ describe('TimelineFrameBeginFrameQueue', () => {
 
   it('pops processed frames out of the queue', () => {
     const beginFrameQueue = new TimelineModel.TimelineFrameModel.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, 1000000, true);
-    beginFrameQueue.addFrameIfNotExists(101, 1000016, false);
-    beginFrameQueue.addFrameIfNotExists(102, 1000032, false);
-    beginFrameQueue.addFrameIfNotExists(103, 1000048, true);
-    beginFrameQueue.addFrameIfNotExists(104, 1000064, false);
-    beginFrameQueue.addFrameIfNotExists(105, 1000080, true);
-    beginFrameQueue.addFrameIfNotExists(106, 1000096, true);
+    beginFrameQueue.addFrameIfNotExists(100, 1000000, true, false);
+    beginFrameQueue.addFrameIfNotExists(101, 1000016, false, false);
+    beginFrameQueue.addFrameIfNotExists(102, 1000032, false, false);
+    beginFrameQueue.addFrameIfNotExists(103, 1000048, true, false);
+    beginFrameQueue.addFrameIfNotExists(104, 1000064, false, false);
+    beginFrameQueue.addFrameIfNotExists(105, 1000080, true, false);
+    beginFrameQueue.addFrameIfNotExists(106, 1000096, true, false);
 
     // Pop frame 100, 101 (not visualized) and 102 from queue.
     let framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(102);

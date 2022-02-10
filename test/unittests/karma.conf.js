@@ -20,6 +20,8 @@ const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']) || Boolean(USER_DEFINE
 const EXPANDED_REPORTING = Boolean(process.env['EXPANDED_REPORTING']);
 const KARMA_TIMEOUT = process.env['KARMA_TIMEOUT'] ? Number(process.env['KARMA_TIMEOUT']) : undefined;
 
+const MOCHA_FGREP = process.env['MOCHA_FGREP'] || undefined;
+
 // true by default
 const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
 // true by default
@@ -163,6 +165,10 @@ module.exports = function(config) {
        * so.
        */
       targetDir,
+
+      mocha: {
+        grep: MOCHA_FGREP,
+      }
     },
 
     plugins: [

@@ -52,12 +52,16 @@ def main():
                         dest='cwd',
                         help='Path to the directory containing the out dir',
                         default=devtools_paths.devtools_root_path())
+    parser.add_argument('--mocha-fgrep',
+                        dest='mocha_fgrep',
+                        help='Run only tests that match this string.')
     args = parser.parse_args(sys.argv[1:])
 
     efficiently_recompile.recompile(args.target, 'test/unittests')
     run_unittests.run_unit_tests_on_ninja_build_target(
         args.target, args.no_text_coverage, args.no_html_coverage,
-        args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd)
+        args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd,
+        args.mocha_fgrep)
 
 
 if __name__ == '__main__':

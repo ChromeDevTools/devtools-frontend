@@ -23,7 +23,7 @@
     "auto-debug-interactionstest": "autoninja -C out/Default && npm run debug-interactionstest --",
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
     "auto-e2etest": "autoninja -C out/Default && npm run e2etest --",
-    "auto-interactionstest": "autoninja -C out/Default && npm run interactionstest",
+    "auto-interactionstest": "autoninja -C out/Default && npm run interactionstest --",
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
     "build": "autoninja -C out/Default",
     "build-release": "autoninja -C out/Release",

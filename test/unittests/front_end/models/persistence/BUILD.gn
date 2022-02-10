@@ -6,7 +6,13 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("persistence") {
   testonly = true
-  sources = [ "PlatformFileSystem_test.ts" ]
+  sources = [
+    "NetworkPersistenceManager_test.ts",
+    "PlatformFileSystem_test.ts",
+  ]
 
-  deps = [ "../../../../../front_end/models/persistence:bundle" ]
+  deps = [
+    "../../../../../front_end/models/persistence:bundle",
+    "../../helpers",
+  ]
 }

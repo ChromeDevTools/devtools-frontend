@@ -134,8 +134,9 @@ describe('The Network Request view', async () => {
         'Remote Address: [::1]:%',
         'Referrer Policy: strict-origin-when-cross-origin',
       ],
-      'Response Headers (5)View source',
+      'Response Headers (6)View source',
       [
+        'Cache-Control: max-age=%',
         'Connection: keep-alive',
         'Content-Type: image/svg+xml; charset=utf-8',
         'Date: %',

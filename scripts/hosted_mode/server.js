@@ -172,6 +172,11 @@ async function requestHandler(request, response) {
         headers.set('Content-Type', inferredContentType);
       }
     }
+    if (!headers.get('Cache-Control')) {
+      // Lets reduce Disk I/O by allowing clients to cache resources.
+      // This is fine to do given that test invocations run against fresh Chrome profiles.
+      headers.set('Cache-Control', 'max-age=3600');
+    }
     headers.forEach((value, header) => {
       response.setHeader(header, value);
     });

@@ -119,7 +119,7 @@ describe('The Network Tab', async function() {
     });
 
     assert.deepEqual(await getNetworkRequestSize(), [
-      `${formatByteSize(361)}${formatByteSize(219)}`,
+      `${formatByteSize(390)}${formatByteSize(219)}`,
       `${formatByteSize(362)}${formatByteSize(28)}`,
     ]);
     assert.deepEqual(await getNetworkRequestMimeTypes(), [
@@ -134,7 +134,7 @@ describe('The Network Tab', async function() {
     await waitForSomeRequestsToAppear(2);
 
     assert.deepEqual(await getNetworkRequestSize(), [
-      `${formatByteSize(361)}${formatByteSize(219)}`,
+      `${formatByteSize(390)}${formatByteSize(219)}`,
       `(memory cache)${formatByteSize(28)}`,
     ]);
 
@@ -221,7 +221,7 @@ describe('The Network Tab', async function() {
     });
 
     assert.sameMembers(await getNetworkRequestSize(), [
-      `${formatByteSize(645)}${formatByteSize(0)}`,
+      `${formatByteSize(674)}${formatByteSize(0)}`,
       `(Web Bundle)${formatByteSize(27)}`,
     ]);
   });

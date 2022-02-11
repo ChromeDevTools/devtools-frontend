@@ -215,7 +215,8 @@ export function sourceLineNumberSelector(lineNumber: number) {
 }
 
 export async function isBreakpointSet(lineNumber: number|string) {
-  const breakpointLineParentClasses = await (await getLineNumberElement(lineNumber))?.evaluate(n => n.className);
+  const lineNumberElement = await getLineNumberElement(lineNumber);
+  const breakpointLineParentClasses = await lineNumberElement?.evaluate(n => n.className);
   return breakpointLineParentClasses?.includes('cm-breakpoint');
 }
 
@@ -243,6 +244,10 @@ export async function getNonBreakableLines() {
   const unbreakableLines = await $$(selector);
   return await Promise.all(
       unbreakableLines.map(unbreakableLine => unbreakableLine.evaluate(n => Number(n.textContent))));
+}
+
+export async function executionLineHighlighted() {
+  return await waitFor('.cm-executionLine');
 }
 
 export async function getExecutionLine() {

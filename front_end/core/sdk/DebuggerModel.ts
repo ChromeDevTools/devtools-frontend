@@ -428,6 +428,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
           Common.ParsedURL.ParsedURL.urlToRawPathString(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
       urlRegex =
           `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
+      if (Host.Platform.isWin() && platformPath.match(/^.:\\/)) {
+        // Match upper or lower case drive letter
+        urlRegex = `[${platformPath[0].toUpperCase()}${platformPath[0].toLowerCase()}]` + urlRegex.substr(1);
+      }
     }
     // Adjust column if needed.
     let minColumnNumber = 0;

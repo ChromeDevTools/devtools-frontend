@@ -77,8 +77,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   private readonly excludedFoldersSetting: Common.Settings.Setting<{[path: string]: string[]}>;
   private excludedFoldersInternal: Set<string>;
   private readonly excludedEmbedderFolders: string[];
-  private readonly initialFilePathsInternal: Set<string>;
-  private readonly initialGitFoldersInternal: Set<string>;
+  private readonly initialFilePathsInternal: Set<Platform.DevToolsPath.EncodedPathString>;
+  private readonly initialGitFoldersInternal: Set<Platform.DevToolsPath.EncodedPathString>;
   private readonly fileLocks: Map<string, Promise<void>>;
 
   constructor(
@@ -129,7 +129,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const promise = new Promise<Metadata|null>(f => {
       fulfill = f;
     });
-    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
+    this.domFileSystem.root.getFile(decodeURIComponent(path), undefined, fileEntryLoaded, errorHandler);
     return promise;
 
     function fileEntryLoaded(entry: FileEntry): void {
@@ -143,11 +143,11 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  initialFilePaths(): string[] {
+  initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
     return [...this.initialFilePathsInternal];
   }
 
-  initialGitFolders(): string[] {
+  initialGitFolders(): Platform.DevToolsPath.EncodedPathString[] {
     return [...this.initialGitFoldersInternal];
   }
 
@@ -168,12 +168,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             if (this.isFileExcluded(entry.fullPath)) {
               continue;
             }
-            this.initialFilePathsInternal.add(entry.fullPath.substr(1));
+            this.initialFilePathsInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
+                entry.fullPath.substr(1) as Platform.DevToolsPath.RawPathString));
           } else {
             if (entry.fullPath.endsWith('/.git')) {
               const lastSlash = entry.fullPath.lastIndexOf('/');
               const parentFolder = entry.fullPath.substring(1, lastSlash);
-              this.initialGitFoldersInternal.add(parentFolder);
+              this.initialGitFoldersInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
+                  parentFolder as Platform.DevToolsPath.RawPathString));
             }
             if (this.isFileExcluded(entry.fullPath + '/')) {
               this.excludedEmbedderFolders.push(Common.ParsedURL.ParsedURL.urlToRawPathString(
@@ -221,7 +223,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   async createFile(path: string, name: string|null): Promise<string|null> {
-    const dirEntry = await this.createFoldersIfNotExist(path);
+    const dirEntry = await this.createFoldersIfNotExist(decodeURIComponent(path));
     if (!dirEntry) {
       return null;
     }
@@ -230,7 +232,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (!fileEntry) {
       return null;
     }
-    return fileEntry.fullPath.substr(1);
+    return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
+        fileEntry.fullPath.substr(1) as Platform.DevToolsPath.RawPathString);
 
     function createFileCandidate(
         this: IsolatedFileSystem, name: string, newFileIndex?: number): Promise<FileEntry|null> {
@@ -256,7 +259,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     const promise = new Promise<boolean>(resolve => {
       resolveCallback = resolve;
     });
-    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this.domFileSystem.root.getFile(
+        decodeURIComponent(path), undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
     return promise;
 
     function fileEntryLoaded(this: IsolatedFileSystem, fileEntry: FileEntry): void {
@@ -279,7 +283,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   requestFileBlob(path: string): Promise<Blob|null> {
     return new Promise(resolve => {
-      this.domFileSystem.root.getFile(path, undefined, entry => {
+      this.domFileSystem.root.getFile(decodeURIComponent(path), undefined, entry => {
         entry.file(resolve, errorHandler.bind(this));
       }, errorHandler.bind(this));
 
@@ -347,7 +351,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
         callback = x;
       });
-      this.domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
+      this.domFileSystem.root.getFile(
+          decodeURIComponent(path), {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
       return promise;
     };
 
@@ -391,7 +396,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     let fileEntry: FileEntry;
     let dirEntry: DirectoryEntry;
 
-    this.domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this.domFileSystem.root.getFile(
+        decodeURIComponent(path), undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       if (entry.name === newName) {
@@ -458,7 +464,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   private requestEntries(path: string, callback: (arg0: Array<FileEntry>) => void): void {
-    this.domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
+    this.domFileSystem.root.getDirectory(decodeURIComponent(path), undefined, innerCallback.bind(this), errorHandler);
 
     function innerCallback(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {
       this.readDirectory(dirEntry, callback);

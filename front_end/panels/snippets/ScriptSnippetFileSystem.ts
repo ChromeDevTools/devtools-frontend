@@ -28,12 +28,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/ScriptSnippetFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-function escapeSnippetName(name: string): string {
-  return escape(name);
+function escapeSnippetName(name: string): Platform.DevToolsPath.EncodedPathString {
+  return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(name as Platform.DevToolsPath.RawPathString);
 }
 
 function unescapeSnippetName(name: string): string {
-  return unescape(name);
+  return Common.ParsedURL.ParsedURL.encodedPathToRawPathString(name as Platform.DevToolsPath.EncodedPathString);
 }
 
 export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
@@ -47,7 +47,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     this.snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);
   }
 
-  initialFilePaths(): string[] {
+  initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
     const savedSnippets: Snippet[] = this.snippetsSetting.get();
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }

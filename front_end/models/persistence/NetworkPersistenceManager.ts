@@ -248,6 +248,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
+  private fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+    return (this.projectInternal as FileSystem).fileSystemPath() + '/' + this.encodedPathFromUrl(url) as
+        Platform.DevToolsPath.UrlString;
+  }
+
   private decodeLocalPathToUrlPath(path: string): string {
     try {
       return unescape(path);
@@ -341,12 +346,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         !this.canHandleNetworkUISourceCode(uiSourceCode)) {
       return;
     }
-    const url = Common.ParsedURL.ParsedURL.urlWithoutHash(uiSourceCode.url());
+    const url = Common.ParsedURL.ParsedURL.urlWithoutHash(uiSourceCode.url()) as Platform.DevToolsPath.UrlString;
     this.networkUISourceCodeForEncodedPath.set(this.encodedPathFromUrl(url), uiSourceCode);
 
     const project = this.projectInternal as FileSystem;
-    const fileSystemUISourceCode =
-        project.uiSourceCodeForURL(project.fileSystemPath() + '/' + this.encodedPathFromUrl(url));
+    const fileSystemUISourceCode = project.uiSourceCodeForURL(this.fileUrlFromNetworkUrl(url));
     if (fileSystemUISourceCode) {
       await this.bind(uiSourceCode, fileSystemUISourceCode);
     }
@@ -571,7 +575,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
     const proj = this.projectInternal as FileSystem;
-    const path = proj.fileSystemPath() + '/' + this.encodedPathFromUrl(interceptedRequest.request.url);
+    const path = this.fileUrlFromNetworkUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString);
     const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
     let responseHeaders: Protocol.Fetch.HeaderEntry[] = [];
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {

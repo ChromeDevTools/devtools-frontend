@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -13,16 +12,6 @@ import * as Workspace from '../workspace/workspace.js';
 import type {FileSystem} from './FileSystemWorkspaceBinding.js';
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
-
-const UIStrings = {
-  /**
-  *@description Error message when attempting to create a binding from a malformed URI.
-  *@example {file://%E0%A4%A} PH1
-  */
-  theAttemptToBindSInTheWorkspace: 'The attempt to bind "{PH1}" in the workspace failed as this URI is malformed.',
-};
-const str_ = i18n.i18n.registerUIStrings('models/persistence/Automapping.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class Automapping {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
@@ -323,11 +312,7 @@ export class Automapping {
   private createBinding(networkSourceCode: Workspace.UISourceCode.UISourceCode): Promise<AutomappingStatus|null> {
     const url = networkSourceCode.url();
     if (url.startsWith('file://') || url.startsWith('snippet://')) {
-      const decodedUrl = sanitizeSourceUrl(url);
-      if (!decodedUrl) {
-        return Promise.resolve(null as AutomappingStatus | null);
-      }
-      const fileSourceCode = this.fileSystemUISourceCodes.get(decodedUrl);
+      const fileSourceCode = this.fileSystemUISourceCodes.get(url);
       const status = fileSourceCode ? new AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(status);
     }
@@ -341,29 +326,14 @@ export class Automapping {
       networkPath += 'index.html';
     }
 
-    const urlDecodedNetworkPath = sanitizeSourceUrl(networkPath);
-    if (!urlDecodedNetworkPath) {
-      return Promise.resolve(null as AutomappingStatus | null);
-    }
-
     const similarFiles =
-        this.filesIndex.similarFiles(urlDecodedNetworkPath).map(path => this.fileSystemUISourceCodes.get(path)) as
+        this.filesIndex.similarFiles(networkPath).map(path => this.fileSystemUISourceCodes.get(path)) as
         Workspace.UISourceCode.UISourceCode[];
     if (!similarFiles.length) {
       return Promise.resolve(null as AutomappingStatus | null);
     }
 
     return this.pullMetadatas(similarFiles.concat(networkSourceCode)).then(onMetadatas.bind(this));
-
-    function sanitizeSourceUrl(url: string): string|null {
-      try {
-        const decodedUrl = decodeURI(url);
-        return decodedUrl;
-      } catch (error) {
-        Common.Console.Console.instance().error(i18nString(UIStrings.theAttemptToBindSInTheWorkspace, {PH1: url}));
-        return null;
-      }
-    }
 
     function onMetadatas(this: Automapping): AutomappingStatus|null {
       const activeFiles =

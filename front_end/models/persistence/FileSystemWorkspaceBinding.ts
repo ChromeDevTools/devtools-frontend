@@ -193,12 +193,14 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return this.fileSystemInternal.mimeFromPath(uiSourceCode.url());
   }
 
-  initialGitFolders(): string[] {
-    return this.fileSystemInternal.initialGitFolders().map(folder => this.fileSystemPathInternal + '/' + folder);
+  initialGitFolders(): Platform.DevToolsPath.EncodedPathString[] {
+    return this.fileSystemInternal.initialGitFolders().map(folder => this.fileSystemPathInternal + '/' + folder) as
+        Platform.DevToolsPath.EncodedPathString[];
   }
 
-  private filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
-    return uiSourceCode.url().substring(this.fileSystemPathInternal.length);
+  private filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Platform.DevToolsPath.EncodedPathString {
+    return uiSourceCode.url().substring(this.fileSystemPathInternal.length) as Platform.DevToolsPath.EncodedPathString;
   }
 
   isServiceProject(): boolean {
@@ -274,9 +276,9 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       }
       console.assert(Boolean(newName));
       const slash = filePath.lastIndexOf('/');
-      const parentPath = filePath.substring(0, slash);
-      filePath = parentPath + '/' + newName;
-      filePath = filePath.substr(1);
+      const parentPath = Common.ParsedURL.ParsedURL.substr(filePath, 0, slash);
+      filePath = Common.ParsedURL.ParsedURL.encodedFromParentPathAndName(parentPath, newName);
+      filePath = Common.ParsedURL.ParsedURL.substr(filePath, 1);
       const newURL = this.fileSystemBaseURL + filePath;
       const newContentType = this.fileSystemInternal.contentType(newName);
       this.renameUISourceCode(uiSourceCode, newName);

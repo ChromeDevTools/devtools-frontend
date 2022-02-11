@@ -36,7 +36,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import type {Project} from './WorkspaceImpl.js';
-import {Events as WorkspaceImplEvents, projectTypes} from './WorkspaceImpl.js';
+import {Events as WorkspaceImplEvents} from './WorkspaceImpl.js';
 
 const UIStrings = {
   /**
@@ -82,9 +82,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (parsedURL) {
       this.originInternal = parsedURL.securityOrigin();
       this.parentURLInternal = this.originInternal + parsedURL.folderPathComponents;
-      this.nameInternal = parsedURL.lastPathComponent;
       if (parsedURL.queryParams) {
-        this.nameInternal += '?' + parsedURL.queryParams;
+        // in case file name contains query params, it doesn't look like a normal file name anymore
+        // so it can as well remain encoded
+        this.nameInternal = parsedURL.lastPathComponent + '?' + parsedURL.queryParams;
+      } else {
+        // file name looks best decoded
+        this.nameInternal = decodeURIComponent(parsedURL.lastPathComponent);
       }
     } else {
       this.originInternal = '';
@@ -138,15 +142,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (!this.nameInternal) {
       return i18nString(UIStrings.index);
     }
-    let name: string = this.nameInternal;
-    try {
-      if (this.project().type() === projectTypes.FileSystem) {
-        name = unescape(name);
-      } else {
-        name = decodeURI(name);
-      }
-    } catch (error) {
-    }
+    const name = this.nameInternal;
     return skipTrim ? name : Platform.StringUtilities.trimEndWithMaxLength(name, 100);
   }
 
@@ -178,10 +174,12 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   private updateName(name: string, url: string, contentType?: Common.ResourceType.ResourceType): void {
     const oldURL = this.urlInternal;
-    this.urlInternal = this.urlInternal.substring(0, this.urlInternal.length - this.nameInternal.length) + name;
     this.nameInternal = name;
     if (url) {
       this.urlInternal = url;
+    } else {
+      this.urlInternal = Common.ParsedURL.ParsedURL.relativePathToUrlString(
+          name as Platform.DevToolsPath.RawPathString, oldURL as Platform.DevToolsPath.UrlString);
     }
     if (contentType) {
       this.contentTypeInternal = contentType;
@@ -191,7 +189,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
         WorkspaceImplEvents.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
   contentURL(): string {
     return this.url();
   }

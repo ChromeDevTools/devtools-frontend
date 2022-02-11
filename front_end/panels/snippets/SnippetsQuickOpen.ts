@@ -77,7 +77,7 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
-    titleElement.textContent = unescape(this.snippets[itemIndex].name());
+    titleElement.textContent = this.snippets[itemIndex].name();
     titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
   }

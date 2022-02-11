@@ -35,6 +35,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
@@ -1269,9 +1270,22 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
     const panel = ElementsPanel.instance();
     panel.pendingNodeReveal = true;
 
-    return new Promise(revealPromise);
+    return (new Promise<void>(revealPromise)).catch((reason: Error) => {
+      let message: string;
+      if (Platform.UserVisibleError.isUserVisibleError(reason)) {
+        message = reason.message;
+      } else {
+        message = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);
+      }
 
-    function revealPromise(resolve: () => void, reject: (arg0: Error) => void): void {
+      Common.Console.Console.instance().warn(message);
+      // Blink tests expect an exception to be raised and unhandled here to detect that the node
+      // was actually not successfully viewed.
+      throw reason;
+    });
+
+    function revealPromise(
+        resolve: () => void, reject: (arg0: Platform.UserVisibleError.UserVisibleError) => void): void {
       if (node instanceof SDK.DOMModel.DOMNode) {
         onNodeResolved((node as SDK.DOMModel.DOMNode));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
@@ -1281,10 +1295,12 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
         if (domModel) {
           void domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {
-          reject(new Error('Could not resolve a node to reveal.'));
+          const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);
+          reject(new Platform.UserVisibleError.UserVisibleError(msg));
         }
       } else {
-        reject(new Error('Can\'t reveal a non-node.'));
+        const msg = i18nString(UIStrings.theRemoteObjectCouldNotBe);
+        reject(new Platform.UserVisibleError.UserVisibleError(msg));
         panel.pendingNodeReveal = false;
       }
 
@@ -1304,8 +1320,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
         const isDocument = node instanceof SDK.DOMModel.DOMDocument;
         if (!isDocument && isDetached) {
           const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);
-          Common.Console.Console.instance().warn(msg);
-          reject(new Error(msg));
+          reject(new Platform.UserVisibleError.UserVisibleError(msg));
           return;
         }
 
@@ -1313,14 +1328,14 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
           void panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
           return;
         }
-        reject(new Error('Could not resolve node to reveal.'));
+        const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);
+        reject(new Platform.UserVisibleError.UserVisibleError(msg));
       }
 
       function checkRemoteObjectThenReveal(resolvedNode: SDK.DOMModel.DOMNode|null): void {
         if (!resolvedNode) {
           const msg = i18nString(UIStrings.theRemoteObjectCouldNotBe);
-          Common.Console.Console.instance().warn(msg);
-          reject(new Error(msg));
+          reject(new Platform.UserVisibleError.UserVisibleError(msg));
           return;
         }
         onNodeResolved(resolvedNode);
@@ -1329,8 +1344,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
       function checkDeferredDOMNodeThenReveal(resolvedNode: SDK.DOMModel.DOMNode|null): void {
         if (!resolvedNode) {
           const msg = i18nString(UIStrings.theDeferredDomNodeCouldNotBe);
-          Common.Console.Console.instance().warn(msg);
-          reject(new Error(msg));
+          reject(new Platform.UserVisibleError.UserVisibleError(msg));
           return;
         }
         onNodeResolved(resolvedNode);

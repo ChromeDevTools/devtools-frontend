@@ -112,6 +112,19 @@ describe('The Network Request view', async () => {
     assert.deepEqual(messages, ['ping', 'ping']);
   });
 
+  async function assertOutlineMatches(expectedPatterns: string[], outline: ElementHandle<Element>[]) {
+    const regexpSpecialChars = /[-\/\\^$*+?.()|[\]{}]/g;
+    for (const item of outline) {
+      const actualText = await item.evaluate(el => el.textContent || '');
+      const expectedPattern = expectedPatterns.shift();
+      if (expectedPattern) {
+        assert.match(actualText, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
+      } else {
+        assert.fail('Unexpected text: ' + actualText);
+      }
+    }
+  }
+
   it('shows request headers and payload', async () => {
     await navigateToNetworkTab('headers-and-payload.html');
 
@@ -165,19 +178,6 @@ describe('The Network Request view', async () => {
       ],
     ].flat();
 
-    async function assertOutlineMatches(expectedPatterns: string[], outline: ElementHandle<Element>[]) {
-      const regexpSpecialChars = /[-\/\\^$*+?.()|[\]{}]/g;
-      for (const item of outline) {
-        const actualText = await item.evaluate(el => el.textContent || '');
-        const expectedPattern = expectedPatterns.shift();
-        if (expectedPattern) {
-          assert.match(actualText, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
-        } else {
-          assert.fail('Unexpected text: ' + actualText);
-        }
-      }
-    }
-
     await assertOutlineMatches(expectedHeadersContent, headersOutline);
 
     const payloadTabHeader = await waitFor('[aria-label=Payload][role="tab"]', networkView);
@@ -198,6 +198,67 @@ describe('The Network Request view', async () => {
     ].flat();
 
     await assertOutlineMatches(expectedPayloadContent, payloadOutline);
+  });
+
+  it('shows raw headers', async () => {
+    await navigateToNetworkTab('headers-and-payload.html');
+
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('image.svg?id=42&param=a%20b');
+
+    const networkView = await waitFor('.network-item-view');
+    const headersTabHeader = await waitFor('[aria-label=Headers][role="tab"]', networkView);
+    await click(headersTabHeader);
+    await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
+    const headersView = await waitFor('.request-headers-view');
+    const responseHeadersTitle = await waitForElementWithTextContent('Response Headers (6)View source');
+    const rawHeadersToggle = await waitFor('.header-toggle', responseHeadersTitle);
+    await click(rawHeadersToggle);
+
+    const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
+    const expectedHeadersContent = [
+      'General',
+      [
+        'Request URL: https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
+        'Request Method: POST',
+        'Status Code: 200 OK',
+        'Remote Address: [::1]:%',
+        'Referrer Policy: strict-origin-when-cross-origin',
+      ],
+      'Response Headers (6)View parsed',
+      [
+        'HTTP/1.1 200 OK',
+        'Content-Type: image/svg+xml; charset=utf-8',
+        'Cache-Control: max-age=%',
+        'Date: %',
+        'Connection: keep-alive',
+        'Keep-Alive: timeout=5',
+        'Transfer-Encoding: chunked',
+      ].join('\r\n'),
+      'Request Headers (17)View source',
+      [
+        'accept: */*',
+        'Accept-Encoding: gzip, deflate, br',
+        'Accept-Language: en-US',
+        'Connection: keep-alive',
+        'Content-Length: 32',
+        'content-type: application/x-www-form-urlencoded;charset=UTF-8',
+        'Host: localhost:%',
+        'Origin: https://localhost:%',
+        'Referer: https://localhost:%/test/e2e/resources/network/headers-and-payload.html',
+        'sec-ch-ua',
+        'sec-ch-ua-mobile: ?0',
+        'sec-ch-ua-platform',
+        'Sec-Fetch-Dest: empty',
+        'Sec-Fetch-Mode: cors',
+        'Sec-Fetch-Site: same-origin',
+        'User-Agent: Mozilla/5.0 %',
+        'x-same-domain: 1',
+      ],
+    ].flat();
+
+    await assertOutlineMatches(expectedHeadersContent, headersOutline);
   });
 
   it('payload tab selection is preserved', async () => {

@@ -1446,6 +1446,32 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return true;
   }
 
+  private createScriptLocationLinkForSyntaxError(
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, exceptionDetails: Protocol.Runtime.ExceptionDetails): HTMLElement
+      |undefined {
+    const {scriptId, lineNumber, columnNumber} = exceptionDetails;
+    if (!scriptId) {
+      return;
+    }
+
+    // SyntaxErrors might not populate the URL field. Try to resolve it via scriptId.
+    const url = exceptionDetails.url || debuggerModel.scriptForId(scriptId)?.sourceURL;
+    if (!url) {
+      return;
+    }
+
+    const scriptLocationLink = this.linkifier.linkifyScriptLocation(
+        debuggerModel.target(), exceptionDetails.scriptId || null, url, lineNumber, {
+          columnNumber,
+          className: undefined,
+          tabStop: undefined,
+          inlineFrameIndex: 0,
+          showColumnNumber: true,
+        });
+    scriptLocationLink.tabIndex = -1;
+    return scriptLocationLink;
+  }
+
   private tryFormatAsError(string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
@@ -1465,6 +1491,20 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (let i = 0; i < linkInfos.length; ++i) {
       const newline = i < linkInfos.length - 1 ? '\n' : '';
       const {line, link} = linkInfos[i];
+      // Syntax errors don't have a stack frame that points to the source position
+      // where the error occurred. We use the source location from the
+      // exceptionDetails and append it to the end of the message instead.
+      if (!link && exceptionDetails && line.startsWith('SyntaxError')) {
+        formattedResult.appendChild(this.linkifyStringAsFragment(line));
+        const maybeScriptLocation = this.createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails);
+        if (maybeScriptLocation) {
+          formattedResult.append(' (at ');
+          formattedResult.appendChild(maybeScriptLocation);
+          formattedResult.append(')');
+        }
+        formattedResult.append(newline);
+        continue;
+      }
       if (!link) {
         formattedResult.appendChild(this.linkifyStringAsFragment(`${line}${newline}`));
         continue;

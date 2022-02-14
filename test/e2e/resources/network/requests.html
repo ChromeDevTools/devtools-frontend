@@ -8,13 +8,11 @@
   // Load it with ?num=N where is the number of requests you want this test
   // page to make.
 
-  function getNumberOfRequiredRequests() {
-    const url = new URL(document.location);
-    const number = url.searchParams.get('num');
-    return number ? parseInt(number, 10) : 0;
-  }
+  const url = new URL(document.location);
+  const numRequests = url.searchParams.get('num') ? parseInt(url.searchParams.get('num'), 10) : 0;
+  const options = url.searchParams.get('cache') ? {cache: url.searchParams.get('cache')} : null;
 
-  for (let i = 0; i < getNumberOfRequiredRequests(); i++) {
-    fetch(`image.svg?id=${i}`);
+  for (let i = 0; i < numRequests; i++) {
+    fetch(`image.svg?id=${i}`, options);
   }
 </script>

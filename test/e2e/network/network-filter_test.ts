@@ -5,9 +5,10 @@
 import {expect} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 
-import {click, reloadDevTools, typeText, waitForAria, waitForMany} from '../../shared/helper.js';
+import {click, reloadDevTools, typeText, waitFor, waitForAria, waitForMany, waitForNone, getTestServerPort} from '../../shared/helper.js';
+
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab} from '../helpers/network-helpers.js';
+import {navigateToNetworkTab, setPersistLog} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
@@ -25,6 +26,10 @@ async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Prom
   return await element.evaluate(node => node.checked);
 }
 
+async function clearFilter() {
+  await click(await waitFor('.filter-input-clear-button'));
+}
+
 describe('The Network Tab', async function() {
   // One of these tests reloads panels repeatedly, which can take a longer time.
   this.timeout(20_000);
@@ -40,11 +45,91 @@ describe('The Network Tab', async function() {
     expect(await elementTextContent(nodes[0])).to.equal(RESULTS[10]);
   });
 
+  it('can match multiple requests by text in the log view', async () => {
+    await typeText('svg');
+    const nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(10);
+  });
+
   it('can filter by regex in the log view', async () => {
     await typeText('/8/');
     const nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
     expect(nodes.length).to.equal(1);
     expect(await elementTextContent(nodes[0])).to.equal(RESULTS[9]);
+  });
+
+  it('can match multiple requests by regex in the log view', async () => {
+    await typeText('/.*/');
+    let nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(11);
+
+    await clearFilter();
+    await typeText('/.*\\..*/');
+    nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(11);
+
+    await clearFilter();
+    await typeText('/.*\\.svg/');
+    nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(10);
+  });
+
+  it('can match no requests by regex in the log view', async () => {
+    await typeText('/NOTHINGTOMATCH/');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+
+    await clearFilter();
+    await typeText('//');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+  });
+
+  // Mac doesn't consistently respect force-cache
+  it.skipOnPlatforms(['mac'], '[crbug.com/1297070] can filter by cache status in the log view', async () => {
+    await navigateToNetworkTab(`requests.html?num=5&cache=no-store&nocache=${Math.random()}`);
+    await setPersistLog(true);
+    await navigateToNetworkTab(`requests.html?num=3&cache=force-cache&nocache=${Math.random()}`);
+    await typeText('-is:from-cache');
+    let nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(7);
+
+    await clearFilter();
+    await typeText('is:from-cache');
+    nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(3);
+    await setPersistLog(false);
+  });
+
+  it('require operator to filter by scheme', async () => {
+    await typeText('http');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+
+    await typeText('s');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+
+    await typeText('://');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+
+    await clearFilter();
+    await typeText('scheme:https');
+    const nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(11);
+  });
+
+  it('require operator to filter by scheme', async () => {
+    await typeText('localhost');
+    await waitForNone('.data-grid-data-grid-node > .name-column');
+
+    await clearFilter();
+    await typeText('domain:localhost');
+    const nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(11);
+  });
+
+  it('can filter by partial URL in the log view', async () => {
+    await clearFilter();
+    await typeText(`https://localhost:${getTestServerPort()}//`);
+    const nodes = await waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    expect(nodes.length).to.equal(11);
   });
 
   it('can reverse filter text in the log view', async () => {

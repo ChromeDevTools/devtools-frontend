@@ -412,6 +412,16 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
      * once it is created in `requestWillBeSent`.
      */
     this.#requestIdToTrustTokenEvent = new Map();
+
+    MultitargetNetworkManager.instance().addEventListener(
+        MultitargetNetworkManager.Events.RequestIntercepted, this.#markAsIntercepted.bind(this));
+  }
+
+  #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const request = this.requestForURL(event.data);
+    if (request) {
+      request.setWasIntercepted(true);
+    }
   }
 
   private headersMapToHeadersArray(headersMap: Protocol.Network.Headers): NameValue[] {
@@ -446,7 +456,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (!networkRequest.statusText) {
       networkRequest.statusText = response.statusText;
     }
-    if (!networkRequest.hasExtraResponseInfo()) {
+    if (!networkRequest.hasExtraResponseInfo() || networkRequest.wasIntercepted()) {
       networkRequest.responseHeaders = this.headersMapToHeadersArray(response.headers);
     }
 
@@ -1401,6 +1411,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     for (const requestInterceptor of this.#urlsForRequestInterceptor.keysArray()) {
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded()) {
+        this.dispatchEventToListeners(
+            MultitargetNetworkManager.Events.RequestIntercepted, interceptedRequest.request.url);
         return;
       }
     }
@@ -1467,6 +1479,7 @@ export namespace MultitargetNetworkManager {
     UserAgentChanged = 'UserAgentChanged',
     InterceptorsChanged = 'InterceptorsChanged',
     AcceptedEncodingsChanged = 'AcceptedEncodingsChanged',
+    RequestIntercepted = 'RequestIntercepted',
   }
 
   export type EventTypes = {
@@ -1475,6 +1488,7 @@ export namespace MultitargetNetworkManager {
     [Events.UserAgentChanged]: void,
     [Events.InterceptorsChanged]: void,
     [Events.AcceptedEncodingsChanged]: void,
+    [Events.RequestIntercepted]: string,
   };
 }
 

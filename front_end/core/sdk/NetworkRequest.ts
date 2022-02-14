@@ -290,6 +290,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #parsedQueryParameters?: NameValue[];
   #contentDataProvider?: (() => Promise<ContentData>);
   #isSameSiteInternal: boolean|null;
+  #wasIntercepted: boolean;
 
   private constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string, documentURL: string,
@@ -363,6 +364,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.localizedFailDescription = null;
     this.#isSameSiteInternal = null;
+
+    this.#wasIntercepted = false;
   }
 
   static create(
@@ -962,6 +965,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
     this.#responseHeaderValues[headerName] = this.computeHeaderValue(this.responseHeaders, headerName);
     return this.#responseHeaderValues[headerName];
+  }
+
+  wasIntercepted(): boolean {
+    return this.#wasIntercepted;
+  }
+
+  setWasIntercepted(wasIntercepted: boolean): void {
+    this.#wasIntercepted = wasIntercepted;
   }
 
   get responseCookies(): Cookie[] {

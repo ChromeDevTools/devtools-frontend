@@ -7,12 +7,14 @@
 :host {
   flex: none;
   padding: 0 2px;
+
+  --toolbar-height: 26px;
 }
 
 .toolbar-shadow {
   position: relative;
   white-space: nowrap;
-  height: 26px;
+  height: var(--toolbar-height);
   overflow: hidden;
   z-index: 12;
   display: flex;
@@ -43,7 +45,7 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  height: 26px;
+  height: var(--toolbar-height);
   border: none;
   white-space: pre;
 }
@@ -55,7 +57,7 @@
 
 .toolbar-shadow.vertical .toolbar-item {
   height: auto;
-  min-height: 26px;
+  min-height: var(--toolbar-height);
   white-space: normal;
 }
 
@@ -173,6 +175,29 @@ it. */
 :host-context(.left) .toolbar-button.main-menu,
 :host-context(.bottom) .toolbar-button.main-menu {
   margin-inline-end: 28px;
+}
+
+.toolbar-button.copied-to-clipboard::after {
+  content: attr(data-content);
+  position: fixed;
+  top: var(--toolbar-height);
+  padding: 3px 5px;
+  color: var(--color-text-secondary);
+  background: var(--color-background-elevation-1);
+  animation: 2s fade-out;
+  font-weight: normal;
+  border: 1px solid var(--color-details-hairline);
+  border-radius: 3px;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 100%;
+  }
+
+  to {
+    opacity: 0%;
+  }
 }
 
 .toolbar-button.toolbar-state-on .toolbar-glyph {

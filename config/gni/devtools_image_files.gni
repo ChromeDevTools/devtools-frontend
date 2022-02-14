@@ -69,6 +69,7 @@ devtools_svg_sources = [
   "flex-nowrap-icon.svg",
   "flex-wrap-icon.svg",
   "help_outline.svg",
+  "ic_changes.svg",
   "ic_checkmark_16x16.svg",
   "ic_command_go_to_line.svg",
   "ic_command_go_to_symbol.svg",

@@ -39,9 +39,11 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
+import type * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -177,6 +179,14 @@ const UIStrings = {
   *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
   */
   cssSelector: '`CSS` selector',
+  /**
+  *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
+  */
+  copyAllCSSChanges: 'Copy all the CSS changes',
+  /**
+  *@description Tooltip text that appears after clicking on the copy CSS changes button
+  */
+  copiedToClipboard: 'Copied to clipboard',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
@@ -236,8 +246,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly resizeThrottler: Common.Throttler.Throttler;
   private readonly imagePreviewPopover: ImagePreviewPopover;
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
-  #changedLinesByURLs: Map<string, Set<number>> = new Map();
-  #uiSourceCodeToDiffCallbacks: Map<Workspace.UISourceCode.UISourceCode, () => void> = new Map();
+  #urlToChangeTracker: Map<string, ChangeTracker> = new Map();
 
   static instance(): StylesSidebarPane {
     if (!_stylesSidebarPaneInstance) {
@@ -609,6 +618,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     await this.innerRebuildUpdate(matchedStyles);
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
+        this.appendToolbarItem(this.createCopyAllChangesButton());
+      }
       this.dispatchEventToListeners(Events.InitialUpdateCompleted);
     }
 
@@ -841,12 +853,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const blocks = [new SectionBlock(null)];
     let sectionIdx = 0;
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
-      this.resetChangedLinesTracking();
-    }
+    const refreshedURLs = new Set<string>();
     for (const style of matchedStyles.nodeStyles()) {
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES) && style.parentRule) {
-        await this.trackChangedLines(style.parentRule.resourceURL());
+        const url = style.parentRule.resourceURL();
+        if (url && !refreshedURLs.has(url)) {
+          await this.trackURLForChanges(url);
+          refreshedURLs.add(url);
+        }
       }
 
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
@@ -1001,25 +1015,27 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return sections;
   }
 
-  resetChangedLinesTracking(): void {
-    this.#changedLinesByURLs.clear();
-    for (const [uiSourceCode, callback] of this.#uiSourceCodeToDiffCallbacks) {
-      WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(uiSourceCode, callback);
+  async trackURLForChanges(url: string): Promise<void> {
+    const currentTracker = this.#urlToChangeTracker.get(url);
+    if (currentTracker) {
+      WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(
+          currentTracker.uiSourceCode, currentTracker.diffChangeCallback);
     }
-    this.#uiSourceCodeToDiffCallbacks.clear();
-  }
 
-  async trackChangedLines(url: string): Promise<void> {
-    if (!url || this.#changedLinesByURLs.has(url)) {
+    // We get a refreshed uiSourceCode each time because the underlying instance may be recreated.
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    if (!uiSourceCode) {
       return;
     }
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
-    if (uiSourceCode) {
-      await this.refreshChangedLines(uiSourceCode);
-      const callback = this.refreshChangedLines.bind(this, uiSourceCode);
-      WorkspaceDiff.WorkspaceDiff.workspaceDiff().subscribeToDiffChange(uiSourceCode, callback);
-      this.#uiSourceCodeToDiffCallbacks.set(uiSourceCode, callback);
-    }
+    const diffChangeCallback = this.refreshChangedLines.bind(this, uiSourceCode);
+    WorkspaceDiff.WorkspaceDiff.workspaceDiff().subscribeToDiffChange(uiSourceCode, diffChangeCallback);
+    const newTracker = {
+      uiSourceCode,
+      changedLines: new Set<number>(),
+      diffChangeCallback,
+    };
+    this.#urlToChangeTracker.set(url, newTracker);
+    await this.refreshChangedLines(newTracker.uiSourceCode);
   }
 
   isPropertyChanged(property: SDK.CSSProperty.CSSProperty): boolean {
@@ -1027,7 +1043,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!url) {
       return false;
     }
-    const changedLines = this.#changedLinesByURLs.get(url);
+    const changedLines = this.#urlToChangeTracker.get(url)?.changedLines;
     if (!changedLines) {
       return false;
     }
@@ -1040,6 +1056,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const changeTracker = this.#urlToChangeTracker.get(uiSourceCode.url());
+    if (!changeTracker) {
+      return;
+    }
     const diff = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
     const changedLines = new Set<number>();
     if (diff && diff.length > 0) {
@@ -1050,7 +1070,24 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         }
       }
     }
-    this.#changedLinesByURLs.set(uiSourceCode.url(), changedLines);
+    changeTracker.changedLines = changedLines;
+  }
+
+  private async getFormattedChanges(): Promise<string> {
+    let allChanges = '';
+    for (const [url, {uiSourceCode}] of this.#urlToChangeTracker) {
+      const diff =
+          await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
+      if (!diff || diff.length < 2) {
+        continue;
+      }
+      const changes = await formatCSSChangesFromDiff(diff);
+      if (changes.length > 0) {
+        allChanges += `/* ${escapeUrlAsCssComment(url)} */\n\n${changes}\n\n`;
+      }
+    }
+
+    return allChanges;
   }
 
   private clipboardCopy(_event: Event): void {
@@ -1146,6 +1183,34 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
     }
   }
+
+  private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {
+    const copyAllIcon = new IconButton.Icon.Icon();
+    copyAllIcon.data = {
+      iconName: 'ic_changes',
+      color: 'var(--color-text-secondary)',
+      width: '18px',
+      height: '18px',
+    };
+    const copyAllChangesButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), copyAllIcon);
+    // TODO(1296947): implement a dedicated component to share between all copy buttons
+    copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
+    let timeout: number|undefined;
+    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
+      const allChanges = await this.getFormattedChanges();
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      copyAllChangesButton.element.classList.add('copied-to-clipboard');
+      timeout = window.setTimeout(() => {
+        copyAllChangesButton.element.classList.remove('copied-to-clipboard');
+        timeout = undefined;
+      }, 2000);
+    });
+    return copyAllChangesButton;
+  }
 }
 
 export const enum Events {
@@ -1161,6 +1226,108 @@ export type EventTypes = {
   [Events.InitialUpdateCompleted]: void,
   [Events.StylesUpdateCompleted]: StylesUpdateCompletedEvent,
 };
+
+type ChangeTracker = {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode,
+  changedLines: Set<number>,
+  diffChangeCallback: () => Promise<void>,
+};
+
+export async function formatCSSChangesFromDiff(diff: Diff.Diff.DiffArray): Promise<string> {
+  const {originalLines, currentLines, rows} = DiffView.DiffView.buildDiffRows(diff);
+
+  const {propertyToSelector: originalPropertyToSelector, ruleToSelector: originalRuleToSelector} =
+      await buildPropertyRuleMaps(originalLines.join('\n'));
+  const {propertyToSelector: currentPropertyToSelector, ruleToSelector: currentRuleToSelector} =
+      await buildPropertyRuleMaps(currentLines.join('\n'));
+  let changes = '';
+  let recordedOriginalSelector, recordedCurrentSelector;
+  for (const {currentLineNumber, originalLineNumber, type} of rows) {
+    // diff line arrays starts at 0, but line numbers start at 1.
+    const currentLineIndex = currentLineNumber - 1;
+    const originalLineIndex = originalLineNumber - 1;
+    switch (type) {
+      case DiffView.DiffView.RowType.Deletion: {
+        const originalLine = originalLines[originalLineIndex].trim();
+        if (originalRuleToSelector.has(originalLineIndex)) {
+          changes += `/* ${originalLine} { */\n`;
+          recordedOriginalSelector = originalLine;
+          continue;
+        }
+
+        const originalSelector = originalPropertyToSelector.get(originalLineIndex);
+        if (!originalSelector) {
+          continue;
+        }
+        if (originalSelector !== recordedOriginalSelector && originalSelector !== recordedCurrentSelector) {
+          if (recordedOriginalSelector || recordedCurrentSelector) {
+            changes += '}\n\n';
+          }
+          changes += `${originalSelector} {\n`;
+        }
+        recordedOriginalSelector = originalSelector;
+        changes += `  /* ${originalLine} */\n`;
+        break;
+      }
+      case DiffView.DiffView.RowType.Addition: {
+        const currentLine = currentLines[currentLineIndex].trim();
+        if (currentRuleToSelector.has(currentLineIndex)) {
+          changes += `${currentLine} {\n`;
+          recordedCurrentSelector = currentLine;
+          continue;
+        }
+
+        const currentSelector = currentPropertyToSelector.get(currentLineIndex);
+        if (!currentSelector) {
+          continue;
+        }
+        if (currentSelector !== recordedOriginalSelector && currentSelector !== recordedCurrentSelector) {
+          if (recordedOriginalSelector || recordedCurrentSelector) {
+            changes += '}\n\n';
+          }
+          changes += `${currentSelector} {\n`;
+        }
+        recordedCurrentSelector = currentSelector;
+        changes += `  ${currentLine}\n`;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  if (changes.length > 0) {
+    changes += '}';
+  }
+  return changes;
+}
+
+async function buildPropertyRuleMaps(content: string):
+    Promise<{propertyToSelector: Map<number, string>, ruleToSelector: Map<number, string>}> {
+  const rules = await new Promise<Formatter.FormatterWorkerPool.CSSRule[]>(res => {
+    const rules: Formatter.FormatterWorkerPool.CSSRule[] = [];
+    Formatter.FormatterWorkerPool.formatterWorkerPool().parseCSS(content, (isLastChunk, currentRules) => {
+      rules.push(...currentRules);
+      if (isLastChunk) {
+        res(rules);
+      }
+    });
+  });
+  const propertyToSelector = new Map<number, string>();
+  const ruleToSelector = new Map<number, string>();
+  for (const rule of rules) {
+    if ('styleRange' in rule) {
+      const selector = rule.selectorText.split('\n').pop()?.trim();
+      if (!selector) {
+        continue;
+      }
+      ruleToSelector.set(rule.styleRange.startLine, selector);
+      for (const property of rule.properties) {
+        propertyToSelector.set(property.range.startLine, selector);
+      }
+    }
+  }
+  return {propertyToSelector, ruleToSelector};
+}
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -3050,6 +3217,14 @@ export function unescapeCssString(input: string): string {
     }
     return String.fromCodePoint(codePoint);
   });
+}
+
+export function escapeUrlAsCssComment(urlText: string): string {
+  const url = new URL(urlText);
+  if (url.search) {
+    return `${url.origin}${url.pathname}${url.search.replaceAll('*/', '*%2F')}${url.hash}`;
+  }
+  return url.toString();
 }
 
 export class StylesSidebarPropertyRenderer {

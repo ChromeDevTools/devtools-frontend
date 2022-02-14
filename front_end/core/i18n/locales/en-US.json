@@ -4835,6 +4835,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Copied to clipboard"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Copy all the CSS changes"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Copy all declarations"
   },

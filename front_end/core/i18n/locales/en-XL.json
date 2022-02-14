@@ -5771,6 +5771,9 @@
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "L̂éĝáĉý n̂áv̂íĝát̂íôń"
   },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "L̂íĝh́t̂h́ôúŝé m̂ód̂é"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "L̂óĉál̂ Śt̂ór̂áĝé"
   },
@@ -5779,6 +5782,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "M̂úl̂t́îṕl̂é t̂áb̂ś âŕê b́êín̂ǵ ĉón̂t́r̂ól̂ĺêd́ b̂ý t̂h́ê śâḿê service worker. Ćl̂óŝé ŷóûŕ ôt́ĥér̂ t́âb́ŝ ón̂ t́ĥé ŝám̂é ôŕîǵîń t̂ó âúd̂ít̂ t́ĥíŝ ṕâǵê."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "N̂áv̂íĝát̂íôń"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "P̂ér̂f́ôŕm̂án̂ćê"
@@ -5792,6 +5798,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "R̂éŝét̂ śt̂ór̂áĝé (cache, service workers, êt́ĉ) b́êf́ôŕê áûd́ît́îńĝ. (Ǵôód̂ f́ôŕ p̂ér̂f́ôŕm̂án̂ćê & PWA t́êśt̂ín̂ǵ)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "R̂ún̂ Ĺîǵĥt́ĥóûśê ín̂ ńâv́îǵât́îón̂, t́îḿêśp̂án̂, ór̂ śn̂áp̂śĥót̂ ḿôd́ê"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "ŜÉÔ"
   },
@@ -5800,6 +5809,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ"
+  },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Ŝńâṕŝh́ôt́"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥéŝé l̂óĉát̂íôńŝ: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
@@ -5866,6 +5878,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "M̂ód̂é"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Âh́, ŝór̂ŕŷ! Ẃê ŕâń îńt̂ó âń êŕr̂ór̂."

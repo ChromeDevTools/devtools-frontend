@@ -586,7 +586,9 @@ export enum DevtoolsExperiments {
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
   'headerOverrides' = 56,
-  'MaxValue' = 57,
+  'lighthousePanelFR' = 57,
+  // Increment this when new experiments are added.
+  'MaxValue' = 58,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

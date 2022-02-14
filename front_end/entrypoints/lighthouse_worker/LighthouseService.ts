@@ -103,7 +103,7 @@ async function start(method: string, params: any): Promise<unknown> {
     const url = params.url;
 
     // Handle legacy Lighthouse runner path.
-    if (method === 'start') {
+    if (method === 'legacyNavigation') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
       const connection = self.setUpWorkerConnection(port);
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
@@ -115,14 +115,21 @@ async function start(method: string, params: any): Promise<unknown> {
     puppeteerConnection =
         await Puppeteer.PuppeteerConnection.getPuppeteerConnection(rawConnection, mainFrameId, mainTargetId);
 
+    if (method === 'snapshot') {
+      // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
+      return await self.runLighthouseSnapshot({
+        url,
+        config,
+        page: puppeteerConnection.page,
+      });
+    }
+
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    const result = await self.runLighthouseNavigation({
+    return await self.runLighthouseNavigation({
       url,
       config,
       page: puppeteerConnection.page,
     });
-
-    return result;
   } catch (err) {
     return ({
       fatal: true,
@@ -179,8 +186,10 @@ function notifyFrontendViaWorkerMessage(method: string, params: any): void {
 self.onmessage = async(event: MessageEvent): Promise<void> => {
   const messageFromFrontend = JSON.parse(event.data);
   switch (messageFromFrontend.method) {
-    case 'navigate':
-    case 'start': {
+    case 'navigation':
+    case 'timespan':
+    case 'snapshot':
+    case 'legacyNavigation': {
       const result = await start(messageFromFrontend.method, messageFromFrontend.params);
       self.postMessage(JSON.stringify({id: messageFromFrontend.id, result}));
       break;

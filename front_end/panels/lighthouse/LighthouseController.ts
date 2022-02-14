@@ -105,6 +105,22 @@ const UIStrings = {
   */
   applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
   /**
+   * @description ARIA label for a radio button input to select the Lighthouse mode.
+   */
+  lighthouseMode: 'Lighthouse mode',
+  /**
+   * @description Tooltip text of a radio button to select the Lighthouse mode.
+   */
+  runLighthouseInMode: 'Run Lighthouse in navigation, timespan, or snapshot mode',
+  /**
+   * @description Text for Lighthouse navigation mode.
+   */
+  navigation: 'Navigation',
+  /**
+   * @description Text for Lighthouse snapshot mode.
+   */
+  snapshot: 'Snapshot',
+  /**
   *@description Text for the mobile platform, as opposed to desktop
   */
   mobile: 'Mobile',
@@ -418,6 +434,20 @@ export const RuntimeSettings: RuntimeSetting[] = [
     options: [
       {label: i18nLazyString(UIStrings.mobile), value: 'mobile'},
       {label: i18nLazyString(UIStrings.desktop), value: 'desktop'},
+    ],
+    learnMore: undefined,
+  },
+  {
+    setting: Common.Settings.Settings.instance().createSetting(
+        'lighthouse.mode', 'navigation', Common.Settings.SettingStorageType.Synced),
+    title: i18nLazyString(UIStrings.lighthouseMode),
+    description: i18nLazyString(UIStrings.runLighthouseInMode),
+    setFlags: (flags: Flags, value: string|boolean): void => {
+      flags.mode = value;
+    },
+    options: [
+      {label: i18nLazyString(UIStrings.navigation), value: 'navigation'},
+      {label: i18nLazyString(UIStrings.snapshot), value: 'snapshot'},
     ],
     learnMore: undefined,
   },

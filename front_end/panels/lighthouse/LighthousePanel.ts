@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -20,6 +21,7 @@ import * as LighthouseReport from '../../third_party/lighthouse/report/report.js
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
+import {StartViewFR} from './LighthouseStartViewFR.js';
 import {StatusView} from './LighthouseStatusView.js';
 
 const UIStrings = {
@@ -85,7 +87,11 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     this.protocolService = new ProtocolService();
     this.controller = new LighthouseController(this.protocolService);
-    this.startView = new StartView(this.controller);
+    if (Root.Runtime.experiments.isEnabled('lighthousePanelFR')) {
+      this.startView = new StartViewFR(this.controller);
+    } else {
+      this.startView = new StartView(this.controller);
+    }
     this.statusView = new StatusView(this.controller);
 
     this.warningText = null;

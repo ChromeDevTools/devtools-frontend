@@ -5771,6 +5771,9 @@
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Legacy navigation"
   },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse mode"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Local Storage"
   },
@@ -5779,6 +5782,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Navigation"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performance"
@@ -5792,6 +5798,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Reset storage (cache, service workers, etc) before auditing. (Good for performance & PWA testing)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Run Lighthouse in navigation, timespan, or snapshot mode"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5800,6 +5809,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Simulated throttling"
+  },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Snapshot"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
@@ -5866,6 +5878,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Learn more"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Mode"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Ah, sorry! We ran into an error."

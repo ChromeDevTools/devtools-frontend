@@ -63,7 +63,12 @@ export class ProtocolService {
     if (!this.targetInfo) {
       throw new Error('Unable to get target info required for Lighthouse');
     }
-    const mode = flags.legacyNavigation ? 'start' : 'navigate';
+
+    let mode = flags.mode as string;
+    if (mode === 'navigation' && flags.legacyNavigation) {
+      mode = 'legacyNavigation';
+    }
+
     return this.sendWithResponse(mode, {
       url: auditURL,
       categoryIDs,

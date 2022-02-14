@@ -17,7 +17,6 @@
 .tree-outline li {
   margin-left: 14px;
   user-select: text;
-  cursor: default;
 }
 
 .tree-outline li.parent {

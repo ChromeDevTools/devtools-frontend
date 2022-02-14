@@ -107,7 +107,6 @@
 .orientation-stage.disabled {
   filter: grayscale();
   opacity: 50%;
-  cursor: default !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .orientation-element,

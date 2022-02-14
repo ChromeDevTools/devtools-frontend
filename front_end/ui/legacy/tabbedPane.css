@@ -117,7 +117,6 @@
   height: 26px;
   line-height: 16px;
   white-space: nowrap;
-  cursor: default;
   display: flex;
   align-items: center;
   color: var(--color-text-secondary);
@@ -194,7 +193,6 @@
 .tabbed-pane-header-tabs-drop-down-container {
   float: left;
   opacity: 80%;
-  cursor: pointer;
   display: flex;
   align-items: center;
   height: 100%;
@@ -347,7 +345,6 @@
 
   width: 14px;
   height: 14px;
-  cursor: default;
   display: flex;
   align-items: center;
   justify-content: center;

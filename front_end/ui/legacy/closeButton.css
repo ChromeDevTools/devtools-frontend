@@ -7,7 +7,6 @@
 .close-button {
   width: 14px;
   height: 14px;
-  cursor: default;
   display: flex;
   align-items: center;
   justify-content: center;

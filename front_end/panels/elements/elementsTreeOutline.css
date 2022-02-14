@@ -144,7 +144,6 @@
 .elements-disclosure > ol {
   position: relative;
   margin: 0;
-  cursor: default;
   min-width: 100%;
   min-height: 100%;
   padding-left: 2px;

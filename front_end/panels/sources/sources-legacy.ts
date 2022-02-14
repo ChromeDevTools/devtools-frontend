@@ -139,26 +139,13 @@ Sources.SnippetsPlugin = SourcesModule.SnippetsPlugin.SnippetsPlugin;
 
 Sources.SourceMapNamesResolver = {};
 
-Sources.SourceMapNamesResolver.setScopeResolvedForTest = SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest;
-
 // Tests can override this global symbol and therefore can't be exported
 Object.defineProperty(Sources.SourceMapNamesResolver, '_scopeResolvedForTest', {
   get: SourcesModule.SourceMapNamesResolver.getScopeResolvedForTest,
   set: SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest,
 });
 
-Sources.SourceMapNamesResolver._scopeIdentifiers = SourcesModule.SourceMapNamesResolver.scopeIdentifiers;
-Sources.SourceMapNamesResolver._resolveScope = SourcesModule.SourceMapNamesResolver.resolveScope;
-Sources.SourceMapNamesResolver._allVariablesInCallFrame = SourcesModule.SourceMapNamesResolver.allVariablesInCallFrame;
 Sources.SourceMapNamesResolver.resolveExpression = SourcesModule.SourceMapNamesResolver.resolveExpression;
-Sources.SourceMapNamesResolver.resolveThisObject = SourcesModule.SourceMapNamesResolver.resolveThisObject;
-Sources.SourceMapNamesResolver.resolveScopeInObject = SourcesModule.SourceMapNamesResolver.resolveScopeInObject;
-
-/** @constructor */
-Sources.SourceMapNamesResolver.Identifier = SourcesModule.SourceMapNamesResolver.Identifier;
-
-/** @constructor */
-Sources.SourceMapNamesResolver.RemoteObject = SourcesModule.SourceMapNamesResolver.RemoteObject;
 
 /** @constructor */
 Sources.NetworkNavigatorView = SourcesModule.SourcesNavigator.NetworkNavigatorView;

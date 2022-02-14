@@ -400,7 +400,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     const removedFrame = (event.data.frame as SDK.ResourceTreeModel.ResourceTreeFrame | null);
     const node = Array.from(this.uiSourceCodeNodes.get(uiSourceCode)).find(node => node.frame() === removedFrame);
-    this.removeUISourceCodeNode((node as NavigatorUISourceCodeTreeNode));
+    if (node) {
+      this.removeUISourceCodeNode(node);
+    }
   }
 
   private acceptsUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {

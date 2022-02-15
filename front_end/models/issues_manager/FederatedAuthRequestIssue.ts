@@ -95,7 +95,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ManifestHttpNotFound,
     {
-      file: 'federatedAuthRequestWellKnownHttpNotFound.md',
+      file: 'federatedAuthRequestManifestHttpNotFound.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),
@@ -105,7 +105,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ManifestNoResponse,
     {
-      file: 'federatedAuthRequestWellKnownNoResponse.md',
+      file: 'federatedAuthRequestManifestNoResponse.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),
@@ -115,7 +115,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ManifestInvalidResponse,
     {
-      file: 'federatedAuthRequestWellKnownInvalidResponse.md',
+      file: 'federatedAuthRequestManifestInvalidResponse.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),
@@ -125,7 +125,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataHttpNotFound,
     {
-      file: 'federatedAuthRequestClientIdMetadataHttpNotFound.md',
+      file: 'federatedAuthRequestClientMetadataHttpNotFound.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),
@@ -135,7 +135,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataNoResponse,
     {
-      file: 'federatedAuthRequestClientIdMetadataNoResponse.md',
+      file: 'federatedAuthRequestClientMetadataNoResponse.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),
@@ -145,7 +145,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataInvalidResponse,
     {
-      file: 'federatedAuthRequestClientIdMetadataInvalidResponse.md',
+      file: 'federatedAuthRequestClientMetadataInvalidResponse.md',
       links: [{
         link: 'https://fedidcg.github.io/FedCM/',
         linkTitle: i18nLazyString(UIStrings.fedCm),

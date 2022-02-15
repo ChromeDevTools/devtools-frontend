@@ -423,7 +423,7 @@ export class _ExpandableContainerWidget extends VBox {
 
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');
-    ARIAUtils.markAsButton(this.titleElement);
+    ARIAUtils.markAsTab(this.titleElement);
     this.titleExpandIcon = Icon.create('smallicon-triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
@@ -847,6 +847,7 @@ class _StackLocation extends Location implements ViewLocation {
     const vbox = new VBox();
     super(manager, vbox, revealCallback);
     this.vbox = vbox;
+    ARIAUtils.markAsTablist(vbox.element);
 
     this.expandableContainers = new Map();
 

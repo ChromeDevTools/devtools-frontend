@@ -476,7 +476,7 @@ export class DebuggerPlugin extends Plugin {
       if (!url) {
         return;
       }
-      scriptFile.addSourceMapURL(url);
+      scriptFile.addSourceMapURL(url as Platform.DevToolsPath.UrlString);
     }
 
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&

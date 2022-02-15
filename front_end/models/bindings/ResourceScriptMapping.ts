@@ -30,6 +30,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -411,7 +412,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
   }
 
-  addSourceMapURL(sourceMapURL: string): void {
+  addSourceMapURL(sourceMapURL: Platform.DevToolsPath.UrlString): void {
     if (!this.scriptInternal) {
       return;
     }

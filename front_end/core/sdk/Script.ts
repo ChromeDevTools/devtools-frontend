@@ -29,6 +29,7 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
@@ -56,7 +57,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Script implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
   debuggerModel: DebuggerModel;
   scriptId: Protocol.Runtime.ScriptId;
-  sourceURL: string;
+  sourceURL: Platform.DevToolsPath.UrlString;
   lineOffset: number;
   columnOffset: number;
   endLine: number;
@@ -65,7 +66,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   hash: string;
   readonly #isContentScriptInternal: boolean;
   readonly #isLiveEditInternal: boolean;
-  sourceMapURL: string|undefined;
+  sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
   debugSymbols: Protocol.Debugger.DebugSymbols|null;
   hasSourceURL: boolean;
   contentLength: number;
@@ -77,12 +78,12 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   readonly #embedderNameInternal: string|null;
   readonly isModule: boolean|null;
   constructor(
-      debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: string, startLine: number,
-      startColumn: number, endLine: number, endColumn: number, executionContextId: number, hash: string,
-      isContentScript: boolean, isLiveEdit: boolean, sourceMapURL: string|undefined, hasSourceURL: boolean,
-      length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
-      codeOffset: number|null, scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
-      embedderName: string|null) {
+      debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString,
+      startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number,
+      hash: string, isContentScript: boolean, isLiveEdit: boolean,
+      sourceMapURL: Platform.DevToolsPath.UrlString|undefined, hasSourceURL: boolean, length: number,
+      isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
+      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null, embedderName: string|null) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;

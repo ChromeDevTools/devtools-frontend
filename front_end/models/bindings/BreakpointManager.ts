@@ -32,6 +32,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -305,7 +306,7 @@ export type EventTypes = {
 
 export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly breakpointManager: BreakpointManager;
-  urlInternal: string;
+  urlInternal: Platform.DevToolsPath.UrlString;
   readonly #lineNumberInternal: number;
   readonly #columnNumberInternal: number|undefined;
   readonly #uiLocations: Set<Workspace.UISourceCode.UILocation>;
@@ -317,8 +318,9 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
 
   constructor(
-      breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode, url: string,
-      lineNumber: number, columnNumber: number|undefined, condition: string, enabled: boolean) {
+      breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode,
+      url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number|undefined, condition: string,
+      enabled: boolean) {
     this.breakpointManager = breakpointManager;
     this.urlInternal = url;
     this.#lineNumberInternal = lineNumber;
@@ -398,7 +400,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     }
   }
 
-  url(): string {
+  url(): Platform.DevToolsPath.UrlString {
     return this.urlInternal;
   }
 
@@ -791,7 +793,7 @@ export class ModelBreakpoint {
 }
 
 interface Position {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   scriptId: Protocol.Runtime.ScriptId;
   scriptHash: string;
   lineNumber: number;

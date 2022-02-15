@@ -2465,9 +2465,9 @@ export class StylePropertiesSection {
     return true;
   }
 
-  private editingMediaCommitted(
+  private async editingMediaCommitted(
       query: SDK.CSSQuery.CSSQuery, element: Element, newContent: string, _oldContent: string,
-      _context: Context|undefined, _moveDirection: string): void {
+      _context: Context|undefined, _moveDirection: string): Promise<void> {
     this.parentPane.setEditingStyle(false);
     this.editingMediaFinished(element);
 
@@ -2475,23 +2475,26 @@ export class StylePropertiesSection {
       newContent = newContent.trim();
     }
 
-    function userCallback(this: StylePropertiesSection, success: boolean): void {
+    // This gets deleted in finishOperation(), which is called both on success and failure.
+    this.parentPane.setUserOperation(true);
+    const cssModel = this.parentPane.cssModel();
+    if (cssModel && query.styleSheetId) {
+      const range = query.range as TextUtils.TextRange.TextRange;
+      let success = false;
+      if (query instanceof SDK.CSSContainerQuery.CSSContainerQuery) {
+        success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
+      } else if (query instanceof SDK.CSSSupports.CSSSupports) {
+        success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);
+      } else {
+        success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
+      }
+
       if (success) {
         this.matchedStyles.resetActiveProperties();
         this.parentPane.refreshUpdate(this);
       }
       this.parentPane.setUserOperation(false);
       this.editingMediaTextCommittedForTest();
-    }
-
-    // This gets deleted in finishOperation(), which is called both on success and failure.
-    this.parentPane.setUserOperation(true);
-    const cssModel = this.parentPane.cssModel();
-    if (cssModel && query.styleSheetId) {
-      const setQueryText =
-          query instanceof SDK.CSSMedia.CSSMedia ? cssModel.setMediaText : cssModel.setContainerQueryText;
-      void setQueryText.call(cssModel, query.styleSheetId, (query.range as TextUtils.TextRange.TextRange), newContent)
-          .then(userCallback.bind(this));
     }
   }
 

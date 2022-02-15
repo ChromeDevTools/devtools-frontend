@@ -1,1 +1,1 @@
-function sayHello(){const e=document.createElement("div");e.innerHTML="hello";document.body.append(e);debugger}
+function sayHello(e){const n=document.createElement("div");n.innerHTML="hello"+e;document.body.append(n);debugger}

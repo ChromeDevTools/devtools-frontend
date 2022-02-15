@@ -309,9 +309,14 @@ export class MainImpl {
         'timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
     Root.Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
     Root.Runtime.experiments.register('timelineReplayEvent', 'Timeline: Replay input events', true);
+
+    // Debugging
     Root.Runtime.experiments.register(
         'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,
         'https://developer.chrome.com/blog/wasm-debugging-2020/');
+    Root.Runtime.experiments.register(
+        'evaluateExpressionsWithSourceMaps', 'Console: Resolve variable names in expressions using source maps',
+        undefined);
 
     // Dual-screen
     Root.Runtime.experiments.register(

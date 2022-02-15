@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {click, getBrowserAndPages, goToResource, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, pasteText, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   // Flaky test.
@@ -140,7 +141,7 @@ describe('The Sources Tab', async () => {
     });
   });
 
-  it('shows unminified identifiers in scopes', async () => {
+  it('shows unminified identifiers in scopes and console', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-minified.js', 'sourcemap-minified.html');
 
@@ -148,7 +149,7 @@ describe('The Sources Tab', async () => {
     const breakLocationRegExp = /sourcemap-minified\.js:1$/;
 
     await step('Run to debugger statement', async () => {
-      scriptEvaluation = target.evaluate('sayHello();');
+      scriptEvaluation = target.evaluate('sayHello(" world");');
 
       const scriptLocation = await waitForStackTopMatch(breakLocationRegExp);
       assert.match(scriptLocation, breakLocationRegExp);
@@ -169,6 +170,28 @@ describe('The Sources Tab', async () => {
         return (values && values.includes(unminifiedVariable)) ? values : undefined;
       });
       assert.include(scopeValues, unminifiedVariable);
+    });
+
+    await step('Check that expression evaluation understands unminified name', async () => {
+      await frontend.evaluate(() => {
+        // @ts-ignore
+        globalThis.Root.Runtime.experiments.setEnabled('evaluateExpressionsWithSourceMaps', true);
+      });
+
+      await click(CONSOLE_TAB_SELECTOR);
+      await focusConsolePrompt();
+      await pasteText('text');
+      await frontend.keyboard.press('Enter');
+
+      // Wait for the console to be usable again.
+      await frontend.waitForFunction(() => {
+        return document.querySelectorAll('.console-user-command-result').length === 1;
+      });
+      const messages = await getCurrentConsoleMessages();
+
+      assert.deepEqual(messages, ['\' world\'']);
+
+      await openSourcesPanel();
     });
 
     await step('Resume', async () => {

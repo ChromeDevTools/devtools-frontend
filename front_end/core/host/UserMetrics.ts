@@ -587,8 +587,9 @@ export enum DevtoolsExperiments {
   'stylesPaneCSSChanges' = 55,
   'headerOverrides' = 56,
   'lighthousePanelFR' = 57,
+  'evaluateExpressionsWithSourceMaps' = 58,
   // Increment this when new experiments are added.
-  'MaxValue' = 58,
+  'MaxValue' = 59,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

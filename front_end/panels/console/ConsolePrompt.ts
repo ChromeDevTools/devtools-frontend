@@ -5,7 +5,9 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -280,12 +282,33 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const executionContext = currentExecutionContext;
       const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
       const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
-      void SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
-          executionContext, message, expression, useCommandLineAPI);
+      void this.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
       if (ConsolePanel.instance().isShowing()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
       }
     }
+  }
+
+  private async evaluateCommandInConsole(
+      executionContext: SDK.RuntimeModel.ExecutionContext, message: SDK.ConsoleModel.ConsoleMessage, expression: string,
+      useCommandLineAPI: boolean): Promise<void> {
+    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+      const callFrame = executionContext.debuggerModel.selectedCallFrame();
+      if (callFrame) {
+        const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+        expression = this.substituteNames(expression, nameMap);
+      }
+    }
+
+    await SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
+        executionContext, message, expression, useCommandLineAPI);
+  }
+
+  private substituteNames(expression: string, mapping: Map<string, string>): string {
+    // TODO(jarin) Build a more reliable replacer, based on the parsed AST.
+    // Here, we just replace exact occurrences.
+    const replacement = mapping.get(expression);
+    return replacement ?? expression;
   }
 
   private editorUpdate(update: CodeMirror.ViewUpdate): void {

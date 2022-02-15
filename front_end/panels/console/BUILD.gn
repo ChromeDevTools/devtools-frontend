@@ -42,6 +42,7 @@ devtools_module("console") {
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
+    "../../models/source_map_scopes:bundle",
     "../../models/text_utils:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../ui/components/code_highlighter:bundle",

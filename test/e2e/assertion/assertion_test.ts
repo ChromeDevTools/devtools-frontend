@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {expectedErrors} from '../../conductor/hooks.js';
+import {expectedErrors} from '../../conductor/events.js';
 import {getBrowserAndPages, goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 

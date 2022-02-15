@@ -8,6 +8,7 @@
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer');
 
+import {installPageErrorHandlers} from './events.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 
 // When loading DevTools with target.goto, we wait for it to be fully loaded using these events.
@@ -56,6 +57,7 @@ export class DevToolsFrontendTab {
         getDebugPort(browser)}/devtools/page/${targetId}`;
 
     const frontend = await browser.newPage();
+    installPageErrorHandlers(frontend);
     await frontend.goto(frontendUrl, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
 
     const tab = new DevToolsFrontendTab(frontend, frontendUrl);

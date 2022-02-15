@@ -1,0 +1,35 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("source_map_scopes") {
+  sources = [ "NamesResolver.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../models/bindings:bundle",
+    "../../models/formatter:bundle",
+    "../../models/text_utils:bundle",
+    "../../models/workspace:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "source_map_scopes.ts"
+
+  deps = [ ":source_map_scopes" ]
+
+  visibility = [
+    ":*",
+    "../../panels/console/*",
+    "../../panels/sources/*",
+  ]
+
+  visibility += devtools_models_visibility
+}

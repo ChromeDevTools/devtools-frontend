@@ -36,6 +36,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -48,7 +49,6 @@ import {AddSourceMapURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, LogpointPrefix} from './BreakpointEditDialog.js';
 import {Plugin} from './Plugin.js';
 import {ScriptFormatterEditorAction} from './ScriptFormatterEditorAction.js';
-import {resolveExpression, resolveScopeInObject} from './SourceMapNamesResolver.js';
 import {SourcesPanel} from './SourcesPanel.js';
 import {getRegisteredEditorActions} from './SourcesView.js';
 
@@ -650,7 +650,7 @@ export class DebuggerPlugin extends Plugin {
     }|{
       error: string,
     }|null> {
-      const resolvedText = await resolveExpression(
+      const resolvedText = await SourceMapScopes.NamesResolver.resolveExpression(
           selectedCallFrame, evaluationText, uiSourceCode, highlightLine.number - 1,
           highlightRange.from - highlightLine.from, highlightRange.to - highlightLine.from);
       return await selectedCallFrame.evaluate({
@@ -887,7 +887,8 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const {properties} = await resolveScopeInObject(localScope).getAllProperties(false, false);
+    const {properties} =
+        await SourceMapScopes.NamesResolver.resolveScopeInObject(localScope).getAllProperties(false, false);
     if (!properties || !properties.length || properties.length > 500) {
       return null;
     }

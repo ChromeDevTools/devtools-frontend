@@ -34,13 +34,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as LinearMemoryInspector from '../../ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
-import {resolveScopeChain, resolveScopeInObject, resolveThisObject} from './SourceMapNamesResolver.js';
 
 const UIStrings = {
   /**
@@ -168,7 +168,10 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
     const callFrame = UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame);
     this.setScopeSourceMapSubscription(callFrame);
-    const [thisObject, scopeChain] = await Promise.all([resolveThisObject(callFrame), resolveScopeChain(callFrame)]);
+    const [thisObject, scopeChain] = await Promise.all([
+      SourceMapScopes.NamesResolver.resolveThisObject(callFrame),
+      SourceMapScopes.NamesResolver.resolveScopeChain(callFrame),
+    ]);
     // By now the developer might have moved on, and we don't want to show stale
     // scope information, so check again that we're still on the same CallFrame.
     if (callFrame === UI.Context.Context.instance().flavor(SDK.DebuggerModel.CallFrame)) {
@@ -243,7 +246,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(
-        resolveScopeInObject(scope), this.linkifier, emptyPlaceholder,
+        SourceMapScopes.NamesResolver.resolveScopeInObject(scope), this.linkifier, emptyPlaceholder,
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All, extraProperties);
     section.title = titleElement;
     section.listItemElement.classList.add('scope-chain-sidebar-pane-section');

@@ -56,6 +56,7 @@ devtools_entrypoint("bundle") {
     "../../ui/legacy/components/utils/*",
     "../formatter/*",
     "../issues_manager/*",
+    "../source_map_scopes/*",
   ]
 
   visibility += devtools_models_visibility

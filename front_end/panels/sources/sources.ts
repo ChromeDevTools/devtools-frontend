@@ -24,7 +24,6 @@ import * as ScriptFormatterEditorAction from './ScriptFormatterEditorAction.js';
 import * as ScriptOriginPlugin from './ScriptOriginPlugin.js';
 import * as SearchSourcesView from './SearchSourcesView.js';
 import * as SnippetsPlugin from './SnippetsPlugin.js';
-import * as SourceMapNamesResolver from './SourceMapNamesResolver.js';
 import * as SourcesNavigator from './SourcesNavigator.js';
 import * as SourcesPanel from './SourcesPanel.js';
 import * as SourcesSearchScope from './SourcesSearchScope.js';
@@ -57,7 +56,6 @@ export {
   ScriptOriginPlugin,
   SearchSourcesView,
   SnippetsPlugin,
-  SourceMapNamesResolver,
   SourcesNavigator,
   SourcesPanel,
   SourcesSearchScope,

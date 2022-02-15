@@ -1,13 +1,13 @@
-// Copyright 2016 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../../models/bindings/bindings.js';
-import * as Formatter from '../../models/formatter/formatter.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Bindings from '../bindings/bindings.js';
+import * as Formatter from '../formatter/formatter.js';
+import * as TextUtils from '../text_utils/text_utils.js';
+import type * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
 
 interface CachedScopeMap {

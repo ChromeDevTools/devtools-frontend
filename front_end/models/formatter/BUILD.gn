@@ -36,6 +36,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/unittests/front_end/models/formatter/*",
     "../../entrypoints/formatter_worker/*",
+    "../../models/source_map_scopes/*",
     "../../models/workspace_diff/*",
     "../../panels/coverage/*",
     "../../panels/sources/*",

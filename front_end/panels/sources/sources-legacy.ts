@@ -4,6 +4,8 @@
 
 // @ts-nocheck
 
+import * as SourceMapScopesModule from '../../models/source_map_scopes/source_map_scopes.js';
+
 import * as SourcesModule from './sources.js';
 
 self.Sources = self.Sources || {};
@@ -141,11 +143,11 @@ Sources.SourceMapNamesResolver = {};
 
 // Tests can override this global symbol and therefore can't be exported
 Object.defineProperty(Sources.SourceMapNamesResolver, '_scopeResolvedForTest', {
-  get: SourcesModule.SourceMapNamesResolver.getScopeResolvedForTest,
-  set: SourcesModule.SourceMapNamesResolver.setScopeResolvedForTest,
+  get: SourceMapScopesModule.NamesResolver.getScopeResolvedForTest,
+  set: SourceMapScopesModule.NamesResolver.setScopeResolvedForTest,
 });
 
-Sources.SourceMapNamesResolver.resolveExpression = SourcesModule.SourceMapNamesResolver.resolveExpression;
+Sources.SourceMapNamesResolver.resolveExpression = SourceMapScopesModule.NamesResolver.resolveExpression;
 
 /** @constructor */
 Sources.NetworkNavigatorView = SourcesModule.SourcesNavigator.NetworkNavigatorView;

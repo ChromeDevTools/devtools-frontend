@@ -74,6 +74,7 @@ devtools_entrypoint("bundle") {
     "../extensions/*",
     "../formatter/*",
     "../issues_manager/*",
+    "../source_map_scopes/*",
   ]
 
   visibility += devtools_models_visibility

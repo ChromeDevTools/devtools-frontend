@@ -2135,8 +2135,8 @@
     {
       name: "container-name",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      type_name: "AtomicString",
-      default_value: "AtomicString()",
+      type_name: "Vector<AtomicString>",
+      default_value: "Vector<AtomicString>()",
       field_group: "*",
       field_template: "external",
       converter: "ConvertContainerName",
@@ -5838,6 +5838,18 @@
       is_descriptor: true,
       is_property: false,
       runtime_flag: "CSSFontFaceSizeAdjust",
+    },
+    {
+      name: "base-palette",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "FontPalette",
+    },
+    {
+      name: "override-colors",
+      is_descriptor: true,
+      is_property: false,
+      runtime_flag: "FontPalette",
     },
 
     // Shorthands

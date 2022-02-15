@@ -285,12 +285,12 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Audits.FederatedAuthRequestIssueReason', {
     ApprovalDeclined: 'ApprovalDeclined',
     TooManyRequests: 'TooManyRequests',
-    WellKnownHttpNotFound: 'WellKnownHttpNotFound',
-    WellKnownNoResponse: 'WellKnownNoResponse',
-    WellKnownInvalidResponse: 'WellKnownInvalidResponse',
-    ClientIdMetadataHttpNotFound: 'ClientIdMetadataHttpNotFound',
-    ClientIdMetadataNoResponse: 'ClientIdMetadataNoResponse',
-    ClientIdMetadataInvalidResponse: 'ClientIdMetadataInvalidResponse',
+    ManifestHttpNotFound: 'ManifestHttpNotFound',
+    ManifestNoResponse: 'ManifestNoResponse',
+    ManifestInvalidResponse: 'ManifestInvalidResponse',
+    ClientMetadataHttpNotFound: 'ClientMetadataHttpNotFound',
+    ClientMetadataNoResponse: 'ClientMetadataNoResponse',
+    ClientMetadataInvalidResponse: 'ClientMetadataInvalidResponse',
     ErrorFetchingSignin: 'ErrorFetchingSignin',
     InvalidSigninResponse: 'InvalidSigninResponse',
     AccountsHttpNotFound: 'AccountsHttpNotFound',
@@ -552,6 +552,13 @@ export function registerCommands(inspectorBackend) {
         {'name': 'range', 'type': 'object', 'optional': false}, {'name': 'text', 'type': 'string', 'optional': false}
       ],
       ['containerQuery']);
+  inspectorBackend.registerCommand(
+      'CSS.setSupportsText',
+      [
+        {'name': 'styleSheetId', 'type': 'string', 'optional': false},
+        {'name': 'range', 'type': 'object', 'optional': false}, {'name': 'text', 'type': 'string', 'optional': false}
+      ],
+      ['supports']);
   inspectorBackend.registerCommand(
       'CSS.setRuleSelector',
       [
@@ -1124,7 +1131,6 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'policy', 'type': 'string', 'optional': false}, {'name': 'budget', 'type': 'number', 'optional': true},
         {'name': 'maxVirtualTimeTaskStarvationCount', 'type': 'number', 'optional': true},
-        {'name': 'waitForNavigation', 'type': 'boolean', 'optional': true},
         {'name': 'initialVirtualTime', 'type': 'number', 'optional': true}
       ],
       ['virtualTimeTicksBase']);
@@ -2033,6 +2039,7 @@ export function registerCommands(inspectorBackend) {
     ChViewportHeight: 'ch-viewport-height',
     ChViewportWidth: 'ch-viewport-width',
     ChWidth: 'ch-width',
+    ChPartitionedCookies: 'ch-partitioned-cookies',
     ClipboardRead: 'clipboard-read',
     ClipboardWrite: 'clipboard-write',
     CrossOriginIsolated: 'cross-origin-isolated',
@@ -2050,7 +2057,6 @@ export function registerCommands(inspectorBackend) {
     Gyroscope: 'gyroscope',
     Hid: 'hid',
     IdleDetection: 'idle-detection',
-    InterestCohort: 'interest-cohort',
     JoinAdInterestGroup: 'join-ad-interest-group',
     KeyboardMap: 'keyboard-map',
     Magnetometer: 'magnetometer',

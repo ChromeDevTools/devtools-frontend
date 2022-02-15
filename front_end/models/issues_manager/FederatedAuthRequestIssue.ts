@@ -93,7 +93,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.WellKnownHttpNotFound,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ManifestHttpNotFound,
     {
       file: 'federatedAuthRequestWellKnownHttpNotFound.md',
       links: [{
@@ -103,7 +103,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.WellKnownNoResponse,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ManifestNoResponse,
     {
       file: 'federatedAuthRequestWellKnownNoResponse.md',
       links: [{
@@ -113,7 +113,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.WellKnownInvalidResponse,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ManifestInvalidResponse,
     {
       file: 'federatedAuthRequestWellKnownInvalidResponse.md',
       links: [{
@@ -123,7 +123,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.ClientIdMetadataHttpNotFound,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataHttpNotFound,
     {
       file: 'federatedAuthRequestClientIdMetadataHttpNotFound.md',
       links: [{
@@ -133,7 +133,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.ClientIdMetadataNoResponse,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataNoResponse,
     {
       file: 'federatedAuthRequestClientIdMetadataNoResponse.md',
       links: [{
@@ -143,7 +143,7 @@ const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, La
     },
   ],
   [
-    Protocol.Audits.FederatedAuthRequestIssueReason.ClientIdMetadataInvalidResponse,
+    Protocol.Audits.FederatedAuthRequestIssueReason.ClientMetadataInvalidResponse,
     {
       file: 'federatedAuthRequestClientIdMetadataInvalidResponse.md',
       links: [{

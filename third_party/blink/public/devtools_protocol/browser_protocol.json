@@ -1604,12 +1604,12 @@
                     "enum": [
                         "ApprovalDeclined",
                         "TooManyRequests",
-                        "WellKnownHttpNotFound",
-                        "WellKnownNoResponse",
-                        "WellKnownInvalidResponse",
-                        "ClientIdMetadataHttpNotFound",
-                        "ClientIdMetadataNoResponse",
-                        "ClientIdMetadataInvalidResponse",
+                        "ManifestHttpNotFound",
+                        "ManifestNoResponse",
+                        "ManifestInvalidResponse",
+                        "ClientMetadataHttpNotFound",
+                        "ClientMetadataNoResponse",
+                        "ClientMetadataInvalidResponse",
                         "ErrorFetchingSignin",
                         "InvalidSigninResponse",
                         "AccountsHttpNotFound",
@@ -3811,6 +3811,32 @@
                             "name": "containerQuery",
                             "description": "The resulting CSS container query rule after modification.",
                             "$ref": "CSSContainerQuery"
+                        }
+                    ]
+                },
+                {
+                    "name": "setSupportsText",
+                    "description": "Modifies the expression of a supports at-rule.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "styleSheetId",
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "range",
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "text",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "supports",
+                            "description": "The resulting CSS Supports rule after modification.",
+                            "$ref": "CSSSupports"
                         }
                     ]
                 },
@@ -8023,12 +8049,6 @@
                             "description": "If set this specifies the maximum number of tasks that can be run before virtual is forced\nforwards to prevent deadlock.",
                             "optional": true,
                             "type": "integer"
-                        },
-                        {
-                            "name": "waitForNavigation",
-                            "description": "If set the virtual time policy change should be deferred until any frame starts navigating.\nNote any previous deferred policy change is superseded.",
-                            "optional": true,
-                            "type": "boolean"
                         },
                         {
                             "name": "initialVirtualTime",
@@ -14801,6 +14821,7 @@
                         "ch-viewport-height",
                         "ch-viewport-width",
                         "ch-width",
+                        "ch-partitioned-cookies",
                         "clipboard-read",
                         "clipboard-write",
                         "cross-origin-isolated",
@@ -14818,7 +14839,6 @@
                         "gyroscope",
                         "hid",
                         "idle-detection",
-                        "interest-cohort",
                         "join-ad-interest-group",
                         "keyboard-map",
                         "magnetometer",

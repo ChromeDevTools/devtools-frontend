@@ -785,12 +785,12 @@ experimental domain Audits
     enum
       ApprovalDeclined
       TooManyRequests
-      WellKnownHttpNotFound
-      WellKnownNoResponse
-      WellKnownInvalidResponse
-      ClientIdMetadataHttpNotFound
-      ClientIdMetadataNoResponse
-      ClientIdMetadataInvalidResponse
+      ManifestHttpNotFound
+      ManifestNoResponse
+      ManifestInvalidResponse
+      ClientMetadataHttpNotFound
+      ClientMetadataNoResponse
+      ClientMetadataInvalidResponse
       ErrorFetchingSignin
       InvalidSigninResponse
       AccountsHttpNotFound
@@ -1791,6 +1791,16 @@ experimental domain CSS
     returns
       # The resulting CSS container query rule after modification.
       CSSContainerQuery containerQuery
+
+  # Modifies the expression of a supports at-rule.
+  experimental command setSupportsText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Supports rule after modification.
+      CSSSupports supports
 
   # Modifies the rule selector.
   command setRuleSelector
@@ -3656,9 +3666,6 @@ domain Emulation
       # If set this specifies the maximum number of tasks that can be run before virtual is forced
       # forwards to prevent deadlock.
       optional integer maxVirtualTimeTaskStarvationCount
-      # If set the virtual time policy change should be deferred until any frame starts navigating.
-      # Note any previous deferred policy change is superseded.
-      optional boolean waitForNavigation
       # If set, base::Time::Now will be overridden to initially return this value.
       optional Network.TimeSinceEpoch initialVirtualTime
     returns
@@ -6899,6 +6906,7 @@ domain Page
       ch-viewport-height
       ch-viewport-width
       ch-width
+      ch-partitioned-cookies
       clipboard-read
       clipboard-write
       cross-origin-isolated
@@ -6916,7 +6924,6 @@ domain Page
       gyroscope
       hid
       idle-detection
-      interest-cohort
       join-ad-interest-group
       keyboard-map
       magnetometer

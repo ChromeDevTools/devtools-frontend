@@ -152,6 +152,7 @@ export const generatedProperties = [
   {'name': 'background-repeat-x'},
   {'name': 'background-repeat-y'},
   {'name': 'background-size', 'keywords': ['auto', 'cover', 'contain']},
+  {'name': 'base-palette'},
   {'name': 'baseline-shift', 'keywords': ['baseline', 'sub', 'super']},
   {'name': 'block-size', 'keywords': ['auto']},
   {
@@ -619,6 +620,7 @@ export const generatedProperties = [
   {'name': 'overflow-wrap', 'inherited': true, 'keywords': ['normal', 'break-word', 'anywhere']},
   {'name': 'overflow-x', 'keywords': ['visible', 'hidden', 'scroll', 'auto', 'overlay', 'clip']},
   {'name': 'overflow-y', 'keywords': ['visible', 'hidden', 'scroll', 'auto', 'overlay', 'clip']},
+  {'name': 'override-colors'},
   {'longhands': ['overscroll-behavior-x', 'overscroll-behavior-y'], 'name': 'overscroll-behavior'},
   {'name': 'overscroll-behavior-block'},
   {'name': 'overscroll-behavior-inline'},

@@ -632,6 +632,11 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.CSS.SetContainerQueryTextResponse>;
 
     /**
+     * Modifies the expression of a supports at-rule.
+     */
+    invoke_setSupportsText(params: Protocol.CSS.SetSupportsTextRequest): Promise<Protocol.CSS.SetSupportsTextResponse>;
+
+    /**
      * Modifies the rule selector.
      */
     invoke_setRuleSelector(params: Protocol.CSS.SetRuleSelectorRequest): Promise<Protocol.CSS.SetRuleSelectorResponse>;

@@ -1065,12 +1065,12 @@ export namespace Audits {
   export const enum FederatedAuthRequestIssueReason {
     ApprovalDeclined = 'ApprovalDeclined',
     TooManyRequests = 'TooManyRequests',
-    WellKnownHttpNotFound = 'WellKnownHttpNotFound',
-    WellKnownNoResponse = 'WellKnownNoResponse',
-    WellKnownInvalidResponse = 'WellKnownInvalidResponse',
-    ClientIdMetadataHttpNotFound = 'ClientIdMetadataHttpNotFound',
-    ClientIdMetadataNoResponse = 'ClientIdMetadataNoResponse',
-    ClientIdMetadataInvalidResponse = 'ClientIdMetadataInvalidResponse',
+    ManifestHttpNotFound = 'ManifestHttpNotFound',
+    ManifestNoResponse = 'ManifestNoResponse',
+    ManifestInvalidResponse = 'ManifestInvalidResponse',
+    ClientMetadataHttpNotFound = 'ClientMetadataHttpNotFound',
+    ClientMetadataNoResponse = 'ClientMetadataNoResponse',
+    ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
     ErrorFetchingSignin = 'ErrorFetchingSignin',
     InvalidSigninResponse = 'InvalidSigninResponse',
     AccountsHttpNotFound = 'AccountsHttpNotFound',
@@ -2552,6 +2552,19 @@ export namespace CSS {
      * The resulting CSS container query rule after modification.
      */
     containerQuery: CSSContainerQuery;
+  }
+
+  export interface SetSupportsTextRequest {
+    styleSheetId: StyleSheetId;
+    range: SourceRange;
+    text: string;
+  }
+
+  export interface SetSupportsTextResponse extends ProtocolResponseWithError {
+    /**
+     * The resulting CSS Supports rule after modification.
+     */
+    supports: CSSSupports;
   }
 
   export interface SetRuleSelectorRequest {
@@ -5273,11 +5286,6 @@ export namespace Emulation {
      * forwards to prevent deadlock.
      */
     maxVirtualTimeTaskStarvationCount?: integer;
-    /**
-     * If set the virtual time policy change should be deferred until any frame starts navigating.
-     * Note any previous deferred policy change is superseded.
-     */
-    waitForNavigation?: boolean;
     /**
      * If set, base::Time::Now will be overridden to initially return this value.
      */
@@ -10052,6 +10060,7 @@ export namespace Page {
     ChViewportHeight = 'ch-viewport-height',
     ChViewportWidth = 'ch-viewport-width',
     ChWidth = 'ch-width',
+    ChPartitionedCookies = 'ch-partitioned-cookies',
     ClipboardRead = 'clipboard-read',
     ClipboardWrite = 'clipboard-write',
     CrossOriginIsolated = 'cross-origin-isolated',
@@ -10069,7 +10078,6 @@ export namespace Page {
     Gyroscope = 'gyroscope',
     Hid = 'hid',
     IdleDetection = 'idle-detection',
-    InterestCohort = 'interest-cohort',
     JoinAdInterestGroup = 'join-ad-interest-group',
     KeyboardMap = 'keyboard-map',
     Magnetometer = 'magnetometer',

@@ -126,7 +126,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  tooltipForURL(url: string): string {
+  tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
     return i18nString(UIStrings.linkedTo, {PH1: unescapeSnippetName(url.substring(this.path().length))});
   }
 

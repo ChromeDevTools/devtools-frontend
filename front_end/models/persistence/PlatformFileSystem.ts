@@ -35,8 +35,8 @@ export class PlatformFileSystem {
     return [];
   }
 
-  path(): string {
-    return this.pathInternal;
+  path(): Platform.DevToolsPath.UrlString {
+    return this.pathInternal as Platform.DevToolsPath.UrlString;
   }
 
   embedderPath(): string {
@@ -111,7 +111,7 @@ export class PlatformFileSystem {
     throw new Error('Not implemented');
   }
 
-  tooltipForURL(_url: string): string {
+  tooltipForURL(_url: Platform.DevToolsPath.UrlString): string {
     throw new Error('Not implemented');
   }
 

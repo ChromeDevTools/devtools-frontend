@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): All casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -169,17 +167,18 @@ export class IsolatedFileSystem extends PlatformFileSystem {
               continue;
             }
             this.initialFilePathsInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
-                entry.fullPath.substr(1) as Platform.DevToolsPath.RawPathString));
+                Common.ParsedURL.ParsedURL.substr(entry.fullPath as Platform.DevToolsPath.RawPathString, 1)));
           } else {
             if (entry.fullPath.endsWith('/.git')) {
               const lastSlash = entry.fullPath.lastIndexOf('/');
-              const parentFolder = entry.fullPath.substring(1, lastSlash);
-              this.initialGitFoldersInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
-                  parentFolder as Platform.DevToolsPath.RawPathString));
+              const parentFolder = Common.ParsedURL.ParsedURL.substr(
+                  entry.fullPath as Platform.DevToolsPath.RawPathString, 1, lastSlash);
+              this.initialGitFoldersInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(parentFolder));
             }
             if (this.isFileExcluded(entry.fullPath + '/')) {
-              this.excludedEmbedderFolders.push(Common.ParsedURL.ParsedURL.urlToRawPathString(
-                  this.path() + entry.fullPath as Platform.DevToolsPath.UrlString, Host.Platform.isWin()));
+              const url = Common.ParsedURL.ParsedURL.concatenate(this.path(), entry.fullPath);
+              this.excludedEmbedderFolders.push(
+                  Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin()));
               continue;
             }
             ++pendingRequests;
@@ -233,7 +232,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       return null;
     }
     return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
-        fileEntry.fullPath.substr(1) as Platform.DevToolsPath.RawPathString);
+        Common.ParsedURL.ParsedURL.substr(fileEntry.fullPath as Platform.DevToolsPath.RawPathString, 1));
 
     function createFileCandidate(
         this: IsolatedFileSystem, name: string, newFileIndex?: number): Promise<FileEntry|null> {
@@ -559,10 +558,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                                              Common.ResourceType.resourceTypes.Document;
   }
 
-  tooltipForURL(url: string): string {
+  tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
     const path = Platform.StringUtilities.trimMiddle(
-        Common.ParsedURL.ParsedURL.urlToRawPathString(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
-        150);
+        Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin()), 150);
     return i18nString(UIStrings.linkedToS, {PH1: path});
   }
 

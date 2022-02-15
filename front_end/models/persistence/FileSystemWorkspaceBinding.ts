@@ -414,7 +414,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     void uiSourceCode.checkContentUpdated();
   }
 
-  tooltipForURL(url: string): string {
+  tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
     return this.fileSystemInternal.tooltipForURL(url);
   }
 

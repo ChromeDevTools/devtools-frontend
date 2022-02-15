@@ -1364,7 +1364,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.treeElement.title = titleText;
     this.treeElement.updateIcon();
 
-    let tooltip = this.uiSourceCodeInternal.url();
+    let tooltip: string = this.uiSourceCodeInternal.url();
     if (this.uiSourceCodeInternal.contentType().isFromSourceMap()) {
       tooltip = i18nString(UIStrings.sFromSourceMap, {PH1: this.uiSourceCodeInternal.displayName()});
     }

@@ -454,7 +454,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
     Linkifier.setTrimmedText(anchor, text, this.maxLength);
 
-    let titleText = uiLocation.uiSourceCode.url();
+    let titleText: string = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in
       // github.com/WebAssembly/design/blob/master/Web.md#developer-facing-display-conventions

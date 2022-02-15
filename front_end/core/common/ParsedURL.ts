@@ -256,9 +256,9 @@ export class ParsedURL {
     return ParsedURL.urlRegexInstance;
   }
 
-  static extractPath(url: string): string {
+  static extractPath(url: string): Platform.DevToolsPath.EncodedPathString {
     const parsedURL = this.fromString(url);
-    return parsedURL ? parsedURL.path : '';
+    return (parsedURL ? parsedURL.path : '') as Platform.DevToolsPath.EncodedPathString;
   }
 
   static extractOrigin(url: string): string {

@@ -140,7 +140,6 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     } else if (targetInfo.type === 'auction_worklet') {
       type = Type.AuctionWorklet;
     }
-
     const target = this.#targetManager.createTarget(
         targetInfo.targetId, targetName, type, this.#parentTarget, sessionId, undefined, undefined, targetInfo);
     target.setInspectedURL(this.#parentTarget.inspectedURL());

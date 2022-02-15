@@ -323,7 +323,7 @@ export class Automapping {
     }
 
     if (networkPath.endsWith('/')) {
-      networkPath += 'index.html';
+      networkPath = networkPath + 'index.html' as Platform.DevToolsPath.EncodedPathString;
     }
 
     const similarFiles =

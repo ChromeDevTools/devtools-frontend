@@ -59,9 +59,9 @@ export class FileSystemWorkspaceBinding {
     return fileSystemPath;
   }
 
-  static relativePath(uiSourceCode: Workspace.UISourceCode.UISourceCode): string[] {
+  static relativePath(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.EncodedPathString[] {
     const baseURL = (uiSourceCode.project() as FileSystem).fileSystemBaseURL;
-    return uiSourceCode.url().substring(baseURL.length).split('/');
+    return uiSourceCode.url().substring(baseURL.length).split('/') as Platform.DevToolsPath.EncodedPathString[];
   }
 
   static tooltipForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {

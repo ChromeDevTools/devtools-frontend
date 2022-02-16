@@ -1887,10 +1887,9 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
         continue;
       }
       const target = this.heapProfilerModel ? this.heapProfilerModel.target() : null;
-      const options = {columnNumber: frame.column - 1};
+      const options = {columnNumber: frame.column - 1, inlineFrameIndex: 0};
       const urlElement = this.linkifier.linkifyScriptLocation(
-          target, String(frame.scriptId) as Protocol.Runtime.ScriptId, frame.scriptName, frame.line - 1,
-          (options as Components.Linkifier.LinkifyOptions));
+          target, String(frame.scriptId) as Protocol.Runtime.ScriptId, frame.scriptName, frame.line - 1, options);
       frameDiv.appendChild(urlElement);
       stackFrameToURLElement.set(frameDiv, urlElement);
       frameDiv.addEventListener('contextmenu', this.onContextMenu.bind(this, urlElement));

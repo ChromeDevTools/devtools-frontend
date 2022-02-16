@@ -195,17 +195,14 @@ export class Linkifier implements SDK.TargetManager.Observer {
       target: SDK.Target.Target|null, scriptId: Protocol.Runtime.ScriptId|null, sourceURL: string,
       lineNumber: number|undefined, options?: LinkifyOptions): HTMLElement|null {
     let fallbackAnchor: HTMLElement|null = null;
-    const linkifyURLOptions = {
+    const linkifyURLOptions: LinkifyURLOptions = {
       lineNumber,
       maxLength: this.maxLength,
-      columnNumber: options ? options.columnNumber : undefined,
+      columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
-      className: options ? options.className : undefined,
-      tabStop: options ? options.tabStop : undefined,
-      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
-      text: undefined,
-      preventClick: undefined,
-      bypassURLTrimming: undefined,
+      className: options?.className,
+      tabStop: options?.tabStop,
+      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
     };
     const {columnNumber, className = ''} = linkifyURLOptions;
     if (sourceURL) {
@@ -230,13 +227,8 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return fallbackAnchor;
     }
 
-    const createLinkOptions = {
-      maxLength: undefined,
-      title: undefined,
-      href: undefined,
-      preventClick: undefined,
-      bypassURLTrimming: undefined,
-      tabStop: options ? options.tabStop : undefined,
+    const createLinkOptions: _CreateLinkOptions = {
+      tabStop: options?.tabStop,
     };
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
     // in the layout engine.
@@ -275,17 +267,14 @@ export class Linkifier implements SDK.TargetManager.Observer {
       target: SDK.Target.Target|null, scriptId: Protocol.Runtime.ScriptId|null, sourceURL: string,
       lineNumber: number|undefined, options?: LinkifyOptions): HTMLElement {
     const scriptLink = this.maybeLinkifyScriptLocation(target, scriptId, sourceURL, lineNumber, options);
-    const linkifyURLOptions = {
+    const linkifyURLOptions: LinkifyURLOptions = {
       lineNumber,
       maxLength: this.maxLength,
-      className: options ? options.className : undefined,
-      columnNumber: options ? options.columnNumber : undefined,
+      className: options?.className,
+      columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
-      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
-      tabStop: options ? options.tabStop : undefined,
-      text: undefined,
-      preventClick: undefined,
-      bypassURLTrimming: undefined,
+      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
+      tabStop: options?.tabStop,
     };
 
     return scriptLink || Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
@@ -296,7 +285,6 @@ export class Linkifier implements SDK.TargetManager.Observer {
         rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
           columnNumber: rawLocation.columnNumber,
           className,
-          tabStop: undefined,
           inlineFrameIndex: rawLocation.inlineFrameIndex,
         });
   }
@@ -304,12 +292,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
   maybeLinkifyConsoleCallFrame(
       target: SDK.Target.Target|null, callFrame: Protocol.Runtime.CallFrame, options?: LinkifyOptions): HTMLElement
       |null {
-    const linkifyOptions = {
+    const linkifyOptions: LinkifyOptions = {
       columnNumber: callFrame.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
-      inlineFrameIndex: options ? options.inlineFrameIndex : 0,
-      tabStop: options ? options.tabStop : undefined,
-      className: options ? options.className : undefined,
+      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
+      tabStop: options?.tabStop,
+      className: options?.className,
     };
     return this.maybeLinkifyScriptLocation(
         target, callFrame.scriptId, callFrame.url, callFrame.lineNumber, linkifyOptions);
@@ -327,10 +315,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       showColumnNumber: false,
       inlineFrameIndex: 0,
       maxLength: this.maxLength,
-      text: undefined,
       preventClick: true,
-      tabStop: undefined,
-      bypassURLTrimming: undefined,
     });
 
     // The contract is that disposed targets don't have a LiveLocationPool
@@ -373,12 +358,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
   }
 
   linkifyCSSLocation(rawLocation: SDK.CSSModel.CSSLocation, classes?: string): Element {
-    const createLinkOptions = {
-      maxLength: undefined,
-      title: undefined,
-      href: undefined,
-      preventClick: undefined,
-      bypassURLTrimming: undefined,
+    const createLinkOptions: _CreateLinkOptions = {
       tabStop: true,
     };
     // Not initialising the anchor element with 'zero width space' (\u200b) causes a crash
@@ -497,16 +477,8 @@ export class Linkifier implements SDK.TargetManager.Observer {
 
   static linkifyURL(url: string, options?: LinkifyURLOptions): HTMLElement {
     options = options || {
-      text: undefined,
-      className: undefined,
-      lineNumber: undefined,
-      columnNumber: undefined,
       showColumnNumber: false,
       inlineFrameIndex: 0,
-      preventClick: undefined,
-      maxLength: undefined,
-      tabStop: undefined,
-      bypassURLTrimming: undefined,
     };
     const text = options.text;
     const className = options.className || '';
@@ -547,29 +519,18 @@ export class Linkifier implements SDK.TargetManager.Observer {
   static linkifyRevealable(
       revealable: Object, text: string|HTMLElement, fallbackHref?: string, title?: string,
       className?: string): HTMLElement {
-    const createLinkOptions = {
+    const createLinkOptions: _CreateLinkOptions = {
       maxLength: UI.UIUtils.MaxLengthForDisplayedURLs,
       href: fallbackHref,
       title,
-      preventClick: undefined,
-      tabStop: undefined,
-      bypassURLTrimming: undefined,
     };
     const {link, linkInfo} = Linkifier.createLink(text, className || '', createLinkOptions);
     linkInfo.revealable = revealable;
     return link;
   }
 
-  private static createLink(text: string|HTMLElement, className: string, options?: _CreateLinkOptions):
+  private static createLink(text: string|HTMLElement, className: string, options: _CreateLinkOptions = {}):
       {link: HTMLElement, linkInfo: _LinkInfo} {
-    options = options || {
-      maxLength: undefined,
-      title: undefined,
-      href: undefined,
-      preventClick: undefined,
-      tabStop: undefined,
-      bypassURLTrimming: undefined,
-    };
     const {maxLength, title, href, preventClick, tabStop, bypassURLTrimming} = options;
     const link = document.createElement('span');
     if (className) {

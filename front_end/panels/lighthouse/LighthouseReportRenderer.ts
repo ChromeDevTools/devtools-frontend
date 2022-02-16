@@ -127,11 +127,6 @@ export class LighthouseReportRenderer extends LighthouseReport.ReportRenderer {
         showColumnNumber: false,
         inlineFrameIndex: 0,
         maxLength: MaxLengthForLinks,
-        bypassURLTrimming: undefined,
-        className: undefined,
-        preventClick: undefined,
-        tabStop: undefined,
-        text: undefined,
       });
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
       origHTMLElement.textContent = '';

@@ -620,9 +620,7 @@ export class NodeFormatter implements Formatter {
     const target = heapProfilerModel ? heapProfilerModel.target() : null;
     const options = {
       className: 'profile-node-file',
-      columnNumber: undefined,
       inlineFrameIndex: 0,
-      tabStop: undefined,
     };
     return this.profileView.linkifier().maybeLinkifyConsoleCallFrame(target, node.profileNode.callFrame, options);
   }

@@ -1301,7 +1301,6 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
             columnNumber: allocationNode.column - 1,
             inlineFrameIndex: 0,
             className: 'profile-node-file',
-            tabStop: undefined,
           });
       urlElement.style.maxWidth = '75%';
       cell.insertBefore(urlElement, cell.firstChild);

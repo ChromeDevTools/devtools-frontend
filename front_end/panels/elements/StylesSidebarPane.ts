@@ -3392,13 +3392,8 @@ export class StylesSidebarPropertyRenderer {
           // so that we don't have to keep two versions (original vs. trimmed) of URL
           // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
           bypassURLTrimming: true,
-          className: undefined,
-          lineNumber: undefined,
-          columnNumber: undefined,
           showColumnNumber: false,
           inlineFrameIndex: 0,
-          maxLength: undefined,
-          tabStop: undefined,
         }),
         hrefUrl || url);
     container.appendChild(link);

@@ -548,8 +548,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return null;
     }
     return this.linkifier.linkifyScriptLocation(
-        runtimeModel.target(), /* scriptId */ null, url, lineNumber,
-        {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
+        runtimeModel.target(), /* scriptId */ null, url, lineNumber, {columnNumber, inlineFrameIndex: 0});
   }
 
   private linkifyStackTraceTopFrame(stackTrace: Protocol.Runtime.StackTrace): HTMLElement|null {
@@ -567,8 +566,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       return null;
     }
     return this.linkifier.linkifyScriptLocation(
-        runtimeModel.target(), scriptId, url, lineNumber,
-        {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
+        runtimeModel.target(), scriptId, url, lineNumber, {columnNumber, inlineFrameIndex: 0});
   }
 
   private format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
@@ -1435,8 +1433,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const formattedLine = document.createElement('span');
       formattedLine.appendChild(this.linkifyStringAsFragment(`${prefix} ${name} (`));
       const scriptLocationLink = this.linkifier.linkifyScriptLocation(
-          debuggerModel.target(), null, url, lineNumber,
-          {columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: f});
+          debuggerModel.target(), null, url, lineNumber, {columnNumber, inlineFrameIndex: f});
       scriptLocationLink.tabIndex = -1;
       this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);
@@ -1463,8 +1460,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const scriptLocationLink = this.linkifier.linkifyScriptLocation(
         debuggerModel.target(), exceptionDetails.scriptId || null, url, lineNumber, {
           columnNumber,
-          className: undefined,
-          tabStop: undefined,
           inlineFrameIndex: 0,
           showColumnNumber: true,
         });
@@ -1515,8 +1510,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const scriptLocationLink = this.linkifier.linkifyScriptLocation(
           debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
             columnNumber: link.columnNumber,
-            className: undefined,
-            tabStop: undefined,
             inlineFrameIndex: 0,
             showColumnNumber: true,
           });

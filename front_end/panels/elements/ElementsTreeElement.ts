@@ -1514,14 +1514,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           Components.Linkifier.Linkifier.linkifyURL(rewrittenHref, {
             text: value,
             preventClick: true,
-            className: undefined,
-            lineNumber: undefined,
-            columnNumber: undefined,
             showColumnNumber: false,
             inlineFrameIndex: 0,
-            maxLength: undefined,
-            tabStop: undefined,
-            bypassURLTrimming: undefined,
           });
       return ImagePreviewPopover.setImageUrl(link, rewrittenHref);
     }

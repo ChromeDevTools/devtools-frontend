@@ -12,6 +12,7 @@ import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
+import {loadEmptyPageAndWaitForContent, DevToolsFrontendTab, type DevToolsFrontendReloadOptions} from './frontend_tab.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -20,12 +21,6 @@ declare module 'puppeteer' {
     stackTrace(): ConsoleMessageLocation[];
   }
 }
-
-const EMPTY_PAGE = 'data:text/html,<!DOCTYPE html>';
-const DEFAULT_TAB = {
-  name: 'elements',
-  selector: '.elements',
-};
 
 const viewportWidth = 1280;
 const viewportHeight = 720;
@@ -41,11 +36,6 @@ let unhandledRejectionSet = false;
 const headless = !process.env['DEBUG_TEST'];
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
-
-// When loading DevTools with target.goto, we wait for it to be fully loaded using these events.
-const DEVTOOLS_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['networkidle2', 'domcontentloaded'];
-// When loading an empty page (including within the devtools window), we wait for it to be loaded using these events.
-const EMPTY_PAGE_WAITUNTIL_EVENTS: puppeteer.PuppeteerLifeCycleEvent[] = ['domcontentloaded'];
 
 const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
 
@@ -81,12 +71,7 @@ const logLevels = {
 };
 
 let browser: puppeteer.Browser;
-let frontendUrl: string;
-
-interface DevToolsTarget {
-  url: string;
-  id: string;
-}
+let frontendTab: DevToolsFrontendTab;
 
 const envChromeBinary = getTestRunnerConfigSetting<string>('chrome-binary-path', process.env['CHROME_BIN'] || '');
 const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', process.env['CHROME_FEATURES'] || '');
@@ -127,21 +112,7 @@ function launchChrome() {
   return puppeteer.launch(opts);
 }
 
-function getDebugPort(browser: puppeteer.Browser) {
-  const websocketUrl = browser.wsEndpoint();
-  const url = new URL(websocketUrl);
-  if (url.port) {
-    return url.port;
-  }
-  throw new Error(`Unable to find debug port: ${websocketUrl}`);
-}
-
 async function loadTargetPageAndFrontend(testServerPort: number) {
-  /**
-   * In hosted mode we run the DevTools and test against it.
-   */
-  const needToLoadDevTools = TEST_SERVER_TYPE === 'hosted-mode';
-
   browser = await launchChrome();
   let stdout = '', stderr = '';
   const browserProcess = browser.process();
@@ -163,51 +134,28 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
 
   // Load the target page.
   const srcPage = await browser.newPage();
-  await srcPage.goto(EMPTY_PAGE);
+  await loadEmptyPageAndWaitForContent(srcPage);
 
   // Create the frontend - the page that will be under test. This will be either
   // DevTools Frontend in hosted mode, or the component docs in docs test mode.
-  const frontend = await browser.newPage();
+  let frontend: puppeteer.Page;
 
-  if (needToLoadDevTools) {
-    const chromeDebugPort = getDebugPort(browser);
-    console.log(`Opened chrome with debug port: ${chromeDebugPort}`);
-    // Now get the DevTools listings.
-    const devtools = await browser.newPage();
-    await devtools.goto(`http://localhost:${chromeDebugPort}/json`);
-
-    // Find the appropriate item to inspect the target page.
-    const listing = await devtools.$('pre');
-    const json = await devtools.evaluate(listing => listing.textContent, listing);
-    const targets: DevToolsTarget[] = JSON.parse(json);
-    const target = targets.find(target => target.url === EMPTY_PAGE);
-    if (!target) {
-      throw new Error(`Unable to find target page: ${EMPTY_PAGE}`);
-    }
-
-    const {id} = target;
-    await devtools.close();
-
+  if (TEST_SERVER_TYPE === 'hosted-mode') {
     /**
-     * In hosted mode the frontend points to DevTools, so let's load it up.
+     * In hosted mode we run the DevTools and test against it.
      */
-
-    const devToolsAppURL =
-        getTestRunnerConfigSetting<string>('hosted-server-devtools-url', 'front_end/devtools_app.html');
-    if (!devToolsAppURL) {
-      throw new Error('Could not load DevTools. hosted-server-devtools-url config not found.');
-    }
-    frontendUrl =
-        `https://localhost:${testServerPort}/${devToolsAppURL}?ws=localhost:${chromeDebugPort}/devtools/page/${id}`;
-    await frontend.goto(frontendUrl, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
-  }
-
-  if (TEST_SERVER_TYPE === 'component-docs') {
+    // TODO(crbug.com/1297458): Replace private property access with public getter once available in puppeteer.
+    frontendTab = await DevToolsFrontendTab.create({browser, testServerPort, targetId: srcPage.target()._targetId});
+    frontend = frontendTab.page;
+  } else if (TEST_SERVER_TYPE === 'component-docs') {
     /**
      * In the component docs mode it points to the page where we load component
      * doc examples, so let's just set it to an empty page for now.
      */
-    await frontend.goto(EMPTY_PAGE);
+    frontend = await browser.newPage();
+    await loadEmptyPageAndWaitForContent(frontend);
+  } else {
+    throw new Error(`Unknown TEST_SERVER_TYPE "${TEST_SERVER_TYPE}"`);
   }
 
   frontend.on('error', error => {
@@ -284,21 +232,12 @@ export async function resetPages() {
   await throttleCPUIfRequired();
 
   if (TEST_SERVER_TYPE === 'hosted-mode') {
-    // Clear any local storage settings.
-    await frontend.evaluate(() => localStorage.clear());
-
-    await reloadDevTools();
+    await frontendTab.reset();
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     // Reset the frontend back to an empty page for the component docs server.
     await loadEmptyPageAndWaitForContent(frontend);
   }
 }
-
-type ReloadDevToolsOptions = {
-  selectedPanel?: {name: string, selector?: string},
-  canDock?: boolean,
-  queryParams?: {panel?: string},
-};
 
 async function throttleCPUIfRequired(): Promise<void> {
   const {frontend} = getBrowserAndPages();
@@ -311,37 +250,8 @@ async function throttleCPUIfRequired(): Promise<void> {
   }
 }
 
-export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
-  const {frontend} = getBrowserAndPages();
-  // For the unspecified case wait for loading, then wait for the elements panel.
-  const {selectedPanel = DEFAULT_TAB, canDock = false, queryParams = {}} = options;
-
-  if (selectedPanel.name !== DEFAULT_TAB.name) {
-    await frontend.evaluate(name => {
-      // @ts-ignore
-      globalThis.localStorage.setItem('panel-selectedTab', `"${name}"`);
-    }, selectedPanel.name);
-  }
-
-  // Reload the DevTools frontend and await the elements panel.
-  await loadEmptyPageAndWaitForContent(frontend);
-  // omit "can_dock=" when it's false because appending "can_dock=false"
-  // will make getElementPosition in shared helpers unhappy
-  let url = canDock ? `${frontendUrl}&can_dock=true` : frontendUrl;
-
-  if (queryParams.panel) {
-    url += `&panel=${queryParams.panel}`;
-  }
-
-  await frontend.goto(url, {waitUntil: DEVTOOLS_WAITUNTIL_EVENTS});
-
-  if (!queryParams.panel && selectedPanel.selector) {
-    await frontend.waitForSelector(selectedPanel.selector);
-  }
-}
-
-async function loadEmptyPageAndWaitForContent(target: puppeteer.Page) {
-  await target.goto(EMPTY_PAGE, {waitUntil: EMPTY_PAGE_WAITUNTIL_EVENTS});
+export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {
+  await frontendTab.reload(options);
 }
 
 // Can be run multiple times in the same process.

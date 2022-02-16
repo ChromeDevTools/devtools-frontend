@@ -14,6 +14,7 @@ import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAnd
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {loadEmptyPageAndWaitForContent, DevToolsFrontendTab, type DevToolsFrontendReloadOptions} from './frontend_tab.js';
 import {dumpCollectedErrors, installPageErrorHandlers, setupBrowserProcessIO} from './events.js';
+import {TargetTab} from './target_tab.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -41,6 +42,7 @@ const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 
 
 let browser: puppeteer.Browser;
 let frontendTab: DevToolsFrontendTab;
+let targetTab: TargetTab;
 
 const envChromeBinary = getTestRunnerConfigSetting<string>('chrome-binary-path', process.env['CHROME_BIN'] || '');
 const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', process.env['CHROME_FEATURES'] || '');
@@ -86,8 +88,7 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
   setupBrowserProcessIO(browser);
 
   // Load the target page.
-  const srcPage = await browser.newPage();
-  await loadEmptyPageAndWaitForContent(srcPage);
+  targetTab = await TargetTab.create(browser);
 
   // Create the frontend - the page that will be under test. This will be either
   // DevTools Frontend in hosted mode, or the component docs in docs test mode.
@@ -97,8 +98,7 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     /**
      * In hosted mode we run the DevTools and test against it.
      */
-    // TODO(crbug.com/1297458): Replace private property access with public getter once available in puppeteer.
-    frontendTab = await DevToolsFrontendTab.create({browser, testServerPort, targetId: srcPage.target()._targetId});
+    frontendTab = await DevToolsFrontendTab.create({browser, testServerPort, targetId: targetTab.targetId()});
     frontend = frontendTab.page;
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     /**
@@ -112,13 +112,11 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
     throw new Error(`Unknown TEST_SERVER_TYPE "${TEST_SERVER_TYPE}"`);
   }
 
-  setBrowserAndPages({target: srcPage, frontend, browser});
+  setBrowserAndPages({target: targetTab.page, frontend, browser});
 }
 
 export async function resetPages() {
-  const {target, frontend} = getBrowserAndPages();
-  // Reload the target page.
-  await loadEmptyPageAndWaitForContent(target);
+  await targetTab.reset();
 
   // Under stress conditions throttle the CPU down.
   await throttleCPUIfRequired();
@@ -127,6 +125,7 @@ export async function resetPages() {
     await frontendTab.reset();
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     // Reset the frontend back to an empty page for the component docs server.
+    const {frontend} = getBrowserAndPages();
     await loadEmptyPageAndWaitForContent(frontend);
   }
 }

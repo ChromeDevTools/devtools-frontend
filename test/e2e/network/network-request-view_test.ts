@@ -147,7 +147,7 @@ describe('The Network Request view', async () => {
         'Remote Address: [::1]:%',
         'Referrer Policy: strict-origin-when-cross-origin',
       ],
-      'Response Headers (6)View source',
+      'Response Headers (7)View source',
       [
         'Cache-Control: max-age=%',
         'Connection: keep-alive',
@@ -155,6 +155,7 @@ describe('The Network Request view', async () => {
         'Date: %',
         'Keep-Alive: timeout=5',
         'Transfer-Encoding: chunked',
+        'Vary: Origin',
       ],
       'Request Headers (17)View source',
       [
@@ -212,7 +213,7 @@ describe('The Network Request view', async () => {
     await click(headersTabHeader);
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
     const headersView = await waitFor('.request-headers-view');
-    const responseHeadersTitle = await waitForElementWithTextContent('Response Headers (6)View source');
+    const responseHeadersTitle = await waitForElementWithTextContent('Response Headers (7)View source');
     const rawHeadersToggle = await waitFor('.header-toggle', responseHeadersTitle);
     await click(rawHeadersToggle);
 
@@ -226,11 +227,12 @@ describe('The Network Request view', async () => {
         'Remote Address: [::1]:%',
         'Referrer Policy: strict-origin-when-cross-origin',
       ],
-      'Response Headers (6)View parsed',
+      'Response Headers (7)View parsed',
       [
         'HTTP/1.1 200 OK',
         'Content-Type: image/svg+xml; charset=utf-8',
         'Cache-Control: max-age=%',
+        'Vary: Origin',
         'Date: %',
         'Connection: keep-alive',
         'Keep-Alive: timeout=5',

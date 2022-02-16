@@ -53,7 +53,10 @@ export class DevToolsFrontendTab {
       throw new Error('Could not load DevTools. hosted-server-devtools-url config not found.');
     }
 
-    const frontendUrl = `https://localhost:${testServerPort}/${devToolsAppURL}?ws=localhost:${
+    // We load the DevTools frontend on a unique origin. Otherwise we would share 'localhost' with
+    // target pages. This could cause difficult to debug problems as things like window.localStorage
+    // would be shared and requests would be "same-origin".
+    const frontendUrl = `https://i1.devtools-frontend.test:${testServerPort}/${devToolsAppURL}?ws=localhost:${
         getDebugPort(browser)}/devtools/page/${targetId}`;
 
     const frontend = await browser.newPage();

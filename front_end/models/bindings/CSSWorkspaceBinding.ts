@@ -123,24 +123,10 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
 
   propertyUILocation(cssProperty: SDK.CSSProperty.CSSProperty, forName: boolean): Workspace.UISourceCode.UILocation
       |null {
-    const style = cssProperty.ownerStyle;
-    if (!style || style.type !== SDK.CSSStyleDeclaration.Type.Regular || !style.styleSheetId) {
+    const rawLocation = this.propertyRawLocation(cssProperty, forName);
+    if (!rawLocation) {
       return null;
     }
-    const header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
-    if (!header) {
-      return null;
-    }
-
-    const range = forName ? cssProperty.nameRange() : cssProperty.valueRange();
-    if (!range) {
-      return null;
-    }
-
-    const lineNumber = range.startLine;
-    const columnNumber = range.startColumn;
-    const rawLocation = new SDK.CSSModel.CSSLocation(
-        header, header.lineNumberInSource(lineNumber), header.columnNumberInSource(lineNumber, columnNumber));
     return this.rawLocationToUILocation(rawLocation);
   }
 

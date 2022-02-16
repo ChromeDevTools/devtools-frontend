@@ -1043,16 +1043,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!url) {
       return false;
     }
-    const changedLines = this.#urlToChangeTracker.get(url)?.changedLines;
-    if (!changedLines) {
+    const changeTracker = this.#urlToChangeTracker.get(url);
+    if (!changeTracker) {
       return false;
     }
+    const {changedLines, formattedCurrentMapping} = changeTracker;
     const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(property, true);
     if (!uiLocation) {
       return false;
     }
-    // UILocation's lineNumber starts at 0, but changedLines start at 1.
-    return changedLines.has(uiLocation.lineNumber + 1);
+    if (!formattedCurrentMapping) {
+      // UILocation's lineNumber starts at 0, but changedLines start at 1.
+      return changedLines.has(uiLocation.lineNumber + 1);
+    }
+    const formattedLineNumber =
+        formattedCurrentMapping.originalToFormatted(uiLocation.lineNumber, uiLocation.columnNumber)[0];
+    return changedLines.has(formattedLineNumber + 1);
   }
 
   private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
@@ -1060,28 +1066,33 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!changeTracker) {
       return;
     }
-    const diff = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    const diffResponse =
+        await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
     const changedLines = new Set<number>();
-    if (diff && diff.length > 0) {
-      const {rows} = DiffView.DiffView.buildDiffRows(diff);
-      for (const row of rows) {
-        if (row.type === DiffView.DiffView.RowType.Addition) {
-          changedLines.add(row.currentLineNumber);
-        }
+    changeTracker.changedLines = changedLines;
+    if (!diffResponse) {
+      return;
+    }
+    const {diff, formattedCurrentMapping} = diffResponse;
+    const {rows} = DiffView.DiffView.buildDiffRows(diff);
+    for (const row of rows) {
+      if (row.type === DiffView.DiffView.RowType.Addition) {
+        changedLines.add(row.currentLineNumber);
       }
     }
-    changeTracker.changedLines = changedLines;
+    changeTracker.formattedCurrentMapping = formattedCurrentMapping;
   }
 
   private async getFormattedChanges(): Promise<string> {
     let allChanges = '';
     for (const [url, {uiSourceCode}] of this.#urlToChangeTracker) {
-      const diff =
+      const diffResponse =
           await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
-      if (!diff || diff.length < 2) {
+      // Diff array with real diff will contain at least 2 lines.
+      if (!diffResponse || diffResponse?.diff.length < 2) {
         continue;
       }
-      const changes = await formatCSSChangesFromDiff(diff);
+      const changes = await formatCSSChangesFromDiff(diffResponse.diff);
       if (changes.length > 0) {
         allChanges += `/* ${escapeUrlAsCssComment(url)} */\n\n${changes}\n\n`;
       }
@@ -1231,6 +1242,7 @@ type ChangeTracker = {
   uiSourceCode: Workspace.UISourceCode.UISourceCode,
   changedLines: Set<number>,
   diffChangeCallback: () => Promise<void>,
+  formattedCurrentMapping?: Formatter.ScriptFormatter.FormatterSourceMapping,
 };
 
 export async function formatCSSChangesFromDiff(diff: Diff.Diff.DiffArray): Promise<string> {

@@ -173,7 +173,7 @@ export class ChangesView extends UI.Widget.VBox {
     }
 
     if (!this.selectedUISourceCode) {
-      this.renderDiffRows(null);
+      this.renderDiffRows();
       return;
     }
     const uiSourceCode = this.selectedUISourceCode;
@@ -181,12 +181,12 @@ export class ChangesView extends UI.Widget.VBox {
       this.hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    const diff = await this.workspaceDiff.requestDiff(
+    const diffResponse = await this.workspaceDiff.requestDiff(
         uiSourceCode, {shouldFormatDiff: Root.Runtime.experiments.isEnabled('preciseChanges')});
     if (this.selectedUISourceCode !== uiSourceCode) {
       return;
     }
-    this.renderDiffRows(diff);
+    this.renderDiffRows(diffResponse?.diff);
   }
 
   private hideDiff(message: string): void {
@@ -197,7 +197,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.emptyWidget.showWidget();
   }
 
-  private renderDiffRows(diff: Diff.Diff.DiffArray|null): void {
+  private renderDiffRows(diff?: Diff.Diff.DiffArray): void {
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
       this.hideDiff(i18nString(UIStrings.noChanges));
     } else {

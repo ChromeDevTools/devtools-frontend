@@ -257,7 +257,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #includedRequestCookiesInternal: Cookie[];
   #blockedResponseCookiesInternal: BlockedSetCookieWithReason[];
   localizedFailDescription: string|null;
-  #urlInternal!: string;
+  #urlInternal!: Platform.DevToolsPath.UrlString;
   #responseReceivedTimeInternal!: number;
   #transferSizeInternal!: number;
   #finishedInternal!: boolean;
@@ -406,7 +406,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#backendRequestIdInternal;
   }
 
-  url(): string {
+  url(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
 
@@ -414,12 +414,13 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#urlInternal.startsWith('blob:');
   }
 
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
   setUrl(x: string): void {
     if (this.#urlInternal === x) {
       return;
     }
 
-    this.#urlInternal = x;
+    this.#urlInternal = x as Platform.DevToolsPath.UrlString;
     this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
     this.#queryStringInternal = undefined;
     this.#parsedQueryParameters = undefined;
@@ -1186,8 +1187,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#contentDataProvider = dataProvider;
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
 

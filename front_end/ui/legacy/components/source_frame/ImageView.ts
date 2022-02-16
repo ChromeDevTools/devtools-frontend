@@ -84,7 +84,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
-  private url: string;
+  private url: Platform.DevToolsPath.UrlString;
   private parsedURL: Common.ParsedURL.ParsedURL;
   private readonly mimeType: string;
   private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;

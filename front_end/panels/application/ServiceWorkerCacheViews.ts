@@ -454,7 +454,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     let value;
-    let tooltip = this.request.url();
+    let tooltip = this.request.url() as string;
     if (columnId === 'number') {
       value = String(this.number);
     } else if (columnId === 'name') {

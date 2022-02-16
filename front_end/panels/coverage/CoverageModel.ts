@@ -746,7 +746,7 @@ export class CoverageInfo {
     return this.contentProvider;
   }
 
-  url(): string {
+  url(): Platform.DevToolsPath.UrlString {
     return this.contentProvider.contentURL();
   }
 

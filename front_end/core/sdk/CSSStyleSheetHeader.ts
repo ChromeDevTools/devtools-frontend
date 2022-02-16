@@ -5,6 +5,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {CSSModel} from './CSSModel.js';
@@ -30,7 +31,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   #cssModelInternal: CSSModel;
   id: Protocol.CSS.StyleSheetId;
   frameId: Protocol.Page.FrameId;
-  sourceURL: string;
+  sourceURL: Platform.DevToolsPath.UrlString;
   hasSourceURL: boolean;
   origin: Protocol.CSS.StyleSheetOrigin;
   title: string;
@@ -51,7 +52,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     this.#cssModelInternal = cssModel;
     this.id = payload.styleSheetId;
     this.frameId = payload.frameId;
-    this.sourceURL = payload.sourceURL;
+    this.sourceURL = payload.sourceURL as Platform.DevToolsPath.UrlString;
     this.hasSourceURL = Boolean(payload.hasSourceURL);
     this.origin = payload.origin;
     this.title = payload.title;
@@ -102,19 +103,19 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return this.isConstructed && this.sourceURL.length === 0;
   }
 
-  resourceURL(): string {
-    return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
+  resourceURL(): Platform.DevToolsPath.UrlString {
+    return (this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL);
   }
 
-  private viaInspectorResourceURL(): string {
+  private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
     const model = this.#cssModelInternal.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
-      return '';
+      return '' as Platform.DevToolsPath.UrlString;
     }
     const frame = model.frameForId(this.frameId);
     if (!frame) {
-      return '';
+      return '' as Platform.DevToolsPath.UrlString;
     }
     console.assert(Boolean(frame));
     const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
@@ -123,7 +124,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
       fakeURL += '/';
     }
     fakeURL += 'inspector-stylesheet';
-    return fakeURL;
+    return fakeURL as Platform.DevToolsPath.UrlString;
   }
 
   lineNumberInSource(lineNumberInStyleSheet: number): number {
@@ -145,8 +146,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return afterStart && beforeEnd;
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.resourceURL();
   }
 

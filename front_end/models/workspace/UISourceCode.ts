@@ -189,7 +189,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
         WorkspaceImplEvents.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.url();
   }
 

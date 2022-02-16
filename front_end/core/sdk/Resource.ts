@@ -42,8 +42,8 @@ import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js'
 export class Resource implements TextUtils.ContentProvider.ContentProvider {
   readonly #resourceTreeModel: ResourceTreeModel;
   #requestInternal: NetworkRequest|null;
-  #urlInternal!: string;
-  readonly #documentURLInternal: string;
+  #urlInternal!: Platform.DevToolsPath.UrlString;
+  readonly #documentURLInternal: Platform.DevToolsPath.UrlString;
   readonly #frameIdInternal: Protocol.Page.FrameId|null;
   readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
   readonly #type: Common.ResourceType.ResourceType;
@@ -58,9 +58,10 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   #contentRequested?: boolean;
 
   constructor(
-      resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: string, documentURL: string,
-      frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
-      type: Common.ResourceType.ResourceType, mimeType: string, lastModified: Date|null, contentSize: number|null) {
+      resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: Platform.DevToolsPath.UrlString,
+      documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
+      loaderId: Protocol.Network.LoaderId|null, type: Common.ResourceType.ResourceType, mimeType: string,
+      lastModified: Date|null, contentSize: number|null) {
     this.#resourceTreeModel = resourceTreeModel;
     this.#requestInternal = request;
     this.url = url;
@@ -101,11 +102,11 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this.#requestInternal;
   }
 
-  get url(): string {
+  get url(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
 
-  set url(x: string) {
+  set url(x: Platform.DevToolsPath.UrlString) {
     this.#urlInternal = x;
     this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
   }
@@ -114,7 +115,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this.#parsedURLInternal;
   }
 
-  get documentURL(): string {
+  get documentURL(): Platform.DevToolsPath.UrlString {
     return this.#documentURLInternal;
   }
 
@@ -150,8 +151,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     this.#isGeneratedInternal = val;
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
 

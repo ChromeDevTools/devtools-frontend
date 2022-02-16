@@ -211,7 +211,9 @@ export class TextSourceMap implements SourceMap {
     if (info && info.content) {
       return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this.#initiator);
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    return new CompilerSourceMappingContentProvider(
+        sourceURL as Platform.DevToolsPath.UrlString, contentType, this.#initiator);
   }
 
   embeddedContentByURL(sourceURL: string): string|null {

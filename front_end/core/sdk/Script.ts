@@ -164,8 +164,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return this.#isLiveEditInternal;
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.sourceURL;
   }
 

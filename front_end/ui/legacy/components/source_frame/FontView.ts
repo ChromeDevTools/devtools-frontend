@@ -51,7 +51,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {
-  private readonly url: string;
+  private readonly url: Platform.DevToolsPath.UrlString;
   private readonly mimeType: string;
   private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
   private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;

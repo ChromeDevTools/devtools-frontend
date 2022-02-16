@@ -31,6 +31,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {PageResourceLoader} from './PageResourceLoader.js';
@@ -48,18 +49,19 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CompilerSourceMappingContentP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CompilerSourceMappingContentProvider implements TextUtils.ContentProvider.ContentProvider {
-  readonly #sourceURL: string;
+  readonly #sourceURL: Platform.DevToolsPath.UrlString;
   readonly #contentTypeInternal: Common.ResourceType.ResourceType;
   readonly #initiator: PageResourceLoadInitiator;
 
-  constructor(sourceURL: string, contentType: Common.ResourceType.ResourceType, initiator: PageResourceLoadInitiator) {
+  constructor(
+      sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+      initiator: PageResourceLoadInitiator) {
     this.#sourceURL = sourceURL;
     this.#contentTypeInternal = contentType;
     this.#initiator = initiator;
   }
 
-  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): string {
+  contentURL(): Platform.DevToolsPath.UrlString {
     return this.#sourceURL;
   }
 

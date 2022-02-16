@@ -34,6 +34,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -49,6 +50,8 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
+
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
 
 export class ResourceTreeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.PageApi;
@@ -237,8 +240,8 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     const frame = this.framesInternal.get(framePayload.id);
     if (frame && !frame.getResourcesMap().get(framePayload.url)) {
       const frameResource = this.createResourceFromFramePayload(
-          framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
-          null);
+          framePayload, framePayload.url as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.Document,
+          framePayload.mimeType, null, null);
       frameResource.isGenerated = true;
       frame.addResource(frameResource);
     }
@@ -301,8 +304,8 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
 
     const resource = new Resource(
-        this, null, url, frame.url, frameId, data.loaderId, Common.ResourceType.resourceTypes[data.resourceType],
-        data.mimeType, data.lastModified, null);
+        this, null, url, frame.url as Platform.DevToolsPath.UrlString, frameId, data.loaderId,
+        Common.ResourceType.resourceTypes[data.resourceType], data.mimeType, data.lastModified, null);
     frame.addResource(resource);
   }
 
@@ -342,25 +345,27 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
       const resource = this.createResourceFromFramePayload(
-          framePayload, subresource.url, Common.ResourceType.resourceTypes[subresource.type], subresource.mimeType,
-          subresource.lastModified || null, subresource.contentSize || null);
+          framePayload, subresource.url as Platform.DevToolsPath.UrlString,
+          Common.ResourceType.resourceTypes[subresource.type], subresource.mimeType, subresource.lastModified || null,
+          subresource.contentSize || null);
       frame.addResource(resource);
     }
 
     if (!frame.getResourcesMap().get(framePayload.url)) {
       const frameResource = this.createResourceFromFramePayload(
-          framePayload, framePayload.url, Common.ResourceType.resourceTypes.Document, framePayload.mimeType, null,
-          null);
+          framePayload, framePayload.url as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.Document,
+          framePayload.mimeType, null, null);
       frame.addResource(frameResource);
     }
   }
 
   private createResourceFromFramePayload(
-      frame: Protocol.Page.Frame, url: string, type: Common.ResourceType.ResourceType, mimeType: string,
-      lastModifiedTime: number|null, contentSize: number|null): Resource {
+      frame: Protocol.Page.Frame, url: Platform.DevToolsPath.UrlString, type: Common.ResourceType.ResourceType,
+      mimeType: string, lastModifiedTime: number|null, contentSize: number|null): Resource {
     const lastModified = typeof lastModifiedTime === 'number' ? new Date(lastModifiedTime * 1000) : null;
     return new Resource(
-        this, null, url, frame.url, frame.id, frame.loaderId, type, mimeType, lastModified, contentSize);
+        this, null, url, frame.url as Platform.DevToolsPath.UrlString, frame.id, frame.loaderId, type, mimeType,
+        lastModified, contentSize);
   }
 
   suspendReload(): void {
@@ -842,8 +847,8 @@ export class ResourceTreeFrame {
       return;
     }
     resource = new Resource(
-        this.#model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
-        request.resourceType(), request.mimeType, null, null);
+        this.#model, request, request.url(), request.documentURL as Platform.DevToolsPath.UrlString, request.frameId,
+        request.loaderId, request.resourceType(), request.mimeType, null, null);
     this.resourcesMap.set(resource.url, resource);
     this.#model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }

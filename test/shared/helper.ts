@@ -371,6 +371,16 @@ export const enableExperiment = async (
   await reloadDevTools(options);
 };
 
+export const setDevToolsSettings = async (settings: Record<string, string>) => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(settings => {
+    for (const name in settings) {
+      globalThis.InspectorFrontendHost.setPreference(name, JSON.stringify(settings[name]));
+    }
+  }, settings);
+  await reloadDevTools();
+};
+
 export const goTo = async (url: string) => {
   const {target} = getBrowserAndPages();
   await target.goto(url);

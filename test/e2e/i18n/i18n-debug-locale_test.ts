@@ -4,12 +4,12 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {setDevToolsSettings, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getMessageContents, waitForTheCoveragePanelToLoad} from '../helpers/coverage-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-describe('With en-US locale (default)', async () => {
+describe('With en-US locale (default)', () => {
   it('check that the reload button has the correct text', async () => {
     await waitForTheCoveragePanelToLoad();
     const message = await getMessageContents();
@@ -18,28 +18,10 @@ describe('With en-US locale (default)', async () => {
   });
 });
 
-describe('With en-XL locale (debug)', async () => {
-  before(async () => {
-    const {frontend} = getBrowserAndPages();
-    const session = await frontend.target().createCDPSession();
-    await session.send('Emulation.setUserAgentOverride', {
-      userAgent: '',
-      acceptLanguage: 'en-XL',
-    });
-  });
+describe('With en-XL locale (debug)', () => {
+  it('renders the translated text for the reload button', async () => {
+    await setDevToolsSettings({language: 'en-XL'});
 
-  after(async () => {
-    const {frontend} = getBrowserAndPages();
-    const session = await frontend.target().createCDPSession();
-    await session.send('Emulation.setUserAgentOverride', {
-      userAgent: '',
-      acceptLanguage: 'en-US',
-    });
-  });
-
-  // DevTools only honors navigator.language when the language setting is set to 'browserLanguage'.
-  // This test needs to be updated once the setting has landed properly.
-  it.skip('[crbug.com/1163928] check that the reload button has the correct text', async () => {
     await openPanelViaMoreTools('Ĉóv̂ér̂áĝé', true);
     await waitFor('div[aria-label="Ĉóv̂ér̂áĝé p̂án̂él̂"]');
     await waitFor('.coverage-results .landing-page');

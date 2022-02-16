@@ -4,7 +4,7 @@
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import type * as puppeteer from 'puppeteer';
-import {getBrowserAndPages, getResourcesPath, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,8 +24,12 @@ function guid() {
   return `${eight}-${four}-4${version}-8${variant}-${twelve}`;
 }
 
+export function getResourcesPathWithDevToolsHostname() {
+  return getResourcesPath(getDevToolsFrontendHostname());
+}
+
 export async function loadExtension(name: string, startPage?: string) {
-  startPage = startPage || `${getResourcesPath()}/extensions/empty_extension.html`;
+  startPage = startPage || `${getResourcesPathWithDevToolsHostname()}/extensions/empty_extension.html`;
   const {frontend} = getBrowserAndPages();
   const extensionInfo = {startPage, name};
 

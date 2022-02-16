@@ -98,6 +98,16 @@ export class DevToolsFrontendTab {
       await this.page.waitForSelector(selectedPanel.selector);
     }
   }
+
+  /**
+   * Returns the current hostname of this frontend tab. This might not be
+   * consistent with the intial URL in case the page was navigated to
+   * a different origin.
+   */
+  hostname(): string {
+    const url = new URL(this.page.url());
+    return url.hostname;
+  }
 }
 
 export async function loadEmptyPageAndWaitForContent(target: puppeteer.Page) {

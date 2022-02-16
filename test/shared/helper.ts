@@ -6,7 +6,7 @@ import {assert, AssertionError} from 'chai';
 import * as os from 'os';
 import * as puppeteer from 'puppeteer';
 
-import {reloadDevTools} from '../conductor/hooks.js';
+import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 import {AsyncScope} from './async-scope.js';
@@ -623,7 +623,7 @@ export function assertNotNullOrUndefined<T>(val: T): asserts val is NonNullable<
 
 // We export Puppeteer so other test utils can import it from here and not rely
 // on Node modules resolution to import it.
-export {getBrowserAndPages, getTestServerPort, reloadDevTools, puppeteer};
+export {getBrowserAndPages, getDevToolsFrontendHostname, getTestServerPort, reloadDevTools, puppeteer};
 
 export function matchString(actual: string, expected: string|RegExp): true|string {
   if (typeof expected === 'string') {

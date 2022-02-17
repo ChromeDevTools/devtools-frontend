@@ -381,7 +381,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   private createRequest(entry: Protocol.CacheStorage.DataEntry): SDK.NetworkRequest.NetworkRequest {
     const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
-        'cache-storage-' + entry.requestURL, entry.requestURL, '' as Platform.DevToolsPath.UrlString, null);
+        'cache-storage-' + entry.requestURL, entry.requestURL as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null);
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;

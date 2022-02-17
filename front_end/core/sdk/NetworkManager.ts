@@ -32,8 +32,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -449,7 +447,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   private updateNetworkRequestWithResponse(networkRequest: NetworkRequest, response: Protocol.Network.Response): void {
     if (response.url && networkRequest.url() !== response.url) {
-      networkRequest.setUrl(response.url);
+      networkRequest.setUrl(response.url as Platform.DevToolsPath.UrlString);
     }
     networkRequest.mimeType = (response.mimeType as MIME_TYPE);
     if (!networkRequest.statusCode) {
@@ -590,11 +588,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
           frameId,
         });
       }
-      networkRequest = this.appendRedirect(requestId, timestamp, request.url);
+      networkRequest = this.appendRedirect(requestId, timestamp, request.url as Platform.DevToolsPath.UrlString);
       this.#manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
     } else {
       networkRequest = NetworkRequest.create(
-          requestId, request.url, documentURL as Platform.DevToolsPath.UrlString, frameId ?? null, loaderId, initiator);
+          requestId, request.url as Platform.DevToolsPath.UrlString, documentURL as Platform.DevToolsPath.UrlString,
+          frameId ?? null, loaderId, initiator);
       requestToManagerMap.set(networkRequest, this.#manager);
     }
     networkRequest.hasNetworkData = true;
@@ -719,7 +718,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   webSocketCreated({requestId, url: requestURL, initiator}: Protocol.Network.WebSocketCreatedEvent): void {
-    const networkRequest = NetworkRequest.createForWebSocket(requestId, requestURL, initiator);
+    const networkRequest =
+        NetworkRequest.createForWebSocket(requestId, requestURL as Platform.DevToolsPath.UrlString, initiator);
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
     this.startNetworkRequest(networkRequest, null);
@@ -868,7 +868,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     return builder;
   }
 
-  private appendRedirect(requestId: Protocol.Network.RequestId, time: number, redirectURL: string): NetworkRequest {
+  private appendRedirect(
+      requestId: Protocol.Network.RequestId, time: number,
+      redirectURL: Platform.DevToolsPath.UrlString): NetworkRequest {
     const originalNetworkRequest = this.#requestsById.get(requestId);
     if (!originalNetworkRequest) {
       throw new Error(`Could not find original network request for ${requestId}`);
@@ -971,7 +973,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webTransportCreated({transportId, url: requestURL, timestamp: time, initiator}:
                           Protocol.Network.WebTransportCreatedEvent): void {
-    const networkRequest = NetworkRequest.createForWebSocket(transportId, requestURL, initiator);
+    const networkRequest =
+        NetworkRequest.createForWebSocket(transportId, requestURL as Platform.DevToolsPath.UrlString, initiator);
     networkRequest.hasNetworkData = true;
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebTransport);
@@ -1075,7 +1078,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       requestId: Protocol.Network.RequestId, frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId,
       url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     const request = NetworkRequest.create(
-        requestId, url, documentURL as Platform.DevToolsPath.UrlString, frameId, loaderId, initiator);
+        requestId, url as Platform.DevToolsPath.UrlString, documentURL as Platform.DevToolsPath.UrlString, frameId,
+        loaderId, initiator);
     requestToManagerMap.set(request, this.#manager);
     return request;
   }

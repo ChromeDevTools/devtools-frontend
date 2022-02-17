@@ -293,7 +293,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #wasIntercepted: boolean;
 
   private constructor(
-      requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string,
+      requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
       documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
       loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null) {
     super();
@@ -369,14 +369,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   static create(
-      backendRequestId: Protocol.Network.RequestId, url: string, documentURL: Platform.DevToolsPath.UrlString,
-      frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
-      initiator: Protocol.Network.Initiator|null): NetworkRequest {
+      backendRequestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString,
+      documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
+      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator);
   }
 
   static createForWebSocket(
-      backendRequestId: Protocol.Network.RequestId, requestURL: string,
+      backendRequestId: Protocol.Network.RequestId, requestURL: Platform.DevToolsPath.UrlString,
       initiator?: Protocol.Network.Initiator): NetworkRequest {
     return new NetworkRequest(
         backendRequestId, backendRequestId, requestURL, '' as Platform.DevToolsPath.UrlString, null, null,
@@ -384,7 +384,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   static createWithoutBackendRequest(
-      requestId: string, url: string, documentURL: Platform.DevToolsPath.UrlString,
+      requestId: string, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString,
       initiator: Protocol.Network.Initiator|null): NetworkRequest {
     return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator);
   }
@@ -417,13 +417,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#urlInternal.startsWith('blob:');
   }
 
-  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-  setUrl(x: string): void {
+  setUrl(x: Platform.DevToolsPath.UrlString): void {
     if (this.#urlInternal === x) {
       return;
     }
 
-    this.#urlInternal = x as Platform.DevToolsPath.UrlString;
+    this.#urlInternal = x;
     this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
     this.#queryStringInternal = undefined;
     this.#parsedQueryParameters = undefined;

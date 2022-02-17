@@ -14,7 +14,7 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.NetworkRequest => {
   const requestId = 'r0' as Protocol.Network.RequestId;
   const request = SDK.NetworkRequest.NetworkRequest.create(
-      requestId, 'p0.com', '' as Platform.DevToolsPath.UrlString, null, null, null);
+      requestId, 'p0.com' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString, null, null, null);
   request.setIssueTime(startTime, startTime);
   request.setContentDataProvider(() => Promise.resolve({error: null, content: '', encoded: false}));
   return request;

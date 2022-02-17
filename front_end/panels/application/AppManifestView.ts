@@ -16,6 +16,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
+
 const UIStrings = {
   /**
   *@description Text in App Manifest View of the Application panel
@@ -640,7 +642,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     this.startURLField.removeChildren();
     if (startURL) {
-      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, startURL) as string);
+      const completeURL =
+          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, startURL) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
           completeURL, ({text: startURL} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
@@ -691,7 +694,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.newNoteUrlField.parentElement?.classList.toggle('hidden', !hasNewNoteUrl);
     this.newNoteUrlField.removeChildren();
     if (hasNewNoteUrl) {
-      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as string);
+      const completeURL =
+          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, newNoteUrl) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
           completeURL, ({text: newNoteUrl} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
@@ -761,7 +765,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         shortcutSection.appendFlexedField('Description', shortcut.description);
       }
       const urlField = shortcutSection.appendFlexedField('URL');
-      const shortcutUrl = (Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as string);
+      const shortcutUrl =
+          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, shortcut.url) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
           shortcutUrl, ({text: shortcut.url} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
@@ -1021,7 +1026,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       imageResourceErrors.push(i18nString(UIStrings.sSrcIsNotSet, {PH1: resourceName}));
       return {imageResourceErrors};
     }
-    const imageUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, imageResource['src']);
+    const imageUrl =
+        Common.ParsedURL.ParsedURL.completeURL(baseUrl as Platform.DevToolsPath.UrlString, imageResource['src']);
     if (!imageUrl) {
       imageResourceErrors.push(
           i18nString(UIStrings.sUrlSFailedToParse, {PH1: resourceName, PH2: imageResource['src']}));

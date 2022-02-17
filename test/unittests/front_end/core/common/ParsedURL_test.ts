@@ -9,6 +9,10 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 
 const ParsedURL = Common.ParsedURL.ParsedURL;
 
+function assertEqualUrlStringString(actual: Platform.DevToolsPath.UrlString|null, expected: string, message?: string) {
+  assert.strictEqual(actual, expected as Platform.DevToolsPath.UrlString, message);
+}
+
 describe('Parsed URL', () => {
   describe('with path normalization', () => {
     const cases = [
@@ -223,30 +227,30 @@ describe('Parsed URL', () => {
 
   it('uses the completeURL function to return a data URL as it is', () => {
     const hrefTest = 'data:http://www.example.com';
-    const baseUrlTest = 'www.example.com';
+    const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return a blob URL as it is', () => {
     const hrefTest = 'blob:http://www.example.com';
-    const baseUrlTest = 'www.example.com';
+    const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return a javascript URL as it is', () => {
     const hrefTest = 'javascript:http://www.example.com';
-    const baseUrlTest = 'www.example.com';
+    const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return a mailto URL as it is', () => {
     const hrefTest = 'mailto:http://www.example.com';
-    const baseUrlTest = 'www.example.com';
+    const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
   describe('completeURL with absolute URLs', () => {
@@ -292,63 +296,64 @@ describe('Parsed URL', () => {
 
     for (const {href, expected} of cases) {
       it(`can use completeURL to normalize "${href}"`, () => {
-        const baseUrlTest = 'www.example.com';
+        const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
         const completeUrl = ParsedURL.completeURL(baseUrlTest, href);
-        assert.strictEqual(completeUrl, expected, 'complete URL is not returned correctly');
+        assertEqualUrlStringString(completeUrl, expected, 'complete URL is not returned correctly');
       });
     }
   });
 
   it('uses the completeURL function to return null for invalid href and invalid base URL', () => {
     const hrefTest = 'www.example.com';
-    const baseUrlTest = 'www.example.com';
+    const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
     assert.strictEqual(completeUrl, null, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return the href if the base URL is a data URL', () => {
     const hrefTest = 'www.example.com';
-    const baseUrlTest = 'data://www.example.com';
+    const baseUrlTest = 'data://www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, hrefTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return the href with scheme if the base URL was valid and the href scheme was dropped',
      () => {
        const hrefTest = '//www.example.com';
-       const baseUrlTest = 'http://www.example.com/';
+       const baseUrlTest = 'http://www.example.com/' as Platform.DevToolsPath.UrlString;
        const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-       assert.strictEqual(completeUrl, 'http:' + hrefTest, 'complete URL is not returned correctly');
+       assertEqualUrlStringString(completeUrl, 'http:' + hrefTest, 'complete URL is not returned correctly');
      });
 
   it('uses the completeURL function to resolve an empty href to a base URL without fragment', () => {
     const hrefTest = '';
-    const baseUrlTest = 'http://www.example.com/?testParam=t';
+    const baseUrlTest = 'http://www.example.com/?testParam=t' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, baseUrlTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, baseUrlTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to resolve a fragment href to a base URL with fragment', () => {
     const hrefTest = '#testFragment';
-    const baseUrlTest = 'http://www.example.com/?testParam=t';
+    const baseUrlTest = 'http://www.example.com/?testParam=t' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, baseUrlTest + hrefTest, 'complete URL is not returned correctly');
+    assertEqualUrlStringString(completeUrl, baseUrlTest + hrefTest, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to resolve a parameters href to a base URL with the parameters from the href while the base URL has parameters',
      () => {
        const hrefTest = '?hrefParams=t';
-       const baseUrlTest = 'http://www.example.com/?testParam=t';
+       const baseUrlTest = 'http://www.example.com/?testParam=t' as Platform.DevToolsPath.UrlString;
        const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-       assert.strictEqual(completeUrl, 'http://www.example.com/' + hrefTest, 'complete URL is not returned correctly');
+       assertEqualUrlStringString(
+           completeUrl, 'http://www.example.com/' + hrefTest, 'complete URL is not returned correctly');
      });
 
   it('uses the completeURL function to resolve a parameters href to a base URL with the parameters from the href while the base URL does not have parameters',
      () => {
        const hrefTest = '?hrefParams=t';
-       const baseUrlTest = 'http://www.example.com/';
+       const baseUrlTest = 'http://www.example.com/' as Platform.DevToolsPath.UrlString;
        const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-       assert.strictEqual(completeUrl, baseUrlTest + hrefTest, 'complete URL is not returned correctly');
+       assertEqualUrlStringString(completeUrl, baseUrlTest + hrefTest, 'complete URL is not returned correctly');
      });
 
   it('uses the splitLineAndColumn function to return undefined line and column numbers if the URL does not contain any',
@@ -519,42 +524,51 @@ describe('Parsed URL', () => {
   });
 
   it('returns the correct results for all ported web_tests unit tests', () => {
-    assert.strictEqual(
-        ParsedURL.completeURL('http://example.com/script.js', 'http://example.com/map.json'),
+    assertEqualUrlStringString(
+        ParsedURL.completeURL(
+            'http://example.com/script.js' as Platform.DevToolsPath.UrlString, 'http://example.com/map.json'),
         'http://example.com/map.json');
-    assert.strictEqual(
-        ParsedURL.completeURL('http://example.com/script.js', '/map.json'), 'http://example.com/map.json');
-    assert.strictEqual(
-        ParsedURL.completeURL('http://example.com/scripts/script.js', '../maps/map.json'),
+    assertEqualUrlStringString(
+        ParsedURL.completeURL('http://example.com/script.js' as Platform.DevToolsPath.UrlString, '/map.json'),
+        'http://example.com/map.json');
+    assertEqualUrlStringString(
+        ParsedURL.completeURL(
+            'http://example.com/scripts/script.js' as Platform.DevToolsPath.UrlString, '../maps/map.json'),
         'http://example.com/maps/map.json');
 
-    const baseURL = 'http://a/b/c/d;p?q';
+    const baseURL = 'http://a/b/c/d;p?q' as Platform.DevToolsPath.UrlString;
 
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'http://h'), 'http://h/');  // modified from RFC3986
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g'), 'http://a/b/c/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, './g'), 'http://a/b/c/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/'), 'http://a/b/c/g/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '/g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '//g'), 'http://g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '?y'), 'http://a/b/c/d;p?y');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y'), 'http://a/b/c/g?y');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '#s'), 'http://a/b/c/d;p?q#s');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s'), 'http://a/b/c/g#s');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y#s'), 'http://a/b/c/g?y#s');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, ';x'), 'http://a/b/c/;x');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x'), 'http://a/b/c/g;x');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x?y#s'), 'http://a/b/c/g;x?y#s');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/./y'), 'http://a/b/c/g;x=1/y');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/../y'), 'http://a/b/c/y');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y/./x'), 'http://a/b/c/g?y/./x');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y/../x'), 'http://a/b/c/g?y/../x');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s/./x'), 'http://a/b/c/g#s/./x');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g#s/../x'), 'http://a/b/c/g#s/../x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'http://h'),
+                               'http://h/');  // modified from RFC3986
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g'), 'http://a/b/c/g');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, './g'), 'http://a/b/c/g');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g/'), 'http://a/b/c/g/');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, '/g'), 'http://a/g');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, '//g'), 'http://g');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, '?y'), 'http://a/b/c/d;p?y');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g?y'), 'http://a/b/c/g?y');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, '#s'), 'http://a/b/c/d;p?q#s');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g#s'), 'http://a/b/c/g#s');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g?y#s'), 'http://a/b/c/g?y#s');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, ';x'), 'http://a/b/c/;x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g;x'), 'http://a/b/c/g;x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g;x?y#s'), 'http://a/b/c/g;x?y#s');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g;x=1/./y'), 'http://a/b/c/g;x=1/y');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g;x=1/../y'), 'http://a/b/c/y');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g?y/./x'), 'http://a/b/c/g?y/./x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g?y/../x'), 'http://a/b/c/g?y/../x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g#s/./x'), 'http://a/b/c/g#s/./x');
+    assertEqualUrlStringString(ParsedURL.completeURL(baseURL, 'g#s/../x'), 'http://a/b/c/g#s/../x');
 
-    assert.strictEqual(ParsedURL.completeURL('http://a/b/c/d;p?q', '//secure.com/moo'), 'http://secure.com/moo');
-    assert.strictEqual(ParsedURL.completeURL('http://a/b/c/d;p?q', 'cat.jpeg'), 'http://a/b/c/cat.jpeg');
-    assert.strictEqual(
-        ParsedURL.completeURL('http://example.com/path.css?query#fragment', ''), 'http://example.com/path.css?query');
+    assertEqualUrlStringString(
+        ParsedURL.completeURL('http://a/b/c/d;p?q' as Platform.DevToolsPath.UrlString, '//secure.com/moo'),
+        'http://secure.com/moo');
+    assertEqualUrlStringString(
+        ParsedURL.completeURL('http://a/b/c/d;p?q' as Platform.DevToolsPath.UrlString, 'cat.jpeg'),
+        'http://a/b/c/cat.jpeg');
+    assertEqualUrlStringString(
+        ParsedURL.completeURL('http://example.com/path.css?query#fragment' as Platform.DevToolsPath.UrlString, ''),
+        'http://example.com/path.css?query');
   });
 
   it('encodes partial path', () => {

@@ -301,12 +301,12 @@ export class ParsedURL {
     return index < 0 ? pathAndQuery : pathAndQuery.substr(0, index);
   }
 
-  static completeURL(baseURL: string, href: string): string|null {
+  static completeURL(baseURL: Platform.DevToolsPath.UrlString, href: string): Platform.DevToolsPath.UrlString|null {
     // Return special URLs as-is.
     const trimmedHref = href.trim();
     if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:') ||
         trimmedHref.startsWith('mailto:')) {
-      return href;
+      return href as Platform.DevToolsPath.UrlString;
     }
 
     // Return absolute URLs with normalized path and other components as-is.
@@ -315,7 +315,7 @@ export class ParsedURL {
       const securityOrigin = parsedHref.securityOrigin();
       const pathText = parsedHref.path;
       const hrefSuffix = trimmedHref.substring(securityOrigin.length + pathText.length);
-      return securityOrigin + normalizePath(pathText) + hrefSuffix;
+      return securityOrigin + normalizePath(pathText) + hrefSuffix as Platform.DevToolsPath.UrlString;
     }
 
     const parsedURL = this.fromString(baseURL);
@@ -324,12 +324,12 @@ export class ParsedURL {
     }
 
     if (parsedURL.isDataURL()) {
-      return href;
+      return href as Platform.DevToolsPath.UrlString;
     }
 
     if (href.length > 1 && href.charAt(0) === '/' && href.charAt(1) === '/') {
       // href starts with "//" which is a full URL with the protocol dropped (use the baseURL protocol).
-      return parsedURL.scheme + ':' + href;
+      return parsedURL.scheme + ':' + href as Platform.DevToolsPath.UrlString;
     }
 
     const securityOrigin = parsedURL.securityOrigin();
@@ -338,15 +338,15 @@ export class ParsedURL {
 
     // Empty href resolves to a URL without fragment.
     if (!href.length) {
-      return securityOrigin + pathText + queryText;
+      return securityOrigin + pathText + queryText as Platform.DevToolsPath.UrlString;
     }
 
     if (href.charAt(0) === '#') {
-      return securityOrigin + pathText + queryText + href;
+      return securityOrigin + pathText + queryText + href as Platform.DevToolsPath.UrlString;
     }
 
     if (href.charAt(0) === '?') {
-      return securityOrigin + pathText + href;
+      return securityOrigin + pathText + href as Platform.DevToolsPath.UrlString;
     }
 
     const hrefMatches = href.match(/^[^#?]*/);
@@ -358,7 +358,7 @@ export class ParsedURL {
     if (hrefPath.charAt(0) !== '/') {
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
     }
-    return securityOrigin + normalizePath(hrefPath) + hrefSuffix;
+    return securityOrigin + normalizePath(hrefPath) + hrefSuffix as Platform.DevToolsPath.UrlString;
   }
 
   static splitLineAndColumn(string: string): {

@@ -110,13 +110,15 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 
   private resolveRelativeURLs(sourceURL: string, sourceMapURL: string): {
-    sourceURL: string,
-    sourceMapURL: string,
+    sourceURL: Platform.DevToolsPath.UrlString,
+    sourceMapURL: Platform.DevToolsPath.UrlString,
     sourceMapId: string,
   }|null {
     // |#sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this.#target.inspectedURL(), sourceURL);
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(
+        this.#target.inspectedURL() as Platform.DevToolsPath.UrlString, sourceURL);
     if (!resolvedSourceURL) {
       return null;
     }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -38,7 +39,7 @@ const mappingRE = new RegExp('^(\\d+):(\\d+)(?:\\s*=>\\s*([^:]+):(\\d+):(\\d+)(?
 // as a source map.
 export function encodeSourceMap(textMap: string[]): SDK.SourceMap.SourceMapV3 {
   let mappings = '';
-  const sources: string[] = [];
+  const sources: Platform.DevToolsPath.UrlString[] = [];
   const names: string[] = [];
 
   const state = {

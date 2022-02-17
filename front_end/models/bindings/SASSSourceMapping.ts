@@ -79,7 +79,7 @@ export class SASSSourceMapping implements SourceMapping {
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
-        binding = new Binding(project, sourceURL as Platform.DevToolsPath.UrlString);
+        binding = new Binding(project, sourceURL);
         bindings.set(sourceURL, binding);
       }
       binding.addSourceMap(sourceMap, header.frameId);

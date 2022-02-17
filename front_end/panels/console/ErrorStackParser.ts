@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -80,7 +81,10 @@ export function parseSourcePositionsFromErrorStack(
     }
     let url = parseOrScriptMatch(debuggerModel, splitResult.url);
     if (!url && Common.ParsedURL.ParsedURL.isRelativeURL(splitResult.url)) {
-      url = parseOrScriptMatch(debuggerModel, Common.ParsedURL.ParsedURL.completeURL(baseURL, splitResult.url));
+      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+      url = parseOrScriptMatch(
+          debuggerModel,
+          Common.ParsedURL.ParsedURL.completeURL(baseURL as Platform.DevToolsPath.UrlString, splitResult.url));
     }
     if (!url) {
       return null;

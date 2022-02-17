@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
@@ -15,12 +16,17 @@ const fakeInitiator = {
   initiatorUrl: '',
 };
 
+const sourceUrlFoo = '<foo>' as Platform.DevToolsPath.UrlString;
+
 describe('SourceMapEntry', () => {
   it('can be instantiated correctly', () => {
-    const sourceMapEntry = new SDK.SourceMap.SourceMapEntry(1, 1, 'http://www.example.com/', 1, 1, 'example');
+    const sourceMapEntry = new SDK.SourceMap.SourceMapEntry(
+        1, 1, 'http://www.example.com/' as Platform.DevToolsPath.UrlString, 1, 1, 'example');
     assert.strictEqual(sourceMapEntry.lineNumber, 1, 'line number was not set correctly');
     assert.strictEqual(sourceMapEntry.columnNumber, 1, 'column number was not set correctly');
-    assert.strictEqual(sourceMapEntry.sourceURL, 'http://www.example.com/', 'source URL was not set correctly');
+    assert.strictEqual(
+        sourceMapEntry.sourceURL, 'http://www.example.com/' as Platform.DevToolsPath.UrlString,
+        'source URL was not set correctly');
     assert.strictEqual(sourceMapEntry.sourceLineNumber, 1, 'source line number was not set correctly');
     assert.strictEqual(sourceMapEntry.sourceColumnNumber, 1, 'source column number was not set correctly');
     assert.strictEqual(sourceMapEntry.name, 'example', 'name was not set correctly');
@@ -28,28 +34,33 @@ describe('SourceMapEntry', () => {
 
   describe('comparison', () => {
     it('checks line numbers first', () => {
-      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(1, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 2, 5, 'foo');
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(1, 5, sourceUrlFoo, 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, sourceUrlFoo, 2, 5, 'foo');
       assert.isBelow(
           SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
     });
 
     it('checks column numbers second when line numbers are equal', () => {
-      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 25, '<foo>', 2, 5, 'foo');
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, sourceUrlFoo, 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 25, sourceUrlFoo, 2, 5, 'foo');
       assert.isBelow(
           SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0, 'first entry is not smaller');
     });
 
     it('works for equal SourceMapEntries', () => {
-      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
-      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, '<foo>', 1, 5, 'foo');
+      const sourceMapEntry1 = new SDK.SourceMap.SourceMapEntry(2, 5, sourceUrlFoo, 1, 5, 'foo');
+      const sourceMapEntry2 = new SDK.SourceMap.SourceMapEntry(2, 5, sourceUrlFoo, 1, 5, 'foo');
       assert.strictEqual(SDK.SourceMap.SourceMapEntry.compare(sourceMapEntry1, sourceMapEntry2), 0);
     });
   });
 });
 
 describe('TextSourceMap', () => {
+  const compiledUrl = 'compiled.js' as Platform.DevToolsPath.UrlString;
+  const sourceMapJsonUrl = 'source-map.json' as Platform.DevToolsPath.UrlString;
+  const sourceUrlExample = 'example.js' as Platform.DevToolsPath.UrlString;
+  const sourceUrlOther = 'other.js' as Platform.DevToolsPath.UrlString;
+
   describe('StringCharIterator', () => {
     it('detects when it has reached the end', () => {
       const emptyIterator = new SDK.SourceMap.TextSourceMap.StringCharIterator('');
@@ -138,7 +149,7 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 9), 'example.js', 0, 9);
     assertMapping(sourceMap.findEntry(0, 13), 'example.js', 0, 13);
@@ -148,11 +159,11 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(0, 27), 'example.js', 2, 24);
     assertMapping(sourceMap.findEntry(1, 0), undefined, undefined, undefined);
 
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 0, 0), 0, 0);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 0, 17);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2, 0), 0, 18);
-    assert.isNull(sourceMap.sourceLineMapping('example.js', 4, 0), 'unexpected source mapping for line 4');
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5, 0), 0, 29);
+    assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 0, 0), 0, 0);
+    assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 1, 0), 0, 17);
+    assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 2, 0), 0, 18);
+    assert.isNull(sourceMap.sourceLineMapping(sourceUrlExample, 4, 0), 'unexpected source mapping for line 4');
+    assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 5, 0), 0, 29);
   });
 
   it('can do reverse lookups', () => {
@@ -168,40 +179,40 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     // Exact match for source location.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 3, 0).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 3, 0).map(r => r.serializeToObject()), [
       {startLine: 1, startColumn: 0, endLine: 2, endColumn: 0},
       {startLine: 5, startColumn: 0, endLine: 7, endColumn: 2},
     ]);
 
     // Inexact match.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 10, 0).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 10, 0).map(r => r.serializeToObject()), [
       {startLine: 1, startColumn: 0, endLine: 2, endColumn: 0},
       {startLine: 5, startColumn: 0, endLine: 7, endColumn: 2},
     ]);
 
     // Match with more than two locations.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 1, 0).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 1, 0).map(r => r.serializeToObject()), [
       {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
       {startLine: 2, startColumn: 0, endLine: 4, endColumn: 0},
       {startLine: 7, startColumn: 2, endLine: 10, endColumn: 5},
     ]);
 
     // Match at the end of file.
-    assert.deepEqual(sourceMap.findReverseRanges('other.js', 5, 0).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlOther, 5, 0).map(r => r.serializeToObject()), [
       {startLine: 4, startColumn: 0, endLine: 5, endColumn: 0},
       {startLine: 10, startColumn: 5, endLine: Infinity, endColumn: 0},
     ]);
 
     // No match.
-    assert.isEmpty(sourceMap.findReverseRanges('example.js', 0, 0));
-    assert.isEmpty(sourceMap.findReverseRanges('other.js', 1, 0));
+    assert.isEmpty(sourceMap.findReverseRanges(sourceUrlExample, 0, 0));
+    assert.isEmpty(sourceMap.findReverseRanges(sourceUrlOther, 1, 0));
 
     // Also test the reverse lookup that returns points.
-    assert.deepEqual(sourceMap.findReverseEntries('other.js', 5, 0).map(e => e.lineNumber), [4, 10]);
-    assert.deepEqual(sourceMap.findReverseEntries('other.js', 10, 0).map(e => e.lineNumber), [4, 10]);
+    assert.deepEqual(sourceMap.findReverseEntries(sourceUrlOther, 5, 0).map(e => e.lineNumber), [4, 10]);
+    assert.deepEqual(sourceMap.findReverseEntries(sourceUrlOther, 10, 0).map(e => e.lineNumber), [4, 10]);
   });
 
   it('can do reverse lookups with merging', () => {
@@ -224,15 +235,15 @@ describe('TextSourceMap', () => {
       // clang-format on
     ]);
 
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 1, 0).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 1, 0).map(r => r.serializeToObject()), [
       {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
       {startLine: 2, startColumn: 0, endLine: 5, endColumn: 0},
       {startLine: 7, startColumn: 0, endLine: Infinity, endColumn: 0},
     ]);
 
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 2, 1).map(r => r.serializeToObject()), [
+    assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 2, 1).map(r => r.serializeToObject()), [
       {startLine: 5, startColumn: 2, endLine: 5, endColumn: 6},
       {startLine: 5, startColumn: 8, endLine: 6, endColumn: 4},
     ]);
@@ -241,7 +252,7 @@ describe('TextSourceMap', () => {
   it('can parse source maps with segments that contain no mapping information', () => {
     const mappingPayload = {
       mappings: 'AAAA,C,CAAE;',
-      sources: ['example.js'],
+      sources: [sourceUrlExample],
       version: 1,
       file: undefined,
       sections: undefined,
@@ -249,7 +260,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 2), 'example.js', 0, 2);
@@ -264,7 +275,7 @@ describe('TextSourceMap', () => {
   it('can parse source maps with empty lines', () => {
     const mappingPayload = {
       mappings: 'AAAA;;;CACA',
-      sources: ['example.js'],
+      sources: [sourceUrlExample],
       version: 1,
       file: undefined,
       sections: undefined,
@@ -272,10 +283,10 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assertMapping(sourceMap.findEntry(0, 0), 'example.js', 0, 0);
-    assertReverseMapping(sourceMap.sourceLineMapping('example.js', 1, 0), 3, 1);
+    assertReverseMapping(sourceMap.sourceLineMapping(sourceUrlExample, 1, 0), 3, 1);
   });
 
   it('can parse the multiple sections format', () => {
@@ -287,7 +298,7 @@ describe('TextSourceMap', () => {
           offset: {line: 0, 'column': 0},
           map: {
             mappings: 'AAAA,CAEC',
-            sources: ['source1.js', 'source2.js'],
+            sources: ['source1.js', 'source2.js'] as Platform.DevToolsPath.UrlString[],
             version: 1,
             file: undefined,
             sections: undefined,
@@ -301,7 +312,7 @@ describe('TextSourceMap', () => {
           offset: {line: 2, 'column': 10},
           map: {
             mappings: 'AAAA,CAEC',
-            sources: ['source2.js'],
+            sources: ['source2.js' as Platform.DevToolsPath.UrlString],
             version: 1,
             file: undefined,
             sections: undefined,
@@ -318,7 +329,7 @@ describe('TextSourceMap', () => {
       names: undefined,
       sourcesContent: undefined,
     };
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
     assert.lengthOf(sourceMap.sourceURLs(), 2, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);
@@ -328,76 +339,83 @@ describe('TextSourceMap', () => {
   });
 
   describe('source URL resolution', () => {
+    const noSourceRoot = '' as Platform.DevToolsPath.UrlString;
+    const absoluteSourceRootExample = 'http://example.com/src' as Platform.DevToolsPath.UrlString;
+    const absoluteSourceRootFoo = 'http://foo.com/src' as Platform.DevToolsPath.UrlString;
+    const relativeSourceRootSrc = 'src' as Platform.DevToolsPath.UrlString;
+    const relativeSourceRootSlashSrc = '/src' as Platform.DevToolsPath.UrlString;
+    const relativeSourceRootSrcSlash = 'src/' as Platform.DevToolsPath.UrlString;
+    const relativeSourceRootCSlashD = 'c/d' as Platform.DevToolsPath.UrlString;
     const cases = [
       // No sourceRoot, relative sourceURL. sourceURL is normalized and resolved relative to sourceMapURL.
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/a/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/b/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/./foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/./foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '/./foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '../foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '../../foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: '../../../foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/foo.ts',
@@ -405,25 +423,25 @@ describe('TextSourceMap', () => {
 
       // No sourceRoot, absolute sourceURL. The sourceURL is normalized and then used as-is.
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'webpack://example/src/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'webpack://example/src/a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/a/b/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/a/b/foo.ts',
       },
       {
-        sourceRoot: '',
+        sourceRoot: noSourceRoot,
         sourceURL: 'webpack://example/src/a/../b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/b/foo.ts',
@@ -431,91 +449,91 @@ describe('TextSourceMap', () => {
 
       // Relative sourceRoot, relative sourceURL. The sourceRoot and sourceURL paths are concatenated and normalized before resolving against the sourceMapURL.
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/a/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/b/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/a/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/b/src/foo.ts',
       },
       {
-        sourceRoot: 'src/',
+        sourceRoot: relativeSourceRootSrcSlash,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'src/',
+        sourceRoot: relativeSourceRootSrcSlash,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/a/src/foo.ts',
       },
       {
-        sourceRoot: 'src/',
+        sourceRoot: relativeSourceRootSrcSlash,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/b/src/foo.ts',
       },
       {
-        sourceRoot: '/src',
+        sourceRoot: relativeSourceRootSlashSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: '/src',
+        sourceRoot: relativeSourceRootSlashSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: '/src',
+        sourceRoot: relativeSourceRootSlashSrc,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '../foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/b/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '../../foo.ts',
         sourceMapURL: 'http://example.com/a/b/foo.js.map',
         expected: 'http://example.com/a/foo.ts',
       },
       {
-        sourceRoot: 'src',
+        sourceRoot: relativeSourceRootSrc,
         sourceURL: '../../../foo.ts',
         sourceMapURL: 'http://example.com/a/foo.js.map',
         expected: 'http://example.com/foo.ts',
@@ -523,13 +541,13 @@ describe('TextSourceMap', () => {
 
       // Relative sourceRoot, absolute sourceURL. Ignore the sourceRoot, normalize the sourceURL.
       {
-        sourceRoot: 'c/d',
+        sourceRoot: relativeSourceRootCSlashD,
         sourceURL: 'webpack://example/src/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/foo.ts',
       },
       {
-        sourceRoot: 'c/d',
+        sourceRoot: relativeSourceRootCSlashD,
         sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/a/b/foo.ts',
@@ -537,55 +555,55 @@ describe('TextSourceMap', () => {
 
       // Absolute sourceRoot, relative sourceURL. Append the sourceURL path into the sourceRoot path, normalize and use the resulting URL.
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: 'foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: 'a/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/a/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: 'a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/a/b/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: '/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: '/a/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/a/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: '/a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/src/a/b/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: '../foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src',
+        sourceRoot: absoluteSourceRootExample,
         sourceURL: '../../foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
       },
       {
-        sourceRoot: 'http://example.com/src/a/b',
+        sourceRoot: 'http://example.com/src/a/b' as Platform.DevToolsPath.UrlString,
         sourceURL: '../../../foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'http://example.com/foo.ts',
@@ -593,13 +611,13 @@ describe('TextSourceMap', () => {
 
       // Absolute sourceRoot, absolute sourceURL. Ignore the sourceRoot, normalize the sourceURL.
       {
-        sourceRoot: 'http://foo.com/src',
+        sourceRoot: absoluteSourceRootFoo,
         sourceURL: 'webpack://example/src/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/foo.ts',
       },
       {
-        sourceRoot: 'http://foo.com/src',
+        sourceRoot: absoluteSourceRootFoo,
         sourceURL: 'webpack://example/../../../src/a/b/foo.ts',
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/a/b/foo.ts',
@@ -612,15 +630,15 @@ describe('TextSourceMap', () => {
            const mappingPayload = {
              mappings: 'AAAA;;;CACA',
              sourceRoot,
-             sources: [sourceURL],
+             sources: [sourceURL as Platform.DevToolsPath.UrlString],
              version: 1,
              file: undefined,
              sections: undefined,
              names: undefined,
              sourcesContent: undefined,
            };
-           const sourceMap =
-               new SDK.SourceMap.TextSourceMap('compiled.js', sourceMapURL, mappingPayload, fakeInitiator);
+           const sourceMap = new SDK.SourceMap.TextSourceMap(
+               compiledUrl, sourceMapURL as Platform.DevToolsPath.UrlString, mappingPayload, fakeInitiator);
            const sourceURLs = sourceMap.sourceURLs();
            assert.lengthOf(sourceURLs, 1, 'unexpected number of original source URLs');
            assert.strictEqual(sourceURLs[0], expected);

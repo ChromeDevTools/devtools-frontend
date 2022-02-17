@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as SourceMapEncoder from './SourceMapEncoder.js';
 
 describe('SourceMapEncoder', () => {
@@ -45,7 +46,7 @@ describe('SourceMapEncoder', () => {
 
     assert.deepEqual(
         {
-          sources: ['a.js'],
+          sources: ['a.js' as Platform.DevToolsPath.UrlString],
           names: [],
           mappings: 'AAAA',
           version: 3,
@@ -58,7 +59,7 @@ describe('SourceMapEncoder', () => {
 
     assert.deepEqual(
         {
-          sources: ['a.js'],
+          sources: ['a.js' as Platform.DevToolsPath.UrlString],
           names: ['b'],
           mappings: 'AAAAA',
           version: 3,
@@ -95,7 +96,7 @@ describe('SourceMapEncoder', () => {
     // Relative source, source line and source column.
     assert.deepEqual(
         {
-          sources: ['a.js', 'b.js', 'c.js'],
+          sources: ['a.js', 'b.js', 'c.js'] as Platform.DevToolsPath.UrlString[],
           names: [],
           mappings: 'CACC;CCEC;CCFC;CDAH',
           version: 3,
@@ -110,7 +111,7 @@ describe('SourceMapEncoder', () => {
   it('can encode names correctly', () => {
     assert.deepEqual(
         {
-          sources: ['a.js'],
+          sources: ['a.js' as Platform.DevToolsPath.UrlString],
           names: ['a', 'b', 'c'],
           mappings: 'AAAAA;AACAC;AACAC;AACAF',
           version: 3,
@@ -126,7 +127,7 @@ describe('SourceMapEncoder', () => {
   it('can encode small realistic samples correctly', () => {
     assert.deepEqual(
         {
-          sources: ['example.js'],
+          sources: ['example.js' as Platform.DevToolsPath.UrlString],
           names: ['a', 'b', 'c', 'd'],
           mappings: 'AAASA,QAAAA,IAAG,CAACC,CAAD,CAAaC,CAAb,CACZ,CACI,MAAOD,EAAP,CAAoBC,CADxB,CAIA,IAAIC,OAAS;A',
           version: 3,
@@ -159,7 +160,7 @@ describe('SourceMapEncoder', () => {
 
     assert.deepEqual(
         {
-          sources: ['sourcemap-stepping-source.js'],
+          sources: ['sourcemap-stepping-source.js' as Platform.DevToolsPath.UrlString],
           names: [],
           mappings:
               'AAAA,oCAAoC;;AAEpC;GACG;GAAA;GAAA;GACA;GAAA;GAAA;GACA;GAAA;GAAA;;GAEA;AACH;;AAEA;GACG;GACA;GACA;;GAEA;AACH',

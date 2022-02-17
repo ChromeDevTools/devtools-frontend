@@ -117,6 +117,7 @@
   height: 26px;
   line-height: 16px;
   white-space: nowrap;
+  cursor: default;
   display: flex;
   align-items: center;
   color: var(--color-text-secondary);

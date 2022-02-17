@@ -18,7 +18,7 @@ Loading…
 Create config
 Requiring gatherers
 Requiring audits
-Runner setup
+Gather phase
 Connecting to browser
 Resetting state with about:blank
 Navigating to about:blank
@@ -147,6 +147,7 @@ Running afterPass methods
 Gathering: ServiceWorker
 Disconnecting from browser...
 Cleaning origin data
+Audit phase
 Analyzing and running audits...
 Auditing: Uses HTTPS
 Auditing: Registers a service worker that controls page and `start_url`
@@ -370,7 +371,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 9.3.0
+Version: 9.4.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,

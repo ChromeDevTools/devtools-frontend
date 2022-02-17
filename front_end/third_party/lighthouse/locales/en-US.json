@@ -1668,7 +1668,7 @@
     "message": "Best practices"
   },
   "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://web.dev/lighthouse-accessibility/). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged."
   },
   "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review)."
@@ -2542,6 +2542,12 @@
   },
   "report/renderer/util.js | varianceDisclaimer": {
     "message": "Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics."
+  },
+  "report/renderer/util.js | viewOriginalTraceLabel": {
+    "message": "View Original Trace"
+  },
+  "report/renderer/util.js | viewTraceLabel": {
+    "message": "View Trace"
   },
   "report/renderer/util.js | viewTreemapLabel": {
     "message": "View Treemap"

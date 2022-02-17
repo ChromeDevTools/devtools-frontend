@@ -118,15 +118,13 @@ async function start(method: string, params: any): Promise<unknown> {
     if (method === 'snapshot') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
       return await self.runLighthouseSnapshot({
-        url,
         config,
         page: puppeteerConnection.page,
       });
     }
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouseNavigation({
-      url,
+    return await self.runLighthouseNavigation(url, {
       config,
       page: puppeteerConnection.page,
     });

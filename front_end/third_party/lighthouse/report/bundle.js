@@ -626,6 +626,10 @@ const UIStrings = {
   thirdPartyResourcesLabel: 'Show 3rd-party resources',
   /** This label is for a button that opens a new tab to a webapp called "Treemap", which is a nested visual representation of a heierarchy of data related to the reports (script bytes and coverage, resource breakdown, etc.) */
   viewTreemapLabel: 'View Treemap',
+  /** This label is for a button that will show the user a trace of the page. */
+  viewTraceLabel: 'View Trace',
+  /** This label is for a button that will show the user a trace of the page. */
+  viewOriginalTraceLabel: 'View Original Trace',
 
   /** Option in a dropdown menu that opens a small, summary report in a print dialog.  */
   dropdownPrintSummary: 'Print Summary',
@@ -1041,7 +1045,7 @@ function createGaugePwaComponent(dom) {
 function createHeadingComponent(dom) {
   const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
-  el1.append('\n    /* CSS Fireworks. Originally by Eddie Lin\n       https://codepen.io/paulirish/pen/yEVMbP\n    */\n    .lh-pyro {\n      display: none;\n      z-index: 1;\n      pointer-events: none;\n    }\n    .lh-score100 .lh-pyro {\n      display: block;\n    }\n    .lh-score100 .lh-lighthouse stop:first-child {\n      stop-color: hsla(200, 12%, 95%, 0);\n    }\n    .lh-score100 .lh-lighthouse stop:last-child {\n      stop-color: hsla(65, 81%, 76%, 1);\n    }\n\n    .lh-pyro > .lh-pyro-before, .lh-pyro > .lh-pyro-after {\n      position: absolute;\n      width: 5px;\n      height: 5px;\n      border-radius: 2.5px;\n      box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;\n      animation: 1s bang ease-out infinite backwards,  1s gravity ease-in infinite backwards,  5s position linear infinite backwards;\n      animation-delay: 1s, 1s, 1s;\n    }\n\n    .lh-pyro > .lh-pyro-after {\n      animation-delay: 2.25s, 2.25s, 2.25s;\n      animation-duration: 1.25s, 1.25s, 6.25s;\n    }\n    .lh-fireworks-paused .lh-pyro > div {\n      animation-play-state: paused;\n    }\n\n    @keyframes bang {\n      to {\n        box-shadow: -70px -115.67px #47ebbc, -28px -99.67px #eb47a4, 58px -31.67px #7eeb47, 13px -141.67px #eb47c5, -19px 6.33px #7347eb, -2px -74.67px #ebd247, 24px -151.67px #eb47e0, 57px -138.67px #b4eb47, -51px -104.67px #479eeb, 62px 8.33px #ebcf47, -93px 0.33px #d547eb, -16px -118.67px #47bfeb, 53px -84.67px #47eb83, 66px -57.67px #eb47bf, -93px -65.67px #91eb47, 30px -13.67px #86eb47, -2px -59.67px #83eb47, -44px 1.33px #eb47eb, 61px -58.67px #47eb73, 5px -22.67px #47e8eb, -66px -28.67px #ebe247, 42px -123.67px #eb5547, -75px 26.33px #7beb47, 15px -52.67px #a147eb, 36px -51.67px #eb8347, -38px -12.67px #eb5547, -46px -59.67px #47eb81, 78px -114.67px #eb47ba, 15px -156.67px #eb47bf, -36px 1.33px #eb4783, -72px -86.67px #eba147, 31px -46.67px #ebe247, -68px 29.33px #47e2eb, -55px 19.33px #ebe047, -56px 27.33px #4776eb, -13px -91.67px #eb5547, -47px -138.67px #47ebc7, -18px -96.67px #eb47ac, 11px -88.67px #4783eb, -67px -28.67px #47baeb, 53px 10.33px #ba47eb, 11px 19.33px #5247eb, -5px -11.67px #eb4791, -68px -4.67px #47eba7, 95px -37.67px #eb478b, -67px -162.67px #eb5d47, -54px -120.67px #eb6847, 49px -12.67px #ebe047, 88px 8.33px #47ebda, 97px 33.33px #eb8147, 6px -71.67px #ebbc47;\n      }\n    }\n    @keyframes gravity {\n      to {\n        transform: translateY(80px);\n        opacity: 0;\n      }\n    }\n    @keyframes position {\n      0%, 19.9% {\n        margin-top: 4%;\n        margin-left: 47%;\n      }\n      20%, 39.9% {\n        margin-top: 7%;\n        margin-left: 30%;\n      }\n      40%, 59.9% {\n        margin-top: 6%;\n        margin-left: 70%;\n      }\n      60%, 79.9% {\n        margin-top: 3%;\n        margin-left: 20%;\n      }\n      80%, 99.9% {\n        margin-top: 3%;\n        margin-left: 80%;\n      }\n    }\n  ');
+  el1.append('\n    /* CSS Fireworks. Originally by Eddie Lin\n       https://codepen.io/paulirish/pen/yEVMbP\n    */\n    .lh-pyro {\n      display: none;\n      z-index: 1;\n      pointer-events: none;\n    }\n    .lh-score100 .lh-pyro {\n      display: block;\n    }\n    .lh-score100 .lh-lighthouse stop:first-child {\n      stop-color: hsla(200, 12%, 95%, 0);\n    }\n    .lh-score100 .lh-lighthouse stop:last-child {\n      stop-color: hsla(65, 81%, 76%, 1);\n    }\n\n    .lh-pyro > .lh-pyro-before, .lh-pyro > .lh-pyro-after {\n      position: absolute;\n      width: 5px;\n      height: 5px;\n      border-radius: 2.5px;\n      box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;\n      animation: 1s bang ease-out infinite backwards,  1s gravity ease-in infinite backwards,  5s position linear infinite backwards;\n      animation-delay: 1s, 1s, 1s;\n    }\n\n    .lh-pyro > .lh-pyro-after {\n      animation-delay: 2.25s, 2.25s, 2.25s;\n      animation-duration: 1.25s, 1.25s, 6.25s;\n    }\n\n    @keyframes bang {\n      to {\n        box-shadow: -70px -115.67px #47ebbc, -28px -99.67px #eb47a4, 58px -31.67px #7eeb47, 13px -141.67px #eb47c5, -19px 6.33px #7347eb, -2px -74.67px #ebd247, 24px -151.67px #eb47e0, 57px -138.67px #b4eb47, -51px -104.67px #479eeb, 62px 8.33px #ebcf47, -93px 0.33px #d547eb, -16px -118.67px #47bfeb, 53px -84.67px #47eb83, 66px -57.67px #eb47bf, -93px -65.67px #91eb47, 30px -13.67px #86eb47, -2px -59.67px #83eb47, -44px 1.33px #eb47eb, 61px -58.67px #47eb73, 5px -22.67px #47e8eb, -66px -28.67px #ebe247, 42px -123.67px #eb5547, -75px 26.33px #7beb47, 15px -52.67px #a147eb, 36px -51.67px #eb8347, -38px -12.67px #eb5547, -46px -59.67px #47eb81, 78px -114.67px #eb47ba, 15px -156.67px #eb47bf, -36px 1.33px #eb4783, -72px -86.67px #eba147, 31px -46.67px #ebe247, -68px 29.33px #47e2eb, -55px 19.33px #ebe047, -56px 27.33px #4776eb, -13px -91.67px #eb5547, -47px -138.67px #47ebc7, -18px -96.67px #eb47ac, 11px -88.67px #4783eb, -67px -28.67px #47baeb, 53px 10.33px #ba47eb, 11px 19.33px #5247eb, -5px -11.67px #eb4791, -68px -4.67px #47eba7, 95px -37.67px #eb478b, -67px -162.67px #eb5d47, -54px -120.67px #eb6847, 49px -12.67px #ebe047, 88px 8.33px #47ebda, 97px 33.33px #eb8147, 6px -71.67px #ebbc47;\n      }\n    }\n    @keyframes gravity {\n      to {\n        transform: translateY(80px);\n        opacity: 0;\n      }\n    }\n    @keyframes position {\n      0%, 19.9% {\n        margin-top: 4%;\n        margin-left: 47%;\n      }\n      20%, 39.9% {\n        margin-top: 7%;\n        margin-left: 30%;\n      }\n      40%, 59.9% {\n        margin-top: 6%;\n        margin-left: 70%;\n      }\n      60%, 79.9% {\n        margin-top: 3%;\n        margin-left: 20%;\n      }\n      80%, 99.9% {\n        margin-top: 3%;\n        margin-left: 80%;\n      }\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('div', 'lh-header-container');
   const el3 = dom.createElement('div', 'lh-scores-wrapper-placeholder');
@@ -1142,8 +1146,8 @@ function createScoresWrapperComponent(dom) {
   const el2 = dom.createElement('div', 'lh-scores-wrapper');
   const el3 = dom.createElement('div', 'lh-scores-container');
   const el4 = dom.createElement('div', 'lh-pyro');
-  const el5 = dom.createElement('div', 'lh-before');
-  const el6 = dom.createElement('div', 'lh-after');
+  const el5 = dom.createElement('div', 'lh-pyro-before');
+  const el6 = dom.createElement('div', 'lh-pyro-after');
   el4.append(' ', el5, ' ', el6, ' ');
   el3.append(' ', el4, ' ');
   el2.append(' ', el3, ' ');
@@ -1772,10 +1776,8 @@ class DOM {
    * @param {string} filename
    */
   saveFile(blob, filename) {
-    const ext = blob.type.match('json') ? '.json' : '.html';
-
     const a = this.createElement('a');
-    a.download = `${filename}${ext}`;
+    a.download = filename;
     this.safelySetBlobHref(a, blob);
     this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
     a.click();
@@ -5497,7 +5499,11 @@ class TopbarFeatures {
   }
 
   _print() {
-    self.print();
+    if (this._reportUIFeatures._opts.onPrintOverride) {
+      this._reportUIFeatures._opts.onPrintOverride(this._dom.rootEl);
+    } else {
+      self.print();
+    }
   }
 
   /**
@@ -5725,12 +5731,13 @@ class ReportUIFeatures {
     this._setupThirdPartyFilter();
     this._setupElementScreenshotOverlay(this._dom.rootEl);
 
-    let turnOffTheLights = false;
     // Do not query the system preferences for DevTools - DevTools should only apply dark theme
     // if dark is selected in the settings panel.
-    const disableDarkMode = this._dom.isDevTools() || this._opts.disableAutoDarkModeAndFireworks;
+    // TODO: set `disableDarkMode` in devtools and delete this special case.
+    const disableDarkMode = this._dom.isDevTools() ||
+      this._opts.disableDarkMode || this._opts.disableAutoDarkModeAndFireworks;
     if (!disableDarkMode && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      turnOffTheLights = true;
+      toggleDarkTheme(this._dom, true);
     }
 
     // Fireworks!
@@ -5740,13 +5747,12 @@ class ReportUIFeatures {
       const cat = lhr.categories[id];
       return cat && cat.score === 1;
     });
-    if (scoresAll100) {
-      turnOffTheLights = true;
+    const disableFireworks =
+      this._opts.disableFireworks || this._opts.disableAutoDarkModeAndFireworks;
+    if (scoresAll100 && !disableFireworks) {
       this._enableFireworks();
-    }
-
-    if (turnOffTheLights) {
-      toggleDarkTheme(this._dom, true);
+      // If dark mode is allowed, force it on because it looks so much better.
+      if (!disableDarkMode) toggleDarkTheme(this._dom, true);
     }
 
     // Show the metric descriptions by default when there is an error.
@@ -5764,6 +5770,15 @@ class ReportUIFeatures {
         text: Util.i18n.strings.viewTreemapLabel,
         icon: 'treemap',
         onClick: () => openTreemap(this.json),
+      });
+    }
+
+    if (this._opts.onViewTrace) {
+      this.addButton({
+        text: lhr.configSettings.throttlingMethod === 'simulate' ?
+          Util.i18n.strings.viewOriginalTraceLabel :
+          Util.i18n.strings.viewTraceLabel,
+        onClick: () => this._opts.onViewTrace?.(),
       });
     }
 
@@ -5835,9 +5850,6 @@ class ReportUIFeatures {
   _enableFireworks() {
     const scoresContainer = this._dom.find('.lh-scores-container', this._dom.rootEl);
     scoresContainer.classList.add('lh-score100');
-    scoresContainer.addEventListener('click', _ => {
-      scoresContainer.classList.toggle('lh-fireworks-paused');
-    });
   }
 
   _setupMediaQueryListeners() {
@@ -5994,14 +6006,16 @@ class ReportUIFeatures {
   }
 
   /**
-   * DevTools uses its own file manager to download files, so it redefines this function.
-   * Wrapper is necessary so DevTools can still override this function.
-   *
    * @param {Blob|File} blob
    */
   _saveFile(blob) {
-    const filename = fileNamer.getLhrFilenamePrefix(this.json);
-    this._dom.saveFile(blob, filename);
+    const ext = blob.type.match('json') ? '.json' : '.html';
+    const filename = fileNamer.getLhrFilenamePrefix(this.json) + ext;
+    if (this._opts.onSaveFileOverride) {
+      this._opts.onSaveFileOverride(blob, filename);
+    } else {
+      this._dom.saveFile(blob, filename);
+    }
   }
 }
 

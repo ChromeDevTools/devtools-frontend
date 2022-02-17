@@ -1668,7 +1668,7 @@
     "message": "B̂éŝt́ p̂ŕâćt̂íĉéŝ"
   },
   "lighthouse-core/config/default-config.js | a11yCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://developers.google.com/web/fundamentals/accessibility). Ôńl̂ý â śûb́ŝét̂ óf̂ áĉćêśŝíb̂íl̂ít̂ý îśŝúêś ĉán̂ b́ê áût́ôḿât́îćâĺl̂ý d̂ét̂éĉt́êd́ ŝó m̂án̂úâĺ t̂éŝt́îńĝ íŝ ál̂śô én̂ćôúr̂áĝéd̂."
+    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://web.dev/lighthouse-accessibility/). Ôńl̂ý â śûb́ŝét̂ óf̂ áĉćêśŝíb̂íl̂ít̂ý îśŝúêś ĉán̂ b́ê áût́ôḿât́îćâĺl̂ý d̂ét̂éĉt́êd́ ŝó m̂án̂úâĺ t̂éŝt́îńĝ íŝ ál̂śô én̂ćôúr̂áĝéd̂."
   },
   "lighthouse-core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "T̂h́êśê ít̂ém̂ś âd́d̂ŕêśŝ ár̂éâś ŵh́îćĥ án̂ áût́ôḿât́êd́ t̂éŝt́îńĝ t́ôól̂ ćâńn̂ót̂ ćôv́êŕ. L̂éâŕn̂ ḿôŕê ín̂ óûŕ ĝúîd́ê ón̂ [ćôńd̂úĉt́îńĝ án̂ áĉćêśŝíb̂íl̂ít̂ý r̂év̂íêẃ](https://developers.google.com/web/fundamentals/accessibility/how-to-review)."
@@ -2542,6 +2542,12 @@
   },
   "report/renderer/util.js | varianceDisclaimer": {
     "message": "V̂ál̂úêś âŕê éŝt́îḿât́êd́ âńd̂ ḿâý v̂ár̂ý. T̂h́ê [ṕêŕf̂ór̂ḿâńĉé ŝćôŕê íŝ ćâĺĉúl̂át̂éd̂](https://web.dev/performance-scoring/) d́îŕêćt̂ĺŷ f́r̂óm̂ t́ĥéŝé m̂ét̂ŕîćŝ."
+  },
+  "report/renderer/util.js | viewOriginalTraceLabel": {
+    "message": "V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê"
+  },
+  "report/renderer/util.js | viewTraceLabel": {
+    "message": "V̂íêẃ T̂ŕâćê"
   },
   "report/renderer/util.js | viewTreemapLabel": {
     "message": "V̂íêẃ T̂ŕêém̂áp̂"

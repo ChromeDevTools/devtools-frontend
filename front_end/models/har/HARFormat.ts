@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 class HARBase {
@@ -197,7 +199,7 @@ export class HAREntry extends HARBase {
 
 class HARRequest extends HARBase {
   method: string;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   httpVersion: string;
   cookies: HARCookie[];
   headers: HARHeader[];
@@ -209,7 +211,7 @@ class HARRequest extends HARBase {
   constructor(data: any) {
     super(data);
     this.method = String(data['method']);
-    this.url = String(data['url']);
+    this.url = String(data['url']) as Platform.DevToolsPath.UrlString;
     this.httpVersion = String(data['httpVersion']);
     this.cookies = Array.isArray(data['cookies']) ? data['cookies'].map(cookie => new HARCookie(cookie)) : [];
     this.headers = Array.isArray(data['headers']) ? data['headers'].map(header => new HARHeader(header)) : [];

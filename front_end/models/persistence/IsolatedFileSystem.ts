@@ -81,7 +81,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   constructor(
       manager: IsolatedFileSystemManager, path: string, embedderPath: string, domFileSystem: FileSystem, type: string) {
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
     super(path, type);
     this.manager = manager;
     this.embedderPathInternal = embedderPath;

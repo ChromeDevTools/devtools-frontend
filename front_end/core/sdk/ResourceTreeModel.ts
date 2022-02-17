@@ -51,8 +51,6 @@ import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 export class ResourceTreeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.PageApi;
   readonly #securityOriginManager: SecurityOriginManager;
@@ -304,8 +302,8 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
 
     const resource = new Resource(
-        this, null, url, frame.url as Platform.DevToolsPath.UrlString, frameId, data.loaderId,
-        Common.ResourceType.resourceTypes[data.resourceType], data.mimeType, data.lastModified, null);
+        this, null, url, frame.url, frameId, data.loaderId, Common.ResourceType.resourceTypes[data.resourceType],
+        data.mimeType, data.lastModified, null);
     frame.addResource(resource);
   }
 
@@ -606,7 +604,7 @@ export class ResourceTreeFrame {
   crossTargetParentFrameId: string|null;
   #loaderIdInternal: string;
   #nameInternal: string|null|undefined;
-  #urlInternal: string;
+  #urlInternal: Platform.DevToolsPath.UrlString;
   #domainAndRegistryInternal: string;
   #securityOriginInternal: string|null;
   #unreachableUrlInternal: string;
@@ -638,7 +636,7 @@ export class ResourceTreeFrame {
 
     this.#loaderIdInternal = (payload && payload.loaderId) || '';
     this.#nameInternal = payload && payload.name;
-    this.#urlInternal = (payload && payload.url) || '';
+    this.#urlInternal = ((payload && payload.url) || '') as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
     this.#securityOriginInternal = payload && payload.securityOrigin;
     this.#unreachableUrlInternal = (payload && payload.unreachableUrl) || '';
@@ -690,7 +688,7 @@ export class ResourceTreeFrame {
   navigate(framePayload: Protocol.Page.Frame): void {
     this.#loaderIdInternal = framePayload.loaderId;
     this.#nameInternal = framePayload.name;
-    this.#urlInternal = framePayload.url;
+    this.#urlInternal = framePayload.url as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
     this.#securityOriginInternal = framePayload.securityOrigin;
     this.#unreachableUrlInternal = framePayload.unreachableUrl || '';
@@ -724,7 +722,7 @@ export class ResourceTreeFrame {
     return this.#nameInternal || '';
   }
 
-  get url(): string {
+  get url(): Platform.DevToolsPath.UrlString {
     return this.#urlInternal;
   }
 
@@ -847,8 +845,8 @@ export class ResourceTreeFrame {
       return;
     }
     resource = new Resource(
-        this.#model, request, request.url(), request.documentURL as Platform.DevToolsPath.UrlString, request.frameId,
-        request.loaderId, request.resourceType(), request.mimeType, null, null);
+        this.#model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
+        request.resourceType(), request.mimeType, null, null);
     this.resourcesMap.set(resource.url, resource);
     this.#model.dispatchEventToListeners(Events.ResourceAdded, resource);
   }

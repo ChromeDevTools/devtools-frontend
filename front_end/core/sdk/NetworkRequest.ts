@@ -204,7 +204,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     TextUtils.ContentProvider.ContentProvider {
   #requestIdInternal: string;
   #backendRequestIdInternal?: Protocol.Network.RequestId;
-  readonly #documentURLInternal: string;
+  readonly #documentURLInternal: Platform.DevToolsPath.UrlString;
   readonly #frameIdInternal: Protocol.Page.FrameId|null;
   readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
   readonly #initiatorInternal: Protocol.Network.Initiator|null|undefined;
@@ -293,9 +293,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #wasIntercepted: boolean;
 
   private constructor(
-      requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string, documentURL: string,
-      frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
-      initiator: Protocol.Network.Initiator|null) {
+      requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string,
+      documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
+      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null) {
     super();
 
     this.#requestIdInternal = requestId;
@@ -369,7 +369,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   static create(
-      backendRequestId: Protocol.Network.RequestId, url: string, documentURL: string,
+      backendRequestId: Protocol.Network.RequestId, url: string, documentURL: Platform.DevToolsPath.UrlString,
       frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
       initiator: Protocol.Network.Initiator|null): NetworkRequest {
     return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator);
@@ -378,11 +378,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   static createForWebSocket(
       backendRequestId: Protocol.Network.RequestId, requestURL: string,
       initiator?: Protocol.Network.Initiator): NetworkRequest {
-    return new NetworkRequest(backendRequestId, backendRequestId, requestURL, '', null, null, initiator || null);
+    return new NetworkRequest(
+        backendRequestId, backendRequestId, requestURL, '' as Platform.DevToolsPath.UrlString, null, null,
+        initiator || null);
   }
 
   static createWithoutBackendRequest(
-      requestId: string, url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
+      requestId: string, url: string, documentURL: Platform.DevToolsPath.UrlString,
+      initiator: Protocol.Network.Initiator|null): NetworkRequest {
     return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator);
   }
 
@@ -428,7 +431,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#pathInternal = undefined;
   }
 
-  get documentURL(): string {
+  get documentURL(): Platform.DevToolsPath.UrlString {
     return this.#documentURLInternal;
   }
 

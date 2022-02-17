@@ -14,9 +14,9 @@ export class StaticContentProvider implements ContentProvider {
   private readonly lazyContent: () => Promise<DeferredContent>;
 
   constructor(
-      contentURL: string, contentType: Common.ResourceType.ResourceType, lazyContent: () => Promise<DeferredContent>) {
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    this.contentURLInternal = contentURL as Platform.DevToolsPath.UrlString;
+      contentURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+      lazyContent: () => Promise<DeferredContent>) {
+    this.contentURLInternal = contentURL;
     this.contentTypeInternal = contentType;
     this.lazyContent = lazyContent;
   }
@@ -27,7 +27,8 @@ export class StaticContentProvider implements ContentProvider {
       content: string,
       isEncoded: boolean,
     }> => Promise.resolve({content, isEncoded: false});
-    return new StaticContentProvider(contentURL, contentType, lazyContent);
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    return new StaticContentProvider(contentURL as Platform.DevToolsPath.UrlString, contentType, lazyContent);
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {

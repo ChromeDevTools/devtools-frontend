@@ -38,7 +38,6 @@ export class Importer {
           lineNumber: initiatorEntry.lineNumber,
         };
       }
-
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
           'har-' + requests.length, entry.request.url, documentURL, initiator);
       const page = pageref ? pages.get(pageref) : undefined;

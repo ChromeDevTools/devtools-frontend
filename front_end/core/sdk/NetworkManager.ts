@@ -32,6 +32,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
+
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
@@ -591,7 +593,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest = this.appendRedirect(requestId, timestamp, request.url);
       this.#manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
     } else {
-      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator);
+      networkRequest = NetworkRequest.create(
+          requestId, request.url, documentURL as Platform.DevToolsPath.UrlString, frameId ?? null, loaderId, initiator);
       requestToManagerMap.set(networkRequest, this.#manager);
     }
     networkRequest.hasNetworkData = true;
@@ -1071,7 +1074,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   private createNetworkRequest(
       requestId: Protocol.Network.RequestId, frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId,
       url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
-    const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
+    const request = NetworkRequest.create(
+        requestId, url, documentURL as Platform.DevToolsPath.UrlString, frameId, loaderId, initiator);
     requestToManagerMap.set(request, this.#manager);
     return request;
   }

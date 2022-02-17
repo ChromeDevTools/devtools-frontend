@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
@@ -78,7 +79,7 @@ export class SASSSourceMapping implements SourceMapping {
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
-        binding = new Binding(project, sourceURL);
+        binding = new Binding(project, sourceURL as Platform.DevToolsPath.UrlString);
         bindings.set(sourceURL, binding);
       }
       binding.addSourceMap(sourceMap, header.frameId);
@@ -163,11 +164,11 @@ const uiSourceCodeToBinding = new WeakMap<Workspace.UISourceCode.UISourceCode, B
 
 class Binding {
   readonly #project: ContentProviderBasedProject;
-  readonly #url: string;
+  readonly #url: Platform.DevToolsPath.UrlString;
   referringSourceMaps: SDK.SourceMap.TextSourceMap[];
   uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
 
-  constructor(project: ContentProviderBasedProject, url: string) {
+  constructor(project: ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString) {
     this.#project = project;
     this.#url = url;
 

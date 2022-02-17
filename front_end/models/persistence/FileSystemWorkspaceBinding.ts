@@ -79,9 +79,9 @@ export class FileSystemWorkspaceBinding {
     return fileSystem.supportsAutomapping();
   }
 
-  static completeURL(project: Workspace.Workspace.Project, relativePath: string): string {
+  static completeURL(project: Workspace.Workspace.Project, relativePath: string): Platform.DevToolsPath.UrlString {
     const fsProject = project as FileSystem;
-    return fsProject.fileSystemBaseURL + relativePath;
+    return Common.ParsedURL.ParsedURL.concatenate(fsProject.fileSystemBaseURL, relativePath);
   }
 
   static fileSystemPath(projectId: string): string {
@@ -155,7 +155,7 @@ export class FileSystemWorkspaceBinding {
 
 export class FileSystem extends Workspace.Workspace.ProjectStore {
   readonly fileSystemInternal: PlatformFileSystem;
-  readonly fileSystemBaseURL: string;
+  readonly fileSystemBaseURL: Platform.DevToolsPath.UrlString;
   private readonly fileSystemParentURL: string;
   private readonly fileSystemWorkspaceBinding: FileSystemWorkspaceBinding;
   private readonly fileSystemPathInternal: string;
@@ -171,7 +171,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     super(workspace, id, Workspace.Workspace.projectTypes.FileSystem, displayName);
 
     this.fileSystemInternal = isolatedFileSystem;
-    this.fileSystemBaseURL = this.fileSystemInternal.path() + '/';
+    this.fileSystemBaseURL = Common.ParsedURL.ParsedURL.concatenate(this.fileSystemInternal.path(), '/');
     this.fileSystemParentURL = this.fileSystemBaseURL.substr(0, fileSystemPath.lastIndexOf('/') + 1);
     this.fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this.fileSystemPathInternal = fileSystemPath;

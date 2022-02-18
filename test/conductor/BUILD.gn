@@ -19,6 +19,7 @@ node_ts_library("implementation") {
     "frontend_tab.ts",
     "hooks.ts",
     "mocha_hooks.ts",
+    "pool.ts",
     "puppeteer-state.ts",
     "target_tab.ts",
     "test_runner_config.ts",

@@ -40,6 +40,8 @@ export class DevToolsFrontendTab {
     name: 'elements',
     selector: '.elements',
   };
+  // We use the counter to give each tab a unique origin.
+  private static tabCounter = 0;
 
   private constructor(readonly page: puppeteer.Page, frontendUrl: string) {
     this.#frontendUrl = frontendUrl;
@@ -56,7 +58,10 @@ export class DevToolsFrontendTab {
     // We load the DevTools frontend on a unique origin. Otherwise we would share 'localhost' with
     // target pages. This could cause difficult to debug problems as things like window.localStorage
     // would be shared and requests would be "same-origin".
-    const frontendUrl = `https://i1.devtools-frontend.test:${testServerPort}/${devToolsAppURL}?ws=localhost:${
+    // We also use a unique ID per DevTools frontend instance, to avoid the same issue with other
+    // frontend instances.
+    const id = DevToolsFrontendTab.tabCounter++;
+    const frontendUrl = `https://i${id}.devtools-frontend.test:${testServerPort}/${devToolsAppURL}?ws=localhost:${
         getDebugPort(browser)}/devtools/page/${targetId}`;
 
     const frontend = await browser.newPage();

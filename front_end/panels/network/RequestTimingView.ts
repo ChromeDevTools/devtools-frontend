@@ -224,6 +224,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {
   private request: SDK.NetworkRequest.NetworkRequest;
   private calculator: NetworkTimeCalculator;
+  private lastMinimumBoundary: number;
   private tableElement?: Element;
   constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator) {
     super();
@@ -231,6 +232,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     this.request = request;
     this.calculator = calculator;
+    this.lastMinimumBoundary = -1;
   }
 
   private static timeRangeTitle(name: RequestTimeRangeNames): string {
@@ -647,7 +649,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   wasShown(): void {
     this.request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
-    this.calculator.addEventListener(Events.BoundariesChanged, this.refresh, this);
+    this.calculator.addEventListener(Events.BoundariesChanged, this.boundaryChanged, this);
     this.registerCSSFiles([networkingTimingTableStyles]);
     this.refresh();
   }
@@ -655,7 +657,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
     this.request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
-    this.calculator.removeEventListener(Events.BoundariesChanged, this.refresh, this);
+    this.calculator.removeEventListener(Events.BoundariesChanged, this.boundaryChanged, this);
   }
 
   private refresh(): void {
@@ -669,6 +671,14 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     if (this.request.fetchedViaServiceWorker) {
       this.constructFetchDetailsView();
+    }
+  }
+
+  private boundaryChanged(): void {
+    const minimumBoundary = this.calculator.minimumBoundary();
+    if (minimumBoundary !== this.lastMinimumBoundary) {
+      this.lastMinimumBoundary = minimumBoundary;
+      this.refresh();
     }
   }
 }

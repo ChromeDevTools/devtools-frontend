@@ -6,7 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("lighthouse_worker") {
-  sources = [ "LighthouseService.ts" ]
+  sources = [ "LighthouseWorkerService.ts" ]
 
   deps = [
     "../../core/root:bundle",

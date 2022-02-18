@@ -11,13 +11,17 @@ function disableLoggingForTest(): void {
 }
 
 /**
+ * LegacyPort is provided to Lighthouse as the CDP connection in legacyNavigation mode.
+ * Its complement is https://github.com/GoogleChrome/lighthouse/blob/v9.3.1/lighthouse-core/gather/connections/raw.js
+ * It speaks pure CDP via notifyFrontendViaWorkerMessage
+ *
  * Any message that comes back from Lighthouse has to go via a so-called "port".
  * This class holds the relevant callbacks that Lighthouse provides and that
  * can be called in the onmessage callback of the worker, so that the frontend
  * can communicate to Lighthouse. Lighthouse itself communicates to the frontend
  * via status updates defined below.
  */
-class LighthousePort {
+class LegacyPort {
   onMessage?: (message: string) => void;
   onClose?: () => void;
   on(eventName: string, callback: (arg?: string) => void): void {
@@ -35,6 +39,10 @@ class LighthousePort {
   }
 }
 
+/**
+ * ConnectionProxy is a SDK interface, but the implementation has no knowledge it's a parallelConnection.
+ * The CDP traffic is smuggled back and forth by the system described in LighthouseProtocolService
+*/
 class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
   sessionId: string;
   onMessage: ((arg0: Object) => void)|null;
@@ -73,15 +81,15 @@ class ConnectionProxy implements SDK.Connections.ParallelConnectionInterface {
   }
 }
 
-const port = new LighthousePort();
-let rawConnection: ConnectionProxy|undefined;
+const legacyPort = new LegacyPort();
+let cdpConnection: ConnectionProxy|undefined;
 let endTimespan: (() => unknown)|undefined;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function start(method: string, params: any): Promise<unknown> {
+async function invokeLH(action: string, args: any): Promise<unknown> {
   if (Root.Runtime.Runtime.queryParam('isUnderTest')) {
     disableLoggingForTest();
-    params.flags.maxWaitForLoad = 2 * 1000;
+    args.flags.maxWaitForLoad = 2 * 1000;
   }
 
   // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
@@ -95,7 +103,7 @@ async function start(method: string, params: any): Promise<unknown> {
   try {
     // For timespan we only need to perform setup on startTimespan.
     // Config, flags, locale, etc. should be stored in the closure of endTimespan.
-    if (method === 'endTimespan') {
+    if (action === 'endTimespan') {
       if (!endTimespan) {
         throw new Error('Cannot end a timespan before starting one');
       }
@@ -104,35 +112,36 @@ async function start(method: string, params: any): Promise<unknown> {
       return result;
     }
 
-    const locale = await fetchLocaleData(params.locales);
-    const flags = params.flags;
+    const locale = await fetchLocaleData(args.locales);
+    const flags = args.flags;
     flags.logLevel = flags.logLevel || 'info';
     flags.channel = 'devtools';
     flags.locale = locale;
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    const config = self.createConfig(params.categoryIDs, flags.emulatedFormFactor);
-    const url = params.url;
+    const config = self.createConfig(args.categoryIDs, flags.emulatedFormFactor);
+    const url = args.url;
 
     // Handle legacy Lighthouse runner path.
-    if (method === 'navigation' && flags.legacyNavigation) {
+    if (action === 'navigation' && flags.legacyNavigation) {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const connection = self.setUpWorkerConnection(port);
+      const connection = self.setUpWorkerConnection(legacyPort);
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
       return await self.runLighthouse(url, flags, config, connection);
     }
 
-    const {mainTargetId, mainFrameId, mainSessionId} = params.target;
-    rawConnection = new ConnectionProxy(mainSessionId);
-    const {page} = puppeteerConnection =
-        await Puppeteer.PuppeteerConnection.getPuppeteerConnection(rawConnection, mainFrameId, mainTargetId);
+    const {mainTargetId, mainFrameId, mainSessionId} = args.target;
+    cdpConnection = new ConnectionProxy(mainSessionId);
+    puppeteerConnection =
+        await Puppeteer.PuppeteerConnection.getPuppeteerConnection(cdpConnection, mainFrameId, mainTargetId);
+    const {page} = puppeteerConnection;
 
-    if (method === 'snapshot') {
+    if (action === 'snapshot') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
       return await self.runLighthouseSnapshot({config, page});
     }
 
-    if (method === 'startTimespan') {
+    if (action === 'startTimespan') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
       const timespan = await self.startLighthouseTimespan({config, page});
       endTimespan = timespan.endTimespan;
@@ -149,7 +158,7 @@ async function start(method: string, params: any): Promise<unknown> {
     });
   } finally {
     // endTimespan will need to use the same connection as startTimespan.
-    if (method !== 'startTimespan') {
+    if (action !== 'startTimespan') {
       puppeteerConnection?.browser.disconnect();
     }
   }
@@ -192,34 +201,42 @@ async function fetchLocaleData(locales: string[]): Promise<string|void> {
   return;
 }
 
+/**
+ * `notifyFrontendViaWorkerMessage` and `onFrontendMessage` work with the FE's ProtocolService.
+ *
+ * onFrontendMessage takes action-wrapped messages and either invoking lighthouse or delivering it CDP traffic.
+ * notifyFrontendViaWorkerMessage posts action-wrapped messages to the FE.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function notifyFrontendViaWorkerMessage(method: string, params: any): void {
-  self.postMessage(JSON.stringify({method, params}));
+function notifyFrontendViaWorkerMessage(action: string, args: any): void {
+  self.postMessage(JSON.stringify({action, args}));
 }
 
-self.onmessage = async(event: MessageEvent): Promise<void> => {
+async function onFrontendMessage(event: MessageEvent): Promise<void> {
   const messageFromFrontend = JSON.parse(event.data);
-  switch (messageFromFrontend.method) {
+  switch (messageFromFrontend.action) {
     case 'startTimespan':
     case 'endTimespan':
     case 'snapshot':
     case 'navigation': {
-      const result = await start(messageFromFrontend.method, messageFromFrontend.params);
+      const result = await invokeLH(messageFromFrontend.action, messageFromFrontend.args);
       self.postMessage(JSON.stringify({id: messageFromFrontend.id, result}));
       break;
     }
     case 'dispatchProtocolMessage': {
-      rawConnection?.onMessage?.(
-          JSON.parse(messageFromFrontend.params.message),
+      cdpConnection?.onMessage?.(
+          JSON.parse(messageFromFrontend.args.message),
       );
-      port.onMessage?.(messageFromFrontend.params.message);
+      legacyPort.onMessage?.(messageFromFrontend.args.message);
       break;
     }
     default: {
       throw new Error(`Unknown event: ${event.data}`);
     }
   }
-};
+}
+
+self.onmessage = onFrontendMessage;
 
 // Make lighthouse and traceviewer happy.
 // @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628

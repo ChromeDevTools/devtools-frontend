@@ -8,6 +8,40 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
+/**
+ * @overview
+                                                   ┌────────────┐
+                                                   │CDP Backend │
+                                                   └────────────┘
+                                                        │ ▲
+                                                        │ │ parallelConnection
+                          ┌┐                            ▼ │                     ┌┐
+                          ││   dispatchProtocolMessage     sendProtocolMessage  ││
+                          ││                     │          ▲                   ││
+          ProtocolService ││                     |          │                   ││
+                          ││    sendWithResponse ▼          │                   ││
+                          ││              │    send          onWorkerMessage    ││
+                          └┘              │    │                 ▲              └┘
+          worker boundary - - - - - - - - ┼ - -│- - - - - - - - -│- - - - - - - - - - - -
+                          ┌┐              ▼    ▼                 │                    ┌┐
+                          ││   onFrontendMessage      notifyFrontendViaWorkerMessage  ││
+                          ││                   │       ▲                              ││
+                          ││                   ▼       │                              ││
+LighthouseWorkerService   ││          Either ConnectionProxy or LegacyPort            ││
+                          ││                           │ ▲                            ││
+                          ││     ┌─────────────────────┼─┼───────────────────────┐    ││
+                          ││     │  Lighthouse    ┌────▼──────┐                  │    ││
+                          ││     │                │connection │                  │    ││
+                          ││     │                └───────────┘                  │    ││
+                          └┘     └───────────────────────────────────────────────┘    └┘
+
+ * All messages traversing the worker boundary are action-wrapped.
+ * All messages over the parallelConnection speak pure CDP.
+ * All messages within ConnectionProxy/LegacyPort speak pure CDP.
+ * The foundational CDP connection is `parallelConnection`.
+ * All connections within the worker are not actual ParallelConnection's.
+*/
+
 let lastId = 1;
 
 export interface LighthouseRun {
@@ -16,13 +50,16 @@ export interface LighthouseRun {
   flags: Record<string, Object|undefined>;
 }
 
+/**
+ * ProtocolService manages a connection between the frontend (Lighthouse panel) and the Lighthouse worker.
+ */
 export class ProtocolService {
   private targetInfo?: {
     mainSessionId: string,
     mainTargetId: string,
     mainFrameId: string,
   };
-  private rawConnection?: ProtocolClient.InspectorBackend.Connection;
+  private parallelConnection?: ProtocolClient.InspectorBackend.Connection;
   private lighthouseWorkerPromise?: Promise<Worker>;
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
 
@@ -52,7 +89,7 @@ export class ProtocolService {
       this.dispatchProtocolMessage(message);
     });
 
-    this.rawConnection = connection;
+    this.parallelConnection = connection;
     this.targetInfo = {
       mainTargetId: await childTargetManager.getParentTargetId(),
       mainFrameId: mainFrame.id,
@@ -103,20 +140,20 @@ export class ProtocolService {
 
   async detach(): Promise<void> {
     const oldLighthouseWorker = this.lighthouseWorkerPromise;
-    const oldRawConnection = this.rawConnection;
+    const oldParallelConnection = this.parallelConnection;
 
     // When detaching, make sure that we remove the old promises, before we
     // perform any async cleanups. That way, if there is a message coming from
     // lighthouse while we are in the process of cleaning up, we shouldn't deliver
     // them to the backend.
     this.lighthouseWorkerPromise = undefined;
-    this.rawConnection = undefined;
+    this.parallelConnection = undefined;
 
     if (oldLighthouseWorker) {
       (await oldLighthouseWorker).terminate();
     }
-    if (oldRawConnection) {
-      await oldRawConnection.disconnect();
+    if (oldParallelConnection) {
+      await oldParallelConnection.disconnect();
     }
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
   }
@@ -140,7 +177,7 @@ export class ProtocolService {
       method?: string,
     };
     if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
-      void this.sendWithoutResponse('dispatchProtocolMessage', {message: JSON.stringify(message)});
+      void this.send('dispatchProtocolMessage', {message: JSON.stringify(message)});
     }
   }
 
@@ -160,18 +197,7 @@ export class ProtocolService {
           return;
         }
 
-        const lighthouseMessage = JSON.parse(event.data);
-
-        if (lighthouseMessage.method === 'statusUpdate') {
-          if (this.lighthouseMessageUpdateCallback && lighthouseMessage.params &&
-              'message' in lighthouseMessage.params) {
-            this.lighthouseMessageUpdateCallback(lighthouseMessage.params.message as string);
-          }
-        } else if (lighthouseMessage.method === 'sendProtocolMessage') {
-          if (lighthouseMessage.params && 'message' in lighthouseMessage.params) {
-            this.sendProtocolMessage(lighthouseMessage.params.message as string);
-          }
-        }
+        this.onWorkerMessage(event);
       });
     });
     return this.lighthouseWorkerPromise;
@@ -187,19 +213,34 @@ export class ProtocolService {
     return worker;
   }
 
-  private sendProtocolMessage(message: string): void {
-    if (this.rawConnection) {
-      this.rawConnection.sendRawMessage(message);
+  private onWorkerMessage(event: MessageEvent): void {
+    const lighthouseMessage = JSON.parse(event.data);
+
+    if (lighthouseMessage.action === 'statusUpdate') {
+      if (this.lighthouseMessageUpdateCallback && lighthouseMessage.args && 'message' in lighthouseMessage.args) {
+        this.lighthouseMessageUpdateCallback(lighthouseMessage.args.message as string);
+      }
+    } else if (lighthouseMessage.action === 'sendProtocolMessage') {
+      if (lighthouseMessage.args && 'message' in lighthouseMessage.args) {
+        this.sendProtocolMessage(lighthouseMessage.args.message as string);
+      }
     }
   }
 
-  private async sendWithoutResponse(method: string, params: {[x: string]: string|string[]|Object} = {}): Promise<void> {
-    const worker = await this.ensureWorkerExists();
-    const messageId = lastId++;
-    worker.postMessage(JSON.stringify({id: messageId, method, params: {...params, id: messageId}}));
+  private sendProtocolMessage(message: string): void {
+    if (this.parallelConnection) {
+      this.parallelConnection.sendRawMessage(message);
+    }
   }
 
-  private async sendWithResponse(method: string, params: {[x: string]: string|string[]|Object} = {}):
+  private async send(action: string, args: {[x: string]: string|string[]|Object} = {}): Promise<void> {
+    const worker = await this.ensureWorkerExists();
+    const messageId = lastId++;
+    worker.postMessage(JSON.stringify({id: messageId, action, args: {...args, id: messageId}}));
+  }
+
+  /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
+  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|Object} = {}):
       Promise<ReportRenderer.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
@@ -214,7 +255,7 @@ export class ProtocolService {
       };
       worker.addEventListener('message', workerListener);
     });
-    worker.postMessage(JSON.stringify({id: messageId, method, params: {...params, id: messageId}}));
+    worker.postMessage(JSON.stringify({id: messageId, action, args: {...args, id: messageId}}));
 
     return messageResult;
   }

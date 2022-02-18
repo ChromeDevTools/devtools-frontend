@@ -5819,6 +5819,9 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "T̂ím̂éŝṕâń"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Âúd̂ít̂ t́ĥé p̂áĝé ûśîńĝ ćl̂áŝśîć L̂íĝh́t̂h́ôúŝé ŵh́êń îń n̂áv̂íĝát̂íôń m̂ód̂é."
   },
@@ -5879,8 +5882,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Âńâĺŷźê ńâv́îǵât́îón̂"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Âńâĺŷźê śn̂áp̂śĥót̂"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "M̂ód̂é"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Ŝt́âŕt̂ t́îḿêśp̂án̂"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "Âh́, ŝór̂ŕŷ! Ẃê ŕâń îńt̂ó âń êŕr̂ór̂."
@@ -5968,6 +5980,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Ŵál̂ḿâŕt̂ śâẃ â 1% ín̂ćr̂éâśê ín̂ ŕêv́êńûé f̂ór̂ év̂ér̂ý 100m̂ś îḿp̂ŕôv́êḿêńt̂ ín̂ ṕâǵê ĺôád̂ [Śôúr̂ćê: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Ĉán̂ćêĺ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Êńd̂ t́îḿêśp̂án̂"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "T̂ím̂éŝṕâń ŝt́âŕt̂éd̂, ín̂t́êŕâćt̂ ẃît́ĥ t́ĥé p̂áĝé"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "T̂ím̂éŝṕâń ŝt́âŕt̂ín̂ǵ…"
   },
   "panels/media/EventDisplayTable.ts | eventDisplay": {
     "message": "Êv́êńt̂ d́îśp̂ĺâý"

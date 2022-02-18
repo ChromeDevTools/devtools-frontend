@@ -14,6 +14,7 @@ import * as Emulation from '../emulation/emulation.js';
 import type {AuditProgressChangedEvent, PageAuditabilityChangedEvent, PageWarningsChangedEvent} from './LighthouseController.js';
 import {Events, LighthouseController} from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
+import type {LighthouseRun} from './LighthouseProtocolService.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
 
 import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
@@ -23,6 +24,7 @@ import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
 import {StartViewFR} from './LighthouseStartViewFR.js';
 import {StatusView} from './LighthouseStatusView.js';
+import {TimespanView} from './LighthouseTimespanView.js';
 
 const UIStrings = {
   /**
@@ -65,6 +67,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private readonly controller: LighthouseController;
   private readonly startView: StartView;
   private readonly statusView: StatusView;
+  private readonly timespanView: TimespanView|null;
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
   private readonly cachedRenderedReports: Map<ReportJSON, HTMLElement>;
@@ -81,6 +84,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     network: {conditions: SDK.NetworkManager.Conditions},
   };
   private isLHAttached?: boolean;
+  private currentLighthouseRun?: LighthouseRun;
 
   private constructor() {
     super('lighthouse');
@@ -89,8 +93,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller = new LighthouseController(this.protocolService);
     if (Root.Runtime.experiments.isEnabled('lighthousePanelFR')) {
       this.startView = new StartViewFR(this.controller);
+      this.timespanView = new TimespanView(this.controller);
     } else {
       this.startView = new StartView(this.controller);
+      this.timespanView = null;
     }
     this.statusView = new StatusView(this.controller);
 
@@ -105,12 +111,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller.addEventListener(Events.PageAuditabilityChanged, this.refreshStartAuditUI.bind(this));
     this.controller.addEventListener(Events.PageWarningsChanged, this.refreshWarningsUI.bind(this));
     this.controller.addEventListener(Events.AuditProgressChanged, this.refreshStatusUI.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseStart, _event => {
-      void this.startLighthouse();
-    });
-    this.controller.addEventListener(Events.RequestLighthouseCancel, _event => {
-      void this.cancelLighthouse();
-    });
+    this.controller.addEventListener(Events.RequestLighthouseTimespanStart, this.onLighthouseTimespanStart.bind(this));
+    this.controller.addEventListener(Events.RequestLighthouseTimespanEnd, this.onLighthouseTimespanEnd.bind(this));
+    this.controller.addEventListener(Events.RequestLighthouseStart, this.onLighthouseStart.bind(this));
+    this.controller.addEventListener(Events.RequestLighthouseCancel, this.onLighthouseCancel.bind(this));
 
     this.renderToolbar();
     this.auditResultsElement = this.contentElement.createChild('div', 'lighthouse-results-container');
@@ -132,6 +136,27 @@ export class LighthousePanel extends UI.Panel.Panel {
     return Events;
   }
 
+  private async onLighthouseTimespanStart(): Promise<void> {
+    this.timespanView?.show(this.contentElement);
+    await this.startLighthouse();
+    this.timespanView?.ready();
+  }
+
+  private async onLighthouseTimespanEnd(): Promise<void> {
+    this.timespanView?.hide();
+    await this.collectLighthouseResults();
+  }
+
+  private async onLighthouseStart(): Promise<void> {
+    await this.startLighthouse();
+    await this.collectLighthouseResults();
+  }
+
+  private async onLighthouseCancel(): Promise<void> {
+    this.timespanView?.hide();
+    void this.cancelLighthouse();
+  }
+
   private refreshWarningsUI(evt: Common.EventTarget.EventTargetEvent<PageWarningsChangedEvent>): void {
     // PageWarningsChanged fires multiple times during an audit, which we want to ignore.
     if (this.isLHAttached) {
@@ -147,6 +172,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     if (this.isLHAttached) {
       return;
     }
+
+    this.startView.updateStartButton();
 
     this.unauditableExplanation = evt.data.helpText;
     this.startView.setUnauditableExplanation(evt.data.helpText);
@@ -348,11 +375,30 @@ export class LighthousePanel extends UI.Panel.Panel {
       const categoryIDs = this.controller.getCategoryIDs();
       const flags = this.controller.getFlags();
 
+      this.currentLighthouseRun = {inspectedURL, categoryIDs, flags};
+
       await this.setupEmulationAndProtocolConnection();
 
-      this.renderStatusView(inspectedURL);
+      if (flags.mode === 'timespan') {
+        await this.protocolService.startTimespan(this.currentLighthouseRun);
+      }
 
-      const lighthouseResponse = await this.protocolService.startLighthouse(inspectedURL, categoryIDs, flags);
+    } catch (err) {
+      await this.resetEmulationAndProtocolConnection();
+      if (err instanceof Error) {
+        this.statusView.renderBugReport(err);
+      }
+    }
+  }
+
+  private async collectLighthouseResults(): Promise<void> {
+    try {
+      if (!this.currentLighthouseRun) {
+        throw new Error('Lighthouse is not started');
+      }
+      this.renderStatusView(this.currentLighthouseRun.inspectedURL);
+
+      const lighthouseResponse = await this.protocolService.collectLighthouseResults(this.currentLighthouseRun);
 
       if (lighthouseResponse && lighthouseResponse.fatal) {
         const error = new Error(lighthouseResponse.message);
@@ -375,10 +421,13 @@ export class LighthousePanel extends UI.Panel.Panel {
       if (err instanceof Error) {
         this.statusView.renderBugReport(err);
       }
+    } finally {
+      this.currentLighthouseRun = undefined;
     }
   }
 
   private async cancelLighthouse(): Promise<void> {
+    this.currentLighthouseRun = undefined;
     this.statusView.updateStatus(i18nString(UIStrings.cancelling));
     await this.resetEmulationAndProtocolConnection();
     this.renderStartView();

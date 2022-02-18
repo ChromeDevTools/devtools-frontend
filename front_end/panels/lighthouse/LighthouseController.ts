@@ -113,11 +113,15 @@ const UIStrings = {
    */
   runLighthouseInMode: 'Run Lighthouse in navigation, timespan, or snapshot mode',
   /**
-   * @description Text for Lighthouse navigation mode.
+   * @description Label of a radio option for a Lighthouse mode that audits a page navigation.
    */
   navigation: 'Navigation',
   /**
-   * @description Text for Lighthouse snapshot mode.
+   * @description Label of a radio option for a Lighthouse mode that audits user interactions over a period of time.
+   */
+  timespan: 'Timespan',
+  /**
+   * @description Label of a radio option for a Lighthouse mode that audits the current page state.
    */
   snapshot: 'Snapshot',
   /**
@@ -305,6 +309,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     internalDisableDeviceScreenEmulation: boolean,
     emulatedFormFactor: (string|undefined),
     legacyNavigation: boolean,
+    mode: string,
   } {
     const flags = {
       // DevTools handles all the emulation. This tells Lighthouse to not bother with emulation.
@@ -317,6 +322,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       internalDisableDeviceScreenEmulation: boolean,
       emulatedFormFactor: (string | undefined),
       legacyNavigation: boolean,
+      mode: string,
     };
   }
 
@@ -447,6 +453,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
     },
     options: [
       {label: i18nLazyString(UIStrings.navigation), value: 'navigation'},
+      {label: i18nLazyString(UIStrings.timespan), value: 'timespan'},
       {label: i18nLazyString(UIStrings.snapshot), value: 'snapshot'},
     ],
     learnMore: undefined,
@@ -495,6 +502,8 @@ export enum Events {
   PageAuditabilityChanged = 'PageAuditabilityChanged',
   PageWarningsChanged = 'PageWarningsChanged',
   AuditProgressChanged = 'AuditProgressChanged',
+  RequestLighthouseTimespanStart = 'RequestLighthouseTimespanStart',
+  RequestLighthouseTimespanEnd = 'RequestLighthouseTimespanEnd',
   RequestLighthouseStart = 'RequestLighthouseStart',
   RequestLighthouseCancel = 'RequestLighthouseCancel',
 }
@@ -515,6 +524,8 @@ export type EventTypes = {
   [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent,
   [Events.PageWarningsChanged]: PageWarningsChangedEvent,
   [Events.AuditProgressChanged]: AuditProgressChangedEvent,
+  [Events.RequestLighthouseTimespanStart]: boolean,
+  [Events.RequestLighthouseTimespanEnd]: boolean,
   [Events.RequestLighthouseStart]: boolean,
   [Events.RequestLighthouseCancel]: void,
 };

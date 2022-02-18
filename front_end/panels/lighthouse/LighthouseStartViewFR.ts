@@ -4,14 +4,28 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 import {StartView} from './LighthouseStartView.js';
+import {Events} from './LighthouseController.js';
 
 const UIStrings = {
   /**
    * @description Text that refers to the Lighthouse mode
    */
   mode: 'Mode',
+  /**
+   * @description Label for a button to start analyzing a page navigation with Lighthouse
+   */
+  analyzeNavigation: 'Analyze navigation',
+  /**
+   * @description Label for a button to start analyzing the current page state with Lighthouse
+   */
+  analyzeSnapshot: 'Analyze snapshot',
+  /**
+   * @description Label for a button that ends a Lighthouse timespan
+   */
+  startTimespan: 'Start timespan',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStartViewFR.ts', UIStrings);
@@ -35,5 +49,52 @@ export class StartViewFR extends StartView {
 
     const form = this.contentElement.querySelector('form');
     form?.appendChild(fragment.element());
+    this.updateStartButton();
+  }
+
+  updateStartButton(): void {
+    const {mode} = this.controller.getFlags();
+
+    let label: Platform.UIString.LocalizedString;
+    let callback: () => void;
+
+    if (mode === 'timespan') {
+      label = i18nString(UIStrings.startTimespan);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseTimespanStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    } else if (mode === 'snapshot') {
+      label = i18nString(UIStrings.analyzeSnapshot);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    } else {
+      label = i18nString(UIStrings.analyzeNavigation);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    }
+
+    this.startButton = UI.UIUtils.createTextButton(
+        label,
+        callback,
+        /* className */ '',
+        /* primary */ true,
+    );
+
+    const startButtonContainer = this.contentElement.querySelector('.lighthouse-start-button-container');
+    if (startButtonContainer) {
+      startButtonContainer.textContent = '';
+      startButtonContainer.appendChild(this.startButton);
+    }
   }
 }

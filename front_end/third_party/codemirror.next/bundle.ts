@@ -30,7 +30,7 @@ export {ensureSyntaxTree, indentOnInput, indentUnit,Language, LanguageSupport, s
 export {bracketMatching} from '@codemirror/matchbrackets';
 export {Panel, showPanel} from '@codemirror/panel';
 export {Range, RangeSet, RangeSetBuilder} from '@codemirror/rangeset';
-export {selectNextOccurrence} from '@codemirror/search';
+export { highlightSelectionMatches,selectNextOccurrence} from '@codemirror/search';
 export {
   Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,
   EditorSelection, EditorState, EditorStateConfig, Extension, Facet, MapMode

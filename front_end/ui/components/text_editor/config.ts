@@ -224,6 +224,7 @@ export function baseConfiguration(text: string): CM.Extension {
   return [
     theme(),
     CM.highlightSpecialChars(),
+    CM.highlightSelectionMatches(),
     CM.history(),
     CM.drawSelection(),
     CM.EditorState.allowMultipleSelections.of(true),

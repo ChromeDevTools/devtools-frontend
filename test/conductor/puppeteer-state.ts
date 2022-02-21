@@ -35,21 +35,6 @@ export const setBrowserAndPages = (newValues: BrowserAndPages) => {
   ({target, frontend, browser} = newValues);
 };
 
-export const setBrowser = (newBrowser: puppeteer.Browser) => {
-  if (browser) {
-    throw new Error('Can\'t set the puppeteer browser twice.');
-  }
-
-  browser = newBrowser;
-};
-
-export const resetPages = (newValues: {target: puppeteer.Page, frontend: puppeteer.Page}) => {
-  target?.close();
-  frontend?.close();
-
-  ({target, frontend} = newValues);
-};
-
 export const getBrowserAndPages = (): BrowserAndPages => {
   if (!target) {
     throw new Error('Unable to locate target page. Was it stored first?');

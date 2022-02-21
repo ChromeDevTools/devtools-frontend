@@ -225,6 +225,7 @@ async function evaluateExpression(
 
 const primitivePrototypes = new Map<string, string>([
   ['string', 'String'],
+  ['symbol', 'Symbol'],
   ['number', 'Number'],
   ['boolean', 'Boolean'],
   ['bigint', 'BigInt'],
@@ -319,9 +320,7 @@ async function completePropertiesInner(
     object = innerObject as SDK.RemoteObject.RemoteObject;
   }
 
-  const toPrototype = object.subtype === 'array' ?
-      'Array' :
-      object.subtype === 'typedarray' ? 'Uint8Array' : primitivePrototypes.get(object.type);
+  const toPrototype = primitivePrototypes.get(object.type);
   if (toPrototype) {
     object = await evaluateExpression(context, toPrototype + '.prototype', 'completion');
   }
@@ -329,7 +328,8 @@ async function completePropertiesInner(
   const functionType = expression === 'globalThis' ? 'function' : 'method';
   const otherType = expression === 'globalThis' ? 'variable' : 'property';
   if (object && (object.type === 'object' || object.type === 'function')) {
-    const properties = await object.getAllProperties(false, false);
+    const properties = await object.getAllProperties(
+        /* accessorPropertiesOnly */ false, /* generatePreview */ false, /* nonIndexedPropertiesOnly */ true);
     const isFunction = object.type === 'function';
     for (const prop of properties.properties || []) {
       if (!prop.symbol && !(isFunction && (prop.name === 'arguments' || prop.name === 'caller')) &&

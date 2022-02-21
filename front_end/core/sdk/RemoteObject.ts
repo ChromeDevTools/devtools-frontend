@@ -485,10 +485,18 @@ export class RemoteObjectImpl extends RemoteObject {
       result.push(remoteProperty);
     }
     for (const property of privateProperties) {
-      const propertyValue =
-          this.runtimeModelInternal.createRemoteObject((property.value as Protocol.Runtime.RemoteObject));
+      const propertyValue = property.value ? this.runtimeModelInternal.createRemoteObject(property.value) : null;
       const remoteProperty = new RemoteObjectProperty(
           property.name, propertyValue, true, true, true, false, undefined, false, undefined, true);
+
+      if (typeof property.value === 'undefined') {
+        if (property.get && property.get.type !== 'undefined') {
+          remoteProperty.getter = this.runtimeModelInternal.createRemoteObject(property.get);
+        }
+        if (property.set && property.set.type !== 'undefined') {
+          remoteProperty.setter = this.runtimeModelInternal.createRemoteObject(property.set);
+        }
+      }
       result.push(remoteProperty);
     }
 

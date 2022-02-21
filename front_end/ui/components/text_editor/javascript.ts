@@ -7,7 +7,8 @@ import * as Formatter from '../../../models/formatter/formatter.js';
 import * as JavaScriptMetaData from '../../../models/javascript_metadata/javascript_metadata.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
-import {cursorTooltip} from './cursor_tooltip.js';
+
+import {closeTooltip, cursorTooltip} from './cursor_tooltip.js';
 
 export function completion(): CodeMirror.Extension {
   return CodeMirror.javascript.javascriptLanguage.data.of({
@@ -422,6 +423,10 @@ export async function isExpressionComplete(expression: string): Promise<boolean>
 
 export function argumentHints(): CodeMirror.Extension {
   return cursorTooltip(getArgumentHints);
+}
+
+export function closeArgumentsHintsTooltip(view: CodeMirror.EditorView): void {
+  view.dispatch({effects: closeTooltip.of(null)});
 }
 
 async function getArgumentHints(

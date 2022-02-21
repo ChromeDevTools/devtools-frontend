@@ -210,6 +210,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       {mac: 'Ctrl-p', run: (): boolean => this.moveHistory(-1, true)},
       {mac: 'Ctrl-n', run: (): boolean => this.moveHistory(1, true)},
       {
+        key: 'Escape',
+        run: (): boolean => {
+          TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor);
+          return true;
+        },
+      },
+      {
         key: 'Enter',
         run: (): boolean => {
           void this.handleEnter();
@@ -259,6 +266,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private async handleEnter(): Promise<void> {
     if (await this.enterWillEvaluate()) {
       this.appendCommand(this.text(), true);
+      TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor);
       this.editor.dispatch({
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,

@@ -222,7 +222,8 @@ describe('The Styles pane', async () => {
         'The correct rule is displayed');
   });
 
-  it('can edit multiple constructed stylesheets', async () => {
+  // Flaky on mac after introducing pooled frontend instances.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1297458] can edit multiple constructed stylesheets', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/multiple-constructed-stylesheets.html');
 

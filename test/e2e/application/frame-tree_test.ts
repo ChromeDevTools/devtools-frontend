@@ -176,7 +176,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['win32'], '[crbug.com/1231056]: shows service workers in the frame tree', async () => {
+  it.skipOnPlatforms(['win32', 'mac'], '[crbug.com/1231056]: shows service workers in the frame tree', async () => {
     await goToResource('application/service-worker-network.html');
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);

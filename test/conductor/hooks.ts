@@ -10,11 +10,12 @@ import puppeteer = require('puppeteer');
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
-import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
+import {clearPuppeteerState, getBrowserAndPages, registerHandlers, resetPages, setBrowser, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
-import {loadEmptyPageAndWaitForContent, DevToolsFrontendTab, type DevToolsFrontendReloadOptions} from './frontend_tab.js';
+import {loadEmptyPageAndWaitForContent, type DevToolsFrontendTab, type DevToolsFrontendReloadOptions} from './frontend_tab.js';
 import {dumpCollectedErrors, installPageErrorHandlers, setupBrowserProcessIO} from './events.js';
 import {TargetTab} from './target_tab.js';
+import {type FrontedTargetPoolOptions, FrontendTargetPool} from './pool.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer' {
@@ -41,8 +42,11 @@ const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const TEST_SERVER_TYPE = getTestRunnerConfigSetting<string>('test-server-type', 'hosted-mode');
 
 let browser: puppeteer.Browser;
-let frontendTab: DevToolsFrontendTab;
-let targetTab: TargetTab;
+let frontendTab: DevToolsFrontendTab;  // Only set for hosted-mode servers.
+let targetTab: TargetTab;              // Always set.
+
+/** For hosted-mode servers the frontend and target is provided by the pool */
+export let frontendTargetPool: FrontendTargetPool;
 
 const envChromeBinary = getTestRunnerConfigSetting<string>('chrome-binary-path', process.env['CHROME_BIN'] || '');
 const envChromeFeatures = getTestRunnerConfigSetting<string>('chrome-features', process.env['CHROME_FEATURES'] || '');
@@ -87,47 +91,51 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
   browser = await launchChrome();
   setupBrowserProcessIO(browser);
 
-  // Load the target page.
-  targetTab = await TargetTab.create(browser);
-
   // Create the frontend - the page that will be under test. This will be either
   // DevTools Frontend in hosted mode, or the component docs in docs test mode.
-  let frontend: puppeteer.Page;
 
   if (TEST_SERVER_TYPE === 'hosted-mode') {
     /**
      * In hosted mode we run the DevTools and test against it.
      */
-    frontendTab = await DevToolsFrontendTab.create({browser, testServerPort, targetId: targetTab.targetId()});
-    frontend = frontendTab.page;
+    const poolOptions: FrontedTargetPoolOptions = {browser, testServerPort};
+    if (process.env['DEBUG_TEST']) {
+      poolOptions.poolSize = 0;
+    }
+    frontendTargetPool = FrontendTargetPool.create(poolOptions);
+    setBrowser(browser);
   } else if (TEST_SERVER_TYPE === 'component-docs') {
     /**
      * In the component docs mode it points to the page where we load component
      * doc examples, so let's just set it to an empty page for now.
      */
-    frontend = await browser.newPage();
+    targetTab = await TargetTab.create(browser);
+    const frontend = await browser.newPage();
     installPageErrorHandlers(frontend);
     await loadEmptyPageAndWaitForContent(frontend);
+    setBrowserAndPages({target: targetTab.page, frontend, browser});
   } else {
     throw new Error(`Unknown TEST_SERVER_TYPE "${TEST_SERVER_TYPE}"`);
   }
-
-  setBrowserAndPages({target: targetTab.page, frontend, browser});
 }
 
-export async function resetPages() {
-  await targetTab.reset();
+async function resetPagesFromPool(): Promise<void> {
+  ({frontend: frontendTab, target: targetTab} = await frontendTargetPool.takeTabPair());
+  resetPages({frontend: frontendTab.page, target: targetTab.page});
+}
 
-  // Under stress conditions throttle the CPU down.
-  await throttleCPUIfRequired();
-
+export async function resetPagesBetweenTests() {
   if (TEST_SERVER_TYPE === 'hosted-mode') {
-    await frontendTab.reset();
+    await resetPagesFromPool();
   } else if (TEST_SERVER_TYPE === 'component-docs') {
+    await targetTab.reset();
     // Reset the frontend back to an empty page for the component docs server.
     const {frontend} = getBrowserAndPages();
     await loadEmptyPageAndWaitForContent(frontend);
   }
+
+  // Under stress conditions throttle the CPU down.
+  await throttleCPUIfRequired();
 }
 
 async function throttleCPUIfRequired(): Promise<void> {

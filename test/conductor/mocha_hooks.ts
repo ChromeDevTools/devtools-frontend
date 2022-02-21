@@ -10,7 +10,7 @@ import * as reports from 'istanbul-reports';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
-import {collectCoverageFromPage, postFileTeardown, preFileSetup, resetPages} from './hooks.js';
+import {collectCoverageFromPage, postFileTeardown, preFileSetup, resetPagesBetweenTests} from './hooks.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
 import {startServer, stopServer} from './test_server.js';
 
@@ -93,6 +93,9 @@ export const mochaHooks = {
   // In serial mode, run after all tests end, once only.
   // In parallel mode, run after all tests end, for each file.
   afterAll: async function(this: Mocha.Suite) {
+    // Tearing down the browser can take a while on bots. Lets give it a long
+    // timeout but lets not wait indefinitely.
+    this.timeout(30_000);
     await postFileTeardown();
 
     if (!SHOULD_GATHER_COVERAGE_INFORMATION) {
@@ -124,7 +127,7 @@ export const mochaHooks = {
   beforeEach: async function(this: Mocha.Suite) {
     // Sets the timeout higher for this hook only.
     this.timeout(10000);
-    await resetPages();
+    await resetPagesBetweenTests();
   },
   afterEach: async function(this: Mocha.Suite) {
     if (!SHOULD_GATHER_COVERAGE_INFORMATION) {

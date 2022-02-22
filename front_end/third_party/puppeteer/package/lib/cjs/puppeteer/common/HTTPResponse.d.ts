@@ -50,6 +50,7 @@ export declare class HTTPResponse {
     private _fromServiceWorker;
     private _headers;
     private _securityDetails;
+    private _timing;
     /**
      * @internal
      */
@@ -94,6 +95,10 @@ export declare class HTTPResponse {
      * secure connection, or `null` otherwise.
      */
     securityDetails(): SecurityDetails | null;
+    /**
+     * @returns Timing information related to the response.
+     */
+    timing(): Protocol.Network.ResourceTiming | null;
     /**
      * @returns Promise which resolves to a buffer with response body.
      */

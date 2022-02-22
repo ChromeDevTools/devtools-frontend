@@ -114,7 +114,7 @@ export declare class ExecutionContext {
      *
      * @returns A promise that resolves to the return value of the given function.
      */
-    evaluate<ReturnType extends any>(pageFunction: Function | string, ...args: unknown[]): Promise<ReturnType>;
+    evaluate<ReturnType>(pageFunction: Function | string, ...args: unknown[]): Promise<ReturnType>;
     /**
      * @remarks
      * The only difference between `executionContext.evaluate` and

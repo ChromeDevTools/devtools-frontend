@@ -288,7 +288,7 @@ export declare class Browser extends EventEmitter {
      * const newWindowTarget = await browser.waitForTarget(target => target.url() === 'https://www.example.com/');
      * ```
      */
-    waitForTarget(predicate: (x: Target) => boolean, options?: WaitForTargetOptions): Promise<Target>;
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     /**
      * An array of all open pages inside the Browser.
      *
@@ -425,7 +425,7 @@ export declare class BrowserContext extends EventEmitter {
      * @returns Promise which resolves to the first target found
      * that matches the `predicate` function.
      */
-    waitForTarget(predicate: (x: Target) => boolean, options?: {
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
         timeout?: number;
     }): Promise<Target>;
     /**
@@ -751,7 +751,7 @@ export declare class CDPSession extends EventEmitter {
     /**
      * @internal
      */
-    _connection: Connection;
+    _connection?: Connection;
     private _sessionId;
     private _targetType;
     private _callbacks;
@@ -759,7 +759,7 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     constructor(connection: Connection, targetType: string, sessionId: string);
-    connection(): Connection;
+    connection(): Connection | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal
@@ -866,7 +866,7 @@ export declare interface CommonEventEmitter {
 }
 
 /**
- * Settings that are common to the Puppeteer class, regardless of enviroment.
+ * Settings that are common to the Puppeteer class, regardless of environment.
  * @internal
  */
 export declare interface CommonPuppeteerSettings {
@@ -891,7 +891,7 @@ export declare class Connection extends EventEmitter {
     _closed: boolean;
     _callbacks: Map<number, ConnectionCallback>;
     constructor(url: string, transport: ConnectionTransport, delay?: number);
-    static fromSession(session: CDPSession): Connection;
+    static fromSession(session: CDPSession): Connection | undefined;
     /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
@@ -948,8 +948,8 @@ export declare const ConnectionEmittedEvents: {
  * @public
  */
 export declare interface ConnectionTransport {
-    send(string: any): any;
-    close(): any;
+    send(message: string): void;
+    close(): void;
     onmessage?: (message: string) => void;
     onclose?: () => void;
 }
@@ -1952,7 +1952,7 @@ export declare class ExecutionContext {
      *
      * @returns A promise that resolves to the return value of the given function.
      */
-    evaluate<ReturnType extends any>(pageFunction: Function | string, ...args: unknown[]): Promise<ReturnType>;
+    evaluate<ReturnType>(pageFunction: Function | string, ...args: unknown[]): Promise<ReturnType>;
     /**
      * @remarks
      * The only difference between `executionContext.evaluate` and
@@ -2171,6 +2171,11 @@ export declare class Frame {
      * @internal
      */
     _updateClient(client: CDPSession): void;
+    /**
+     * @remarks
+     *
+     * @returns `true` if the frame is an OOP frame, or `false` otherwise.
+     */
     isOOPFrame(): boolean;
     /**
      * @remarks
@@ -2240,6 +2245,10 @@ export declare class Frame {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
+    /**
+     * @internal
+     */
+    client(): CDPSession;
     /**
      * @returns a promise that resolves to the frame's default execution context.
      */
@@ -3142,6 +3151,7 @@ export declare class HTTPResponse {
     private _fromServiceWorker;
     private _headers;
     private _securityDetails;
+    private _timing;
     /**
      * @internal
      */
@@ -3186,6 +3196,10 @@ export declare class HTTPResponse {
          * secure connection, or `null` otherwise.
          */
      securityDetails(): SecurityDetails | null;
+     /**
+      * @returns Timing information related to the response.
+      */
+     timing(): Protocol.Network.ResourceTiming | null;
      /**
       * @returns Promise which resolves to a buffer with response body.
       */
@@ -6232,9 +6246,9 @@ export declare class HTTPResponse {
      * @public
      */
     export declare interface ProductLauncher {
-        launch(object: PuppeteerNodeLaunchOptions): any;
-        executablePath: (string?: any) => string;
-        defaultArgs(object: BrowserLaunchArgumentOptions): any;
+        launch(object: PuppeteerNodeLaunchOptions): Promise<Browser>;
+        executablePath: (path?: any) => string;
+        defaultArgs(object: BrowserLaunchArgumentOptions): string[];
         product: Product;
     }
 
@@ -6436,8 +6450,8 @@ export declare class HTTPResponse {
      * @public
      */
     export declare class PuppeteerNode extends Puppeteer {
-        private _lazyLauncher;
-        private _projectRoot;
+        private _lazyLauncher?;
+        private _projectRoot?;
         private __productName?;
         /**
          * @internal
@@ -6447,7 +6461,7 @@ export declare class HTTPResponse {
          * @internal
          */
         constructor(settings: {
-            projectRoot: string;
+            projectRoot?: string;
             preferredRevision: string;
             productName?: Product;
         } & CommonPuppeteerSettings);
@@ -6463,8 +6477,8 @@ export declare class HTTPResponse {
         /**
          * @internal
          */
-        get _productName(): Product;
-        set _productName(name: Product);
+        get _productName(): Product | undefined;
+        set _productName(name: Product | undefined);
         /**
          * Launches puppeteer and launches a browser instance with given arguments
          * and options when specified.
@@ -7211,7 +7225,7 @@ export declare class HTTPResponse {
               * @param args - Arguments to pass to `pageFunction`.
               * @returns Promise which resolves to the return value of `pageFunction`.
               */
-             evaluate<ReturnType extends any>(pageFunction: Function | string, ...args: any[]): Promise<ReturnType>;
+             evaluate<ReturnType>(pageFunction: Function | string, ...args: any[]): Promise<ReturnType>;
              /**
               * The only difference between `worker.evaluate` and `worker.evaluateHandle`
               * is that `worker.evaluateHandle` returns in-page object (JSHandle). If the

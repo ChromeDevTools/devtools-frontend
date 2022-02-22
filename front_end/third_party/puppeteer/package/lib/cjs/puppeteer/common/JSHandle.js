@@ -757,7 +757,7 @@ class ElementHandle extends JSHandle {
         (0, assert_js_1.assert)(boundingBox.height !== 0, 'Node has 0 height.');
         const layoutMetrics = await this._client.send('Page.getLayoutMetrics');
         // Fallback to `layoutViewport` in case of using Firefox.
-        const { pageX, pageY } = layoutMetrics.cssLayoutViewport || layoutMetrics.layoutViewport;
+        const { pageX, pageY } = layoutMetrics.cssVisualViewport || layoutMetrics.layoutViewport;
         const clip = Object.assign({}, boundingBox);
         clip.x += pageX;
         clip.y += pageY;

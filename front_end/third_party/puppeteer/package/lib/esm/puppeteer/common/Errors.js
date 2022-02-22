@@ -41,6 +41,10 @@ export class TimeoutError extends CustomError {
  * @public
  */
 export class ProtocolError extends CustomError {
+    constructor() {
+        super(...arguments);
+        this.originalMessage = '';
+    }
 }
 /**
  * @public

@@ -81,7 +81,7 @@ export declare class WebWorker extends EventEmitter {
      * @param args - Arguments to pass to `pageFunction`.
      * @returns Promise which resolves to the return value of `pageFunction`.
      */
-    evaluate<ReturnType extends any>(pageFunction: Function | string, ...args: any[]): Promise<ReturnType>;
+    evaluate<ReturnType>(pageFunction: Function | string, ...args: any[]): Promise<ReturnType>;
     /**
      * The only difference between `worker.evaluate` and `worker.evaluateHandle`
      * is that `worker.evaluateHandle` returns in-page object (JSHandle). If the

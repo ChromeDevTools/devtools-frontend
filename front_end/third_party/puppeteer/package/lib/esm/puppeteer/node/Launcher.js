@@ -35,6 +35,7 @@ class ChromeLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
+        var _a;
         const { ignoreDefaultArgs = false, args = [], dumpio = false, channel = null, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort = null, } = options;
         const chromeArguments = [];
         if (!ignoreDefaultArgs)
@@ -77,17 +78,13 @@ class ChromeLauncher {
             chromeExecutable = executablePathForChannel(channel);
         }
         else if (!executablePath) {
-            // Use Intel x86 builds on Apple M1 until native macOS arm64
-            // Chromium builds are available.
-            if (os.platform() !== 'darwin' && os.arch() === 'arm64') {
-                chromeExecutable = '/usr/bin/chromium-browser';
-            }
-            else {
-                const { missingText, executablePath } = resolveExecutablePath(this);
-                if (missingText)
-                    throw new Error(missingText);
-                chromeExecutable = executablePath;
-            }
+            const { missingText, executablePath } = resolveExecutablePath(this);
+            if (missingText)
+                throw new Error(missingText);
+            chromeExecutable = executablePath;
+        }
+        if (!chromeExecutable) {
+            throw new Error('chromeExecutable is not found.');
         }
         const usePipe = chromeArguments.includes('--remote-debugging-pipe');
         const runner = new BrowserRunner(this.product, chromeExecutable, chromeArguments, userDataDir, isTempUserDataDir);
@@ -107,7 +104,7 @@ class ChromeLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
+            browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, (_a = runner.proc) !== null && _a !== void 0 ? _a : undefined, runner.close.bind(runner));
         }
         catch (error) {
             runner.kill();
@@ -234,6 +231,9 @@ class FirefoxLauncher {
                 throw new Error(missingText);
             firefoxExecutable = executablePath;
         }
+        if (!firefoxExecutable) {
+            throw new Error('firefoxExecutable is not found.');
+        }
         const runner = new BrowserRunner(this.product, firefoxExecutable, firefoxArguments, userDataDir, isTempUserDataDir);
         runner.start({
             handleSIGHUP,
@@ -274,6 +274,9 @@ class FirefoxLauncher {
     async _updateRevision() {
         // replace 'latest' placeholder with actual downloaded revision
         if (this._preferredRevision === 'latest') {
+            if (!this._projectRoot) {
+                throw new Error('_projectRoot is undefined. Unable to create a BrowserFetcher.');
+            }
             const browserFetcher = new BrowserFetcher(this._projectRoot, {
                 product: this.product,
             });
@@ -565,9 +568,10 @@ function executablePathForChannel(channel) {
     return chromePath;
 }
 function resolveExecutablePath(launcher) {
+    const { product, _isPuppeteerCore, _projectRoot, _preferredRevision } = launcher;
     let downloadPath;
     // puppeteer-core doesn't take into account PUPPETEER_* env variables.
-    if (!launcher._isPuppeteerCore) {
+    if (!_isPuppeteerCore) {
         const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
             process.env.npm_config_puppeteer_executable_path ||
             process.env.npm_package_config_puppeteer_executable_path;
@@ -575,35 +579,45 @@ function resolveExecutablePath(launcher) {
             const missingText = !fs.existsSync(executablePath)
                 ? 'Tried to use PUPPETEER_EXECUTABLE_PATH env variable to launch browser but did not find any executable at: ' +
                     executablePath
-                : null;
+                : undefined;
             return { executablePath, missingText };
+        }
+        const ubuntuChromiumPath = '/usr/bin/chromium-browser';
+        if (product === 'chrome' &&
+            os.platform() !== 'darwin' &&
+            os.arch() === 'arm64' &&
+            fs.existsSync(ubuntuChromiumPath)) {
+            return { executablePath: ubuntuChromiumPath, missingText: undefined };
         }
         downloadPath =
             process.env.PUPPETEER_DOWNLOAD_PATH ||
                 process.env.npm_config_puppeteer_download_path ||
                 process.env.npm_package_config_puppeteer_download_path;
     }
-    const browserFetcher = new BrowserFetcher(launcher._projectRoot, {
-        product: launcher.product,
+    if (!_projectRoot) {
+        throw new Error('_projectRoot is undefined. Unable to create a BrowserFetcher.');
+    }
+    const browserFetcher = new BrowserFetcher(_projectRoot, {
+        product: product,
         path: downloadPath,
     });
-    if (!launcher._isPuppeteerCore && launcher.product === 'chrome') {
+    if (!_isPuppeteerCore && product === 'chrome') {
         const revision = process.env['PUPPETEER_CHROMIUM_REVISION'];
         if (revision) {
             const revisionInfo = browserFetcher.revisionInfo(revision);
             const missingText = !revisionInfo.local
                 ? 'Tried to use PUPPETEER_CHROMIUM_REVISION env variable to launch browser but did not find executable at: ' +
                     revisionInfo.executablePath
-                : null;
+                : undefined;
             return { executablePath: revisionInfo.executablePath, missingText };
         }
     }
-    const revisionInfo = browserFetcher.revisionInfo(launcher._preferredRevision);
+    const revisionInfo = browserFetcher.revisionInfo(_preferredRevision);
     const firefoxHelp = `Run \`PUPPETEER_PRODUCT=firefox npm install\` to download a supported Firefox browser binary.`;
     const chromeHelp = `Run \`npm install\` to download the correct Chromium revision (${launcher._preferredRevision}).`;
     const missingText = !revisionInfo.local
-        ? `Could not find expected browser (${launcher.product}) locally. ${launcher.product === 'chrome' ? chromeHelp : firefoxHelp}`
-        : null;
+        ? `Could not find expected browser (${product}) locally. ${product === 'chrome' ? chromeHelp : firefoxHelp}`
+        : undefined;
     return { executablePath: revisionInfo.executablePath, missingText };
 }
 /**

@@ -264,7 +264,7 @@ export declare class Browser extends EventEmitter {
      * const newWindowTarget = await browser.waitForTarget(target => target.url() === 'https://www.example.com/');
      * ```
      */
-    waitForTarget(predicate: (x: Target) => boolean, options?: WaitForTargetOptions): Promise<Target>;
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     /**
      * An array of all open pages inside the Browser.
      *
@@ -393,7 +393,7 @@ export declare class BrowserContext extends EventEmitter {
      * @returns Promise which resolves to the first target found
      * that matches the `predicate` function.
      */
-    waitForTarget(predicate: (x: Target) => boolean, options?: {
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
         timeout?: number;
     }): Promise<Target>;
     /**

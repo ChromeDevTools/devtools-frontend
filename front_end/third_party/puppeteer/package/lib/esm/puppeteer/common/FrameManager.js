@@ -452,6 +452,11 @@ export class Frame {
         this._mainWorld = new DOMWorld(this._client, this._frameManager, this, this._frameManager._timeoutSettings);
         this._secondaryWorld = new DOMWorld(this._client, this._frameManager, this, this._frameManager._timeoutSettings);
     }
+    /**
+     * @remarks
+     *
+     * @returns `true` if the frame is an OOP frame, or `false` otherwise.
+     */
     isOOPFrame() {
         return this._client !== this._frameManager._client;
     }
@@ -519,6 +524,12 @@ export class Frame {
      */
     async waitForNavigation(options = {}) {
         return await this._frameManager.waitForFrameNavigation(this, options);
+    }
+    /**
+     * @internal
+     */
+    client() {
+        return this._client;
     }
     /**
      * @returns a promise that resolves to the frame's default execution context.

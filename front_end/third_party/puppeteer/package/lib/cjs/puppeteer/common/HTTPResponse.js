@@ -38,6 +38,7 @@ class HTTPResponse {
         this._securityDetails = responsePayload.securityDetails
             ? new SecurityDetails_js_1.SecurityDetails(responsePayload.securityDetails)
             : null;
+        this._timing = responsePayload.timing;
     }
     /**
      * @internal
@@ -108,6 +109,12 @@ class HTTPResponse {
      */
     securityDetails() {
         return this._securityDetails;
+    }
+    /**
+     * @returns Timing information related to the response.
+     */
+    timing() {
+        return this._timing;
     }
     /**
      * @returns Promise which resolves to a buffer with response body.

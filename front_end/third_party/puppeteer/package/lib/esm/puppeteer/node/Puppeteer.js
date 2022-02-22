@@ -176,6 +176,9 @@ export class PuppeteerNode extends Puppeteer {
      * @returns A new BrowserFetcher instance.
      */
     createBrowserFetcher(options) {
+        if (!this._projectRoot) {
+            throw new Error('_projectRoot is undefined. Unable to create a BrowserFetcher.');
+        }
         return new BrowserFetcher(this._projectRoot, options);
     }
 }

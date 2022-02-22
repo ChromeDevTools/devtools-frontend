@@ -39,8 +39,8 @@ const Browser_js_1 = require("./Browser.js");
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("../common/helper.js");
 const Connection_js_1 = require("./Connection.js");
-const fetch_js_1 = require("./fetch.js");
 const environment_js_1 = require("../environment.js");
+const fetch_js_1 = require("./fetch.js");
 const getWebSocketTransportClass = async () => {
     return environment_js_1.isNode
         ? (await Promise.resolve().then(() => __importStar(require('../node/NodeWebSocketTransport.js')))).NodeWebSocketTransport

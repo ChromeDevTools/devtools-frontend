@@ -46,6 +46,10 @@ exports.TimeoutError = TimeoutError;
  * @public
  */
 class ProtocolError extends CustomError {
+    constructor() {
+        super(...arguments);
+        this.originalMessage = '';
+    }
 }
 exports.ProtocolError = ProtocolError;
 /**

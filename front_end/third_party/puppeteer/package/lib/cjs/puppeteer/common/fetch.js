@@ -38,7 +38,7 @@ exports.getFetch = void 0;
 const environment_js_1 = require("../environment.js");
 /* Use the global version if we're in the browser, else load the node-fetch module. */
 const getFetch = async () => {
-    return environment_js_1.isNode ? await Promise.resolve().then(() => __importStar(require('node-fetch'))) : globalThis.fetch;
+    return environment_js_1.isNode ? (await Promise.resolve().then(() => __importStar(require('cross-fetch')))).fetch : globalThis.fetch;
 };
 exports.getFetch = getFetch;
 //# sourceMappingURL=fetch.js.map

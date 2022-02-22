@@ -17,8 +17,8 @@ import { Browser } from './Browser.js';
 import { assert } from './assert.js';
 import { debugError } from '../common/helper.js';
 import { Connection } from './Connection.js';
-import { getFetch } from './fetch.js';
 import { isNode } from '../environment.js';
+import { getFetch } from './fetch.js';
 const getWebSocketTransportClass = async () => {
     return isNode
         ? (await import('../node/NodeWebSocketTransport.js')).NodeWebSocketTransport

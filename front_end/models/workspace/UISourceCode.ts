@@ -235,6 +235,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.contentInternal as TextUtils.ContentProvider.DeferredContent;
   }
 
+  #decodeContent(content: TextUtils.ContentProvider.DeferredContent|null): string|null {
+    if (!content) {
+      return null;
+    }
+    return content.isEncoded && content.content ? window.atob(content.content) : content.content;
+  }
+
   async checkContentUpdated(): Promise<void> {
     if (!this.contentLoadedInternal && !this.forceLoadOnCheckContentInternal) {
       return;
@@ -260,7 +267,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return;
     }
 
-    if (this.contentInternal?.content === updatedContent.content) {
+    if (this.#decodeContent(this.contentInternal) === this.#decodeContent(updatedContent)) {
       this.lastAcceptedContent = null;
       return;
     }

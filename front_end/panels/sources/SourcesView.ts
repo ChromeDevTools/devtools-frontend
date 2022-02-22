@@ -385,9 +385,49 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       this.historyManager.trackSourceFrameCursorJumps(sourceFrame);
     }
 
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
+
     const widget = (sourceFrame || sourceView as UI.Widget.Widget);
     this.sourceViewByUISourceCode.set(uiSourceCode, widget);
     return widget;
+  }
+
+  #sourceViewTypeForWidget(widget: UI.Widget.Widget): SourceViewType {
+    if (widget instanceof SourceFrame.ImageView.ImageView) {
+      return SourceViewType.ImageView;
+    }
+    if (widget instanceof SourceFrame.FontView.FontView) {
+      return SourceViewType.FontView;
+    }
+    return SourceViewType.SourceView;
+  }
+
+  #sourceViewTypeForContentType(contentType: Common.ResourceType.ResourceType): SourceViewType {
+    switch (contentType) {
+      case Common.ResourceType.resourceTypes.Image:
+        return SourceViewType.ImageView;
+      case Common.ResourceType.resourceTypes.Font:
+        return SourceViewType.FontView;
+      default:
+        return SourceViewType.SourceView;
+    }
+  }
+
+  #uiSourceCodeTitleChanged(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
+    const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
+    if (widget) {
+      const contentType = uiSourceCode.contentType();
+      if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForContentType(contentType)) {
+        // Remove the exisiting editor tab and create a new one of the correct type.
+        this.removeUISourceCodes([uiSourceCode]);
+        this.showSourceLocation(uiSourceCode);
+      }
+    }
+  }
+
+  getSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget|undefined {
+    return this.sourceViewByUISourceCode.get(uiSourceCode);
   }
 
   private getOrCreateSourceView(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
@@ -395,9 +435,12 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   recycleUISourceCodeFrame(sourceFrame: UISourceCodeFrame, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    sourceFrame.uiSourceCode().removeEventListener(
+        Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
     this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
     sourceFrame.setUISourceCode(uiSourceCode);
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
 
   viewForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Widget.Widget {
@@ -410,6 +453,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
       (sourceView as UISourceCodeFrame).dispose();
     }
+    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
 
   private editorClosed(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
@@ -718,4 +762,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return false;
   }
+}
+
+// eslint-disable-next-line rulesdir/const_enum
+enum SourceViewType {
+  ImageView = 'ImageView',
+  FontView = 'FontView',
+  SourceView = 'SourceView',
 }

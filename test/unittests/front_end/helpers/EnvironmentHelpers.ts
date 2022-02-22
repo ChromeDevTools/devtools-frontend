@@ -40,12 +40,13 @@ function createSettingValue(
 }
 
 const REGISTERED_EXPERIMENTS = [
-  'preciseChanges',
   'captureNodeCreationStacks',
-  'protocolMonitor',
   'hideIssuesFeature',
-  'wasmDWARFDebugging',
   'keyboardShortcutEditor',
+  'preciseChanges',
+  'protocolMonitor',
+  'sourcesPrettyPrint',
+  'wasmDWARFDebugging',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

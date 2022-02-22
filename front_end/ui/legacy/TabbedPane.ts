@@ -1019,6 +1019,9 @@ export class TabbedPaneTab {
     this.titleInternal = title;
     if (this.titleElement) {
       this.titleElement.textContent = title;
+      const closeIconContainer = this.tabElementInternal?.querySelector('.close-button');
+      closeIconContainer?.setAttribute('title', i18nString(UIStrings.closeS, {PH1: title}));
+      closeIconContainer?.setAttribute('aria-label', i18nString(UIStrings.closeS, {PH1: title}));
     }
     delete this.measuredWidth;
   }

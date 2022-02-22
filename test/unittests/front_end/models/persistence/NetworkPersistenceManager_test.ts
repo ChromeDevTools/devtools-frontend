@@ -14,10 +14,9 @@ import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../
 
 async function setUpEnvironment() {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  const forceNew = true;
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const debuggerWorkspaceBinding =
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew, targetManager, workspace});
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
   const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
       {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
   Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});

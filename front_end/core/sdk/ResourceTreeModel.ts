@@ -140,7 +140,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     if (mainFramePayload && mainFramePayload.frame.url !== ':') {
       this.dispatchEventToListeners(Events.WillLoadCachedResources);
       this.addFramesRecursively(null, mainFramePayload);
-      this.target().setInspectedURL(mainFramePayload.frame.url);
+      this.target().setInspectedURL(mainFramePayload.frame.url as Platform.DevToolsPath.UrlString);
     }
     this.#cachedResourcesProcessed = true;
     const runtimeModel = this.target().model(RuntimeModel);

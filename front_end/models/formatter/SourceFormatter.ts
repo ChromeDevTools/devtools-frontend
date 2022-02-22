@@ -129,7 +129,7 @@ export class SourceFormatter {
         let count = 0;
         let suffix = '';
         do {
-          formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
+          formattedURL = Common.ParsedURL.ParsedURL.concatenate(uiSourceCode.url(), ':formatted', suffix);
           suffix = `:${count++}`;
         } while (this.project.uiSourceCodeForURL(formattedURL));
         const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(

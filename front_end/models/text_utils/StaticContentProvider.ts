@@ -21,14 +21,14 @@ export class StaticContentProvider implements ContentProvider {
     this.lazyContent = lazyContent;
   }
 
-  static fromString(contentURL: string, contentType: Common.ResourceType.ResourceType, content: string):
-      StaticContentProvider {
+  static fromString(
+      contentURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+      content: string): StaticContentProvider {
     const lazyContent = (): Promise<{
       content: string,
       isEncoded: boolean,
     }> => Promise.resolve({content, isEncoded: false});
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    return new StaticContentProvider(contentURL as Platform.DevToolsPath.UrlString, contentType, lazyContent);
+    return new StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {

@@ -5,6 +5,7 @@
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Console from '../../../../../front_end/panels/console/console.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 const {assert} = chai;
@@ -19,7 +20,7 @@ describe('ErrorStackParser', () => {
     //                      no longer needs a RuntimeModel.
     runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel, {
       target: sinon.createStubInstance(SDK.Target.Target, {
-        inspectedURL: 'http://www.example.org',
+        inspectedURL: 'http://www.example.org' as Platform.DevToolsPath.UrlString,
       }),
       debuggerModel: sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel, {
         scriptsForSourceURL: [],

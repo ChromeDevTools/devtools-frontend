@@ -8,16 +8,16 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 export class BinaryResourceViewFactory {
   private base64content: string;
-  private readonly contentUrl: string;
+  private readonly contentUrl: Platform.DevToolsPath.UrlString;
   private readonly resourceType: Common.ResourceType.ResourceType;
   private arrayPromise: Promise<Uint8Array>|null;
   private hexPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
   private utf8Promise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  constructor(base64content: string, contentUrl: string, resourceType: Common.ResourceType.ResourceType) {
+  constructor(
+      base64content: string, contentUrl: Platform.DevToolsPath.UrlString,
+      resourceType: Common.ResourceType.ResourceType) {
     this.base64content = base64content;
     this.contentUrl = contentUrl;
     this.resourceType = resourceType;
@@ -70,8 +70,8 @@ export class BinaryResourceViewFactory {
   }
 
   createHexView(): ResourceSourceFrame {
-    const hexViewerContentProvider = new TextUtils.StaticContentProvider.StaticContentProvider(
-        this.contentUrl as Platform.DevToolsPath.UrlString, this.resourceType, async () => {
+    const hexViewerContentProvider =
+        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, async () => {
           const contentAsArray = await this.fetchContentAsArray();
           const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
           return {content, isEncoded: false};
@@ -82,8 +82,8 @@ export class BinaryResourceViewFactory {
 
   createUtf8View(): ResourceSourceFrame {
     const utf8fn = this.utf8.bind(this);
-    const utf8ContentProvider = new TextUtils.StaticContentProvider.StaticContentProvider(
-        this.contentUrl as Platform.DevToolsPath.UrlString, this.resourceType, utf8fn);
+    const utf8ContentProvider =
+        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
     return new ResourceSourceFrame(
         utf8ContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
   }

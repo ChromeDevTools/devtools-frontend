@@ -116,9 +116,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }|null {
     // |#sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(
-        this.#target.inspectedURL() as Platform.DevToolsPath.UrlString, sourceURL);
+    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this.#target.inspectedURL(), sourceURL);
     if (!resolvedSourceURL) {
       return null;
     }

@@ -9,6 +9,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Formatter from '../../../../../front_end/models/formatter/formatter.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -18,7 +19,7 @@ describeWithEnvironment('SourceFormatter', () => {
   let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
   let sourceFormatter: Formatter.SourceFormatter.SourceFormatter;
 
-  const DOCUMENT_URL = 'index.html';
+  const DOCUMENT_URL = 'index.html' as Platform.DevToolsPath.UrlString;
   const PROJECT_ID = 'projectID';
   const MIME_TYPE = 'text/html';
   const RESOURCE_TYPE = Common.ResourceType.ResourceType.fromMimeType(MIME_TYPE);

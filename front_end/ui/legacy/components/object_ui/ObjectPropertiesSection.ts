@@ -1018,9 +1018,23 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this.linkifier);
       this.valueElement = (this.propertyValue.element as HTMLElement);
     } else if (this.property.getter) {
-      this.valueElement = ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
-          (parentMap.get(this.property) as SDK.RemoteObject.RemoteObject), [this.property.name],
-          this.onInvokeGetterClick.bind(this));
+      this.valueElement = document.createElement('span');
+      const element = this.valueElement.createChild('span');
+      element.textContent = i18nString(UIStrings.dots);
+      element.classList.add('object-value-calculate-value-button');
+      UI.Tooltip.Tooltip.install(element, i18nString(UIStrings.invokePropertyGetter));
+      const object = parentMap.get(this.property) as SDK.RemoteObject.RemoteObject;
+      const getter = this.property.getter;
+      element.addEventListener('click', (event: Event) => {
+        event.consume();
+        // @ts-ignore No way to teach TypeScript to preserve the Function-ness of `getter`.
+        void object.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)])
+            .then(this.onInvokeGetterClick.bind(this));
+
+        function invokeGetter(this: Object, getter: Function): Object {
+          return Reflect.apply(getter, this, []);
+        }
+      }, false);
     } else {
       this.valueElement = document.createElement('span');
       this.valueElement.classList.add('object-value-undefined');

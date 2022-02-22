@@ -144,6 +144,8 @@ grd_files_release_sources = [
   "front_end/Images/touchCursor_2x.png",
   "front_end/Images/trash_bin_icon.svg",
   "front_end/Images/treeoutlineTriangles.svg",
+  "front_end/Images/triangle-collapsed.svg",
+  "front_end/Images/triangle-expanded.svg",
   "front_end/Images/warning_icon.svg",
   "front_end/Images/whatsnew.avif",
   "front_end/Tests.js",

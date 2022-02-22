@@ -211,7 +211,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       TextEditor.Config.sourcesAutocompletion.instance(),
       TextEditor.Config.showWhitespace.instance(),
       TextEditor.Config.allowScrollPastEof.instance(),
-      TextEditor.Config.codeFolding.instance(),
+      CodeMirror.Prec.lowest(TextEditor.Config.codeFolding.instance()),
       TextEditor.Config.autoDetectIndent.instance(),
       sourceFrameTheme,
       CodeMirror.EditorView.domEventHandlers({

@@ -15,6 +15,9 @@ import {InterestGroupStorageView} from './InterestGroupStorageView.js';
 const UIStrings = {
   /**
   *@description Label for an item in the Application Panel Sidebar of the Application panel
+  * An interest group is an ad targeting group stored on the browser that can
+  * be used to show a certain set of advertisements in the future as the
+  * outcome of a FLEDGE auction. (https://developer.chrome.com/blog/fledge-api/)
   */
   interestGroups: 'Interest Groups',
 };

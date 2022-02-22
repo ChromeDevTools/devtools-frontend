@@ -596,6 +596,10 @@ const strings = {};
  * @return {Record<string, CtcMessage>}
  */
 function collectAllStringsInDir(directory) {
+  // If CWD is contains "third_party" (e.g. in a full Chromium checkout) then
+  // *all* paths will be ignored. To avoid this, make the directory relative to
+  // CWD.
+  directory = path.relative(process.cwd(), directory)
   // Globs require UNIX path separators, even on Windows
   const globPattern = path.join(directory, '/**/*.{js,ts}').replace(/\\/g, '/');
   const files = glob.sync(globPattern, {

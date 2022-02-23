@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ошол эле сайт жана ошол эле булак"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Порталдар — Бир жерден келип чыккан байланыш каналдары"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Интернеттеги ишенимдүү аракеттерди колдонгон PWA сапатынын критерийлерине киргизилген өзгөртүүлөр"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm модулун бир түпнускада бөлүшүүнү чектөөдө"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<жашыруун>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "баштапкы абалга келтирүү"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Бул URI туура эмес форматта болгондуктан, \"{PH1}\" иштөө аймагында байланыштырылган жок."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Кошуу"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Версия"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Кызыкчылык тобунун иш-чарасын чыкылдатып, топтун учурдагы абалын көрүңүз"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Тандалган кызыкчылык тобунун чоо-жайы жеткиликсиз. Серепчи топтон чыгып кеткен болушу мүмкүн."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Кызыкчылык топтору"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Ачкычка өтүү"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ооба"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Кызыкчылык тобунда сакталган бардык иш-чаралар."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Иш-чаранын убакыты"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Кирүү уруксатынын түрү"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Аталышы"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Ээси"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Кызыккан топтун иш-чаралары жаздырылган жок."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Мөөнөтү аяктоочу күн"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Элементтер панелинде бул функцияга уруксат бербеген эң мыкты iframe'дерди көрсөтүү үчүн басыңыз."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "fencedframe ичинде өчүрүлдү"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "\"Permissions-Policy\" аталышы тарабынан өчүрүлдү"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Чоо-жайын көрсөтүү"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Көздөгөн жер"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Даярдалган убакыт"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Көрсөтүлө турган кабарлар жок"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Абалы"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Стекти трассирлөө үлгүдөн алып тартып алынбай жатат"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "түзүлгөн стиль жадыбалы"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Буферге көчүрүлдү"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Бардык CSS өзгөрүүлөрүн көчүрүү"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Бардык декларацияларды көчүрүү"
   },
@@ -4680,10 +4722,10 @@
     "message": "Көчүрүү: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS мүнөздөмөсүнүн аталышы"
+    "message": "CSS мүнөздөмөсүнүн аталышы: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS мүнөздөмөсүнүн мааниси"
+    "message": "CSS мүнөздөмөсүнүн мааниси: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS тандагычы"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Интернеттеги ишенимдүү аракеттер"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "бөгөттөлдү"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# модуль}other{# модуль}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Булактын башаты"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Абалы"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Максаттуу башат"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "эскертүү"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm модулунун URL"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Маселелерди жашыруу"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Бул баракты мүмкүнчүлүгү чектелген адамдар же майыптар колдонобу?"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Эски багыт алуу режими"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Маяк режими"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Жергиликтүү сактагыч"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Бир нече өтмөк бир эле service worker тарабынан көзөмөлдөнүп жатат. Бул баракты текшерүү үчүн бир булактан алынган башка өтмөктөрдү жабыңыз."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Навигация"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Иштин майнаптуулугу"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Текшерүүдөн мурун сактагычты баштапкы абалга келтириңиз (cache, service workers, ж.б.). (Иштин майнаптуулугу жана PWA сыноо үчүн жакшы)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Маякты навигация, убакыт аралыгы же көз ирмемдик сүрөт режиминде иштетүү"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Жөнгө салууну симуляциялоо"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Snapshot"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Бул жерлердеги жүктөө көрсөткүчүнө кедергисин тийгизген маалымат сакталышы мүмкүн: {PH1}. Ал булактардын көрсөткүчтөрүңүзгө кедергисин тийгизбеши үчүн бул баракты жашыруун терезеде ачыңыз."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Бул жердеги жүктөө көрсөткүчүнө кедергисин тийгизген маалымат сакталышы мүмкүн: {PH1}. Ал булактардын көрсөткүчтөрүңүзгө кедергисин тийгизбеши үчүн бул баракты жашыруун терезеде ачыңыз."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Навигация режиминде Маяктын классикалык версиясын колдонуп, баракты карап чыгыңыз."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Веб SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Кеңири маалымат"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Режим"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016-жылы дүйнө жүзүндөгү мобилдик түзмөк колдонуучуларынын 75% 2G же 3G тармактарын пайдаланышкан [Булак: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Четке кагылгандардын тизмесинде"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Жарым-жартылай көрсөтүлгөн алкак"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Растр"

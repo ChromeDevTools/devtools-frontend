@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ተመሳሳይ-ጣቢያ እና ተመሳሳይ-ምንጭ"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "የፌዴሬትድ የመግቢያ ማስረጃ አስተዳደር ኤፒአይ"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "መግቢያዎች - ተመሳሳይ ምንጭ ያላቸው የግንኙነት ሰርጦች"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "የታመነ የድር እንቅስቃሴን በመጠቀም ለPWAዎች የጥራት መስፈርት ላይ የተደረጉ ለውጦች"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "የWasm ሞዱል ማጋራትን ለተመሳሳይ-ምንጭ በመገደብ ላይ"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ማንነት የማይታወቅ>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "ዳግም አስጀምር"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "ይህ ዩአርአይ የተበላሸ ስለሆነ በሥራ ቦታ ላይ «{PH1}»ን ለማጣመር የተደረገው ሙከራ አልተሳካም።"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "አክል"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "ስሪት"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "የቡድኑን የአሁን ሁኔታ ለማሳየት በማንኛውም የፍላጎት ቡድን ክስተት ላይ ጠቅ ያድርጉ"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "ለተመረጠው የፍላጎት ቡድን ምንም ዝርዝር አይገኝም። አሳሹ ከቡድኑ ወጥቶ ሊሆን ይችላል።"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "የፍላጎት ቡድኖች"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "የመክፈቻ መዳረሻ"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "አዎ"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "ሁሉም የፍላጎት ቡድን ማከማቻ ክስተቶች።"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "የክስተት ሰዓት"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "የመዳረሻ ዓይነት"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "ስም"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "ባለቤት"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "ምንም የፍላጎት ቡድን ክስተቶች አልተመዘገቡም።"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "የማብቂያ ጊዜ"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "ይህን ባህሪ በአባላት ፓነል ውስጥ የማይፈቅደውን ከፍተኛውን iframe ለመግለጥ ጠቅ ያድርጉ።"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "በfencedframe ውስጥ የተሰናከለ"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "በ«Permissions-Policy» ራስጌ የተሰናከለ"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "ዝርዝሮችን አሳይ"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "መድረሻ"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "የመነጨው በ"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ምንም የሚታዩ ሪፖርቶች የሉም"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "ሁኔታ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "የመከታተያ ቁልልን ምስል መሥራት አይችልም"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "የተገነባ የቅጥ ሉህ"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "ሁሉንም የሲኤስኤስ ለውጦች ይቅዱ"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "ሁሉንም መግለጫዎች ይቅዱ"
   },
@@ -4680,10 +4722,10 @@
     "message": "selectorን ቅዳ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS የንብረት ስም"
+    "message": "CSS የንብረት ስም፦ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS የንብረት እሴት"
+    "message": "CSS የንብረት እሴት፦ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "የCSS መራጭ"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "የታመነ የድር እንቅስቃሴ"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "የታገዱ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# ሞጁል}one{# ሞጁሎች}other{# ሞጁሎች}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "SOURCE_ORIGIN"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "ሁኔታ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "የዒላማ መነሻ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "ማስጠንቀቂያ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "የWasm ሞዱል ዩአርኤል"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ችግሮችን ደብቅ"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ይህ ገጽ በአካል ጉዳተኞች ወይም ችግር ባለባቸው ሰዎች ጥቅም ላይ ሊውል ይችላል?"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "የቆየ አሰሳ"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "የብርሃን ማማ ሁነታ"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "የውስጥ ማከማቻ"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "በርካታ ትሮች በተመሳሳዩ service worker ቁጥጥር እየተደረገባቸው ነው። ይህን ገጽ ኦዲት ለማድረግ በተመሳሳዩ ምንጭ ላይ ሌሎች ትሮችዎን ይዝጉ።"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "አሰሳ"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "አፈጻጸም"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ኦዲት ከማድረግዎ በፊት ማከማቻን (cache፣ service workers፣ ወዘተ) ዳግም ያስጀምሩ። (ለአፈጻጻም እና PWA ምርመራ ጥሩ የሆነ)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "የብርሃን ማማን በአሰሳ፣ በጊዜ ቆይታ ወይም በቅጽበት ፎቶ ሁነታ ያሂዱ"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "ኤስኢኦ"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "የተመሳሰለ መተላለፊያ"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "ቅጽበታዊ ፎቶ"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "በእነዚህ አካባቢዎች የመጫኛ አፈፃፀም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገጽ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "በዚህ አካባቢ ላይ በመጫኛ አፈጻጸም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገጽ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "በአሰሳ ሁነታ ላይ ሲሆኑ የታወቀ የብርሃን ማማን በመጠቀም ገጹን ኦዲት ያድርጉ።"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "የድር SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "ሁነታ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "በ2016 ከ75% የአለም ሞባይል ተጠቃሚዎች በ2ጂ ወይም በ3 ጂላይ ነበሩ [ምንጭ፦GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ችላ በተባለው ዝርዝር ላይ"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "በከፊል የቀረበ ክፈፍ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "ራስተር"

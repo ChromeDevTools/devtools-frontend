@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site e Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portais: canles de comunicación coa mesma orixe"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Cambios nos criterios de calidade das aplicacións web progresivas usando Actividade de confianza na Web"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Restrinxir o uso compartido do módulo Wasm á mesma orixe"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anónimo>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "restablecer"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Non se puido vincular {PH1} no espazo de traballo porque este URI ten un formato incorrecto."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Engadir"
@@ -1584,7 +1581,7 @@
     "message": "O nó de accesibilidade non se mostra"
   },
   "panels/accessibility/AccessibilityNodeView.ts | ancestorChildrenAreAll": {
-    "message": "Todos os elementos secundarios do antecedente son presentacionais: "
+    "message": "Todos os elementos secundarios do antecesor son presentacionais: "
   },
   "panels/accessibility/AccessibilityNodeView.ts | computedProperties": {
     "message": "Propiedades computadas"
@@ -1644,13 +1641,13 @@
     "message": "Parte do elemento de etiqueta: "
   },
   "panels/accessibility/AccessibilityNodeView.ts | placeholderIsPlaceholderOnAncestor": {
-    "message": "{PH1} é {PH2} no predecesor: "
+    "message": "{PH1} é {PH2} no antecesor: "
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
     "message": "Unha versión lexible por humanos do valor dun widget de intervalo (se é necesario)."
   },
   "panels/accessibility/AccessibilityStrings.ts | activeDescendant": {
-    "message": "Descendente activo"
+    "message": "Sucesor activo"
   },
   "panels/accessibility/AccessibilityStrings.ts | atomicLiveRegions": {
     "message": "Atómico (zonas en tempo real)"
@@ -1854,7 +1851,7 @@
     "message": "O nome computado deste elemento."
   },
   "panels/accessibility/AccessibilityStrings.ts | theDescendantOfThisElementWhich": {
-    "message": "O descendente deste elemento que está activo; é dicir, o elemento que se debería enfocar no seu lugar."
+    "message": "O sucesor deste elemento que está activo; é dicir, o elemento que se debería enfocar no seu lugar."
   },
   "panels/accessibility/AccessibilityStrings.ts | theHierarchicalLevelOfThis": {
     "message": "O nivel xerárquico deste elemento."
@@ -2554,6 +2551,15 @@
   },
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Versión"
+  },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Fai clic en calquera evento dun grupo de interese para ver o estado actual dese grupo"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Non hai información dispoñible en relación co grupo de interese seleccionado. Pode que o navegador saíse do grupo."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Grupos de interese"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Acceso ao método de apertura"
@@ -3279,7 +3285,7 @@
     "message": "Non hai ningún punto final para mostrar"
   },
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
-    "message": "Un predecesor de marco é un contexto que non é seguro"
+    "message": "Un antecesor de marco é un contexto que non é seguro"
   },
   "panels/application/components/FrameDetailsView.ts | adStatus": {
     "message": "Estado do anuncio"
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Si"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Todos os eventos de almacenamento de grupos de interese."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Hora do evento"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Tipo de acceso"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Nome"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Propietario"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Non se gravaron eventos de grupos de interese."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Tempo de caducidade"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Facer clic para mostrar o principal iframe que non permite esta función no panel de elementos."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "desactivouse por estar dentro dun fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "desactivada pola cabeceira Permissions-Policy"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Mostrar detalles"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Destino"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Marca de tempo da creación"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Non hai ningún informe para mostrar"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Estado"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Non se puido renderizar o seguimento da pilla"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "folla de estilo creada"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Copiouse no portapapeis"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Copiar todos os cambios do CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Copiar todas as declaracións"
   },
@@ -4680,10 +4722,10 @@
     "message": "Copiar selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Nome da propiedade (CSS)"
+    "message": "Nome da propiedade do CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Valor da propiedade (CSS)"
+    "message": "Valor da propiedade do CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Selector de CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Actividade de confianza na Web"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "bloqueouse"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# módulo}other{# módulos}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Orixe da fonte"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Estado"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Orixe obxectivo"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "advertencia"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL de módulo Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ocultar problemas"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Se esta páxina a poden usar persoas con discapacidades ou limitacións"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Navegación antiga"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Modo Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Almacenamento local"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Hai varias pestanas controladas polo mesmo service worker. Para auditar esta páxina, pecha o resto de pestanas coa mesma orixe."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Navegación"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Rendemento"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Restablecer o almacenamento (cache, service workers etc.) antes da auditoría. (Axuste adecuado para rendemento e probas de PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Executar Lighthouse no modo de navegación, duración ou instantánea"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Limitación simulada"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Instantánea"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "É posible que haxa datos almacenados que lle afecten ao rendemento da carga nestas localizacións: {PH1}. Audita esta páxina nunha ventá do modo de incógnito para evitar que eses recursos lles afecten ás túas puntuacións."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Pode que haxa datos almacenados que lle afectan ao desempeño da carga nesta localización: {PH1}. Audita esta páxina cunha ventá do modo de incógnito para evitar que eses recursos lles afecten ás túas puntuacións."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Auditar a páxina coa versión clásica de Lighthouse no modo de navegación."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Máis información"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Modo"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "En 2016, o 75 % dos usuarios de móbiles de todo o mundo usaban redes 2G ou 3G [fonte: GSMA Mobile]"
@@ -9192,10 +9234,10 @@
     "message": "Depurador en pausa"
   },
   "panels/sources/DebuggerPausedMessage.ts | descendantSAdded": {
-    "message": "Engadiuse un {PH1} descendente"
+    "message": "Engadiuse un {PH1} sucesor"
   },
   "panels/sources/DebuggerPausedMessage.ts | descendantSRemoved": {
-    "message": "Quitouse o descendente {PH1}"
+    "message": "Quitouse o sucesor {PH1}"
   },
   "panels/sources/DebuggerPausedMessage.ts | nodeRemoval": {
     "message": "retirada de nós"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Na lista de elementos ignorados"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Marco parcialmente presentado"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

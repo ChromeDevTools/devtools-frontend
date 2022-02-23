@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်းနှင့် ဇာစ်မြစ်တစ်ခုတည်း"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ပေါ်တယ်များ - ဇစ်မြစ်တစ်ခုထဲဖြစ်သော ဆက်သွယ်ရေး ချန်နယ်များ"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "‘စိတ်ချရသော ဝဘ်လုပ်ဆောင်ချက်’ သုံးသော PWA များအတွက် အရည်အသွေးသတ်မှတ်ချက်ရှိ အပြောင်းအလဲများ"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "ဇာစ်မြစ်တစ်ခုတည်းသို့ Wasm မော်ဂျူးမျှဝေခြင်းကို ကန့်သတ်ခြင်း"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<အမည်မသိ>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "ပြင်ဆင်သတ်မှတ်ရန်"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "ဤ URI ပုံစံပျက်ယွင်းနေသဖြင့် အလုပ်နေရာတွင် \"{PH1}\" ကို ပေါင်းထည့်၍မရပါ။"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "ထည့်ရန်"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "ဗားရှင်း"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "အုပ်စု၏လက်ရှိအခြေအနေ ပြသရန် စိတ်ဝင်စားမှုအုပ်စု ဖြစ်ရပ်တစ်ခုခုကို နှိပ်ပါ"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "ရွေးထားသည့် စိတ်ဝင်စားမှုအုပ်စုအတွက် အသေးစိတ်အချက်အလက် မရနိုင်ပါ။ ဘရောင်ဇာသည် အုပ်စုမှ ထွက်သွားခြင်းဖြစ်နိုင်သည်။"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "စိတ်ဝင်စားမှုအုပ်စုများ"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ဖွင့်သည့်စနစ်သို့ ဝင်ခွင့်"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Yes"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "စိတ်ဝင်စားမှုအုပ်စု သိုလှောင်ခန်းဖြစ်ရပ်များ အားလုံး။"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "ဖြစ်ရပ်၏အချိန်"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "သုံးခွင့်အမျိုးအစား"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "အမည်"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "ပိုင်ရှင်"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "စိတ်ဝင်စားမှုအုပ်စု ဖြစ်ရပ်များ မှတ်သားမထားပါ။"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "သက်တမ်းကုန်ချိန်"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "အစိတ်အပိုင်းများ အကန့်တွင် ဤဝန်ဆောင်မှုကို ခွင့်မပြုသည် ထိပ်ဆုံး iframe ကိုပြရန် နှိပ်ပါ။"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "fencedframe ထဲတွင် ပိတ်ထားသည်"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "“Permissions-Policy” ခေါင်းစီးက ပိတ်ထားသည်"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "အသေးစိတ် ပြရန်"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "ပို့မည့်နေရာ"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "ထုတ်ယူချိန်"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ပြသရန် အစီရင်ခံစာမရှိပါ"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "အခြေအနေ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "သုံးနည်းမှတ်တမ်းကို ပုံဖော်၍မရပါ"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ပြုလုပ်ထားသော ပုံစံစာမျက်နှာ"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးပြီးပြီ"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "CSS အပြောင်းအလဲအားလုံး မိတ္တူကူးရန်"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "ကြေညာချက်အားလုံးကို မိတ္တူကူးရန်"
   },
@@ -4680,10 +4722,10 @@
     "message": "selector မိတ္တူကူးရန်"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS သတ်မှတ်ချက် အမည်"
+    "message": "CSS property အမည်- {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS သတ်မှတ်ချက်တန်ဖိုး"
+    "message": "CSS property တန်ဖိုး- {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS ရွေးချယ်စနစ်"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "ယုံကြည်ရသော ဝဘ်လုပ်ဆောင်ချက်"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "ပိတ်ထားသည်"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{မော်ဂျူး # ခု}other{မော်ဂျူး # ခု}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "ရင်းမြစ်ဇာစ်မြစ်"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "အခြေအနေ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "ပစ်မှတ် ဇာစ်မြစ်"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "သတိပေးချက်"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm မော်ဂျူး URL"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ပြဿနာများ ဖျောက်ထားပါ"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ဤစာမျက်နှာကို မသန်စွမ်းသူ (သို့) ချို့ယွင်းသူတို့က သုံးနိုင်သလား"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "ဗားရှင်းဟောင်း လမ်းညွှန်မှုမုဒ်"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse မုဒ်"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "စက်တွင်း သိုလှောင်ခန်း"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "တဘ်အများအပြားကို service worker တစ်ခုတည်းက ထိန်းချုပ်နေသည်။ ဤစာမျက်နှာကို စစ်ဆေးရန် ဇာစ်မြစ်တစ်ခုတည်းရှိ အခြားတဘ်များကို ပိတ်ပါ။"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "လမ်းညွှန်မှု"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "စွမ်းဆောင်ရည်"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "မစစ်ဆေးမီ သိုလှောင်ခန်း (cache၊ service workers စသည်) ကို ပြင်ဆင်သတ်မှန်ရန်။ (စွမ်းဆောင်ရည်နှင့် PWA စစ်ဆေးမှုအတွက် ကောင်းသည်)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Lighthouse ကို လမ်းညွှန်မှု၊ ကြာချိန်ပြသမှု (သို့) လျှပ်တစ်ပြက်မုဒ်တို့တွင် လုပ်ဆောင်ရန်"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "အသွင်တူပြုလုပ်ထားသော မြန်နှုန်းထိန်းချုပ်ခြင်း"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "လျှပ်တစ်ပြက်"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "အဆိုပါနေရာများတွင် စွမ်းဆောင်ရည်ဖွင့်ခြင်းအပေါ် သက်ရောက်မှုရှိသော သိမ်းထားသည့်ဒေတာများ ရှိနိုင်သည်- {PH1}။ ထိုရင်းမြစ်များက သင့်ရမှတ်များပေါ် သက်ရောက်မှုမရှိစေရန် ဤစာမျက်နှာကို ရုပ်ဖျက်ဝင်ဒိုးတွင် စစ်ဆေးပါ။"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ဤနေရာမျာတွင် စွမ်းဆောင်ရည်ဖွင့်ခြင်းကို သက်ရောက်မှုရှိသော သိမ်းထားသည့်ဒေတာများ ရှိနိုင်သည်- {PH1}။ ထိုရင်းမြစ်များက သင့်ရမှတ်များပေါ် သက်ရောက်မှုမရှိစေရန် ဤစာမျက်နှာကို ရုပ်ဖျက်ဝင်ဒိုးတွင် စစ်ဆေးပါ။"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "လမ်းညွှန်မှုမုဒ်သုံးချိန်တွင် မူရင်း Lighthouse ဖြင့် စာမျက်နှာကို စစ်ဆေးနိုင်သည်။"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ဝဘ် SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "မုဒ်"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "၂၀၁၆ တွင် ကမ္ဘာအနှံ့ရှိ မိုဘိုင်းအသုံးပြုသူများ၏ ၇၅% က 2G (သို့) 3G အသုံးပြုကြသည် [ရင်းမြစ်- GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "လျစ်လျူရှုစာရင်းတွင်"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "တစ်ဝက်တစ်ပျက်ပြထားသော ဖရိမ်"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "ရက်စတာပုံ"

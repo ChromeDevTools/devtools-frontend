@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site và Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Cổng thông tin – Kênh giao tiếp cùng nguồn gốc"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Các thay đổi đối với tiêu chí chất lượng cho những PWA sử dụng Hoạt động đáng tin cậy trên web"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Hạn chế chia sẻ cùng nguồn gốc đối với mô-đun Wasm"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ẩn danh>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "đặt lại"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Không liên kết được \"{PH1}\" trong không gian làm việc vì URI này không đúng định dạng."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Thêm"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Phiên bản"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Nhấp vào một sự kiện nhóm mối quan tâm để xem tình trạng hiện tại của nhóm"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Không có thông tin chi tiết nào cho nhóm mối quan tâm đã chọn. Có thể trình duyệt đã rời khỏi nhóm đó."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Nhóm mối quan tâm"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Truy cập vào trình mở"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Có"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Tất cả sự kiện lưu trữ nhóm mối quan tâm."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Thời gian sự kiện"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Loại quyền truy cập"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Tên"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Chủ sở hữu"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Chưa ghi sự kiện nhóm mối quan tâm nào."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Thời gian hết hạn"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Nhấp để hiển thị iframe ở cấp cao nhất. iframe này không cho phép tính năng này trong bảng điều khiển phần tử."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "đã tắt bên trong một fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "bị tắt theo tiêu đề \"Permissions-Policy\""
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Hiện thông tin chi tiết"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Điểm đến"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Đã tạo vào"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Không có báo cáo để hiện"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Trạng thái"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Không thể hiển thị dấu vết ngăn xếp"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "biểu định kiểu được tạo"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Đã sao chép vào bảng nhớ tạm"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Sao chép mọi thay đổi CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Sao chép mọi nội dung khai báo"
   },
@@ -4680,10 +4722,10 @@
     "message": "Sao chép selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Tên thuộc tính CSS"
+    "message": "Loại thuộc tính CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Giá trị thuộc tính CSS"
+    "message": "Giá trị thuộc tính CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Bộ chọn CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Hoạt động đáng tin cậy trên web"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "bị chặn"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# mô-đun}other{# mô-đun}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Nguồn gốc"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Trạng thái"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Nguồn gốc mục tiêu"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "cảnh báo"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL mô-đun Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ẩn vấn đề"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Những người bị khuyết tật có thể sử dụng trang này không"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Trình điều hướng cũ"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Chế độ Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Bộ nhớ cục bộ"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Cùng một service worker đang kiểm soát nhiều thẻ. Hãy đóng các thẻ khác trên cùng một nguồn gốc để kiểm tra trang này."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Điều hướng"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Hiệu suất"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Đặt lại bộ nhớ (cache, service workers, v.v.) trước khi kiểm tra. (Phù hợp để thử nghiệm hiệu suất và PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Chạy Lighthouse ở chế độ điều hướng, dấu thời gian và ảnh chụp nhanh"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Điều tiết theo mô phỏng"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Ảnh chụp nhanh"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở những vị trí này: {PH1}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn những tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở vị trí này: {PH1}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Kiểm tra trang bằng Lighthouse cũ khi ở chế độ điều hướng."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Tìm hiểu thêm"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Chế độ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Trong năm 2016, 75% số người dùng thiết bị di động trên toàn cầu đã dùng mạng 2G hoặc 3G [Nguồn: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Trên danh sách bỏ qua"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Khung hiện diện một phần"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Đường quét"

@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site, Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "ఫెడరేటెడ్ క్రెడెన్షియల్ మేనేజ్‌మెంట్ API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "పోర్టల్‌లు - ఒకే ఆరిజిన్ కమ్యూనికేషన్ ఛానెల్స్"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "విశ్వసనీయ వెబ్ యాక్టివిటీని ఉపయోగించి PWAల క్వాలిటీ ప్రమాణాలకు మార్పులు"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm మాడ్యూల్, షేరింగ్‌ను అదే ఆరిజిన్‌కు పరిమితం చేస్తోంది"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<అజ్ఞాతం>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "రీసెట్ చేయి"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "ఈ URL తప్పుగా ఉన్న కారణంగా వర్క్ స్పేస్‌లో \"{PH1}\" బైండ్ చేసే ప్రయత్నం విఫలమైంది."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "జోడించు"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "వెర్షన్"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "గ్రూప్ ప్రస్తుత స్టేట్‌ను ప్రదర్శించడానికి ఒకటే ఆసక్తి ఆధారంగా క్రియేట్ చేయబడిన ఏదైనా గ్రూప్‌పై క్లిక్ చేయండి"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "ఒకటే ఆసక్తి ఆధారంగా క్రియేట్ చేయబడిన ఈ ఎంచుకున్న గ్రూప్‌లకు సంబంధించిన వివరాలు ఏవీ అందుబాటులో లేవు. బ్రౌజర్ గ్రూప్ నుండి నిష్క్రమించి ఉండవచ్చు."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "ఒకటే ఆసక్తి ఆధారంగా క్రియేట్ చేయబడిన గ్రూప్‌లు"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ఓపెనర్‌కు యాక్సెస్"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "అవును"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "ఒకటే ఆసక్తి ఆధారంగా క్రియేట్ చేయబడిన గ్రూప్‌నకు సంబంధించిన స్టోరేజ్ ఈవెంట్‌లు."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "ఈవెంట్ సమయం"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "యాక్సెస్ రకం"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "పేరు"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "ఓనర్"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "ఒకటే ఆసక్తి ఆధారంగా క్రియేట్ చేయబడిన గ్రూప్ ఈవెంట్‌లు ఏవీ రికార్డ్ చేయబడలేదు."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "గడువు ముగింపు సమయం"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "ఎలిమెంట్‌ల ప్యానెల్‌లో ఈ ఫీచర్‌ను అనుమతించని అత్యంత ఎగువన ఉన్న iframeను చూపడానికి క్లిక్ చేయండి."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "fencedframe‌లో డిజేబుల్ చేయబడి ఉంటుంది"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "\"Permissions-Policy\" హెడర్ ద్వారా డిజేబుల్ చేయబడింది"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "వివరాలను చూడండి"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "గమ్యస్థానం"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "జెనరేట్ అయిన సమయం"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ప్రదర్శించడానికి రిపోర్ట్‌లు ఏవీ లేవు"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "స్టేటస్"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "స్టాక్ ట్రేస్‌ను రెండర్ చేయడం సాధ్యపడదు"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "నిర్మాణం చేయబడిన స్టయిల్‌షీట్"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "అన్ని CSS మార్పులను కాపీ చేయండి"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "అన్ని డిక్లరేషన్‌లను కాపీ చేయండి"
   },
@@ -4680,10 +4722,10 @@
     "message": "selectorను కాపీ చేయండి"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS ప్రాపర్టీ పేరు"
+    "message": "CSS ప్రాపర్టీ పేరు: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS ప్రాపర్టీ విలువ"
+    "message": "CSS ప్రాపర్టీ విలువ: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS ఎంపిక సాధనం"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "విశ్వసనీయ వెబ్ యాక్టివిటీ"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "బ్లాక్ చేయబడింది"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# మాడ్యూల్}other{# మాడ్యూల్‌లు}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "సోర్స్ ఆరిజిన్"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "స్టేటస్"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "టార్గెట్ ఆరిజిన్"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "హెచ్చరిక"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm మాడ్యూల్ URL"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "సమస్యలకు సంబంధించిన మెనూను దాచండి"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ఈ పేజీ వైకల్యాలు లేదా లోపాలు ఉన్న వారికి ఉపయోగపడుతుందా"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "లెగసీ నావిగేషన్"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "లైట్‌హౌస్ మోడ్"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "స్థానిక స్టోరేజ్"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "అదే service worker పలు ట్యాబ్‌లను కంట్రోల్ చేస్తోంది. ఈ పేజీని ఆడిట్ చేయడానికి అదే మూలంలోని మీ ఇతర ట్యాబ్‌లను మూసివేయండి."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "నావిగేషన్"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "పనితీరు"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ఆడిట్ చేసే ముందు స్టోరేజ్ (cache, service workers, మొదలైనవి)ను రీసెట్ చేయండి. (పనితీరు, అలాగే PWA పరీక్షించడం కోసం మంచిది)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "నావిగేషన్, టైమ్‌స్పాన్, లేదా స్నాప్‌షాట్ మోడ్‌లో లైట్‌హౌస్‌ను రన్ చేయండి"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "త్రోట్లింగ్ అనుకరణ"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "స్నాప్‌షాట్"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "ఈ లొకేషన్‌లలో ఉండే స్టోర్ చేసిన డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {PH1}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {PH1}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "నావిగేషన్ మోడ్‌లో ఉన్నప్పుడు క్లాసిక్ లైట్‌హౌస్‌ను ఉపయోగించి పేజీని ఆడిట్ చేయండి."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "వెబ్ SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "మోడ్"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016లో 75% మంది గ్లోబల్ మొబైల్ యూజర్‌లు 2G లేదా 3Gని ఉపయోగించే వారు [సోర్స్: GSMA Mobile]"
@@ -8094,7 +8136,7 @@
     "message": "ఒక ప్రొఫైల్‌ను రికార్డ్ చేస్తూ ఉండగా మరొక ప్రొఫైల్‌ను లోడ్ చేయడం సాధ్యపడదు."
   },
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
-    "message": "అన్ని ప్రొఫైల్‌లను క్లియర్ చేయి"
+    "message": "అన్ని ప్రొఫైళ్లను క్లియర్ చేయి"
   },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "లోడ్ చేయి…"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "'విస్మరించు' లిస్ట్‌లో ఉంది"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "కొంత భాగాన్ని మాత్రమే చూపించే ఫ్రేమ్"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "రాస్టర్"

@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "I njëjti sajt dhe e njëjta origjinë"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portale - Kanale komunikimi me origjinë të njëjtë"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Ndryshimet në kriteret e cilësisë për PWA që përdorin aktivitetin e besuar të uebit"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Po kufizohet ndarja nga moduli Wasm drejt së njëjtës origjinë"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "rivendos"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Përpjekja për të lidhur \"{PH1}\" në hapësirën e punës dështoi sepse kjo URI është e keqformuar."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Shto"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Versioni"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Kliko në një ngjarje grupi interesi për të shfaqur gjendjen aktuale të grupit"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Nuk ofrohen detaje për grupet e zgjedhura të interesit. Shfletuesi mund të jetë larguar nga grupi."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Grupet e interesit"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Qasja te hapësi"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Po"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Të gjitha ngjarjet e hapësirës ruajtëse të grupit të interesit."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Koha e ngjarjes"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Lloji i qasjes"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Emri"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Zotëruesi"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Nuk ka ngjarje të regjistruara të grupeve të interesit."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Koha e skadimit"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Kliko për të zbuluar kuadrin iframe më në krye që nuk e lejon këtë veçori në panelin e elementeve."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "çaktivizuar brenda një fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "çaktivizuar nga koka e faqes \"Permissions-Policy\""
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Shfaq detajet"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Destinacioni"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Gjeneruar në"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Nuk ka raporte për të shfaqur"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Statusi"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Gjurmimi i stivës nuk mund të paraqitet"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "fletë e konstruktuar stili"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "U kopjua në kujtesën e fragmenteve"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Kopjo të gjithë ndryshimet e CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Kopjo të gjitha deklaratat"
   },
@@ -4680,10 +4722,10 @@
     "message": "Kopjo selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Emri i atributit CSS"
+    "message": "Emri i atributit CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Vlera e atributit CSS"
+    "message": "Vlera e atributit CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Përzgjedhësi i CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Aktiviteti i besuar i uebit"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "bllokuar"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# modul}other{# module}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Origjina e burimit"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Statusi"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Origjina e synuar"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "paralajmërim"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL-ja e modulit Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Fshih problemet"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "A është kjo faqe e përdorshme nga personat me aftësi të kufizuara apo personat me të meta"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Formati i vjetër i navigimit"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Modaliteti Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Hapësira ruajtëse lokale"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Skeda të shumta po kontrollohen nga i njëjti service worker. Mbyll skedat e tua të tjera në të njëjtën origjinë për të audituar këtë faqe."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Navigimi"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performanca"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Rivendos hapësirën ruajtëse (cache, service workers etj.) përpara auditimit. (E mirë për performancën dhe testimin e PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Ekzekuto Lighthouse në modalitetin e navigimit, segmentit kohor ose të shkrepjes"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Përshpejtimi i simuluar"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Shkrepje"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Mund të ketë të dhëna të ruajtura që ndikojnë në performancën e ngarkimit në këto vendndodhje: {PH1}. Auditoje këtë faqe në një dritare \"të fshehtë\" për të parandaluar që ato burime të ndikojnë në rezultatet e tua."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mund të ketë të dhëna të ruajtura që prekin cilësinë e funksionimit në këtë vendndodhje: {PH1}. Auditoje këtë faqe në një dritare \"të fshehtë\" për të parandaluar që ato burime të ndikojnë në rezultatet e tua."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Audito faqen duke përdorur versioni klasik të Lighthouse kur je në modalitetin e navigimit."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL e uebit"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Mëso më shumë"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Modaliteti"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% e përdoruesve botërorë të celularëve në 2016 ishin në 2G ose 3G [Burimi: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Në listën e shpërfilljes"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Kuadër i shfaqur pjesërisht"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

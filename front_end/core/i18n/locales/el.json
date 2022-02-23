@@ -405,10 +405,10 @@
     "message": "Worklet δημοπρασίας διαφήμισης"
   },
   "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
-    "message": "'Εναρξης φάσης υποβολής προσφορών υποβάλλοντα προσφοράς"
+    "message": "'Εναρξης φάσης υποβολής προσφορών πλειοδότη"
   },
   "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
-    "message": "'Εναρξης φάσης αναφοράς υποβάλλοντα προσφοράς"
+    "message": "'Εναρξης φάσης αναφοράς πλειοδότη"
   },
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
     "message": "Έναρξη φάσης αναφοράς πωλητή"
@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site και Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "API διαχείρισης ομόσπονδων διαπιστευτηρίων"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Πύλες – Κανάλια επικοινωνίας κοινής προέλευσης"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Αλλαγές σε κριτήρια ποιότητας για PWA με χρήση της Αξιόπιστης δραστηριότητας ιστού"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Περιορισμός λειτουργικής μονάδας Wasm σε κοινή χρήση ίδιας προέλευσης"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ανώνυμο>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "επαναφορά"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Η προσπάθεια για τη σύνδεση του στοιχείου {PH1} στον χώρο εργασίας απέτυχε επειδή η μορφή αυτού του URI δεν είναι σωστή."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Προσθήκη"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Έκδοση"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Κάντε κλικ σε ένα συμβάν ομάδας ενδιαφέροντος για να δείτε την τρέχουσα κατάσταση της ομάδας"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Δεν διατίθενται λεπτομέρειες για την επιλεγμένη ομάδα ενδιαφέροντος. Το πρόγραμμα περιήγησης μπορεί να αποχώρησε από την ομάδα."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Ομάδες ενδιαφέροντος"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Πρόσβαση στο στοιχείο ανοίγματος"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ναι"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Όλα τα συμβάντα αποθήκευσης ομάδων ενδιαφέροντος."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Ώρα συμβάντος"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Τύπος πρόσβασης"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Όνομα"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Κάτοχος"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Δεν έχουν καταγραφεί συμβάντα ομάδων ενδιαφέροντος."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Χρόνος λήξης"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Κάντε κλικ για να αποκαλύψετε το κορυφαίο iframe το οποίο δεν επιτρέπει αυτήν τη λειτουργία στο πλαίσιο Στοιχεία"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "απενεργοποιήθηκε εντός fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "απενεργοποιήθηκε από την κεφαλίδα \"Permissions-Policy\""
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Εμφάνιση λεπτομερειών"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Προορισμός"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Δημιουργήθηκε στις"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Δεν υπάρχουν αναφορές για προβολή"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Κατάσταση"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Δεν είναι δυνατή η απόδοση της ιχνηλάτησης στοίβας."
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "κατασκευασμένο φύλλο στιλ"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Αντιγράφηκε στο πρόχειρο"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Αντιγραφή όλων των αλλαγών CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Αντιγραφή όλων των δηλώσεων"
   },
@@ -4680,10 +4722,10 @@
     "message": "Αντιγραφή selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Όνομα ιδιοκτησίας CSS"
+    "message": "Όνομα ιδιότητας CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Τιμή ιδιότητας CSS"
+    "message": "Τιμή ιδιότητας CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Επιλογέας CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Αξιόπιστη δραστηριότητα ιστού"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "αποκλείστηκε"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# λειτουργική μονάδα}other{# λειτουργικές μονάδες}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Προέλευση πηγής"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Κατάσταση"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Προέλευση στόχευσης"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "προειδοποίηση"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL λειτουργικής μονάδας Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Απόκρυψη ζητημάτων"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Η σελίδα μπορεί να χρησιμοποιηθεί από άτομα με αναπηρίες;"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Πλοήγηση παλαιού τύπου"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Λειτουργία Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Τοπικός αποθηκευτικός χώρος"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Πολλές καρτέλες ελέγχονται από το ίδιο service worker. Κλείστε τις άλλες καρτέλες στην ίδια προέλευση για να ελέγξετε αυτήν τη σελίδα."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Πλοήγηση"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Απόδοση"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Επαναφορά αποθηκευτικού χώρου (cache, service workers κ.λπ.) πριν από τον έλεγχο. (Καλό για δοκιμές απόδοσης και PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Εκτέλεση του Lighthouse σε λειτουργία πλοήγησης, χρονικού διαστήματος ή σύνοψης"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Προσομοιωμένος περιορισμός"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Σύνοψη"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Ενδέχεται να υπάρχουν αποθηκευμένα δεδομένα που επηρεάζουν την απόδοση φόρτωσης σε αυτές τις τοποθεσίες: {PH1}. Ελέγξτε αυτήν τη σελίδα σε παράθυρο για ανώνυμη περιήγηση για να εμποδίσετε αυτούς τους πόρους να επηρεάσουν τις βαθμολογίες σας."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Ενδέχεται να υπάρχουν αποθηκευμένα δεδομένα που επηρεάζουν την απόδοση φόρτωσης σε αυτήν την τοποθεσία: {PH1}. Ελέγξτε αυτήν τη σελίδα σε παράθυρο για ανώνυμη περιήγηση για να εμποδίσετε αυτούς τους πόρους να επηρεάσουν τις βαθμολογίες σας."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Ελέγξτε τη σελίδα χρησιμοποιώντας το κλασικό Lighthouse κατά τη λειτουργία πλοήγησης."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Λειτουργία"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Το 2016, το 75% των χρηστών κινητών ανά τον κόσμο είχαν 2G ή 3G [Πηγή: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Στη λίστα παράβλεψης"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Πλαίσιο που εμφανίζεται μερικώς"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

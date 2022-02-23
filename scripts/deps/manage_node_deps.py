@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 #
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -12,7 +12,6 @@ number in DEPS below and run this script.
 import os
 import os.path as path
 import json
-import shutil
 import subprocess
 import sys
 from collections import OrderedDict
@@ -149,11 +148,10 @@ def ensure_licenses():
 
 def strip_private_fields():
     # npm adds private fields which need to be stripped.
-    pattern = path.join(devtools_paths.node_modules_path(), 'package.json')
     packages = []
-    for root, dirnames, filenames in os.walk(devtools_paths.node_modules_path()):
-        for filename in filter(lambda f: f == 'package.json', filenames):
-            packages.append(path.join(root, filename))
+    for root, _, filenames in os.walk(devtools_paths.node_modules_path()):
+        if 'package.json' in filenames:
+            packages.append(path.join(root, 'package.json'))
 
     for pkg in packages:
         with open(pkg, 'r+') as pkg_file:
@@ -163,7 +161,7 @@ def strip_private_fields():
                 # Remove anything that begins with an underscore, as these are
                 # the private fields in a package.json
                 for key in pkg_data.keys():
-                    if key.find(u'_') == 0:
+                    if key.find('_') == 0:
                         pkg_data.pop(key)
 
                 pkg_file.truncate(0)
@@ -182,7 +180,7 @@ def install_missing_deps():
     with open(devtools_paths.package_lock_json_path(), 'r+') as pkg_lock_file:
         try:
             pkg_lock_data = load_json_file(pkg_lock_file)
-            existing_deps = pkg_lock_data[u'dependencies']
+            existing_deps = pkg_lock_data['dependencies']
             new_deps = []
 
             # Find any new DEPS and add them in.
@@ -213,7 +211,7 @@ def append_package_json_entries():
             pkg_data = load_json_file(pkg_file)
 
             # Replace the dev deps.
-            pkg_data[u'devDependencies'] = DEPS
+            pkg_data['devDependencies'] = DEPS
 
             pkg_file.truncate(0)
             pkg_file.seek(0)
@@ -234,7 +232,8 @@ def remove_package_json_entries():
             # Remove the dependencies and devDependencies from the root package.json
             # so that they can't be used to overwrite the node_modules managed by this file.
             for key in pkg_data.keys():
-                if key.find(u'dependencies') == 0 or key.find(u'devDependencies') == 0:
+                if key.find('dependencies') == 0 or key.find(
+                        'devDependencies') == 0:
                     pkg_data.pop(key)
 
             pkg_file.truncate(0)
@@ -281,7 +280,7 @@ def addChromiumReadme():
 
 def run_npm_command(npm_command_args=None):
     for (name, version) in DEPS.items():
-        if (version.find(u'^') == 0):
+        if (version.find('^') == 0):
             print('Versions must be locked to a specific version; remove ^ from the start of the version.')
             return True
 

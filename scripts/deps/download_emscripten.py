@@ -11,7 +11,6 @@ testing DevTools with emscripten generated Wasm binaries.
 import argparse
 import os
 import platform
-import subprocess
 import sys
 import tarfile
 import urllib.request

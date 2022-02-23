@@ -1,10 +1,10 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 #
 # Copyright 2020 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import urllib
+import urllib.request
 import tarfile
 import os
 import re
@@ -19,10 +19,10 @@ sys.path.append(scripts_path)
 import devtools_paths
 
 package_info = json.load(
-    urllib.urlopen('https://registry.npmjs.org/puppeteer/latest'))
+    urllib.request.urlopen('https://registry.npmjs.org/puppeteer/latest'))
 url = package_info['dist']['tarball']
 
-file = urllib.urlretrieve(url, filename=None)[0]
+file = urllib.request.urlretrieve(url, filename=None)[0]
 tar = tarfile.open(file, 'r:gz')
 members = [
     member for member in tar.getmembers()

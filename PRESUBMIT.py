@@ -639,40 +639,6 @@ def _checkWithNodeScript(input_api, output_api, script_path, script_arguments=[]
     return _ExecuteSubProcess(input_api, output_api, [devtools_paths.node_path(), script_path], script_arguments, [])
 
 
-def _checkWithTypeScript(input_api,
-                         output_api,
-                         tsc_arguments,
-                         script_path,
-                         script_arguments=[]):  # pylint: disable=invalid-name
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [
-            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
-        ]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-
-    # First run tsc to compile the TS script that we then run in the _ExecuteSubProcess call
-    tsc_compiler_process = input_api.subprocess.Popen(
-        [
-            devtools_paths.node_path(),
-            devtools_paths.typescript_compiler_path()
-        ] + tsc_arguments,
-        stdout=input_api.subprocess.PIPE,
-        stderr=input_api.subprocess.STDOUT)
-
-    out, _ = tsc_compiler_process.communicate()
-    if tsc_compiler_process.returncode != 0:
-        return [
-            output_api.PresubmitError('Error compiling briges regenerator:\n' +
-                                      out.decode('utf-8'))
-        ]
-
-    return _checkWithNodeScript(input_api, output_api, script_path,
-                                script_arguments)
-
-
 def _getFilesToLint(input_api, output_api, lint_config_files,
                     default_linted_directories, accepted_endings, results):
     run_full_check = False

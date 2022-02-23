@@ -15,6 +15,7 @@ declare module 'estree' {
 // The @types/estree do not export the types to a namespace. Since we reference
 // these types as "ESTree.Node", we need to explicitly re-export them here.
 export type ArrayPattern = estree.ArrayPattern;
+export type AssignmentProperty = estree.AssignmentProperty;
 export type CatchClause = estree.CatchClause;
 export type Class = estree.Class;
 export type Expression = estree.Expression;

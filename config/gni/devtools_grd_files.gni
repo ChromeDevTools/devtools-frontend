@@ -666,6 +666,7 @@ grd_files_debug_sources = [
   "front_end/entrypoints/formatter_worker/JSONFormatter.js",
   "front_end/entrypoints/formatter_worker/JavaScriptFormatter.js",
   "front_end/entrypoints/formatter_worker/JavaScriptOutline.js",
+  "front_end/entrypoints/formatter_worker/Substitute.js",
   "front_end/entrypoints/heap_snapshot_worker/AllocationProfile.js",
   "front_end/entrypoints/heap_snapshot_worker/HeapSnapshot.js",
   "front_end/entrypoints/heap_snapshot_worker/HeapSnapshotLoader.js",

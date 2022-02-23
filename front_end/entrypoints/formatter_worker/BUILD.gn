@@ -20,6 +20,7 @@ devtools_module("formatter_worker") {
     "JSONFormatter.ts",
     "JavaScriptFormatter.ts",
     "JavaScriptOutline.ts",
+    "Substitute.ts",
   ]
 
   deps = [

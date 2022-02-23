@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 The Chromium Authors. All rights reserved.

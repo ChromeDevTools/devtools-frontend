@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 # Copyright (c) 2014 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer', 'c
 
 
 def _keep_only_required_keys(entry):
-    for key in entry.keys():
+    for key in list(entry.keys()):
         if key not in ("name", "longhands", "svg", "inherited", "keywords"):
             del entry[key]
     return entry
@@ -70,9 +70,10 @@ def properties_from_file(file_name):
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
         if "keywords" in entry:
-            keywords = list(
-                filter(lambda keyword: not keyword.startswith("-internal-"),
-                       entry["keywords"]))
+            keywords = [
+                keyword for keyword in entry["keywords"]
+                if not keyword.startswith("-internal-")
+            ]
             property_values[entry["name"]] = {"values": keywords}
 
     properties.sort(key=lambda entry: entry["name"])

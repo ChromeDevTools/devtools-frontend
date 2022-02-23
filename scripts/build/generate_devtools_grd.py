@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 #
 # Copyright (C) 2011 Google Inc. All rights reserved.
 #
@@ -29,13 +29,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """Creates a grd file for packaging the inspector files."""
 
-from __future__ import with_statement
-from os import path
 
-import errno
 import os
 import shlex
-import shutil
 import sys
 from xml.dom import minidom
 

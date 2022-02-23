@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site 和 Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "门户 - 同源通信渠道"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "使用 Trusted Web Activity 时 PWA 的画质标准出现变化"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "将 Wasm 模块共享功能限制为同源"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<匿名>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "重置"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "由于此 URI 格式不正确，因此在工作区尝试绑定“{PH1}”时失败。"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "添加"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "版本"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "点击任意兴趣群体事件即可显示该群体的当前状态"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "没有所选兴趣群体的任何详细信息。浏览器可能已退出该群体。"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "兴趣群体"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "访问打开者"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "是"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "所有兴趣群体存储事件。"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "事件时间"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "权限类型"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "名称"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "所有者"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "未记录任何兴趣群体事件。"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "到期时间"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "点击即可在“元素”面板中显示不允许使用此功能的最顶部 iframe。"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "已在 fencedframe 内停用"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "已被“Permissions-Policy”标头停用"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "显示详细信息"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "目标端点"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "生成时间"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "没有可显示的报告"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "状态"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "无法渲染堆栈轨迹"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "构造的样式表"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "已复制到剪贴板"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "复制所有 CSS 更改"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "复制所有声明"
   },
@@ -4680,10 +4722,10 @@
     "message": "复制selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS 属性名称"
+    "message": "CSS 属性名称：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS 属性值"
+    "message": "CSS 属性值：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS 选择器"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "可信网络活动"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "已被拦截"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# 个模块}other{# 个模块}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "来源"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "状态"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "目标源"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "警告"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm 模块网址"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "隐藏问题"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "此网页是否可供残障人士使用"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "旧版导航"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse 模式"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "本地存储空间"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "多个标签页正受到同一个 service worker 的控制。请关闭同一来源的其他标签页以审核此网页。"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "导航"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "性能"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "在审核前重置存储空间（cache 和 service workers 等）。（适用于性能和 PWA 测试）"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "在导航模式、时间跨度模式或快照模式下运行 Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "模拟节流"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "快照"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "下列位置可能存储了会影响加载性能的数据：{PH1}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "下列位置可能存储了会影响加载性能的数据：{PH1}。请在无痕式窗口中审核此网页，以防止这些资源影响您的得分。"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "在导航模式下使用传统版 Lighthouse 审核网页。"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "了解详情"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "模式"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 年，全球有 75% 的手机用户使用的是 2G 或 3G 网络 [来源：GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "在忽略列表中"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "呈现部分框架"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "光栅"

@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "同網站與同來源"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "聯合憑證管理 API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "入口網站 - 同來源通訊渠道"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "透過可信任網絡活動整合 PWA 時的品質標準有所變更"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "將 Wasm 模組共用功能限制為相同來源"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<匿名>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "重設"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "由於 URI 不正確，因此無法繫結「{PH1}」至工作區。"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "新增"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "版本"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "按一下任何興趣群組事件，以顯示該群組的目前狀態"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "沒有已選取興趣群組的詳細資料。瀏覽器可能已離開群組。"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "興趣群組"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "可存取 Opener"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "是"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "所有興趣群組儲存空間事件。"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "事件時間"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "存取類型"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "名稱"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "擁有者"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "沒有記錄過興趣群組事件。"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "到期時間"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "按一下即可顯示「元素」面板中不允許使用此功能的頂層 iframe。"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "已於 fencedframe 之中停用"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "已由「Permissions-Policy」標題停用"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "顯示詳細資訊"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "目的地"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "已於以下時間產生："
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "沒有可顯示的報告"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "狀態"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "無法輸出堆疊追蹤"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "結構化樣式表"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "已複製到剪貼簿"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "複製所有 CSS 變更"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "複製所有聲明"
   },
@@ -4680,10 +4722,10 @@
     "message": "複製selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS 屬性名稱"
+    "message": "CSS 屬性名稱：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS 屬性值"
+    "message": "CSS 屬性值：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS 選取器"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "可信任的網絡活動"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "已封鎖"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# 個模組}other{# 個模組}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "來源"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "狀態"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "目標來源"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "警告"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm 模組網址"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "隱藏問題"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "殘疾或身體有障礙的人士能否使用此頁面"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "舊版導覽"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse 模式"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "本機儲存空間"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "同一 service worker 正在控制多個分頁。請關閉同一來源的其他分頁以審核此頁面。"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "導覽"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "效能"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "請在審核前重設 cache、service workers 等儲存空間 (適用於效能和 PWA 測試)。"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "在導覽、時間範圍或快覽模式中執行 Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "搜尋引擎優化 (SEO)"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "模擬節流"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "快覽"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "可能有儲存資料影響以下位置的載入效能：{PH1}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "可能有儲存資料影響以下位置的載入效能：{PH1}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "在導覽模式時，使用傳統版 Lighthouse 來審核頁面。"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "網絡 SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "瞭解詳情"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "模式"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "在 2016 年，全球 75% 流動裝置使用者使用 2G 或 3G [來源：GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "在忽略清單上"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "部分顯示的頁框"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "柵格"

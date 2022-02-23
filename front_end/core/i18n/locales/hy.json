@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site և Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Պորտալներ – նույն աղբյուրի կապուղիներ"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Որակի չափորոշիչների փոփոխություններ PWA-ների համար, որոնք օգտագործում են անվտանգ գործողություններ համացանցում"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm մոդուլի համատեղ օգտագործում միայն մեկ աղբյուրի կողմից"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<անանուն>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "զրոյացնել"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "URL-ի սխալ ձևաչափի պատճառով չհաջողվեց կապել «{PH1}» տարրն աշխատանքային տարածքում։"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Ավելացնել"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Տարբերակ"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Սեղմեք հետաքրքրությունների ցանկացած խմբի վրա՝ խմբի ընթացիկ կարգավիճակը տեսնելու համար"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Հետաքրքրությունների ընտրված խմբի համար հասանելի մանրամասներ չկան։ Հնարավոր է՝ դիտարկիչը լքել է խումբը։"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Հետաքրքրությունների խմբեր"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Պատուհանը բացող էջի հասանելիություն"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Այո"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Հետաքրքրությունների խմբերի պահոցի բոլոր իրադարձությունները։"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Իրադարձության ժամը"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Թույլտվության տեսակը"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Անվանում"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Սեփականատեր"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Հետաքրքրությունների խմբերի իրադարձություններ չեն գրանցվել։"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Գործողության ժամկետը"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Սեղմեք՝ տարրերի վահանակում ցույց տալու վերին iframe պատուհանը, որտեղ այս գործառույթն արգելված է։"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "անջատված է fencedframe-ում"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "անջատվել է «Permissions-Policy» վերնագրում"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ցուցադրել մանրամասները"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Նպատակակետ"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Ստեղծվել է"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Հաշվետվություններ չկան"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Կարգավիճակ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Չհաջողվեց արտապատկերել սթեքի ժամանակագրությունը"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ոճերի ստեղված աղյուսակ"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Պատճենվեց սեղմատախտակին"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Պատճենել բոլոր հայտարարագրերը"
   },
@@ -4680,10 +4722,10 @@
     "message": "Պատճենել՝ selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS հատկանիշի անվանումը"
+    "message": "CSS հատկանիշի անվանումը՝ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS հատկության արժեքը"
+    "message": "CSS հատկության արժեքը՝ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS-ի ընտրիչ"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Անվտանգ գործողություններ համացանցում"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "արգելափակված է"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# մոդուլ}one{# մոդուլ}other{# մոդուլ}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Սկզբնաղբյուրը"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Կարգավիճակ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Թիրախի աղբյուրը"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "նախազգուշացում"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm մոդուլի URL"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Թաքցնել խնդիրները"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Արդյոք այս էջը կարող են օգտագործել հենաշարժողական խնդիրներ կամ սահմանափակ հնարավորություններ ունեցող օգտատերերը"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Նավիգացիայի հնացած ռեժիմ"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse-ի ռեժիմ"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Լոկալ հիշողություն"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "service worker՝ կառավարում է մի քանի ներդիրներ։ Փակեք նույն աղբյուրի մյուս ներդիրները՝ այս էջը ստուգելու համար։"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Նավիգացիա"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Արդյունավետություն"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Ստուգումից առաջ մաքրեք հիշողությունը (cache, service workersև այլն)` արդյունավետությունն ապահովելու PWA-ի փարձարկման համար)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Գործարկել Lighthouse-ը նավիգացիայի, ժամանակային միջակայքի կամ կադրի ռեժիմում"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Սահմանափակման նմանակում"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Կադր"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Բեռնման արագության վրա կարող են ազդել հետևյալ վայրերի տվյալները՝ {PH1}։ Ստուգեք այս էջն ինկոգնիտո պատուհանում, որպեսզի այդ ռեսուրսները չազդեն ձեր ցուցանիշների վրա։"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Բեռնման արագության վրա կարող են ազդել հետևյալ տարածքի տվյալները՝ {PH1}։ Ստուգեք այս էջն ինկոգնիտո պատուհանում, որպեսզի այդ ռեսուրսները չազդեն ձեր ցուցանիշների վրա։"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Դիտել էջը Lighthouse-ի դասական տարբերակի միջոցով նավիգացիայի ռեժիմում։"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Իմանալ ավելին"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Ռեժիմ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Շարժական սարքեր օգտագործողների 75%-ն ամբողջ աշխարհում 2016 թ․-ին օգտվել է 2G կամ 3G ցանցից [աղբյուրը՝ GSMA Mobile]։"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Անտեսվածների ցանկում"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Մասամբ ներկայացված շրջանակ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Պատկերացանց"

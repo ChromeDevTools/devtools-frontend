@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Istega spletnega mesta in istega izvora"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "API za združeno upravljanje poverilnic"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portali – komunikacijski kanali istega izvora"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Spremembe meril kakovosti za MSA-je z zaupanja vredno spletno dejavnostjo"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Omejevanje deljenja modula Wasm na »same-origin«"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonimno>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "ponastavitev"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Poskus vezave elementa »{PH1}« v delovni prostor ni uspel, saj je ta URI napačno oblikovan."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Dodaj"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Različica"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Kliknite poljubni dogodek interesne skupine, če želite prikazati trenutno stanje skupine."
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Ni podrobnosti za izbrano interesno skupino. Brskalnik je morda zapustil skupino."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Interesne skupine"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Dostop do programa za odpiranje"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Da"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Vsi dogodki shranjevanje interesne skupine."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Čas dogodka"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Vrsta dostopa"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Ime"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Lastnik"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Zabeležen ni bil noben dogodek interesne skupine."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Čas poteka"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Kliknite, če želite razkriti okvir iframe na samem vrhu, ki ne dovoljuje te funkcije v podoknu z elementi."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "onemogočeno v tem: fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "onemogočila glava »Permissions-Policy«"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Pokaži podrobnosti"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Cilj"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Ustvarjeno ob"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Ni poročil za prikaz"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Stanje"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Sledi sklada ni mogoče upodobiti."
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "sestavljena datoteka s slogi"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Kopirano v odložišče"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Kopiranje vseh sprememb CSS-ja"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Kopiraj vse izjave"
   },
@@ -4680,10 +4722,10 @@
     "message": "Kopiraj selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Ime lastnosti CSS"
+    "message": "Ime lastnosti CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Vrednost lastnosti CSS"
+    "message": "Vrednost lastnosti CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Izbirnik CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Zaupanja vredna spletna dejavnost"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "blokirano"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# modul}one{# modul}two{# modula}few{# moduli}other{# modulov}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Izvorni izvor"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Stanje"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Ciljni izvor"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "opozorilo"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL modula Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Skrij težave"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Ali lahko to stran uporabljajo osebe z invalidnostmi ali prizadetostmi"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Starejše premikanje"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Način orodja Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Lokalna shramba"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Več zavihkov nadzira enak service worker. Za pregled te strani zaprite druge zavihke na istem izhodišču."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Premikanje"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Zmogljivost"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Pred pregledom ponastavite shrambo (cache, service workers itd.). (Koristno za učinkovitost delovanja in preizkušanje PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Zagon orodja Lighthouse v načinu premikanja, časovnega obdobja ali posnetka."
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Simulirano zaviranje"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Posnetek"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Na teh lokacijah so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {PH1}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ti viri vplivali na vaše rezultate."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Na tej lokaciji so morda shranjeni podatki, ki vplivajo na uspešnost nalaganja: {PH1}. Preglejte to stran v anonimnem oknu, da preprečite, da bi ta sredstva vplivala na vaše rezultate."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Revidirajte stran s klasičnim orodjem Lighthouse v načinu premikanja."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Spletni SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Več o tem"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Način"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % uporabnikov mobilnih naprav po svetu je bilo povezanih v omrežje 2G ali 3G. [Vir: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Na seznamu prezrtih"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Delno predstavljen okvir"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

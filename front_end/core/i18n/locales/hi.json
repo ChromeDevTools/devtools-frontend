@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site and Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "फ़ेडरेटेड क्रेडेंशियल मैनेजमेंट एपीआई"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "पोर्टल - एक ही ऑरिजिन वाले कम्यूनिकेशन चैनल"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "भरोसेमंद वेब गतिविधि का इस्तेमाल करके PWA के लिए क्वालिटी से जुड़ी शर्तों में बदलाव"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "एक ही ऑरिजिन वाले Wasm मॉड्यूल को प्रतिबंधित करें"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<पहचान छिपाई गई>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "रीसेट करें"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "वर्कस्पेस में \"{PH1}\" को बाइंड नहीं किया जा सका, क्योंकि यह यूआरआई गलत फ़ॉर्मैट में है."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "जोड़ें"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "वर्शन"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "ग्रुप की मौजूदा स्थिति देखने के लिए, एक जैसी पसंद के हिसाब से बनाए गए ग्रुप के किसी भी इवेंट पर क्लिक करें"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "एक जैसी पसंद के हिसाब से बनाए गए जिस ग्रुप को चुना गया है उसके बारे में कोई जानकारी उपलब्ध नहीं है. ऐसा हो सकता है कि ब्राउज़ करने वाले व्यक्ति ने ग्रुप छोड़ दिया हो."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "एक जैसी पसंद के हिसाब से बनाए गए ग्रुप"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ओपनर का ऐक्सेस"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "हां"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "एक जैसी पसंद के हिसाब से बनाए गए ग्रुप से जुड़े सभी स्टोरेज इवेंट."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "इवेंट का समय"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "ऐक्सेस टाइप"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "नाम"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "मालिक"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "एक जैसी पसंद के हिसाब से बनाए गए ग्रुप से जुड़ा कोई इवेंट रिकॉर्ड नहीं किया गया."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "समय-सीमा खत्म होने का समय"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "सबसे ऊपर का iframe दिखाने के लिए क्लिक करें. यह iframe इस सुविधा को एलिमेंट पैनल में अनुमति नहीं देता."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "fencedframe में बंद रहती है"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "\"Permissions-Policy\" हेडर से बंद किया गया"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "ब्यौरा देखें"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "डेस्टिनेशन"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "जनरेट होने का समय"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "दिखाने के लिए कोई रिपोर्ट नहीं है"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "स्थिति"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "स्टैक ट्रेस को रेंडर नहीं कर पा रहे हैं"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "स्टाइलशीट बनाई गई"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी किया गया"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "सीएसएस में हुए सभी बदलावों को कॉपी करें"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "सभी एलान कॉपी करें"
   },
@@ -4680,10 +4722,10 @@
     "message": "selector कॉपी करें"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS प्रॉपर्टी का नाम"
+    "message": "CSS प्रॉपर्टी का नाम: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS प्रॉपर्टी वैल्यू"
+    "message": "CSS प्रॉपर्टी की वैल्यू: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS चुनने वाला"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "भरोसेमंद वेब गतिविधि"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "ब्लॉक किया गया"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# मॉड्यूल}one{# मॉड्यूल}other{# मॉड्यूल}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "स्रोत का ऑरिजिन"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "स्थिति"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "टारगेट ऑरिजिन"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "चेतावनी"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm मॉड्यूल का यूआरएल"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "समस्याएं छिपाएं"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "क्या इस पेज को दिव्यांगता या किसी शारीरिक समस्या वाले लोग इस्तेमाल कर सकते हैं"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "लेगसी नेविगेशन"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "लाइटहाउस मोड"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "लोकल स्टोरेज"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "एक ही service worker से कई टैब कंट्रोल किए जा रहे हैं. इस पेज को ऑडिट करने के लिए, एक ही ओरिजिन पर अपने अन्य टैब बंद करें."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "नेविगेशन"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "परफ़ॉर्मेंस"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ऑडिट करने से पहले स्टोरेज (cache, service workers वगैरह) रीसेट करें. (परफ़ॉर्मेंस और PWA की जांच के लिए अच्छा है)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "लाइटहाउस को नेविगेशन, टाइमस्पैन या स्नैपशॉट मोड में इस्तेमाल करें"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "एसईओ"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "सिम्युलेटेड थ्रॉटलिंग"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "स्नैपशॉट"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "हो सकता है कि सेव किया गया डेटा इन जगहों पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {PH1}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन रिसॉर्स का आपके स्कोर पर कोई असर न पड़े."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "हो सकता है कि सेव किया गया डेटा इस जगह पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {PH1}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन संसाधनों का आपके स्कोर पर कोई असर न पड़े."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "नेविगेशन मोड में होने पर, क्लासिक लाइटहाउस का इस्तेमाल करके पेज को ऑडिट करें."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "वेब SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ज़्यादा जानें"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "मोड"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "दुनिया भर में, 2016 में 75 प्रतिशत मोबाइल उपयोगकर्ता 2G या 3G नेटवर्क इस्तेमाल कर रहे थे [स्रोत: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "अनदेखा करने की सूची में"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "सिर्फ़ कुछ हिस्सा दिखाने वाला फ़्रेम"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "रास्टर"

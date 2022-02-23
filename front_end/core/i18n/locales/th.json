@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "มาจากเว็บไซต์และต้นทางเดียวกัน"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "พอร์ทัล - ช่องทางการสื่อสารต้นทางเดียวกัน"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "การเปลี่ยนแปลงเกณฑ์เชิงคุณภาพสำหรับ PWA ที่ใช้กิจกรรมในเว็บซึ่งเชื่อถือได้"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "การจำกัดการแชร์โมดูล Wasm ไปยังต้นทางเดียวกัน"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ไม่ระบุชื่อ>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "รีเซ็ต"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "พยายามเชื่อมโยง \"{PH1}\" ในพื้นที่ทำงานไม่สำเร็จเนื่องจาก URI นี้มีรูปแบบไม่ถูกต้อง"
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "เพิ่ม"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "เวอร์ชัน"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "คลิกเหตุการณ์ของกลุ่มความสนใจเพื่อแสดงสถานะปัจจุบันของกลุ่มดังกล่าว"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "ไม่มีรายละเอียดสำหรับกลุ่มความสนใจที่เลือก เบราว์เซอร์อาจออกจากกลุ่มแล้ว"
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "กลุ่มความสนใจ"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "การเข้าถึงโปรแกรมเปิด"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "ใช่"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "เหตุการณ์เกี่ยวกับพื้นที่เก็บข้อมูลของกลุ่มความสนใจทั้งหมด"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "เวลาของเหตุการณ์"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "ประเภทการเข้าถึง"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "ชื่อ"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "เจ้าของ"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "ไม่มีบันทึกเหตุการณ์ของกลุ่มความสนใจ"
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "เวลาหมดอายุ"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "คลิกเพื่อแสดง iframe ระดับบนสุดซึ่งไม่อนุญาตฟีเจอร์นี้ในแผงองค์ประกอบ"
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "ถูกปิดใช้ภายใน fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "ปิดใช้โดยส่วนหัว \"Permissions-Policy\""
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "แสดงรายละเอียด"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "ปลายทาง"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "สร้างเมื่อ"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ไม่มีรายงานที่จะแสดง"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "สถานะ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "แสดงผลสแต็กเทรซไม่ได้"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "สไตล์ชีตที่สร้างขึ้น"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "คัดลอกประกาศทั้งหมด"
   },
@@ -4680,10 +4722,10 @@
     "message": "คัดลอก selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "ชื่อพร็อพเพอร์ตี้ CSS"
+    "message": "ชื่อพร็อพเพอร์ตี้ CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "ค่าพร็อพเพอร์ตี้ CSS"
+    "message": "ค่าพร็อพเพอร์ตี้ CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "ตัวเลือก CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "กิจกรรมในเว็บซึ่งเชื่อถือได้"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "ถูกบล็อก"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# โมดูล}other{# โมดูล}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "ต้นทางของซอร์ส"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "สถานะ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "ต้นทางเป้าหมาย"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "คำเตือน"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL โมดูล Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ซ่อนปัญหา"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ผู้พิการหรือมีความบกพร่องใช้หน้านี้ได้หรือไม่"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "การนำทางแบบเดิม"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "โหมด Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "พื้นที่เก็บข้อมูลในเครื่อง"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "service worker กำลังควบคุมหลายแท็บ ปิดแท็บอื่นๆ ในต้นทางเดียวกันเพื่อตรวจสอบหน้านี้"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "การนำทาง"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "ประสิทธิภาพ"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "รีเซ็ตพื้นที่เก็บข้อมูล (cache, service workers และอื่นๆ) ก่อนตรวจสอบ (ดีสำหรับการทดสอบประสิทธิภาพและ PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "เรียกใช้ Lighthouse ในการนำทาง ระยะเวลา หรือโหมดสแนปชอต"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "การควบคุมจําลอง"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "สแนปชอต"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลต่อประสิทธิภาพการโหลดในตำแหน่ง {PH1} ทดสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลต่อคะแนนของคุณ"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {PH1} ตรวจสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ"
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "ตรวจสอบหน้าเว็บโดยใช้ Lighthouse แบบคลาสสิกเมื่ออยู่ในโหมดการนำทาง"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ของเว็บ"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "โหมด"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% ของผู้ใช้อุปกรณ์เคลื่อนที่ทั่วโลกในปี 2016 ใช้ระบบ 2G หรือ 3G [แหล่งที่มา: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ในรายการละเว้น"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "เฟรมที่แสดงบางส่วน"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "แรสเตอร์"

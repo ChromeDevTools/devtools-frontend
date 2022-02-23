@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site и Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "API за управление на идентификационни данни за федерирано удостоверяване"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Портали – Комуникационни канали с един и същ произход"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Промени в критериите за качество на PWA, използващи надеждна активност в мрежата"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Ограничаване на споделянето на модули в Wasm с външни източници"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимно>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "нулиране"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Опитът за обвързване на {PH1} в работното пространство не бе успешен, тъй като този URI адрес е неправилно образуван."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Добавяне"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Версия"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Кликнете върху събитие за група по интереси, за да видите текущото ѝ състояние"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Няма налични данни за избраната група по интереси. Възможно е браузърът вече да не е част от нея."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Групи по интереси"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Достъп до родителския прозорец"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Да"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Всички свързани с хранилището събития за групи по интереси"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Час на събитието"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Тип на достъпа"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Име"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Собственик"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Няма записани събития за групи по интереси."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Срок на валидност"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Кликнете и най-горната вложена рамка, която не разрешава тази функция, ще се покаже в панела за елементи."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "деактивирано във fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "деактивирано от заглавката Permissions-Policy"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Показване на подробностите"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Дестинация"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Генерирано в"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Няма отчети за показване"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Състояние"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Трасирането на стека не може да се рендерира"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "съставен стилов лист"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Копирано в буферната памет"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Копиране на всички промени в CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Копиране на всички декларации"
   },
@@ -4680,10 +4722,10 @@
     "message": "Копиране на selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Име на свойството в CSS"
+    "message": "Име на свойството в CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Стойност за свойството CSS"
+    "message": "Стойност на свойството в CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS селектор"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надеждна активност в мрежата"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "блокиран"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# модул}other{# модула}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Източник на началната точка"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Състояние"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Източник на местоназначението"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "предупреждение"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL адрес на модул в Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Скриване на проблемите"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Тази страница може ли да се използва от хора с увреждания"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Наследен режим на навигиране"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Режим на Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Локално хранилище"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Няколко раздела се контролират от един и същ файл service worker. Затворете другите раздели от същия източник, за да се извърши проверка на тази страница."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Навигиране"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Ефективност"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Изчистване на данните в хранилището (cache, service workers и др.) преди проверка. (Подходящо за тестване на ефективността и PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Стартиране на Lighthouse в режим на навигиране, период от време или моментна снимка"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Симулирано ограничаване на потока на данни"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Моментна снимка"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Възможно е в следните места да се съхраняват данни, които засягат ефективността при зареждане: {PH1}. Проверете тази страница в прозорец в режим „инкогнито“, така че тези ресурси да не влияят върху резултатите."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Възможно е в следното място да се съхраняват данни, които засягат ефективността при зареждане: {PH1}. Проверете тази страница в прозорец в режим „инкогнито“, така че тези ресурси да не влияят върху резултатите."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Проверка на страницата посредством класическата версия на Lighthouse, когато сте в режим на навигиране."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Научете повече"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Режим"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "През 2016 г. 75% от потребителите на мобилни устройства по света са използвали 2G или 3G [източник: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "В списъка за пренебрегване"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Частично изобразен кадър"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Растер"

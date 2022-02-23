@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site وSame-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "قنوات الاتصال ذات المصدر الواحد في المداخل"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "التغيّرات في معايير الجودة لتطبيقات PWA باستخدام نشاط موثوق به على الويب"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "حصر مشاركة وحدة Wasm على المصدر نفسه"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<مجهول المصدر>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "إعادة ضبط"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "تعذّر إجراء محاولة ربط \"{PH1}\" في مساحة العمل لأن عنوان URL هذا غير صالح."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "إضافة"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "الإصدار"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "انقر على أي حدث للمجموعة ذات الاهتمامات المشتركة لعرض الحالة الحالية للمجموعة."
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "لا تتوفّر أي تفاصيل للمجموعة المحدَّدة ذات الاهتمامات المشتركة. ويُحتمل أن يكون المستخدم قد غادر المجموعة في المتصفّح."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "المجموعات ذات الاهتمامات المشتركة"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "إمكانية الوصول إلى المتصفّح الذي تم من خلاله فتح هذه النافذة"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "نعم"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "جميع أحداث التخزين المرتبطة بالمجموعات ذات الاهتمامات المشتركة"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "وقت الحدث"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "نوع مستوى الوصول"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "الاسم"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "المالك"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "لم يتم تسجيل أي أحداث للمجموعات ذات الاهتمامات المشتركة."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "وقت انتهاء الصلاحية"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "انقر للكشف عن إطار iframe الأهم الذي لا يسمح بهذه الميزة في لوحة العناصر."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "تم إيقاف الميزة داخل fencedframe."
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "تم إيقاف هذه الميزة من خلال العنوان \"Permissions-Policy\"."
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "عرض التفاصيل"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "الوجهة"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "وقت إنشاء التقرير:"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ما مِن تقارير لعرضها."
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "الحالة"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "يتعذّر عرض تتبُّع تسلسل استدعاء الدوال البرمجية."
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "أوراق الأنماط التي تم إنشاؤها"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "تم النسخ إلى الحافظة."
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "نسخ جميع التغييرات من صفحات CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "نسخ كل التعريفات"
   },
@@ -4680,10 +4722,10 @@
     "message": "نسخ selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "اسم خاصية CSS"
+    "message": "اسم خاصية CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "قيمة خاصية CSS"
+    "message": "قيمة خاصية CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "أداة اختيار CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "نشاط موثوق به على الويب"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "محظور"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{وِحدة واحدة}zero{# وحدة}two{وحدتان}few{# وحدات}many{# وحدة}other{# وحدة}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "أصل المصدر"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "الحالة"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "أصل الهدف"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "تحذير"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "عنوان URL لوحدة Wasm"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "إخفاء المشاكل"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "هل يمكن لذوي الاحتياجات الخاصة أو من يعانون من اعتلال استخدام هذه الصفحة؟"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "وضع التنقّل القديم"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "وضع Lighthouse"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "مساحة التخزين المحلية"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "يتم التحكّم في علامات التبويب المتعدّدة من خلال وحدة التحكّم service worker نفسها. وعليك إغلاق علامات التبويب الأخرى في المصدر الأصلي نفسه للتدقيق في هذه الصفحة."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "التنقّل"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "الأداء"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "عليك محو مساحة التخزين (cache، service workers، إلخ) قبل إجراء التدقيق. (خيار مناسب لتحسين الأداء وإجراء اختبار PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "تشغيل Lighthouse في وضع التنقّل أو الفترة الزمنية أو وضع اللقطة"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "تحسين محركات البحث"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "محاكاة عملية التقييد"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "وضع اللقطة"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "قد تكون هناك بيانات مخزَّنة تؤثّر في أداء التحميل في أماكن تخزين البيانات التالية: {PH1}. يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفّح المتخفي لمنع هذه الموارد من التأثير في نتائجك."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في هذا المكان: {PH1} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفّح المتخفّي لمنع هذه الموارد من التأثير على نتيجتك."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "يمكنك فحص أداء الصفحة باستخدام وضع Lighthouse الكلاسيكي أثناء التنقّل."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "لغة الاستعلامات البنيوية (SQL) على الويب"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "مزيد من المعلومات"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "الوضع"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75‏% من مستخدمي الأجهزة الجوّالة حول العالم كانوا يستخدمون شبكتَي الجيل الثاني أو الثالث في العام 2016. [المصدر: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "في قائمة التجاهل"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "الإطار المعروض جزئيًا"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "صورة نقطية"

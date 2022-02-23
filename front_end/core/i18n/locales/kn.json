@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ಮತ್ತು Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ಪೋರ್ಟಲ್‌ಗಳು - ಅದೇ-ಮೂಲದ ಸಂವಹನ ಚಾನಲ್‌ಗಳು"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "ವಿಶ್ವಾಸಾರ್ಹ ವೆಬ್ ಚಟುವಟಿಕೆಯನ್ನು ಬಳಸುವ PWA ಗಳಿಗಾಗಿ ಗುಣಮಟ್ಟ ಮಾನದಂಡದಲ್ಲಿ ಬದಲಾವಣೆಗಳು"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm ಮಾಡ್ಯುಲ್ ಹಂಚಿಕೆಯನ್ನು ಒಂದೇ-ಮೂಲಕ್ಕೆ ನಿರ್ಬಂಧಿಸಲಾಗುತ್ತಿದೆ"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ಅನಾಮಧೇಯ>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "ಮರುಹೊಂದಿಸಿ"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "ಈ URI ದೋಷಪೂರಿತವಾಗಿರುವುದರಿಂದ ಕಾರ್ಯಸ್ಥಳದಲ್ಲಿ \"{PH1}\" ಅನ್ನು ಬೈಂಡ್ ಮಾಡುವ ಪ್ರಯತ್ನ ವಿಫಲವಾಗಿದೆ."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "ಸೇರಿಸಿ"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "ಆವೃತ್ತಿ"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "ಗುಂಪಿನ ಪ್ರಸ್ತುತ ಸ್ಥಿತಿಯನ್ನು ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದೇ ಆಸಕ್ತಿಯ ಗುಂಪಿನ ಈವೆಂಟ್ ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "ಆಯ್ಕೆಮಾಡಿದ ಆಸಕ್ತಿಯ ಗುಂಪಿಗೆ ಸಂಬಂಧಿಸಿದಂತೆ ಯಾವುದೇ ವಿವರಗಳು ಲಭ್ಯವಾಗಿಲ್ಲ. ಬ್ರೌಸರ್ ಗುಂಪನ್ನು ತೊರೆದಿರಬಹುದು."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "ಆಸಕ್ತಿಯ ಗುಂಪುಗಳು"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ಓಪನರ್‌ಗೆ ಪ್ರವೇಶ"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "ಹೌದು"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "ಎಲ್ಲಾ ಆಸಕ್ತಿಯ ಗುಂಪು ಸಂಗ್ರಹಣಾ ಈವೆಂಟ್‌ಗಳು."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "ಈವೆಂಟ್ ಸಮಯ"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "ಪ್ರವೇಶದ ಪ್ರಕಾರ"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "ಹೆಸರು"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "ಮಾಲೀಕರು"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "ಯಾವುದೇ ಆಸಕ್ತಿಯ ಗುಂಪಿನ ಈವೆಂಟ್‌ಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲಾಗಿಲ್ಲ."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "ಮುಕ್ತಾಯ ಸಮಯ"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "ಎಲಿಮೆಂಟ್‌ಗಳ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಈ ಫೀಚರ್ ಅನ್ನು ಅನುಮತಿಸದ ಉನ್ನತ-ಮಟ್ಟದ iframe ಅನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "fencedframe ಒಳಗಡೆ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "\"Permissions-Policy\" ಶಿರೋಲೇಖದ ಮೂಲಕ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "ವಿವರಗಳನ್ನು ತೋರಿಸಿ"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "ಗಮ್ಯಸ್ಥಾನ"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "ಇಲ್ಲಿ ರಚಿಸಲಾಗಿದೆ"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದೇ ವರದಿಗಳಿಲ್ಲ"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "ಸ್ಥಿತಿ"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ಸ್ಟಾಕ್ ಟ್ರೇಸ್ ರೆಂಡರ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ರಚಿಸಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
   },
@@ -4680,10 +4722,10 @@
     "message": "selector ನಕಲಿಸಿ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS ಪ್ರಾಪರ್ಟಿ ಹೆಸರು"
+    "message": "CSS ಆಸ್ತಿಯ ಹೆಸರು: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS ಪ್ರಾಪರ್ಟಿ ಮೌಲ್ಯ"
+    "message": "CSS ಆಸ್ತಿಯ ಮೌಲ್ಯ: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS ಸೆಲೆಕ್ಟರ್"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "ವಿಶ್ವಾಸಾರ್ಹ ವೆಬ್ ಚಟುವಟಿಕೆ"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# ಮಾಡ್ಯೂಲ್}one{# ಮಾಡ್ಯೂಲ್‌ಗಳು}other{# ಮಾಡ್ಯೂಲ್‌ಗಳು}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "ಮಾಹಿತಿಮೂಲದ ಮೂಲ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "ಸ್ಥಿತಿ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "ಟಾರ್ಗೆಟ್ ಮೂಲ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "ಎಚ್ಚರಿಕೆ"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "Wasm ಮಾಡ್ಯುಲ್‌ URL"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ಸಮಸ್ಯೆಗಳನ್ನು ಮರೆಮಾಡಿ"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ವಿಕಲತೆಗಳನ್ನು ಹೊಂದಿರುವ ಜನರು ಈ ಪುಟವನ್ನು ಬಳಸಬಹುದೇ"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "ಲೆಗಸಿ ನ್ಯಾವಿಗೇಶನ್"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "ಲೈಟ್‌ಹೌಸ್ ಮೋಡ್"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "ಸ್ಥಳೀಯ ಸಂಗ್ರಹಣೆ"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "ಬಹು ಟ್ಯಾಬ್‌ಗಳನ್ನು ಒಂದೇ service worker ನಿಯಂತ್ರಿಸುತ್ತಿದೆ. ಈ ಪುಟವನ್ನು ಆಡಿಟ್ ಮಾಡಲು ಅದೇ ಮೂಲದಲ್ಲಿನ ನಿಮ್ಮ ಇತರ ಟ್ಯಾಬ್‌ಗಳನ್ನು ಮುಚ್ಚಿ."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "ಕಾರ್ಯಕ್ಷಮತೆ"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "ಆಡಿಟ್ ಮಾಡುವ ಮೊದಲು ಸಂಗ್ರಹಣೆಯನ್ನು (cache, service workers, ಇತ್ಯಾದಿ) ರೀಸೆಟ್ ಮಾಡಿ. (ಕಾರ್ಯಕ್ಷಮತೆ ಮತ್ತು PWA ಪರೀಕ್ಷೆಗಾಗಿ ಉತ್ತಮವಾಗಿದೆ)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್, ಟೈಮ್‌ಸ್ಪ್ಯಾನ್ ಅಥವಾ ಸ್ನ್ಯಾಪ್‌ಶಾಟ್ ಮೋಡ್‌ನಲ್ಲಿ ಲೈಟ್‌ಹೌಸ್ ರನ್ ಮಾಡಿ"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "ಕೃತಕವಾದ ಥ್ರಾಟಲಿಂಗ್"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "ಸ್ನ್ಯಾಪ್‌ಶಾಟ್"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "ಈ ಸ್ಥಳಗಳಲ್ಲಿ, ಲೋಡಿಂಗ್ ಕಾರ್ಯಕ್ಷಮತೆಯ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವ, ಸಂಗ್ರಹಣೆ ಮಾಡಲಾದ ಡೇಟಾ ಇರಬಹುದು: {PH1}. ಆ ಮಾಹಿತಿ ಮೂಲಗಳು ನಿಮ್ಮ ಅಂಕಗಳ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರದ ಹಾಗೆ ತಡೆಯಲು ಈ ಪುಟವನ್ನು ಅದೃಶ್ಯ ವಿಂಡೋದಲ್ಲಿ ಆಡಿಟ್ ಮಾಡಿ."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ಈ ಸ್ಥಳದಲ್ಲಿ, ಲೋಡಿಂಗ್ ಕಾರ್ಯಕ್ಷಮತೆಯ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವ, ಸಂಗ್ರಹಣೆ ಮಾಡಲಾದ ಡೇಟಾ ಇರಬಹುದು: {PH1}. ಆ ಮಾಹಿತಿ ಮೂಲಗಳು ನಿಮ್ಮ ಸ್ಕೋರ್‌ಗಳ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರದ ಹಾಗೆ ತಡೆಯಲು ಈ ಪುಟವನ್ನು ಅದೃಶ್ಯ ವಿಂಡೋದಲ್ಲಿ ಆಡಿಟ್ ಮಾಡಿ."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್‌ನಲ್ಲಿರುವಾಗ ಕ್ಲಾಸಿಕ್ ಲೈಟ್‌ಹೌಸ್ ಬಳಸಿಕೊಂಡು ಪುಟವನ್ನು ಆಡಿಟ್ ಮಾಡಿ."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ವೆಬ್ SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "ಮೋಡ್"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 ರಲ್ಲಿ, ಶೇಕಡಾ 75 ರಷ್ಟು ಜಾಗತಿಕ ಮೊಬೈಲ್ ಬಳಕೆದಾರರು 2G ಅಥವಾ 3G ಬಳಸುತ್ತಿದ್ದರು [ಮೂಲ: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿಯಲ್ಲಿ"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "ಭಾಗಶಃ ಪ್ರಸ್ತುತಪಡಿಸಲಾದ ಫ್ರೇಮ್"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "ರೇಸ್ಟರ್"

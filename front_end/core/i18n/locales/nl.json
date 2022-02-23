@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site en Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portals - Communicatiekanalen met dezelfde oorsprong"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Wijzigingen in de kwaliteitscriteria voor PWA's via vertrouwde webactiviteit"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Delen van Wasm-module beperken tot dezelfde oorsprong"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anoniem>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "opnieuw instellen"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "De poging om {PH1} in de werkruimte te binden is mislukt omdat de notatie van de URI onjuist is."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Toevoegen"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Versie"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Klik op de gebeurtenis van een interessegroep om de huidige status van de groep te bekijken"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Geen gegevens beschikbaar voor de geselecteerde interessegroep. De browsende gebruiker heeft de groep misschien verlaten."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Interessegroepen"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Toegang tot opener"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ja"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Alle opslaggebeurtenissen voor interessegroepen."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Tijd van gebeurtenis"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Toegangstype"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Naam"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "Eigenaar"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Geen gebeurtenissen voor interessegroepen vastgelegd."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Vervaltijd"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "Klik om het bovenste iframe te bekijken waarvoor deze functie niet in het deelvenster Elementen is toegestaan."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "uitgezet in een fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "uitgezet door header Permissions-Policy"
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Details bekijken"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Bestemming"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Gegenereerd om"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Geen rapporten om te laten zien"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Status"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Kan geen stacktrace renderen"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "samengestelde stylesheet"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Gekopieerd naar klembord"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Alle css-wijzigingen kopiëren"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Alle declaraties kopiëren"
   },
@@ -4680,10 +4722,10 @@
     "message": "Kopiëren: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Naam van CSS-eigenschap"
+    "message": "Naam van CSS-property: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Waarde van CSS-eigenschap"
+    "message": "Waarde van CSS-property: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "Kiezer voor CSS"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Vertrouwde webactiviteit"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "geblokkeerd"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# module}other{# modules}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Oorsprong van bron"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Status"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Oorsprong van doel"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "waarschuwing"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL van Wasm-module"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Problemen verbergen"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Is deze pagina bruikbaar voor mensen met een handicap of beperking?"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Verouderde navigatie"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse-modus"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Lokale opslag"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Meerdere tabbladen worden beheerd door dezelfde service worker. Sluit je andere tabbladen met dezelfde oorsprong om deze pagina te controleren."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Navigatie"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Prestaties"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "Opslag resetten (cache, service workers enzovoort) voor controle. (Goed voor prestaties en PWA-tests)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Lighthouse uitvoeren in de navigatie-, periode- of momentopnamemodus"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Gesimuleerde throttling"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Momentopname"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Er kunnen op de volgende locaties gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {PH1}. Controleer deze pagina in een incognitovenster om te voorkomen dat die resources van invloed zijn op je scores."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Er kunnen op de volgende locatie gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {PH1}. Controleer deze pagina in een incognitovenster om te voorkomen dat die resources van invloed zijn op je scores."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "Controleer de pagina met de klassieke versie van Lighthouse indien in de navigatiemodus."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Meer informatie"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Modus"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% van de mobiele gebruikers wereldwijd zat in 2016 op 2G en 3G [Bron: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Op negeerlijst"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Gedeeltelijk gepresenteerd frame"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

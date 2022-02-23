@@ -1337,6 +1337,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site at Same-Origin"
   },
+  "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
+    "message": "Federated Credential Management API"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Mga Portal - Mga channel ng komunikasyon na iisa ang origin"
   },
@@ -1394,9 +1397,6 @@
   "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
     "message": "Mga pagbabago sa mga pamantayan sa kalidad para sa mga PWA na gumagamit ng Pinagkakatiwalaang Aktibidad sa Web"
   },
-  "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Pinaghihigpitan ang pagbabahagi ng Wasm module sa parehong pinagmulan"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1420,9 +1420,6 @@
   },
   "models/logs/logs-meta.ts | reset": {
     "message": "pag-reset"
-  },
-  "models/persistence/Automapping.ts | theAttemptToBindSInTheWorkspace": {
-    "message": "Pumalya ang pagsubok na i-bind ang \"{PH1}\" sa workspace dahil mali ang URI na ito."
   },
   "models/persistence/EditFileSystemView.ts | add": {
     "message": "Idagdag"
@@ -2555,6 +2552,15 @@
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Bersyon"
   },
+  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
+    "message": "Mag-click sa anumang event ng grupo ng interes para ipakita ang kasalukuyang status ng grupo"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
+    "message": "Walang available na detalye para sa napiling grupo ng interes. Posibleng umalis sa grupo ang browser."
+  },
+  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
+    "message": "Mga Grupo ng Interes"
+  },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Access sa opener"
   },
@@ -3419,6 +3425,24 @@
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Oo"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
+    "message": "Lahat ng event sa storage ng grupo ng interes."
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
+    "message": "Oras ng Event"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
+    "message": "Uri ng Access"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
+    "message": "Pangalan"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
+    "message": "May-ari"
+  },
+  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
+    "message": "Walang na-record na event ng grupo ng interes."
+  },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Oras ng Pag-expire"
   },
@@ -3458,6 +3482,9 @@
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
     "message": "I-click para ipakita ang pinakamataas na iframe na hindi nagpapahintulot sa feature na ito sa panel ng mga element."
   },
+  "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
+    "message": "naka-disable sa loob ng isang fencedframe"
+  },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "na-disable ng header na \"Permissions-Policy\""
   },
@@ -3473,8 +3500,17 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ipakita ang mga detalye"
   },
+  "panels/application/components/ReportsGrid.ts | destination": {
+    "message": "Destinasyon"
+  },
+  "panels/application/components/ReportsGrid.ts | generatedAt": {
+    "message": "Nabuo noong"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Walang maipapakitang ulat"
+  },
+  "panels/application/components/ReportsGrid.ts | status": {
+    "message": "Status"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Hindi ma-render ang stack trace"
@@ -4670,6 +4706,12 @@
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "binuong stylesheet"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Nakopya sa clipboard"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Kopyahin ang lahat ng pagbabago sa CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
     "message": "Kopyahin ang lahat ng declaration"
   },
@@ -4680,10 +4722,10 @@
     "message": "Kopyahin ang selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "Pangalan ng property na CSS"
+    "message": "Pangalan ng property na CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "Value ng property na CSS"
+    "message": "Value ng property na CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
     "message": "CSS selector"
@@ -5483,27 +5525,6 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Pinagkakatiwalaang Aktibidad sa Web"
   },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
-    "message": "naka-block"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | nModuleTransfers": {
-    "message": "{n,plural, =1{# module}one{# module}other{# na module}}"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | sourceOrigin": {
-    "message": "Origin ng Source"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | status": {
-    "message": "Status"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | targetOrigin": {
-    "message": "Origin ng Target"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | warned": {
-    "message": "babala"
-  },
-  "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
-    "message": "URL ng Wasm Module"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Itago ang mga isyu"
   },
@@ -5744,6 +5765,12 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "Magagamit ba ng mga taong may mga kapansanan o problema ang page na ito?"
   },
+  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
+    "message": "Legacy na pag-navigate"
+  },
+  "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
+    "message": "Lighthouse mode"
+  },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
     "message": "Lokal na Storage"
   },
@@ -5752,6 +5779,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
     "message": "Marami ang tab na kinokontrol ng parehong service worker. Isara ang iba mo pang tag sa parehong pinagmulan para ma-audit ang page na ito."
+  },
+  "panels/lighthouse/LighthouseController.ts | navigation": {
+    "message": "Navigation"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performance"
@@ -5765,6 +5795,9 @@
   "panels/lighthouse/LighthouseController.ts | resetStorageLocalstorage": {
     "message": "I-reset ang storage (cache, service workers, atbp.) bago mag-audit. (Mainam para sa performance at pagsubok sa PWA)"
   },
+  "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
+    "message": "Patakbuhin ang Lighthouse sa navigation, timespan, o snapshot mode"
+  },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
   },
@@ -5774,11 +5807,17 @@
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
     "message": "Simulated na pag-throttle"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshot": {
+    "message": "Snapshot"
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa mga lokasyong ito: {PH1}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa lokasyong ito: {PH1}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score."
+  },
+  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
+    "message": "I-audit ang page gamit ang classic na Lighthouse kapag nasa navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ng Web"
@@ -5836,6 +5875,9 @@
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Matuto pa"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
+    "message": "Mode"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Naka-2G o 3G ang 75% ng mga user ng mobile sa buong mundo noong 2016 [Source: GSMA Mobile]"
@@ -10051,6 +10093,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Nasa listahan ng babalewalain"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
+    "message": "Frame na Pine-present nang Hindi Buo"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "Raster"

@@ -4,11 +4,12 @@
 
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
+export type ArgumentHintsTooltip = [CodeMirror.StateField<CodeMirror.Tooltip|null>, CodeMirror.ViewPlugin<{}>];
 export const closeTooltip = CodeMirror.StateEffect.define<null>();
 
 export function cursorTooltip(
     source: (state: CodeMirror.EditorState, pos: number) => Promise<(() => CodeMirror.TooltipView)|null>,
-    ): CodeMirror.Extension {
+    ): ArgumentHintsTooltip {
   const openTooltip = CodeMirror.StateEffect.define<() => CodeMirror.TooltipView>();
 
   const state = CodeMirror.StateField.define<null|CodeMirror.Tooltip>({

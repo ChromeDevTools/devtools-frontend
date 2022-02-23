@@ -41,6 +41,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private readonly eagerEvalSetting: Common.Settings.Setting<boolean>;
   private previewRequestForTest: Promise<void>|null;
   private highlightingNode: boolean;
+  // The CodeMirror state field that controls whether the argument hints are showing.
+  // If they are, the escape key will clear them. However, if they aren't, then the
+  // console drawer should be hidden as a whole.
+  #argumentHintsState: CodeMirror.StateField<CodeMirror.Tooltip|null>;
 
   constructor() {
     super();
@@ -70,13 +74,15 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.element.tabIndex = 0;
     this.previewRequestForTest = null;
     this.highlightingNode = false;
+    const argumentHints = TextEditor.JavaScript.argumentHints();
+    this.#argumentHintsState = argumentHints[0];
 
     const editorState = CodeMirror.EditorState.create({
       doc: this.initialText,
       extensions: [
         CodeMirror.keymap.of(this.editorKeymap()),
         CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
-        TextEditor.JavaScript.argumentHints(),
+        argumentHints,
         TextEditor.JavaScript.completion(),
         TextEditor.Config.showCompletionHint,
         CodeMirror.javascript.javascript(),
@@ -212,8 +218,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       {
         key: 'Escape',
         run: (): boolean => {
-          TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor);
-          return true;
+          return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
         },
       },
       {
@@ -266,7 +271,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private async handleEnter(): Promise<void> {
     if (await this.enterWillEvaluate()) {
       this.appendCommand(this.text(), true);
-      TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor);
+      TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
       this.editor.dispatch({
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,

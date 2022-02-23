@@ -8,7 +8,7 @@ import * as JavaScriptMetaData from '../../../models/javascript_metadata/javascr
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 
-import {closeTooltip, cursorTooltip} from './cursor_tooltip.js';
+import {type ArgumentHintsTooltip, closeTooltip, cursorTooltip} from './cursor_tooltip.js';
 
 export function completion(): CodeMirror.Extension {
   return CodeMirror.javascript.javascriptLanguage.data.of({
@@ -421,12 +421,19 @@ export async function isExpressionComplete(expression: string): Promise<boolean>
   return false;
 }
 
-export function argumentHints(): CodeMirror.Extension {
+export function argumentHints(): ArgumentHintsTooltip {
   return cursorTooltip(getArgumentHints);
 }
 
-export function closeArgumentsHintsTooltip(view: CodeMirror.EditorView): void {
+export function closeArgumentsHintsTooltip(
+    view: CodeMirror.EditorView, tooltip: CodeMirror.StateField<CodeMirror.Tooltip|null>): boolean {
+  // If the tooltip is currently showing, the state will reflect its properties.
+  // If it isn't showing, the state is explicitly set to `null`.
+  if (view.state.field(tooltip) === null) {
+    return false;
+  }
   view.dispatch({effects: closeTooltip.of(null)});
+  return true;
 }
 
 async function getArgumentHints(

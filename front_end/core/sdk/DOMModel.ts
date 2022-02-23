@@ -1243,10 +1243,10 @@ export class DOMModel extends SDKModel<EventTypes> {
 
   documentUpdated(): void {
     // If we have this.#pendingDocumentRequestPromise in flight,
-    // if it hits backend post #document update, it will contain most recent result.
-    const documentWasRequested = this.#document || this.#pendingDocumentRequestPromise;
+    // it will contain most recent result.
+    const documentWasRequested = this.#pendingDocumentRequestPromise;
     this.setDocument(null);
-    if (this.parentModel() && documentWasRequested) {
+    if (this.parentModel() && !documentWasRequested) {
       void this.requestDocument();
     }
   }

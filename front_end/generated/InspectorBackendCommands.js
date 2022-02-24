@@ -113,11 +113,7 @@ export function registerCommands(inspectorBackend) {
       ['nodes']);
   inspectorBackend.registerCommand(
       'Accessibility.getFullAXTree',
-      [
-        {'name': 'depth', 'type': 'number', 'optional': true},
-        {'name': 'max_depth', 'type': 'number', 'optional': true},
-        {'name': 'frameId', 'type': 'string', 'optional': true}
-      ],
+      [{'name': 'depth', 'type': 'number', 'optional': true}, {'name': 'frameId', 'type': 'string', 'optional': true}],
       ['nodes']);
   inspectorBackend.registerCommand(
       'Accessibility.getRootAXNode', [{'name': 'frameId', 'type': 'string', 'optional': true}], ['node']);
@@ -211,6 +207,7 @@ export function registerCommands(inspectorBackend) {
     MixedContentWarning: 'MixedContentWarning'
   });
   inspectorBackend.registerEnum('Audits.MixedContentResourceType', {
+    AttributionSrc: 'AttributionSrc',
     Audio: 'Audio',
     Beacon: 'Beacon',
     CSPReport: 'CSPReport',
@@ -521,6 +518,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'CSS.getStyleSheetText', [{'name': 'styleSheetId', 'type': 'string', 'optional': false}], ['text']);
   inspectorBackend.registerCommand(
+      'CSS.getLayersForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}], ['rootLayer']);
+  inspectorBackend.registerCommand(
       'CSS.trackComputedStyleUpdates', [{'name': 'propertiesToTrack', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand('CSS.takeComputedStyleUpdates', [], ['nodeIds']);
   inspectorBackend.registerCommand(
@@ -656,10 +655,11 @@ export function registerCommands(inspectorBackend) {
     ScrollbarCorner: 'scrollbar-corner',
     Resizer: 'resizer',
     InputListButton: 'input-list-button',
-    Transition: 'transition',
-    TransitionContainer: 'transition-container',
-    TransitionOldContent: 'transition-old-content',
-    TransitionNewContent: 'transition-new-content'
+    PageTransition: 'page-transition',
+    PageTransitionContainer: 'page-transition-container',
+    PageTransitionImageWrapper: 'page-transition-image-wrapper',
+    PageTransitionOutgoingImage: 'page-transition-outgoing-image',
+    PageTransitionIncomingImage: 'page-transition-incoming-image'
   });
   inspectorBackend.registerEnum('DOM.ShadowRootType', {UserAgent: 'user-agent', Open: 'open', Closed: 'closed'});
   inspectorBackend.registerEnum(
@@ -1153,6 +1153,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'userAgentMetadata', 'type': 'object', 'optional': true}
       ],
       []);
+  inspectorBackend.registerCommand(
+      'Emulation.setAutomationOverride', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
 
   // HeadlessExperimental.
   inspectorBackend.registerEnum('HeadlessExperimental.ScreenshotParamsFormat', {Jpeg: 'jpeg', Png: 'png'});

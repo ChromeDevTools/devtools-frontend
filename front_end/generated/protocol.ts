@@ -308,10 +308,6 @@ export namespace Accessibility {
      */
     depth?: integer;
     /**
-     * Deprecated. This parameter has been renamed to `depth`. If depth is not provided, max_depth will be used.
-     */
-    max_depth?: integer;
-    /**
      * The frame for whose document the AX tree should be retrieved.
      * If omited, the root frame is used.
      */
@@ -758,6 +754,7 @@ export namespace Audits {
   }
 
   export const enum MixedContentResourceType {
+    AttributionSrc = 'AttributionSrc',
     Audio = 'Audio',
     Beacon = 'Beacon',
     CSPReport = 'CSPReport',
@@ -1059,7 +1056,7 @@ export namespace Audits {
   /**
    * Represents the failure reason when a federated authentication reason fails.
    * Should be updated alongside RequestIdTokenStatus in
-   * third_party/blink/public/mojom/webid/federated_auth_request.mojom to include
+   * third_party/blink/public/mojom/devtools/inspector_issue.mojom to include
    * all cases except for success.
    */
   export const enum FederatedAuthRequestIssueReason {
@@ -1924,6 +1921,11 @@ export namespace CSS {
      * The array enumerates @supports at-rules starting with the innermost one, going outwards.
      */
     supports?: CSSSupports[];
+    /**
+     * Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
+     * with the innermost layer and going outwards.
+     */
+    layers?: CSSLayer[];
   }
 
   /**
@@ -2183,6 +2185,44 @@ export namespace CSS {
      * Identifier of the stylesheet containing this object (if exists).
      */
     styleSheetId?: StyleSheetId;
+  }
+
+  /**
+   * CSS Layer at-rule descriptor.
+   */
+  export interface CSSLayer {
+    /**
+     * Layer name.
+     */
+    text: string;
+    /**
+     * The associated rule header range in the enclosing stylesheet (if
+     * available).
+     */
+    range?: SourceRange;
+    /**
+     * Identifier of the stylesheet containing this object (if exists).
+     */
+    styleSheetId?: StyleSheetId;
+  }
+
+  /**
+   * CSS Layer data.
+   */
+  export interface CSSLayerData {
+    /**
+     * Layer name.
+     */
+    name: string;
+    /**
+     * Direct sub-layers
+     */
+    subLayers?: CSSLayerData[];
+    /**
+     * Layer order. The order determines the order of the layer in the cascade order.
+     * A higher number has higher priority in the cascade order.
+     */
+    order: number;
   }
 
   /**
@@ -2493,6 +2533,14 @@ export namespace CSS {
      * The stylesheet text.
      */
     text: string;
+  }
+
+  export interface GetLayersForNodeRequest {
+    nodeId: DOM.NodeId;
+  }
+
+  export interface GetLayersForNodeResponse extends ProtocolResponseWithError {
+    rootLayer: CSSLayerData;
   }
 
   export interface TrackComputedStyleUpdatesRequest {
@@ -2951,10 +2999,11 @@ export namespace DOM {
     ScrollbarCorner = 'scrollbar-corner',
     Resizer = 'resizer',
     InputListButton = 'input-list-button',
-    Transition = 'transition',
-    TransitionContainer = 'transition-container',
-    TransitionOldContent = 'transition-old-content',
-    TransitionNewContent = 'transition-new-content',
+    PageTransition = 'page-transition',
+    PageTransitionContainer = 'page-transition-container',
+    PageTransitionImageWrapper = 'page-transition-image-wrapper',
+    PageTransitionOutgoingImage = 'page-transition-outgoing-image',
+    PageTransitionIncomingImage = 'page-transition-incoming-image',
   }
 
   /**
@@ -5350,6 +5399,13 @@ export namespace Emulation {
      * To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
      */
     userAgentMetadata?: UserAgentMetadata;
+  }
+
+  export interface SetAutomationOverrideRequest {
+    /**
+     * Whether the override should be enabled.
+     */
+    enabled: boolean;
   }
 }
 

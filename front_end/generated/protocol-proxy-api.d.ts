@@ -593,6 +593,15 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.CSS.GetStyleSheetTextResponse>;
 
     /**
+     * Returns all layers parsed by the rendering engine for the tree scope of a node.
+     * Given a DOM element identified by nodeId, getLayersForNode returns the root
+     * layer for the nearest ancestor document or shadow root. The layer root contains
+     * the full layer tree for the tree scope and their ordering.
+     */
+    invoke_getLayersForNode(params: Protocol.CSS.GetLayersForNodeRequest):
+        Promise<Protocol.CSS.GetLayersForNodeResponse>;
+
+    /**
      * Starts tracking the given computed styles for updates. The specified array of properties
      * replaces the one previously specified. Pass empty array to disable tracking.
      * Use takeComputedStyleUpdates to retrieve the list of nodes that had properties modified.
@@ -1467,6 +1476,12 @@ declare namespace ProtocolProxyApi {
      * Allows overriding user agent with the given string.
      */
     invoke_setUserAgentOverride(params: Protocol.Emulation.SetUserAgentOverrideRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Allows overriding the automation flag.
+     */
+    invoke_setAutomationOverride(params: Protocol.Emulation.SetAutomationOverrideRequest):
         Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface EmulationDispatcher {

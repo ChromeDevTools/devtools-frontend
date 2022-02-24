@@ -2634,7 +2634,7 @@ export const NativeFunctions = [
   },
   {
     name: 'transitionWhile',
-    signatures: [['newNavigationAction']]
+    signatures: [['newNavigationAction','?options']]
   },
   {
     name: 'updateCurrent',
@@ -2784,6 +2784,10 @@ export const NativeFunctions = [
     signatures: [['keyword']]
   },
   {
+    name: 'CSSMathClamp',
+    signatures: [['lower','value','upper']]
+  },
+  {
     name: 'CSSMathInvert',
     signatures: [['arg']]
   },
@@ -2908,11 +2912,91 @@ export const NativeFunctions = [
     signatures: [['value']]
   },
   {
+    name: 'vi',
+    signatures: [['value']]
+  },
+  {
+    name: 'vb',
+    signatures: [['value']]
+  },
+  {
     name: 'vmin',
     signatures: [['value']]
   },
   {
     name: 'vmax',
+    signatures: [['value']]
+  },
+  {
+    name: 'svw',
+    signatures: [['value']]
+  },
+  {
+    name: 'svh',
+    signatures: [['value']]
+  },
+  {
+    name: 'svi',
+    signatures: [['value']]
+  },
+  {
+    name: 'svb',
+    signatures: [['value']]
+  },
+  {
+    name: 'svmin',
+    signatures: [['value']]
+  },
+  {
+    name: 'svmax',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvw',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvh',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvi',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvb',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvmin',
+    signatures: [['value']]
+  },
+  {
+    name: 'lvmax',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvw',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvh',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvi',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvb',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvmin',
+    signatures: [['value']]
+  },
+  {
+    name: 'dvmax',
     signatures: [['value']]
   },
   {
@@ -3624,14 +3708,6 @@ export const NativeFunctions = [
   {
     name: 'dispatchEvent',
     signatures: [['event']]
-  },
-  {
-    name: 'Event',
-    signatures: [['type','?eventInitDict']]
-  },
-  {
-    name: 'initEvent',
-    signatures: [['type','?bubbles','?cancelable']]
   },
   {
     name: 'MutationObserver',
@@ -4513,7 +4589,8 @@ export const NativeFunctions = [
   },
   {
     name: 'end',
-    signatures: [['index']]
+    signatures: [['index']],
+    receiver: 'TimeRanges'
   },
   {
     name: 'getTrackById',
@@ -6660,11 +6737,6 @@ export const NativeFunctions = [
     signatures: [['permissions']]
   },
   {
-    name: 'requestPictureInPicture',
-    signatures: [['?options']],
-    receiver: 'HTMLElement'
-  },
-  {
     name: 'PictureInPictureEvent',
     signatures: [['type','eventInitDict']]
   },
@@ -8543,10 +8615,6 @@ export const NativeFunctions = [
   {
     name: 'requestAdapter',
     signatures: [['?options']]
-  },
-  {
-    name: 'provide',
-    signatures: [['?id_token']]
   },
   {
     name: 'MIDIConnectionEvent',

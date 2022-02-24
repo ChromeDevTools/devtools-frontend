@@ -4,13 +4,17 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import {Plugin} from './Plugin.js';
 
 // Plugin to add CSS completion, shortcuts, and color/curve swatches
@@ -29,17 +33,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function completion(): CodeMirror.Extension {
-  const {cssCompletionSource} = CodeMirror.css;
-  return CodeMirror.autocompletion({
-    override:
-        [async(cx: CodeMirror.CompletionContext):
-             Promise<CodeMirror.CompletionResult|null> => {
-               return (await specificCssCompletion(cx)) || cssCompletionSource(cx);
-             }],
-  });
-}
-
 const dontCompleteIn = new Set(['ColorLiteral', 'NumberLiteral', 'StringLiteral', 'Comment', 'Important']);
 
 function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.SyntaxNode|null {
@@ -57,18 +50,43 @@ function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.Sy
   return null;
 }
 
-function specificCssCompletion(cx: CodeMirror.CompletionContext): CodeMirror.CompletionResult|null {
-  const node = CodeMirror.syntaxTree(cx.state).resolveInner(cx.pos, -1);
-  const property = findPropertyAt(node, cx.pos);
-  if (!property) {
-    return null;
+function getCurrentStyleSheet(
+    url: Platform.DevToolsPath.UrlString, cssModel: SDK.CSSModel.CSSModel): Protocol.CSS.StyleSheetId {
+  const currentStyleSheet = cssModel.getStyleSheetIdsForURL(url);
+  if (currentStyleSheet.length === 0) {
+    Platform.DCHECK(() => currentStyleSheet.length !== 0, 'Can\'t find style sheet ID for current URL');
   }
-  const propertyValues = SDK.CSSMetadata.cssMetadata().getPropertyValues(cx.state.sliceDoc(property.from, property.to));
-  return {
-    from: node.name === 'ValueName' ? node.from : cx.pos,
-    options: propertyValues.map(value => ({type: 'constant', label: value})),
-    span: /^[\w\P{ASCII}\-]+$/u,
-  };
+
+  return currentStyleSheet[0];
+}
+
+async function specificCssCompletion(
+    cx: CodeMirror.CompletionContext, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+    cssModel: SDK.CSSModel.CSSModel|undefined): Promise<CodeMirror.CompletionResult|null> {
+  const node = CodeMirror.syntaxTree(cx.state).resolveInner(cx.pos, -1);
+  if (node.name === 'ClassName') {
+    // Should never happen, but let's code defensively here
+    assertNotNullOrUndefined(cssModel);
+
+    const currentStyleSheet = getCurrentStyleSheet(uiSourceCode.url(), cssModel);
+    const existingClassNames = await cssModel.classNamesPromise(currentStyleSheet);
+
+    return {
+      from: node.from,
+      options: existingClassNames.map(value => ({type: 'constant', label: value})),
+    };
+  }
+  const property = findPropertyAt(node, cx.pos);
+  if (property) {
+    const propertyValues =
+        SDK.CSSMetadata.cssMetadata().getPropertyValues(cx.state.sliceDoc(property.from, property.to));
+    return {
+      from: node.name === 'ValueName' ? node.from : cx.pos,
+      options: propertyValues.map(value => ({type: 'constant', label: value})),
+      span: /^[\w\P{ASCII}\-]+$/u,
+    };
+  }
+  return null;
 }
 
 function findColorsAndCurves(
@@ -380,12 +398,49 @@ export function cssBindings(): CodeMirror.Extension {
   });
 }
 
-export class CSSPlugin extends Plugin {
+export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
+  #cssModel?: SDK.CSSModel.CSSModel;
+
+  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, _transformer?: SourceFrame.SourceFrame.Transformer) {
+    super(uiSourceCode, _transformer);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
+  }
+
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.contentType().isStyleSheet();
   }
 
+  modelAdded(cssModel: SDK.CSSModel.CSSModel): void {
+    if (this.#cssModel) {
+      return;
+    }
+    this.#cssModel = cssModel;
+  }
+  modelRemoved(cssModel: SDK.CSSModel.CSSModel): void {
+    if (this.#cssModel === cssModel) {
+      this.#cssModel = undefined;
+    }
+  }
+
   editorExtension(): CodeMirror.Extension {
-    return [cssBindings(), completion(), cssSwatches()];
+    return [cssBindings(), this.#cssCompletion(), cssSwatches()];
+  }
+
+  #cssCompletion(): CodeMirror.Extension {
+    const {cssCompletionSource} = CodeMirror.css;
+
+    // CodeMirror binds the function below to the state object.
+    // Therefore, we can't access `this` and retrieve the following properties.
+    // Instead, retrieve them up front to bind them to the correct closure.
+    const uiSourceCode = this.uiSourceCode;
+    const cssModel = this.#cssModel;
+
+    return CodeMirror.autocompletion({
+      override:
+          [async(cx: CodeMirror.CompletionContext):
+               Promise<CodeMirror.CompletionResult|null> => {
+                 return (await specificCssCompletion(cx, uiSourceCode, cssModel)) || cssCompletionSource(cx);
+               }],
+    });
   }
 }

@@ -542,6 +542,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private textElement: HTMLElement;
   private text?: string;
   private glyph?: string;
+  private icon?: HTMLElement;
   /**
    * TODO(crbug.com/1126026): remove glyph parameter in favor of icon.
    */
@@ -557,11 +558,8 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.textElement = this.element.createChild('div', 'toolbar-text hidden');
 
     this.setTitle(title);
-    if (glyphOrIcon instanceof HTMLElement) {
-      glyphOrIcon.classList.add('toolbar-icon');
-      this.element.append(glyphOrIcon);
-    } else if (glyphOrIcon) {
-      this.setGlyph(glyphOrIcon);
+    if (glyphOrIcon) {
+      this.setGlyphOrIcon(glyphOrIcon);
     }
     this.setText(text || '');
     this.title = '';
@@ -578,6 +576,20 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.textElement.textContent = text;
     this.textElement.classList.toggle('hidden', !text);
     this.text = text;
+  }
+
+  setGlyphOrIcon(glyphOrIcon: string|HTMLElement): void {
+    if (glyphOrIcon instanceof HTMLElement) {
+      glyphOrIcon.classList.add('toolbar-icon');
+      if (this.icon) {
+        this.icon.replaceWith(glyphOrIcon);
+      } else {
+        this.element.appendChild(glyphOrIcon);
+      }
+      this.icon = glyphOrIcon;
+    } else if (glyphOrIcon) {
+      this.setGlyph(glyphOrIcon);
+    }
   }
 
   setGlyph(glyph: string): void {
@@ -739,14 +751,14 @@ export namespace ToolbarInput {
 
 export class ToolbarToggle extends ToolbarButton {
   private toggledInternal: boolean;
-  private readonly untoggledGlyph: string|undefined;
-  private readonly toggledGlyph: string|undefined;
+  private readonly untoggledGlyphOrIcon: string|HTMLElement|undefined;
+  private readonly toggledGlyphOrIcon: string|HTMLElement|undefined;
 
-  constructor(title: string, glyph?: string, toggledGlyph?: string) {
-    super(title, glyph, '');
+  constructor(title: string, glyphOrIcon?: string|HTMLElement, toggledGlyphOrIcon?: string|HTMLElement) {
+    super(title, glyphOrIcon, '');
     this.toggledInternal = false;
-    this.untoggledGlyph = glyph;
-    this.toggledGlyph = toggledGlyph;
+    this.untoggledGlyphOrIcon = glyphOrIcon;
+    this.toggledGlyphOrIcon = toggledGlyphOrIcon;
     this.element.classList.add('toolbar-state-off');
     ARIAUtils.setPressed(this.element, false);
   }
@@ -763,8 +775,8 @@ export class ToolbarToggle extends ToolbarButton {
     this.element.classList.toggle('toolbar-state-on', toggled);
     this.element.classList.toggle('toolbar-state-off', !toggled);
     ARIAUtils.setPressed(this.element, toggled);
-    if (this.toggledGlyph && this.untoggledGlyph) {
-      this.setGlyph(toggled ? this.toggledGlyph : this.untoggledGlyph);
+    if (this.toggledGlyphOrIcon && this.untoggledGlyphOrIcon) {
+      this.setGlyphOrIcon(toggled ? this.toggledGlyphOrIcon : this.untoggledGlyphOrIcon);
     }
   }
 

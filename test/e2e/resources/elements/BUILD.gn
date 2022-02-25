@@ -15,6 +15,7 @@ copy_to_gen("elements") {
     "css-container-queries.html",
     "css-grid-ua-shadow.html",
     "css-grid.html",
+    "css-layers.html",
     "css-module.css",
     "css-supports.html",
     "css-variables-many.html",

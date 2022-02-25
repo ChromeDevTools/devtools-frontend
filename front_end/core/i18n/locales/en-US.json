@@ -4751,6 +4751,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Show listeners on the ancestors"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS layers"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Toggle CSS Layers view"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Breakpoint"
   },
@@ -4832,6 +4838,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "View computed value"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Click to reveal layer in layer tree"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
@@ -4885,6 +4894,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, property name: {PH2}, property value: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Layer"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "New Style Rule"

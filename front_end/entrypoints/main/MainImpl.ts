@@ -384,6 +384,10 @@ export class MainImpl {
     // New Lighthouse panel with timespan and snapshot mode
     Root.Runtime.experiments.register('lighthousePanelFR', 'Use Lighthouse panel with timespan and snapshot modes');
 
+    // Tooling for CSS layers in Styles sidebar pane.
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.CSS_LAYERS, 'Tooling for CSS layers in the Styles pane');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'hideIssuesFeature',
@@ -391,6 +395,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       'reportingApiDebugging',
       Root.Runtime.ExperimentName.SYNC_SETTINGS,
+      Root.Runtime.ExperimentName.CSS_LAYERS,
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

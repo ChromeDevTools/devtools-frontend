@@ -588,8 +588,9 @@ export enum DevtoolsExperiments {
   'headerOverrides' = 56,
   'lighthousePanelFR' = 57,
   'evaluateExpressionsWithSourceMaps' = 58,
+  'cssLayers' = 59,
   // Increment this when new experiments are added.
-  'MaxValue' = 59,
+  'MaxValue' = 60,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

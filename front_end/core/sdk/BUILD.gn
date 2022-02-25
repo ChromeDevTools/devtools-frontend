@@ -13,6 +13,7 @@ devtools_module("sdk") {
     "CPUThrottlingManager.ts",
     "CSSContainerQuery.ts",
     "CSSFontFace.ts",
+    "CSSLayer.ts",
     "CSSMatchedStyles.ts",
     "CSSMedia.ts",
     "CSSMetadata.ts",

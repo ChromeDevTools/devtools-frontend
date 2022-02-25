@@ -275,6 +275,7 @@ export enum ExperimentName {
   PRECISE_CHANGES = 'preciseChanges',
   STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',
   HEADER_OVERRIDES = 'headerOverrides',
+  CSS_LAYERS = 'cssLayers',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

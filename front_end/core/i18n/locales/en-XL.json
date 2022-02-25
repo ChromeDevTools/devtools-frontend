@@ -4751,6 +4751,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ŝh́ôẃ l̂íŝt́êńêŕŝ ón̂ t́ĥé âńĉéŝt́ôŕŝ"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "ĈŚŜ ĺâýêŕŝ"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "T̂óĝǵl̂é ĈŚŜ Ĺâýêŕŝ v́îéŵ"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "D̂ÓM̂ B́r̂éâḱp̂óîńt̂"
   },
@@ -4832,6 +4838,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "V̂íêẃ ĉóm̂ṕût́êd́ v̂ál̂úê"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ĺâýêŕ îń l̂áŷér̂ t́r̂éê"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
   },
@@ -4885,6 +4894,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, p̂ŕôṕêŕt̂ý n̂ám̂é: {PH2}, p̂ŕôṕêŕt̂ý v̂ál̂úê: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "L̂áŷér̂"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "N̂éŵ Śt̂ýl̂é R̂úl̂é"

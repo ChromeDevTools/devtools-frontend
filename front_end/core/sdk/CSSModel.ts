@@ -266,6 +266,11 @@ export class CSSModel extends SDKModel<EventTypes> {
     return medias ? CSSMedia.parseMediaArrayPayload(this, medias) : [];
   }
 
+  async rootLayerPromise(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.CSSLayerData> {
+    const {rootLayer} = await this.agent.invoke_getLayersForNode({nodeId});
+    return rootLayer;
+  }
+
   isEnabled(): boolean {
     return this.#isEnabled;
   }

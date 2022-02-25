@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<style>
+  div {
+    width: 0px;
+    height: 0px;
+  }
+
+  @layer base {
+    .rule1 {
+      width: 10px;
+    }
+  }
+
+  @layer overrule {
+    .rule1 {
+      width: 15px;
+    }
+  }
+</style>
+<div class="rule1"></div>

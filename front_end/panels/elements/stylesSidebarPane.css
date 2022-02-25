@@ -217,6 +217,10 @@
   margin-left: 2px;
 }
 
+.sidebar-separator.layer-separator {
+  display: flex;
+}
+
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;

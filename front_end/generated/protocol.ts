@@ -10869,6 +10869,12 @@ export namespace Page {
      * Not restored reason
      */
     reason: BackForwardCacheNotRestoredReason;
+    /**
+     * Context associated with the reason. The meaning of this context is
+     * dependent on the reason:
+     * - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
+     */
+    context?: string;
   }
 
   export interface BackForwardCacheNotRestoredExplanationTree {

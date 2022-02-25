@@ -15911,6 +15911,12 @@
                             "name": "reason",
                             "description": "Not restored reason",
                             "$ref": "BackForwardCacheNotRestoredReason"
+                        },
+                        {
+                            "name": "context",
+                            "description": "Context associated with the reason. The meaning of this context is\ndependent on the reason:\n- EmbedderExtensionSentMessageToCachedFrame: the extension ID.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },

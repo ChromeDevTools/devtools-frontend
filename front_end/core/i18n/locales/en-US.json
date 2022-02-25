@@ -5835,7 +5835,7 @@
     "message": "Timespan"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Audit the page using classic Lighthouse when in navigation mode."
+    "message": "Analyze the page using classic Lighthouse when in navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"

@@ -109,7 +109,7 @@ const UIStrings = {
    */
   lighthouseMode: 'Lighthouse mode',
   /**
-   * @description Tooltip text of a radio button to select the Lighthouse mode.
+   * @description Tooltip text of a radio button to select the Lighthouse mode. "Navigation" is a Lighthouse mode that audits a page navigation. "Timespan" is a Lighthouse mode that audits user interactions over a period of time. "Snapshot" is a Lighthouse mode that audits the current page state.
    */
   runLighthouseInMode: 'Run Lighthouse in navigation, timespan, or snapshot mode',
   /**
@@ -150,9 +150,9 @@ const UIStrings = {
    */
   legacyNavigation: 'Legacy navigation',
   /**
-   * @description Tooltip text that appears when hovering over the 'Legacy navigation' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel
+   * @description Tooltip text that appears when hovering over the 'Legacy navigation' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel. "Navigation mode" is a Lighthouse mode that analyzes a page navigation.
    */
-  useLegacyNavigation: 'Audit the page using classic Lighthouse when in navigation mode.',
+  useLegacyNavigation: 'Analyze the page using classic Lighthouse when in navigation mode.',
   /**
   * @description Tooltip text of checkbox to reset storage features prior to running audits in
   * Lighthouse. Resetting the storage clears/empties it to a neutral state.

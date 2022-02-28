@@ -9587,6 +9587,7 @@ export namespace Overlay {
   export const enum ColorFormat {
     Rgb = 'rgb',
     Hsl = 'hsl',
+    Hwb = 'hwb',
     Hex = 'hex',
   }
 

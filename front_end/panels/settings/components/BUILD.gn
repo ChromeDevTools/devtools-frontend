@@ -18,6 +18,7 @@ devtools_module("components") {
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/sdk:bundle",
+    "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
     "../../../ui/lit-html:bundle",

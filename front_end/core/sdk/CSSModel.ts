@@ -150,6 +150,10 @@ export class CSSModel extends SDKModel<EventTypes> {
     return this.#sourceMapManager;
   }
 
+  static readableLayerName(text: string): string {
+    return text || '<anonymous>';
+  }
+
   static trimSourceURL(text: string): string {
     let sourceURLIndex = text.lastIndexOf('/*# sourceURL=');
     if (sourceURLIndex === -1) {

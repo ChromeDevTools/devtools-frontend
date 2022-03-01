@@ -374,12 +374,19 @@ describe('The Styles pane', async () => {
 
     const layerSeparators = await waitForFunction(async () => {
       const layers = await $$(LAYER_SEPARATOR_SELECTOR);
-      return layers.length === 3 ? layers : null;
+      return layers.length === 6 ? layers : null;
     });
     assertNotNullOrUndefined(layerSeparators);
 
     const layerText = await Promise.all(layerSeparators.map(element => element.evaluate(node => node.textContent)));
-    assert.deepEqual(layerText.slice(0, -1), ['Layeroverrule', 'Layerbase']);
+    assert.deepEqual(layerText, [
+      'Layer<anonymous>',
+      'Layerimportant',
+      'Layeroverrule',
+      'Layeroverrule.<anonymous>',
+      'Layerbase',
+      'Layer\xa0user\xa0agent\xa0stylesheet',
+    ]);
   });
 
   it('can click @layer separators to open layer tree', async () => {
@@ -390,16 +397,10 @@ describe('The Styles pane', async () => {
     await frontend.keyboard.press('ArrowDown');
     await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B');
 
-    const layerSeparators = await waitForFunction(async () => {
-      const layers = await $$(LAYER_SEPARATOR_SELECTOR);
-      return layers.length === 3 ? layers : null;
-    });
-    assertNotNullOrUndefined(layerSeparators);
-    const overruleButton = await frontend.$('aria/overrule');
-    assertNotNullOrUndefined(overruleButton);
+    const overruleButton = await waitFor('overrule[role="button"]', undefined, undefined, 'aria');
     await click(overruleButton);
 
-    const treeElement = await waitFor('[data-node-key="1: overrule"]');
+    const treeElement = await waitFor('[data-node-key="2: overrule"]');
     assertNotNullOrUndefined(treeElement);
   });
 });

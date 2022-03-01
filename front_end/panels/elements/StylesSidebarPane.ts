@@ -875,7 +875,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       if (parentRule instanceof SDK.CSSRule.CSSStyleRule) {
         const layers = parentRule.layers;
         if ((layers.length || lastLayers) && lastLayers !== layers) {
-          const block = SectionBlock.createLayerBlock(layers);
+          const block = SectionBlock.createLayerBlock(parentRule);
           blocks.push(block);
           sawLayers = true;
           lastLayers = layers;
@@ -1430,18 +1430,21 @@ export class SectionBlock {
     return new SectionBlock(separatorElement);
   }
 
-  static createLayerBlock(layers: SDK.CSSLayer.CSSLayer[]): SectionBlock {
+  static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator layer-separator';
     UI.UIUtils.createTextChild(separatorElement.createChild('div'), i18nString(UIStrings.layer));
-    if (!layers.length) {
-      UI.UIUtils.createTextChild(separatorElement.createChild('div'), '\xa0user\xa0agent\xa0stylesheet');
+    const layers = rule.layers;
+    if (!layers.length && rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent) {
+      const name = rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent ? '\xa0user\xa0agent\xa0stylesheet' :
+                                                                             '\xa0implicit\xa0outer\xa0layer';
+      UI.UIUtils.createTextChild(separatorElement.createChild('div'), name);
       return new SectionBlock(separatorElement);
     }
     const layerLink = separatorElement.createChild('button') as HTMLButtonElement;
     layerLink.className = 'link';
     layerLink.title = i18nString(UIStrings.clickToRevealLayer);
-    const name = layers.map(layer => layer.text || '<anonymous>').join('.');
+    const name = layers.map(layer => SDK.CSSModel.CSSModel.readableLayerName(layer.text)).join('.');
     layerLink.textContent = name;
     layerLink.onclick = (): Promise<void> => LayersWidget.LayersWidget.instance().revealLayer(name);
     return new SectionBlock(separatorElement);

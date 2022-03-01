@@ -15,6 +15,23 @@
     .rule1 {
       width: 15px;
     }
+    @layer {
+      .rule1 {
+        width: 16px;
+      }
+    }
+  }
+
+  @layer important {
+    .rule1 {
+      width: 20px !important;
+    }
+  }
+
+  @layer {
+    .rule1 {
+      width: 25px !important;
+    }
   }
 </style>
 <div class="rule1"></div>

@@ -84,8 +84,9 @@ export class LayersWidget extends UI.Widget.Widget {
     const makeTreeNode = (parentId: string) =>
         (layer: Protocol.CSS.CSSLayerData): TreeOutline.TreeOutlineUtils.TreeNode<string> => {
           const subLayers = layer.subLayers;
-          const treeNodeData = layer.order + ': ' + layer.name;
-          const id = parentId ? parentId + '.' + layer.name : layer.name;
+          const name = SDK.CSSModel.CSSModel.readableLayerName(layer.name);
+          const treeNodeData = layer.order + ': ' + name;
+          const id = parentId ? parentId + '.' + name : name;
           if (!subLayers) {
             return {treeNodeData, id};
           }

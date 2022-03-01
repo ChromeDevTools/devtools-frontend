@@ -313,7 +313,7 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
       if (stylesheet.frameId !== this.selectedFrameId) {
         continue;
       }
-      const cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => {
+      const cssPromise = cssModel.getClassNames(stylesheet.id).then(classes => {
         for (const className of classes) {
           completions.add(className);
         }

@@ -165,7 +165,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       return Promise.resolve();
     }
 
-    return this.cssModel.mediaQueriesPromise().then(this.rebuildMediaQueries.bind(this));
+    return this.cssModel.getMediaQueries().then(this.rebuildMediaQueries.bind(this));
   }
 
   private squashAdjacentEqual(models: MediaQueryUIModel[]): MediaQueryUIModel[] {

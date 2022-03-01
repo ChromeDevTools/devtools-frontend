@@ -97,7 +97,7 @@ export class LayersWidget extends UI.Widget.Widget {
                 Promise.resolve(subLayers.sort((layer1, layer2) => layer1.order - layer2.order).map(makeTreeNode(id))),
           };
         };
-    const rootLayer = await this.cssModel.rootLayerPromise(node.id);
+    const rootLayer = await this.cssModel.getRootLayer(node.id);
     this.layerTreeComponent.data = {
       defaultRenderer: TreeOutline.TreeOutline.defaultRenderer,
       tree: [makeTreeNode('')(rootLayer)],

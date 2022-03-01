@@ -1996,7 +1996,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const styles = await node.domModel().cssModel().computedStylePromise(nodeId);
+    const styles = await node.domModel().cssModel().getComputedStyle(nodeId);
     for (const styleAdorner of this.styleAdorners) {
       this.removeAdorner(styleAdorner);
     }

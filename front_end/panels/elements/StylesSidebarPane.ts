@@ -3195,13 +3195,12 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       if (!node || this.selectedNodeComputedStyles) {
         return;
       }
-      this.selectedNodeComputedStyles = await node.domModel().cssModel().computedStylePromise(node.id);
+      this.selectedNodeComputedStyles = await node.domModel().cssModel().getComputedStyle(node.id);
       const parentNode = node.parentNode;
       if (parentNode) {
-        this.parentNodeComputedStyles = await parentNode.domModel().cssModel().computedStylePromise(parentNode.id);
+        this.parentNodeComputedStyles = await parentNode.domModel().cssModel().getComputedStyle(parentNode.id);
       }
     };
-
     for (const result of results) {
       await ensureComputedStyles();
       // Using parent node's computed styles does not work in all cases. For example:

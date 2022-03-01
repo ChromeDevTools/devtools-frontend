@@ -50,7 +50,7 @@ export class CSSContainerQueryContainer {
   }
 
   async getContainerSizeDetails(): Promise<ContainerQueriedSizeDetails|undefined> {
-    const styles = await this.containerNode.domModel().cssModel().computedStylePromise(this.containerNode.id);
+    const styles = await this.containerNode.domModel().cssModel().getComputedStyle(this.containerNode.id);
     if (!styles) {
       return;
     }

@@ -278,7 +278,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const cssModel = this.parentPaneInternal.cssModel();
     const node = this.node();
     if (cssModel && node && typeof node.id !== 'undefined') {
-      const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo(await cssModel.backgroundColorsPromise(node.id));
+      const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo(await cssModel.getBackgroundColors(node.id));
       swatchIcon.setContrastInfo(contrastInfo);
     }
   }

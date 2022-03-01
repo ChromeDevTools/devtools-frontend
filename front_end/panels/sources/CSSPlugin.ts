@@ -69,7 +69,7 @@ async function specificCssCompletion(
     assertNotNullOrUndefined(cssModel);
 
     const currentStyleSheet = getCurrentStyleSheet(uiSourceCode.url(), cssModel);
-    const existingClassNames = await cssModel.classNamesPromise(currentStyleSheet);
+    const existingClassNames = await cssModel.getClassNames(currentStyleSheet);
 
     return {
       from: node.from,

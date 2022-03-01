@@ -88,7 +88,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
       return Promise.resolve();
     }
 
-    return cssModel.platformFontsPromise(node.id).then(this.refreshUI.bind(this, node));
+    return cssModel.getPlatformFonts(node.id).then(this.refreshUI.bind(this, node));
   }
 
   private refreshUI(node: SDK.DOMModel.DOMNode, platformFonts: Protocol.CSS.PlatformFontUsage[]|null): void {

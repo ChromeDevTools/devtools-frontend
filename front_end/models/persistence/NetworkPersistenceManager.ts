@@ -421,7 +421,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     await this.#innerUpdateInterceptionPatterns();
   }
 
-  private updateInterceptionPatterns(): void {
+  updateInterceptionPatterns(): void {
     void this.updateInterceptionThrottler.schedule(this.#innerUpdateInterceptionPatterns.bind(this));
   }
 

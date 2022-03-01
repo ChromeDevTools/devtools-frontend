@@ -12,6 +12,7 @@ import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js'
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
 
@@ -377,6 +378,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (contentType === Common.ResourceType.resourceTypes.Font) {
       sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+    } else if (
+        uiSourceCode.name() === HEADER_OVERRIDES_FILENAME &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
+      sourceView = new Components.HeadersView.HeadersView(uiSourceCode);
     } else {
       sourceFrame = new UISourceCodeFrame(uiSourceCode);
     }
@@ -399,10 +404,18 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (widget instanceof SourceFrame.FontView.FontView) {
       return SourceViewType.FontView;
     }
+    if (widget instanceof Components.HeadersView.HeadersView) {
+      return SourceViewType.HeadersView;
+    }
     return SourceViewType.SourceView;
   }
 
-  #sourceViewTypeForContentType(contentType: Common.ResourceType.ResourceType): SourceViewType {
+  #sourceViewTypeForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SourceViewType {
+    if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
+      return SourceViewType.HeadersView;
+    }
+    const contentType = uiSourceCode.contentType();
     switch (contentType) {
       case Common.ResourceType.resourceTypes.Image:
         return SourceViewType.ImageView;
@@ -417,8 +430,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const uiSourceCode = event.data;
     const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
     if (widget) {
-      const contentType = uiSourceCode.contentType();
-      if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForContentType(contentType)) {
+      if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
         // Remove the exisiting editor tab and create a new one of the correct type.
         this.removeUISourceCodes([uiSourceCode]);
         this.showSourceLocation(uiSourceCode);
@@ -602,20 +614,18 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   save(): void {
-    this.saveSourceFrame(this.currentSourceFrame());
+    this.saveSourceView(this.visibleView());
   }
 
   saveAll(): void {
     const sourceFrames = this.editorContainer.fileViews();
-    sourceFrames.forEach(this.saveSourceFrame.bind(this));
+    sourceFrames.forEach(this.saveSourceView.bind(this));
   }
 
-  private saveSourceFrame(sourceFrame: UI.Widget.Widget|null): void {
-    if (!(sourceFrame instanceof UISourceCodeFrame)) {
-      return;
+  private saveSourceView(sourceView: UI.Widget.Widget|null): void {
+    if (sourceView instanceof UISourceCodeFrame || sourceView instanceof Components.HeadersView.HeadersView) {
+      sourceView.commitEditing();
     }
-    const uiSourceCodeFrame = (sourceFrame as UISourceCodeFrame);
-    uiSourceCodeFrame.commitEditing();
   }
 
   toggleBreakpointsActiveState(active: boolean): void {
@@ -764,9 +774,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
+const HEADER_OVERRIDES_FILENAME = '.headers';
+
 // eslint-disable-next-line rulesdir/const_enum
 enum SourceViewType {
   ImageView = 'ImageView',
   FontView = 'FontView',
+  HeadersView = 'HeadersView',
   SourceView = 'SourceView',
 }

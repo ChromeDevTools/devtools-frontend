@@ -7,16 +7,20 @@ const {assert} = chai;
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as SourceFrame from '../../../../../front_end/ui/legacy/components/source_frame/source_frame.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
+import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {initializeGlobalVars, deinitializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 
 describe('SourcesView', () => {
-  before(async () => {
+  beforeEach(async () => {
     await initializeGlobalVars();
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -27,7 +31,8 @@ describe('SourcesView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
   });
-  after(async () => {
+
+  afterEach(async () => {
     await deinitializeGlobalVars();
   });
 
@@ -70,5 +75,14 @@ describe('SourcesView', () => {
     // Rename which changes contentType
     await uiSourceCode.rename('font.woff');
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.FontView.FontView);
+  });
+
+  it('creates a HeadersView when the filename is \'.headers\'', async () => {
+    const sourcesView = new Sources.SourcesView.SourcesView();
+    const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
+        {} as Persistence.FileSystemWorkspaceBinding.FileSystem, 'file:///path/to/overrides/www.example.com/.headers',
+        Common.ResourceType.resourceTypes.Document);
+    sourcesView.viewForFile(uiSourceCode);
+    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourcesComponents.HeadersView.HeadersView);
   });
 });

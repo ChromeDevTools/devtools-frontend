@@ -1,0 +1,32 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  flex-grow: 1;
+}
+
+.center-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.centered {
+  margin: 1em;
+  max-width: 300px;
+  text-align: center;
+}
+
+.error-header {
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.error-body {
+  line-height: 1.5em;
+  color: var(--color-text-secondary);
+}

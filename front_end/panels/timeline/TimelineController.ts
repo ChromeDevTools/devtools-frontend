@@ -80,18 +80,31 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     function disabledByDefault(category: string): string {
       return 'disabled-by-default-' + category;
     }
+
+    // The following categories are also used in other tools, but this panel
+    // offers the possibility of turning them off (see below).
+    // 'disabled-by-default-devtools.screenshot'
+    //   └ default: on, option: captureFilmStrip
+    // 'disabled-by-default-devtools.timeline.invalidationTracking'
+    //   └ default: off, experiment: timelineInvalidationTracking
+    // 'disabled-by-default-v8.cpu_profiler'
+    //   └ default: on, option: enableJSSampling
     const categoriesArray = [
       '-*',
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
       'devtools.timeline',
       disabledByDefault('devtools.timeline'),
       disabledByDefault('devtools.timeline.frame'),
-      'v8.execute',
+      disabledByDefault('devtools.timeline.stack'),
       disabledByDefault('v8.compile'),
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
-      TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
+      disabledByDefault('v8.cpu_profiler.hires'),
+      TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo,
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Loading,
+      disabledByDefault('lighthouse'),
+      'v8.execute',
+      'v8',
     ];
-    categoriesArray.push(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo);
 
     if (Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
@@ -99,7 +112,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     if (!Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
     }
-    categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
     if (Root.Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
     }

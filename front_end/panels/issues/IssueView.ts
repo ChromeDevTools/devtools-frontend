@@ -131,7 +131,7 @@ class AffectedRequestsView extends AffectedResourcesView {
 const issueTypeToNetworkHeaderMap =
     new Map<IssuesManager.Issue.IssueCategory, NetworkForward.UIRequestLocation.UIRequestTabs>([
       [
-        IssuesManager.Issue.IssueCategory.SameSiteCookie,
+        IssuesManager.Issue.IssueCategory.Cookie,
         NetworkForward.UIRequestLocation.UIRequestTabs.Cookies,
       ],
       [

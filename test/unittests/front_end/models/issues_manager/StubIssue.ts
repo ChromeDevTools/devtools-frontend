@@ -107,28 +107,3 @@ export function mkInspectorCspIssue(blockedURL: string): Protocol.Audits.Inspect
     },
   };
 }
-
-export function mkCookieIssue(): Protocol.Audits.InspectorIssue {
-  const cookieIssuePayload = `{
-    "code": "CookieIssue",
-    "details": {
-      "cookieIssueDetails": {
-        "cookie": {},
-        "cookieWarningReasons": [
-          "WarnSameSiteUnspecifiedCrossSiteContext"
-        ],
-        "cookieExclusionReasons": [
-          "ExcludeSameSiteUnspecifiedTreatedAsLax"
-        ],
-        "operation": "SetCookie",
-        "siteForCookies": "",
-        "cookieUrl": "",
-        "request": {
-          "requestId": "",
-          "url": ""
-        }
-      }
-    }
-  }`;
-  return JSON.parse(cookieIssuePayload);
-}

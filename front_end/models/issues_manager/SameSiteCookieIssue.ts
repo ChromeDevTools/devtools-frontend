@@ -37,12 +37,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class SameSiteCookieIssue extends Issue {
-  #issueDetails: Protocol.Audits.SameSiteCookieIssueDetails;
+export class CookieIssue extends Issue {
+  #issueDetails: Protocol.Audits.CookieIssueDetails;
 
   constructor(
-      code: string, issueDetails: Protocol.Audits.SameSiteCookieIssueDetails,
-      issuesModel: SDK.IssuesModel.IssuesModel) {
+      code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(code, issuesModel);
     this.#issueDetails = issueDetails;
   }
@@ -62,35 +61,34 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   /**
-   * Returns an array of issues from a given SameSiteCookieIssueDetails.
+   * Returns an array of issues from a given CookieIssueDetails.
    */
-  static createIssuesFromSameSiteDetails(
-      sameSiteDetails: Protocol.Audits.SameSiteCookieIssueDetails,
-      issuesModel: SDK.IssuesModel.IssuesModel): SameSiteCookieIssue[] {
-    const issues: SameSiteCookieIssue[] = [];
+  static createIssuesFromCookieIssueDetails(
+      cookieIssueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel): CookieIssue[] {
+    const issues: CookieIssue[] = [];
 
     // Exclusion reasons have priority. It means a cookie was blocked. Create an issue
     // for every exclusion reason but ignore warning reasons if the cookie was blocked.
     // Some exclusion reasons are dependent on warning reasons existing in order to produce an issue.
-    if (sameSiteDetails.cookieExclusionReasons && sameSiteDetails.cookieExclusionReasons.length > 0) {
-      for (const exclusionReason of sameSiteDetails.cookieExclusionReasons) {
-        const code = SameSiteCookieIssue.codeForSameSiteDetails(
-            exclusionReason, sameSiteDetails.cookieWarningReasons, sameSiteDetails.operation,
-            sameSiteDetails.cookieUrl);
+    if (cookieIssueDetails.cookieExclusionReasons && cookieIssueDetails.cookieExclusionReasons.length > 0) {
+      for (const exclusionReason of cookieIssueDetails.cookieExclusionReasons) {
+        const code = CookieIssue.codeForCookieIssueDetails(
+            exclusionReason, cookieIssueDetails.cookieWarningReasons, cookieIssueDetails.operation,
+            cookieIssueDetails.cookieUrl);
         if (code) {
-          issues.push(new SameSiteCookieIssue(code, sameSiteDetails, issuesModel));
+          issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel));
         }
       }
       return issues;
     }
 
-    if (sameSiteDetails.cookieWarningReasons) {
-      for (const warningReason of sameSiteDetails.cookieWarningReasons) {
+    if (cookieIssueDetails.cookieWarningReasons) {
+      for (const warningReason of cookieIssueDetails.cookieWarningReasons) {
         // warningReasons should be an empty array here.
-        const code = SameSiteCookieIssue.codeForSameSiteDetails(
-            warningReason, [], sameSiteDetails.operation, sameSiteDetails.cookieUrl);
+        const code = CookieIssue.codeForCookieIssueDetails(
+            warningReason, [], cookieIssueDetails.operation, cookieIssueDetails.cookieUrl);
         if (code) {
-          issues.push(new SameSiteCookieIssue(code, sameSiteDetails, issuesModel));
+          issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel));
         }
       }
     }
@@ -99,36 +97,35 @@ export class SameSiteCookieIssue extends Issue {
 
   /**
    * Calculates an issue code from a reason, an operation, and an array of warningReasons. All these together
-   * can uniquely identify a specific SameSite cookie issue.
-   * warningReasons is only needed for some SameSiteCookieExclusionReason in order to determine if an issue should be raised.
-   * It is not required if reason is a SameSiteCookieWarningReason.
+   * can uniquely identify a specific cookie issue.
+   * warningReasons is only needed for some CookieExclusionReason in order to determine if an issue should be raised.
+   * It is not required if reason is a CookieWarningReason.
    */
-  static codeForSameSiteDetails(
-      reason: Protocol.Audits.SameSiteCookieExclusionReason|Protocol.Audits.SameSiteCookieWarningReason,
-      warningReasons: Protocol.Audits.SameSiteCookieWarningReason[], operation: Protocol.Audits.SameSiteCookieOperation,
+  static codeForCookieIssueDetails(
+      reason: Protocol.Audits.CookieExclusionReason|Protocol.Audits.CookieWarningReason,
+      warningReasons: Protocol.Audits.CookieWarningReason[], operation: Protocol.Audits.CookieOperation,
       cookieUrl?: string): string|null {
     const isURLSecure = cookieUrl && (cookieUrl.startsWith('https://') || cookieUrl.startsWith('wss://'));
     const secure = isURLSecure ? 'Secure' : 'Insecure';
 
-    if (reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteStrict ||
-        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteLax ||
-        reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
+    if (reason === Protocol.Audits.CookieExclusionReason.ExcludeSameSiteStrict ||
+        reason === Protocol.Audits.CookieExclusionReason.ExcludeSameSiteLax ||
+        reason === Protocol.Audits.CookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
       if (warningReasons && warningReasons.length > 0) {
-        if (warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict)) {
+        if (warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict)) {
           return [
-            Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue,
+            Protocol.Audits.InspectorIssueCode.CookieIssue,
             'ExcludeNavigationContextDowngrade',
             secure,
           ].join('::');
         }
 
-        if (warningReasons.includes(
-                Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict) ||
-            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeLax) ||
-            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict) ||
-            warningReasons.includes(Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeLax)) {
+        if (warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict) ||
+            warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeLax) ||
+            warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict) ||
+            warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeLax)) {
           return [
-            Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue,
+            Protocol.Audits.InspectorIssueCode.CookieIssue,
             'ExcludeContextDowngrade',
             operation,
             secure,
@@ -138,8 +135,8 @@ export class SameSiteCookieIssue extends Issue {
 
       // If we have ExcludeSameSiteUnspecifiedTreatedAsLax but no corresponding warnings, then add just
       // the Issue code for ExcludeSameSiteUnspecifiedTreatedAsLax.
-      if (reason === Protocol.Audits.SameSiteCookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
-        return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, reason, operation].join('::');
+      if (reason === Protocol.Audits.CookieExclusionReason.ExcludeSameSiteUnspecifiedTreatedAsLax) {
+        return [Protocol.Audits.InspectorIssueCode.CookieIssue, reason, operation].join('::');
       }
 
       // ExcludeSameSiteStrict and ExcludeSameSiteLax require being paired with an appropriate warning. We didn't
@@ -147,18 +144,17 @@ export class SameSiteCookieIssue extends Issue {
       return null;
     }
 
-    if (reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict) {
-      return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, reason, secure].join('::');
+    if (reason === Protocol.Audits.CookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict) {
+      return [Protocol.Audits.InspectorIssueCode.CookieIssue, reason, secure].join('::');
     }
     // These have the same message.
-    if (reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict ||
-        reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteStrictCrossDowngradeLax ||
-        reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeLax ||
-        reason === Protocol.Audits.SameSiteCookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict) {
-      return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, 'WarnCrossDowngrade', operation, secure].join(
-          '::');
+    if (reason === Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict ||
+        reason === Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeLax ||
+        reason === Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeLax ||
+        reason === Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict) {
+      return [Protocol.Audits.InspectorIssueCode.CookieIssue, 'WarnCrossDowngrade', operation, secure].join('::');
     }
-    return [Protocol.Audits.InspectorIssueCode.SameSiteCookieIssue, reason, operation].join('::');
+    return [Protocol.Audits.InspectorIssueCode.CookieIssue, reason, operation].join('::');
   }
 
   cookies(): Iterable<Protocol.Audits.AffectedCookie> {
@@ -183,7 +179,7 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   getCategory(): IssueCategory {
-    return IssueCategory.SameSiteCookie;
+    return IssueCategory.Cookie;
   }
 
   getDescription(): MarkdownIssueDescription|null {
@@ -207,14 +203,14 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      SameSiteCookieIssue[] {
-    const sameSiteDetails = inspectorIssue.details.sameSiteCookieIssueDetails;
-    if (!sameSiteDetails) {
-      console.warn('SameSite issue without details received.');
+      CookieIssue[] {
+    const cookieIssueDetails = inspectorIssue.details.cookieIssueDetails;
+    if (!cookieIssueDetails) {
+      console.warn('Cookie issue without details received.');
       return [];
     }
 
-    return SameSiteCookieIssue.createIssuesFromSameSiteDetails(sameSiteDetails, issuesModel);
+    return CookieIssue.createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel);
   }
 }
 
@@ -431,32 +427,32 @@ const samePartyCrossPartyContextSet: LazyMarkdownIssueDescription = {
 };
 
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
-  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
-  ['SameSiteCookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
+  ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
+  ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
   // These two don't have a deprecation date yet, but they need to be fixed eventually.
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet],
-  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
-  ['SameSiteCookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
-  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
-  ['SameSiteCookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
-  ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true)],
-  ['SameSiteCookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false)],
-  ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
-  ['SameSiteCookieIssue::WarnCrossDowngrade::ReadCookie::Insecure', sameSiteWarnCrossDowngradeRead(false)],
-  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Secure', sameSiteWarnCrossDowngradeSet(true)],
-  ['SameSiteCookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false)],
-  ['SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Secure', sameSiteExcludeNavigationContextDowngrade(true)],
+  ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],
+  ['CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::ReadCookie', sameSiteUnspecifiedWarnRead],
+  ['CookieIssue::WarnSameSiteUnspecifiedCrossSiteContext::SetCookie', sameSiteUnspecifiedWarnSet],
+  ['CookieIssue::ExcludeSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureErrorRead],
+  ['CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureErrorSet],
+  ['CookieIssue::WarnSameSiteNoneInsecure::ReadCookie', sameSiteNoneInsecureWarnRead],
+  ['CookieIssue::WarnSameSiteNoneInsecure::SetCookie', sameSiteNoneInsecureWarnSet],
+  ['CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure', sameSiteWarnStrictLaxDowngradeStrict(true)],
+  ['CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure', sameSiteWarnStrictLaxDowngradeStrict(false)],
+  ['CookieIssue::WarnCrossDowngrade::ReadCookie::Secure', sameSiteWarnCrossDowngradeRead(true)],
+  ['CookieIssue::WarnCrossDowngrade::ReadCookie::Insecure', sameSiteWarnCrossDowngradeRead(false)],
+  ['CookieIssue::WarnCrossDowngrade::SetCookie::Secure', sameSiteWarnCrossDowngradeSet(true)],
+  ['CookieIssue::WarnCrossDowngrade::SetCookie::Insecure', sameSiteWarnCrossDowngradeSet(false)],
+  ['CookieIssue::ExcludeNavigationContextDowngrade::Secure', sameSiteExcludeNavigationContextDowngrade(true)],
   [
-    'SameSiteCookieIssue::ExcludeNavigationContextDowngrade::Insecure',
+    'CookieIssue::ExcludeNavigationContextDowngrade::Insecure',
     sameSiteExcludeNavigationContextDowngrade(false),
   ],
-  ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Secure', sameSiteExcludeContextDowngradeRead(true)],
-  ['SameSiteCookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure', sameSiteExcludeContextDowngradeRead(false)],
-  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
-  ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
-  ['SameSiteCookieIssue::ExcludeInvalidSameParty::SetCookie', sameSiteInvalidSameParty],
-  ['SameSiteCookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie', samePartyCrossPartyContextSet],
+  ['CookieIssue::ExcludeContextDowngrade::ReadCookie::Secure', sameSiteExcludeContextDowngradeRead(true)],
+  ['CookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure', sameSiteExcludeContextDowngradeRead(false)],
+  ['CookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
+  ['CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
+  ['CookieIssue::ExcludeInvalidSameParty::SetCookie', sameSiteInvalidSameParty],
+  ['CookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie', samePartyCrossPartyContextSet],
 ]);

@@ -44,7 +44,7 @@ export enum IssueCategory {
   CrossOriginEmbedderPolicy = 'CrossOriginEmbedderPolicy',
   Generic = 'Generic',
   MixedContent = 'MixedContent',
-  SameSiteCookie = 'SameSiteCookie',
+  Cookie = 'Cookie',
   HeavyAd = 'HeavyAd',
   ContentSecurityPolicy = 'ContentSecurityPolicy',
   TrustedWebActivity = 'TrustedWebActivity',

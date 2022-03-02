@@ -16,7 +16,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows the toolbar button for one issue correctly', async () => {
-    // Navigate to page which causes a SameSiteCookieIssue.
+    // Navigate to page which causes a CookieIssue.
     await goToResource('console/cookie-issue.html');
     await navigateToConsoleTab();
 
@@ -24,7 +24,7 @@ describe('The Console Tab', async () => {
   });
 
   it('shows the toolbar button for two issues correctly', async () => {
-    // Navigate to page which causes two SameSiteCookieIssue.
+    // Navigate to page which causes two CookieIssue.
     await goToResource('console/two-cookie-issues.html');
     await navigateToConsoleTab();
 
@@ -40,7 +40,7 @@ describe('The Console Tab', async () => {
 
     const {target} = getBrowserAndPages();
     await target.evaluate(() => {
-      // Trigger a SameSiteCookieIssue.
+      // Trigger a CookieIssue.
       document.cookie = 'foo=bar;samesite=None';
     });
 

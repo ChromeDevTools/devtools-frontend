@@ -430,11 +430,11 @@ describe('User Metrics for Issue Panel', () => {
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.IssueCreated',
-        actionCode: 15,  // SameSiteCookieIssue
+        actionCode: 15,  // CookieIssue
       },
       {
         actionName: 'DevTools.IssueCreated',
-        actionCode: 15,  // SameSiteCookieIssue
+        actionCode: 15,  // CookieIssue
       },
       {
         actionName: 'DevTools.IssuesPanelIssueExpanded',

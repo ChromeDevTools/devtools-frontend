@@ -973,7 +973,7 @@
                     ]
                 },
                 {
-                    "id": "SameSiteCookieExclusionReason",
+                    "id": "CookieExclusionReason",
                     "type": "string",
                     "enum": [
                         "ExcludeSameSiteUnspecifiedTreatedAsLax",
@@ -985,7 +985,7 @@
                     ]
                 },
                 {
-                    "id": "SameSiteCookieWarningReason",
+                    "id": "CookieWarningReason",
                     "type": "string",
                     "enum": [
                         "WarnSameSiteUnspecifiedCrossSiteContext",
@@ -995,11 +995,12 @@
                         "WarnSameSiteStrictCrossDowngradeStrict",
                         "WarnSameSiteStrictCrossDowngradeLax",
                         "WarnSameSiteLaxCrossDowngradeStrict",
-                        "WarnSameSiteLaxCrossDowngradeLax"
+                        "WarnSameSiteLaxCrossDowngradeLax",
+                        "WarnAttributeValueExceedsMaxSize"
                     ]
                 },
                 {
-                    "id": "SameSiteCookieOperation",
+                    "id": "CookieOperation",
                     "type": "string",
                     "enum": [
                         "SetCookie",
@@ -1007,7 +1008,7 @@
                     ]
                 },
                 {
-                    "id": "SameSiteCookieIssueDetails",
+                    "id": "CookieIssueDetails",
                     "description": "This information is currently necessary, as the front-end has a difficult\ntime finding a specific cookie. With this, we can convey specific error\ninformation without the cookie.",
                     "type": "object",
                     "properties": [
@@ -1026,20 +1027,20 @@
                             "name": "cookieWarningReasons",
                             "type": "array",
                             "items": {
-                                "$ref": "SameSiteCookieWarningReason"
+                                "$ref": "CookieWarningReason"
                             }
                         },
                         {
                             "name": "cookieExclusionReasons",
                             "type": "array",
                             "items": {
-                                "$ref": "SameSiteCookieExclusionReason"
+                                "$ref": "CookieExclusionReason"
                             }
                         },
                         {
                             "name": "operation",
                             "description": "Optionally identifies the site-for-cookies and the cookie url, which\nmay be used by the front-end as additional context.",
-                            "$ref": "SameSiteCookieOperation"
+                            "$ref": "CookieOperation"
                         },
                         {
                             "name": "siteForCookies",
@@ -1637,7 +1638,7 @@
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
                     "enum": [
-                        "SameSiteCookieIssue",
+                        "CookieIssue",
                         "MixedContentIssue",
                         "BlockedByResponseIssue",
                         "HeavyAdIssue",
@@ -1661,9 +1662,9 @@
                     "type": "object",
                     "properties": [
                         {
-                            "name": "sameSiteCookieIssueDetails",
+                            "name": "cookieIssueDetails",
                             "optional": true,
-                            "$ref": "SameSiteCookieIssueDetails"
+                            "$ref": "CookieIssueDetails"
                         },
                         {
                             "name": "mixedContentIssueDetails",

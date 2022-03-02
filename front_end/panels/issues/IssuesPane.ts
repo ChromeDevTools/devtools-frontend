@@ -127,7 +127,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
         return i18nString(UIStrings.crossOriginEmbedderPolicy);
       case IssuesManager.Issue.IssueCategory.MixedContent:
         return i18nString(UIStrings.mixedContent);
-      case IssuesManager.Issue.IssueCategory.SameSiteCookie:
+      case IssuesManager.Issue.IssueCategory.Cookie:
         return i18nString(UIStrings.samesiteCookie);
       case IssuesManager.Issue.IssueCategory.HeavyAd:
         return i18nString(UIStrings.heavyAds);

@@ -182,7 +182,7 @@ export function registerCommands(inspectorBackend) {
       []);
 
   // Audits.
-  inspectorBackend.registerEnum('Audits.SameSiteCookieExclusionReason', {
+  inspectorBackend.registerEnum('Audits.CookieExclusionReason', {
     ExcludeSameSiteUnspecifiedTreatedAsLax: 'ExcludeSameSiteUnspecifiedTreatedAsLax',
     ExcludeSameSiteNoneInsecure: 'ExcludeSameSiteNoneInsecure',
     ExcludeSameSiteLax: 'ExcludeSameSiteLax',
@@ -190,7 +190,7 @@ export function registerCommands(inspectorBackend) {
     ExcludeInvalidSameParty: 'ExcludeInvalidSameParty',
     ExcludeSamePartyCrossPartyContext: 'ExcludeSamePartyCrossPartyContext'
   });
-  inspectorBackend.registerEnum('Audits.SameSiteCookieWarningReason', {
+  inspectorBackend.registerEnum('Audits.CookieWarningReason', {
     WarnSameSiteUnspecifiedCrossSiteContext: 'WarnSameSiteUnspecifiedCrossSiteContext',
     WarnSameSiteNoneInsecure: 'WarnSameSiteNoneInsecure',
     WarnSameSiteUnspecifiedLaxAllowUnsafe: 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
@@ -198,9 +198,10 @@ export function registerCommands(inspectorBackend) {
     WarnSameSiteStrictCrossDowngradeStrict: 'WarnSameSiteStrictCrossDowngradeStrict',
     WarnSameSiteStrictCrossDowngradeLax: 'WarnSameSiteStrictCrossDowngradeLax',
     WarnSameSiteLaxCrossDowngradeStrict: 'WarnSameSiteLaxCrossDowngradeStrict',
-    WarnSameSiteLaxCrossDowngradeLax: 'WarnSameSiteLaxCrossDowngradeLax'
+    WarnSameSiteLaxCrossDowngradeLax: 'WarnSameSiteLaxCrossDowngradeLax',
+    WarnAttributeValueExceedsMaxSize: 'WarnAttributeValueExceedsMaxSize'
   });
-  inspectorBackend.registerEnum('Audits.SameSiteCookieOperation', {SetCookie: 'SetCookie', ReadCookie: 'ReadCookie'});
+  inspectorBackend.registerEnum('Audits.CookieOperation', {SetCookie: 'SetCookie', ReadCookie: 'ReadCookie'});
   inspectorBackend.registerEnum('Audits.MixedContentResolutionStatus', {
     MixedContentBlocked: 'MixedContentBlocked',
     MixedContentAutomaticallyUpgraded: 'MixedContentAutomaticallyUpgraded',
@@ -301,7 +302,7 @@ export function registerCommands(inspectorBackend) {
     Canceled: 'Canceled'
   });
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
-    SameSiteCookieIssue: 'SameSiteCookieIssue',
+    CookieIssue: 'CookieIssue',
     MixedContentIssue: 'MixedContentIssue',
     BlockedByResponseIssue: 'BlockedByResponseIssue',
     HeavyAdIssue: 'HeavyAdIssue',

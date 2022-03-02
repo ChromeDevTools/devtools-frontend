@@ -1716,7 +1716,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return false;
     }
     if (this.onlyIssuesFilterUI.checked() &&
-        !IssuesManager.RelatedIssue.hasIssueOfCategory(request, IssuesManager.Issue.IssueCategory.SameSiteCookie)) {
+        !IssuesManager.RelatedIssue.hasIssueOfCategory(request, IssuesManager.Issue.IssueCategory.Cookie)) {
       return false;
     }
     if (this.onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {

@@ -696,7 +696,7 @@ export namespace Audits {
     frameId: Page.FrameId;
   }
 
-  export const enum SameSiteCookieExclusionReason {
+  export const enum CookieExclusionReason {
     ExcludeSameSiteUnspecifiedTreatedAsLax = 'ExcludeSameSiteUnspecifiedTreatedAsLax',
     ExcludeSameSiteNoneInsecure = 'ExcludeSameSiteNoneInsecure',
     ExcludeSameSiteLax = 'ExcludeSameSiteLax',
@@ -705,7 +705,7 @@ export namespace Audits {
     ExcludeSamePartyCrossPartyContext = 'ExcludeSamePartyCrossPartyContext',
   }
 
-  export const enum SameSiteCookieWarningReason {
+  export const enum CookieWarningReason {
     WarnSameSiteUnspecifiedCrossSiteContext = 'WarnSameSiteUnspecifiedCrossSiteContext',
     WarnSameSiteNoneInsecure = 'WarnSameSiteNoneInsecure',
     WarnSameSiteUnspecifiedLaxAllowUnsafe = 'WarnSameSiteUnspecifiedLaxAllowUnsafe',
@@ -714,9 +714,10 @@ export namespace Audits {
     WarnSameSiteStrictCrossDowngradeLax = 'WarnSameSiteStrictCrossDowngradeLax',
     WarnSameSiteLaxCrossDowngradeStrict = 'WarnSameSiteLaxCrossDowngradeStrict',
     WarnSameSiteLaxCrossDowngradeLax = 'WarnSameSiteLaxCrossDowngradeLax',
+    WarnAttributeValueExceedsMaxSize = 'WarnAttributeValueExceedsMaxSize',
   }
 
-  export const enum SameSiteCookieOperation {
+  export const enum CookieOperation {
     SetCookie = 'SetCookie',
     ReadCookie = 'ReadCookie',
   }
@@ -726,7 +727,7 @@ export namespace Audits {
    * time finding a specific cookie. With this, we can convey specific error
    * information without the cookie.
    */
-  export interface SameSiteCookieIssueDetails {
+  export interface CookieIssueDetails {
     /**
      * If AffectedCookie is not set then rawCookieLine contains the raw
      * Set-Cookie header string. This hints at a problem where the
@@ -735,13 +736,13 @@ export namespace Audits {
      */
     cookie?: AffectedCookie;
     rawCookieLine?: string;
-    cookieWarningReasons: SameSiteCookieWarningReason[];
-    cookieExclusionReasons: SameSiteCookieExclusionReason[];
+    cookieWarningReasons: CookieWarningReason[];
+    cookieExclusionReasons: CookieExclusionReason[];
     /**
      * Optionally identifies the site-for-cookies and the cookie url, which
      * may be used by the front-end as additional context.
      */
-    operation: SameSiteCookieOperation;
+    operation: CookieOperation;
     siteForCookies?: string;
     cookieUrl?: string;
     request?: AffectedRequest;
@@ -1096,7 +1097,7 @@ export namespace Audits {
    * information about the kind of issue.
    */
   export const enum InspectorIssueCode {
-    SameSiteCookieIssue = 'SameSiteCookieIssue',
+    CookieIssue = 'CookieIssue',
     MixedContentIssue = 'MixedContentIssue',
     BlockedByResponseIssue = 'BlockedByResponseIssue',
     HeavyAdIssue = 'HeavyAdIssue',
@@ -1120,7 +1121,7 @@ export namespace Audits {
    * add a new optional field to this type.
    */
   export interface InspectorIssueDetails {
-    sameSiteCookieIssueDetails?: SameSiteCookieIssueDetails;
+    cookieIssueDetails?: CookieIssueDetails;
     mixedContentIssueDetails?: MixedContentIssueDetails;
     blockedByResponseIssueDetails?: BlockedByResponseIssueDetails;
     heavyAdIssueDetails?: HeavyAdIssueDetails;

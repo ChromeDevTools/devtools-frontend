@@ -16,9 +16,9 @@ describe('Issue', () => {
   });
 });
 
-describe('SameSiteCookieIssue', () => {
+describe('CookieIssue', () => {
   describe('isCausedByThirdParty', () => {
-    const isCausedByThirdParty = IssueManager.SameSiteCookieIssue.isCausedByThirdParty;
+    const isCausedByThirdParty = IssueManager.CookieIssue.isCausedByThirdParty;
     const mockResourceTreeFrame = (domainAndRegistry: string) => {
       return {domainAndRegistry: () => domainAndRegistry} as SDK.ResourceTreeModel.ResourceTreeFrame;
     };

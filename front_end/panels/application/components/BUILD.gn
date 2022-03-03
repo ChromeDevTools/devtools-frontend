@@ -49,6 +49,7 @@ devtools_module("components") {
     "../../../panels/network/forward:bundle",
     "../../../ui/components/adorners:bundle",
     "../../../ui/components/buttons:bundle",
+    "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/data_grid:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/icon_button:bundle",

@@ -13,6 +13,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
@@ -97,6 +98,10 @@ const UIStrings = {
    */
   supportPendingExplanation:
       'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome.',
+  /**
+   * @description Text that precedes disaplaying a link to the extension which blocked the page from being eligible for back/forward cache.
+   */
+  blockingExtensionId: 'Extension id: ',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -370,6 +375,22 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
+  /* x-link doesn't work with custom click/keydown handlers */
+  /* eslint-disable rulesdir/ban_a_tags_in_lit_html */
+  #maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult|
+      {} {
+    if (explanation.reason ===
+            Protocol.Page.BackForwardCacheNotRestoredReason.EmbedderExtensionSentMessageToCachedFrame &&
+        explanation.context) {
+      const link = 'chrome://extensions/?id=' + explanation.context;
+      // clang-format off
+    return LitHtml.html`${i18nString(UIStrings.blockingExtensionId)}
+      <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${explanation.context}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>`;
+      // clang-format on
+    }
+    return LitHtml.nothing;
+  }
+
   #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
@@ -385,7 +406,10 @@ export class BackForwardCacheView extends HTMLElement {
               } as IconButton.Icon.IconData}>
               </${IconButton.Icon.Icon.litTagName}>
             </div>
-            ${NotRestoredReasonDescription[explanation.reason].name()}` :
+            <div>
+              ${NotRestoredReasonDescription[explanation.reason].name()}
+             ${this.#maybeRenderReasonContext(explanation)}
+           </div>` :
             LitHtml.nothing}
       </${ReportView.ReportView.ReportSection.litTagName}>
       <div class='gray-text'>

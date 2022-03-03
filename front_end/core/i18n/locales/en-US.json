@@ -2762,6 +2762,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back/forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Extension id: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Not Actionable"
   },

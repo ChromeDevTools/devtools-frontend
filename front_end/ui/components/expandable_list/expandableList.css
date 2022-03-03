@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+  overflow: hidden;
+}
+
 div {
   line-height: 1.7em;
 }
@@ -52,4 +56,10 @@ button.link {
   background: none;
   font-family: inherit;
   font-size: inherit;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

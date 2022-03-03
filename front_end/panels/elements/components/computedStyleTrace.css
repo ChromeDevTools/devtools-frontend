@@ -24,6 +24,7 @@
   --size: 16px;
 
   display: none;
+  cursor: pointer;
   position: absolute;
   width: var(--size);
   height: var(--size);

@@ -44,6 +44,7 @@ slot[name="property-value"] {
 
 .goto {
   display: none;
+  cursor: pointer;
   position: absolute;
   width: var(--goto-size);
   height: var(--goto-size);

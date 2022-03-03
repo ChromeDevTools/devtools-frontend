@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "T̂ŕûśt̂éd̂ T́ŷṕêś - P̂ól̂íĉý v̂íôĺât́îón̂"
   },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "âń îńŝéĉúr̂é"
+  },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "â śêćûŕê"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets âńd̂ t́ĥé SameParty ât́t̂ŕîb́ût́ê"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Ĥóŵ Śĉh́êḿêf́ûĺ Ŝám̂é-Ŝít̂é Ŵór̂ḱŝ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Ŝám̂éŜít̂é ĉóôḱîéŝ éx̂ṕl̂áîńêd́"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêśôúr̂ćê Śĥár̂ín̂ǵ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "D̂óĉúm̂én̂t́ ĉóm̂ṕât́îb́îĺît́ŷ ḿôd́ê"
-  },
-  "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
-    "message": "âń îńŝéĉúr̂é"
-  },
-  "models/issues_manager/SameSiteCookieIssue.ts | aSecure": {
-    "message": "â śêćûŕê"
-  },
-  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets âńd̂ t́ĥé SameParty ât́t̂ŕîb́ût́ê"
-  },
-  "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Ĥóŵ Śĉh́êḿêf́ûĺ Ŝám̂é-Ŝít̂é Ŵór̂ḱŝ"
-  },
-  "models/issues_manager/SameSiteCookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Ŝám̂éŜít̂é ĉóôḱîéŝ éx̂ṕl̂áîńêd́"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Êńâb́l̂ín̂ǵ SharedArrayBuffer"

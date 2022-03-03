@@ -34,7 +34,7 @@ const UIStrings = {
    */
   firstPartySetsExplained: '`First-Party Sets` and the `SameParty` attribute',
 };
-const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class CookieIssue extends Issue {

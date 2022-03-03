@@ -8,7 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
-import {isCausedByThirdParty} from './SameSiteCookieIssue.js';
+import {isCausedByThirdParty} from './CookieIssue.js';
 
 const UIStrings = {
   /**

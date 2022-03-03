@@ -16,6 +16,7 @@ export const LOG_LEVELS_VERBOSE_OPTION_SELECTOR = '[aria-label^="Verbose"]';
 export const CONSOLE_PROMPT_SELECTOR = '.console-prompt-editor-container';
 export const CONSOLE_VIEW_SELECTOR = '.console-view';
 export const CONSOLE_TOOLTIP_SELECTOR = '.cm-tooltip';
+export const CONSOLE_COMPLETION_HINT_SELECTOR = '.cm-completionHint';
 export const STACK_PREVIEW_CONTAINER = '.stack-preview-container';
 export const CONSOLE_MESSAGE_WRAPPER_SELECTOR = '.console-group-messages .console-message-wrapper';
 export const CONSOLE_SELECTOR = '.console-user-command-result';

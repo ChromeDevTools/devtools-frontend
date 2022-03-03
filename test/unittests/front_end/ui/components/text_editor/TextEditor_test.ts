@@ -137,6 +137,19 @@ describeWithEnvironment('TextEditor', () => {
       await testQueryType('foo["ba', 7, TextEditor.JavaScript.QueryType.PropertyExpression, '"ba', 'foo["ba');
     });
 
+    describe('potential map key retrievals', () => {
+      it('recognizes potential maps', async () => {
+        await testQueryType('foo.get(', 8, TextEditor.JavaScript.QueryType.PotentiallyRetrievingFromMap, '', 'foo');
+        await testQueryType('foo\n.get(', 9, TextEditor.JavaScript.QueryType.PotentiallyRetrievingFromMap, '', 'foo');
+      });
+
+      it('leaves other expressions as-is', async () => {
+        await testQueryType('foo.method(', 11, TextEditor.JavaScript.QueryType.Expression);
+        await testQueryType('5 + (', 5, TextEditor.JavaScript.QueryType.Expression);
+        await testQueryType('functionCall(', 13, TextEditor.JavaScript.QueryType.Expression);
+      });
+    });
+
     it('does not complete in inappropriate places', async () => {
       await testQueryType('"foo bar"', 4);
       await testQueryType('x["foo" + "bar', 14);

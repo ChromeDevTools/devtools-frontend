@@ -101,11 +101,11 @@ const dontCompleteIn = new Set([
   'TypeName',
 ]);
 
-// FIXME Implement Map property completion?
 export const enum QueryType {
   Expression = 0,
   PropertyName = 1,
   PropertyExpression = 2,
+  PotentiallyRetrievingFromMap = 3,
 }
 
 export function getQueryType(tree: CodeMirror.Tree, pos: number, doc: CodeMirror.Text): {
@@ -149,6 +149,22 @@ export function getQueryType(tree: CodeMirror.Tree, pos: number, doc: CodeMirror
       return {type: QueryType.PropertyName, relatedNode: node};
     }
   }
+  if (node.name === '(') {
+    // map.get(<auto-complete>
+    if (parent.name === 'ArgList' && parent.parent.name === 'CallExpression') {
+      // map.get
+      const callReceiver = parent.parent.firstChild;
+      if (callReceiver.name === 'MemberExpression') {
+        // get
+        const propertyExpression = callReceiver.lastChild;
+        if (doc.sliceString(propertyExpression.from, propertyExpression.to) === 'get') {
+          // map
+          const potentiallyMapObject = callReceiver.firstChild;
+          return {type: QueryType.PotentiallyRetrievingFromMap, relatedNode: potentiallyMapObject};
+        }
+      }
+    }
+  }
   return {type: QueryType.Expression};
 }
 
@@ -184,6 +200,12 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
     }
     result = await completeProperties(
         cx.state.sliceDoc(objectExpr.from, objectExpr.to), quote, cx.state.sliceDoc(cx.pos, cx.pos + 1) === ']');
+  } else if (query.type === QueryType.PotentiallyRetrievingFromMap) {
+    const potentialMapObject = query.relatedNode;
+    if (!potentialMapObject) {
+      return null;
+    }
+    result = await maybeCompleteKeysFromMap(cx.state.sliceDoc(potentialMapObject.from, potentialMapObject.to));
   } else {
     return null;
   }
@@ -270,6 +292,29 @@ class PropertyCache {
     }
     return cacheInstance;
   }
+}
+
+async function maybeCompleteKeysFromMap(objectVariable: string): Promise<CompletionSet> {
+  const result = new CompletionSet();
+  const context = getExecutionContext();
+  if (!context) {
+    return result;
+  }
+  const maybeRetrieveKeys =
+      await evaluateExpression(context, `[...Map.prototype.keys.call(${objectVariable})]`, 'completion');
+  if (!maybeRetrieveKeys) {
+    return result;
+  }
+  const properties = SDK.RemoteObject.RemoteArray.objectAsArray(maybeRetrieveKeys);
+  const numProperties = properties.length();
+  for (let i = 0; i < numProperties; i++) {
+    result.add({
+      label: `"${(await properties.at(i)).value}")`,
+      type: 'constant',
+      boost: i * -1,
+    });
+  }
+  return result;
 }
 
 async function completeProperties(

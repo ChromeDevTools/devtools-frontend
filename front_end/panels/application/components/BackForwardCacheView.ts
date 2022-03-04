@@ -99,7 +99,7 @@ const UIStrings = {
   supportPendingExplanation:
       'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome.',
   /**
-   * @description Text that precedes disaplaying a link to the extension which blocked the page from being eligible for back/forward cache.
+   * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
    */
   blockingExtensionId: 'Extension id: ',
 };
@@ -375,8 +375,6 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
-  /* x-link doesn't work with custom click/keydown handlers */
-  /* eslint-disable rulesdir/ban_a_tags_in_lit_html */
   #maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult|
       {} {
     if (explanation.reason ===

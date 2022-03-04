@@ -372,7 +372,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   async generateHeaderPatterns(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<{headerPatterns: Set<string>, path: string, overridesWithRegex: HeaderOverrideWithRegex[]}> {
     const headerPatterns = new Set<string>();
-    const content = (await uiSourceCode.requestContent()).content || '';
+    const content = (await uiSourceCode.requestContent()).content || '[]';
     let headerOverrides: HeaderOverride[] = [];
     try {
       headerOverrides = JSON.parse(content) as HeaderOverride[];
@@ -657,7 +657,7 @@ export type EventTypes = {
   [Events.ProjectChanged]: Workspace.Workspace.Project|null,
 };
 
-interface HeaderOverride {
+export interface HeaderOverride {
   applyTo: string;
   headers: Protocol.Network.Headers;
 }
@@ -668,7 +668,7 @@ interface HeaderOverrideWithRegex {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isHeaderOverride(arg: any): arg is HeaderOverride {
+export function isHeaderOverride(arg: any): arg is HeaderOverride {
   if (!(arg && arg.applyTo && typeof (arg.applyTo === 'string') && arg.headers && Object.keys(arg.headers).length)) {
     return false;
   }

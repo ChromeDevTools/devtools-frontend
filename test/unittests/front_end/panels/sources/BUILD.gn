@@ -14,5 +14,6 @@ ts_library("sources") {
   deps = [
     "../../../../../front_end/panels/sources:bundle",
     "../../helpers",
+    "./components",
   ]
 }

@@ -831,6 +831,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
     }
     this.showView(this.view);
     UI.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);
+    Host.userMetrics.panelShown('background_service_' + this.serviceName);
     return false;
   }
 }
@@ -854,6 +855,7 @@ export class DatabaseTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.sidebar.showDatabase(this.database);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.web_sql]);
     return false;
   }
 
@@ -891,6 +893,7 @@ export class DatabaseTableTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.sidebar.showDatabase(this.database, this.tableName);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.web_sql]);
     return false;
   }
 }
@@ -914,6 +917,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
       this.view = new ServiceWorkersView();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.service_workers]);
     return false;
   }
 }
@@ -936,6 +940,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
       this.view = new AppManifestView();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.app_manifest]);
     return false;
   }
 }
@@ -958,6 +963,7 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
       this.view = new StorageView();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.storage]);
     return false;
   }
 }
@@ -1170,6 +1176,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
     return false;
   }
 
@@ -1302,6 +1309,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
     return false;
   }
 
@@ -1391,6 +1399,7 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.indexed_db]);
     return false;
   }
 
@@ -1417,6 +1426,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
 
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.dom_storage]);
     this.resourcesPanel.showDOMStorage(this.domStorage);
     return false;
   }
@@ -1469,6 +1479,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
   onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this.target, this.cookieDomainInternal);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.cookies]);
     return false;
   }
 }
@@ -1810,6 +1821,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     } else {
       this.view.update();
     }
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_details]);
     this.showView(this.view);
 
     this.listItemElement.classList.remove('hovered');
@@ -1978,6 +1990,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_resource]);
     return false;
   }
 
@@ -2065,6 +2078,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
       this.view.update();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_window]);
     return false;
   }
 
@@ -2093,6 +2107,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
       this.view.update();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_worker]);
     return false;
   }
 

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -37,6 +38,7 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
       this.view = new ReportingApiView();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.reporting_api]);
     return false;
   }
 }

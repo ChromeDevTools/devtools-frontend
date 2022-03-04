@@ -9,6 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
+import * as Host from '../../core/host/host.js';
 
 const UIStrings = {
   /**
@@ -41,6 +42,7 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
       this.view = new TrustTokensViewWidgetWrapper();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.trust_tokens]);
     return false;
   }
 }

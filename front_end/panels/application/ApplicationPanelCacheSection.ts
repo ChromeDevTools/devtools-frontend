@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ApplicationComponents from './components/components.js';
+import * as Host from '../../core/host/host.js';
 
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -164,6 +165,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     }
 
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.service_worker_cache]);
     return false;
   }
 
@@ -192,6 +194,7 @@ export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
       this.view = new ApplicationComponents.BackForwardCacheView.BackForwardCacheViewWrapper();
     }
     this.showView(this.view);
+    Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.back_forward_cache]);
     return false;
   }
 }

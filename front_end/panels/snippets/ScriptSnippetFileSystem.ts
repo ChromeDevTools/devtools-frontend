@@ -13,6 +13,8 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
+// TODO(crbug.com/1253323): Cast to EncodedPathString will be removed from this file when migration to branded types is complete.
+
 const UIStrings = {
   /**
   *@description Default snippet name when a new snippet is created in the Sources panel
@@ -40,7 +42,6 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   private readonly lastSnippetIdentifierSetting: Common.Settings.Setting<number>;
   private readonly snippetsSetting: Common.Settings.Setting<Snippet[]>;
   constructor() {
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
     super('snippet://', 'snippets');
     this.lastSnippetIdentifierSetting =
         Common.Settings.Settings.instance().createSetting('scriptSnippets_lastIdentifier', 0);

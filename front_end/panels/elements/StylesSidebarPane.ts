@@ -3461,8 +3461,7 @@ export class StylesSidebarPropertyRenderer {
     UI.UIUtils.createTextChild(container, 'url(');
     let hrefUrl: (string|null)|null = null;
     if (this.rule && this.rule.resourceURL()) {
-      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-      hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL() as Platform.DevToolsPath.UrlString, url);
+      hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);
     }

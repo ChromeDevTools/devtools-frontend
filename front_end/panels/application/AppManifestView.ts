@@ -16,8 +16,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 const UIStrings = {
   /**
   *@description Text in App Manifest View of the Application panel
@@ -543,7 +541,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   }
 
   private async renderManifest(
-      url: string, data: string|null, errors: Protocol.Page.AppManifestError[],
+      url: Platform.DevToolsPath.UrlString, data: string|null, errors: Protocol.Page.AppManifestError[],
       installabilityErrors: Protocol.Page.InstallabilityError[], manifestIcons: {
         primaryIcon: string|null,
       },
@@ -642,12 +640,13 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     this.startURLField.removeChildren();
     if (startURL) {
-      const completeURL =
-          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, startURL) as string);
-      const link = Components.Linkifier.Linkifier.linkifyURL(
-          completeURL, ({text: startURL} as Components.Linkifier.LinkifyURLOptions));
-      link.tabIndex = 0;
-      this.startURLField.appendChild(link);
+      const completeURL = Common.ParsedURL.ParsedURL.completeURL(url, startURL);
+      if (completeURL) {
+        const link = Components.Linkifier.Linkifier.linkifyURL(
+            completeURL, ({text: startURL} as Components.Linkifier.LinkifyURLOptions));
+        link.tabIndex = 0;
+        this.startURLField.appendChild(link);
+      }
     }
 
     this.themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
@@ -694,8 +693,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.newNoteUrlField.parentElement?.classList.toggle('hidden', !hasNewNoteUrl);
     this.newNoteUrlField.removeChildren();
     if (hasNewNoteUrl) {
-      const completeURL =
-          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, newNoteUrl) as string);
+      const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, newNoteUrl) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
           completeURL, ({text: newNoteUrl} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
@@ -765,8 +763,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         shortcutSection.appendFlexedField('Description', shortcut.description);
       }
       const urlField = shortcutSection.appendFlexedField('URL');
-      const shortcutUrl =
-          (Common.ParsedURL.ParsedURL.completeURL(url as Platform.DevToolsPath.UrlString, shortcut.url) as string);
+      const shortcutUrl = (Common.ParsedURL.ParsedURL.completeURL(url, shortcut.url) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(
           shortcutUrl, ({text: shortcut.url} as Components.Linkifier.LinkifyURLOptions));
       link.tabIndex = 0;
@@ -1018,7 +1015,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   private async appendImageResourceToSection(
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      baseUrl: string, imageResource: any, section: UI.ReportView.Section, isScreenshot: boolean):
+      baseUrl: Platform.DevToolsPath.UrlString, imageResource: any, section: UI.ReportView.Section,
+      isScreenshot: boolean):
       Promise<{imageResourceErrors: Platform.UIString.LocalizedString[], squareSizedIconAvailable?: boolean}> {
     const imageResourceErrors: Platform.UIString.LocalizedString[] = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
@@ -1026,8 +1024,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       imageResourceErrors.push(i18nString(UIStrings.sSrcIsNotSet, {PH1: resourceName}));
       return {imageResourceErrors};
     }
-    const imageUrl =
-        Common.ParsedURL.ParsedURL.completeURL(baseUrl as Platform.DevToolsPath.UrlString, imageResource['src']);
+    const imageUrl = Common.ParsedURL.ParsedURL.completeURL(baseUrl, imageResource['src']);
     if (!imageUrl) {
       imageResourceErrors.push(
           i18nString(UIStrings.sUrlSFailedToParse, {PH1: resourceName, PH2: imageResource['src']}));

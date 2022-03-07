@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
@@ -44,9 +45,9 @@ export class CSSRule {
     this.style.rebase(edit);
   }
 
-  resourceURL(): string {
+  resourceURL(): Platform.DevToolsPath.UrlString {
     if (!this.styleSheetId) {
-      return '';
+      return '' as Platform.DevToolsPath.UrlString;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
     return styleSheetHeader.resourceURL();

@@ -6,6 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("console") {
   sources = [
+    "console-accessors_test.ts",
     "console-autocomplete_test.ts",
     "console-clear_test.ts",
     "console-context-menu_test.ts",

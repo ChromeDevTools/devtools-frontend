@@ -168,6 +168,10 @@ describe('The Memory Panel', async function() {
     await waitForNonEmptyHeapSnapshotData();
     await setSearchFilter('leaking');
     await waitForSearchResultNumber(4);
+    await findSearchResult(async p => {
+      const el = await p.$(':scope > td > div > .object-value-string');
+      return el !== null && await el.evaluate(el => el.textContent === '"leaking"');
+    });
 
     await waitForFunction(async () => {
       // Wait for all the rows of the data-grid to load.

@@ -365,6 +365,10 @@ SourcesTestRunner.dumpSourceFrameContents = function(sourceFrame) {
 };
 
 SourcesTestRunner.pausedScript = function(callFrames, reason, auxData, breakpointIds, asyncStackTrace) {
+  if (reason === 'instrumentation') {
+    // Do not report instrumentation breaks.
+    return;
+  }
   if (!SourcesTestRunner.quiet) {
     TestRunner.addResult('Script execution paused.');
   }
@@ -383,6 +387,11 @@ SourcesTestRunner.pausedScript = function(callFrames, reason, auxData, breakpoin
 };
 
 SourcesTestRunner.resumedScript = function() {
+  if (!SourcesTestRunner.pausedScriptArguments) {
+    // This was an instrumentation break, do not report.
+    return;
+  }
+
   if (!SourcesTestRunner.quiet) {
     TestRunner.addResult('Script execution resumed.');
   }

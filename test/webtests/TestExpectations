@@ -1,2 +1,5 @@
 # tags: [ Release Debug ]
 # results: [ Timeout Crash Pass Failure Slow Skip ]
+
+# Need updates to the testing infrastructure after landing crbug.com/1229541.
+crbug.com/1300509 http/tests/devtools/a11y-axe-core/elements/dom-breakpoints-a11y-test.js [ Skip ]

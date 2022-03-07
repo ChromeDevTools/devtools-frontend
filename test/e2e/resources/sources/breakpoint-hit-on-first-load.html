@@ -1,0 +1,18 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<body>
+  <script src=breakpoint-hit-on-first-load.js></script>
+  <script>
+    console.log('Hello from the inline script!');
+    function spawnWorker() {
+      new Worker('breakpoint-hit-on-first-load.js');
+    }
+  </script>
+  <script>
+      console.log('Hello from the inline script!');
+      //#sourceURL=hello.js
+  </script>
+</body>

@@ -35,6 +35,7 @@ SDKTestRunner.PageMock = class {
       'Debugger.enable': this.debuggerEnable,
       'Debugger.getScriptSource': this.debuggerGetScriptSource,
       'Debugger.setBlackboxPatterns': (id, params) => this.sendResponse(id, {}),
+      'Debugger.setInstrumentationBreakpoint': (id, params) => this.sendResponse(id, {}),
       'Runtime.enable': this.runtimeEnable,
       'Page.enable': this.pageEnable,
       'Page.getResourceTree': this.pageGetResourceTree

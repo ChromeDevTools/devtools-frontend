@@ -150,10 +150,10 @@ describe('The Console Tab', async () => {
     const messages = await getConsoleMessages('dom-interactions');
 
     assert.deepEqual(messages, [
-      '',
-      '',
-      '',
-      '',
+      'div#p',
+      'attr',
+      'attr',
+      'id',
       '#text',
       'HTMLCollection\xA0[select, sel: select]',
       'HTMLCollection\xA0[]',

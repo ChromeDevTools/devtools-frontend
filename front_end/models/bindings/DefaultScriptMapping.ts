@@ -61,6 +61,12 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     this.#uiSourceCodeToScriptsMap = new WeakMap();
   }
 
+  static createV8ScriptURL(script: SDK.Script.Script): string {
+    const name = Common.ParsedURL.ParsedURL.extractName(script.sourceURL);
+    const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
+    return url;
+  }
+
   static scriptForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
     const scripts = uiSourceCodeToScriptsMap.get(uiSourceCode);
     return scripts ? scripts.values().next().value : null;
@@ -90,8 +96,7 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
 
   private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
-    const name = Common.ParsedURL.ParsedURL.extractName(script.sourceURL);
-    const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
+    const url = DefaultScriptMapping.createV8ScriptURL(script);
 
     const uiSourceCode = this.#project.createUISourceCode(url, Common.ResourceType.resourceTypes.Script);
     this.#uiSourceCodeToScriptsMap.set(uiSourceCode, script);

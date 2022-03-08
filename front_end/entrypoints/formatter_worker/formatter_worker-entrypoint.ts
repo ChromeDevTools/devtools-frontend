@@ -10,7 +10,8 @@ import {FormatterActions} from './FormatterActions.js';
 
 self.onmessage = function(event: MessageEvent): void {
   const method: FormatterActions = event.data.method;
-  const params: {indentString: string, content: string, mimeType: string} = event.data.params;
+  const params: {indentString: string, content: string, mimeType: string, mapping: [string, string][]} =
+      event.data.params;
   if (!method) {
     return;
   }
@@ -31,6 +32,11 @@ self.onmessage = function(event: MessageEvent): void {
     case FormatterActions.JAVASCRIPT_IDENTIFIERS:
       self.postMessage(FormatterWorker.FormatterWorker.javaScriptIdentifiers(params.content));
       break;
+    case FormatterActions.JAVASCRIPT_SUBSTITUTE: {
+      const mapping = new Map<string, string>(params.mapping);
+      self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, mapping));
+      break;
+    }
     case FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING:
       self.postMessage(FormatterWorker.FormatterWorker.evaluatableJavaScriptSubstring(params.content));
       break;

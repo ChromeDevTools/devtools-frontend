@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -309,7 +310,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const callFrame = executionContext.debuggerModel.selectedCallFrame();
       if (callFrame) {
         const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
-        expression = this.substituteNames(expression, nameMap);
+        expression = await this.substituteNames(expression, nameMap);
       }
     }
 
@@ -317,11 +318,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         executionContext, message, expression, useCommandLineAPI);
   }
 
-  private substituteNames(expression: string, mapping: Map<string, string>): string {
-    // TODO(jarin) Build a more reliable replacer, based on the parsed AST.
-    // Here, we just replace exact occurrences.
-    const replacement = mapping.get(expression);
-    return replacement ?? expression;
+  private async substituteNames(expression: string, mapping: Map<string, string>): Promise<string> {
+    try {
+      return await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, mapping);
+    } catch {
+      return expression;
+    }
   }
 
   private editorUpdate(update: CodeMirror.ViewUpdate): void {

@@ -180,7 +180,7 @@ describe('The Sources Tab', async () => {
 
       await click(CONSOLE_TAB_SELECTOR);
       await focusConsolePrompt();
-      await pasteText('text');
+      await pasteText('`Hello${text}!`');
       await frontend.keyboard.press('Enter');
 
       // Wait for the console to be usable again.
@@ -189,7 +189,7 @@ describe('The Sources Tab', async () => {
       });
       const messages = await getCurrentConsoleMessages();
 
-      assert.deepEqual(messages, ['\' world\'']);
+      assert.deepEqual(messages, ['\'Hello world!\'']);
 
       await openSourcesPanel();
     });

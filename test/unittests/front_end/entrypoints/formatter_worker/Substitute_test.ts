@@ -16,8 +16,7 @@ const mapping = new Map<string, string>([
 ]);
 
 function substitute(expression: string): string {
-  const substitution = FormatterWorker.Substitute.computeSubstitution(expression, mapping);
-  return FormatterWorker.Substitute.applySubstitution(expression, substitution);
+  return FormatterWorker.Substitute.substituteExpression(expression, mapping);
 }
 
 describe('Substitute', () => {

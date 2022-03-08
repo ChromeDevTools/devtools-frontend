@@ -42,7 +42,7 @@ import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 import {JSONFormatter} from './JSONFormatter.js';
-import {computeSubstitution, applySubstitution} from './Substitute.js';
+import {substituteExpression} from './Substitute.js';
 
 export interface Chunk {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -306,4 +306,4 @@ export function argumentsList(content: string): string[] {
   }
 })();
 
-export {applySubstitution, computeSubstitution};
+export {substituteExpression};

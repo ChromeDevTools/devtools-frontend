@@ -6,7 +6,12 @@ import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
 
-export interface Replacement {
+export function substituteExpression(expression: string, nameMap: Map<string, string>): string {
+  const replacements = computeSubstitution(expression, nameMap);
+  return applySubstitution(expression, replacements);
+}
+
+interface Replacement {
   from: string;
   to: string;
   offset: number;
@@ -17,7 +22,7 @@ export interface Replacement {
 // function returns a list of replacements sorted by the offset. The function throws if
 // it cannot parse the expression or the substitution is impossible to perform (for example
 // if the substitution target is 'this' within a function, it would become bound there).
-export function computeSubstitution(expression: string, nameMap: Map<string, string>): Replacement[] {
+function computeSubstitution(expression: string, nameMap: Map<string, string>): Replacement[] {
   // Parse the expression and find variables and scopes.
   const root = Acorn.parse(expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false}) as
       Acorn.ESTree.Node;
@@ -80,7 +85,7 @@ export function computeSubstitution(expression: string, nameMap: Map<string, str
   return result;
 }
 
-export function applySubstitution(expression: string, replacements: Replacement[]): string {
+function applySubstitution(expression: string, replacements: Replacement[]): string {
   const accumulator = [];
   let last = 0;
   for (const r of replacements) {

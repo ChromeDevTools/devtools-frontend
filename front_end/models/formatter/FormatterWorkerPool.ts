@@ -108,7 +108,7 @@ export class FormatterWorkerPool {
   }
 
   private runTask(methodName: FormatterActions.FormatterActions, params: {
-    [x: string]: string,
+    [x: string]: string|string[][],
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<any> {
@@ -130,6 +130,14 @@ export class FormatterWorkerPool {
   }[]> {
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_IDENTIFIERS, {content: content})
         .then(ids => ids || []);
+  }
+
+  javaScriptSubstitute(expression: string, mapping: Map<string, string>): Promise<string> {
+    return this
+        .runTask(
+            FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE,
+            {content: expression, mapping: Array.from(mapping.entries())})
+        .then(result => result || '');
   }
 
   evaluatableJavaScriptSubstring(content: string): Promise<string> {
@@ -179,13 +187,13 @@ export class FormatterWorkerPool {
 class Task {
   method: string;
   params: {
-    [x: string]: string,
+    [x: string]: string|string[][],
   };
   callback: (arg0: MessageEvent|null) => void;
   isChunked: boolean|undefined;
   constructor(
       method: string, params: {
-        [x: string]: string,
+        [x: string]: string|string[][],
       },
       callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
     this.method = method;

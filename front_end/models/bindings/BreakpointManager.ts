@@ -40,12 +40,10 @@ import * as Workspace from '../workspace/workspace.js';
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import type {LiveLocation} from './LiveLocation.js';
 import {LiveLocationPool} from './LiveLocation.js';
-import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
-export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
-    SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
+export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly storage: Storage;
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
   readonly targetManager: SDK.TargetManager.TargetManager;
@@ -68,8 +66,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
-
-    this.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 
   static instance(opts: {
@@ -99,58 +95,11 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return `${url}:${lineNumber}` + (typeof columnNumber === 'number' ? `:${columnNumber}` : '');
   }
 
-  modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    debuggerModel.setSynchronizeBreakpointsCallback(this.#restoreBreakpointsForScript.bind(this));
-  }
-
-  modelRemoved(): void {
-  }
-
   async copyBreakpoints(fromURL: string, toSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const breakpointItems = this.storage.breakpointItems(fromURL);
     for (const item of breakpointItems) {
       await this.setBreakpoint(toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled);
     }
-  }
-
-  // This method explicitly awaits the source map (if necessary) and the uiSourceCodes
-  // required to set all breakpoints that are related to this script.
-  async #restoreBreakpointsForScript(script: SDK.Script.Script): Promise<void> {
-    const debuggerModel = script.debuggerModel;
-    if (this.#hasBreakpointsForUrl(script.sourceURL)) {
-      // Handle inline scripts without sourceURL comment separately:
-      // The UISourceCode of inline scripts without sourceURLs will not be availabe
-      // until a later point. Use the v8 script for setting the breakpoint.
-      const isInlineScriptWithoutSourceURL = script.isInlineScript() && !script.hasSourceURL;
-      const sourceURL =
-          isInlineScriptWithoutSourceURL ? DefaultScriptMapping.createV8ScriptURL(script) : script.sourceURL;
-      const uiSourceCode = await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL);
-      await this.#restoreBreakpointsForUrl(uiSourceCode);
-    }
-
-    // Handle source maps and the original sources.
-    const sourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
-    if (sourceMap) {
-      for (const sourceURL of sourceMap.sourceURLs()) {
-        if (this.#hasBreakpointsForUrl(sourceURL)) {
-          const uiSourceCode = await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL);
-          await this.#restoreBreakpointsForUrl(uiSourceCode);
-        }
-      }
-    }
-  }
-
-  async #restoreBreakpointsForUrl(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    this.restoreBreakpoints(uiSourceCode);
-    const breakpoints = this.#breakpointByStorageId.values();
-    const affectedBreakpoints = Array.from(breakpoints).filter(x => x.uiSourceCodes.has(uiSourceCode));
-    // Make sure to properly await their updates
-    await Promise.all(affectedBreakpoints.map(bp => bp.updateBreakpoint()));
-  }
-
-  #hasBreakpointsForUrl(url: string): boolean {
-    const breakpointItems = this.storage.breakpointItems(url);
-    return breakpointItems.length > 0;
   }
 
   private restoreBreakpoints(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
@@ -211,7 +160,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     if (breakpoint) {
       breakpoint.updateState(condition, enabled);
       breakpoint.addUISourceCode(uiSourceCode);
-      void breakpoint.updateBreakpoint();
+      breakpoint.updateBreakpoint();
       return breakpoint;
     }
     breakpoint = new Breakpoint(this, uiSourceCode, uiSourceCode.url(), lineNumber, columnNumber, condition, enabled);
@@ -521,18 +470,19 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     this.#enabledInternal = enabled;
     this.#conditionInternal = condition;
     this.breakpointManager.storage.updateBreakpoint(this);
-    void this.updateBreakpoint();
+    this.updateBreakpoint();
   }
 
-  async updateBreakpoint(): Promise<void> {
+  updateBreakpoint(): void {
     if (!this.bound()) {
       this.removeAllUnboundLocations();
       if (!this.isRemoved) {
         this.addAllUnboundLocations();
       }
     }
-    await Promise.all(
-        Array.from(this.#modelBreakpoints.values()).map(modelBreakpoint => modelBreakpoint.scheduleUpdateInDebugger()));
+    for (const modelBreakpoint of this.#modelBreakpoints.values()) {
+      void modelBreakpoint.scheduleUpdateInDebugger();
+    }
   }
 
   remove(keepInStorage: boolean): void {

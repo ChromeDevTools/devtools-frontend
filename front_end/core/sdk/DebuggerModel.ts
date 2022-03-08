@@ -139,7 +139,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                    }>>)|null;
   #expandCallFramesCallback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null;
   evaluateOnCallFrameCallback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null;
-  #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null;
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
   // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
   readonly #breakpointResolvedEventTarget =
@@ -170,7 +169,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#computeAutoStepRangesCallback = null;
     this.#expandCallFramesCallback = null;
     this.evaluateOnCallFrameCallback = null;
-    this.#synchronizeBreakpointsCallback = null;
 
     this.#autoStepOver = false;
 
@@ -234,8 +232,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this.agent.invoke_enable({maxScriptsCacheSize});
-    const instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint(
-        {instrumentation: Protocol.Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution});
+    void enablePromise.then(this.registerDebugger.bind(this));
     this.pauseOnExceptionStateChanged();
     void this.asyncStackTracesStateChanged();
     if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
@@ -245,8 +242,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       void this.pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
-    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
-    this.registerDebugger(enableResult);
+    await enablePromise;
   }
 
   async syncDebuggerId(): Promise<Protocol.Debugger.EnableResponse> {
@@ -648,24 +644,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.evaluateOnCallFrameCallback = callback;
   }
 
-  setSynchronizeBreakpointsCallback(callback: (script: Script) => Promise<void>): void {
-    this.#synchronizeBreakpointsCallback = callback;
-  }
-
   async pausedScript(
       callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Object|undefined,
       breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace,
       asyncStackTraceId?: Protocol.Runtime.StackTraceId,
       asyncCallStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void> {
-    if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {
-      const script = this.scriptForId(callFrames[0].location.scriptId);
-      if (this.#synchronizeBreakpointsCallback && script) {
-        await this.#synchronizeBreakpointsCallback(script);
-      }
-      this.resume();
-      return;
-    }
-
     if (asyncCallStackTraceId) {
       // Note: this is only to support old backends. Newer ones do not send asyncCallStackTraceId.
       _scheduledPauseOnAsyncCall = asyncCallStackTraceId;

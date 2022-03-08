@@ -97,44 +97,6 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     return this.#sourceMapById.get(sourceMapId) || null;
   }
 
-  // This method actively awaits the source map, if still loading.
-  sourceMapForClientPromise(client: T): Promise<SourceMap|null> {
-    const sourceMapId = this.#resolvedSourceMapId.get(client);
-    if (!sourceMapId) {
-      // The source map has detached or none exists for this client.
-      return Promise.resolve(null);
-    }
-
-    const sourceMap = this.sourceMapForClient(client);
-    if (sourceMap) {
-      return Promise.resolve(sourceMap);
-    }
-
-    if (!this.#sourceMapIdToLoadingClients.has(sourceMapId)) {
-      // The source map failed to attach.
-      return Promise.resolve(null);
-    }
-
-    return new Promise(resolve => {
-      const sourceMapAddedDescriptor = this.addEventListener(Events.SourceMapAttached, event => {
-        if (event.data.client !== client) {
-          return;
-        }
-        this.removeEventListener(Events.SourceMapAttached, sourceMapAddedDescriptor.listener);
-        this.removeEventListener(Events.SourceMapFailedToAttach, sourceMapFailedDescriptor.listener);
-        resolve(event.data.sourceMap);
-      });
-      const sourceMapFailedDescriptor = this.addEventListener(Events.SourceMapFailedToAttach, event => {
-        if (event.data.client !== client) {
-          return;
-        }
-        this.removeEventListener(Events.SourceMapAttached, sourceMapAddedDescriptor.listener);
-        this.removeEventListener(Events.SourceMapFailedToAttach, sourceMapFailedDescriptor.listener);
-        resolve(null);
-      });
-    });
-  }
-
   clientsForSourceMap(sourceMap: SourceMap): T[] {
     const sourceMapId = this.getSourceMapId(sourceMap.compiledURL(), sourceMap.url());
     if (this.#sourceMapIdToClients.has(sourceMapId)) {

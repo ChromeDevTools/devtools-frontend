@@ -618,9 +618,7 @@ export function loadHTML(html) {
     }
   }
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
-  const updatePromise = TestRunner.domModel.once(SDK.DOMModel.Events.DocumentUpdated);
-  evaluateInPageAnonymously(`document.write(\`${html}\`);document.close();`);
-  return updatePromise;
+  return evaluateInPageAnonymously(`document.write(\`${html}\`);document.close();`);
 }
 
 /**

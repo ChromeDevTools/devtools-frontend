@@ -10,7 +10,7 @@
     height: 0px;
   }
 
-  @container size(min-width: 100px) {
+  @container (min-width: 100px) {
     .rule1 {
       width: 10px;
     }
@@ -18,7 +18,7 @@
 </style>
 <script>
   const sheet = new CSSStyleSheet();
-  sheet.insertRule('@container size(min-width: 50px) { .rule2 { height: 10px; } }', 0);
+  sheet.insertRule('@container (min-width: 50px) { .rule2 { height: 10px; } }', 0);
   document.adoptedStyleSheets = [sheet];
 </script>
 <div class="rule1 rule2"></div>

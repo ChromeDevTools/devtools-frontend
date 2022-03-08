@@ -318,8 +318,8 @@ describe('The Styles pane', async () => {
           'incorrectly displayed style after initialization');
     }
 
-    await editQueryRuleText(rule1PropertiesSection, 'size(min-width: 300px)');
-    await editQueryRuleText(rule2PropertiesSection, 'size(max-width: 300px)');
+    await editQueryRuleText(rule1PropertiesSection, '(min-width: 300px)');
+    await editQueryRuleText(rule2PropertiesSection, '(max-width: 300px)');
 
     // Verify that computed styles correspond to the changes made.
     const computedStyles = [

@@ -2765,6 +2765,7 @@ declare namespace ts.server.protocol {
         ES2019 = "ES2019",
         ES2020 = "ES2020",
         ES2021 = "ES2021",
+        ES2022 = "ES2022",
         ESNext = "ESNext"
     }
     const enum ClassificationType {
@@ -2899,6 +2900,7 @@ declare namespace ts.server.protocol {
         externalModuleName = "external module name",
         /**
          * <JsxTagName attribute1 attribute2={0} />
+         * @deprecated
          */
         jsxAttribute = "JSX attribute",
         /** String literal */

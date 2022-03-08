@@ -480,7 +480,7 @@ function createLocaleInfobar(): Infobar {
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale =
-      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en');
+      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en') || 'English';
 
   const languageSetting = Common.Settings.Settings.instance().moduleSetting<string>('language');
   return new Infobar(

@@ -157,19 +157,20 @@ def strip_private_fields():
         with open(pkg, 'r+') as pkg_file:
             try:
                 pkg_data = load_json_file(pkg_file)
+                updated_pkg_data = pkg_data.copy()
 
                 # Remove anything that begins with an underscore, as these are
                 # the private fields in a package.json
                 for key in pkg_data.keys():
                     if key.find('_') == 0:
-                        pkg_data.pop(key)
+                        updated_pkg_data.pop(key)
 
                 pkg_file.truncate(0)
                 pkg_file.seek(0)
-                json.dump(pkg_data, pkg_file, indent=2, separators=(',', ': '))
+                json.dump(updated_pkg_data, pkg_file, indent=2, separators=(',', ': '))
                 pkg_file.write('\n')
             except:
-                print('Unable to fix: %s' % pkg)
+                print('Unable to fix: %s, %s' % (pkg, sys.exc_info()))
                 return True
 
     return False

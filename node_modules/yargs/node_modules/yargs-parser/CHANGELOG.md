@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [21.0.1](https://github.com/yargs/yargs-parser/compare/yargs-parser-v21.0.0...yargs-parser-v21.0.1) (2022-02-27)
+
+
+### Bug Fixes
+
+* return deno env object ([#432](https://github.com/yargs/yargs-parser/issues/432)) ([b00eb87](https://github.com/yargs/yargs-parser/commit/b00eb87b4860a890dd2dab0d6058241bbfd2b3ec))
+
 ## [21.0.0](https://www.github.com/yargs/yargs-parser/compare/yargs-parser-v20.2.9...yargs-parser-v21.0.0) (2021-11-15)
 
 

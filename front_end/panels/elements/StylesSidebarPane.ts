@@ -219,9 +219,7 @@ const HIGHLIGHTABLE_PROPERTIES = [
   {mode: 'flexibility', properties: ['flex', 'flex-basis', 'flex-grow', 'flex-shrink']},
 ];
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-let _stylesSidebarPaneInstance: StylesSidebarPane;
+let stylesSidebarPaneInstance: StylesSidebarPane;
 
 // TODO(crbug.com/1172300) This workaround is needed to keep the linter happy.
 // Otherwise it complains about: Unknown word CssSyntaxError
@@ -258,10 +256,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #urlToChangeTracker: Map<string, ChangeTracker> = new Map();
 
   static instance(): StylesSidebarPane {
-    if (!_stylesSidebarPaneInstance) {
-      _stylesSidebarPaneInstance = new StylesSidebarPane();
+    if (!stylesSidebarPaneInstance) {
+      stylesSidebarPaneInstance = new StylesSidebarPane();
     }
-    return _stylesSidebarPaneInstance;
+    return stylesSidebarPaneInstance;
   }
 
   private constructor() {
@@ -292,7 +290,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.swatchPopoverHelperInternal = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     this.swatchPopoverHelperInternal.addEventListener(
         InlineEditor.SwatchPopoverHelper.Events.WillShowPopover, this.hideAllPopovers, this);
-    this.linkifier = new Components.Linkifier.Linkifier(_maxLinkLength, /* useLinkDecorator */ true);
+    this.linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
     this.decorator = new StylePropertyHighlighter(this);
     this.lastRevealedProperty = null;
     this.userOperation = false;
@@ -307,7 +305,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.sectionBlocks = [];
     this.idleCallbackManager = null;
     this.needsForceUpdate = false;
-    _stylesSidebarPaneInstance = this;
+    stylesSidebarPaneInstance = this;
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this.clipboardCopy.bind(this));
     this.resizeThrottler = new Common.Throttler.Throttler(100);
@@ -1392,9 +1390,7 @@ async function buildPropertyRuleMaps(content: string):
   return {propertyToSelector, ruleToSelector};
 }
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const _maxLinkLength = 23;
+const MAX_LINK_LENGTH = 23;
 
 export class SectionBlock {
   private readonly titleElementInternal: Element|null;

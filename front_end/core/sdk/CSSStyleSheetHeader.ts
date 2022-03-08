@@ -6,6 +6,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {CSSModel} from './CSSModel.js';
@@ -104,27 +105,38 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   resourceURL(): Platform.DevToolsPath.UrlString {
-    return (this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL);
+    const url = this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
+    if (!url && Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
+      return this.dynamicStyleURL();
+    }
+    return url;
   }
 
-  private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
+  private getFrameURLPath(): string {
     const model = this.#cssModelInternal.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
-      return '' as Platform.DevToolsPath.UrlString;
+      return '';
     }
     const frame = model.frameForId(this.frameId);
     if (!frame) {
-      return '' as Platform.DevToolsPath.UrlString;
+      return '';
     }
     console.assert(Boolean(frame));
     const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
-    let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
-    if (!fakeURL.endsWith('/')) {
-      fakeURL += '/';
+    let urlPath = parsedURL.host + parsedURL.folderPathComponents;
+    if (!urlPath.endsWith('/')) {
+      urlPath += '/';
     }
-    fakeURL += 'inspector-stylesheet';
-    return fakeURL as Platform.DevToolsPath.UrlString;
+    return urlPath;
+  }
+
+  private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
+    return `inspector://${this.getFrameURLPath()}inspector-stylesheet` as Platform.DevToolsPath.UrlString;
+  }
+
+  private dynamicStyleURL(): Platform.DevToolsPath.UrlString {
+    return `stylesheet://${this.getFrameURLPath()}style#${this.id}` as Platform.DevToolsPath.UrlString;
   }
 
   lineNumberInSource(lineNumberInStyleSheet: number): number {

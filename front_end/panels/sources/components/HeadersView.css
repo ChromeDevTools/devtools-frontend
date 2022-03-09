@@ -6,6 +6,7 @@
 
 :host {
   flex-grow: 1;
+  padding: 6px;
 }
 
 .row {
@@ -16,11 +17,7 @@
   font-size: var(--monospace-font-size);
   align-items: center;
   line-height: 18px;
-  margin: 2em 0 0 0.5em;
-}
-
-.row:first-child {
-  margin-top: 0.5em;
+  margin-top: 3px;
 }
 
 .row devtools-button {
@@ -29,7 +26,7 @@
 }
 
 .padded {
-  margin: 0.25em 0 0 2em;
+  margin-left: 2em;
 }
 
 .separator {

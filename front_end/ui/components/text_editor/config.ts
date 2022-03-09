@@ -247,6 +247,7 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.indentOnInput(),
     CodeHighlighter.CodeHighlighter.highlightStyle,
     baseKeymap,
+    CM.EditorView.clickAddsSelectionRange.of(mouseEvent => mouseEvent.altKey || mouseEvent.ctrlKey),
     tabMovesFocus.instance(),
     bracketMatching.instance(),
     indentUnit.instance(),

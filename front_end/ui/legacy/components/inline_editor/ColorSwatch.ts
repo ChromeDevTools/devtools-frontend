@@ -180,6 +180,7 @@ function nextColorFormat(color: Common.Color.Color, curFormat: string): string {
   // * original
   // * rgb(a)
   // * hsl(a)
+  // * hwb(a)
   // * nickname (if the color has a nickname)
   // * shorthex (if has short hex)
   // * hex
@@ -195,6 +196,10 @@ function nextColorFormat(color: Common.Color.Color, curFormat: string): string {
 
     case cf.HSL:
     case cf.HSLA:
+      return !color.hasAlpha() ? cf.HWB : cf.HWBA;
+
+    case cf.HWB:
+    case cf.HWBA:
       if (color.nickname()) {
         return cf.Nickname;
       }

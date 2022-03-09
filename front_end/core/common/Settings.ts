@@ -1113,6 +1113,8 @@ export function detectColorFormat(color: Color): Format {
     format = cf.RGB;
   } else if (formatSetting === cf.HSL) {
     format = cf.HSL;
+  } else if (formatSetting === cf.HWB) {
+    format = cf.HWB;
   } else if (formatSetting === cf.HEX) {
     format = color.detectHEXFormat();
   } else {

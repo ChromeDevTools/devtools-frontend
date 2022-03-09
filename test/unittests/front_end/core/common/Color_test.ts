@@ -15,6 +15,14 @@ const parseAndAssertNotNull = (value: string) => {
   return result;
 };
 
+const deepCloseTo = (actual: number[], expected: number[], delta: number, message?: string) => {
+  for (let i = 0; i <= 3; ++i) {
+    assert.closeTo(actual[i], expected[i], delta, message);
+  }
+};
+
+const tolerance = 0.0001;
+
 describe('Color', () => {
   it('can be instantiated without issues', () => {
     const color = new Color.Color([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
@@ -69,6 +77,12 @@ describe('Color', () => {
     const color = new Color.Color([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColor');
     const result = color.canonicalHSLA();
     assert.deepEqual(result, [0, 0, 50, 0.5], 'canonical HSLA was not calculated correctly');
+  });
+
+  it('is able to return canonical HWBA for a color', () => {
+    const color = new Color.Color([0.5, 0.5, 0.5, 0.5], Color.Format.Original, 'testColorGray');
+    const result = color.canonicalHWBA();
+    deepCloseTo(result, [0, 50, 50, 0.5], tolerance, 'canonical HWBA was not calculated correctly');
   });
 
   it('parses hex values', () => {
@@ -134,6 +148,32 @@ describe('Color', () => {
     assert.deepEqual(colorSix.rgba(), [1, 0, 0, 0.5]);
   });
 
+  it('parses hwb values', () => {
+    const colorOne = Color.Color.parse('hwb(300 0% 0%)');
+    assertNotNullOrUndefined(colorOne);
+    deepCloseTo(colorOne.rgba(), [1, 0, 1, 1], tolerance);
+
+    const colorTwo = Color.Color.parse('hwb(0 0% 0% / 0.5)');
+    assertNotNullOrUndefined(colorTwo);
+    deepCloseTo(colorTwo.rgba(), [1, 0, 0, 0.5], tolerance);
+
+    const colorThree = Color.Color.parse('hwb(60deg 0% 0% / 50%)');
+    assertNotNullOrUndefined(colorThree);
+    deepCloseTo(colorThree.rgba(), [1, 1, 0, 0.5], tolerance);
+
+    const colorFour = Color.Color.parse('hwb(0deg 100% 0% / 0.2)');
+    assertNotNullOrUndefined(colorFour);
+    deepCloseTo(colorFour.rgba(), [1, 1, 1, 0.2], tolerance);
+
+    const colorFive = Color.Color.parse('hwb(180deg 0% 0%)');
+    assertNotNullOrUndefined(colorFive);
+    deepCloseTo(colorFive.rgba(), [0, 1, 1, 1], tolerance);
+
+    const colorSix = Color.Color.parse('hwb(240deg 0% 0% / 90%)');
+    assertNotNullOrUndefined(colorSix);
+    deepCloseTo(colorSix.rgba(), [0, 0, 1, 0.9], tolerance);
+  });
+
   it('handles invalid values', () => {
     assert.isNull(Color.Color.parse('#FAFAFA       Trailing'));
     assert.isNull(Color.Color.parse('#FAFAFG'));
@@ -142,6 +182,9 @@ describe('Color', () => {
     assert.isNull(Color.Color.parse('rgb(10% 10% 10% 0.4 40)'));
     assert.isNull(Color.Color.parse('hsl(0, carrot, 30%)'));
     assert.isNull(Color.Color.parse('hsl(0)'));
+    assert.isNull(Color.Color.parse('hwb(0)'));
+    // Unlike HSL, HWB does not allow comma-separated input
+    assert.isNull(Color.Color.parse('hwb(0%, 50%, 50%)'));
     assert.isNull(Color.Color.parse('rgb(255)'));
     assert.isNull(Color.Color.parse('rgba(1 golf 30)'));
   });
@@ -278,6 +321,24 @@ describe('Color', () => {
     assert.strictEqual(result, 'hsl(0deg 100% 50%)', 'color was not converted to a string correctly');
   });
 
+  it('returns the HWB value when turned into a string if its format was "hwb"', () => {
+    const color = new Color.Color([0, 0, 1, 1], Color.Format.HWB, 'testColor');
+    const result = color.asString();
+    assert.strictEqual(result, 'hwb(240deg 0% 0%)', 'color was not converted to a string correctly');
+  });
+
+  it('returns the HWB value when turned into a string if its format was "hwba"', () => {
+    const color = new Color.Color([1, 0, 0, 0.42], Color.Format.HWBA, 'testColor');
+    const result = color.asString();
+    assert.strictEqual(result, 'hwb(0deg 0% 0% / 42%)', 'color was not converted to a string correctly');
+  });
+
+  it('omits the alpha value when it’s 100% if its format was "hwba"', () => {
+    const color = new Color.Color([1, 0, 0, 1], Color.Format.HWBA, 'testColor');
+    const result = color.asString();
+    assert.strictEqual(result, 'hwb(0deg 0% 0%)', 'color was not converted to a string correctly');
+  });
+
   it('is able to return a color in a different format than the one the color was originally set with', () => {
     const color = new Color.Color([1, 0, 0, 1], Color.Format.RGB, 'testColor');
     const result = color.asString('nickname');
@@ -288,6 +349,8 @@ describe('Color', () => {
     const color = new Color.Color([1, 0, 0, 1], Color.Format.RGB);
     color.setFormat(Color.Format.HSL);
     assert.strictEqual(color.asString(), 'hsl(0deg 100% 50%)', 'format was not set correctly');
+    color.setFormat(Color.Format.HWB);
+    assert.strictEqual(color.asString(), 'hwb(0deg 0% 0%)', 'format was not set correctly');
   });
 
   it('suggests colors with good contrast', () => {

@@ -120,6 +120,8 @@ describe('ColorSwatch', () => {
     dispatchClickEvent(target, {shiftKey: true});
     assertSwatch(swatch, {colorTextInSlot: 'hsl(0deg 100% 50%)'});
     dispatchClickEvent(target, {shiftKey: true});
+    assertSwatch(swatch, {colorTextInSlot: 'hwb(0deg 0% 0%)'});
+    dispatchClickEvent(target, {shiftKey: true});
     assertSwatch(swatch, {colorTextInSlot: 'red'});
   });
 

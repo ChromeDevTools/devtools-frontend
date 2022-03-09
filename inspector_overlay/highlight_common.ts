@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {rgbaToHsla} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
+import {rgbaToHsla, rgbaToHwba} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import type {Bounds, PathCommands, Quad} from './common.js';
 
@@ -258,7 +258,7 @@ export function parseHexa(hexa: string): Array<number> {
   return (hexa.match(/#(\w\w)(\w\w)(\w\w)(\w\w)/) || []).slice(1).map(c => parseInt(c, 16) / 255);
 }
 
-export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'): string {
+export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'|'hwb'): string {
   if (colorFormat === 'rgb') {
     const [r, g, b, a] = rgba;
     // rgb(r g b [ / a])
@@ -273,11 +273,18 @@ export function formatRgba(rgba: number[], colorFormat: 'rgb'|'hsl'): string {
         a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
   }
 
+  if (colorFormat === 'hwb') {
+    const [h, w, b, a] = rgbaToHwba(rgba);
+    // hwb(hdeg w b [ / a])
+    return `hwb(${Math.round(h * 360)}deg ${Math.round(w * 100)} ${Math.round(b * 100)}${
+        a === 1 ? '' : ' / ' + Math.round(a * 100) / 100})`;
+  }
+
   throw new Error('NOT_REACHED');
 }
 
 export function formatColor(hexa: string, colorFormat: string): string {
-  if (colorFormat === 'rgb' || colorFormat === 'hsl') {
+  if (colorFormat === 'rgb' || colorFormat === 'hsl' || colorFormat === 'hwb') {
     return formatRgba(parseHexa(hexa), colorFormat);
   }
 

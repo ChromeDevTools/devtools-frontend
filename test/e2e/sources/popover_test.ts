@@ -62,4 +62,40 @@ describe('Sources Tab', async function() {
     await click(RESUME_BUTTON);
     await scriptEvaluation;
   });
+
+  it('shows correct preview for `this.#x` member expressions in TypeScript', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile('popover-typescript.ts', 'popover-typescript.html');
+    await addBreakpointForLine(frontend, 5);
+
+    const scriptEvaluation = target.evaluate('test();');
+    const lastElement = await waitFor('.cm-executionLine > span:last-child');
+    await lastElement.hover();
+
+    const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
+    const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
+    assert.strictEqual(value, '84');
+
+    await click(RESUME_BUTTON);
+    await scriptEvaluation;
+  });
+
+  it('shows correct preview for `this.#x` member expressions despite Terser minification', async () => {
+    const {target, frontend} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile('popover-terser.js', 'popover-terser.html');
+    await addBreakpointForLine(frontend, 5);
+
+    const scriptEvaluation = target.evaluate('test();');
+    const lastElement = await waitFor('.cm-executionLine > span:last-child');
+    await lastElement.hover();
+
+    const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
+    const value = await waitFor('.object-value-number', popover).then(e => e.evaluate(node => node.textContent));
+    assert.strictEqual(value, '21');
+
+    await click(RESUME_BUTTON);
+    await scriptEvaluation;
+  });
 });

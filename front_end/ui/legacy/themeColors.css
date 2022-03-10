@@ -127,6 +127,8 @@
   --color-button-secondary-background-hovering: rgb(26 115 232 / 10%);
   --color-button-secondary-background-pressed: rgb(26 92 178 / 25%);
   --color-button-secondary-border: rgb(218 220 224);
+  --color-iconbutton-hover: rgb(0 0 0 / 10%);
+  --color-iconbutton-pressed: rgb(0 0 0 / 15%);
 
   /* Colors for file icons */
   --color-ic-file-document: rgb(39 116 240);
@@ -273,6 +275,8 @@
   --color-button-secondary-background-hovering: rgb(138 180 248 / 15%);
   --color-button-secondary-background-pressed: rgb(138 180 248 / 23%);
   --color-button-secondary-border: rgb(60 61 65);
+  --color-iconbutton-hover: rgb(255 255 255 / 12%);
+  --color-iconbutton-pressed: rgb(255 255 255 / 20%);
 
   /* Colors for file icons */
   --color-ic-file-document: rgb(39 116 240);

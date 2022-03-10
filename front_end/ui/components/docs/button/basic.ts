@@ -190,7 +190,7 @@ disabledPrimaryIconButton.data = {
 disabledPrimaryIconButton.onclick = () => alert('clicked');
 appendButton(disabledPrimaryIconButton);
 
-// Disabled Secondary Icon Only
+// Small Disabled Secondary Icon Only
 const disabledSecondaryIconOnlyButton = new Buttons.Button.Button();
 disabledSecondaryIconOnlyButton.onclick = () => alert('clicked');
 disabledSecondaryIconOnlyButton.style.width = '18px';
@@ -201,6 +201,50 @@ disabledSecondaryIconOnlyButton.data = {
   disabled: true,
 };
 appendButton(disabledSecondaryIconOnlyButton);
+
+// Round Button
+const roundButton = new Buttons.Button.Button();
+roundButton.data = {
+  variant: Buttons.Button.Variant.ROUND,
+  iconUrl: testIcon,
+};
+roundButton.title = 'Round Button';
+roundButton.onclick = () => alert('clicked');
+appendButton(roundButton);
+
+// Disabled Round Button
+const roundButtonDisabled = new Buttons.Button.Button();
+roundButtonDisabled.data = {
+  variant: Buttons.Button.Variant.ROUND,
+  iconUrl: testIcon,
+  disabled: true,
+};
+roundButtonDisabled.title = 'Disabled Round Button';
+roundButtonDisabled.onclick = () => alert('clicked');
+appendButton(roundButtonDisabled);
+
+// Small Round Button
+const smallRoundButton = new Buttons.Button.Button();
+smallRoundButton.data = {
+  variant: Buttons.Button.Variant.ROUND,
+  iconUrl: testIcon,
+  size: Buttons.Button.Size.SMALL,
+};
+smallRoundButton.title = 'Small Round Button';
+smallRoundButton.onclick = () => alert('clicked');
+appendButton(smallRoundButton);
+
+// Small Disabled Round Button
+const smallRoundButtonDisabled = new Buttons.Button.Button();
+smallRoundButtonDisabled.data = {
+  variant: Buttons.Button.Variant.ROUND,
+  iconUrl: testIcon,
+  disabled: true,
+  size: Buttons.Button.Size.SMALL,
+};
+smallRoundButtonDisabled.title = 'Small Disabled Round Button';
+smallRoundButtonDisabled.onclick = () => alert('clicked');
+appendButton(smallRoundButtonDisabled);
 
 for (let i = 0; i < 6; i++) {
   // Regular Toolbar Button
@@ -245,6 +289,7 @@ for (let i = 0; i < 6; i++) {
   }
 }
 
+// Submit Button
 const submitButton = new Buttons.Button.Button();
 submitButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
@@ -253,6 +298,7 @@ submitButton.data = {
 submitButton.innerText = 'Submit';
 document.querySelector('#form')?.append(submitButton);
 
+// Reset Button
 const resetButton = new Buttons.Button.Button();
 resetButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,

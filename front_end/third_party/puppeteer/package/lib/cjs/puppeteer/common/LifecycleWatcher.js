@@ -51,6 +51,7 @@ class LifecycleWatcher {
             helper_js_1.helper.addEventListener(frameManager._client, Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => this._terminate(new Error('Navigation failed because browser has disconnected!'))),
             helper_js_1.helper.addEventListener(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.LifecycleEvent, this._checkLifecycleComplete.bind(this)),
             helper_js_1.helper.addEventListener(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigatedWithinDocument, this._navigatedWithinDocument.bind(this)),
+            helper_js_1.helper.addEventListener(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameSwapped, this._frameSwapped.bind(this)),
             helper_js_1.helper.addEventListener(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameDetached, this._onFrameDetached.bind(this)),
             helper_js_1.helper.addEventListener(this._frameManager.networkManager(), NetworkManager_js_1.NetworkManagerEmittedEvents.Request, this._onRequest.bind(this)),
         ];
@@ -112,14 +113,25 @@ class LifecycleWatcher {
         this._hasSameDocumentNavigation = true;
         this._checkLifecycleComplete();
     }
+    _frameSwapped(frame) {
+        if (frame !== this._frame)
+            return;
+        this._swapped = true;
+        this._checkLifecycleComplete();
+    }
     _checkLifecycleComplete() {
         // We expect navigation to commit.
         if (!checkLifecycle(this._frame, this._expectedLifecycle))
             return;
         this._lifecycleCallback();
         if (this._frame._loaderId === this._initialLoaderId &&
-            !this._hasSameDocumentNavigation)
+            !this._hasSameDocumentNavigation) {
+            if (this._swapped) {
+                this._swapped = false;
+                this._newDocumentNavigationCompleteCallback();
+            }
             return;
+        }
         if (this._hasSameDocumentNavigation)
             this._sameDocumentNavigationCompleteCallback();
         if (this._frame._loaderId !== this._initialLoaderId)

@@ -48,6 +48,7 @@ export class LifecycleWatcher {
             helper.addEventListener(frameManager._client, CDPSessionEmittedEvents.Disconnected, () => this._terminate(new Error('Navigation failed because browser has disconnected!'))),
             helper.addEventListener(this._frameManager, FrameManagerEmittedEvents.LifecycleEvent, this._checkLifecycleComplete.bind(this)),
             helper.addEventListener(this._frameManager, FrameManagerEmittedEvents.FrameNavigatedWithinDocument, this._navigatedWithinDocument.bind(this)),
+            helper.addEventListener(this._frameManager, FrameManagerEmittedEvents.FrameSwapped, this._frameSwapped.bind(this)),
             helper.addEventListener(this._frameManager, FrameManagerEmittedEvents.FrameDetached, this._onFrameDetached.bind(this)),
             helper.addEventListener(this._frameManager.networkManager(), NetworkManagerEmittedEvents.Request, this._onRequest.bind(this)),
         ];
@@ -109,14 +110,25 @@ export class LifecycleWatcher {
         this._hasSameDocumentNavigation = true;
         this._checkLifecycleComplete();
     }
+    _frameSwapped(frame) {
+        if (frame !== this._frame)
+            return;
+        this._swapped = true;
+        this._checkLifecycleComplete();
+    }
     _checkLifecycleComplete() {
         // We expect navigation to commit.
         if (!checkLifecycle(this._frame, this._expectedLifecycle))
             return;
         this._lifecycleCallback();
         if (this._frame._loaderId === this._initialLoaderId &&
-            !this._hasSameDocumentNavigation)
+            !this._hasSameDocumentNavigation) {
+            if (this._swapped) {
+                this._swapped = false;
+                this._newDocumentNavigationCompleteCallback();
+            }
             return;
+        }
         if (this._hasSameDocumentNavigation)
             this._sameDocumentNavigationCompleteCallback();
         if (this._frame._loaderId !== this._initialLoaderId)

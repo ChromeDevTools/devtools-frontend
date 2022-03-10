@@ -36,6 +36,7 @@ exports.FrameManagerEmittedEvents = {
     FrameAttached: Symbol('FrameManager.FrameAttached'),
     FrameNavigated: Symbol('FrameManager.FrameNavigated'),
     FrameDetached: Symbol('FrameManager.FrameDetached'),
+    FrameSwapped: Symbol('FrameManager.FrameSwapped'),
     LifecycleEvent: Symbol('FrameManager.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('FrameManager.FrameNavigatedWithinDocument'),
     ExecutionContextCreated: Symbol('FrameManager.ExecutionContextCreated'),
@@ -288,11 +289,13 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         // Frames might be removed before we send this.
         await Promise.all(this.frames()
             .filter((frame) => frame._client === session)
-            .map((frame) => session.send('Page.createIsolatedWorld', {
+            .map((frame) => session
+            .send('Page.createIsolatedWorld', {
             frameId: frame._id,
             worldName: name,
             grantUniveralAccess: true,
-        })));
+        })
+            .catch(helper_js_1.debugError)));
     }
     _onFrameNavigatedWithinDocument(frameId, url) {
         const frame = this._frames.get(frameId);
@@ -310,6 +313,9 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             // For frames that become OOP iframes, the reason would be 'swap'.
             if (frame)
                 this._removeFramesRecursively(frame);
+        }
+        else if (reason === 'swap') {
+            this.emit(exports.FrameManagerEmittedEvents.FrameSwapped, frame);
         }
     }
     _onExecutionContextCreated(contextPayload, session) {

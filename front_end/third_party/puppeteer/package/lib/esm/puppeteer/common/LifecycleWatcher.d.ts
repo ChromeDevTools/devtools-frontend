@@ -49,6 +49,7 @@ export declare class LifecycleWatcher {
     _timeoutPromise: Promise<TimeoutError | null>;
     _maximumTimer?: NodeJS.Timeout;
     _hasSameDocumentNavigation?: boolean;
+    _swapped?: boolean;
     constructor(frameManager: FrameManager, frame: Frame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number);
     _onRequest(request: HTTPRequest): void;
     _onFrameDetached(frame: Frame): void;
@@ -60,6 +61,7 @@ export declare class LifecycleWatcher {
     timeoutOrTerminationPromise(): Promise<Error | TimeoutError | null>;
     _createTimeoutPromise(): Promise<TimeoutError | null>;
     _navigatedWithinDocument(frame: Frame): void;
+    _frameSwapped(frame: Frame): void;
     _checkLifecycleComplete(): void;
     dispose(): void;
 }

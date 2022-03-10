@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export const PUPPETEER_REVISIONS = {
-    chromium: '961656',
+    chromium: '970485',
     firefox: 'latest',
 };
 //# sourceMappingURL=revisions.js.map

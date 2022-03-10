@@ -36,6 +36,7 @@ export declare const FrameManagerEmittedEvents: {
     FrameAttached: symbol;
     FrameNavigated: symbol;
     FrameDetached: symbol;
+    FrameSwapped: symbol;
     LifecycleEvent: symbol;
     FrameNavigatedWithinDocument: symbol;
     ExecutionContextCreated: symbol;

@@ -147,7 +147,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * ```
      */
     async createIncognitoBrowserContext(options = {}) {
-        const { proxyServer = '', proxyBypassList = [] } = options;
+        const { proxyServer, proxyBypassList } = options;
         const { browserContextId } = await this._connection.send('Target.createBrowserContext', {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),

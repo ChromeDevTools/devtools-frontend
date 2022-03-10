@@ -53,9 +53,8 @@ export class PersistenceUtils {
       }
       const icon = UI.Icon.Icon.create('mediumicon-file-sync');
       UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
-      // TODO(allada) This will not work properly with dark theme.
       if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
-        icon.style.filter = 'hue-rotate(160deg)';
+        icon.classList.add('purple-dot');
       }
       return icon;
     }

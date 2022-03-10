@@ -550,6 +550,15 @@ span[is="dt-icon-label"] {
   background: var(--override-force-white-icons-background) !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.mediumicon-file-sync.purple-dot {
+  filter: hue-rotate(160deg);
+}
+
+.-theme-with-dark-background [is="ui-icon"].icon-invert.mediumicon-file-sync.purple-dot,
+:host-context(.-theme-with-dark-background) [is="ui-icon"].icon-invert.mediumicon-file-sync.purple-dot {
+  filter: invert(80%) hue-rotate(350deg);
+}
+
 .expandable-inline-button {
   background-color: var(--color-background-elevation-2);
   color: var(--color-text-primary);

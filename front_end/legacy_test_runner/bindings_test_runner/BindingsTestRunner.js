@@ -236,3 +236,8 @@ BindingsTestRunner.dumpLocation = async function(liveLocation, hint) {
       prefix + BindingsTestRunner.cleanupURL(uiLocation.uiSourceCode.url()) + ':' + uiLocation.lineNumber + ':' +
       uiLocation.columnNumber);
 };
+
+BindingsTestRunner.GC = async () => {
+  await TestRunner.evaluateInPageAsync(`new Promise(resolve =>
+    GCController.asyncCollectAll(resolve))`);
+};

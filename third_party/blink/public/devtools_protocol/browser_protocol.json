@@ -1605,6 +1605,8 @@
                         "ClientMetadataHttpNotFound",
                         "ClientMetadataNoResponse",
                         "ClientMetadataInvalidResponse",
+                        "ClientMetadataMissingPrivacyPolicyUrl",
+                        "DisabledInSettings",
                         "ErrorFetchingSignin",
                         "InvalidSigninResponse",
                         "AccountsHttpNotFound",
@@ -2668,6 +2670,21 @@
                     ]
                 },
                 {
+                    "id": "InheritedPseudoElementMatches",
+                    "description": "Inherited pseudo element matches from pseudos of an ancestor node.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "pseudoElements",
+                            "description": "Matches of pseudo styles from the pseudos of an ancestor node.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "PseudoElementMatches"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "RuleMatch",
                     "description": "Match data for a CSS rule.",
                     "type": "object",
@@ -3684,6 +3701,15 @@
                             "type": "array",
                             "items": {
                                 "$ref": "InheritedStyleEntry"
+                            }
+                        },
+                        {
+                            "name": "inheritedPseudoElements",
+                            "description": "A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "InheritedPseudoElementMatches"
                             }
                         },
                         {

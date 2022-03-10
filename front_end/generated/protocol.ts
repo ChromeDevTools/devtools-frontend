@@ -1069,6 +1069,8 @@ export namespace Audits {
     ClientMetadataHttpNotFound = 'ClientMetadataHttpNotFound',
     ClientMetadataNoResponse = 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
+    ClientMetadataMissingPrivacyPolicyUrl = 'ClientMetadataMissingPrivacyPolicyUrl',
+    DisabledInSettings = 'DisabledInSettings',
     ErrorFetchingSignin = 'ErrorFetchingSignin',
     InvalidSigninResponse = 'InvalidSigninResponse',
     AccountsHttpNotFound = 'AccountsHttpNotFound',
@@ -1761,6 +1763,16 @@ export namespace CSS {
      * Matches of CSS rules matching the ancestor node in the style inheritance chain.
      */
     matchedCSSRules: RuleMatch[];
+  }
+
+  /**
+   * Inherited pseudo element matches from pseudos of an ancestor node.
+   */
+  export interface InheritedPseudoElementMatches {
+    /**
+     * Matches of pseudo styles from the pseudos of an ancestor node.
+     */
+    pseudoElements: PseudoElementMatches[];
   }
 
   /**
@@ -2504,6 +2516,10 @@ export namespace CSS {
      * A chain of inherited styles (from the immediate node parent up to the DOM tree root).
      */
     inherited?: InheritedStyleEntry[];
+    /**
+     * A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+     */
+    inheritedPseudoElements?: InheritedPseudoElementMatches[];
     /**
      * A list of CSS keyframed animations matching this node.
      */

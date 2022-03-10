@@ -791,6 +791,8 @@ experimental domain Audits
       ClientMetadataHttpNotFound
       ClientMetadataNoResponse
       ClientMetadataInvalidResponse
+      ClientMetadataMissingPrivacyPolicyUrl
+      DisabledInSettings
       ErrorFetchingSignin
       InvalidSigninResponse
       AccountsHttpNotFound
@@ -1299,6 +1301,12 @@ experimental domain CSS
       # Matches of CSS rules matching the ancestor node in the style inheritance chain.
       array of RuleMatch matchedCSSRules
 
+  # Inherited pseudo element matches from pseudos of an ancestor node.
+  type InheritedPseudoElementMatches extends object
+    properties
+      # Matches of pseudo styles from the pseudos of an ancestor node.
+      array of PseudoElementMatches pseudoElements
+
   # Match data for a CSS rule.
   type RuleMatch extends object
     properties
@@ -1737,6 +1745,8 @@ experimental domain CSS
       optional array of PseudoElementMatches pseudoElements
       # A chain of inherited styles (from the immediate node parent up to the DOM tree root).
       optional array of InheritedStyleEntry inherited
+      # A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+      optional array of InheritedPseudoElementMatches inheritedPseudoElements
       # A list of CSS keyframed animations matching this node.
       optional array of CSSKeyframesRule cssKeyframesRules
 

@@ -289,6 +289,8 @@ export function registerCommands(inspectorBackend) {
     ClientMetadataHttpNotFound: 'ClientMetadataHttpNotFound',
     ClientMetadataNoResponse: 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse: 'ClientMetadataInvalidResponse',
+    ClientMetadataMissingPrivacyPolicyUrl: 'ClientMetadataMissingPrivacyPolicyUrl',
+    DisabledInSettings: 'DisabledInSettings',
     ErrorFetchingSignin: 'ErrorFetchingSignin',
     InvalidSigninResponse: 'InvalidSigninResponse',
     AccountsHttpNotFound: 'AccountsHttpNotFound',
@@ -511,8 +513,10 @@ export function registerCommands(inspectorBackend) {
       'CSS.getInlineStylesForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}],
       ['inlineStyle', 'attributesStyle']);
   inspectorBackend.registerCommand(
-      'CSS.getMatchedStylesForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}],
-      ['inlineStyle', 'attributesStyle', 'matchedCSSRules', 'pseudoElements', 'inherited', 'cssKeyframesRules']);
+      'CSS.getMatchedStylesForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}], [
+        'inlineStyle', 'attributesStyle', 'matchedCSSRules', 'pseudoElements', 'inherited', 'inheritedPseudoElements',
+        'cssKeyframesRules'
+      ]);
   inspectorBackend.registerCommand('CSS.getMediaQueries', [], ['medias']);
   inspectorBackend.registerCommand(
       'CSS.getPlatformFontsForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}], ['fonts']);

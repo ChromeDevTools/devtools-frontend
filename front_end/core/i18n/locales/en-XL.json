@@ -10991,6 +10991,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "P̂ín̂ćĥ Úp̂d́ât́ê"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "P̂ŕê-Ṕâín̂t́"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "P̂ŕêv́îéŵ"
   },

@@ -10991,6 +10991,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Pinch Update"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pre-Paint"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Preview"
   },

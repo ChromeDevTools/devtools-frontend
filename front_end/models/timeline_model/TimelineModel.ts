@@ -1462,6 +1462,7 @@ export enum RecordType {
   PaintSetup = 'PaintSetup',
   Paint = 'Paint',
   PaintImage = 'PaintImage',
+  PrePaint = 'PrePaint',
   Rasterize = 'Rasterize',
   RasterTask = 'RasterTask',
   ScrollLayer = 'ScrollLayer',

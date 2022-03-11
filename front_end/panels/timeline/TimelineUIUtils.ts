@@ -132,6 +132,12 @@ const UIStrings = {
   */
   paintImage: 'Paint Image',
   /**
+  *@description Noun for an event in the Performance panel. Pre-paint is a
+  *step before the 'Paint' event. A paint event is when the browser records the
+  *instructions for drawing the page. This step is the setup beforehand.
+  */
+  prePaint: 'Pre-Paint',
+  /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
   updateLayer: 'Update Layer',
@@ -1283,6 +1289,7 @@ export class TimelineUIUtils {
     eventStyles[type.UpdateLayer] = new TimelineRecordStyle(i18nString(UIStrings.updateLayer), painting, true);
     eventStyles[type.UpdateLayerTree] = new TimelineRecordStyle(i18nString(UIStrings.updateLayerTree), rendering);
     eventStyles[type.Paint] = new TimelineRecordStyle(i18nString(UIStrings.paint), painting);
+    eventStyles[type.PrePaint] = new TimelineRecordStyle(i18nString(UIStrings.prePaint), rendering);
     eventStyles[type.RasterTask] = new TimelineRecordStyle(i18nString(UIStrings.rasterizePaint), painting);
     eventStyles[type.ScrollLayer] = new TimelineRecordStyle(i18nString(UIStrings.scroll), rendering);
     eventStyles[type.CompositeLayers] = new TimelineRecordStyle(i18nString(UIStrings.compositeLayers), painting);

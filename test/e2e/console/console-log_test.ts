@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer';
 
 import {activeElement, activeElementAccessibleName, activeElementTextContent, getBrowserAndPages, tabBackward, tabForward, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {focusConsolePrompt, getConsoleMessages, getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
+import {CONSOLE_FIRST_MESSAGES_SELECTOR, focusConsolePrompt, getConsoleMessages, getCurrentConsoleMessages, getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
 
 /* eslint-disable no-console */
 
@@ -299,6 +300,60 @@ describe('The Console Tab', async () => {
       await frontend.mouse.wheel({deltaY: -500});
 
       assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+    });
+  });
+
+  describe('Console log message formatters', () => {
+    async function getConsoleMessageTextChunksWithStyle(
+        frontend: puppeteer.Page, styles: string[] = []): Promise<string[][][]> {
+      return await frontend.evaluate((selector, styles: string[]) => {
+        return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
+          // For all nodes, extract text.
+          const result = [node.textContent];
+          if (node.nodeType !== Node.ELEMENT_NODE) {
+            return result;
+          }
+          // For element nodes, get the requested styles.
+          for (const style of styles) {
+            result.push(node.style[style]);
+          }
+          return result;
+        }));
+      }, CONSOLE_FIRST_MESSAGES_SELECTOR, styles);
+    }
+
+    async function waitForConsoleMessages(count: number): Promise<void> {
+      await waitForFunction(async () => {
+        const messages = await getCurrentConsoleMessages();
+        return messages.length === count ? messages : null;
+      });
+    }
+
+    it('expand primitive formatters', async () => {
+      const {frontend, target} = getBrowserAndPages();
+      await navigateToConsoleTab();
+      await target.evaluate(() => {
+        console.log('--%s--', 'text');
+        console.log('--%s--', '%s%i', 'u', 2);
+        console.log('Number %i', 42);
+        console.log('Float %f', 1.5);
+      });
+
+      await waitForConsoleMessages(4);
+      const texts = await getConsoleMessageTextChunksWithStyle(frontend);
+      assert.deepEqual(texts, [[['--text--']], [['--u2--']], [['Number 42']], [['Float 1.5']]]);
+    });
+
+    it('expand %c formatter with color style', async () => {
+      const {frontend, target} = getBrowserAndPages();
+      await navigateToConsoleTab();
+      await target.evaluate(() => console.log('PRE%cRED%cBLUE', 'color:red', 'color:blue'));
+
+      await waitForConsoleMessages(1);
+
+      // Extract the text and color.
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['color']);
+      assert.deepEqual(textsAndStyles, [[['PRE'], ['RED', 'red'], ['BLUE', 'blue']]]);
     });
   });
 });

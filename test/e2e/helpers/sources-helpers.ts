@@ -16,6 +16,7 @@ export const PAUSE_INDICATOR_SELECTOR = '.paused-status';
 export const CODE_LINE_SELECTOR = '.cm-lineNumbers .cm-gutterElement';
 export const SCOPE_LOCAL_VALUES_SELECTOR = 'li[aria-label="Local"] + ol';
 export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-item-title';
+export const STEP_INTO_BUTTON = '[aria-label="Step into next function call"]';
 export const STEP_OVER_BUTTON = '[aria-label="Step over next function call"]';
 export const STEP_OUT_BUTTON = '[aria-label="Step out of current function"]';
 export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';

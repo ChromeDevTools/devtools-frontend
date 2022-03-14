@@ -203,7 +203,7 @@ describe('TextSourceMap', () => {
     // Match at the end of file.
     assert.deepEqual(sourceMap.findReverseRanges(sourceUrlOther, 5, 0).map(r => r.serializeToObject()), [
       {startLine: 4, startColumn: 0, endLine: 5, endColumn: 0},
-      {startLine: 10, startColumn: 5, endLine: Infinity, endColumn: 0},
+      {startLine: 10, startColumn: 5, endLine: 2 ** 31 - 1, endColumn: 2 ** 31 - 1},
     ]);
 
     // No match.
@@ -240,7 +240,7 @@ describe('TextSourceMap', () => {
     assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 1, 0).map(r => r.serializeToObject()), [
       {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
       {startLine: 2, startColumn: 0, endLine: 5, endColumn: 0},
-      {startLine: 7, startColumn: 0, endLine: Infinity, endColumn: 0},
+      {startLine: 7, startColumn: 0, endLine: 2 ** 31 - 1, endColumn: 2 ** 31 - 1},
     ]);
 
     assert.deepEqual(sourceMap.findReverseRanges(sourceUrlExample, 2, 1).map(r => r.serializeToObject()), [

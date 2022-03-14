@@ -7,7 +7,7 @@ import {click, getBrowserAndPages, goToResource, pasteText, step, typeText, wait
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_INTO_BUTTON, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   // Flaky test.
@@ -139,6 +139,42 @@ describe('The Sources Tab', async () => {
       await click(RESUME_BUTTON);
       await scriptEvaluation;
     });
+  });
+
+  it('stepping works at the end of a sourcemapped script (crbug/1305956)', async () => {
+    const {target} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-stepping-at-end.js', 'sourcemap-stepping-at-end.html');
+
+    // DevTools is contracting long filenames with ellipses.
+    // Let us match the location with regexp to match even contracted locations.
+    const breakLocationRegExp = /.*at-end\.js:2$/;
+    const stepLocationRegExp = /.*at-end.html:6$/;
+
+    for (const [description, button] of [
+             ['into', STEP_INTO_BUTTON],
+             ['out', STEP_OUT_BUTTON],
+             ['over', STEP_OVER_BUTTON],
+    ]) {
+      let scriptEvaluation: Promise<unknown>;
+      await step('Run to debugger statement', async () => {
+        scriptEvaluation = target.evaluate('outer();');
+
+        const scriptLocation = await waitForStackTopMatch(breakLocationRegExp);
+        assert.match(scriptLocation, breakLocationRegExp);
+      });
+
+      await step(`Step ${description} from debugger statement`, async () => {
+        await click(button);
+
+        const stepLocation = await waitForStackTopMatch(stepLocationRegExp);
+        assert.match(stepLocation, stepLocationRegExp);
+      });
+
+      await step('Resume', async () => {
+        await click(RESUME_BUTTON);
+        await scriptEvaluation;
+      });
+    }
   });
 
   it('shows unminified identifiers in scopes and console', async () => {

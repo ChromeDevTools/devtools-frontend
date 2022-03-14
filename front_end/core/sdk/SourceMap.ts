@@ -296,10 +296,19 @@ export class TextSourceMap implements SourceMap {
         ++endIndex;
         ++i;
       }
-      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : Infinity;
-      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 0;
-      ranges.push(new TextUtils.TextRange.TextRange(
-          mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn));
+
+      // Source maps don't contain end positions for entries, but each entry is assumed to
+      // span until the following entry. This doesn't work however in case of the last
+      // entry, where there's no following entry. We also don't know the number of lines
+      // and columns in the original source code (which might not be available at all), so
+      // for that case we store the maximum signed 32-bit integer, which is definitely going
+      // to be larger than any script we can process and can safely be serialized as part of
+      // the skip list we send to V8 with `Debugger.stepOver` (http://crbug.com/1305956).
+      const startLine = mappings[startIndex].lineNumber;
+      const startColumn = mappings[startIndex].columnNumber;
+      const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
+      const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
+      ranges.push(new TextUtils.TextRange.TextRange(startLine, startColumn, endLine, endColumn));
     }
 
     return ranges;

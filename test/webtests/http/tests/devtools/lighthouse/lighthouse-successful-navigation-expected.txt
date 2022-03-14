@@ -1,4 +1,4 @@
-Tests that audits panel works.
+Tests that navigation mode works correctly.
 
 
 ========== Lighthouse Start Audit State ==========
@@ -8,145 +8,35 @@ Tests that audits panel works.
 [x] Accessibility
 [x] SEO
 [x] Publisher Ads
-[x] Legacy navigation
+[ ] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
 Generate report: enabled visible
 
 =============== Lighthouse Status Updates ===============
 Loading…
-Create config
-Requiring gatherers
-Requiring audits
+Initialize config
+Resolve artifact definitions
+Resolve navigation definitions
 Gather phase
 Connecting to browser
-Resetting state with about:blank
 Navigating to about:blank
-Getting browser version
 Benchmarking machine
-Initializing…
+Getting browser version
 Preparing target for navigation mode
-Running defaultPass pass
-Resetting state with about:blank
 Navigating to about:blank
 Preparing target for navigation
 Cleaning origin data
 Cleaning browser cache
 Preparing network conditions
-Running beforePass methods
-Gathering setup: CSSUsage
-Gathering setup: JsUsage
-Gathering setup: ViewportDimensions
-Gathering setup: ConsoleMessages
-Gathering setup: AnchorElements
-Gathering setup: ImageElements
-Gathering setup: LinkElements
-Gathering setup: MetaElements
-Gathering setup: ScriptElements
-Gathering setup: IFrameElements
-Gathering setup: MainDocumentContent
-Gathering setup: GlobalListeners
-Gathering setup: Doctype
-Gathering setup: DOMStats
-Gathering setup: OptimizedImages
-Gathering setup: PasswordInputsWithPreventedPaste
-Gathering setup: ResponseCompression
-Gathering setup: TagsBlockingFirstPaint
-Gathering setup: FontSize
-Gathering setup: EmbeddedContent
-Gathering setup: RobotsTxt
-Gathering setup: TapTargets
-Gathering setup: Accessibility
-Gathering setup: TraceElements
-Gathering setup: InspectorIssues
-Gathering setup: SourceMaps
-Gathering setup: FullPageScreenshot
-Beginning devtoolsLog and trace
-Loading page & waiting for onload
 Navigating to http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Running pass methods
-Gathering in-page: CSSUsage
-Gathering in-page: JsUsage
-Gathering in-page: ViewportDimensions
-Gathering in-page: ConsoleMessages
-Gathering in-page: AnchorElements
-Gathering in-page: ImageElements
-Gathering in-page: LinkElements
-Gathering in-page: MetaElements
-Gathering in-page: ScriptElements
-Gathering in-page: IFrameElements
-Gathering in-page: MainDocumentContent
-Gathering in-page: GlobalListeners
-Gathering in-page: Doctype
-Gathering in-page: DOMStats
-Gathering in-page: OptimizedImages
-Gathering in-page: PasswordInputsWithPreventedPaste
-Gathering in-page: ResponseCompression
-Gathering in-page: TagsBlockingFirstPaint
-Gathering in-page: FontSize
-Gathering in-page: EmbeddedContent
-Gathering in-page: RobotsTxt
-Gathering in-page: TapTargets
-Gathering in-page: Accessibility
-Gathering in-page: TraceElements
-Gathering in-page: InspectorIssues
-Gathering in-page: SourceMaps
-Gathering in-page: FullPageScreenshot
-Gathering trace
-Gathering devtoolsLog & network records
 Computing artifact: NetworkRecords$M
-Running afterPass methods
-Gathering: CSSUsage
-Gathering: JsUsage
-Gathering: ViewportDimensions
-Gathering: ConsoleMessages
-Gathering: AnchorElements
-Gathering: ImageElements
-Gathering: LinkElements
-Gathering: MetaElements
-Gathering: ScriptElements
-Gathering: IFrameElements
-Gathering: MainDocumentContent
-Gathering: GlobalListeners
-Gathering: Doctype
-Gathering: DOMStats
-Gathering: OptimizedImages
-Gathering: PasswordInputsWithPreventedPaste
-Gathering: ResponseCompression
-Gathering: TagsBlockingFirstPaint
-Gathering: FontSize
-Gathering: EmbeddedContent
-Gathering: RobotsTxt
+Get webapp installability errors
 Getting browser version
-Gathering: TapTargets
-Gathering: Accessibility
-Gathering: TraceElements
+Collect stacks
 Computing artifact: ProcessedTrace$f
 Computing artifact: ProcessedNavigation$7
-Gathering: InspectorIssues
-Gathering: SourceMaps
-Gathering: FullPageScreenshot
-Populate base artifacts
 Get webapp manifest
-Collect stacks
-Running offlinePass pass
-Resetting state with about:blank
-Navigating to about:blank
-Preparing target for navigation
-Preparing network conditions
-Running beforePass methods
-Gathering setup: ServiceWorker
-Beginning devtoolsLog and trace
-Loading page & waiting for onload
-Navigating to http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Running pass methods
-Gathering in-page: ServiceWorker
-Gathering devtoolsLog & network records
-Computing artifact: NetworkRecords$M
-Running afterPass methods
-Gathering: ServiceWorker
-Disconnecting from browser...
-Cleaning origin data
 Audit phase
 Analyzing and running audits...
 Auditing: Uses HTTPS

@@ -53,7 +53,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
-import {format} from './ConsoleFormat.js';
+import {format, updateStyle} from './ConsoleFormat.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import consoleViewStyles from './consoleView.css.js';
 import {augmentErrorStackWithScriptIds, parseSourcePositionsFromErrorStack} from './ErrorStackParser.js';
@@ -925,26 +925,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           }
           break;
         }
-        case 'style': {
+        case 'style':
           // Make sure that allowed properties do not interfere with link visibility.
-          const ALLOWED_PROPERTY_PREFIXES =
-              ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
-
-          currentStyle.clear();
-          const buffer = document.createElement('span');
-          buffer.setAttribute('style', token.value);
-          for (const property of buffer.style) {
-            if (!ALLOWED_PROPERTY_PREFIXES.some(
-                    prefix => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
-              continue;
-            }
-            currentStyle.set(property, {
-              value: buffer.style.getPropertyValue(property),
-              priority: buffer.style.getPropertyPriority(property),
-            });
-          }
+          updateStyle(currentStyle, token.value);
           break;
-        }
       }
     }
     return args;

@@ -326,4 +326,104 @@ describe('ConsoleFormat', () => {
       ]);
     });
   });
+
+  describe('updateStyle', () => {
+    it('allows allow-listed styles', () => {
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, 'border-top-style:solid');
+      assert.deepEqual(styles.get('border-top-style'), {value: 'solid', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'color:red');
+      assert.deepEqual(styles.get('color'), {value: 'red', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'font-family:serif');
+      assert.deepEqual(styles.get('font-family'), {value: 'serif', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'line-height:100%');
+      assert.deepEqual(styles.get('line-height'), {value: '100%', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'margin-top:30px');
+      assert.deepEqual(styles.get('margin-top'), {value: '30px', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'padding-top : 20px');
+      assert.deepEqual(styles.get('padding-top'), {value: '20px', priority: ''});
+
+      Console.ConsoleFormat.updateStyle(styles, 'text-align : center');
+      assert.deepEqual(styles.get('text-align'), {value: 'center', priority: ''});
+    });
+
+    it('handles multiple styles', () => {
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, 'font-size:14px; color:red');
+      assert.deepEqual(styles.get('color'), {value: 'red', priority: ''});
+      assert.deepEqual(styles.get('font-size'), {value: '14px', priority: ''});
+    });
+
+    it('resets styles', () => {
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, 'font-size:14px; color:red');
+      Console.ConsoleFormat.updateStyle(styles, 'color:red');
+      assert.isFalse(styles.has('font-size'));
+    });
+
+    it('blocks styles outside of allow-list', () => {
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, 'visibility:hidden');
+      assert.isFalse(styles.has('visibility'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'width:100px');
+      assert.isFalse(styles.has('width'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'box-sizing:border-box');
+      assert.isFalse(styles.has('box-sizing'));
+    });
+
+    it('blocks block-listed url schemes in values', () => {
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(http://localhost/a.png)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(https://localhost/a.png)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(resource://localhost/a.png)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(app://com.foo.bar/index.html)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(chrome://a/b.png)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(about:flags)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(ftp://localhost/a.png)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'background-image:url(file://c/a.txt)');
+      assert.isFalse(styles.has('background-image'));
+
+      Console.ConsoleFormat.updateStyle(styles, 'border-image-source:url(file://c/a.txt)');
+      assert.isFalse(styles.has('border-image-source'));
+    });
+
+    it('allows data urls in values', () => {
+      const dataUrl =
+          'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=)';
+
+      const styles = new Map();
+
+      Console.ConsoleFormat.updateStyle(styles, `background-image:${dataUrl}`);
+      assert.include(styles.get('background-image').value, 'data:image/png;base64');
+
+      Console.ConsoleFormat.updateStyle(styles, `border-image-source:${dataUrl}`);
+      assert.include(styles.get('border-image-source').value, 'data:image/png;base64');
+    });
+  });
 });

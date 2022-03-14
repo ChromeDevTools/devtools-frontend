@@ -310,12 +310,9 @@ describe('The Console Tab', async () => {
         return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
           // For all nodes, extract text.
           const result = [node.textContent];
-          if (node.nodeType !== Node.ELEMENT_NODE) {
-            return result;
-          }
           // For element nodes, get the requested styles.
           for (const style of styles) {
-            result.push(node.style[style]);
+            result.push(node.style?.[style] ?? '');
           }
           return result;
         }));
@@ -353,7 +350,39 @@ describe('The Console Tab', async () => {
 
       // Extract the text and color.
       const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['color']);
-      assert.deepEqual(textsAndStyles, [[['PRE'], ['RED', 'red'], ['BLUE', 'blue']]]);
+      assert.deepEqual(textsAndStyles, [[['PRE', ''], ['RED', 'red'], ['BLUE', 'blue']]]);
+    });
+
+    it('expand %c formatter with background image in data URL', async () => {
+      const {frontend, target} = getBrowserAndPages();
+      await navigateToConsoleTab();
+      await target.evaluate(
+          () => console.log(
+              'PRE%cBG',
+              'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=);'));
+
+      await waitForConsoleMessages(1);
+
+      // Check that the 'BG' text has the background image set.
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['background-image']);
+      assert.strictEqual(textsAndStyles.length, 1);
+      const message = textsAndStyles[0];
+      assert.strictEqual(message.length, 2);
+      const textWithBackground = message[1];
+      assert.strictEqual(textWithBackground[0], 'BG');
+      assert.include(textWithBackground[1], 'data:image/png;base64');
+    });
+
+    it('filter out %c formatter if background image is remote URL', async () => {
+      const {frontend, target} = getBrowserAndPages();
+      await navigateToConsoleTab();
+      await target.evaluate(() => console.log('PRE%cBG', 'background-image: url(http://localhost/image.png)'));
+
+      await waitForConsoleMessages(1);
+
+      // Check that the 'BG' text has no bakcground image.
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['background-image']);
+      assert.deepEqual(textsAndStyles, [[['PRE', ''], ['BG', '']]]);
     });
   });
 });

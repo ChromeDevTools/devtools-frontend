@@ -196,3 +196,26 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
   addStringToken(fmt);
   return {tokens, args: args.slice(argIndex)};
 };
+
+export const updateStyle = (currentStyle: Map<string, {value: string, priority: string}>, styleToAdd: string): void => {
+  const ALLOWED_PROPERTY_PREFIXES = ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
+  const BLOCKED_URL_SCHEMES = ['chrome', 'resource', 'about', 'app', 'http', 'https', 'ftp', 'file'];
+
+  currentStyle.clear();
+  const buffer = document.createElement('span');
+  buffer.setAttribute('style', styleToAdd);
+  for (const property of buffer.style) {
+    if (!ALLOWED_PROPERTY_PREFIXES.some(
+            prefix => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
+      continue;
+    }
+    const value = buffer.style.getPropertyValue(property);
+    if (BLOCKED_URL_SCHEMES.some(scheme => value.includes(scheme + ':'))) {
+      continue;
+    }
+    currentStyle.set(property, {
+      value,
+      priority: buffer.style.getPropertyPriority(property),
+    });
+  }
+};

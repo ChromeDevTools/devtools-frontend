@@ -94,7 +94,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       }
     } else {
       this.originInternal = '';
-      this.parentURLInternal = '' as Platform.DevToolsPath.UrlString;
+      this.parentURLInternal = Platform.DevToolsPath.EmptyUrlString;
       this.nameInternal = url;
     }
 

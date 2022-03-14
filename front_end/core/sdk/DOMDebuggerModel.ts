@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -534,7 +534,7 @@ export class EventListener {
     this.#originalHandlerInternal = originalHandler || handler;
     this.#locationInternal = location;
     const script = location.script();
-    this.#sourceURLInternal = script ? script.contentURL() : '' as Platform.DevToolsPath.UrlString;
+    this.#sourceURLInternal = script ? script.contentURL() : Platform.DevToolsPath.EmptyUrlString;
     this.#customRemoveFunction = customRemoveFunction;
     this.#originInternal = origin || EventListener.Origin.Raw;
   }

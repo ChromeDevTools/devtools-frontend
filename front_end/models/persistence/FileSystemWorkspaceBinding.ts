@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): Cast to Branded Types will be removed from this file when migration to branded types is complete.
+
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -200,7 +202,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 
   private filePathForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Platform.DevToolsPath.EncodedPathString {
-    return uiSourceCode.url().substring(this.fileSystemPathInternal.length) as Platform.DevToolsPath.EncodedPathString;
+    return Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(
+        uiSourceCode.url(), this.fileSystemPathInternal.length);
   }
 
   isServiceProject(): boolean {
@@ -339,12 +342,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   excludeFolder(url: string): void {
-    let relativeFolder = url.substring(this.fileSystemBaseURL.length);
+    let relativeFolder = Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(
+        url as Platform.DevToolsPath.UrlString, this.fileSystemBaseURL.length);
     if (!relativeFolder.startsWith('/')) {
-      relativeFolder = '/' + relativeFolder;
+      relativeFolder = Common.ParsedURL.ParsedURL.prepend('/', relativeFolder);
     }
     if (!relativeFolder.endsWith('/')) {
-      relativeFolder += '/';
+      relativeFolder = Common.ParsedURL.ParsedURL.concatenate(relativeFolder, '/');
     }
     this.fileSystemInternal.addExcludedFolder(relativeFolder);
 
@@ -357,7 +361,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     }
   }
 
-  canExcludeFolder(path: string): boolean {
+  canExcludeFolder(path: Platform.DevToolsPath.EncodedPathString): boolean {
     return this.fileSystemInternal.canExcludeFolder(path);
   }
 
@@ -365,8 +369,9 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return true;
   }
 
-  async createFile(path: string, name: Platform.DevToolsPath.RawPathString|null, content: string, isBase64?: boolean):
-      Promise<Workspace.UISourceCode.UISourceCode|null> {
+  async createFile(
+      path: Platform.DevToolsPath.EncodedPathString, name: Platform.DevToolsPath.RawPathString|null, content: string,
+      isBase64?: boolean): Promise<Workspace.UISourceCode.UISourceCode|null> {
     const guardFileName = this.fileSystemPathInternal + path + (!path.endsWith('/') ? '/' : '') + name;
     this.creatingFilesGuard.add(guardFileName);
     const filePath = await this.fileSystemInternal.createFile(path, name);
@@ -392,7 +397,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     this.fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.fileSystemInternal);
   }
 
-  private addFile(filePath: string): Workspace.UISourceCode.UISourceCode {
+  private addFile(filePath: Platform.DevToolsPath.EncodedPathString): Workspace.UISourceCode.UISourceCode {
     const contentType = this.fileSystemInternal.contentType(filePath);
     const uiSourceCode = this.createUISourceCode(this.fileSystemBaseURL + filePath, contentType);
     this.addUISourceCode(uiSourceCode);

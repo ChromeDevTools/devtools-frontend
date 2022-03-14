@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Platform from '../platform/platform.js';
 
 import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSLayer} from './CSSLayer.js';
@@ -47,7 +47,7 @@ export class CSSRule {
 
   resourceURL(): Platform.DevToolsPath.UrlString {
     if (!this.styleSheetId) {
-      return '' as Platform.DevToolsPath.UrlString;
+      return Platform.DevToolsPath.EmptyUrlString;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
     return styleSheetHeader.resourceURL();

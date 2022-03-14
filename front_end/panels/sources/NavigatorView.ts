@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): Casts to Branded Types will be removed from this file when migration to branded types is complete.
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -843,7 +845,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   handleFolderContextMenu(event: Event, node: NavigatorTreeNode): void {
-    const path = (node as NavigatorFolderTreeNode).folderPath || '';
+    const path = (node as NavigatorFolderTreeNode).folderPath || Platform.DevToolsPath.EmptyEncodedPathString;
     const project = (node as NavigatorFolderTreeNode).project || null;
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -914,7 +916,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (uiSourceCodeToCopy) {
       content = (await uiSourceCodeToCopy.requestContent()).content || '';
     }
-    const uiSourceCode = await project.createFile(path, null, content);
+    const uiSourceCode = await project.createFile(path as Platform.DevToolsPath.EncodedPathString, null, content);
     if (!uiSourceCode) {
       return;
     }
@@ -1455,7 +1457,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
 
 export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   project: Workspace.Workspace.Project|null;
-  readonly folderPath: string;
+  readonly folderPath: Platform.DevToolsPath.EncodedPathString;
   title: string;
   treeElement!: NavigatorFolderTreeElement|null;
   constructor(
@@ -1463,7 +1465,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       folderPath: string, title: string) {
     super(navigatorView, id, type);
     this.project = project;
-    this.folderPath = folderPath;
+    this.folderPath = folderPath as Platform.DevToolsPath.EncodedPathString;
     this.title = title;
   }
 

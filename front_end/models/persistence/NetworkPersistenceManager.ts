@@ -185,9 +185,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     PersistenceImpl.instance().refreshAutomapping();
   }
 
-  private encodedPathFromUrl(url: string): string {
+  private encodedPathFromUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.EncodedPathString {
     if (!this.activeInternal || !this.projectInternal) {
-      return '';
+      return Platform.DevToolsPath.EmptyEncodedPathString;
     }
     let urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
     if (urlPath.endsWith('/') && urlPath.indexOf('?') === -1) {
@@ -208,7 +208,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         shortFileName + Platform.StringUtilities.hashCode(encodedPath).toString(16) + extensionPart,
       ];
     }
-    return encodedPathParts.join('/');
+    return Common.ParsedURL.ParsedURL.join(encodedPathParts as Platform.DevToolsPath.EncodedPathString[], '/');
 
     function encodeUrlPathToLocalPathParts(urlPath: string): string[] {
       const encodedParts = [];
@@ -310,7 +310,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const encoded = await uiSourceCode.contentEncoded();
     const lastIndexOfSlash = encodedPath.lastIndexOf('/');
     const encodedFileName = encodedPath.substr(lastIndexOfSlash + 1);
-    encodedPath = encodedPath.substr(0, lastIndexOfSlash);
+    encodedPath = Common.ParsedURL.ParsedURL.substr(encodedPath, 0, lastIndexOfSlash);
     if (this.projectInternal) {
       await this.projectInternal.createFile(encodedPath, encodedFileName, content, encoded);
     }
@@ -555,7 +555,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   handleHeaderInterception(interceptedRequest: SDK.NetworkManager.InterceptedRequest): Protocol.Fetch.HeaderEntry[] {
     let result: Protocol.Fetch.HeaderEntry[] = interceptedRequest.responseHeaders || [];
-    const urlSegments = this.encodedPathFromUrl(interceptedRequest.request.url).split('/');
+    const urlSegments =
+        this.encodedPathFromUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString).split('/');
     // Traverse the hierarchy of overrides from the most general to the most
     // specific. Check with empty string first to match overrides applying to
     // all domains.

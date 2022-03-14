@@ -140,12 +140,13 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   excludeFolder(_path: string): void {
   }
 
-  canExcludeFolder(_path: string): boolean {
+  canExcludeFolder(_path: Platform.DevToolsPath.EncodedPathString): boolean {
     return false;
   }
 
-  async createFile(_path: string, _name: string|null, _content: string, _isBase64?: boolean):
-      Promise<Workspace.UISourceCode.UISourceCode|null> {
+  async createFile(
+      _path: Platform.DevToolsPath.EncodedPathString, _name: string|null, _content: string,
+      _isBase64?: boolean): Promise<Workspace.UISourceCode.UISourceCode|null> {
     return null;
   }
 

@@ -51,7 +51,8 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }
 
-  async createFile(_path: string, _name: Platform.DevToolsPath.RawPathString|null): Promise<string|null> {
+  async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
+      Promise<Platform.DevToolsPath.EncodedPathString|null> {
     const nextId = this.lastSnippetIdentifierSetting.get() + 1;
     this.lastSnippetIdentifierSetting.set(nextId);
 

@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import {StubIssue} from './StubIssue.js';
@@ -16,14 +16,14 @@ describe('issuesAssociatedWith', () => {
 
   it('should return no issues if no issues exist', () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        requestId1, '' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString, null, null, null);
+        requestId1, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([], request).length, 0);
   });
 
   it('should return no issues if issues dont affect any resources', () => {
     const issue = new StubIssue('code', [], []);
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        requestId1, '' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString, null, null, null);
+        requestId1, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
 
     assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([issue], request).length, 0);
   });
@@ -34,9 +34,9 @@ describe('issuesAssociatedWith', () => {
     const issues = [issue1, issue2];
 
     const request1 = SDK.NetworkRequest.NetworkRequest.create(
-        requestId1, '' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString, null, null, null);
+        requestId1, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
     const request2 = SDK.NetworkRequest.NetworkRequest.create(
-        requestId2, '' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString, null, null, null);
+        requestId2, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
 
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request1), issues);
     assert.deepStrictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith(issues, request2), [issue1]);

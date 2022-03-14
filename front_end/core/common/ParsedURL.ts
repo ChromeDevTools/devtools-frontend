@@ -240,6 +240,11 @@ export class ParsedURL {
     return devToolsPath.substring(start, end) as DevToolsPathType;
   }
 
+  static prepend<DevToolsPathType extends BrandedPathString>(prefix: string, devToolsPath: DevToolsPathType):
+      DevToolsPathType {
+    return prefix + devToolsPath as DevToolsPathType;
+  }
+
   static concatenate<DevToolsPathType extends BrandedPathString>(
       devToolsPath: DevToolsPathType, ...appendage: string[]): DevToolsPathType {
     return devToolsPath.concat(...appendage) as DevToolsPathType;
@@ -247,6 +252,12 @@ export class ParsedURL {
 
   static trim<DevToolsPathType extends BrandedPathString>(devToolsPath: DevToolsPathType): DevToolsPathType {
     return devToolsPath.trim() as DevToolsPathType;
+  }
+
+  static join<DevToolsPathType extends Platform.DevToolsPath.UrlString|Platform.DevToolsPath.RawPathString|
+                                       Platform.DevToolsPath.EncodedPathString>(
+      devToolsPaths: DevToolsPathType[], separator?: string): DevToolsPathType {
+    return devToolsPaths.join(separator) as DevToolsPathType;
   }
 
   static urlWithoutHash(url: string): string {

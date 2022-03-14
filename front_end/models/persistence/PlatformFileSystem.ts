@@ -23,7 +23,7 @@ export class PlatformFileSystem {
     this.typeInternal = type;
   }
 
-  getMetadata(_path: string): Promise<{modificationTime: Date, size: number}|null> {
+  getMetadata(_path: Platform.DevToolsPath.EncodedPathString): Promise<{modificationTime: Date, size: number}|null> {
     return Promise.resolve(null);
   }
 
@@ -49,7 +49,8 @@ export class PlatformFileSystem {
     return this.typeInternal;
   }
 
-  async createFile(_path: string, _name: Platform.DevToolsPath.RawPathString|null): Promise<string|null> {
+  async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
+      Promise<Platform.DevToolsPath.EncodedPathString|null> {
     return Promise.resolve(null);
   }
 
@@ -76,7 +77,7 @@ export class PlatformFileSystem {
     callback(false);
   }
 
-  addExcludedFolder(_path: string): void {
+  addExcludedFolder(_path: Platform.DevToolsPath.EncodedPathString): void {
   }
 
   removeExcludedFolder(_path: string): void {
@@ -85,7 +86,7 @@ export class PlatformFileSystem {
   fileSystemRemoved(): void {
   }
 
-  isFileExcluded(_folderPath: string): boolean {
+  isFileExcluded(_folderPath: Platform.DevToolsPath.EncodedPathString): boolean {
     return false;
   }
 
@@ -107,7 +108,7 @@ export class PlatformFileSystem {
     throw new Error('Not implemented');
   }
 
-  canExcludeFolder(_path: string): boolean {
+  canExcludeFolder(_path: Platform.DevToolsPath.EncodedPathString): boolean {
     return false;
   }
 

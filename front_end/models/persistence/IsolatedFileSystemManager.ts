@@ -248,7 +248,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
         for (const fileSystemPath of this.fileSystemsInternal.keys()) {
           const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
-          if (fileSystem && fileSystem.isFileExcluded(embedderPath)) {
+          if (fileSystem &&
+              fileSystem.isFileExcluded(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(embedderPath))) {
             continue;
           }
           const pathPrefix = fileSystemPath.endsWith('/') ? fileSystemPath : fileSystemPath + '/';
@@ -348,8 +349,8 @@ export type EventTypes = {
   [Events.FileSystemAdded]: PlatformFileSystem,
   [Events.FileSystemRemoved]: PlatformFileSystem,
   [Events.FileSystemFilesChanged]: FilesChangedData,
-  [Events.ExcludedFolderAdded]: string,
-  [Events.ExcludedFolderRemoved]: string,
+  [Events.ExcludedFolderAdded]: Platform.DevToolsPath.EncodedPathString,
+  [Events.ExcludedFolderRemoved]: Platform.DevToolsPath.EncodedPathString,
 };
 
 let lastRequestId = 0;

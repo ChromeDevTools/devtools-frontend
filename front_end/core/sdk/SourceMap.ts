@@ -360,7 +360,7 @@ export class TextSourceMap implements SourceMap {
 
   private parseSources(sourceMap: SourceMapV3): void {
     const sourcesList = [];
-    let sourceRoot = sourceMap.sourceRoot || '' as Platform.DevToolsPath.UrlString;
+    let sourceRoot = sourceMap.sourceRoot || Platform.DevToolsPath.EmptyUrlString;
     if (sourceRoot && !sourceRoot.endsWith('/')) {
       sourceRoot = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, '/');
     }

@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
@@ -339,7 +339,7 @@ describe('TextSourceMap', () => {
   });
 
   describe('source URL resolution', () => {
-    const noSourceRoot = '' as Platform.DevToolsPath.UrlString;
+    const noSourceRoot = Platform.DevToolsPath.EmptyUrlString;
     const absoluteSourceRootExample = 'http://example.com/src' as Platform.DevToolsPath.UrlString;
     const absoluteSourceRootFoo = 'http://foo.com/src' as Platform.DevToolsPath.UrlString;
     const relativeSourceRootSrc = 'src' as Platform.DevToolsPath.UrlString;

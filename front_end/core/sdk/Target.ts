@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type {TargetManager} from './TargetManager.js';
@@ -32,7 +32,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this.#targetManagerInternal = targetManager;
     this.#nameInternal = name;
-    this.#inspectedURLInternal = '' as Platform.DevToolsPath.UrlString;
+    this.#inspectedURLInternal = Platform.DevToolsPath.EmptyUrlString;
     this.#inspectedURLName = '';
     this.#capabilitiesMask = 0;
     switch (type) {

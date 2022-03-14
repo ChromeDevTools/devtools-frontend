@@ -60,8 +60,9 @@ export interface Project {
       uiSourceCode: UISourceCode, newName: Platform.DevToolsPath.RawPathString,
       callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void): void;
   excludeFolder(path: string): void;
-  canExcludeFolder(path: string): boolean;
-  createFile(path: string, name: string|null, content: string, isBase64?: boolean): Promise<UISourceCode|null>;
+  canExcludeFolder(path: Platform.DevToolsPath.EncodedPathString): boolean;
+  createFile(path: Platform.DevToolsPath.EncodedPathString, name: string|null, content: string, isBase64?: boolean):
+      Promise<UISourceCode|null>;
   canCreateFile(): boolean;
   deleteFile(uiSourceCode: UISourceCode): void;
   remove(): void;
@@ -210,8 +211,10 @@ export abstract class ProjectStore implements Project {
   abstract fullDisplayName(uiSourceCode: UISourceCode): string;
   abstract mimeType(uiSourceCode: UISourceCode): string;
   abstract canRename(): boolean;
-  abstract canExcludeFolder(path: string): boolean;
-  abstract createFile(path: string, name: string|null, content: string, isBase64?: boolean): Promise<UISourceCode|null>;
+  abstract canExcludeFolder(path: Platform.DevToolsPath.EncodedPathString): boolean;
+  abstract createFile(
+      path: Platform.DevToolsPath.EncodedPathString, name: string|null, content: string,
+      isBase64?: boolean): Promise<UISourceCode|null>;
   abstract canCreateFile(): boolean;
   abstract searchInFileContent(uiSourceCode: UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]>;

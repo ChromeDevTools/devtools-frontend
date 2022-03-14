@@ -11,6 +11,7 @@ class UrlStringTag {
  * “file:///Hello%20World/file/js”
  */
 export type UrlString = string&UrlStringTag;
+export const EmptyUrlString = '' as UrlString;
 
 class RawPathStringTag {
   private rawPathTag: (string|undefined);
@@ -22,6 +23,7 @@ class RawPathStringTag {
  * “/Hello World/file.js”
  */
 export type RawPathString = string&RawPathStringTag;
+export const EmptyRawPathString = '' as RawPathString;
 
 class EncodedPathStringTag {
   private encodedPathTag: (string|undefined);
@@ -32,3 +34,4 @@ class EncodedPathStringTag {
  * “/Hello%20World/file.js”
  */
 export type EncodedPathString = string&EncodedPathStringTag;
+export const EmptyEncodedPathString = '' as EncodedPathString;

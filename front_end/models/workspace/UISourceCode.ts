@@ -51,6 +51,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// TODO(crbug.com/1297535): Casts to UrlString and RawPathString will be removed from this file when migration to branded types is complete.
+
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     TextUtils.ContentProvider.ContentProvider {
   private projectInternal: Project;
@@ -150,7 +152,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.projectInternal.canRename();
   }
 
-  rename(newName: string): Promise<boolean> {
+  rename(newName: Platform.DevToolsPath.RawPathString): Promise<boolean> {
     let fulfill: (arg0: boolean) => void;
     const promise = new Promise<boolean>(x => {
       fulfill = x;

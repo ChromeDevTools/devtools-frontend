@@ -220,13 +220,16 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  async createFile(path: string, name: string|null): Promise<string|null> {
+  async createFile(path: string, name: Platform.DevToolsPath.RawPathString|null): Promise<string|null> {
     const dirEntry = await this.createFoldersIfNotExist(decodeURIComponent(path));
     if (!dirEntry) {
       return null;
     }
     const fileEntry =
-        await this.serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile')) as FileEntry | null;
+        await this.serializedFileOperation(
+            path, createFileCandidate.bind(this, name || 'NewFile' as Platform.DevToolsPath.RawPathString)) as
+            FileEntry |
+        null;
     if (!fileEntry) {
       return null;
     }
@@ -234,9 +237,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
         Common.ParsedURL.ParsedURL.substr(fileEntry.fullPath as Platform.DevToolsPath.RawPathString, 1));
 
     function createFileCandidate(
-        this: IsolatedFileSystem, name: string, newFileIndex?: number): Promise<FileEntry|null> {
+        this: IsolatedFileSystem, name: Platform.DevToolsPath.RawPathString,
+        newFileIndex?: number): Promise<FileEntry|null> {
       return new Promise(resolve => {
-        const nameCandidate = name + (newFileIndex || '');
+        const nameCandidate = Common.ParsedURL.ParsedURL.concatenate(name, (newFileIndex || '').toString());
         (dirEntry as DirectoryEntry).getFile(nameCandidate, {create: true, exclusive: true}, resolve, error => {
           if (error.name === 'InvalidModificationError') {
             resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
@@ -252,7 +256,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  deleteFile(path: string): Promise<boolean> {
+  deleteFile(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
     let resolveCallback: (arg0: boolean) => void;
     const promise = new Promise<boolean>(resolve => {
       resolveCallback = resolve;
@@ -279,7 +283,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  requestFileBlob(path: string): Promise<Blob|null> {
+  requestFileBlob(path: Platform.DevToolsPath.EncodedPathString): Promise<Blob|null> {
     return new Promise(resolve => {
       this.domFileSystem.root.getFile(decodeURIComponent(path), undefined, entry => {
         entry.file(resolve, errorHandler.bind(this));
@@ -298,11 +302,13 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     });
   }
 
-  requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
+  requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
+      Promise<TextUtils.ContentProvider.DeferredContent> {
     return this.serializedFileOperation(path, () => this.innerRequestFileContent(path));
   }
 
-  private async innerRequestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
+  private async innerRequestFileContent(path: Platform.DevToolsPath.EncodedPathString):
+      Promise<TextUtils.ContentProvider.DeferredContent> {
     const blob = await this.requestFileBlob(path);
     if (!blob) {
       return {content: null, error: i18nString(UIStrings.blobCouldNotBeLoaded), isEncoded: false};
@@ -341,7 +347,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     return {isEncoded: encoded, content: encoded ? btoa(result) : result};
   }
 
-  async setFileContent(path: string, content: string, isBase64: boolean): Promise<void> {
+  async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, isBase64: boolean):
+      Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
     let callback: (event?: ProgressEvent<EventTarget>) => void;
     const innerSetFileContent = (): Promise<ProgressEvent<EventTarget>> => {
@@ -385,8 +392,10 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  renameFile(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
-    newName = newName ? newName.trim() : newName;
+  renameFile(
+      path: Platform.DevToolsPath.EncodedPathString, newName: Platform.DevToolsPath.RawPathString,
+      callback: (arg0: boolean, arg1?: string|undefined) => void): void {
+    newName = newName ? newName.trim() as Platform.DevToolsPath.RawPathString : newName;
     if (!newName || newName.indexOf('/') !== -1) {
       callback(false);
       return;

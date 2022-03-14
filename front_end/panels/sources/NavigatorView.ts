@@ -1413,7 +1413,9 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         if (this.treeElement) {
           this.treeElement.title = newTitle;
         }
-        void this.uiSourceCodeInternal.rename(newTitle).then(renameCallback.bind(this));
+        // necessary cast to RawPathString as alternative would be altering type of Config<T>
+        void this.uiSourceCodeInternal.rename(newTitle as Platform.DevToolsPath.RawPathString)
+            .then(renameCallback.bind(this));
         return;
       }
       afterEditing.call(this, true);

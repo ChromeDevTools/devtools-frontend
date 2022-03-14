@@ -64,6 +64,16 @@ export function normalizePath(path: string): string {
   return normalizedPath;
 }
 
+/**
+ * File paths in DevTools that are represented either as unencoded absolute or relative paths, or encoded paths, or URLs.
+ * @example
+ * RawPathString: “/Hello World/file.js”
+ * EncodedPathString: “/Hello%20World/file.js”
+ * UrlString: “file:///Hello%20World/file/js”
+ */
+type BrandedPathString =
+    Platform.DevToolsPath.UrlString|Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.EncodedPathString;
+
 export class ParsedURL {
   isValid: boolean;
   url: string;
@@ -215,16 +225,28 @@ export class ParsedURL {
     return decodedFileURL.substr('file://'.length) as Platform.DevToolsPath.RawPathString;
   }
 
-  static substr<DevToolsPathType extends Platform.DevToolsPath.UrlString|Platform.DevToolsPath.RawPathString|
-                                         Platform.DevToolsPath.EncodedPathString>(
+  static sliceUrlToEncodedPathString(url: Platform.DevToolsPath.UrlString, start: number):
+      Platform.DevToolsPath.EncodedPathString {
+    return url.substring(start) as Platform.DevToolsPath.EncodedPathString;
+  }
+
+  static substr<DevToolsPathType extends BrandedPathString>(
       devToolsPath: DevToolsPathType, from: number, length?: number): DevToolsPathType {
     return devToolsPath.substr(from, length) as DevToolsPathType;
   }
 
-  static concatenate<DevToolsPathType extends Platform.DevToolsPath.UrlString|Platform.DevToolsPath
-                                                  .RawPathString|Platform.DevToolsPath.EncodedPathString>(
+  static substring<DevToolsPathType extends BrandedPathString>(
+      devToolsPath: DevToolsPathType, start: number, end?: number): DevToolsPathType {
+    return devToolsPath.substring(start, end) as DevToolsPathType;
+  }
+
+  static concatenate<DevToolsPathType extends BrandedPathString>(
       devToolsPath: DevToolsPathType, ...appendage: string[]): DevToolsPathType {
     return devToolsPath.concat(...appendage) as DevToolsPathType;
+  }
+
+  static trim<DevToolsPathType extends BrandedPathString>(devToolsPath: DevToolsPathType): DevToolsPathType {
+    return devToolsPath.trim() as DevToolsPathType;
   }
 
   static urlWithoutHash(url: string): string {

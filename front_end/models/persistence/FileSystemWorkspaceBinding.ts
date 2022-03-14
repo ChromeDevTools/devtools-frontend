@@ -257,7 +257,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   rename(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: Platform.DevToolsPath.RawPathString,
       callback:
           (arg0: boolean, arg1?: string|undefined, arg2?: string|undefined,
            arg3?: Common.ResourceType.ResourceType|undefined) => void): void {
@@ -365,7 +365,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return true;
   }
 
-  async createFile(path: string, name: string|null, content: string, isBase64?: boolean):
+  async createFile(path: string, name: Platform.DevToolsPath.RawPathString|null, content: string, isBase64?: boolean):
       Promise<Workspace.UISourceCode.UISourceCode|null> {
     const guardFileName = this.fileSystemPathInternal + path + (!path.endsWith('/') ? '/' : '') + name;
     this.creatingFilesGuard.add(guardFileName);

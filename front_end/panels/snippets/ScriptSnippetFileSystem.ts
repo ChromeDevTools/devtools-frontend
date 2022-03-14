@@ -13,8 +13,6 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
-// TODO(crbug.com/1253323): Cast to EncodedPathString will be removed from this file when migration to branded types is complete.
-
 const UIStrings = {
   /**
   *@description Default snippet name when a new snippet is created in the Sources panel
@@ -30,12 +28,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/ScriptSnippetFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-function escapeSnippetName(name: string): Platform.DevToolsPath.EncodedPathString {
-  return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(name as Platform.DevToolsPath.RawPathString);
+function escapeSnippetName(name: Platform.DevToolsPath.RawPathString): Platform.DevToolsPath.EncodedPathString {
+  return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(name);
 }
 
-function unescapeSnippetName(name: string): string {
-  return Common.ParsedURL.ParsedURL.encodedPathToRawPathString(name as Platform.DevToolsPath.EncodedPathString);
+function unescapeSnippetName(name: Platform.DevToolsPath.EncodedPathString): string {
+  return Common.ParsedURL.ParsedURL.encodedPathToRawPathString(name);
 }
 
 export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
@@ -53,11 +51,12 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }
 
-  async createFile(_path: string, _name: string|null): Promise<string|null> {
+  async createFile(_path: string, _name: Platform.DevToolsPath.RawPathString|null): Promise<string|null> {
     const nextId = this.lastSnippetIdentifierSetting.get() + 1;
     this.lastSnippetIdentifierSetting.set(nextId);
 
-    const snippetName = i18nString(UIStrings.scriptSnippet, {PH1: nextId});
+    const snippetName =
+        i18nString(UIStrings.scriptSnippet, {PH1: nextId}) as string as Platform.DevToolsPath.RawPathString;
     const snippets = this.snippetsSetting.get();
     snippets.push({name: snippetName, content: ''});
     this.snippetsSetting.set(snippets);
@@ -65,8 +64,8 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return escapeSnippetName(snippetName);
   }
 
-  async deleteFile(path: string): Promise<boolean> {
-    const name = unescapeSnippetName(path.substring(1));
+  async deleteFile(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+    const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const allSnippets: Snippet[] = this.snippetsSetting.get();
     const snippets = allSnippets.filter(snippet => snippet.name !== name);
     if (allSnippets.length !== snippets.length) {
@@ -76,8 +75,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  async requestFileContent(path: string): Promise<TextUtils.ContentProvider.DeferredContent> {
-    const name = unescapeSnippetName(path.substring(1));
+  async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
+      Promise<TextUtils.ContentProvider.DeferredContent> {
+    const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
@@ -86,8 +86,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return {content: null, isEncoded: false, error: `A snippet with name '${name}' was not found`};
   }
 
-  async setFileContent(path: string, content: string, _isBase64: boolean): Promise<boolean> {
-    const name = unescapeSnippetName(path.substring(1));
+  async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, _isBase64: boolean):
+      Promise<boolean> {
+    const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
@@ -98,11 +99,13 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  renameFile(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
-    const name = unescapeSnippetName(path.substring(1));
+  renameFile(
+      path: Platform.DevToolsPath.EncodedPathString, newName: Platform.DevToolsPath.RawPathString,
+      callback: (arg0: boolean, arg1?: string|undefined) => void): void {
+    const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
-    newName = newName.trim();
+    newName = Common.ParsedURL.ParsedURL.trim(newName);
     if (!snippet || newName.length === 0 || snippets.find(snippet => snippet.name === newName)) {
       callback(false);
       return;
@@ -128,7 +131,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   }
 
   tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
-    return i18nString(UIStrings.linkedTo, {PH1: unescapeSnippetName(url.substring(this.path().length))});
+    return i18nString(
+        UIStrings.linkedTo,
+        {PH1: unescapeSnippetName(Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(url, this.path().length))});
   }
 
   supportsAutomapping(): boolean {
@@ -215,6 +220,6 @@ export function findSnippetsProject(): Workspace.Workspace.Project {
   return workspaceProject;
 }
 export interface Snippet {
-  name: string;
+  name: Platform.DevToolsPath.RawPathString;
   content: string;
 }

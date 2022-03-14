@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
 import type {UISourceCodeMetadata} from './UISourceCode.js';
@@ -56,7 +57,7 @@ export interface Project {
   mimeType(uiSourceCode: UISourceCode): string;
   canRename(): boolean;
   rename(
-      uiSourceCode: UISourceCode, newName: string,
+      uiSourceCode: UISourceCode, newName: Platform.DevToolsPath.RawPathString,
       callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void): void;
   excludeFolder(path: string): void;
   canExcludeFolder(path: string): boolean;

@@ -8,6 +8,7 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as SourceFrame from '../../../../../front_end/ui/legacy/components/source_frame/source_frame.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
@@ -65,15 +66,15 @@ describe('SourcesView', () => {
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof Sources.UISourceCodeFrame.UISourceCodeFrame);
 
     // Rename, but contentType stays the same
-    await uiSourceCode.rename('newName.html');
+    await uiSourceCode.rename('newName.html' as Platform.DevToolsPath.RawPathString);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof Sources.UISourceCodeFrame.UISourceCodeFrame);
 
     // Rename which changes contentType
-    await uiSourceCode.rename('image.jpg');
+    await uiSourceCode.rename('image.jpg' as Platform.DevToolsPath.RawPathString);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.ImageView.ImageView);
 
     // Rename which changes contentType
-    await uiSourceCode.rename('font.woff');
+    await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.FontView.FontView);
   });
 

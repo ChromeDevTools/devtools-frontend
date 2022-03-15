@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright 2017 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,11 +55,11 @@ def main():
 
     # json.decoder.c_scanstring = py_scanstring
     def py_maker(*_args, **_kwargs):
-      decoder = json.JSONDecoder()
-      decoder.scan_once = json.scanner.py_make_scanner(decoder)
-      decoder.parse_string = json.decoder.py_scanstring
-      json.decoder.scanstring = decoder.parse_string
-      return decoder
+        decoder = json.JSONDecoder()
+        decoder.scan_once = json.scanner.py_make_scanner(decoder)
+        decoder.parse_string = json.decoder.py_scanstring
+        json.decoder.scanstring = decoder.parse_string
+        return decoder
 
     maker = py_maker if args.pure else json.JSONDecoder
 

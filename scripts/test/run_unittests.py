@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env vpython3
 #
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -8,11 +8,7 @@ Run unit tests on a pinned version of chrome.
 """
 
 import os
-import platform
-import re
-from subprocess import Popen
 import sys
-import signal
 import argparse
 
 scripts_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

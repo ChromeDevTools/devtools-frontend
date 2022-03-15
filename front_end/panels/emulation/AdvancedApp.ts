@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
 import type {Bounds} from './InspectedPagePlaceholder.js';
@@ -77,7 +78,10 @@ export class AdvancedApp implements Common.App.App {
   }
 
   deviceModeEmulationFrameLoaded(toolboxDocument: Document): void {
-    Common.Settings.Settings.instance().createSetting('uiTheme', 'default');
+    ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      ThemeSupport.ThemeSupport.instance().applyTheme(toolboxDocument);
+    });
     UI.UIUtils.initializeUIUtils(toolboxDocument);
     UI.UIUtils.installComponentRootStyles((toolboxDocument.body as Element));
     UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);

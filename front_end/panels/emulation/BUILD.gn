@@ -44,6 +44,7 @@ devtools_module("emulation") {
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/legacy/theme_support:bundle",
     "./components:bundle",
   ]
 

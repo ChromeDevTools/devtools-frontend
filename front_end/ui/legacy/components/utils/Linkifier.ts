@@ -31,6 +31,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
@@ -749,10 +750,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
       }
     }
     if (resource || info.url) {
+      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
       result.push({
         section: 'reveal',
         title: UI.UIUtils.openLinkExternallyLabel(),
-        handler: (): void => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url),
+        handler: (): void => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+            url as Platform.DevToolsPath.UrlString),
       });
       result.push({
         section: 'clipboard',
@@ -916,7 +919,9 @@ export class ContentProviderContextMenuProvider implements UI.ContextMenu.Provid
     contextMenu.revealSection().appendItem(
         UI.UIUtils.openLinkExternallyLabel(),
         () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            contentUrl.endsWith(':formatted') ? contentUrl.slice(0, contentUrl.lastIndexOf(':')) : contentUrl));
+            contentUrl.endsWith(':formatted') ?
+                Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
+                contentUrl));
     for (const title of linkHandlers.keys()) {
       const handler = linkHandlers.get(title);
       if (!handler) {

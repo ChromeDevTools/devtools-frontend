@@ -506,7 +506,8 @@ export class CoverageView extends UI.Widget.VBox {
 
   private async exportReport(): Promise<void> {
     const fos = new Bindings.FileUtils.FileOutputStream();
-    const fileName = `Coverage-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
+    const fileName =
+        `Coverage-${Platform.DateUtilities.toISO8601Compact(new Date())}.json` as Platform.DevToolsPath.RawPathString;
     const accepted = await fos.open(fileName);
     if (!accepted) {
       return;

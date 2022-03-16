@@ -636,7 +636,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     const now = new Date();
-    const fileName = 'Profile-' + Platform.DateUtilities.toISO8601Compact(now) + '.json';
+    const fileName =
+        'Profile-' + Platform.DateUtilities.toISO8601Compact(now) + '.json' as Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);

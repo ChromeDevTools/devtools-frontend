@@ -359,8 +359,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private static showHelp(): void {
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-        UI.UIUtils.addReferrerToURL('https://web.dev/color-and-contrast-accessibility/'));
+        UI.UIUtils.addReferrerToURL('https://web.dev/color-and-contrast-accessibility/') as
+        Platform.DevToolsPath.UrlString);
   }
 
   setVisible(visible: boolean): void {

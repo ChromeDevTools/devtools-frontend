@@ -1076,7 +1076,9 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private async saveConsole(): Promise<void> {
     const url = (SDK.TargetManager.TargetManager.instance().mainTarget() as SDK.Target.Target).inspectedURL();
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-    const filename = Platform.StringUtilities.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now());
+    const filename =
+        Platform.StringUtilities.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now()) as
+        Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
+
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as ComponentHelpers from '../components/helpers/helpers.js';
@@ -47,13 +49,15 @@ export class XLink extends XElement {
 
     this.onClick = (event: Event): void => {
       event.consume(true);
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab((this.hrefInternal as string));
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          (this.hrefInternal as Platform.DevToolsPath.UrlString));
       this.dispatchEvent(new Event('x-link-invoke'));
     };
     this.onKeyDown = (event: Event): void => {
       if (isEnterOrSpaceKey(event)) {
         event.consume(true);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab((this.hrefInternal as string));
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+            (this.hrefInternal as Platform.DevToolsPath.UrlString));
       }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
@@ -138,7 +142,8 @@ export class ContextMenuProvider implements Provider {
     const node: XLink = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(node.href);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+            node.href as Platform.DevToolsPath.UrlString);
       }
     });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

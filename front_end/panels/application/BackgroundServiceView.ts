@@ -457,7 +457,8 @@ export class BackgroundServiceView extends UI.Widget.VBox {
    * Saves all currently displayed events in a file (JSON format).
    */
   private async saveToFile(): Promise<void> {
-    const fileName = `${this.serviceName}-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
+    const fileName = `${this.serviceName}-${Platform.DateUtilities.toISO8601Compact(new Date())}.json` as
+        Platform.DevToolsPath.RawPathString;
     const stream = new Bindings.FileUtils.FileOutputStream();
 
     const accepted = await stream.open(fileName);

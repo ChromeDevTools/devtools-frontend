@@ -175,7 +175,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
     this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#idInternal;
     if (!this.parentTarget()) {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(inspectedURL || '');
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
+          inspectedURL || Platform.DevToolsPath.EmptyUrlString);
     }
     this.#targetManagerInternal.onInspectedURLChange(this);
     if (!this.#nameInternal) {

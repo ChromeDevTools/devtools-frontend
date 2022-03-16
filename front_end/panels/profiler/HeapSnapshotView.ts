@@ -1557,7 +1557,7 @@ export class HeapProfileHeader extends ProfileHeader {
   onTempFileReady: (() => void)|null;
   failedToCreateTempFile?: boolean;
   wasDisposed?: boolean;
-  fileName?: string;
+  fileName?: Platform.DevToolsPath.RawPathString;
 
   constructor(
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: HeapSnapshotProfileType, title?: string) {
@@ -1713,7 +1713,8 @@ export class HeapProfileHeader extends ProfileHeader {
   saveToFile(): void {
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     this.fileName = this.fileName ||
-        'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension();
+        'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension() as
+            Platform.DevToolsPath.RawPathString;
     const onOpen = async(accepted: boolean): Promise<void> => {
       if (!accepted) {
         return;

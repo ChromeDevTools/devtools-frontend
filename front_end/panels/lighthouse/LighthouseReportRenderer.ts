@@ -184,7 +184,7 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
     const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
     const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(this.json.fetchTime));
     const ext = blob.type.match('json') ? '.json' : '.html';
-    const basename = `${sanitizedDomain}-${timestamp}${ext}`;
+    const basename = `${sanitizedDomain}-${timestamp}${ext}` as Platform.DevToolsPath.RawPathString;
     const text = await blob.text();
     void Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
   }

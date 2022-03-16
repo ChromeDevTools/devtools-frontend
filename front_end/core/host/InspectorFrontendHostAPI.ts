@@ -127,8 +127,8 @@ export interface RevealSourceLineEvent {
 }
 
 export interface SavedURLEvent {
-  url: string;
-  fileSystemPath: string;
+  url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
+  fileSystemPath: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
 }
 
 export interface SearchCompletedEvent {
@@ -142,8 +142,8 @@ export interface SearchCompletedEvent {
 // Please note that the "dispatch" side can't be type-checked as the dispatch is
 // done dynamically.
 export type EventTypes = {
-  [Events.AppendedToURL]: string,
-  [Events.CanceledSaveURL]: string,
+  [Events.AppendedToURL]: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString,
+  [Events.CanceledSaveURL]: Platform.DevToolsPath.UrlString,
   [Events.ContextMenuCleared]: void,
   [Events.ContextMenuItemSelected]: number,
   [Events.DeviceCountUpdated]: number,
@@ -197,7 +197,7 @@ export interface InspectorFrontendHostAPI {
 
   inspectElementCompleted(): void;
 
-  openInNewTab(url: string): void;
+  openInNewTab(url: Platform.DevToolsPath.UrlString): void;
 
   showItemInFolder(fileSystemPath: string): void;
 
@@ -205,11 +205,11 @@ export interface InspectorFrontendHostAPI {
 
   requestFileSystems(): void;
 
-  save(url: string, content: string, forceSaveAs: boolean): void;
+  save(url: Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean): void;
 
-  append(url: string, content: string): void;
+  append(url: Platform.DevToolsPath.UrlString, content: string): void;
 
-  close(url: string): void;
+  close(url: Platform.DevToolsPath.UrlString): void;
 
   searchInPath(requestId: number, fileSystemPath: string, query: string): void;
 

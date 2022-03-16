@@ -254,6 +254,11 @@ export class ParsedURL {
     return devToolsPath.trim() as DevToolsPathType;
   }
 
+  static slice<DevToolsPathType extends BrandedPathString>(
+      devToolsPath: DevToolsPathType, start?: number, end?: number): DevToolsPathType {
+    return devToolsPath.slice(start, end) as DevToolsPathType;
+  }
+
   static join<DevToolsPathType extends Platform.DevToolsPath.UrlString|Platform.DevToolsPath.RawPathString|
                                        Platform.DevToolsPath.EncodedPathString>(
       devToolsPaths: DevToolsPathType[], separator?: string): DevToolsPathType {

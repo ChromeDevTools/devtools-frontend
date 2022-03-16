@@ -9245,11 +9245,23 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Ŝh́ôẃ m̂ór̂é"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Âd́d̂ á ĥéâd́êŕ"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Âd́d̂ h́êád̂ér̂ óv̂ér̂ŕîd́ê"
+  },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Êŕr̂ór̂ ẃĥén̂ ṕâŕŝín̂ǵ ''{PH1}''."
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "T̂h́îś îś m̂óŝt́ l̂ík̂él̂ý d̂úê t́ô á ŝýn̂t́âx́ êŕr̂ór̂ ín̂ ''{PH1}''. T́r̂ý ôṕêńîńĝ t́ĥíŝ f́îĺê ín̂ án̂ éx̂t́êŕn̂ál̂ éd̂ít̂ór̂ t́ô f́îx́ t̂h́ê ér̂ŕôŕ ôŕ d̂él̂ét̂é t̂h́ê f́îĺê án̂d́ r̂é-ĉŕêát̂é t̂h́ê óv̂ér̂ŕîd́ê."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "R̂ém̂óv̂é t̂h́îś 'ApplyTo'-ŝéĉt́îón̂"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "R̂ém̂óv̂é t̂h́îś ĥéâd́êŕ"
   },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Ĉĺîćk̂ t́ô śĥóŵ Ćôv́êŕâǵê Ṕâńêĺ"

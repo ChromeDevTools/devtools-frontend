@@ -9245,11 +9245,23 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Show more"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Add a header"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Add header override"
+  },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Error when parsing ''{PH1}''."
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "This is most likely due to a syntax error in ''{PH1}''. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Remove this 'ApplyTo'-section"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Remove this header"
   },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Click to show Coverage Panel"

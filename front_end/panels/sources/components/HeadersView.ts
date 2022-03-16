@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -12,6 +13,18 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import HeadersViewStyles from './HeadersView.css.js';
 
 const UIStrings = {
+  /**
+  *@description The title of a button that adds a field to input a header in the editor form.
+  */
+  addHeader: 'Add a header',
+  /**
+  *@description The title of a button that removes a field to input a header in the editor form.
+  */
+  removeHeader: 'Remove this header',
+  /**
+  *@description The title of a button that removes a section for defining header overrides in the editor form.
+  */
+  removeBlock: 'Remove this \'`ApplyTo`\'-section',
   /**
   *@description Error message for files which cannot not be parsed.
   *@example {.headers} PH1
@@ -23,9 +36,16 @@ const UIStrings = {
   */
   parsingErrorExplainer:
       'This is most likely due to a syntax error in \'\'{PH1}\'\'. Try opening this file in an external editor to fix the error or delete the file and re-create the override.',
+  /**
+  *@description Button text for a button which adds an additional header override.
+  */
+  addHeaderOverride: 'Add header override',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
+const minusIconUrl = new URL('../../../Images/minus_icon.svg', import.meta.url).toString();
 
 export class HeadersView extends UI.View.SimpleView {
   readonly #headersViewComponent = new HeadersViewComponent();
@@ -96,6 +116,10 @@ export class HeadersView extends UI.View.SimpleView {
     this.#setComponentData(this.#uiSourceCode.workingCopy());
   }
 
+  getComponent(): HeadersViewComponent {
+    return this.#headersViewComponent;
+  }
+
   dispose(): void {
     this.#uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
@@ -127,11 +151,13 @@ export class HeadersViewComponent extends HTMLElement {
   #headerOverrides: HeaderOverride[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #parsingError = false;
+  #focusElement: {blockIndex: number, headerIndex?: number}|null = null;
 
   constructor() {
     super();
     this.#shadow.addEventListener('focusin', this.#onFocusIn.bind(this));
     this.#shadow.addEventListener('focusout', this.#onFocusOut.bind(this));
+    this.#shadow.addEventListener('click', this.#onClick.bind(this));
     this.#shadow.addEventListener('input', this.#onInput.bind(this));
     this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
   }
@@ -185,6 +211,43 @@ export class HeadersViewComponent extends HTMLElement {
     // clear selection
     const selection = window.getSelection();
     selection?.removeAllRanges();
+  }
+
+  #generateNextHeaderName(headers: Header[]): string {
+    const takenNames = new Set<string>(headers.map(header => header.name));
+    let idx = 1;
+    while (takenNames.has('headerName' + idx)) {
+      idx++;
+    }
+    return 'headerName' + idx;
+  }
+
+  #onClick(e: Event): void {
+    const target = e.target as HTMLButtonElement;
+    const rowElement = target.closest('.row') as HTMLElement | null;
+    const blockIndex = Number(rowElement?.dataset.blockIndex || 0);
+    const headerIndex = Number(rowElement?.dataset.headerIndex || 0);
+    if (target.matches('.add-header')) {
+      this.#headerOverrides[blockIndex].headers.splice(
+          headerIndex + 1, 0,
+          {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'headerValue'});
+      this.#focusElement = {blockIndex, headerIndex: headerIndex + 1};
+      this.#onHeadersChanged();
+    } else if (target.matches('.remove-header')) {
+      this.#headerOverrides[blockIndex].headers.splice(headerIndex, 1);
+      if (this.#headerOverrides[blockIndex].headers.length === 0) {
+        this.#headerOverrides[blockIndex].headers.push(
+            {name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: 'headerValue'});
+      }
+      this.#onHeadersChanged();
+    } else if (target.matches('.add-block')) {
+      this.#headerOverrides.push({applyTo: '*', headers: [{name: 'headerName', value: 'headerValue'}]});
+      this.#focusElement = {blockIndex: this.#headerOverrides.length - 1};
+      this.#onHeadersChanged();
+    } else if (target.matches('.remove-block')) {
+      this.#headerOverrides.splice(blockIndex, 1);
+      this.#onHeadersChanged();
+    }
   }
 
   #onInput(e: Event): void {
@@ -252,8 +315,25 @@ export class HeadersViewComponent extends HTMLElement {
           )}
         `,
       )}
+      <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.SECONDARY} class="add-block">
+        ${i18nString(UIStrings.addHeaderOverride)}
+      </${Buttons.Button.Button.litTagName}>
     `, this.#shadow, {host: this});
     // clang-format on
+
+    if (this.#focusElement) {
+      let focusElement: Element|null = null;
+      if (this.#focusElement.headerIndex) {
+        focusElement = this.#shadow.querySelector(`[data-block-index="${
+            this.#focusElement.blockIndex}"][data-header-index="${this.#focusElement.headerIndex}"] .header-name`);
+      } else {
+        focusElement = this.#shadow.querySelector(`[data-block-index="${this.#focusElement.blockIndex}"] .apply-to`);
+      }
+      if (focusElement) {
+        (focusElement as HTMLElement).focus();
+      }
+      this.#focusElement = null;
+    }
   }
 
   #renderApplyToRow(pattern: string, blockIndex: number): LitHtml.TemplateResult {
@@ -263,6 +343,13 @@ export class HeadersViewComponent extends HTMLElement {
         <div>${i18n.i18n.lockedString('Apply to')}</div>
         <div class="separator">:</div>
         ${this.#renderEditable(pattern, 'apply-to')}
+        <${Buttons.Button.Button.litTagName}
+        title=${i18nString(UIStrings.removeBlock)}
+        .size=${Buttons.Button.Size.SMALL}
+        .iconUrl=${minusIconUrl}
+        .variant=${Buttons.Button.Variant.ROUND}
+        class="remove-block inline-button"
+      ></${Buttons.Button.Button.litTagName}>
       </div>
     `;
     // clang-format on
@@ -275,6 +362,21 @@ export class HeadersViewComponent extends HTMLElement {
         ${this.#renderEditable(header.name, 'header-name red')}
         <div class="separator">:</div>
         ${this.#renderEditable(header.value, 'header-value')}
+        <${Buttons.Button.Button.litTagName}
+          title=${i18nString(UIStrings.addHeader)}
+          .size=${Buttons.Button.Size.SMALL}
+          .iconUrl=${plusIconUrl}
+          .variant=${Buttons.Button.Variant.ROUND}
+          class="add-header inline-button"
+        ></${Buttons.Button.Button.litTagName}>
+        <${Buttons.Button.Button.litTagName}
+          title=${i18nString(UIStrings.removeHeader)}
+          .size=${Buttons.Button.Size.SMALL}
+          .iconUrl=${minusIconUrl}
+          .variant=${Buttons.Button.Variant.ROUND}
+          class="remove-header inline-button"
+        ></${Buttons.Button.Button.litTagName}>
+      </div>
     `;
     // clang-format on
   }

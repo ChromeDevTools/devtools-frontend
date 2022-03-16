@@ -16,8 +16,7 @@
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
-  line-height: 18px;
-  margin-top: 3px;
+  line-height: 24px;
 }
 
 .row devtools-button {
@@ -57,6 +56,18 @@
   border-radius: 2px;
 }
 
+.row .inline-button {
+  opacity: 0%;
+  visibility: hidden;
+  transition: opacity 200ms;
+}
+
+.row:focus-within .inline-button,
+.row:hover .inline-button {
+  opacity: 100%;
+  visibility: visible;
+}
+
 .center-wrapper {
   height: 100%;
   display: flex;
@@ -78,4 +89,8 @@
 .error-body {
   line-height: 1.5em;
   color: var(--color-text-secondary);
+}
+
+.add-block {
+  margin-top: 3px;
 }

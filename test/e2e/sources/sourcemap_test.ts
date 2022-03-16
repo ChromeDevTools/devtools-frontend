@@ -10,25 +10,15 @@ import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfS
 import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_INTO_BUTTON, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
-  // Flaky test.
-  it.skip('[crbug.com/1272490] sets multiple breakpoints in case of code-splitting', async () => {
+  it('sets multiple breakpoints in case of code-splitting', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-codesplit.ts', 'sourcemap-codesplit.html');
     await addBreakpointForLine(frontend, 3);
 
-    const scriptLocation0 = await retrieveTopCallFrameScriptLocation('functions[0]();', target);
-    assert.deepEqual(scriptLocation0, 'sourcemap-codesplit.ts:3');
-
-    await target.evaluate(
-        'var s = document.createElement("script"); s.src = "sourcemap-codesplit2.js"; document.body.appendChild(s);');
-
-    // Wait for the sourcemap of sourcemap-codesplit2.js to load, which is
-    // indicated by the status text in the toolbar of the Sources panel.
-    const toolbarHandle = await waitFor('.sources-toolbar');
-    await waitForElementWithTextContent('sourcemap-codesplit2.js', toolbarHandle);
-
-    const scriptLocation1 = await retrieveTopCallFrameScriptLocation('functions[1]();', target);
-    assert.deepEqual(scriptLocation1, 'sourcemap-codesplit.ts:3');
+    for (let i = 0; i < 2; ++i) {
+      const scriptLocation = await retrieveTopCallFrameScriptLocation(`functions[${i}]();`, target);
+      assert.deepEqual(scriptLocation, 'sourcemap-codesplit.ts:3');
+    }
   });
 
   async function waitForStackTopMatch(matcher: RegExp) {

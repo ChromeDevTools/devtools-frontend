@@ -1259,6 +1259,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
       const allChanges = await this.getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
       if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;
@@ -2611,16 +2612,19 @@ export class StylePropertiesSection {
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copySelector), () => {
       const selectorText = this.headerText();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(selectorText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.SelectorViaContextMenu);
     });
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyRule), () => {
       const ruleText = StylesSidebarPane.formatLeadingProperties(this).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RuleViaContextMenu);
     });
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
       const allDeclarationText = StylesSidebarPane.formatLeadingProperties(this).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsViaContextMenu);
     });
 
     void contextMenu.show();

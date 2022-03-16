@@ -734,6 +734,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       copyIcon.addEventListener('click', () => {
         const propertyText = `${this.property.name}: ${this.property.value};`;
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
+        Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationViaChangedLine);
       });
       this.listItemElement.append(copyIcon);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
@@ -847,26 +848,31 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyDeclaration), () => {
       const propertyText = `${this.property.name}: ${this.property.value};`;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationViaContextMenu);
     });
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyProperty), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.name);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.PropertyViaContextMenu);
     });
 
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), () => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.property.value);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ValueViaContextMenu);
     });
 
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyRule), () => {
       const section = (this.section() as StylePropertiesSection);
       const ruleText = StylesSidebarPane.formatLeadingProperties(section).ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.RuleViaContextMenu);
     });
 
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyAllDeclarations), () => {
       const section = (this.section() as StylePropertiesSection);
       const allDeclarationText = StylesSidebarPane.formatLeadingProperties(section).allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsViaContextMenu);
     });
 
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.viewComputedValue), () => {
@@ -906,6 +912,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private copyCssDeclarationAsJs(): void {
     const cssDeclarationValue = getCssDeclarationAsJavascriptProperty(this.property);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssDeclarationValue);
+    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.DeclarationAsJSViaContextMenu);
   }
 
   private copyAllCssDeclarationAsJs(): void {
@@ -914,6 +921,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const cssDeclarationsAsJsProperties =
         leadingProperties.filter(property => !property.disabled).map(getCssDeclarationAsJavascriptProperty);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssDeclarationsAsJsProperties.join(',\n'));
+    Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllDeclarationsAsJSViaContextMenu);
   }
 
   private navigateToSource(element: Element, omitFocus?: boolean): void {

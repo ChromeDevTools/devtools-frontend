@@ -374,4 +374,5 @@ export enum EnumeratedHistogram {
   RecordingReplayFinished = 'DevTools.RecordingReplayFinished',
   RecordingReplayStarted = 'DevTools.RecordingReplayStarted',
   RecordingToggled = 'DevTools.RecordingToggled',
+  StyleTextCopied = 'DevTools.StyleTextCopied',
 }

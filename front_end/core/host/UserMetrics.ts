@@ -260,6 +260,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.RecordingExported, value, RecordingExported.MaxValue);
   }
+
+  styleTextCopied(value: StyleTextCopied): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.StyleTextCopied, value, StyleTextCopied.MaxValue);
+  }
 }
 
 /**
@@ -925,4 +930,21 @@ export enum ConsoleShowsCorsErrors {
   'true' = 1,
   MaxValue = 2,
 }
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum StyleTextCopied {
+  DeclarationViaChangedLine = 1,
+  AllChangesViaStylesPane = 2,
+  DeclarationViaContextMenu = 3,
+  PropertyViaContextMenu = 4,
+  ValueViaContextMenu = 5,
+  DeclarationAsJSViaContextMenu = 6,
+  RuleViaContextMenu = 7,
+  AllDeclarationsViaContextMenu = 8,
+  AllDeclarationsAsJSViaContextMenu = 9,
+  SelectorViaContextMenu = 10,
+  MaxValue = 11,
+}
+
 /* eslint-enable @typescript-eslint/naming-convention */

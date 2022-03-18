@@ -11,15 +11,15 @@ import lighthouseDialogStyles from './lighthouseDialog.css.js';
 
 const UIStrings = {
   /**
-   * @description Header indicating that a Lighthouse timespan is starting.
+   * @description Header indicating that a Lighthouse timespan is starting. "Timespan" is a Lighthouse mode that analyzes user interactions over a period of time.
    */
   timespanStarting: 'Timespan starting…',
   /**
-   * @description Header indicating that a Lighthouse timespan has started.
+   * @description Header indicating that a Lighthouse timespan has started. "Timespan" is a Lighthouse mode that analyzes user interactions over a period of time. "interact with the page" is a call to action for the user to interact with the web page.
    */
   timespanStarted: 'Timespan started, interact with the page',
   /**
-   * @description Label for a button that ends a Lighthouse timespan.
+   * @description Label for a button that ends a Lighthouse timespan. "timespan" is a Lighthouse mode that analyzes user interactions over a period of time.
    */
   endTimespan: 'End timespan',
   /**

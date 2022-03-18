@@ -77,6 +77,7 @@ devtools_module("network") {
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/search:bundle",
+    "../../panels/sources:bundle",
     "../../panels/utils:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/expandable_list:bundle",
@@ -108,6 +109,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/panels/network/*",
     "../../entrypoints/*",
     "../../ui/components/request_link_icon/*",
 

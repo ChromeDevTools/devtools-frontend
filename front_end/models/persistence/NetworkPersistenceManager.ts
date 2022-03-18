@@ -248,7 +248,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  private fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+  fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
     return (this.projectInternal as FileSystem).fileSystemPath() + '/' + this.encodedPathFromUrl(url) as
         Platform.DevToolsPath.UrlString;
   }
@@ -646,7 +646,7 @@ const RESERVED_FILENAMES = new Set<string>([
   'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
 ]);
 
-const HEADERS_FILENAME = '.headers';
+export const HEADERS_FILENAME = '.headers';
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

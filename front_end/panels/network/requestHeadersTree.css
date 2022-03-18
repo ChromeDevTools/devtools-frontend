@@ -216,3 +216,19 @@
 .header-decode-error {
   color: var(--color-accent-red);
 }
+
+.headers-title {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 5px;
+}
+
+.tree-outline li .headers-link {
+  display: none;
+}
+
+.tree-outline li.expanded .headers-link {
+  display: inline;
+  color: var(--color-text-primary);
+}

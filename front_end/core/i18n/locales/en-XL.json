@@ -7166,6 +7166,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ĝén̂ér̂ál̂"
   },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Ĥéâd́êŕ ôv́êŕr̂íd̂éŝ"
+  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê"
   },

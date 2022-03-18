@@ -1352,6 +1352,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "D̂ép̂ŕêćât́êd́ F̂éât́ûŕê Úŝéd̂"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "F̂éd̂ér̂át̂éd̂ Ćr̂éd̂én̂t́îál̂ Ḿâńâǵêḿêńt̂ ÁP̂Í"
   },

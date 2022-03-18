@@ -25,6 +25,7 @@ describe('Deprecation Issues', async () => {
               columnNumber: 1,
             },
             message: 'Test',
+            deprecationType: 'Test',
           },
         },
       };

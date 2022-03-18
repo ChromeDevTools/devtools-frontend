@@ -2,11 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
+import {resolveLazyDescription} from './MarkdownIssueDescription.js';
+
+const UIStrings = {
+  /**
+  *@description Title of issue raised when a deprecated feature is used
+  */
+  title: 'Deprecated Feature Used',
+};
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class DeprecationIssue extends Issue {
   #issueDetails: Protocol.Audits.DeprecationIssueDetails;
@@ -28,16 +39,17 @@ export class DeprecationIssue extends Issue {
     return this.#issueDetails;
   }
 
-  getDescription(): MarkdownIssueDescription|null {
-    return {
+  getDescription(): MarkdownIssueDescription {
+    return resolveLazyDescription({
       file: 'deprecation.md',
       substitutions: new Map([
+        ['PLACEHOLDER_title', i18nLazyString(UIStrings.title)],
         // TODO(crbug.com/1264960): Re-work format to add i18n support per:
         // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
-        ['PLACEHOLDER_message', String(this.#issueDetails.message)],
+        ['PLACEHOLDER_message', (): string => String(this.#issueDetails.message)],
       ]),
       links: [],
-    };
+    });
   }
 
   sources(): Iterable<Protocol.Audits.SourceCodeLocation> {

@@ -2549,6 +2549,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "A service worker was activated while the page was in back/forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Back/forward cache is disabled due to a document error."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "The page was evicted from the cache to allow another page to be cached."
   },

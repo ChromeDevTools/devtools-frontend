@@ -643,6 +643,7 @@ export const generatedProperties = [
   {'longhands': ['break-before'], 'name': 'page-break-before'},
   {'longhands': ['break-inside'], 'name': 'page-break-inside'},
   {'name': 'page-orientation'},
+  {'name': 'page-transition-tag', 'keywords': ['none']},
   {'name': 'paint-order', 'inherited': true, 'keywords': ['normal', 'fill', 'stroke', 'markers']},
   {'name': 'perspective', 'keywords': ['none']},
   {'name': 'perspective-origin'},
@@ -1110,6 +1111,7 @@ export const generatedPropertyValues = {
   'overscroll-behavior-x': {'values': ['auto', 'contain', 'none']},
   'overscroll-behavior-y': {'values': ['auto', 'contain', 'none']},
   'page': {'values': ['auto']},
+  'page-transition-tag': {'values': ['none']},
   'paint-order': {'values': ['normal', 'fill', 'stroke', 'markers']},
   'perspective': {'values': ['none']},
   'pointer-events': {

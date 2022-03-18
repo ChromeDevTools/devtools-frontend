@@ -2549,6 +2549,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Â śêŕv̂íĉé ŵór̂ḱêŕ ŵáŝ áĉt́îv́ât́êd́ ŵh́îĺê t́ĥé p̂áĝé ŵáŝ ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô á d̂óĉúm̂én̂t́ êŕr̂ór̂."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ t́ĥé ĉáĉh́ê t́ô ál̂ĺôẃ âńôt́ĥér̂ ṕâǵê t́ô b́ê ćâćĥéd̂."
   },

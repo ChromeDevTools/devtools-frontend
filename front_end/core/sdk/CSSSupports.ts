@@ -13,6 +13,8 @@ export class CSSSupports extends CSSQuery {
     return payload.map(supports => new CSSSupports(cssModel, supports));
   }
 
+  #active: boolean = true;
+
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSSupports) {
     super(cssModel);
     this.reinitialize(payload);
@@ -22,9 +24,10 @@ export class CSSSupports extends CSSQuery {
     this.text = payload.text;
     this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
+    this.#active = payload.active;
   }
 
   active(): boolean {
-    return true;
+    return this.#active;
   }
 }

@@ -2364,7 +2364,7 @@ export class StylePropertiesSection {
       return;
     }
 
-    this.queryListElement.classList.toggle('query-matches', this.matchedStyles.mediaMatches(this.styleInternal));
+    this.queryListElement.classList.toggle('query-matches', this.matchedStyles.queryMatches(this.styleInternal));
 
     const selectorTexts = rule.selectors.map(selector => selector.text);
     const matchingSelectorIndexes = this.matchedStyles.getMatchingSelectors(rule);

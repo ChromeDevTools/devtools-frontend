@@ -249,7 +249,7 @@ export class CSSMatchedStyles {
 
   hasMatchingSelectors(rule: CSSStyleRule): boolean {
     const matchingSelectors = this.getMatchingSelectors(rule);
-    return matchingSelectors.length > 0 && this.mediaMatches(rule.style);
+    return matchingSelectors.length > 0 && this.queryMatches(rule.style);
   }
 
   getMatchingSelectors(rule: CSSStyleRule): number[] {
@@ -327,13 +327,14 @@ export class CSSMatchedStyles {
     map.set(selectorText, value);
   }
 
-  mediaMatches(style: CSSStyleDeclaration): boolean {
+  queryMatches(style: CSSStyleDeclaration): boolean {
     if (!style.parentRule) {
       return true;
     }
-    const media = (style.parentRule as CSSStyleRule).media;
-    for (let i = 0; media && i < media.length; ++i) {
-      if (!media[i].active()) {
+    const parentRule = style.parentRule as CSSStyleRule;
+    const queries = [...parentRule.media, ...parentRule.containerQueries, ...parentRule.supports];
+    for (const query of queries) {
+      if (!query.active()) {
         return false;
       }
     }

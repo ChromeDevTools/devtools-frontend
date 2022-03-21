@@ -38,6 +38,7 @@ import {Icon} from './Icon.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 import softContextMenuStyles from './softContextMenu.css.legacy.js';
+import {InspectorView} from './InspectorView.js';
 
 const UIStrings = {
   /**
@@ -75,7 +76,7 @@ export class SoftContextMenu {
   private glassPane?: GlassPane;
   private contextMenuElement?: HTMLElement;
   private focusRestorer?: ElementFocusRestorer;
-  private hideOnUserGesture?: ((event: Event) => void);
+  private hideOnUserMouseDownUnlessInMenu?: ((event: Event) => void);
   private activeSubMenuElement?: HTMLElement;
   private subMenu?: SoftContextMenu;
   private onMenuClosed?: () => void;
@@ -122,7 +123,7 @@ export class SoftContextMenu {
     this.focusRestorer = new ElementFocusRestorer(this.contextMenuElement);
 
     if (!this.parentMenu) {
-      this.hideOnUserGesture = (event: Event): void => {
+      this.hideOnUserMouseDownUnlessInMenu = (event: Event): void => {
         // If a user clicks on any submenu, prevent the menu system from closing.
         let subMenu: (SoftContextMenu|undefined) = this.subMenu;
         while (subMenu) {
@@ -135,9 +136,27 @@ export class SoftContextMenu {
         this.discard();
         event.consume(true);
       };
-      this.document.body.addEventListener('mousedown', this.hideOnUserGesture, false);
-      if (this.document.defaultView) {
-        this.document.defaultView.addEventListener('resize', this.hideOnUserGesture, false);
+
+      this.document.body.addEventListener('mousedown', this.hideOnUserMouseDownUnlessInMenu, false);
+
+      // To reliably get resize events when 1) the browser window is resized,
+      // 2) DevTools is undocked and resized and 3) DevTools is docked &
+      // resized, we have to use ResizeObserver.
+      const devToolsElem = InspectorView.maybeGetInspectorViewInstance()?.element;
+      if (devToolsElem) {
+        // The resize-observer will fire immediately upon starting observation.
+        // So we have to ignore that first fire, and then the moment we get a
+        // second, we know that it's been resized so we can act accordingly.
+        let firedOnce = false;
+        const observer = new ResizeObserver(() => {
+          if (firedOnce) {
+            // observer.disconnect();
+            // this.discard();
+            return;
+          }
+          firedOnce = true;
+        });
+        observer.observe(devToolsElem);
       }
     }
   }
@@ -152,14 +171,11 @@ export class SoftContextMenu {
     if (this.glassPane) {
       this.glassPane.hide();
       delete this.glassPane;
-      if (this.hideOnUserGesture) {
+      if (this.hideOnUserMouseDownUnlessInMenu) {
         if (this.document) {
-          this.document.body.removeEventListener('mousedown', this.hideOnUserGesture, false);
-          if (this.document.defaultView) {
-            this.document.defaultView.removeEventListener('resize', this.hideOnUserGesture, false);
-          }
+          this.document.body.removeEventListener('mousedown', this.hideOnUserMouseDownUnlessInMenu, false);
         }
-        delete this.hideOnUserGesture;
+        delete this.hideOnUserMouseDownUnlessInMenu;
       }
     }
     if (this.parentMenu) {

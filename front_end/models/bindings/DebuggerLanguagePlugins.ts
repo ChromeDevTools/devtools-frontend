@@ -15,6 +15,8 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
+
 const UIStrings = {
   /**
   *@description Error message that is displayed in the Console when language #plugins report errors
@@ -943,7 +945,7 @@ export class DebuggerLanguagePluginManager implements
       |null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      return modelData.getProject().uiSourceCodeForURL(url);
+      return modelData.getProject().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
     }
     return null;
   }
@@ -1300,7 +1302,7 @@ class ModelData {
 
   addSourceFiles(script: SDK.Script.Script, urls: string[]): void {
     const initiator = script.createPageResourceLoadInitiator();
-    for (const url of urls) {
+    for (const url of (urls as Platform.DevToolsPath.UrlString[])) {
       let uiSourceCode = this.project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
         uiSourceCode = this.project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);

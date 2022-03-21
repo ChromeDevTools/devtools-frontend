@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -92,7 +93,9 @@ export class EditingLocationHistoryManager {
   }
 
   private reveal(entry: EditingLocationHistoryEntry): void {
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(entry.projectId, entry.url);
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCode(
+        entry.projectId, entry.url as Platform.DevToolsPath.UrlString);
     if (uiSourceCode) {
       this.revealing = true;
       this.sourcesView.showSourceLocation(uiSourceCode, entry.position, false, true);

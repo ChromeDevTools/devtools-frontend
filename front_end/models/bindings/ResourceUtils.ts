@@ -59,7 +59,9 @@ export function displayNameForURL(url: string): string {
     return resource.displayName;
   }
 
-  const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  const uiSourceCode =
+      Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
   if (uiSourceCode) {
     return uiSourceCode.displayName();
   }

@@ -266,7 +266,9 @@ export class CoverageListView extends UI.Widget.VBox {
       return;
     }
     const coverageInfo = (node as GridNode).coverageInfo;
-    let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(coverageInfo.url());
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
+        coverageInfo.url() as Platform.DevToolsPath.UrlString);
     if (!sourceCode) {
       return;
     }

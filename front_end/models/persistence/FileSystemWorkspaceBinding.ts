@@ -142,7 +142,8 @@ export class FileSystemWorkspaceBinding {
       if (!fileSystem) {
         continue;
       }
-      paths.removed.get(fileSystemPath).forEach(path => fileSystem.removeUISourceCode(path));
+      paths.removed.get(fileSystemPath)
+          .forEach(path => fileSystem.removeUISourceCode(path as Platform.DevToolsPath.UrlString));
     }
   }
 
@@ -341,9 +342,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     }
   }
 
-  excludeFolder(url: string): void {
-    let relativeFolder = Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(
-        url as Platform.DevToolsPath.UrlString, this.fileSystemBaseURL.length);
+  excludeFolder(url: Platform.DevToolsPath.UrlString): void {
+    let relativeFolder = Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(url, this.fileSystemBaseURL.length);
     if (!relativeFolder.startsWith('/')) {
       relativeFolder = Common.ParsedURL.ParsedURL.prepend('/', relativeFolder);
     }
@@ -399,7 +399,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 
   private addFile(filePath: Platform.DevToolsPath.EncodedPathString): Workspace.UISourceCode.UISourceCode {
     const contentType = this.fileSystemInternal.contentType(filePath);
-    const uiSourceCode = this.createUISourceCode(this.fileSystemBaseURL + filePath, contentType);
+    const uiSourceCode =
+        this.createUISourceCode(Common.ParsedURL.ParsedURL.concatenate(this.fileSystemBaseURL, filePath), contentType);
     this.addUISourceCode(uiSourceCode);
     return uiSourceCode;
   }
@@ -409,10 +410,10 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     if (this.creatingFilesGuard.has(path)) {
       return;
     }
-    const uiSourceCode = this.uiSourceCodeForURL(path);
+    const uiSourceCode = this.uiSourceCodeForURL(path as Platform.DevToolsPath.UrlString);
     if (!uiSourceCode) {
       const contentType = this.fileSystemInternal.contentType(path);
-      this.addUISourceCode(this.createUISourceCode(path, contentType));
+      this.addUISourceCode(this.createUISourceCode(path as Platform.DevToolsPath.UrlString, contentType));
       return;
     }
     sourceCodeToMetadataMap.delete(uiSourceCode);

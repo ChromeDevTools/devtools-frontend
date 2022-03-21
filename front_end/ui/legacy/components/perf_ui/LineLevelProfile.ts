@@ -6,7 +6,10 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
 
 let performanceInstance: Performance;
 
@@ -78,7 +81,7 @@ export class Performance {
       if (!node) {
         continue;
       }
-      const scriptIdOrUrl = node.scriptId || node.url;
+      const scriptIdOrUrl = Number(node.scriptId) || node.url;
       if (!scriptIdOrUrl) {
         continue;
       }
@@ -122,7 +125,7 @@ export class Memory {
       if (!node.selfSize) {
         return;
       }
-      const script = Number(node.callFrame.scriptId) || node.callFrame.url;
+      const script = Number(node.callFrame.scriptId) || node.callFrame.url as Platform.DevToolsPath.UrlString;
       if (!script) {
         return;
       }
@@ -136,7 +139,7 @@ export class Helper {
   private readonly type: string;
   private readonly locationPool: Bindings.LiveLocation.LiveLocationPool;
   private updateTimer: number|null;
-  private lineData!: Map<SDK.Target.Target|null, Map<string|number, Map<number, number>>>;
+  private lineData!: Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, number>>>;
 
   constructor(type: string) {
     this.type = type;
@@ -151,7 +154,9 @@ export class Helper {
     this.scheduleUpdate();
   }
 
-  addLineData(target: SDK.Target.Target|null, scriptIdOrUrl: string|number, line: number, data: number): void {
+  addLineData(
+      target: SDK.Target.Target|null, scriptIdOrUrl: Platform.DevToolsPath.UrlString|number, line: number,
+      data: number): void {
     let targetData = this.lineData.get(target);
     if (!targetData) {
       targetData = new Map();
@@ -181,13 +186,9 @@ export class Helper {
     const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, number>>();
     const pending: Promise<void>[] = [];
 
-    for (const targetToScript of this.lineData) {
-      const target = (targetToScript[0] as SDK.Target.Target | null);
+    for (const [target, scriptToLineMap] of this.lineData) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
-      const scriptToLineMap = (targetToScript[1] as Map<string|number, Map<number, number>>);
-      for (const scriptToLine of scriptToLineMap) {
-        const scriptIdOrUrl = (scriptToLine[0] as string | number);
-        const lineToDataMap = (scriptToLine[1] as Map<number, number>);
+      for (const [scriptIdOrUrl, lineToDataMap] of scriptToLineMap) {
         // debuggerModel is null when the profile is loaded from file.
         // Try to get UISourceCode by the URL in this case.
         const workspace = Workspace.Workspace.WorkspaceImpl.instance();

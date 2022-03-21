@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -137,7 +139,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     }
   }
 
-  excludeFolder(_path: string): void {
+  excludeFolder(_path: Platform.DevToolsPath.UrlString): void {
   }
 
   canExcludeFolder(_path: Platform.DevToolsPath.EncodedPathString): boolean {
@@ -213,14 +215,14 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   addContentProvider(url: string, contentProvider: TextUtils.ContentProvider.ContentProvider, mimeType: string):
       Workspace.UISourceCode.UISourceCode {
-    const uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
+    const uiSourceCode = this.createUISourceCode(url as Platform.DevToolsPath.UrlString, contentProvider.contentType());
     this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
     return uiSourceCode;
   }
 
   removeFile(path: string): void {
     this.#contentProviders.delete(path);
-    this.removeUISourceCode(path);
+    this.removeUISourceCode(path as Platform.DevToolsPath.UrlString);
   }
 
   reset(): void {

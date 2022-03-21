@@ -121,7 +121,7 @@ export interface KeyEventUnhandledEvent {
 }
 
 export interface RevealSourceLineEvent {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   lineNumber: number;
   columnNumber: number;
 }

@@ -1387,8 +1387,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     if (debuggerWorkspaceBinding.pluginManager) {
       const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
-          Workspace.UISourceCode.UISourceCode[];
+      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString))
+                                .flat()
+                                .filter(f => Boolean(f)) as Workspace.UISourceCode.UISourceCode[];
       const scripts =
           uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
       if (scripts.length) {

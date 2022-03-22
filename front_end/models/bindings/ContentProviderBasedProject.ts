@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -162,7 +160,9 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   remove(): void {
   }
 
-  performRename(path: string, newName: string, callback: (arg0: boolean, arg1?: string|undefined) => void): void {
+  performRename(
+      path: Platform.DevToolsPath.UrlString, newName: string,
+      callback: (arg0: boolean, arg1?: string|undefined) => void): void {
     callback(false);
   }
 
@@ -175,11 +175,11 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   async findFilesMatchingSearchRequest(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, filesMathingFileQuery: string[],
+      searchConfig: Workspace.Workspace.ProjectSearchConfig, filesMatchingFileQuery: Platform.DevToolsPath.UrlString[],
       progress: Common.Progress.Progress): Promise<string[]> {
     const result: string[] = [];
-    progress.setTotalWork(filesMathingFileQuery.length);
-    await Promise.all(filesMathingFileQuery.map(searchInContent.bind(this)));
+    progress.setTotalWork(filesMatchingFileQuery.length);
+    await Promise.all(filesMatchingFileQuery.map(searchInContent.bind(this)));
     progress.done();
     return result;
 
@@ -213,16 +213,17 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     this.addUISourceCode(uiSourceCode);
   }
 
-  addContentProvider(url: string, contentProvider: TextUtils.ContentProvider.ContentProvider, mimeType: string):
-      Workspace.UISourceCode.UISourceCode {
-    const uiSourceCode = this.createUISourceCode(url as Platform.DevToolsPath.UrlString, contentProvider.contentType());
+  addContentProvider(
+      url: Platform.DevToolsPath.UrlString, contentProvider: TextUtils.ContentProvider.ContentProvider,
+      mimeType: string): Workspace.UISourceCode.UISourceCode {
+    const uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
     this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
     return uiSourceCode;
   }
 
-  removeFile(path: string): void {
+  removeFile(path: Platform.DevToolsPath.UrlString): void {
     this.#contentProviders.delete(path);
-    this.removeUISourceCode(path as Platform.DevToolsPath.UrlString);
+    this.removeUISourceCode(path);
   }
 
   reset(): void {

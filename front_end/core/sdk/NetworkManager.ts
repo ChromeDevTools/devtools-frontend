@@ -1021,7 +1021,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   subresourceWebBundleMetadataReceived({requestId, urls}: Protocol.Network.SubresourceWebBundleMetadataReceivedEvent):
       void {
     const extraInfoBuilder = this.getExtraInfoBuilder(requestId);
-    extraInfoBuilder.setWebBundleInfo({resourceUrls: urls});
+    extraInfoBuilder.setWebBundleInfo({resourceUrls: urls as Platform.DevToolsPath.UrlString[]});
     const finalRequest = extraInfoBuilder.finalRequest();
     if (finalRequest) {
       this.updateNetworkRequest(finalRequest);

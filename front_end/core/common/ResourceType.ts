@@ -243,7 +243,7 @@ export class ResourceType {
     return null;
   }
 
-  static mimeFromURL(url: string): string|undefined {
+  static mimeFromURL(url: Platform.DevToolsPath.UrlString): string|undefined {
     const name = ParsedURL.extractName(url);
     if (mimeTypeByName.has(name)) {
       return mimeTypeByName.get(name);

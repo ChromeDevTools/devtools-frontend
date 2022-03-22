@@ -32,7 +32,7 @@ function escapeSnippetName(name: Platform.DevToolsPath.RawPathString): Platform.
   return Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(name);
 }
 
-function unescapeSnippetName(name: Platform.DevToolsPath.EncodedPathString): string {
+function unescapeSnippetName(name: Platform.DevToolsPath.EncodedPathString): Platform.DevToolsPath.RawPathString {
   return Common.ParsedURL.ParsedURL.encodedPathToRawPathString(name);
 }
 

@@ -218,17 +218,18 @@ describeWithEnvironment('ResourceType class', () => {
   });
 
   it('is able to return a mime from URL that contains a mapped extension', () => {
-    const result = ResourceType.mimeFromURL('http://www.example.com/test/path.html');
+    const result = ResourceType.mimeFromURL('http://www.example.com/test/path.html' as Platform.DevToolsPath.UrlString);
     assert.strictEqual(result, 'text/html', 'mime returned was not correct');
   });
 
   it('is able to return a mime from URL that contains an unmapped extension', () => {
-    const result = ResourceType.mimeFromURL('http://www.example.com/test/path.testExt');
+    const result =
+        ResourceType.mimeFromURL('http://www.example.com/test/path.testExt' as Platform.DevToolsPath.UrlString);
     assert.isUndefined(result, 'mime returned was not correct');
   });
 
   it('is able to return a mime from URL that contains a mapped name', () => {
-    const result = ResourceType.mimeFromURL('http://www.example.com/test/Cakefile');
+    const result = ResourceType.mimeFromURL('http://www.example.com/test/Cakefile' as Platform.DevToolsPath.UrlString);
     assert.strictEqual(result, 'text/x-coffeescript', 'mime returned was not correct');
   });
 

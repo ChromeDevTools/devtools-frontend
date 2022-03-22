@@ -1718,7 +1718,7 @@ export interface ExtraResponseInfo {
 }
 
 export interface WebBundleInfo {
-  resourceUrls?: string[];
+  resourceUrls?: Platform.DevToolsPath.UrlString[];
   errorMessage?: string;
 }
 

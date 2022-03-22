@@ -94,7 +94,8 @@ export class SearchConfig implements Workspace.Workspace.ProjectSearchConfig {
     }
   }
 
-  filePathMatchesFileQuery(filePath: string): boolean {
+  filePathMatchesFileQuery(filePath: Platform.DevToolsPath.RawPathString|
+                           Platform.DevToolsPath.EncodedPathString|Platform.DevToolsPath.UrlString): boolean {
     if (!this.fileRegexQueries) {
       return true;
     }

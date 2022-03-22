@@ -522,12 +522,12 @@ export class ParsedURL {
     return this.host + (this.port ? ':' + this.port : '');
   }
 
-  securityOrigin(): string {
+  securityOrigin(): Platform.DevToolsPath.UrlString {
     if (this.isDataURL()) {
-      return 'data:';
+      return 'data:' as Platform.DevToolsPath.UrlString;
     }
     const scheme = this.isBlobURL() ? this.blobInnerScheme : this.scheme;
-    return scheme + '://' + this.domain();
+    return scheme + '://' + this.domain() as Platform.DevToolsPath.UrlString;
   }
 
   urlWithoutScheme(): string {

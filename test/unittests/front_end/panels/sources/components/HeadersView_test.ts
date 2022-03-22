@@ -10,6 +10,7 @@ import {deinitializeGlobalVars, initializeGlobalVars} from '../../../helpers/Env
 
 import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -86,7 +87,8 @@ describe('HeadersView', async () => {
       type: () => Workspace.Workspace.projectTypes.FileSystem,
     } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
     const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
-        fileSystem, 'file:///path/to/overrides/example.html', Common.ResourceType.resourceTypes.Document);
+        fileSystem, 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
+        Common.ResourceType.resourceTypes.Document);
 
     const editorWrapper = new SourcesComponents.HeadersView.HeadersView(uiSourceCode);
     await coordinator.done();

@@ -557,7 +557,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   mimeFromPath(path: string): string {
-    return Common.ResourceType.ResourceType.mimeFromURL(path) || 'text/plain';
+    return Common.ResourceType.ResourceType.mimeFromURL(path as Platform.DevToolsPath.UrlString) || 'text/plain';
   }
 
   canExcludeFolder(path: Platform.DevToolsPath.EncodedPathString): boolean {

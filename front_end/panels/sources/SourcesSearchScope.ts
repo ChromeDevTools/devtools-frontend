@@ -158,7 +158,9 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
       if (dirtyOnly && !uiSourceCode.isDirty()) {
         continue;
       }
-      if (searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName())) {
+      if (searchConfig.filePathMatchesFileQuery(
+              uiSourceCode.fullDisplayName() as Platform.DevToolsPath.UrlString |
+              Platform.DevToolsPath.EncodedPathString)) {
         result.push(uiSourceCode.url());
       }
     }

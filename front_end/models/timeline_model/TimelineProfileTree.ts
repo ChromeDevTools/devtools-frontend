@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -494,14 +495,14 @@ export class BottomUpNode extends Node {
   }
 }
 
-export function eventURL(event: SDK.TracingModel.Event): string|null {
+export function eventURL(event: SDK.TracingModel.Event): Platform.DevToolsPath.UrlString|null {
   const data = event.args['data'] || event.args['beginData'];
   if (data && data['url']) {
     return data['url'];
   }
   let frame = eventStackFrame(event);
   while (frame) {
-    const url = frame['url'];
+    const url = frame['url'] as Platform.DevToolsPath.UrlString;
     if (url) {
       return url;
     }

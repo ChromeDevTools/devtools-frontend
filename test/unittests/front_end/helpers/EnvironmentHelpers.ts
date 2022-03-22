@@ -205,6 +205,7 @@ export async function deinitializeGlobalVars() {
   if (UI) {
     UI.ZoomManager.ZoomManager.removeInstance();
     UI.ViewManager.ViewManager.removeInstance();
+    UI.ViewManager.resetViewRegistration();
   }
 }
 

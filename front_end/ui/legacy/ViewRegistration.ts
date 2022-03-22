@@ -158,6 +158,12 @@ export function getRegisteredLocationResolvers(): Array<LocationResolverRegistra
   return registeredLocationResolvers;
 }
 
+export function resetViewRegistration(): void {
+  registeredViewExtensions.length = 0;
+  registeredLocationResolvers.length = 0;
+  viewLocationNameSet.clear();
+}
+
 // TODO(crbug.com/1181019)
 export const ViewLocationCategoryValues = {
   ELEMENTS: 'Elements',

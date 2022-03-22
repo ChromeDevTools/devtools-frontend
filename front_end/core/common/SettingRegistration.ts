@@ -111,6 +111,7 @@ export function registerSettingsForTest(settings: Array<SettingRegistration>, fo
 
 export function resetSettings(): void {
   registeredSettings = [];
+  settingNameSet.clear();
 }
 
 export function maybeRemoveSettingExtension(settingName: string): boolean {

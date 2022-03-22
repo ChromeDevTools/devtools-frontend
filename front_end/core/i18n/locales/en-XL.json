@@ -4892,6 +4892,9 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Îńĥér̂ít̂éd̂ f́r̂óm̂ "
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Îńĥér̂ít̂éd̂ f́r̂óm̂ ::{PH1} ṕŝéûd́ô óf̂ "
+  },
   "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
     "message": "îńĵéĉt́êd́ ŝt́ŷĺêśĥéêt́"
   },

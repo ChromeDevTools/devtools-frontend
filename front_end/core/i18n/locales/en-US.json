@@ -4892,6 +4892,9 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Inherited from "
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Inherited from ::{PH1} pseudo of "
+  },
   "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
     "message": "injected stylesheet"
   },

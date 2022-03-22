@@ -25,6 +25,7 @@ copy_to_gen("elements") {
     "flexbox-editor.html",
     "focus.html",
     "grid-editor.html",
+    "highlight-pseudo-inheritance.html",
     "hover.html",
     "limited-quirks-mode.html",
     "low-contrast.html",

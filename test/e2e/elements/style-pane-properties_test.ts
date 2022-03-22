@@ -18,6 +18,7 @@ const FIRST_PROPERTY_VALUE_SELECTOR = '.tree-outline li:nth-of-type(1) > .value'
 const RULE1_SELECTOR = '.rule1';
 const RULE2_SELECTOR = '.rule2';
 const LAYER_SEPARATOR_SELECTOR = '.layer-separator';
+const SIDEBAR_SEPARATOR_SELECTOR = '.sidebar-separator';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const deletePropertyByBackspace = async (selector: string, root?: puppeteer.ElementHandle<Element>) => {
@@ -402,5 +403,55 @@ describe('The Styles pane', async () => {
 
     const treeElement = await waitFor('[data-node-key="2: overrule"]');
     assertNotNullOrUndefined(treeElement);
+  });
+
+  it('can display inherited CSS highlight pseudo styles', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/highlight-pseudo-inheritance.html');
+
+    const onH1RuleAppeared = waitForStyleRule('h1');
+
+    // Select the h1 for which we will inspect the pseudo styles
+    await frontend.keyboard.press('ArrowRight');
+
+    await onH1RuleAppeared;
+
+    const h1Rules = await getDisplayedStyleRules();
+    // The 6 rule blocks for the h1 are:
+    // 1. Inline styles from the style attribute
+    // 2. The h1's user agent styles
+    // 3. The h1's own highlight pseudo
+    // 4. The h1's inherited highlight pseudo
+    // 5. The h1's own selection pseudo
+    // 6. The h1's inherited selection pseudo
+    // And there is no 6th block for the ::first-letter style, since only
+    // highlight pseudos are inherited.
+    assert.strictEqual(h1Rules.length, 6, 'The h1 should have 6 style rule blocks');
+    assert.deepEqual(
+        h1Rules[2], {selectorText: 'h1::highlight(foo)', propertyNames: ['background-color']},
+        'The h1\'s own highlight pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[3], {selectorText: 'body::highlight(bar)', propertyNames: ['color']},
+        'The h1\'s inherited highlight pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[4], {selectorText: 'h1::selection', propertyNames: ['background-color']},
+        'The h1\'s own selection pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[5], {selectorText: 'body::selection', propertyNames: ['text-shadow']},
+        'The h1\'s inherited selection pseudo is displayed');
+
+    const sidebarSeparators = await waitForFunction(async () => {
+      const separators = await $$(SIDEBAR_SEPARATOR_SELECTOR);
+      return separators.length === 4 ? separators : null;
+    });
+    assertNotNullOrUndefined(sidebarSeparators);
+
+    const layerText = await Promise.all(sidebarSeparators.map(element => element.evaluate(node => node.textContent)));
+    assert.deepEqual(layerText, [
+      'Pseudo ::highlight element',
+      'Inherited from ::highlight pseudo of ',
+      'Pseudo ::selection element',
+      'Inherited from ::selection pseudo of ',
+    ]);
   });
 });

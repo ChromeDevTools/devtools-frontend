@@ -167,6 +167,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/issue_counter/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../test/unittests/front_end/helpers/*",
     "../../../test/unittests/front_end/ui/components/issue_counter/*",
     "../../ui/components/issue_counter/*",
     "../../ui/legacy/components/cookie_table/*",

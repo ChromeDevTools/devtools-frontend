@@ -10,6 +10,7 @@ import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
+import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 
 import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 
@@ -197,6 +198,7 @@ export async function deinitializeGlobalVars() {
   Workspace.Workspace.WorkspaceImpl.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
+  IssuesManager.IssuesManager.IssuesManager.removeInstance();
   Common.Settings.resetSettings();
 
   // Protect against the dynamic import not having happened.

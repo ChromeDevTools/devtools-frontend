@@ -208,6 +208,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return issuesManagerInstance;
   }
 
+  static removeInstance(): void {
+    issuesManagerInstance = null;
+  }
+
   /**
    * Once we have seen at least one `TopFrameNavigated` event, we can be reasonably sure
    * that we also collected issues that were reported during the navigation to the current

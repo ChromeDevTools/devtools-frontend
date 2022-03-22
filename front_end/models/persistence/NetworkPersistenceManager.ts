@@ -185,8 +185,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     PersistenceImpl.instance().refreshAutomapping();
   }
 
-  private encodedPathFromUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.EncodedPathString {
-    if (!this.activeInternal || !this.projectInternal) {
+  encodedPathFromUrl(url: Platform.DevToolsPath.UrlString, ignoreInactive?: boolean):
+      Platform.DevToolsPath.EncodedPathString {
+    if ((!this.activeInternal && !ignoreInactive) || !this.projectInternal) {
       return Platform.DevToolsPath.EmptyEncodedPathString;
     }
     let urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
@@ -248,8 +249,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
-    return (this.projectInternal as FileSystem).fileSystemPath() + '/' + this.encodedPathFromUrl(url) as
+  fileUrlFromNetworkUrl(url: Platform.DevToolsPath.UrlString, ignoreInactive?: boolean):
+      Platform.DevToolsPath.UrlString {
+    if (!this.projectInternal) {
+      return Platform.DevToolsPath.EmptyUrlString;
+    }
+    return (this.projectInternal as FileSystem).fileSystemPath() + '/' + this.encodedPathFromUrl(url, ignoreInactive) as
         Platform.DevToolsPath.UrlString;
   }
 

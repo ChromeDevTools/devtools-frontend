@@ -585,7 +585,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
   #getHeaderOverridesFileUrl(): Platform.DevToolsPath.UrlString {
     const fileUrl = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().fileUrlFromNetworkUrl(
-        this.request.url());
+        this.request.url(), /* ignoreInactive */ true);
     return fileUrl.substring(0, fileUrl.lastIndexOf('/')) + '/' +
         Persistence.NetworkPersistenceManager.HEADERS_FILENAME as Platform.DevToolsPath.UrlString;
   }

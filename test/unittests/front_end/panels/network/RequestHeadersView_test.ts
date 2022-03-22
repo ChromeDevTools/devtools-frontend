@@ -111,4 +111,29 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.strictEqual(button.textContent, 'Header overrides');
     component.detach();
   });
+
+  it('renders without error when no overrides folder specified (i.e. there is no project)', async () => {
+    createTarget();
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerWorkspaceBinding =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
+    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [{name: 'server', value: 'DevTools Test Server'}];
+    const component = renderHeadersView(request);
+    const headersTitle =
+        component.responseHeadersCategory.treeOutline?.contentElement.querySelector('.headers-title') || null;
+    assertElement(headersTitle, HTMLElement);
+    const button = headersTitle.querySelector('button.headers-link');
+    assert.isNull(button);
+    component.detach();
+  });
 });

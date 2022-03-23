@@ -62,8 +62,8 @@ export class RemoteObject {
     return remoteObject.type;
   }
 
-  static isNullOrUndefined(remoteObject: RemoteObject|null|undefined): boolean {
-    if (remoteObject === null || remoteObject === undefined) {
+  static isNullOrUndefined(remoteObject?: RemoteObject): boolean {
+    if (remoteObject === undefined) {
       return true;
     }
     switch (remoteObject.type) {
@@ -715,7 +715,7 @@ export class ScopeRef {
 
 export class RemoteObjectProperty {
   name: string;
-  value: RemoteObject|null|undefined;
+  value?: RemoteObject;
   enumerable: boolean;
   writable: boolean;
   isOwn: boolean;
@@ -733,9 +733,7 @@ export class RemoteObjectProperty {
       wasThrown?: boolean, symbol?: RemoteObject|null, synthetic?: boolean,
       syntheticSetter?: ((arg0: string) => Promise<RemoteObject|null>), isPrivate?: boolean) {
     this.name = name;
-    if (value !== null) {
-      this.value = value;
-    }
+    this.value = value !== null ? value : undefined;
     this.enumerable = typeof enumerable !== 'undefined' ? enumerable : true;
     const isNonSyntheticOrSyntheticWritable = !synthetic || Boolean(syntheticSetter);
     this.writable = typeof writable !== 'undefined' ? writable : isNonSyntheticOrSyntheticWritable;
@@ -764,6 +762,20 @@ export class RemoteObjectProperty {
 
   isAccessorProperty(): boolean {
     return Boolean(this.getter || this.setter);
+  }
+
+  match({includeNullOrUndefinedValues, regex}: {includeNullOrUndefinedValues: boolean, regex: RegExp|null}): boolean {
+    if (regex !== null) {
+      if (!regex.test(this.name) && !regex.test(this.value?.description ?? '')) {
+        return false;
+      }
+    }
+    if (!includeNullOrUndefinedValues) {
+      if (!this.isAccessorProperty() && RemoteObject.isNullOrUndefined(this.value)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

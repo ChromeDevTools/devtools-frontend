@@ -35,7 +35,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -147,32 +146,13 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   private filterList(): void {
-    const isHidden = (property: SDK.RemoteObject.RemoteObjectProperty): boolean => {
-      if (!this.showAllPropertiesSetting.get()) {
-        if (SDK.RemoteObject.RemoteObject.isNullOrUndefined(property.value)) {
-          return true;
-        }
-        if (property.value?.type === Protocol.Runtime.RemoteObjectType.Undefined ||
-            (property.value?.type === Protocol.Runtime.RemoteObjectType.Object &&
-             property.value.subtype === Protocol.Runtime.RemoteObjectSubtype.Null)) {
-          return true;
-        }
-      }
-      if (this.filterRegex !== null) {
-        if (this.filterRegex.test(property.name)) {
-          return false;
-        }
-        if (this.filterRegex.test(property.value?.description ?? '')) {
-          return false;
-        }
-        return true;
-      }
-      return false;
-    };
     let noMatches = true;
     for (const element of this.treeOutline.rootElement().children()) {
       const {property} = element as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
-      const hidden = isHidden(property);
+      const hidden = !property.match({
+        includeNullOrUndefinedValues: this.showAllPropertiesSetting.get(),
+        regex: this.filterRegex,
+      });
       if (!hidden) {
         noMatches = false;
       }

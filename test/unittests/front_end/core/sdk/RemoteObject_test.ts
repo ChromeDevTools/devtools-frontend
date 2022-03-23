@@ -306,4 +306,102 @@ describe('RemoteObject', () => {
       assert.deepEqual(callArguments.unserializableValue, undefined);
     });
   });
+
+  describe('isNullOrUndefined', () => {
+    it('correctly handles undefined', () => {
+      assert.isTrue(SDK.RemoteObject.RemoteObject.isNullOrUndefined(undefined));
+    });
+
+    it('correctly handles RemoteObject null value', () => {
+      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(null);
+      assert.isTrue(SDK.RemoteObject.RemoteObject.isNullOrUndefined(remoteObject));
+    });
+
+    it('correctly handles RemoteObject undefined value', () => {
+      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(undefined);
+      assert.isTrue(SDK.RemoteObject.RemoteObject.isNullOrUndefined(remoteObject));
+    });
+
+    it('correctly handles RemoteObject object', () => {
+      const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject({x: 42, y: 21});
+      assert.isFalse(SDK.RemoteObject.RemoteObject.isNullOrUndefined(remoteObject));
+    });
+  });
+});
+
+describe('RemoteObjectProperty', () => {
+  describe('isAccessorProperty', () => {
+    it('correctly handles data properties', () => {
+      const property =
+          new SDK.RemoteObject.RemoteObjectProperty('x', SDK.RemoteObject.RemoteObject.fromLocalObject('some string'));
+      assert.isFalse(property.isAccessorProperty());
+    });
+
+    it('correctly handles accessor properties with getters', () => {
+      const property = new SDK.RemoteObject.RemoteObjectProperty('y', null);
+      property.getter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => {});
+      assert.isTrue(property.isAccessorProperty());
+    });
+
+    it('correctly handles accessor properties with setters', () => {
+      const property = new SDK.RemoteObject.RemoteObjectProperty('y', null);
+      property.setter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => {});
+      assert.isTrue(property.isAccessorProperty());
+    });
+  });
+
+  describe('match', () => {
+    it('correctly handles properties with a null value', () => {
+      const property = new SDK.RemoteObject.RemoteObjectProperty('foo', null);
+      assert.isFalse(property.match({includeNullOrUndefinedValues: false, regex: null}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: null}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /bar/}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /f.*/}));
+    });
+
+    it('correctly handles properties with a RemoteObject null value', () => {
+      const property =
+          new SDK.RemoteObject.RemoteObjectProperty('bar', SDK.RemoteObject.RemoteObject.fromLocalObject(null));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: false, regex: null}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: null}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /foo/}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: false, regex: /.*r/}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /.*r/}));
+    });
+
+    it('correctly handles properties with a RemoteObject undefined value', () => {
+      const property =
+          new SDK.RemoteObject.RemoteObjectProperty('x', SDK.RemoteObject.RemoteObject.fromLocalObject(undefined));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: false, regex: null}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: null}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /y/}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /.*/}));
+    });
+
+    it('correctly handles properties with a RemoteObject object value', () => {
+      const property =
+          new SDK.RemoteObject.RemoteObjectProperty('obj', SDK.RemoteObject.RemoteObject.fromLocalObject({x: 1}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: false, regex: null}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: null}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /^b.*/}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /.*/}));
+    });
+
+    it('correctly matches property values\' descriptions', () => {
+      const property = new SDK.RemoteObject.RemoteObjectProperty(
+          'foo', SDK.RemoteObject.RemoteObject.fromLocalObject('this is a bar'));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /bar/}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /baz/}));
+    });
+
+    it('correctly matches accessor properties', () => {
+      const property = new SDK.RemoteObject.RemoteObjectProperty('foo', null);
+      property.getter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => void 0);
+      property.setter = SDK.RemoteObject.RemoteObject.fromLocalObject(() => void 0);
+      assert.isTrue(property.match({includeNullOrUndefinedValues: false, regex: null}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: null}));
+      assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /bar/}));
+      assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /foo/}));
+    });
+  });
 });

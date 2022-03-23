@@ -51,6 +51,10 @@ export class Runtime {
     return queryParamsObject.get(name);
   }
 
+  static setQueryParamForTesting(name: string, value: string): void {
+    queryParamsObject.set(name, value);
+  }
+
   static experimentsSetting(): {
     [x: string]: boolean,
   } {

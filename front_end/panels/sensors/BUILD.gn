@@ -52,5 +52,8 @@ devtools_entrypoint("meta") {
 
   deps = [ ":bundle" ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [
+    "../../../test/unittests/front_end/helpers/*",
+    "../../entrypoints/*",
+  ]
 }

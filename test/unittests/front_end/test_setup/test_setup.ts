@@ -9,12 +9,14 @@
 import type * as Common from '../../../../front_end/core/common/common.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
+import {markStaticTestsLoaded} from '../helpers/RealConnection.js';
 
 beforeEach(resetTestDOM);
 
 before(async function() {
   /* Larger than normal timeout because we've seen some slowness on the bots */
   this.timeout(10000);
+  markStaticTestsLoaded();
 });
 
 afterEach(() => {

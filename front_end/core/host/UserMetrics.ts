@@ -407,7 +407,8 @@ export enum PanelCodes {
   'dom_storage' = 60,
   'indexed_db' = 61,
   'web_sql' = 62,
-  MaxValue = 63,
+  'performance_insights' = 63,
+  MaxValue = 64,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

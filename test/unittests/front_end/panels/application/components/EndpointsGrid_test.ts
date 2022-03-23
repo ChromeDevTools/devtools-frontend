@@ -6,6 +6,7 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 import {getHeaderCells, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 
 const {assert} = chai;
@@ -38,7 +39,7 @@ const getHeaderText = (cell: HTMLTableCellElement): string|null => {
       cell.querySelector('devtools-resources-endpoints-grid-status-header')?.shadowRoot?.textContent?.trim() || null;
 };
 
-describe('EndpointsGrid', async () => {
+describeWithLocale('EndpointsGrid', async () => {
   it('displays placeholder text if no data', async () => {
     const component = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
     renderElementIntoDOM(component);

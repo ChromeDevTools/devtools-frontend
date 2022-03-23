@@ -4,6 +4,7 @@
 
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -30,7 +31,7 @@ function clickSettingsButton(
   settingsButton.click();
 }
 
-describe('LinearMemoryValueInterpreter', () => {
+describeWithLocale('LinearMemoryValueInterpreter', () => {
   function setUpComponent() {
     const buffer = new Uint8Array([34, 234, 12, 3]).buffer;
     const component = new LinearMemoryInspector.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter();

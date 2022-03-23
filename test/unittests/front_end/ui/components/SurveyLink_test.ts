@@ -8,6 +8,7 @@ import * as SurveyLink from '../../../../../front_end/ui/components/survey_link/
 import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 function canShowSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: true});
@@ -24,7 +25,7 @@ function showFailureCallback(trigger: string, callback: SurveyLink.SurveyLink.Sh
 
 const empty = Common.UIString.LocalizedEmptyString;
 
-describe('SurveyLink', async () => {
+describeWithLocale('SurveyLink', async () => {
   it('shows no link when canShowSurvey is still pending', () => {
     const link = new SurveyLink.SurveyLink.SurveyLink();
     link.data = {trigger: 'test trigger', promptText: empty, canShowSurvey: () => {}, showSurvey: () => {}};

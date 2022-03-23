@@ -5,10 +5,11 @@
 import * as PanelFeedback from '../../../../../../front_end/ui/components/panel_feedback/panel_feedback.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-describe('Panel Feedback', () => {
+describeWithLocale('Panel Feedback', () => {
   async function renderFeedbackComponent(): Promise<PanelFeedback.PanelFeedback.PanelFeedback> {
     const component = new PanelFeedback.PanelFeedback.PanelFeedback();
     component.data = {

@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as TimelineComponents from '../../../../../../front_end/panels/timeline/components/components.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describe('WebVitalsTimeline', () => {
+describeWithLocale('WebVitalsTimeline', () => {
   it('should instantiate without problems', () => {
     const node = new TimelineComponents.WebVitalsTimeline.WebVitalsTimeline();
     assert.instanceOf(node, TimelineComponents.WebVitalsTimeline.WebVitalsTimeline);

@@ -11,5 +11,6 @@ ts_library("diff_view") {
   deps = [
     "../../../../../../front_end/third_party/diff:bundle",
     "../../../../../../front_end/ui/components/diff_view:bundle",
+    "../../../helpers",
   ]
 }

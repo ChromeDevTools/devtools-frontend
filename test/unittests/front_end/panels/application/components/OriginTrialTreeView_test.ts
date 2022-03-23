@@ -7,6 +7,7 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
 import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -204,7 +205,7 @@ async function waitForRenderedTreeNodeCount(shadowRoot: ShadowRoot, expectedNode
   });
 }
 
-describe('OriginTrialTreeView', () => {
+describeWithLocale('OriginTrialTreeView', () => {
   it('renders trial names as root tree nodes', async () => {
     const {shadowRoot} = await renderOriginTrialTreeViewTreeOutline({
       trials: [

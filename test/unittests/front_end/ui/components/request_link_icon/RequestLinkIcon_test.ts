@@ -11,6 +11,7 @@ import * as IconButton from '../../../../../../front_end/ui/components/icon_butt
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -104,7 +105,7 @@ class MockRequestResolver {
   }
 }
 
-describe('RequestLinkIcon', () => {
+describeWithLocale('RequestLinkIcon', () => {
   const requestId1 = 'r1' as Protocol.Network.RequestId;
   const requestId2 = 'r2' as Protocol.Network.RequestId;
 

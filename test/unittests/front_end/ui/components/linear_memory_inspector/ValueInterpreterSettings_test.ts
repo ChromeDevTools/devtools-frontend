@@ -4,6 +4,7 @@
 
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {assertElement, getElementsWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -11,7 +12,7 @@ const SETTINGS_INPUT_SELECTOR = '[data-input]';
 const SETTINGS_TITLE_SELECTOR = '[data-title]';
 const SETTINGS_LABEL_SELECTOR = '.type-label';
 
-describe('ValueInterpreterSettings', () => {
+describeWithLocale('ValueInterpreterSettings', () => {
   function setUpComponent() {
     const component = new LinearMemoryInspector.ValueInterpreterSettings.ValueInterpreterSettings();
     const data = {

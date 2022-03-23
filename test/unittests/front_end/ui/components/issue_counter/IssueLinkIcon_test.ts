@@ -8,6 +8,7 @@ import * as IconButton from '../../../../../../front_end/ui/components/icon_butt
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as IssuesManager from '../../../../../../front_end/models/issues_manager/issues_manager.js';
@@ -92,7 +93,7 @@ class MockIssueResolver {
   }
 }
 
-describe('IssueLinkIcon', () => {
+describeWithLocale('IssueLinkIcon', () => {
   const issueId = 'issue1' as Protocol.Audits.IssueId;
   const defaultIcon = {iconName: 'issue-questionmark-icon', color: 'var(--color-text-secondary)'};
   const breakingChangeIcon =

@@ -5,10 +5,11 @@
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-describe('AccessibilityTreeNode', () => {
+describeWithLocale('AccessibilityTreeNode', () => {
   it('renders role and name correctly for unignored nodes', async () => {
     const component = new ElementsComponents.AccessibilityTreeNode.AccessibilityTreeNode();
     renderElementIntoDOM(component);

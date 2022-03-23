@@ -5,6 +5,7 @@
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as PerfUI from '../../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -26,7 +27,7 @@ const testChartNoLegendData = {
   slices: [{value: 75, color: 'crimson', title: 'Filling'}, {value: 25, color: 'burlywood', title: 'Crust'}],
 };
 
-describe('PieChart', () => {
+describeWithLocale('PieChart', () => {
   describe('with legend', () => {
     it('is labelled by the chart name', () => {
       const chart = new PerfUI.PieChart.PieChart();

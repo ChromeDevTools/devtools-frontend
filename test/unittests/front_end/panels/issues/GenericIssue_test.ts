@@ -8,8 +8,9 @@ import * as IssuesManager from '../../../../../front_end/models/issues_manager/i
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
-describe('GenericIssue', async () => {
+describeWithLocale('GenericIssue', async () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 
   function createProtocolIssueWithoutDetails(): Protocol.Audits.InspectorIssue {

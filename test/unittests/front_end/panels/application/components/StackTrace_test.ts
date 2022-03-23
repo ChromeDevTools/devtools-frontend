@@ -8,6 +8,7 @@ import * as ExpandableList from '../../../../../../front_end/ui/components/expan
 import * as Components from '../../../../../../front_end/ui/legacy/components/utils/utils.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, getElementsWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -40,7 +41,7 @@ function mockBuildStackTraceRows(
 
 const fakeScriptId = '1' as Protocol.Runtime.ScriptId;
 
-describe('StackTrace', () => {
+describeWithLocale('StackTrace', () => {
   it('does not generate rows when there is no data', () => {
     const component = new ApplicationComponents.StackTrace.StackTrace();
     const rows = component.createRowTemplates();

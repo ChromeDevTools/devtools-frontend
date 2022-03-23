@@ -5,10 +5,11 @@
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describe('LayoutPane', async () => {
+describeWithLocale('LayoutPane', async () => {
   function queryLabels(component: HTMLElement, selector: string) {
     assertShadowRoot(component.shadowRoot);
     return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {

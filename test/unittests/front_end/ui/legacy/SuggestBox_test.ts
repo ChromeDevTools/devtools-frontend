@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -34,7 +35,7 @@ class MockSuggestBoxDelegate implements UI.SuggestBox.SuggestBoxDelegate {
 
 const createKeyEvent = (key: string) => new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key});
 
-describe('SuggestBox', () => {
+describeWithLocale('SuggestBox', () => {
   let delegate: MockSuggestBoxDelegate;
   let div: HTMLElement;
   let suggestBox: UI.SuggestBox.SuggestBox;

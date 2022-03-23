@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as DiffView from '../../../../../../front_end/ui/components/diff_view/diff_view.js';
 import * as Diff from '../../../../../../front_end/third_party/diff/diff.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 function buildDiff(original: string, updated: string): Promise<DocumentFragment> {
   const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), updated.split('\n'));
@@ -35,7 +36,7 @@ function text(elt: Node): string {
   return '';
 }
 
-describe('DiffView', () => {
+describeWithLocale('DiffView', () => {
   it('renders the proper content', async () => {
     const output = await simpleDiff();
     const lines = Array.from(output.querySelectorAll('.diff-line-content'));

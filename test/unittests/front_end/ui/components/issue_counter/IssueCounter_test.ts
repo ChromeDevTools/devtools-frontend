@@ -7,6 +7,7 @@ import * as IssuesManager from '../../../../../../front_end/models/issues_manage
 import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../../../../../front_end/ui/components/issue_counter/issue_counter.js';
 import {assertElement, assertElements, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 import {MockIssuesManager} from '../../../models/issues_manager/MockIssuesManager.js';
 
 const {assert} = chai;
@@ -50,7 +51,7 @@ export const extractButton = (shadowRoot: ShadowRoot): HTMLButtonElement => {
   return button;
 };
 
-describe('IssueCounter', () => {
+describeWithLocale('IssueCounter', () => {
   describe('with omitting zero-count issue kinds', () => {
     it('renders correctly', () => {
       const issuesManager = new MockIssuesManager([]);
@@ -216,7 +217,7 @@ describe('IssueCounter', () => {
   });
 });
 
-describe('getIssueCountsEnumeration', () => {
+describeWithLocale('getIssueCountsEnumeration', () => {
   it('formats issue counts correctly', () => {
     const issuesManager = new MockIssuesManager([]);
     const string = IssueCounter.IssueCounter.getIssueCountsEnumeration(

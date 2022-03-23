@@ -4,6 +4,7 @@
 
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {assertElement, assertElements, assertShadowRoot, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -12,7 +13,7 @@ export const NAVIGATOR_PAGE_BUTTON_SELECTOR = '[data-button=pagenavigation]';
 export const NAVIGATOR_HISTORY_BUTTON_SELECTOR = '[data-button=historynavigation]';
 export const NAVIGATOR_REFRESH_BUTTON_SELECTOR = '[data-button=refreshrequested]';
 
-describe('LinearMemoryNavigator', () => {
+describeWithLocale('LinearMemoryNavigator', () => {
   let component: LinearMemoryInspector.LinearMemoryNavigator.LinearMemoryNavigator;
 
   beforeEach(renderNavigator);

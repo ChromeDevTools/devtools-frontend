@@ -7,6 +7,7 @@ const {assert} = chai;
 import type * as Host from '../../../../../front_end/core/host/host.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 interface LoadResult {
   success: boolean;
@@ -14,7 +15,7 @@ interface LoadResult {
   errorDescription: Host.ResourceLoader.LoadErrorDescription;
 }
 
-describe('PageResourceLoader', () => {
+describeWithLocale('PageResourceLoader', () => {
   const loads: Array<{url: string}> = [];
   const load = async(url: string): Promise<LoadResult> => {
     loads.push({url});

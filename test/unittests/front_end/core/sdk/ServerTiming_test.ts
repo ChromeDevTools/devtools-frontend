@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 describe('ServerTiming', () => {
   it('can be instantiated correctly', () => {
@@ -15,7 +16,7 @@ describe('ServerTiming', () => {
   });
 });
 
-describe('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
+describeWithLocale('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => {
   it('parses headers correctly', () => {
     // A real-world-like example with some edge cases.
     const actual = SDK.ServerTiming.ServerTiming.createFromHeaderValue(

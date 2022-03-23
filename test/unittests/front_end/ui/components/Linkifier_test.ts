@@ -4,13 +4,14 @@
 
 import * as Linkifier from '../../../../../front_end/ui/components/linkifier/linkifier.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {assertElement, assertShadowRoot, dispatchClickEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 const {assert} = chai;
 
-describe('Linkifier', () => {
+describeWithLocale('Linkifier', () => {
   it('renders a link when given a URL', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {

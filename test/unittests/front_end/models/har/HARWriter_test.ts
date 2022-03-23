@@ -10,6 +10,7 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.NetworkRequest => {
   const requestId = 'r0' as Protocol.Network.RequestId;
@@ -20,7 +21,7 @@ const simulateRequestWithStartTime = (startTime: number): SDK.NetworkRequest.Net
   return request;
 };
 
-describe('HARWriter', () => {
+describeWithLocale('HARWriter', () => {
   it('can correctly sort exported requests logs', async () => {
     const req1Time = new Date(2020, 0, 3);
     const req2Time = new Date(2020, 1, 3);

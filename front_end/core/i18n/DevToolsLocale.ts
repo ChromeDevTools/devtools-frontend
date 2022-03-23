@@ -55,6 +55,10 @@ export class DevToolsLocale {
     return devToolsLocaleInstance as DevToolsLocale;
   }
 
+  static removeInstance(): void {
+    devToolsLocaleInstance = null;
+  }
+
   forceFallbackLocale(): void {
     // Locale is 'readonly', this is the only case where we want to forceably
     // overwrite the locale.

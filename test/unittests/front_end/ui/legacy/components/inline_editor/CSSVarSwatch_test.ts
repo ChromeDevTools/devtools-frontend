@@ -5,6 +5,7 @@
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as InlineEditor from '../../../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -31,7 +32,7 @@ function assertSwatch(swatch: InlineEditor.CSSVarSwatch.CSSVarSwatch, expected: 
   assert.strictEqual(link.textContent, expected.varText, 'The link has the right text content');
 }
 
-describe('CSSVarSwatch', () => {
+describeWithLocale('CSSVarSwatch', () => {
   it('can be instantiated successfully', () => {
     const component = new InlineEditor.CSSVarSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);

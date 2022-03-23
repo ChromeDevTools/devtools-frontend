@@ -5,8 +5,9 @@
 const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/legacy/legacy.js';
+import {describeWithLocale} from '../helpers/EnvironmentHelpers.js';
 
-describe('ListWidget', () => {
+describeWithLocale('ListWidget', () => {
   it('Cancel button triggers on mouse click event', () => {
     const editor = new UI.ListWidget.Editor<string>();
     document.body.appendChild(editor.element);

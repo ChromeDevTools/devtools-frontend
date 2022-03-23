@@ -7,6 +7,7 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 import {getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -35,7 +36,7 @@ function getInternalDataGridShadowRoot(
   return dataGrid.shadowRoot;
 }
 
-describe('InterestGroupAccessGrid', () => {
+describeWithLocale('InterestGroupAccessGrid', () => {
   it('renders interest group access events', async () => {
     const component = await renderInterestGroupAccessGrid([
       {

@@ -4,10 +4,11 @@
 
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import {assertElement, assertShadowRoot, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-describe('StylePropertyEditor', async () => {
+describeWithLocale('StylePropertyEditor', async () => {
   function assertValues(component: HTMLElement, values: string[]) {
     assertShadowRoot(component.shadowRoot);
     const propertyElements = component.shadowRoot.querySelectorAll('.property');

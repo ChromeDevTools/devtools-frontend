@@ -4,6 +4,7 @@
 
 import * as LinearMemoryInspectorModule from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {dispatchClickEvent, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 import {NAVIGATOR_ADDRESS_SELECTOR, NAVIGATOR_HISTORY_BUTTON_SELECTOR, NAVIGATOR_PAGE_BUTTON_SELECTOR} from './LinearMemoryNavigator_test.js';
 import {ENDIANNESS_SELECTOR} from './LinearMemoryValueInterpreter_test.js';
@@ -16,7 +17,7 @@ const NAVIGATOR_SELECTOR = 'devtools-linear-memory-inspector-navigator';
 const VIEWER_SELECTOR = 'devtools-linear-memory-inspector-viewer';
 const INTERPRETER_SELECTOR = 'devtools-linear-memory-inspector-interpreter';
 
-describe('LinearMemoryInspector', () => {
+describeWithLocale('LinearMemoryInspector', () => {
   function getViewer(component: LinearMemoryInspectorModule.LinearMemoryInspector.LinearMemoryInspector) {
     return getElementWithinComponent(
         component, VIEWER_SELECTOR, LinearMemoryInspectorModule.LinearMemoryViewer.LinearMemoryViewer);

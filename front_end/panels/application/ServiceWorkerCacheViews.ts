@@ -480,7 +480,12 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
         tooltip = i18nString(UIStrings.varyHeaderWarning);
       }
     }
-    DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', true);
+    const parentElement = cell.parentElement;
+    let gridNode;
+    if (parentElement && this.dataGrid) {
+      gridNode = this.dataGrid.elementToDataGridNode.get(parentElement);
+    }
+    DataGrid.DataGrid.DataGridImpl.setElementText(cell, value || '', /* longText= */ true, gridNode);
     UI.Tooltip.Tooltip.install(cell, tooltip);
     return cell;
   }

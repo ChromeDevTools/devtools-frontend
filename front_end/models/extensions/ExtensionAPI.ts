@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as Platform from '../../core/platform/platform.js';
 import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
 import type * as HAR from '../har/har.js';
 
@@ -151,7 +152,8 @@ export namespace PrivateAPI {
     evaluateOptions?: EvaluateOptions,
   };
   type SetSidebarPageRequest = {command: Commands.SetSidebarPage, id: string, page: string};
-  type OpenResourceRequest = {command: Commands.OpenResource, url: string, lineNumber: number, columnNumber: number};
+  type OpenResourceRequest =
+      {command: Commands.OpenResource, url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number};
   type SetOpenResourceHandlerRequest = {command: Commands.SetOpenResourceHandler, handlerPresent: boolean};
   type SetThemeChangeHandlerRequest = {command: Commands.SetThemeChangeHandler, handlerPresent: boolean};
   type ReloadRequest = {
@@ -606,7 +608,8 @@ self.injectedExtensionAPI = function(
     },
 
     openResource: function(
-        url: string, lineNumber: number, columnNumber?: number, _callback?: (response: unknown) => unknown): void {
+        url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number,
+        _callback?: (response: unknown) => unknown): void {
       const callbackArg = extractCallbackArgument(arguments);
       // Handle older API:
       const columnNumberArg = typeof columnNumber === 'number' ? columnNumber : 0;

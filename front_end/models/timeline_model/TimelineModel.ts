@@ -2123,7 +2123,6 @@ export class InvalidationTracker {
         lastScheduleStyleRecalculation = invalidation;
       }
       if (!lastScheduleStyleRecalculation) {
-        console.error('Failed to lookup the event that scheduled a style invalidator invalidation.');
         continue;
       }
       this.addSyntheticStyleRecalcInvalidation(
@@ -2143,7 +2142,6 @@ export class InvalidationTracker {
       invalidation.selectorPart = styleInvalidatorInvalidation.selectorPart;
     }
 
-    this.addInvalidation(invalidation);
     if (!invalidation.linkedRecalcStyleEvent) {
       this.associateWithLastRecalcStyleEvent(invalidation);
     }

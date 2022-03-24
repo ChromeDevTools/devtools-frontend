@@ -75,7 +75,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   readonly #codeOffsetInternal: number|null;
   readonly #language: string|null;
   #contentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  readonly #embedderNameInternal: string|null;
+  readonly #embedderNameInternal: Platform.DevToolsPath.UrlString|null;
   readonly isModule: boolean|null;
   constructor(
       debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString,
@@ -83,7 +83,8 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       hash: string, isContentScript: boolean, isLiveEdit: boolean,
       sourceMapURL: Platform.DevToolsPath.UrlString|undefined, hasSourceURL: boolean, length: number,
       isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
-      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null, embedderName: string|null) {
+      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
+      embedderName: Platform.DevToolsPath.UrlString|null) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -109,7 +110,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     this.#embedderNameInternal = embedderName;
   }
 
-  embedderName(): string|null {
+  embedderName(): Platform.DevToolsPath.UrlString|null {
     return this.#embedderNameInternal;
   }
 

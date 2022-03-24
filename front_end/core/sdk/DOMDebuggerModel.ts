@@ -234,8 +234,12 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
   readonly #runtimeModelInternal: RuntimeModel;
   #domModel: DOMModel;
   #domBreakpointsInternal: DOMBreakpoint[];
-  readonly #domBreakpointsSetting: Common.Settings
-      .Setting<{url: string, path: string, type: Protocol.DOMDebugger.DOMBreakpointType, enabled: boolean}[]>;
+  readonly #domBreakpointsSetting: Common.Settings.Setting<{
+    url: Platform.DevToolsPath.UrlString,
+    path: string,
+    type: Protocol.DOMDebugger.DOMBreakpointType,
+    enabled: boolean,
+  }[]>;
   suspended = false;
 
   constructor(target: Target) {
@@ -384,9 +388,9 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     return {type: type, node: node, targetNode: targetNode, insertion: insertion};
   }
 
-  private currentURL(): string {
+  private currentURL(): Platform.DevToolsPath.UrlString {
     const domDocument = this.#domModel.existingDocument();
-    return domDocument ? domDocument.documentURL : '';
+    return domDocument ? domDocument.documentURL : Platform.DevToolsPath.EmptyUrlString;
   }
 
   private async documentUpdated(): Promise<void> {
@@ -403,7 +407,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     // Note that requestDocument() caches the document so that it is requested
     // only once.
     const document = await this.#domModel.requestDocument();
-    const currentURL = document ? document.documentURL : '';
+    const currentURL = document ? document.documentURL : Platform.DevToolsPath.EmptyUrlString;
     for (const breakpoint of this.#domBreakpointsSetting.get()) {
       if (breakpoint.url === currentURL) {
         void this.#domModel.pushNodeByPathToFrontend(breakpoint.path).then(appendBreakpoint.bind(this, breakpoint));
@@ -464,7 +468,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
   private saveDOMBreakpoints(): void {
     const currentURL = this.currentURL();
     const breakpoints = this.#domBreakpointsSetting.get().filter((breakpoint: {
-                                                                   url: string,
+                                                                   url: Platform.DevToolsPath.UrlString,
                                                                  }) => breakpoint.url !== currentURL);
     for (const breakpoint of this.#domBreakpointsInternal) {
       breakpoints.push(

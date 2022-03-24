@@ -54,7 +54,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface PrecomputedFeatures {
   renderedWidth: number;
   renderedHeight: number;
-  currentSrc?: string;
+  currentSrc?: Platform.DevToolsPath.UrlString;
 }
 
 function isImageResource(resource: SDK.Resource.Resource|null): boolean {
@@ -62,17 +62,18 @@ function isImageResource(resource: SDK.Resource.Resource|null): boolean {
 }
 
 export class ImagePreview {
-  static async build(target: SDK.Target.Target, originalImageURL: string, showDimensions: boolean, options: {
-    precomputedFeatures: (PrecomputedFeatures|undefined),
-    imageAltText: (string|undefined),
-  }|undefined = {precomputedFeatures: undefined, imageAltText: undefined}): Promise<Element|null> {
+  static async build(
+      target: SDK.Target.Target, originalImageURL: Platform.DevToolsPath.UrlString, showDimensions: boolean, options: {
+        precomputedFeatures: (PrecomputedFeatures|undefined),
+        imageAltText: (string|undefined),
+      }|undefined = {precomputedFeatures: undefined, imageAltText: undefined}): Promise<Element|null> {
     const {precomputedFeatures, imageAltText} = options;
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (!resourceTreeModel) {
       return null;
     }
     let resource = resourceTreeModel.resourceForURL(originalImageURL);
-    let imageURL: string = originalImageURL;
+    let imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
       resource = resourceTreeModel.resourceForURL(imageURL);
@@ -187,7 +188,11 @@ export class ImagePreview {
     return featuresObject;
 
     function features(this: HTMLImageElement): PrecomputedFeatures {
-      return {renderedWidth: this.width, renderedHeight: this.height, currentSrc: this.currentSrc};
+      return {
+        renderedWidth: this.width,
+        renderedHeight: this.height,
+        currentSrc: this.currentSrc as Platform.DevToolsPath.UrlString,
+      };
     }
   }
 

@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import type * as Host from '../../../../../front_end/core/host/host.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
@@ -16,6 +17,9 @@ interface LoadResult {
 }
 
 describeWithLocale('PageResourceLoader', () => {
+  const foo1Url = 'foo1' as Platform.DevToolsPath.UrlString;
+  const foo2Url = 'foo2' as Platform.DevToolsPath.UrlString;
+  const foo3Url = 'foo3' as Platform.DevToolsPath.UrlString;
   const loads: Array<{url: string}> = [];
   const load = async(url: string): Promise<LoadResult> => {
     loads.push({url});
@@ -27,7 +31,11 @@ describeWithLocale('PageResourceLoader', () => {
     };
   };
 
-  const initiator = {target: null, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: ''};
+  const initiator = {
+    target: null,
+    frameId: '123' as Protocol.Page.FrameId,
+    initiatorUrl: Platform.DevToolsPath.EmptyUrlString,
+  };
 
   beforeEach(() => {
     loads.length = 0;
@@ -37,9 +45,9 @@ describeWithLocale('PageResourceLoader', () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: load, maxConcurrentLoads: 500, loadTimeout: 30000});
     const loading = [
-      loader.loadResource('foo1', initiator),
-      loader.loadResource('foo2', initiator),
-      loader.loadResource('foo3', initiator),
+      loader.loadResource(foo1Url, initiator),
+      loader.loadResource(foo2Url, initiator),
+      loader.loadResource(foo3Url, initiator),
     ];
 
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 0, resources: 3});
@@ -56,9 +64,9 @@ describeWithLocale('PageResourceLoader', () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: load, maxConcurrentLoads: 1, loadTimeout: 30000});
     const loading = [
-      loader.loadResource('foo1', initiator).catch(e => e.message),
-      loader.loadResource('foo2', initiator).catch(e => e.message),
-      loader.loadResource('foo3', initiator).catch(e => e.message),
+      loader.loadResource(foo1Url, initiator).catch(e => e.message),
+      loader.loadResource(foo2Url, initiator).catch(e => e.message),
+      loader.loadResource(foo3Url, initiator).catch(e => e.message),
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 2, resources: 3});
 
@@ -87,9 +95,9 @@ describeWithLocale('PageResourceLoader', () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [
-      loader.loadResource('foo1', initiator).catch(e => e.message),
-      loader.loadResource('foo2', initiator).catch(e => e.message),
-      loader.loadResource('foo3', initiator).catch(e => e.message),
+      loader.loadResource(foo1Url, initiator).catch(e => e.message),
+      loader.loadResource(foo2Url, initiator).catch(e => e.message),
+      loader.loadResource(foo3Url, initiator).catch(e => e.message),
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 1, resources: 3});
 
@@ -107,9 +115,9 @@ describeWithLocale('PageResourceLoader', () => {
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
         {forceNew: true, loadOverride: load, maxConcurrentLoads: 2, loadTimeout: 30});
     const loading = [
-      loader.loadResource('foo1', initiator),
-      loader.loadResource('foo2', initiator),
-      loader.loadResource('foo3', initiator),
+      loader.loadResource(foo1Url, initiator),
+      loader.loadResource(foo2Url, initiator),
+      loader.loadResource(foo3Url, initiator),
     ];
     assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 1, resources: 3});
 

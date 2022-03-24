@@ -5,7 +5,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -46,7 +46,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   endColumn: number;
   contentLength: number;
   ownerNode: DeferredDOMNode|undefined;
-  sourceMapURL: string|undefined;
+  sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
   #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
@@ -69,7 +69,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     if (payload.ownerNode) {
       this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
-    this.sourceMapURL = payload.sourceMapURL;
+    this.sourceMapURL = payload.sourceMapURL as Platform.DevToolsPath.UrlString;
     this.#originalContentProviderInternal = null;
   }
 
@@ -88,7 +88,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return this.#originalContentProviderInternal;
   }
 
-  setSourceMapURL(sourceMapURL?: string): void {
+  setSourceMapURL(sourceMapURL?: Platform.DevToolsPath.UrlString): void {
     this.sourceMapURL = sourceMapURL;
   }
 
@@ -197,6 +197,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   createPageResourceLoadInitiator(): PageResourceLoadInitiator {
-    return {target: null, frameId: this.frameId, initiatorUrl: this.hasSourceURL ? '' : this.sourceURL};
+    return {
+      target: null,
+      frameId: this.frameId,
+      initiatorUrl: this.hasSourceURL ? Platform.DevToolsPath.EmptyUrlString : this.sourceURL,
+    };
   }
 }

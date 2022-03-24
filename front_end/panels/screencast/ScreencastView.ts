@@ -718,7 +718,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     // encodeURI ensures an encoded URL is always passed to the backend
     // This allows the input field to support both encoded and decoded URLs
     if (this.resourceTreeModel) {
-      void this.resourceTreeModel.navigate(encodeURI(decodeURI(url)));
+      void this.resourceTreeModel.navigate(encodeURI(decodeURI(url)) as Platform.DevToolsPath.UrlString);
     }
     this.canvasElement.focus();
   }

@@ -249,7 +249,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return newHeaders;
   }
 
-  requestForURL(url: string): NetworkRequest|null {
+  requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest|null {
     return this.dispatcher.requestForURL(url);
   }
 
@@ -281,7 +281,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   async loadNetworkResource(
-      frameId: Protocol.Page.FrameId|null, url: string,
+      frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString,
       options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult> {
     const result = await this.#networkAgent.invoke_loadNetworkResource({frameId: frameId ?? undefined, url, options});
     if (result.getError()) {
@@ -395,7 +395,7 @@ export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
 export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   readonly #manager: NetworkManager;
   #requestsById: Map<string, NetworkRequest>;
-  #requestsByURL: Map<string, NetworkRequest>;
+  #requestsByURL: Map<Platform.DevToolsPath.UrlString, NetworkRequest>;
   #requestIdToExtraInfoBuilder: Map<string, ExtraInfoBuilder>;
   readonly #requestIdToTrustTokenEvent: Map<string, Protocol.Network.TrustTokenOperationDoneEvent>;
   constructor(manager: NetworkManager) {
@@ -417,7 +417,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         MultitargetNetworkManager.Events.RequestIntercepted, this.#markAsIntercepted.bind(this));
   }
 
-  #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<string>): void {
+  #markAsIntercepted(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.UrlString>): void {
     const request = this.requestForURL(event.data);
     if (request) {
       request.setWasIntercepted(true);
@@ -522,7 +522,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     return this.#requestsById.get(url) || null;
   }
 
-  requestForURL(url: string): NetworkRequest|null {
+  requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest|null {
     return this.#requestsByURL.get(url) || null;
   }
 
@@ -550,7 +550,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     // TODO(crbug/841076): Sends the request ID of prefetching to the browser
     // process and DevTools to find the matching request.
     if (!networkRequest) {
-      networkRequest = this.#requestsByURL.get(info.outerResponse.url);
+      networkRequest = this.#requestsByURL.get(info.outerResponse.url as Platform.DevToolsPath.UrlString);
       if (!networkRequest) {
         return;
       }
@@ -1099,7 +1099,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #updatingInterceptionPatternsPromise: Promise<void>|null;
   readonly #blockingEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #blockedPatternsSetting: Common.Settings.Setting<BlockedPattern[]>;
-  #effectiveBlockedURLs: string[];
+  #effectiveBlockedURLs: Platform.DevToolsPath.UrlString[];
   readonly #urlsForRequestInterceptor:
       Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern>;
   #extraHeaders?: Protocol.Network.Headers;
@@ -1420,7 +1420,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded()) {
         this.dispatchEventToListeners(
-            MultitargetNetworkManager.Events.RequestIntercepted, interceptedRequest.request.url);
+            MultitargetNetworkManager.Events.RequestIntercepted,
+            interceptedRequest.request.url as Platform.DevToolsPath.UrlString);
         return;
       }
     }
@@ -1453,7 +1454,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     return certificate.tableNames;
   }
 
-  async loadResource(url: string): Promise<{
+  async loadResource(url: Platform.DevToolsPath.UrlString): Promise<{
     success: boolean,
     content: string,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
@@ -1496,7 +1497,7 @@ export namespace MultitargetNetworkManager {
     [Events.UserAgentChanged]: void,
     [Events.InterceptorsChanged]: void,
     [Events.AcceptedEncodingsChanged]: void,
-    [Events.RequestIntercepted]: string,
+    [Events.RequestIntercepted]: Platform.DevToolsPath.UrlString,
   };
 }
 
@@ -1713,7 +1714,7 @@ export interface Conditions {
 }
 
 export interface BlockedPattern {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   enabled: boolean;
 }
 

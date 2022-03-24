@@ -5,6 +5,7 @@
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {FrameManager} from './FrameManager.js';
@@ -32,18 +33,18 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export type PageResourceLoadInitiator = {
   target: null,
   frameId: Protocol.Page.FrameId,
-  initiatorUrl: string|null,
+  initiatorUrl: Platform.DevToolsPath.UrlString|null,
 }|{
   target: Target,
   frameId: Protocol.Page.FrameId | null,
-  initiatorUrl: string | null,
+  initiatorUrl: Platform.DevToolsPath.UrlString | null,
 };
 
 export interface PageResource {
   success: boolean|null;
   errorMessage?: string;
   initiator: PageResourceLoadInitiator;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   size: number|null;
 }
 
@@ -168,7 +169,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return Promise.race([promise, timeoutPromise]);
   }
 
-  static makeKey(url: string, initiator: PageResourceLoadInitiator): string {
+  static makeKey(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): string {
     if (initiator.frameId) {
       return `${url}-${initiator.frameId}`;
     }
@@ -178,7 +179,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     throw new Error('Invalid initiator');
   }
 
-  async loadResource(url: string, initiator: PageResourceLoadInitiator): Promise<{
+  async loadResource(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<{
     content: string,
   }> {
     const key = PageResourceLoader.makeKey(url, initiator);
@@ -210,7 +211,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     }
   }
 
-  private async dispatchLoad(url: string, initiator: PageResourceLoadInitiator): Promise<{
+  private async dispatchLoad(url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<{
     success: boolean,
     content: string,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
@@ -285,7 +286,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return Host.UserMetrics.DeveloperResourceScheme.SchemeOther;
   }
 
-  private async loadFromTarget(target: Target, frameId: Protocol.Page.FrameId|null, url: string): Promise<{
+  private async loadFromTarget(
+      target: Target, frameId: Protocol.Page.FrameId|null, url: Platform.DevToolsPath.UrlString): Promise<{
     success: boolean,
     content: string,
     errorDescription: {

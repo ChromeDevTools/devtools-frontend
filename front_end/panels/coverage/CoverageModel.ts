@@ -618,7 +618,8 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     if (!useFullText) {
       return null;
     }
-    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url as Platform.DevToolsPath.UrlString);
     if (!resource) {
       return null;
     }

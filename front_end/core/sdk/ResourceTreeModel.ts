@@ -34,7 +34,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -108,7 +108,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return result;
   }
 
-  static resourceForURL(url: string): Resource|null {
+  static resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
@@ -322,7 +322,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return [...this.framesInternal.values()];
   }
 
-  resourceForURL(url: string): Resource|null {
+  resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
     // Workers call into this with no #frames available.
     return this.mainFrame ? this.mainFrame.resourceForURL(url) : null;
   }
@@ -399,7 +399,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigate(url: string): Promise<any> {
+  navigate(url: Platform.DevToolsPath.UrlString): Promise<any> {
     return this.agent.invoke_navigate({url});
   }
 
@@ -607,7 +607,7 @@ export class ResourceTreeFrame {
   #urlInternal: Platform.DevToolsPath.UrlString;
   #domainAndRegistryInternal: string;
   #securityOriginInternal: string|null;
-  #unreachableUrlInternal: string;
+  #unreachableUrlInternal: Platform.DevToolsPath.UrlString;
   #adFrameStatusInternal?: Protocol.Page.AdFrameStatus;
   #secureContextType: Protocol.Page.SecureContextType|null;
   #crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
@@ -615,7 +615,7 @@ export class ResourceTreeFrame {
   #creationStackTrace: Protocol.Runtime.StackTrace|null;
   #creationStackTraceTarget: Target|null;
   #childFramesInternal: Set<ResourceTreeFrame>;
-  resourcesMap: Map<string, Resource>;
+  resourcesMap: Map<Platform.DevToolsPath.UrlString, Resource>;
   backForwardCacheDetails: {
     restoredFromCache: boolean|undefined,
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
@@ -636,10 +636,12 @@ export class ResourceTreeFrame {
 
     this.#loaderIdInternal = (payload && payload.loaderId) || '';
     this.#nameInternal = payload && payload.name;
-    this.#urlInternal = ((payload && payload.url) || '') as Platform.DevToolsPath.UrlString;
+    this.#urlInternal =
+        payload && payload.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
     this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
     this.#securityOriginInternal = payload && payload.securityOrigin;
-    this.#unreachableUrlInternal = (payload && payload.unreachableUrl) || '';
+    this.#unreachableUrlInternal =
+        (payload && payload.unreachableUrl as Platform.DevToolsPath.UrlString) || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = payload?.adFrameStatus;
     this.#secureContextType = payload && payload.secureContextType;
     this.#crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
@@ -691,7 +693,8 @@ export class ResourceTreeFrame {
     this.#urlInternal = framePayload.url as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
     this.#securityOriginInternal = framePayload.securityOrigin;
-    this.#unreachableUrlInternal = framePayload.unreachableUrl || '';
+    this.#unreachableUrlInternal =
+        framePayload.unreachableUrl as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = framePayload?.adFrameStatus;
     this.#secureContextType = framePayload.secureContextType;
     this.#crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
@@ -734,7 +737,7 @@ export class ResourceTreeFrame {
     return this.#securityOriginInternal;
   }
 
-  unreachableUrl(): string {
+  unreachableUrl(): Platform.DevToolsPath.UrlString {
     return this.#unreachableUrlInternal;
   }
 
@@ -855,7 +858,7 @@ export class ResourceTreeFrame {
     return Array.from(this.resourcesMap.values());
   }
 
-  resourceForURL(url: string): Resource|null {
+  resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
     const resource = this.resourcesMap.get(url);
     if (resource) {
       return resource;

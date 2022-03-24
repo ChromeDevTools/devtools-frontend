@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -42,7 +43,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
     const {logModel, entry} = event.data;
     const target = logModel.target();
     const details = {
-      url: entry.url,
+      url: entry.url as Platform.DevToolsPath.UrlString,
       line: entry.lineNumber,
       parameters: [entry.text, ...(entry.args ?? [])],
       stackTrace: entry.stackTrace,

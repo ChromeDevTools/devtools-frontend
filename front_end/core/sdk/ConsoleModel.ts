@@ -32,6 +32,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 
 import {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
 export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js';
@@ -277,7 +278,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
     const details = {
       type: call.type,
-      url: callFrame?.url,
+      url: callFrame?.url as Platform.DevToolsPath.UrlString | undefined,
       line: callFrame?.lineNumber,
       column: callFrame?.columnNumber,
       parameters: call.args,
@@ -517,7 +518,7 @@ function areStackTracesEquivalent(
 
 export interface ConsoleMessageDetails {
   type?: MessageType;
-  url?: string;
+  url?: Platform.DevToolsPath.UrlString;
   line?: number;
   column?: number;
   parameters?: (string|RemoteObject|Protocol.Runtime.RemoteObject)[];
@@ -537,7 +538,7 @@ export class ConsoleMessage {
   level: Protocol.Log.LogEntryLevel|null;
   messageText: string;
   readonly type: MessageType;
-  url: string|undefined;
+  url: Platform.DevToolsPath.UrlString|undefined;
   line: number;
   column: number;
   parameters: (string|RemoteObject|Protocol.Runtime.RemoteObject)[]|undefined;
@@ -598,10 +599,10 @@ export class ConsoleMessage {
   static fromException(
       runtimeModel: RuntimeModel, exceptionDetails: Protocol.Runtime.ExceptionDetails,
       messageType?: Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType, timestamp?: number,
-      forceUrl?: string, affectedResources?: AffectedResources): ConsoleMessage {
+      forceUrl?: Platform.DevToolsPath.UrlString, affectedResources?: AffectedResources): ConsoleMessage {
     const details = {
       type: messageType,
-      url: forceUrl || exceptionDetails.url,
+      url: forceUrl || exceptionDetails.url as Platform.DevToolsPath.UrlString,
       line: exceptionDetails.lineNumber,
       column: exceptionDetails.columnNumber,
       parameters: exceptionDetails.exception ?

@@ -90,7 +90,7 @@ export class SourceMapV3 {
 export class Section {
   map!: SourceMapV3;
   offset!: Offset;
-  url!: string|undefined;
+  url!: Platform.DevToolsPath.UrlString|undefined;
   constructor() {
   }
 }

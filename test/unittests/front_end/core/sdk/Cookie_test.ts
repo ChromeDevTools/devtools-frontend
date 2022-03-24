@@ -65,7 +65,7 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.expires(), expires);
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'https://.example.com/test');
+    assert.strictEqual(String(cookie.url()), 'https://.example.com/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 443);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.Secure);
@@ -105,7 +105,7 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'http://.example.com/test');
+    assert.strictEqual(String(cookie.url()), 'http://.example.com/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 80);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
@@ -144,7 +144,7 @@ describe('Cookie', () => {
     assert.strictEqual(cookie.domain(), '.example.com');
     assert.strictEqual(cookie.maxAge(), undefined);
     assert.strictEqual(cookie.size(), 23);
-    assert.strictEqual(cookie.url(), 'http://.example.com:8000/test');
+    assert.strictEqual(String(cookie.url()), 'http://.example.com:8000/test');
     assert.strictEqual(cookie.getCookieLine(), null);
     assert.strictEqual(cookie.sourcePort(), 8000);
     assert.strictEqual(cookie.sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
@@ -155,14 +155,14 @@ describe('Cookie', () => {
     cookie.addAttribute('Secure');
     cookie.addAttribute('Domain', 'example.com');
     cookie.addAttribute('Path', '/test');
-    assert.strictEqual(cookie.url(), 'https://example.com/test');
+    assert.strictEqual(String(cookie.url()), 'https://example.com/test');
   });
 
   it('can handle insecure urls', () => {
     const cookie = new SDK.Cookie.Cookie('name', 'value');
     cookie.addAttribute('Domain', 'example.com');
     cookie.addAttribute('Path', '/test');
-    assert.strictEqual(cookie.url(), 'http://example.com/test');
+    assert.strictEqual(String(cookie.url()), 'http://example.com/test');
   });
 
   it('can set attributes used as flags', () => {

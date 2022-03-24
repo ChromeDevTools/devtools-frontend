@@ -4,6 +4,7 @@
 
 const {assert} = chai;
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
@@ -25,7 +26,7 @@ describe('ConsoleMessage', () => {
   }: {
     source?: SDKModule.ConsoleModel.MessageSource,
     message?: string,
-    url?: string,
+    url?: Platform.DevToolsPath.UrlString,
     scriptId?: Protocol.Runtime.ScriptId,
     executionContextId?: number,
     stackTrace?: Protocol.Runtime.StackTrace,
@@ -55,9 +56,9 @@ describe('ConsoleMessage', () => {
 
   it('compares using url', () => {
     const a = newMessage({});
-    const b = newMessage({url: 'http://a.b/c'});
-    const c = newMessage({url: 'http://a.b/c'});
-    const d = newMessage({url: 'http://a.b/d'});
+    const b = newMessage({url: 'http://a.b/c' as Platform.DevToolsPath.UrlString});
+    const c = newMessage({url: 'http://a.b/c' as Platform.DevToolsPath.UrlString});
+    const d = newMessage({url: 'http://a.b/d' as Platform.DevToolsPath.UrlString});
     assert.isFalse(a.isEqual(b));
     assert.isTrue(b.isEqual(c));
     assert.isFalse(c.isEqual(d));

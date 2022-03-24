@@ -1582,7 +1582,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       let patterns = manager.blockedPatterns();
 
       function addBlockedURL(url: string): void {
-        patterns.push({enabled: true, url: url});
+        patterns.push({enabled: true, url: url as Platform.DevToolsPath.UrlString});
         manager.setBlockedPatterns(patterns);
         manager.setBlockingEnabled(true);
         void UI.ViewManager.ViewManager.instance().showView('network.blocked-urls');

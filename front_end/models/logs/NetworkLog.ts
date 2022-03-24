@@ -548,7 +548,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     if (initiator) {
       consoleMessage.stackTrace = initiator.stack || undefined;
       if (initiator.url) {
-        consoleMessage.url = initiator.url;
+        consoleMessage.url = initiator.url as Platform.DevToolsPath.UrlString;
         consoleMessage.line = initiator.lineNumber || 0;
       }
     }

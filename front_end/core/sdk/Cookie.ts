@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 const OPAQUE_PARITION_KEY = '<opaque>';
@@ -144,7 +145,7 @@ export class Cookie {
   /**
    * @deprecated
    */
-  url(): string|null {
+  url(): Platform.DevToolsPath.UrlString|null {
     if (!this.domain() || !this.path()) {
       return null;
     }
@@ -156,7 +157,8 @@ export class Cookie {
     }
     // We must not consider the this.sourceScheme() here, otherwise it will be impossible to set a cookie without
     // the Secure attribute from a secure origin.
-    return (this.secure() ? 'https://' : 'http://') + this.domain() + port + this.path();
+    return (this.secure() ? 'https://' : 'http://') + this.domain() + port + this.path() as
+        Platform.DevToolsPath.UrlString;
   }
 
   setSize(size: number): void {

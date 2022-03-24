@@ -25,8 +25,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   readonly #target: Target;
   #isEnabled: boolean;
-  readonly #relativeSourceURL: Map<T, string>;
-  readonly #relativeSourceMapURL: Map<T, string>;
+  readonly #relativeSourceURL: Map<T, Platform.DevToolsPath.UrlString>;
+  readonly #relativeSourceMapURL: Map<T, Platform.DevToolsPath.UrlString>;
   #resolvedSourceMapId: Map<T, string>;
   readonly #sourceMapById: Map<string, SourceMap>;
   #sourceMapIdToLoadingClients: Platform.MapUtilities.Multimap<string, T>;
@@ -105,11 +105,13 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     return [...this.#sourceMapIdToLoadingClients.get(sourceMapId)];
   }
 
-  private getSourceMapId(sourceURL: string, sourceMapURL: string): string {
+  private getSourceMapId(sourceURL: Platform.DevToolsPath.UrlString, sourceMapURL: Platform.DevToolsPath.UrlString):
+      string {
     return `${sourceURL}:${sourceMapURL}`;
   }
 
-  private resolveRelativeURLs(sourceURL: string, sourceMapURL: string): {
+  private resolveRelativeURLs(
+      sourceURL: Platform.DevToolsPath.UrlString, sourceMapURL: Platform.DevToolsPath.UrlString): {
     sourceURL: Platform.DevToolsPath.UrlString,
     sourceMapURL: Platform.DevToolsPath.UrlString,
     sourceMapId: string,
@@ -131,7 +133,9 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     };
   }
 
-  attachSourceMap(client: T, relativeSourceURL: string|undefined, relativeSourceMapURL: string|undefined): void {
+  attachSourceMap(
+      client: T, relativeSourceURL: Platform.DevToolsPath.UrlString|undefined,
+      relativeSourceMapURL: Platform.DevToolsPath.UrlString|undefined): void {
     // TODO(chromium:1011811): Strengthen the type to obsolte the undefined check once core/sdk/ is fully typescriptified.
     if (relativeSourceURL === undefined || !relativeSourceMapURL) {
       return;

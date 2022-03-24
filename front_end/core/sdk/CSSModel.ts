@@ -63,7 +63,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   readonly #sourceMapManager: SourceMapManager<CSSStyleSheetHeader>;
   readonly #styleLoader: ComputedStyleLoader;
   readonly #stylePollingThrottler: Common.Throttler.Throttler;
-  readonly #styleSheetIdsForURL: Map<string, Map<string, Set<Protocol.CSS.StyleSheetId>>>;
+  readonly #styleSheetIdsForURL: Map<Platform.DevToolsPath.UrlString, Map<string, Set<Protocol.CSS.StyleSheetId>>>;
   readonly #styleSheetIdToHeader: Map<Protocol.CSS.StyleSheetId, CSSStyleSheetHeader>;
   #cachedMatchedCascadeNode: DOMNode|null;
   #cachedMatchedCascadePromise: Promise<CSSMatchedStyles|null>|null;
@@ -111,7 +111,7 @@ export class CSSModel extends SDKModel<EventTypes> {
         .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
   }
 
-  headersForSourceURL(sourceURL: string): CSSStyleSheetHeader[] {
+  headersForSourceURL(sourceURL: Platform.DevToolsPath.UrlString): CSSStyleSheetHeader[] {
     const headers = [];
     for (const headerId of this.getStyleSheetIdsForURL(sourceURL)) {
       const header = this.styleSheetHeaderForId(headerId);
@@ -122,7 +122,9 @@ export class CSSModel extends SDKModel<EventTypes> {
     return headers;
   }
 
-  createRawLocationsByURL(sourceURL: string, lineNumber: number, columnNumber: number|undefined = 0): CSSLocation[] {
+  createRawLocationsByURL(
+      sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number,
+      columnNumber: number|undefined = 0): CSSLocation[] {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
     const endIndex = Platform.ArrayUtilities.upperBound(
@@ -602,7 +604,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.StyleSheetRemoved, header);
   }
 
-  getStyleSheetIdsForURL(url: string): Protocol.CSS.StyleSheetId[] {
+  getStyleSheetIdsForURL(url: Platform.DevToolsPath.UrlString): Protocol.CSS.StyleSheetId[] {
     const frameIdToStyleSheetIds = this.#styleSheetIdsForURL.get(url);
     if (!frameIdToStyleSheetIds) {
       return [];
@@ -628,7 +630,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 
     await this.ensureOriginalStyleSheetText(styleSheetId);
     const response = await this.agent.invoke_setStyleSheetText({styleSheetId: header.id, text: newText});
-    const sourceMapURL = response.sourceMapURL;
+    const sourceMapURL = response.sourceMapURL as Platform.DevToolsPath.UrlString;
 
     this.#sourceMapManager.detachSourceMap(header);
     header.setSourceMapURL(sourceMapURL);

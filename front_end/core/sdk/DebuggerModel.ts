@@ -703,7 +703,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       sourceMapURL: Platform.DevToolsPath.UrlString|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean,
       length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
       codeOffset: number|null, scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
-      embedderName: string|null): Script {
+      embedderName: Platform.DevToolsPath.UrlString|null): Script {
     const knownScript = this.#scriptsInternal.get(scriptId);
     if (knownScript) {
       return knownScript;
@@ -1060,7 +1060,8 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
         scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
         executionContextId, hash, executionContextAuxData, Boolean(isLiveEdit),
         sourceMapURL as Platform.DevToolsPath.UrlString, Boolean(hasSourceURL), false, length || 0, isModule || null,
-        stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null);
+        stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null,
+        embedderName as Platform.DevToolsPath.UrlString || null);
   }
 
   scriptFailedToParse({
@@ -1089,7 +1090,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
         scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
         executionContextId, hash, executionContextAuxData, false, sourceMapURL as Platform.DevToolsPath.UrlString,
         Boolean(hasSourceURL), true, length || 0, isModule || null, stackTrace || null, codeOffset || null,
-        scriptLanguage || null, null, embedderName || null);
+        scriptLanguage || null, null, embedderName as Platform.DevToolsPath.UrlString || null);
   }
 
   breakpointResolved({breakpointId, location}: Protocol.Debugger.BreakpointResolvedEvent): void {

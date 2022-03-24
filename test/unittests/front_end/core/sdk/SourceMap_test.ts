@@ -13,7 +13,7 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 const fakeInitiator = {
   target: null,
   frameId: '123' as Protocol.Page.FrameId,
-  initiatorUrl: '',
+  initiatorUrl: Platform.DevToolsPath.EmptyUrlString,
 };
 
 const sourceUrlFoo = '<foo>' as Platform.DevToolsPath.UrlString;

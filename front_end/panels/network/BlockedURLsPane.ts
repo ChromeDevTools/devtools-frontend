@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -132,7 +133,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   private addButtonClicked(): void {
     this.manager.setBlockingEnabled(true);
-    this.list.addNewItem(0, {url: '', enabled: true});
+    this.list.addNewItem(0, {url: Platform.DevToolsPath.EmptyUrlString, enabled: true});
   }
 
   renderItem(pattern: SDK.NetworkManager.BlockedPattern, editable: boolean): Element {
@@ -180,7 +181,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   commitEdit(
       item: SDK.NetworkManager.BlockedPattern, editor: UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>,
       isNew: boolean): void {
-    const url = editor.control('url').value;
+    const url = editor.control('url').value as Platform.DevToolsPath.UrlString;
     const patterns = this.manager.blockedPatterns();
     if (isNew) {
       patterns.push({enabled: true, url: url});

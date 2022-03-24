@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import * as Host from '../host/host.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
@@ -82,7 +83,7 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
   #onWebSocketDisconnect: (() => void)|null;
   #connected: boolean;
   #messages: string[];
-  constructor(url: string, onWebSocketDisconnect: () => void) {
+  constructor(url: Platform.DevToolsPath.UrlString, onWebSocketDisconnect: () => void) {
     this.#socket = new WebSocket(url);
     this.#socket.onerror = this.onError.bind(this);
     this.#socket.onopen = this.onOpen.bind(this);
@@ -286,7 +287,7 @@ function createMainConnection(websocketConnectionLost: () => void): ProtocolClie
   const wsParam = Root.Runtime.Runtime.queryParam('ws');
   const wssParam = Root.Runtime.Runtime.queryParam('wss');
   if (wsParam || wssParam) {
-    const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
+    const ws = (wsParam ? `ws://${wsParam}` : `wss://${wssParam}`) as Platform.DevToolsPath.UrlString;
     return new WebSocketConnection(ws, websocketConnectionLost);
   }
   if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {

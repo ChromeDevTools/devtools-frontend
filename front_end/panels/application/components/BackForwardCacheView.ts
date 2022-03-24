@@ -226,7 +226,7 @@ export class BackForwardCacheView extends HTMLElement {
       // as the browser navigates to another unrelated page and goes back to the current page.
       // We chose "chrome://terms" because it must be cross-site.
       // Ideally, We want to have our own testing page like "chrome: //bfcache-test".
-      void resourceTreeModel.navigate('chrome://terms');
+      void resourceTreeModel.navigate('chrome://terms' as Platform.DevToolsPath.UrlString);
     }
   }
 

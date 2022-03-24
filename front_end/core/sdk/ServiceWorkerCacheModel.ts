@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import type * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -305,7 +306,7 @@ export class Cache {
     return this.securityOrigin + this.cacheName;
   }
 
-  async requestCachedResponse(url: string, requestHeaders: NameValue[]):
+  async requestCachedResponse(url: Platform.DevToolsPath.UrlString, requestHeaders: NameValue[]):
       Promise<Protocol.CacheStorage.CachedResponse|null> {
     const response = await this.#model.cacheAgent.invoke_requestCachedResponse(
         {cacheId: this.cacheId, requestURL: url, requestHeaders});

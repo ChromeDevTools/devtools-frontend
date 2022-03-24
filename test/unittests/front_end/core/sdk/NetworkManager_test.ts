@@ -106,7 +106,8 @@ describe('NetworkDispatcher', () => {
 
       // ResponseReceived does overwrite response headers if request is marked as intercepted.
       SDK.NetworkManager.MultitargetNetworkManager.instance().dispatchEventToListeners(
-          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestIntercepted, 'example.com');
+          SDK.NetworkManager.MultitargetNetworkManager.Events.RequestIntercepted,
+          'example.com' as Platform.DevToolsPath.UrlString);
       networkDispatcher.responseReceived(mockResponseReceivedEventWithHeaders({'test-header': 'third'}));
       assert.deepEqual(
           networkDispatcher.requestForId('mockId')?.responseHeaders, [{name: 'test-header', value: 'third'}]);

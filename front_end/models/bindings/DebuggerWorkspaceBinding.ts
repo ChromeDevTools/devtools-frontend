@@ -228,7 +228,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   uiSourceCodeForSourceMapSourceURL(
-      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string,
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
       isContentScript: boolean): Workspace.UISourceCode.UISourceCode|null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (!modelData) {

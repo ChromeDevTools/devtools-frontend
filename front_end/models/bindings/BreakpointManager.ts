@@ -86,14 +86,15 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     return breakpointManagerInstance;
   }
 
-  static breakpointStorageId(url: string, lineNumber: number, columnNumber?: number): string {
+  static breakpointStorageId(url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number): string {
     if (!url) {
       return '';
     }
     return `${url}:${lineNumber}` + (typeof columnNumber === 'number' ? `:${columnNumber}` : '');
   }
 
-  async copyBreakpoints(fromURL: string, toSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async copyBreakpoints(fromURL: Platform.DevToolsPath.UrlString, toSourceCode: Workspace.UISourceCode.UISourceCode):
+      Promise<void> {
     const breakpointItems = this.storage.breakpointItems(fromURL);
     for (const item of breakpointItems) {
       await this.setBreakpoint(toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled);
@@ -868,7 +869,7 @@ class Storage {
     this.#muted = undefined;
   }
 
-  breakpointItems(url: string): Storage.Item[] {
+  breakpointItems(url: Platform.DevToolsPath.UrlString): Storage.Item[] {
     return Array.from(this.#breakpoints.values()).filter(item => item.url === url);
   }
 
@@ -894,7 +895,7 @@ class Storage {
 
 namespace Storage {
   export class Item {
-    url: string;
+    url: Platform.DevToolsPath.UrlString;
     lineNumber: number;
     columnNumber?: number;
     condition: string;

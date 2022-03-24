@@ -107,7 +107,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     return url ? this.isIgnoreListedURL(url) : false;
   }
 
-  isIgnoreListedURL(url: string, isContentScript?: boolean): boolean {
+  isIgnoreListedURL(url: Platform.DevToolsPath.UrlString, isContentScript?: boolean): boolean {
     if (this.#isIgnoreListedURLCache.has(url)) {
       return Boolean(this.#isIgnoreListedURLCache.get(url));
     }
@@ -187,7 +187,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     }
   }
 
-  private uiSourceCodeURL(uiSourceCode: Workspace.UISourceCode.UISourceCode): string|null {
+  private uiSourceCodeURL(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString|null {
     return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Debugger ? null : uiSourceCode.url();
   }
 
@@ -218,7 +218,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     Common.Settings.Settings.instance().moduleSetting('skipContentScripts').set(false);
   }
 
-  private ignoreListURL(url: string): void {
+  private ignoreListURL(url: Platform.DevToolsPath.UrlString): void {
     const regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
     const regexValue = this.urlToRegExpString(url);
     if (!regexValue) {
@@ -239,7 +239,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     this.getSkipStackFramesPatternSetting().setAsArray(regexPatterns);
   }
 
-  private unIgnoreListURL(url: string): void {
+  private unIgnoreListURL(url: Platform.DevToolsPath.UrlString): void {
     let regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
     const regexValue = IgnoreListManager.instance().urlToRegExpString(url);
     if (!regexValue) {
@@ -287,7 +287,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     // This method is sniffed in tests.
   }
 
-  private urlToRegExpString(url: string): string {
+  private urlToRegExpString(url: Platform.DevToolsPath.UrlString): string {
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     if (parsedURL.isAboutBlank() || parsedURL.isDataURL()) {
       return '';

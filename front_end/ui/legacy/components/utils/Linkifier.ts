@@ -500,7 +500,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return element;
     }
 
-    let linkText = text || Bindings.ResourceUtils.displayNameForURL(url);
+    let linkText = text || Bindings.ResourceUtils.displayNameForURL(url as Platform.DevToolsPath.UrlString);
     if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
       if (showColumnNumber && typeof columnNumber === 'number') {
@@ -721,7 +721,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
               Common.ParsedURL.ParsedURL.urlWithoutHash(url) as Platform.DevToolsPath.UrlString);
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
-    const resource = url ? Bindings.ResourceUtils.resourceForURL(url) : null;
+    const resource = url ? Bindings.ResourceUtils.resourceForURL(url as Platform.DevToolsPath.UrlString) : null;
     const contentProvider = uiLocation ? uiLocation.uiSourceCode : resource;
 
     const revealable = info.revealable || uiLocation || resource;
@@ -753,7 +753,6 @@ export class Linkifier implements SDK.TargetManager.Observer {
       }
     }
     if (resource || info.url) {
-      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
       result.push({
         section: 'reveal',
         title: UI.UIUtils.openLinkExternallyLabel(),

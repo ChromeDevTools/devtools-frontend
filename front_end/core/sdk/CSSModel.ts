@@ -830,7 +830,7 @@ export class Edit {
 export class CSSLocation {
   readonly #cssModelInternal: CSSModel;
   styleSheetId: Protocol.CSS.StyleSheetId;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   lineNumber: number;
   columnNumber: number;
   constructor(header: CSSStyleSheetHeader, lineNumber: number, columnNumber?: number) {

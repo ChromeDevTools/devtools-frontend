@@ -721,11 +721,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame) {
       return false;
     }
-    const url = event.args['data']['url'];
+    const url = event.args['data']['url'] as Platform.DevToolsPath.UrlString;
     return url && this.isIgnoreListedURL(url);
   }
 
-  private isIgnoreListedURL(url: string): boolean {
+  private isIgnoreListedURL(url: Platform.DevToolsPath.UrlString): boolean {
     return Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedURL(url);
   }
 

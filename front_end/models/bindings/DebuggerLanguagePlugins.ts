@@ -15,8 +15,6 @@ import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 const UIStrings = {
   /**
   *@description Error message that is displayed in the Console when language #plugins report errors
@@ -768,7 +766,7 @@ export class DebuggerLanguagePluginManager implements
     rawModuleId: string,
     plugin: DebuggerLanguagePlugin,
     scripts: Array<SDK.Script.Script>,
-    addRawModulePromise: Promise<Array<string>>,
+    addRawModulePromise: Promise<Array<Platform.DevToolsPath.UrlString>>,
   }>;
 
   constructor(
@@ -941,11 +939,11 @@ export class DebuggerLanguagePluginManager implements
     return {rawModuleId, plugin: null};
   }
 
-  uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string): Workspace.UISourceCode.UISourceCode
-      |null {
+  uiSourceCodeForURL(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString):
+      Workspace.UISourceCode.UISourceCode|null {
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
-      return modelData.getProject().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+      return modelData.getProject().uiSourceCodeForURL(url);
     }
     return null;
   }
@@ -972,7 +970,8 @@ export class DebuggerLanguagePluginManager implements
     try {
       const sourceLocations = await plugin.rawLocationToSourceLocation(pluginLocation);
       for (const sourceLocation of sourceLocations) {
-        const uiSourceCode = this.uiSourceCodeForURL(script.debuggerModel, sourceLocation.sourceFileURL);
+        const uiSourceCode = this.uiSourceCodeForURL(
+            script.debuggerModel, sourceLocation.sourceFileURL as Platform.DevToolsPath.UrlString);
         if (!uiSourceCode) {
           continue;
         }
@@ -1070,7 +1069,7 @@ export class DebuggerLanguagePluginManager implements
       const rawModuleId = rawModuleIdForScript(script);
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
-        const sourceFileURLsPromise = (async(): Promise<string[]> => {
+        const sourceFileURLsPromise = (async(): Promise<Platform.DevToolsPath.UrlString[]> => {
           const console = Common.Console.Console.instance();
           const url = script.sourceURL;
           const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
@@ -1081,7 +1080,8 @@ export class DebuggerLanguagePluginManager implements
           }
           try {
             const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
-            const sourceFileURLs = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
+            const sourceFileURLs =
+                await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code}) as Platform.DevToolsPath.UrlString[];
             // Check that the handle isn't stale by now. This works because the code that assigns to
             // `rawModuleHandle` below will run before this code because of the `await` in the preceding
             // line. This is primarily to avoid logging the message below, which would give the developer
@@ -1300,9 +1300,9 @@ class ModelData {
     this.uiSourceCodeToScripts = new Map();
   }
 
-  addSourceFiles(script: SDK.Script.Script, urls: string[]): void {
+  addSourceFiles(script: SDK.Script.Script, urls: Platform.DevToolsPath.UrlString[]): void {
     const initiator = script.createPageResourceLoadInitiator();
-    for (const url of (urls as Platform.DevToolsPath.UrlString[])) {
+    for (const url of urls) {
       let uiSourceCode = this.project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
         uiSourceCode = this.project.createUISourceCode(url, Common.ResourceType.resourceTypes.SourceMapScript);
@@ -1318,7 +1318,7 @@ class ModelData {
         this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
 
         const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
-            url as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.SourceMapScript, initiator);
+            url, Common.ResourceType.resourceTypes.SourceMapScript, initiator);
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || 'text/javascript';
         this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {

@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -163,9 +161,10 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     }
   }
 
-  uiSourceCodeForURL(url: string, isContentScript: boolean): Workspace.UISourceCode.UISourceCode|null {
-    return isContentScript ? this.#contentScriptsProject.uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString) :
-                             this.#regularProject.uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+  uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString, isContentScript: boolean):
+      Workspace.UISourceCode.UISourceCode|null {
+    return isContentScript ? this.#contentScriptsProject.uiSourceCodeForURL(url) :
+                             this.#regularProject.uiSourceCodeForURL(url);
   }
 
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null {

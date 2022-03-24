@@ -38,7 +38,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
 
-export function resourceForURL(url: string): SDK.Resource.Resource|null {
+export function resourceForURL(url: Platform.DevToolsPath.UrlString): SDK.Resource.Resource|null {
   for (const resourceTreeModel of SDK.TargetManager.TargetManager.instance().models(
            SDK.ResourceTreeModel.ResourceTreeModel)) {
     const resource = resourceTreeModel.resourceForURL(url);
@@ -49,7 +49,7 @@ export function resourceForURL(url: string): SDK.Resource.Resource|null {
   return null;
 }
 
-export function displayNameForURL(url: string): string {
+export function displayNameForURL(url: Platform.DevToolsPath.UrlString): string {
   if (!url) {
     return '';
   }
@@ -59,9 +59,7 @@ export function displayNameForURL(url: string): string {
     return resource.displayName;
   }
 
-  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-  const uiSourceCode =
-      Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+  const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
   if (uiSourceCode) {
     return uiSourceCode.displayName();
   }
@@ -90,8 +88,9 @@ export function displayNameForURL(url: string): string {
   return displayName === '/' ? parsedURL.host + '/' : displayName;
 }
 
-export function metadataForURL(target: SDK.Target.Target, frameId: Protocol.Page.FrameId, url: string):
-    Workspace.UISourceCode.UISourceCodeMetadata|null {
+export function metadataForURL(
+    target: SDK.Target.Target, frameId: Protocol.Page.FrameId,
+    url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCodeMetadata|null {
   const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
   if (!resourceTreeModel) {
     return null;

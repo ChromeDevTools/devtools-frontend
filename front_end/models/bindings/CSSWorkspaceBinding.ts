@@ -170,7 +170,7 @@ export class ModelInfo {
   #stylesSourceMapping: StylesSourceMapping;
   #sassSourceMapping: SASSSourceMapping;
   readonly #locations: Platform.MapUtilities.Multimap<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, LiveLocation>;
-  readonly #unboundLocations: Platform.MapUtilities.Multimap<string, LiveLocation>;
+  readonly #unboundLocations: Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, LiveLocation>;
   constructor(cssModel: SDK.CSSModel.CSSModel, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.#eventListeners = [
       cssModel.addEventListener(
@@ -289,7 +289,7 @@ export class ModelInfo {
 }
 
 export class LiveLocation extends LiveLocationWithPool {
-  readonly url: string;
+  readonly url: Platform.DevToolsPath.UrlString;
   readonly #lineNumber: number;
   readonly #columnNumber: number;
   readonly #info: ModelInfo;

@@ -298,7 +298,6 @@ export class RenderCoordinator extends EventTarget {
     for (const handler of handlers) {
       const rejector = this.#rejectors.get(handler);
       if (!rejector) {
-        console.warn('Unable to locate rejector');
         continue;
       }
 

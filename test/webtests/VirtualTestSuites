@@ -1,6 +1,7 @@
 [
     {
         "prefix": "threaded",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/tracing"
         ],
@@ -10,6 +11,7 @@
     },
     {
         "prefix": "site-isolated-code-cache",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/isolated-code-cache"
         ],
@@ -20,6 +22,7 @@
     },
     {
         "prefix": "wasm-site-isolated-code-cache",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/wasm-isolated-code-cache"
         ],
@@ -31,6 +34,7 @@
     },
     {
         "prefix": "split-http-cache-not-site-per-process",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/isolated-code-cache"
         ],
@@ -41,6 +45,7 @@
     },
     {
         "prefix": "not-split-http-cache-not-site-per-process",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/isolated-code-cache"
         ],
@@ -51,6 +56,7 @@
     },
     {
         "prefix": "not-site-per-process",
+        "platforms": ["Linux", "Mac", "Win"],
         "bases": [
             "http/tests/devtools/debugger/fetch-breakpoints.js",
             "http/tests/devtools/oopif/oopif-storage.js"

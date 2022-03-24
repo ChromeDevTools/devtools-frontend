@@ -16,9 +16,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
-  private readonly pathInternal: string;
+  private readonly pathInternal: Platform.DevToolsPath.UrlString;
   private readonly typeInternal: string;
-  constructor(path: string, type: string) {
+  constructor(path: Platform.DevToolsPath.UrlString, type: string) {
     this.pathInternal = path;
     this.typeInternal = type;
   }
@@ -36,11 +36,10 @@ export class PlatformFileSystem {
   }
 
   path(): Platform.DevToolsPath.UrlString {
-    // TODO(crbug.com/1297535): Cast to UrlString will be removed when migration to branded types is complete.
-    return this.pathInternal as Platform.DevToolsPath.UrlString;
+    return this.pathInternal;
   }
 
-  embedderPath(): string {
+  embedderPath(): Platform.DevToolsPath.RawPathString {
     throw new Error('Not implemented');
   }
 
@@ -80,7 +79,7 @@ export class PlatformFileSystem {
   addExcludedFolder(_path: Platform.DevToolsPath.EncodedPathString): void {
   }
 
-  removeExcludedFolder(_path: string): void {
+  removeExcludedFolder(_path: Platform.DevToolsPath.EncodedPathString): void {
   }
 
   fileSystemRemoved(): void {
@@ -90,7 +89,7 @@ export class PlatformFileSystem {
     return false;
   }
 
-  excludedFolders(): Set<string> {
+  excludedFolders(): Set<Platform.DevToolsPath.EncodedPathString> {
     return new Set();
   }
 
@@ -104,7 +103,7 @@ export class PlatformFileSystem {
     });
   }
 
-  mimeFromPath(_path: string): string {
+  mimeFromPath(_path: Platform.DevToolsPath.UrlString): string {
     throw new Error('Not implemented');
   }
 

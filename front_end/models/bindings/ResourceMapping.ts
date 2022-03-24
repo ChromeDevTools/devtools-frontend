@@ -74,8 +74,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
     if (!info) {
       return null;
     }
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    const uiSourceCode = info.getProject().uiSourceCodeForURL(cssLocation.url as Platform.DevToolsPath.UrlString);
+    const uiSourceCode = info.getProject().uiSourceCodeForURL(cssLocation.url);
     if (!uiSourceCode) {
       return null;
     }

@@ -23,7 +23,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private readonly savingSymbol: symbol;
   private enabledSetting: Common.Settings.Setting<boolean>;
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
-  private readonly networkUISourceCodeForEncodedPath: Map<string, Workspace.UISourceCode.UISourceCode>;
+  private readonly networkUISourceCodeForEncodedPath:
+      Map<Platform.DevToolsPath.EncodedPathString, Workspace.UISourceCode.UISourceCode>;
   private readonly interceptionHandlerBound:
       (interceptedRequest: SDK.NetworkManager.InterceptedRequest) => Promise<void>;
   private readonly updateInterceptionThrottler: Common.Throttler.Throttler;
@@ -190,12 +191,14 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if ((!this.activeInternal && !ignoreInactive) || !this.projectInternal) {
       return Platform.DevToolsPath.EmptyEncodedPathString;
     }
-    let urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
+    let urlPath =
+        Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, '')) as Platform.DevToolsPath.UrlString;
     if (urlPath.endsWith('/') && urlPath.indexOf('?') === -1) {
-      urlPath = urlPath + 'index.html';
+      urlPath = Common.ParsedURL.ParsedURL.concatenate(urlPath, 'index.html');
     }
     let encodedPathParts = encodeUrlPathToLocalPathParts(urlPath);
-    const projectPath = FileSystemWorkspaceBinding.fileSystemPath(this.projectInternal.id());
+    const projectPath =
+        FileSystemWorkspaceBinding.fileSystemPath(this.projectInternal.id() as Platform.DevToolsPath.UrlString);
     const encodedPath = encodedPathParts.join('/');
     if (projectPath.length + encodedPath.length > 200) {
       const domain = encodedPathParts[0];
@@ -211,7 +214,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     return Common.ParsedURL.ParsedURL.join(encodedPathParts as Platform.DevToolsPath.EncodedPathString[], '/');
 
-    function encodeUrlPathToLocalPathParts(urlPath: string): string[] {
+    function encodeUrlPathToLocalPathParts(urlPath: Platform.DevToolsPath.UrlString): string[] {
       const encodedParts = [];
       for (const pathPart of fileNamePartsFromUrlPath(urlPath)) {
         if (!pathPart) {
@@ -233,8 +236,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       return encodedParts;
     }
 
-    function fileNamePartsFromUrlPath(urlPath: string): string[] {
-      urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(urlPath);
+    function fileNamePartsFromUrlPath(urlPath: Platform.DevToolsPath.UrlString): string[] {
+      urlPath = Common.ParsedURL.ParsedURL.urlWithoutHash(urlPath) as Platform.DevToolsPath.UrlString;
       const queryIndex = urlPath.indexOf('?');
       if (queryIndex === -1) {
         return urlPath.split('/');
@@ -323,7 +326,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.savingForOverrides.delete(uiSourceCode);
   }
 
-  private fileCreatedForTest(_path: string, _fileName: string): void {
+  private fileCreatedForTest(_path: Platform.DevToolsPath.EncodedPathString, _fileName: string): void {
   }
 
   private patternForFileSystemUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
@@ -368,7 +371,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.updateInterceptionPatterns();
 
     const relativePath = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
-    const networkUISourceCode = this.networkUISourceCodeForEncodedPath.get(relativePath.join('/'));
+    const networkUISourceCode =
+        this.networkUISourceCodeForEncodedPath.get(Common.ParsedURL.ParsedURL.join(relativePath, '/'));
     if (networkUISourceCode) {
       await this.bind(networkUISourceCode, uiSourceCode);
     }
@@ -514,7 +518,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides') {
       return;
     }
-    const fileSystemPath = FileSystemWorkspaceBinding.fileSystemPath(project.id());
+    const fileSystemPath = FileSystemWorkspaceBinding.fileSystemPath(project.id() as Platform.DevToolsPath.UrlString);
     if (!fileSystemPath) {
       return;
     }
@@ -547,8 +551,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     return result;
   }
 
-  #maybeMergeHeadersForPathSegment(path: string, requestUrl: string, headers: Protocol.Fetch.HeaderEntry[]):
-      Protocol.Fetch.HeaderEntry[] {
+  #maybeMergeHeadersForPathSegment(
+      path: Platform.DevToolsPath.EncodedPathString, requestUrl: Platform.DevToolsPath.UrlString,
+      headers: Protocol.Fetch.HeaderEntry[]): Protocol.Fetch.HeaderEntry[] {
     const headerOverrides = this.#headerOverridesMap.get(path) || [];
     for (const headerOverride of headerOverrides) {
       if (headerOverride.applyToRegex.test(requestUrl)) {
@@ -561,16 +566,19 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   handleHeaderInterception(interceptedRequest: SDK.NetworkManager.InterceptedRequest): Protocol.Fetch.HeaderEntry[] {
     let result: Protocol.Fetch.HeaderEntry[] = interceptedRequest.responseHeaders || [];
     const urlSegments =
-        this.encodedPathFromUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString).split('/');
+        this.encodedPathFromUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString).split('/') as
+        Platform.DevToolsPath.EncodedPathString[];
     // Traverse the hierarchy of overrides from the most general to the most
     // specific. Check with empty string first to match overrides applying to
     // all domains.
     // e.g. '', 'www.example.com/', 'www.example.com/path/', ...
-    let path = '';
-    result = this.#maybeMergeHeadersForPathSegment(path, interceptedRequest.request.url, result);
+    let path = Platform.DevToolsPath.EmptyEncodedPathString;
+    result = this.#maybeMergeHeadersForPathSegment(
+        path, interceptedRequest.request.url as Platform.DevToolsPath.UrlString, result);
     for (const segment of urlSegments) {
-      path += segment + '/';
-      result = this.#maybeMergeHeadersForPathSegment(path, interceptedRequest.request.url, result);
+      path = Common.ParsedURL.ParsedURL.concatenate(path, segment, '/');
+      result = this.#maybeMergeHeadersForPathSegment(
+          path, interceptedRequest.request.url as Platform.DevToolsPath.UrlString, result);
     }
     return result;
   }

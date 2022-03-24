@@ -1489,9 +1489,10 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const absoluteFileSystemPath =
-        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id()) + '/' +
-        this.folderPath;
+    const absoluteFileSystemPath = Common.ParsedURL.ParsedURL.concatenate(
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+            this.project.id() as Platform.DevToolsPath.UrlString),
+        '/', this.folderPath);
     const hasMappedFiles =
         Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
     this.treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
@@ -1649,8 +1650,8 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     if (!this.treeElement || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystemPath =
-        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id());
+    const fileSystemPath = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+        this.project.id() as Platform.DevToolsPath.UrlString);
     const wasActive = this.treeElement.listItemElement.classList.contains('has-mapped-files');
     const isActive = Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
     if (wasActive === isActive) {

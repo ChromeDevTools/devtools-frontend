@@ -50,7 +50,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly fileSystemsInternal: Map<string, PlatformFileSystem>;
+  private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
   private readonly callbacks: Map<number, (arg0: Array<Platform.DevToolsPath.RawPathString>) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
   private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
@@ -191,7 +191,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  addPlatformFileSystem(fileSystemURL: string, fileSystem: PlatformFileSystem): void {
+  addPlatformFileSystem(fileSystemURL: Platform.DevToolsPath.UrlString, fileSystem: PlatformFileSystem): void {
     this.fileSystemsInternal.set(fileSystemURL, fileSystem);
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
@@ -241,9 +241,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.dispatchEventToListeners(Events.FileSystemFilesChanged, urlPaths);
 
     function groupFilePathsIntoFileSystemPaths(
-        this: IsolatedFileSystemManager,
-        embedderPaths: Platform.DevToolsPath.RawPathString[]): Platform.MapUtilities.Multimap<string, string> {
-      const paths = new Platform.MapUtilities.Multimap<string, string>();
+        this: IsolatedFileSystemManager, embedderPaths: Platform.DevToolsPath.RawPathString[]):
+        Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.UrlString> {
+      const paths =
+          new Platform.MapUtilities.Multimap<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.UrlString>();
       for (const embedderPath of embedderPaths) {
         const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
         for (const fileSystemPath of this.fileSystemsInternal.keys()) {
@@ -267,7 +268,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return [...this.fileSystemsInternal.values()];
   }
 
-  fileSystem(fileSystemPath: string): PlatformFileSystem|null {
+  fileSystem(fileSystemPath: Platform.DevToolsPath.UrlString): PlatformFileSystem|null {
     return this.fileSystemsInternal.get(fileSystemPath) || null;
   }
 

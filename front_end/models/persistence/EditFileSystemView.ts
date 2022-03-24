@@ -74,13 +74,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/EditFileSystemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.Delegate<string> {
-  private readonly fileSystemPath: string;
-  private excludedFolders: string[];
+  private readonly fileSystemPath: Platform.DevToolsPath.UrlString;
+  private excludedFolders: Platform.DevToolsPath.EncodedPathString[];
   private readonly eventListeners: Common.EventTarget.EventDescriptor[];
   private readonly excludedFoldersList: UI.ListWidget.ListWidget<string>;
   private muteUpdate?: boolean;
   private excludedFolderEditor?: UI.ListWidget.Editor<string>;
-  constructor(fileSystemPath: string) {
+  constructor(fileSystemPath: Platform.DevToolsPath.UrlString) {
     super(true);
 
     this.fileSystemPath = fileSystemPath;
@@ -148,7 +148,8 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
     this.getFileSystem().removeExcludedFolder(this.excludedFolders[index]);
   }
 
-  commitEdit(item: string, editor: UI.ListWidget.Editor<string>, isNew: boolean): void {
+  commitEdit(item: Platform.DevToolsPath.EncodedPathString, editor: UI.ListWidget.Editor<string>, isNew: boolean):
+      void {
     this.muteUpdate = true;
     if (!isNew) {
       this.getFileSystem().removeExcludedFolder(item);

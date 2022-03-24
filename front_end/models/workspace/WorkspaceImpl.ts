@@ -336,7 +336,7 @@ export enum Events {
 }
 
 export interface UISourceCodeRenamedEvent {
-  oldURL: string;
+  oldURL: Platform.DevToolsPath.UrlString;
   uiSourceCode: UISourceCode;
 }
 

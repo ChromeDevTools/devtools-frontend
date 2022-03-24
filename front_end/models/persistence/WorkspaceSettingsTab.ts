@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
@@ -44,8 +45,8 @@ let workspaceSettingsTabInstance: WorkspaceSettingsTab;
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
   private readonly fileSystemsListContainer: HTMLElement;
-  private readonly elementByPath: Map<string, Element>;
-  private readonly mappingViewByPath: Map<string, EditFileSystemView>;
+  private readonly elementByPath: Map<Platform.DevToolsPath.UrlString, Element>;
+  private readonly mappingViewByPath: Map<Platform.DevToolsPath.UrlString, EditFileSystemView>;
   private constructor() {
     super();
 

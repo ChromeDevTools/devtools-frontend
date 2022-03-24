@@ -308,7 +308,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return binding ? binding.network : null;
   }
 
-  filePathHasBindings(filePath: string): boolean {
+  filePathHasBindings(filePath: Platform.DevToolsPath.UrlString): boolean {
     return this.filePathPrefixesToBindingCount.hasBindingPrefix(filePath);
   }
 }
@@ -320,11 +320,11 @@ class FilePathPrefixesBindingCounts {
     this.prefixCounts = new Map();
   }
 
-  private getPlatformCanonicalFilePath(path: string): string {
-    return Host.Platform.isWin() ? path.toLowerCase() : path;
+  private getPlatformCanonicalFilePath(path: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+    return Host.Platform.isWin() ? Common.ParsedURL.ParsedURL.toLowerCase(path) : path;
   }
 
-  add(filePath: string): void {
+  add(filePath: Platform.DevToolsPath.UrlString): void {
     filePath = this.getPlatformCanonicalFilePath(filePath);
     let relative = '';
     for (const token of filePath.split('/')) {
@@ -334,7 +334,7 @@ class FilePathPrefixesBindingCounts {
     }
   }
 
-  remove(filePath: string): void {
+  remove(filePath: Platform.DevToolsPath.UrlString): void {
     filePath = this.getPlatformCanonicalFilePath(filePath);
     let relative = '';
     for (const token of filePath.split('/')) {
@@ -348,10 +348,10 @@ class FilePathPrefixesBindingCounts {
     }
   }
 
-  hasBindingPrefix(filePath: string): boolean {
+  hasBindingPrefix(filePath: Platform.DevToolsPath.UrlString): boolean {
     filePath = this.getPlatformCanonicalFilePath(filePath);
     if (!filePath.endsWith('/')) {
-      filePath += '/';
+      filePath = Common.ParsedURL.ParsedURL.concatenate(filePath, '/');
     }
     return this.prefixCounts.has(filePath);
   }

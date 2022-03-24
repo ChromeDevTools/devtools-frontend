@@ -35,6 +35,7 @@ group("front_end") {
     "panels/media",
     "panels/network",
     "panels/network/components",
+    "panels/profiler",
     "panels/settings/components",
     "panels/settings/emulation",
     "panels/settings/emulation/components",

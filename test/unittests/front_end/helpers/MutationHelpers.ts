@@ -241,3 +241,13 @@ export const withMutations = async<T extends Node>(
 export const withNoMutations = async<T extends Node>(element: T, fn: (shadowRoot: T) => void): Promise<void> => {
   return await withMutations([], element, fn);
 };
+
+export const someMutations = async<T extends Node>(element: T): Promise<void> => {
+  return new Promise<void>(resolve => {
+    const observer = new MutationObserver(() => {
+      resolve();
+      observer.disconnect();
+    });
+    observer.observe(element, {attributes: true, childList: true, subtree: true});
+  });
+};

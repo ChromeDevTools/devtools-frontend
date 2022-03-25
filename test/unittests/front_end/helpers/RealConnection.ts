@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Main from '../../../../front_end/entrypoints/main/main.js';
 
 import {deinitializeGlobalVars} from './EnvironmentHelpers.js';
@@ -75,3 +76,22 @@ describeWithRealConnection.only = function(title: string, fn: (this: Mocha.Suite
     describeBody(title, fn);
   });
 };
+
+export async function getExecutionContext(runtimeModel: SDK.RuntimeModel.RuntimeModel):
+    Promise<SDK.RuntimeModel.ExecutionContext> {
+  let executionContexts = runtimeModel.executionContexts();
+  if (!executionContexts.length) {
+    await new Promise<void>(resolve => {
+      const listener = () => {
+        runtimeModel.removeEventListener(SDK.RuntimeModel.Events.ExecutionContextCreated, listener);
+        executionContexts = runtimeModel.executionContexts();
+        resolve();
+      };
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExecutionContextCreated, listener);
+    });
+  }
+  if (!executionContexts.length) {
+    throw new Error('Cannot get executionContext');
+  }
+  return executionContexts[0];
+}

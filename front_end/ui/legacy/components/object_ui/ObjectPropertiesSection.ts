@@ -1027,13 +1027,14 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       const getter = this.property.getter;
       element.addEventListener('click', (event: Event) => {
         event.consume();
+        const invokeGetter = `
+          function invokeGetter(getter) {
+            return Reflect.apply(getter, this, []);
+          }`;
         // @ts-ignore No way to teach TypeScript to preserve the Function-ness of `getter`.
+        // Also passing a string instead of a Function to avoid coverage implementation messing with it.
         void object.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)])
             .then(this.onInvokeGetterClick.bind(this));
-
-        function invokeGetter(this: Object, getter: Function): Object {
-          return Reflect.apply(getter, this, []);
-        }
       }, false);
     } else {
       this.valueElement = document.createElement('span');

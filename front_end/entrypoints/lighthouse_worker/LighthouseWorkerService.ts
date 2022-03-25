@@ -135,21 +135,28 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     puppeteerConnection =
         await Puppeteer.PuppeteerConnection.getPuppeteerConnection(cdpConnection, mainFrameId, mainTargetId);
     const {page} = puppeteerConnection;
+    const configContext = {
+      logLevel: flags.logLevel,
+      settingsOverrides: {
+        channel: flags.channel,
+        locale: flags.locale,
+      },
+    };
 
     if (action === 'snapshot') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return await self.runLighthouseSnapshot({config, page});
+      return await self.runLighthouseSnapshot({config, page, configContext});
     }
 
     if (action === 'startTimespan') {
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const timespan = await self.startLighthouseTimespan({config, page});
+      const timespan = await self.startLighthouseTimespan({config, page, configContext});
       endTimespan = timespan.endTimespan;
       return;
     }
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouseNavigation(url, {config, page});
+    return await self.runLighthouseNavigation(url, {config, page, configContext});
   } catch (err) {
     return ({
       fatal: true,

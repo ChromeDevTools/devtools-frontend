@@ -271,7 +271,11 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       return '';
     }
     const mainTarget = this.manager.target();
-    const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({origin: mainTarget.inspectedURL()});
+    const origin = mainTarget.inspectedURL();
+    if (!origin) {
+      return '';
+    }
+    const usageData = await mainTarget.storageAgent().invoke_getUsageAndQuota({origin});
     const locations = usageData.usageBreakdown.filter(usage => usage.usage)
                           .map(usage => STORAGE_TYPE_NAMES.get(usage.storageType))
                           .map(i18nStringFn => i18nStringFn ? i18nStringFn() : undefined)

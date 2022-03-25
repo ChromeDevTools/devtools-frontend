@@ -71,6 +71,13 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     this.#sourceMappings.push(sourceMapping);
   }
 
+  removeSourceMapping(sourceMapping: DebuggerSourceMapping): void {
+    const index = this.#sourceMappings.indexOf(sourceMapping);
+    if (index !== -1) {
+      this.#sourceMappings.splice(index, 1);
+    }
+  }
+
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
       Promise<RawLocationRange[]> {
     function contained(location: SDK.DebuggerModel.Location, range: RawLocationRange): boolean {

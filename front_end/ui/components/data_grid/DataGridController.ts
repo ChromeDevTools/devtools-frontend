@@ -153,7 +153,9 @@ export class DataGridController extends HTMLElement {
 
   #onColumnHeaderClick(event: ColumnHeaderClickEvent): void {
     const {column} = event.data;
-    this.#applySortOnColumn(column);
+    if (column.sortable) {
+      this.#applySortOnColumn(column);
+    }
   }
 
   #applySortOnColumn(column: Column): void {

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – нарушение правил"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "безопасно"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "небезопасно"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets и атрибут SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Как работает функция переопределения сайтов"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "О файлах cookie SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Совместное использование ресурсов между разными источниками (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим совместимости с документом"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "безопасно"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "небезопасно"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets и атрибут SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Как работает функция переопределения сайтов"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "О файлах cookie SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Включение объекта SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Возвратный кеш"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Extension id: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Не нужно принимать меры"
   },
@@ -3435,7 +3438,7 @@
     "message": "Тип доступа"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
-    "message": "Название"
+    "message": "Name"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Владелец"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Показать прослушиватели предков"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS layers"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Toggle CSS Layers view"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Точка останова DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Показать вычисленное значение"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Click to reveal layer in layer tree"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "сконструированная таблица стилей"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1} (имя свойства: {PH2}, значение свойства: {PH3})"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Layer"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Новое правило стиля"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "На скорость загрузки могут влиять данные из этого хранилища: {PH1}. Попробуйте открыть страницу в режиме инкогнито."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Timespan"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Просмотр страницы с помощью классической версии Lighthouse в режиме навигации"
+    "message": "Analyze the page using classic Lighthouse when in navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Подробнее…"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analyze navigation"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analyze snapshot"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Режим"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Start timespan"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % всех обладателей мобильных устройств пользовались сетями 2G и 3G в 2016 году (источник: GSMA Mobile)."
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "При повышении скорости загрузки страниц на каждые 100 мс доход Walmart увеличивался на 1 % [источник: WPO Stats]."
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Cancel"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "End timespan"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Timespan started, interact with the page"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Timespan starting…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Показать Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Обновить выражения контрольного значения"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Добавить заголовок"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Добавить переопределение заголовка"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Error when parsing ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "This is most likely due to a syntax error in ''{PH1}''. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Удалить этот раздел: ApplyTo"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Удалить заголовок"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активировать точки останова"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Обновление сжатия"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Предварительная отрисовка"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Предварительный просмотр"

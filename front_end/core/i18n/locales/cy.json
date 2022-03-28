@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Mathau Dibynadwy - Tor Polisi"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "diogel"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "anniogel"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets a'r briodwedd SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Sut mae Schemeful Same-Site yn gweithio"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Esbonio cwcis SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Rhannu Adnoddau Traws-darddiad (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modd cydnawsedd dogfen"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "diogel"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "anniogel"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets a'r briodwedd SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Sut mae Schemeful Same-Site yn gweithio"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Esbonio cwcis SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Wrthi'n galluogi SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Storfa yn ôl/ymlaen"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Rhif adnabod yr estyniad: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ddim yn Weithredadwy"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Dangos gwrandawyr ar yr hynafiaid"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Haenau CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Toglo'r wedd Haenau CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Torbwynt DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Gweld y gwerth sydd wedi'i gyfrifo"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Cliciwch i ddatgelu haen yng nghoeden haenau"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "taflen arddull adeiledig"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, enw'r eiddo: {PH2}, gwerth yr eiddo: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Haen"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Rheol Arddull Newydd"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mae'n bosib y bydd data sydd wedi'u storio sy'n effeithio ar berfformiad yn llwytho yn y lleoliad hwn: {PH1}. Archwiliwch y dudalen hon mewn ffenestr anhysbys i atal yr adnoddau hynny rhag effeithio ar eich sgorau."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Cyfnod"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Archwilio'r dudalen hon gan ddefnyddio Lighthouse clasurol pan fyddwch yn y modd llywio."
+    "message": "Dadansoddi'r dudalen hon gan ddefnyddio Lighthouse clasurol pan fyddwch yn y modd llywio."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Dysgu rhagor"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Dadansoddi llywio"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Dadansoddi ciplun"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modd"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Dechrau cyfnod"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Roedd 75% o ddefnyddwyr symudol byd-eang yn 2016 ar 2G neu 3G [Ffynhonnell: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Gwelodd Walmart gynnydd o 1% mewn refeniw ar gyfer pob gwelliant 100ms o ran amser llwytho tudalen [Ffynhonnell: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Canslo"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Dod â'r cyfnod i ben"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Wedi dechrau cyfnod, rhyngweithiwch gyda'r dudalen"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Wrthi'n dechrau cyfnod…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Dangos Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Ail-lwytho mynegiadau oriawr"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Ychwanegu pennyn"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Ychwanegu diystyriad pennyn"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Gwall wrth ddosrannu \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Mae hyn yn fwyaf tebygol oherwydd gwall cystrawen yn \"{PH1}\". Rhowch gynnig ar agor y ffeil hon mewn golygydd allanol i drwsio'r gwall neu dilëwch y ffeil ac ail-grëwch y diystyriad."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Tynnu'r adran 'ApplyTo' hon"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Tynnu'r pennyn hwn"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Gweithredu torbwyntiau"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Diweddariad Pinsio"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Cyn-beintio"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Rhagolwg"

@@ -165,7 +165,7 @@
     "message": "Synchronizacja"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
-    "message": "Narzędzia deweloperskie – {PH1}"
+    "message": "Narzędzia dla deweloperów – {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
     "message": "Błąd pamięci podręcznej"
@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – naruszenie zasad"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "bezpiecznego"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "niezabezpieczonego"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets i atrybut SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Jak działa atrybut „Schemeful Same-Site”"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Objaśnienie plików cookie SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Współdzielenie zasobów pomiędzy serwerami z różnych domen (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Tryb zgodności dokumentu"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "bezpiecznego"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "niezabezpieczonego"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets i atrybut SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Jak działa atrybut „Schemeful Same-Site”"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Objaśnienie plików cookie SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Włączam SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Pamięć podręczna stanu strony internetowej"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Identyfikator rozszerzenia: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nie umożliwiające wykonania czynności"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Pokaż detektory na elementach podrzędnych"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Warstwy CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Przełącz widok warstw CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Punkt przerwania DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Wyświetl obliczoną wartość"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Kliknij, aby odsłonić warstwę w drzewie warstw"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "skonstruowany arkusz stylów"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, nazwa właściwości: {PH2}, wartość właściwości: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Warstwa"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nowa reguła stylu"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Możliwe, że przechowywane są dane, które mają wpływ na szybkość wczytywania w tej lokalizacji: {PH1}. Aby uchronić się przed wpływem tych zasobów na wyniki, sprawdź tę stronę w oknie incognito."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Okres"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Skontroluj stronę w trybie nawigacji, korzystając z klasycznej wersji Lighthouse."
+    "message": "Analizuj stronę w trybie nawigacji, korzystając z klasycznej wersji Lighthouse."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Więcej informacji"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analizuj nawigację"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analizuj migawkę"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Tryb"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Uruchom okres"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% użytkowników urządzeń mobilnych na świecie w 2016 roku korzystało z sieci 2G lub 3G. [Źródło: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Firma Walmart zwiększyła swoje przychody o 1%, przyspieszając ładowanie stron o każde 100 ms [źródło: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Anuluj"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Zakończ okres"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Uruchomiono okres, wejdź w interakcję ze stroną"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Uruchamiam okres…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Pokaż: Lighthouse"
@@ -6417,7 +6456,7 @@
     "message": "(dane)"
   },
   "panels/network/NetworkDataGridNode.ts | devtools": {
-    "message": "narzędzia deweloperskie"
+    "message": "narzędzia dla deweloperów"
   },
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(pamięć podręczna na dysku)"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Odśwież obserwowane wyrażenia"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Dodaj nagłówek"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Dodaj zastąpienie nagłówka"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Podczas analizowania „{PH1}” wystąpił błąd."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Jest to najprawdopodobniej spowodowane błędem składni w „{PH1}”. Spróbuj otworzyć ten plik w edytorze zewnętrznym, aby naprawić błąd, lub usuń plik i ponownie utwórz zastępujący go element."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Usuń tę sekcję „ApplyTo”"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Usuń ten nagłówek"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktywuj punkty przerwania"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Aktualizacja ściągania/rozciągania"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Renderowanie wstępne"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Podgląd"

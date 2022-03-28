@@ -417,7 +417,7 @@
     "message": "Beginn der Wertungsphase für Verkäufer"
   },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Cross-Origin Read Blocking (CORB) hat die ursprungsübergreifende Antwort {PH1} mit dem MIME-Typ {PH2} blockiert. Weitere Informationen finden Sie unter https://www.chromestatus.com/feature/5629709824032768."
+    "message": "Cross-Origin Read Blocking (CORB) hat die ursprungsübergreifende Antwort {PH1} mit dem MIME-Typ {PH2} blockiert. Weitere Informationen findest du unter https://www.chromestatus.com/feature/5629709824032768."
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Schnelles 3G"
@@ -561,7 +561,7 @@
     "message": "Skriptquelle kann nicht abgerufen werden."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Veraltete Syntax gefunden. Bitte verwenden Sie: <name>;dur=<duration>;desc=<description>"
+    "message": "Veraltete Syntax gefunden. Bitte verwende: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Doppelter Parameter „{PH1}“ ignoriert."
@@ -1206,7 +1206,7 @@
     "message": "Leitfaden zum Node.js-Debugging"
   },
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
-    "message": "Geben Sie den Netzwerk-Endpunkt an und DevTools stellt automatisch eine Verbindung zu ihm her. Weitere Informationen finden Sie unter {PH1}."
+    "message": "Gib den Netzwerk-Endpunkt an und DevTools stellt automatisch eine Verbindung zu ihm her. Weitere Informationen findest du unter {PH1}."
   },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Hauptinhalt"
@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Vertrauenswürdige Typen – Richtlinienverstoß"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "sicher"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "„First-Party Sets“ und das Attribut „SameParty“"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "So funktioniert die Schemeful-Same-Site-Kennzeichnung"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Erläuterungen zu SameSite-Cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-Origin Resource Sharing (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modus für die Kompatibilität von Dokumenten"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "sicher"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "„First-Party Sets“ und das Attribut „SameParty“"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "So funktioniert die Schemeful-Same-Site-Kennzeichnung"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Erläuterungen zu SameSite-Cookies"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer aktivieren"
@@ -1551,7 +1551,7 @@
     "message": "(Index)"
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "Diese Datei wurde extern geändert. Möchten Sie sie aktualisieren?"
+    "message": "Diese Datei wurde extern geändert. Möchtest du sie aktualisieren?"
   },
   "panels/accessibility/ARIAAttributesView.ts | ariaAttributes": {
     "message": "ARIA-Attribute"
@@ -2001,7 +2001,7 @@
     "message": "Alle fortsetzen"
   },
   "panels/animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
-    "message": "Wählen Sie zum Untersuchen und Ändern oben einen Effekt aus."
+    "message": "Wähle zum Untersuchen und Ändern oben einen Effekt aus."
   },
   "panels/animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Geschwindigkeit auf {PH1} einstellen"
@@ -2040,7 +2040,7 @@
     "message": "Dies dient als Information für den Browser, ob das Manifest eine bestehende Anwendung aktualisieren soll, oder ob sich dies auf eine neue Webanwendung bezieht, die installiert werden kann."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "{PH1} „{PH2}“ wird nicht im Manifest angegeben. Stattdessen wird „{PH3}“ verwendet. Wenn Sie eine App-ID angeben möchten, die der aktuellen Identität entspricht, setzen Sie das Feld „{PH4}“ auf „{PH5}“ {PH6}."
+    "message": "{PH1} „{PH2}“ wird nicht im Manifest angegeben. Stattdessen wird „{PH3}“ verwendet. Wenn du eine App-ID angeben möchtest, die der aktuellen Identität entspricht, setze das Feld „{PH4}“ auf „{PH5}“ {PH6}."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "App-Manifest"
@@ -2130,7 +2130,7 @@
     "message": "Name"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
-    "message": "Brauchen Sie Hilfe? Lesen Sie {PH1}."
+    "message": "Brauchst du Hilfe? Lies {PH1}."
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL für neue Notiz"
@@ -2139,7 +2139,7 @@
     "message": "Kein Manifest erkannt"
   },
   "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Keine passenden service worker gefunden. Versuchen Sie, die Seite zu aktualisieren, oder prüfen Sie, ob der Bereich für den service worker für die aktuelle Seite den Bereich und die Start-URL des Manifests umfasst."
+    "message": "Keine passenden service worker gefunden. Versuche, die Seite zu aktualisieren, oder prüfe, ob der Bereich für den service worker für die aktuelle Seite den Bereich und die Start-URL des Manifests umfasst."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store-ID fehlt"
@@ -2157,7 +2157,7 @@
     "message": "Seite kann offline nicht geladen werden"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "Die Seite kann offline nicht geladen werden. Ab Chrome 93 ändern sich die Kriterien für die Installierbarkeit. Diese Website ist dann nicht mehr installierbar. Weitere Informationen finden Sie unter {PH1}."
+    "message": "Die Seite kann offline nicht geladen werden. Ab Chrome 93 ändern sich die Kriterien für die Installierbarkeit. Diese Website ist dann nicht mehr installierbar. Weitere Informationen findest du unter {PH1}."
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
     "message": "Die Seite hat kein Manifest <link> URL"
@@ -2193,7 +2193,7 @@
     "message": "Die Höhe von {PH1} {PH2} darf nicht mehr als 2,3-mal so groß wie die Breite sein"
   },
   "panels/application/AppManifestView.ts | sSShouldHaveSquareIcon": {
-    "message": "Die meisten Betriebssysteme erfordern quadratische Symbole. Nehmen Sie mindestens ein quadratisches Symbol in das Array auf."
+    "message": "Die meisten Betriebssysteme erfordern quadratische Symbole. Nimm mindestens ein quadratisches Symbol in das Array auf."
   },
   "panels/application/AppManifestView.ts | sSShouldSpecifyItsSizeAs": {
     "message": "{PH1} {PH2} sollte seine Größe als [width]x[height] angeben"
@@ -2346,7 +2346,7 @@
     "message": "Löschen"
   },
   "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klicken Sie auf die Schaltfläche zum Aufzeichnen {PH1} oder drücken Sie {PH2}, um mit der Aufzeichnung zu beginnen."
+    "message": "Klicke auf die Schaltfläche zum Aufzeichnen {PH1} oder drücke {PH2}, um mit der Aufzeichnung zu beginnen."
   },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools zeichnet für bis zu 3 Tage alle {PH1}-Aktivitäten auf, auch wenn es geschlossen ist."
@@ -2388,7 +2388,7 @@
     "message": "Ereignisse speichern"
   },
   "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
-    "message": "Wählen Sie einen Eintrag aus, um die Metadaten anzuzeigen"
+    "message": "Wähle einen Eintrag aus, um die Metadaten anzuzeigen"
   },
   "panels/application/BackgroundServiceView.ts | showEventsFromOtherDomains": {
     "message": "Ereignisse aus anderen Domains anzeigen"
@@ -2424,7 +2424,7 @@
     "message": "Nur Cookies mit einem Problem anzeigen"
   },
   "panels/application/CookieItemsView.ts | selectACookieToPreviewItsValue": {
-    "message": "Wählen Sie ein Cookie aus, um den Wert in der Vorschau anzuzeigen"
+    "message": "Wähle ein Cookie aus, um den Wert in der Vorschau anzuzeigen"
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "URL-dekodiert anzeigen"
@@ -2517,7 +2517,7 @@
     "message": "Objekthändler"
   },
   "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Bestätigen Sie das Löschen der „{PH1}“-Datenbank."
+    "message": "Bestätige das Löschen der „{PH1}“-Datenbank."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Primärschlüssel"
@@ -2553,7 +2553,7 @@
     "message": "Version"
   },
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
-    "message": "Klicken Sie auf ein beliebiges Interessengruppen-Ereignis, um den derzeitigen Status der Gruppe anzeigen zu lassen"
+    "message": "Klicke auf ein beliebiges Interessengruppen-Ereignis, um den derzeitigen Status der Gruppe anzeigen zu lassen"
   },
   "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
     "message": "Für die ausgewählte Interessengruppe sind keine Details verfügbar. Der Browser hat die Gruppe möglicherweise verlassen."
@@ -2616,7 +2616,7 @@
     "message": "Ja"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
-    "message": "Klicken Sie auf einen Bericht, um sich den zugehörigen Text anzusehen"
+    "message": "Klicke auf einen Bericht, um sich den zugehörigen Text anzusehen"
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
@@ -2658,7 +2658,7 @@
     "message": "Einträge insgesamt: {PH1}"
   },
   "panels/application/ServiceWorkerCacheViews.ts | varyHeaderWarning": {
-    "message": "⚠️ ignoreVary auf „true“ setzen, wenn Sie diesen Eintrag abgleichen"
+    "message": "⚠️ ignoreVary auf „true“ setzen, wenn du diesen Eintrag abgleichst"
   },
   "panels/application/ServiceWorkerUpdateCycleView.ts | endTimeS": {
     "message": "Ende: {PH1}"
@@ -2838,7 +2838,7 @@
     "message": "Sonstiges"
   },
   "panels/application/StorageView.ts | pleaseEnterANumber": {
-    "message": "Geben Sie eine Nummer ein"
+    "message": "Gib eine Nummer ein"
   },
   "panels/application/StorageView.ts | sFailedToLoad": {
     "message": "{PH1} (konnte nicht geladen werden)"
@@ -2913,7 +2913,7 @@
     "message": "Seiten, die einen App-Banner angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Der Back-Forward-Cache wurde durch Flags deaktiviert. Rufen Sie chrome://flags/#back-forward-cache auf, um die Funktion lokal für dieses Gerät zu aktivieren."
+    "message": "Der Back-Forward-Cache wurde durch Flags deaktiviert. Rufe chrome://flags/#back-forward-cache auf, um die Funktion lokal für dieses Gerät zu aktivieren."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
     "message": "Der Back-Forward-Cache wurde über die Befehlszeile deaktiviert."
@@ -3236,11 +3236,14 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-Forward-Cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Erweiterungs-ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nicht umsetzbar"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "Sie können keine Maßnahmen ergreifen, um diese Probleme zu lösen, da das Caching durch etwas verhindert wurde, das außerhalb des direkten Einflussbereichs der Seite liegt."
+    "message": "Du kannst keine Maßnahmen ergreifen, um diese Probleme zu lösen, da das Caching durch etwas verhindert wurde, das außerhalb des direkten Einflussbereichs der Seite liegt."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Weitere Informationen: Voraussetzungen für die Verwendung des Back-Forward-Cache"
@@ -3249,13 +3252,13 @@
     "message": "Hauptframe"
   },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Nicht aus dem Back-Forward-Cache geladen: Um die Seite automatisch zu verlassen und zu ihr zurückzukehren, verwenden Sie die Schaltflächen „Zurück“ und „Weiter“ in Chrome oder die Testschaltfläche unten."
+    "message": "Nicht aus dem Back-Forward-Cache geladen: Um die Seite automatisch zu verlassen und zu ihr zurückzukehren, verwende die Schaltflächen „Zurück“ und „Weiter“ in Chrome oder die Testschaltfläche unten."
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Umsetzbar"
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Sie können Maßnahmen ergreifen, um diese Probleme zu lösen und dafür zu sorgen, dass die Seite den Back-Forward-Cache verwenden kann."
+    "message": "Du kannst Maßnahmen ergreifen, um diese Probleme zu lösen und dafür zu sorgen, dass die Seite den Back-Forward-Cache verwenden kann."
   },
   "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Erfolgreich aus dem Back-Forward-Cache geladen."
@@ -3477,10 +3480,10 @@
     "message": "Zulässige Funktionen"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
-    "message": "Klicken Sie, um die Anfrage aufzurufen, deren HTTP-Header „Permissions-Policy“ diese Funktion deaktiviert."
+    "message": "Klicke, um die Anfrage aufzurufen, deren HTTP-Header „Permissions-Policy“ diese Funktion deaktiviert."
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Klicken Sie, um das oberste iFrame aufzurufen, das diese Funktion im Elementbereich nicht zulässt."
+    "message": "Klicke, um das oberste iFrame aufzurufen, das diese Funktion im Elementbereich nicht zulässt."
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByFencedFrame": {
     "message": "innerhalb von „fencedframe“ deaktiviert"
@@ -4104,10 +4107,10 @@
     "message": "Alle löschen"
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Klicken Sie die Aufnahmeschaltfläche {PH1}, um die Aufnahme der Abdeckung zu starten."
+    "message": "Klicke die Aufnahmeschaltfläche {PH1}, um die Aufnahme der Abdeckung zu starten."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Klicken Sie auf die Schaltfläche zum Aktualisieren {PH1}, um neu zu laden und die Aufnahme der Abdeckung zu starten."
+    "message": "Klicke auf die Schaltfläche zum Aktualisieren {PH1}, um neu zu laden und die Aufnahme der Abdeckung zu starten."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Inhaltskripte"
@@ -4293,7 +4296,7 @@
     "message": "Aufnahmenübersicht"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
-    "message": "Eine Übersicht über das CSS Ihrer Seite aufnehmen"
+    "message": "Eine Übersicht über das CSS deiner Seite aufnehmen"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "CSS-Verbesserungsmöglichkeiten entdecken"
@@ -4353,7 +4356,7 @@
     "message": "Laden durch Target aktivieren"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
-    "message": "Geben Sie Text ein, um in den Spalten für URL und Fehler zu suchen"
+    "message": "Gib Text ein, um in den Spalten für URL und Fehler zu suchen"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "HTTP(S)-Entwicklerressourcen über das geprüfte Ziel laden"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Listener auf den Ancestors anzeigen"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-Ebenen"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS-Ebenenansicht ein-/ausblenden"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-Haltepunkt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Berechneten Wert ansehen"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klicken, um die Ebene in der Ebenenstruktur einzublenden"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "erstelltes Stylesheet"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, Property-Name: {PH2}, Property-Wert: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Ebene"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Neue Stilregel"
@@ -5010,7 +5025,7 @@
     "message": "Zoom"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
-    "message": "Klicken Sie doppelt, um die volle Höhe anzuzeigen"
+    "message": "Klicke doppelt, um die volle Höhe anzuzeigen"
   },
   "panels/emulation/DeviceModeView.ts | laptop": {
     "message": "Laptop"
@@ -5151,7 +5166,7 @@
     "message": "blockiert"
   },
   "panels/issues/AffectedDirectivesView.ts | clickToRevealTheViolatingDomNode": {
-    "message": "Klicken Sie, um den richtlinienverletzenden DOM-Knoten im Elementbereich anzuzeigen"
+    "message": "Klicke, um den richtlinienverletzenden DOM-Knoten im Elementbereich anzuzeigen"
   },
   "panels/issues/AffectedDirectivesView.ts | directiveC": {
     "message": "Anweisung"
@@ -5235,7 +5250,7 @@
     "message": "Gewarnt"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
-    "message": "Klicken Sie, um den DOM-Knoten des Frames im Elementbereich anzuzeigen"
+    "message": "Klicke, um den DOM-Knoten des Frames im Elementbereich anzuzeigen"
   },
   "panels/issues/AffectedResourcesView.ts | unavailable": {
     "message": "nicht verfügbar"
@@ -5583,7 +5598,7 @@
     "message": "{PH1} {PH2} × {PH3} (um {PH4}, {PH5})"
   },
   "panels/layer_viewer/LayerDetailsView.ts | selectALayerToSeeItsDetails": {
-    "message": "Wählen Sie eine Ebene aus, um ihre Details zu sehen"
+    "message": "Wähle eine Ebene aus, um ihre Details zu sehen"
   },
   "panels/layer_viewer/LayerDetailsView.ts | size": {
     "message": "Größe"
@@ -5649,7 +5664,7 @@
     "message": "Scroll-Rects verlangsamen"
   },
   "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
-    "message": "Die WebGL-Unterstützung ist in Ihrem Browser deaktiviert."
+    "message": "Die WebGL-Unterstützung ist in deinem Browser deaktiviert."
   },
   "panels/layer_viewer/PaintProfilerView.ts | bitmap": {
     "message": "Bitmap"
@@ -5736,7 +5751,7 @@
     "message": "Best Practices"
   },
   "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Kann nur HTTP-/HTTPS-Seiten und Chrome-Erweiterungen prüfen. Rufen Sie eine andere Seite auf, um, die Prüfung zu starten."
+    "message": "Kann nur HTTP-/HTTPS-Seiten und Chrome-Erweiterungen prüfen. Rufe eine andere Seite auf, um, die Prüfung zu starten."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Speicherinhalt löschen"
@@ -5778,7 +5793,7 @@
     "message": "Mobil"
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
-    "message": "Mehrere Tabs werden von demselben service worker gesteuert. Schließen Sie andere Tabs derselben Quelle, um diese Seite zu prüfen."
+    "message": "Mehrere Tabs werden von demselben service worker gesteuert. Schließe andere Tabs derselben Quelle, um diese Seite zu prüfen."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
     "message": "Navigation"
@@ -5811,13 +5826,16 @@
     "message": "Snapshot"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "Gespeicherte Daten haben möglicherweise die Ladeleistungen an diesen Orten beeinflusst: {PH1}. Testen Sie diese Seite in einem Inkognitofenster, um zu verhindern, dass sich diese Ressourcen auf Ihre Ergebnisse auswirken."
+    "message": "Gespeicherte Daten haben möglicherweise die Ladeleistungen an diesen Orten beeinflusst: {PH1}. Teste diese Seite in einem Inkognitofenster, um zu verhindern, dass sich diese Ressourcen auf deine Ergebnisse auswirken."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "Gespeicherte Daten haben möglicherweise die Ladeleistung an diesem Ort beeinflusst: {PH1}. Testen Sie diese Seite in einem Inkognitofenster, um zu verhindern, dass sich die Ressourcen auf Ihre Ergebnisse auswirken."
+    "message": "Gespeicherte Daten haben möglicherweise die Ladeleistung an diesem Ort beeinflusst: {PH1}. Teste diese Seite in einem Inkognitofenster, um zu verhindern, dass sich die Ressourcen auf deine Ergebnisse auswirken."
+  },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Zeitspanne"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Seite im Navigationsmodus mithilfe der klassischen Lighthouse-Version prüfen."
+    "message": "Seite im Navigationsmodus mithilfe der klassischen Lighthouse-Version analysieren."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5841,10 +5859,10 @@
     "message": "Drucken"
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
-    "message": "Das Pop-up-Fenster zum Drucken ist geöffnet. Bitte schließen Sie es, um fortzufahren."
+    "message": "Das Pop-up-Fenster zum Drucken ist geöffnet. Bitte schließe es, um fortzufahren."
   },
   "panels/lighthouse/LighthouseReportRenderer.ts | thePerformanceMetricsAboveAre": {
-    "message": "Die obigen Leistungsmesswerte sind simuliert und stimmen nicht mit den Timings überein, die in diesem Trace gefunden wurden. Wenn die Timings übereinstimmen sollen, deaktivieren Sie die simulierte Drosselung in den „Lighthouse-Einstellungen“."
+    "message": "Die obigen Leistungsmesswerte sind simuliert und stimmen nicht mit den Timings überein, die in diesem Trace gefunden wurden. Wenn die Timings übereinstimmen sollen, deaktiviere die simulierte Drosselung in den „Lighthouse-Einstellungen“."
   },
   "panels/lighthouse/LighthouseReportRenderer.ts | viewOriginalTrace": {
     "message": "Ursprünglichen Trace anzeigen"
@@ -5871,13 +5889,22 @@
     "message": "Bericht erstellen"
   },
   "panels/lighthouse/LighthouseStartView.ts | identifyAndFixCommonProblemsThat": {
-    "message": "Identifizieren und beheben Sie häufige Probleme, die die Leistung, Barrierefreiheit und Nutzerfreundlichkeit Ihrer Website beeinträchtigen."
+    "message": "Identifiziere und behebe häufige Probleme, die die Leistung, Barrierefreiheit und Nutzerfreundlichkeit deiner Website beeinträchtigen."
   },
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Weitere Informationen"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Navigation analysieren"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Snapshot analysieren"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modus"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Zeitspanne starten"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % aller Nutzer auf Mobilgeräten weltweit nutzten 2G oder 3G [Quelle: GSMA Mobile]"
@@ -5892,7 +5919,7 @@
     "message": "Tut uns leid. Ein Fehler ist aufgetreten."
   },
   "panels/lighthouse/LighthouseStatusView.ts | almostThereLighthouseIsNow": {
-    "message": "Fast geschafft! Lighthouse erstellt jetzt Ihren Bericht."
+    "message": "Fast geschafft! Lighthouse erstellt jetzt deinen Bericht."
   },
   "panels/lighthouse/LighthouseStatusView.ts | asPageLoadTimeIncreasesFromOne": {
     "message": "Wenn die Seitenladezeit sich von einer Sekunde auf sieben Sekunden erhöht, steigt die Wahrscheinlichkeit, dass ein mobiler Besucher abspringt, um 113 %. [Quelle: Think with Google]"
@@ -5922,31 +5949,31 @@
     "message": "Wenn eine Website > 1 Sekunde benötigt, um interaktiv zu werden, lässt die Aufmerksamkeit der Nutzer nach und der Eindruck, die Seite ihrem Zweck entsprechend nutzen zu können, ist beeinträchtigt [Quelle: Google Developers Blog]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ifThisIssueIsReproduciblePlease": {
-    "message": "Wenn dieses Problem reproduzierbar ist, melden Sie es bitte an das Lighthouse GitHub-Repository."
+    "message": "Wenn dieses Problem reproduzierbar ist, melde es bitte an das Lighthouse GitHub-Repository."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsGatheringInformation": {
-    "message": "Lighthouse trägt Informationen zur Seite zusammen, um Ihre Punktzahl zu berechnen."
+    "message": "Lighthouse trägt Informationen zur Seite zusammen, um deine Punktzahl zu berechnen."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingThePage": {
     "message": "Lighthouse lädt die Seite."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPage": {
-    "message": "Lighthouse lädt Ihre Seite"
+    "message": "Lighthouse lädt deine Seite"
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWith": {
-    "message": "Lighthouse lädt Ihre Seite gedrosselt, um die Leistung bei einem 3G-Mobilgerät zu messen."
+    "message": "Lighthouse lädt deine Seite gedrosselt, um die Leistung bei einem 3G-Mobilgerät zu messen."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithMobile": {
-    "message": "Lighthouse lädt Ihre Seite mit Mobilemulation."
+    "message": "Lighthouse lädt deine Seite mit Mobilemulation."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsLoadingYourPageWithThrottling": {
-    "message": "Lighthouse lädt Ihre Seite mit einer Drosselung, um die Leistung auf einem langsamen Desktop mit 3G zu messen."
+    "message": "Lighthouse lädt deine Seite mit einer Drosselung, um die Leistung auf einem langsamen Desktop mit 3G zu messen."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsWarmingUp": {
     "message": "Lighthouse wird vorbereitet…"
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseOnlySimulatesMobile": {
-    "message": "Lighthouse simuliert nur die mobile Leistung; um die Leistung auf einem echten Gerät zu messen, gehen Sie auf WebPageTest.org [Quelle: Lighthouse-Team]"
+    "message": "Lighthouse simuliert nur die mobile Leistung; um die Leistung auf einem echten Gerät zu messen, geh auf WebPageTest.org [Quelle: Lighthouse-Team]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | loading": {
     "message": "Wird geladen…"
@@ -5961,10 +5988,22 @@
     "message": "Das Gerät eines durchschnittlichen Nutzers kostet weniger als 200 $. [Quelle: International Data Corporation]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | tryToNavigateToTheUrlInAFresh": {
-    "message": "Rufen Sie die URL in einem neuen Chrome-Profil ohne andere geöffnete Tabs oder Erweiterungen auf und versuchen Sie es noch einmal."
+    "message": "Rufe die URL in einem neuen Chrome-Profil ohne andere geöffnete Tabs oder Erweiterungen auf und versuche es noch einmal."
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Der Umsatz von Walmart erhöhte sich um 1 % pro 100 ms kürzerer Seitenladezeit [Quelle: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Abbrechen"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Zeitspanne beenden"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Zeitspanne gestartet, interagiere mit der Seite"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Zeitspanne wird gestartet…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse anzeigen"
@@ -6153,7 +6192,7 @@
     "message": "Voreinstellungen"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "Der Satz an akzeptierten Content-Encoding-Headern wurde durch die Entwicklertools geändert. Im Bereich „Netzwerkbedingungen“ erfahren Sie mehr."
+    "message": "Der Satz an akzeptierten Content-Encoding-Headern wurde durch die Entwicklertools geändert. Im Bereich „Netzwerkbedingungen“ erfährst du mehr."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Netzwerkdrosselung ist aktiviert"
@@ -6384,7 +6423,7 @@
     "message": "Cache deaktivieren"
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
-    "message": "Geben Sie einen benutzerdefinierten User-Agent ein"
+    "message": "Gib einen benutzerdefinierten User-Agent ein"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netzwerkdrosselung"
@@ -6510,7 +6549,7 @@
     "message": "(unbekannt)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "Der Status der Anfrage kann hier nicht angezeigt werden, da die Seite, von der sie stammt, während der Übertragung der Anfrage entfernt wurde. Sie können chrome://net-export verwenden, um ein Netzwerkprotokoll zu erstellen und sich alle Details der Anfrage anzusehen."
+    "message": "Der Status der Anfrage kann hier nicht angezeigt werden, da die Seite, von der sie stammt, während der Übertragung der Anfrage entfernt wurde. Du kannst chrome://net-export verwenden, um ein Netzwerkprotokoll zu erstellen und sich alle Details der Anfrage anzusehen."
   },
   "panels/network/NetworkDataGridNode.ts | webBundle": {
     "message": "(Web Bundle)"
@@ -6576,10 +6615,10 @@
     "message": "WebSocket-Nachrichten"
   },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
-    "message": "Möchten Sie den Browsercache wirklich löschen?"
+    "message": "Möchtest du den Browsercache wirklich löschen?"
   },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowserCookies": {
-    "message": "Möchten Sie die Browsercookies wirklich löschen?"
+    "message": "Möchtest du die Browsercookies wirklich löschen?"
   },
   "panels/network/NetworkLogView.ts | blockRequestDomain": {
     "message": "Anfrage-Domain blockieren"
@@ -6693,7 +6732,7 @@
     "message": "Zeigt nur Anfragen an, bei denen sich der Seitenursprung vom Ursprung unterscheidet"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Führen Sie eine Anfrage aus oder drücken Sie {PH1}, um die Aktualisierung aufzuzeichnen."
+    "message": "Führe eine Anfrage aus oder drücke {PH1}, um die Aktualisierung aufzuzeichnen."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
     "message": "Netzwerkprotokoll ({PH1}) aufzeichnen, um Netzwerkaktivität zu sehen."
@@ -6882,7 +6921,7 @@
     "message": "Anforderungen nach Anfrage-Frame der obersten Ebene gruppieren"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Drücken Sie {PH1}, um Filmstreifen neu zu laden und zu erfassen."
+    "message": "Drücke {PH1}, um Filmstreifen neu zu laden und zu erfassen."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "HAR-Datei importieren..."
@@ -6972,7 +7011,7 @@
     "message": "Aktive client experiment variation IDs, die serverseitiges Verhalten auslösen."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "Wählen Sie diese Option, wenn die Ressource und das Dokument von der gleichen Website bereitgestellt werden."
+    "message": "Wähle diese Option, wenn die Ressource und das Dokument von der gleichen Website bereitgestellt werden."
   },
   "panels/network/RequestHeadersView.ts | copyValue": {
     "message": "Wert kopieren"
@@ -7005,19 +7044,19 @@
     "message": "Weitere Informationen"
   },
   "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Weitere Informationen finden Sie im Tab für Probleme"
+    "message": "Weitere Informationen findest du im Tab für Probleme"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Wählen Sie diese Option nur aus, wenn beliebige Websites mit dieser Ressource kein Sicherheitsrisiko darstellen."
+    "message": "Wähle diese Option nur aus, wenn beliebige Websites mit dieser Ressource kein Sicherheitsrisiko darstellen."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Es sind nur vorübergehende Header verfügbar, da diese Anfrage nicht über das Netzwerk gesendet wurde. Stattdessen wurde sie über einen lokalen Cache ausgeliefert, der die originalen Anfrageheader nicht speichert. Deaktivieren Sie den Cache, um die vollständigen Anfrageheader anzuzeigen."
+    "message": "Es sind nur vorübergehende Header verfügbar, da diese Anfrage nicht über das Netzwerk gesendet wurde. Stattdessen wurde sie über einen lokalen Cache ausgeliefert, der die originalen Anfrageheader nicht speichert. Deaktiviere den Cache, um die vollständigen Anfrageheader anzuzeigen."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "Vorübergehende Header werden angezeigt"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "Vorläufige Header werden angezeigt. Deaktivieren Sie den Cache, um die vollständigen Header anzuzeigen."
+    "message": "Vorläufige Header werden angezeigt. Deaktiviere den Cache, um die vollständigen Header anzuzeigen."
   },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "Erfasste Attribution mit trigger-data: {PH1}"
@@ -7050,7 +7089,7 @@
     "message": "Das Laden dieses Dokuments in einem iframe mit einem sandbox-Attribut wurde blockiert, da dieses Dokument eine herkunftsübergreifende Richtlinie für die Ursprungsseite festgelegt hat."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Um diesen Frame in Ihr Dokument einzubetten, muss die Antwort die ursprungsübergreifende Einbettungs-Richtlinie aktivieren, indem sie den folgenden Antwortheader angibt:"
+    "message": "Um diesen Frame in dein Dokument einzubetten, muss die Antwort die ursprungsübergreifende Einbettungs-Richtlinie aktivieren, indem sie den folgenden Antwortheader angibt:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "Um diese Ressource aus einem anderen Ursprung zu verwenden, muss der Server in den Antwortheadern eine ursprungsübergreifende Ressourcenrichtlinie festlegen:"
@@ -7158,7 +7197,7 @@
     "message": "DAUER"
   },
   "panels/network/RequestTimingView.ts | duringDevelopmentYouCanUseSToAdd": {
-    "message": "Bei der Entwicklung können Sie {PH1} verwenden, um Einblicke in das serverseitige Timing dieser Anforderung zu gewinnen."
+    "message": "Bei der Entwicklung kannst du {PH1} verwenden, um Einblicke in das serverseitige Timing dieser Anforderung zu gewinnen."
   },
   "panels/network/RequestTimingView.ts | explanation": {
     "message": "Erklärung"
@@ -7314,7 +7353,7 @@
     "message": "{PH1} (Opcode {PH2}, maskieren)"
   },
   "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Wählen Sie eine Nachricht aus, um ihren Inhalt zu durchsuchen."
+    "message": "Wähle eine Nachricht aus, um ihren Inhalt zu durchsuchen."
   },
   "panels/network/ResourceWebSocketFrameView.ts | send": {
     "message": "Senden"
@@ -7578,7 +7617,7 @@
     "message": "CPU-PROFILE"
   },
   "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "CPU-Profile zeigen, wo die Ausführungszeit in den JavaScript-Funktionen Ihrer Seite verbracht wird."
+    "message": "CPU-Profile zeigen, wo die Ausführungszeit in den JavaScript-Funktionen deiner Seite verbracht wird."
   },
   "panels/profiler/CPUProfileView.ts | fms": {
     "message": "{PH1} ms"
@@ -7782,7 +7821,7 @@
     "message": "Als ein Aufruf der Methode „{PH1}“ angefragt wurde, ist ein Fehler aufgetreten"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
-    "message": "Zugewiesene Zeitachsen zeigen instrumentierte JavaScript-Arbeitsspeicherzuweisungen im Zeitverlauf. Sobald das Profil aufgezeichnet ist, können Sie ein Zeitintervall auswählen, um Objekte anzuzeigen, die darin zugewiesen und am Ende der Aufzeichnung noch aktiv sind. Diesen Profiltyp zum Isolieren von Speicherlecks nutzen."
+    "message": "Zugewiesene Zeitachsen zeigen instrumentierte JavaScript-Arbeitsspeicherzuweisungen im Zeitverlauf. Sobald das Profil aufgezeichnet ist, kannst du ein Zeitintervall auswählen, um Objekte anzuzeigen, die darin zugewiesen und am Ende der Aufzeichnung noch aktiv sind. Diesen Profiltyp zum Isolieren von Speicherlecks nutzen."
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "Alle Objekte"
@@ -7830,7 +7869,7 @@
     "message": "Heap-Snapshot"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
-    "message": "Heap-Snapshotprofile zeigen die Arbeitsspeicherverteilung für die JavaScript-Objekte und die zugehörigen DOM-Knoten Ihrer Seite an."
+    "message": "Heap-Snapshotprofile zeigen die Arbeitsspeicherverteilung für die JavaScript-Objekte und die zugehörigen DOM-Knoten deiner Seite an."
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "HEAP-SNAPSHOTS"
@@ -8370,10 +8409,10 @@
     "message": "Vollständige Details ausblenden"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "Wenn dies Ihrer Meinung nach fälschlicherweise angezeigt wird, gehen Sie bitte auf: https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
+    "message": "Wenn dies deiner Meinung nach fälschlicherweise angezeigt wird, gehe bitte auf: https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "Wenn dies Ihrer Meinung nach fälschlicherweise angezeigt wird, gehen Sie bitte auf: https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
+    "message": "Wenn dies deiner Meinung nach fälschlicherweise angezeigt wird, gehe bitte auf: https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Info"
@@ -8535,7 +8574,7 @@
     "message": "Die Sicherheitsangaben oben stammen aus der ersten geprüften Antwort."
   },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
-    "message": "Die Serversignatur verwendet SHA-1. Diese Signatur ist veraltet. Aktivieren Sie stattdessen einen SHA-2-Signaturalgorithmus. (Hinweis: Dies ist nicht dieselbe Signatur wie die im Zertifikat.)"
+    "message": "Die Serversignatur verwendet SHA-1. Diese Signatur ist veraltet. Aktiviere stattdessen einen SHA-2-Signaturalgorithmus. (Hinweis: Dies ist nicht dieselbe Signatur wie die im Zertifikat.)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
     "message": "Dies ist eine Fehlermeldung."
@@ -8583,7 +8622,7 @@
     "message": "Der Hostname dieser Website ähnelt dem von {PH1}. Angreifer kopieren manchmal Websites und nehmen kleine, unauffällige Änderungen am Domainnamen vor."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "Wenn Sie den Status dieser Seite prüfen möchten, rufen Sie g.co/safebrowsingstatus auf."
+    "message": "Wenn du den Status dieser Seite prüfen möchtest, rufe g.co/safebrowsingstatus auf."
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Unbekannt/abgebrochen"
@@ -8610,16 +8649,16 @@
     "message": "Anfragen im Netzwerkbereich anzeigen"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
-    "message": "Sie haben vor Kurzem die Ausführung von Inhalten mit Zertifikatfehlern wie Skripts oder iFrames auf dieser Website zugelassen."
+    "message": "Du hast vor Kurzem die Ausführung von Inhalten mit Zertifikatfehlern wie Skripts oder iFrames auf dieser Website zugelassen."
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedNonsecure": {
-    "message": "Sie haben vor Kurzem die Ausführung unsicherer Inhalte wie Skripts oder iFrames auf dieser Website zugelassen."
+    "message": "Du hast vor Kurzem die Ausführung unsicherer Inhalte wie Skripts oder iFrames auf dieser Website zugelassen."
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
     "message": "Die Verbindung zu dieser Quelle ist nicht sicher."
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Ihre Seite hat unsichere Ressourcen angefordert, die blockiert wurden."
+    "message": "Deine Seite hat unsichere Ressourcen angefordert, die blockiert wurden."
   },
   "panels/security/security-meta.ts | security": {
     "message": "Sicherheit"
@@ -8958,7 +8997,7 @@
     "message": "Verknüpfungen"
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "Diese Tests sind besonders instabil. Sie aktivieren sie auf eigenes Risiko."
+    "message": "Diese Tests sind besonders instabil. Du aktivierst sie auf eigenes Risiko."
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
     "message": "Diese Tests könnten instabil oder unzuverlässig sein und erfordern möglicherweise einen Neustart von DevTools."
@@ -8967,7 +9006,7 @@
     "message": "ACHTUNG:"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "Wenn Sie diese Einstellung aktivieren möchten, müssen Sie erst die Chrome-Synchronisierung aktivieren."
+    "message": "Wenn du diese Einstellung aktivierst möchten, musst du erst die Chrome-Synchronisierung aktivieren."
   },
   "panels/settings/components/SyncSection.ts | settings": {
     "message": "Zu den Einstellungen"
@@ -8976,7 +9015,7 @@
     "message": "In Chrome angemeldet als:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
-    "message": "Wenn Sie diese Einstellung aktivieren möchten, müssen Sie zuerst die Chrome-Synchronisierung aktivieren."
+    "message": "Wenn du diese Einstellung aktivierst möchten, musst du zuerst die Chrome-Synchronisierung aktivieren."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Benutzerdefiniertes Gerät hinzufügen…"
@@ -9087,7 +9126,7 @@
     "message": "Aktualisieren"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "User-Agent-Client-Hinweise sind eine Alternative zum User-Agent-String, die den Browser und das Gerät auf strukturiertere Weise identifizieren und dabei die Privatsphäre besser wahren. Klicken Sie auf die Schaltfläche, um weitere Informationen zu erhalten."
+    "message": "User-Agent-Client-Hinweise sind eine Alternative zum User-Agent-String, die den Browser und das Gerät auf strukturiertere Weise identifizieren und dabei die Privatsphäre besser wahren. Klicke auf die Schaltfläche, um weitere Informationen zu erhalten."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
     "message": "Version"
@@ -9297,7 +9336,7 @@
     "message": "Zugehörige Dateien sind über den Dateibaum oder {PH1} verfügbar."
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
-    "message": "Zugehörige Dateien sollten dem Dateibaum hinzugefügt werden. Sie können diese aufgelösten Quelldateien wie normale JavaScript-Dateien debuggen."
+    "message": "Zugehörige Dateien sollten dem Dateibaum hinzugefügt werden. Du kannst diese aufgelösten Quelldateien wie normale JavaScript-Dateien debuggen."
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Konfigurieren"
@@ -9321,7 +9360,7 @@
     "message": "Quelltextformatierung für diese komprimierte Datei ausführen?"
   },
   "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "Bei der Quelltextformatierung wird diese Datei in einem neuen Tab formatiert, in dem Sie die Fehlerbehebung fortsetzen können. Sie können die Quelltextformatierung auch für diese Datei ausführen, indem Sie in der unteren Statusleiste auf die Schaltfläche {PH1} klicken."
+    "message": "Bei der Quelltextformatierung wird diese Datei in einem neuen Tab formatiert, in dem du die Fehlerbehebung fortsetzen kannst. Du kannst die Quelltextformatierung auch für diese Datei ausführen, indem du in der unteren Statusleiste auf die Schaltfläche {PH1} klickst."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Haltepunkt entfernen}other{Alle Haltepunkte in der Zeile entfernen}}"
@@ -9345,10 +9384,10 @@
     "message": "Keine Dateien gefunden"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
-    "message": "Aktuelle Zeile: {PH1}. Geben Sie eine Zeilennummer zwischen 1 und {PH2} ein, zu der Sie gehen möchten."
+    "message": "Aktuelle Zeile: {PH1}. Gib eine Zeilennummer zwischen 1 und {PH2} ein, zu der du gehen möchtest."
   },
   "panels/sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
-    "message": "Aktuelle Position: 0 x {PH1}. Geben Sie eine Abweichung zwischen 0 x {PH2} und 0 x {PH3} an, zu der navigiert werden soll."
+    "message": "Aktuelle Position: 0 x {PH1}. Gib eine Abweichung zwischen 0 x {PH2} und 0 x {PH3} an, zu der navigiert werden soll."
   },
   "panels/sources/GoToLineQuickOpen.ts | goToLineS": {
     "message": "Zu Zeile {PH1} gehen."
@@ -9366,7 +9405,7 @@
     "message": "Keine Ergebnisse gefunden"
   },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
-    "message": "Geben Sie eine Zahl ein, um zu dieser Zeile zu gehen."
+    "message": "Gib eine Zahl ein, um zu dieser Zeile zu gehen."
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "Format"
@@ -9423,10 +9462,10 @@
     "message": "nicht ausgewählt"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Möchten Sie wirklich alle in diesem Ordner enthaltenen Überschreibungen löschen?"
+    "message": "Möchtest du wirklich alle in diesem Ordner enthaltenen Überschreibungen löschen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Möchten Sie diese Datei wirklich löschen?"
+    "message": "Möchtest du diese Datei wirklich löschen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
     "message": "Möchten sie diesen Ordner wirklich ausschließen?"
@@ -9663,7 +9702,7 @@
     "message": "Quellenanzeige-Aktionen"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
-    "message": "Möchten Sie die nicht gespeicherte Datei wirklich schließen: {PH1}?"
+    "message": "Möchtest du die nicht gespeicherte Datei wirklich schließen: {PH1}?"
   },
   "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
     "message": "Änderungen an dieser Datei wurden nicht im Dateisystem gespeichert."
@@ -9697,6 +9736,24 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Watch-Ausdrücke aktualisieren"
+  },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Header hinzufügen"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Header-Überschreibung hinzufügen"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Fehler beim Parsen von „{PH1}'“."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Dies ist wahrscheinlich auf einen Syntaxfehler in „{PH1}“ zurückzuführen. Versuche, die Datei in einem externen Bearbeitungsprogramm zu öffnen, um den Fehler zu beheben, oder lösche die Datei und erstelle die Überschreibung noch einmal."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Diesen „ApplyTo“-Abschnitt entfernen"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Header entfernen"
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Haltepunkte aktivieren"
@@ -10179,7 +10236,7 @@
     "message": "– Erheblicher Overhead durch Paint-Instrumentierung"
   },
   "panels/timeline/TimelinePanel.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Wählen Sie nach der Aufnahme in der Übersicht einen Bereich, der Sie interessiert, durch Ziehen aus. Zoomen und schwenken Sie dann die Zeitachse mit dem Mausrad oder den {PH1}-Tasten. {PH2}"
+    "message": "Wähle nach der Aufnahme in der Übersicht einen Bereich, der dich interessiert, durch Ziehen aus. Zoome und schwenke dann die Zeitachse mit dem Mausrad oder den {PH1}-Tasten. {PH2}"
   },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Zwischenspeichernutzung"
@@ -10197,10 +10254,10 @@
     "message": "Löschen"
   },
   "panels/timeline/TimelinePanel.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klicken Sie auf die Schaltfläche zum Aufzeichnen {PH1} oder drücken Sie {PH2}, um mit der Aufzeichnung zu beginnen."
+    "message": "Klicke auf die Schaltfläche zum Aufzeichnen {PH1} oder drücke {PH2}, um mit der Aufzeichnung zu beginnen."
   },
   "panels/timeline/TimelinePanel.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Klicken Sie auf die Schaltfläche zum erneuten Laden {PH1} oder drücken Sie {PH2}, um mit der Aufzeichnung des Seitenaufbaus zu beginnen."
+    "message": "Klicke auf die Schaltfläche zum erneuten Laden {PH1} oder drücke {PH2}, um mit der Aufzeichnung des Seitenaufbaus zu beginnen."
   },
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Schließen"
@@ -10368,7 +10425,7 @@
     "message": "Leistung"
   },
   "panels/timeline/TimelineTreeView.ts | selectItemForDetails": {
-    "message": "Wählen Sie ein Element aus, um weitere Informationen zu erhalten."
+    "message": "Wähle ein Element aus, um weitere Informationen zu erhalten."
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
     "message": "Zeit für Einzelaktivität"
@@ -10874,6 +10931,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Auseinanderziehen-Update"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pre-Paint"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Vorschau"
   },
@@ -11325,7 +11385,7 @@
     "message": "(keine Aufnahmen)"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
-    "message": "Öffnen Sie eine Seite, die Web Audio API verwendet, um die Überwachung zu starten."
+    "message": "Öffne eine Seite, die Web Audio API verwendet, um die Überwachung zu starten."
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "Audio"
@@ -11379,7 +11439,7 @@
     "message": "Nein"
   },
   "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
-    "message": "Keine Anmeldedaten. Versuchen Sie, {PH1} von Ihrer Website aus aufzurufen."
+    "message": "Keine Anmeldedaten. Versuche, {PH1} von deiner Website aus aufzurufen."
   },
   "panels/webauthn/WebauthnPane.ts | privateKeypem": {
     "message": "Private key.pem"
@@ -11532,22 +11592,22 @@
     "message": "Vorschaufunktion"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
-    "message": "Unser Team arbeitet fortlaufend an dieser Funktion und wir würden uns sehr über Ihr Feedback freuen."
+    "message": "Unser Team arbeitet fortlaufend an dieser Funktion und wir würden uns sehr über dein Feedback freuen."
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
-    "message": "Senden Sie uns Ihr Feedback."
+    "message": "Sende uns dein Feedback."
   },
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Video und Dokumentation"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
-    "message": "Senden Sie uns Ihr Feedback."
+    "message": "Sende uns dein Feedback."
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klicken, um den Netzwerkbereich zu öffnen und die Anfrage für die folgende URL anzuzeigen: {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "Anforderung im Netzwerk-Steuerfeld nicht verfügbar; versuchen Sie, die geprüfte Seite zu aktualisieren"
+    "message": "Anforderung im Netzwerk-Steuerfeld nicht verfügbar; versuche es, die geprüfte Seite zu aktualisieren"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "Gekürzte URL"
@@ -11559,7 +11619,7 @@
     "message": "Umfrage öffnen…"
   },
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
-    "message": "Vielen Dank für Ihr Feedback"
+    "message": "Vielen Dank für das Feedback"
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Codeeditor"
@@ -11865,7 +11925,7 @@
     "message": "Langer Klick oder langes Drücken der Leertaste, um alternative Schattierungen von {PH1} anzuzeigen"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "Drücken Sie die Pfeiltasten mit oder ohne Modifikator, um die Position von Swatch zu ändern. Eine Pfeiltaste zusammen mit der Umschalttaste verändert die Position stark, mit der Strg-Taste ist es etwas weniger und mit der Alt-Taste noch etwas weniger"
+    "message": "Drücke die Pfeiltasten mit oder ohne Modifikator, um die Position von Swatch zu ändern. Eine Pfeiltaste zusammen mit der Umschalttaste verändert die Position stark, mit der Strg-Taste ist es etwas weniger und mit der Alt-Taste noch etwas weniger"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
     "message": "Palettenvorschau"
@@ -11943,7 +12003,7 @@
     "message": "„{PH1}“ bearbeiten"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
-    "message": "Eine leere Tabellenzeile wurde erstellt. Sie können doppelklicken oder das Kontextmenü verwenden, um die Zeile zu bearbeiten."
+    "message": "Eine leere Tabellenzeile wurde erstellt. Du kannst doppelklicken oder das Kontextmenü verwenden, um die Zeile zu bearbeiten."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "Maximiert"
@@ -11967,7 +12027,7 @@
     "message": "{PH1} Zeile {PH2}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sSUseTheUpAndDownArrowKeysTo": {
-    "message": "{PH1} {PH2}, verwenden Sie die Nach-unten- und Nach-oben-Tasten, um in den Zeilen der Tabelle zu navigieren und mit ihnen zu interagieren. Im Durchsuchen-Modus können Sie Zelle für Zelle lesen."
+    "message": "{PH1} {PH2}, verwende die Nach-unten- und Nach-oben-Tasten, um in den Zeilen der Tabelle zu navigieren und mit ihnen zu interagieren. Im Durchsuchen-Modus kannst du Zelle für Zelle lesen."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
     "message": "Sortieren nach"
@@ -12003,10 +12063,10 @@
     "message": "{PH1} ist nicht definiert"
   },
   "ui/legacy/components/inline_editor/ColorSwatch.ts | shiftclickToChangeColorFormat": {
-    "message": "Klicken Sie bei gedrückter Umschalttaste, um das Farbformat zu ändern"
+    "message": "Klicke bei gedrückter Umschalttaste, um das Farbformat zu ändern"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | PleaseEnterAValidValueForSText": {
-    "message": "*Geben Sie einen gültigen Wert für die {PH1}-Texteingabe ein"
+    "message": "*Gib einen gültigen Wert für die {PH1}-Texteingabe ein"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | cssProperties": {
     "message": "CSS-Properties"

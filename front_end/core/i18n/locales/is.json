@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Traustar gerðir – brot á reglum"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "traust"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "er óöruggt"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets og SameParty eigindin"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Svona virka „Same-Site“-fótspor með samskiptaaðferð"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Frekari upplýsingar um „SameSite“-fótspor"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Deiling efnis þvert á uppruna (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Samhæfisstilling fyrir skjal"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "traust"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "er óöruggt"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets og SameParty eigindin"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Svona virka „Same-Site“-fótspor með samskiptaaðferð"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Frekari upplýsingar um „SameSite“-fótspor"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Gera SharedArrayBuffer virkt"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Skyndiminni til baka/áfram"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Auðkenni viðbótar: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ekki hægt að grípa til aðgerða"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Sýna hlustendur í forverum"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-lög"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Breyta yfirliti CSS-laga"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-stopppunktur"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skoða reiknað gildi"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Smelltu til að sýna lag í lagatré"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "tilbúin stílsnið"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, heiti eiginleika: {PH2}, gildi eiginleika: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lag"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Ný stílregla"
@@ -5816,6 +5831,9 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Vistuð gögn kunna að hafa áhrif á hleðsluafköst á þessum stað: {PH1}. Greindu síðuna í huliðsglugga til að koma í veg fyrir að þessi gögn hafi áhrif á einkunnina."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tímabil"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Greina síðuna með sígildu Lighthouse þegar kveikt er á leiðsagnarstillingu."
   },
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Frekari upplýsingar"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Greina leiðsögn"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Greina yfirlit"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Stilling"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Hefja tímabil"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% farsímanotenda heimsins árið 2016 notuðu 2G eða 3G [Heimild: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Tekjur Walmart jukust um 1% í hvert sinn sem hleðsluhraði síðu var aukinn um 100 ms [Heimild: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Hætta við"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Ljúka tímabili"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tímabil hafið, hægt er að nota síðuna"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tímabil hefst…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Sýna Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Endurhlaða eftirlitssegðum"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Bæta við haus"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Bæta við hnekkingu hauss"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Villa kom upp við þáttun „{PH1}“."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Þetta stafar líklega af málskipunarvillu í „{PH1}“. Prófaðu að opna þessa skrá í ytri ritli til að lagfæra villuna eða eyddu skránni og búðu hnekkinguna til að nýju."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Fjarlægja þennan hluta af „ApplyTo“"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Fjarlægja þennan haus"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Virkja stopppunkta"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Færa fingur saman uppfært"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Formálun"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Forskoða"

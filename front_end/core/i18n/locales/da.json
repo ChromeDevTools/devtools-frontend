@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Typer, der er tillid til –politikovertrædelse"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "sikker"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets og attributten SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Sådan fungerer Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Beskrivelse af SameSite-cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ressourcedeling på tværs af oprindelse (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetstilstand for dokument"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "sikker"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets og attributten SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Sådan fungerer Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Beskrivelse af SameSite-cookies"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktiverer SharedArrayBuffer"
@@ -1947,7 +1947,7 @@
     "message": "Om dette tekstfelt må have mere end én linje."
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherThisToggleButtonIs": {
-    "message": "Hvorvidt denne kontakt i øjeblikket er trykket ind."
+    "message": "Hvorvidt denne skydeknap i øjeblikket er trykket ind."
   },
   "panels/accessibility/SourceOrderView.ts | noSourceOrderInformation": {
     "message": "Der er ingen tilgængelige oplysninger om kilderækkefølgen"
@@ -3235,6 +3235,9 @@
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back/forward-cache"
+  },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Udvidelses-id: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ikke handlingsrettet"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Vis hændelsesfunktioner på overordnede elementer"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-lag"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Skift visningen af CSS-lag"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-skillepunkt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Se beregnede værdier"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klik for at se laget i lagtræet"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "konstrueret typografiark"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, egenskabsnavn: {PH2}, egenskabsværdi: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lag"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Ny typografiregel"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Der kan være gemte data, som påvirker indlæsningseffektiviteten på følgende placering: {PH1}. Kontrollér denne side i et inkognitovindue for at forhindre, at disse ressourcer påvirker dine resultater."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tidsperiode"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Gennemgå siden ved hjælp af den klassiske version af Lighthouse, når du er i navigationstilstand."
+    "message": "Analysér siden ved hjælp af den klassiske version af Lighthouse, når du er i navigationstilstand."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analysér navigationen"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analysér øjebliksbillede"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Tilstand"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Start tidsperioden"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % af globale mobilbrugere i 2016 var på 2G eller 3G [Kilde: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart oplevede, at deres omsætning steg med 1 %, hver gang sideindlæsningen blev forbedret med 100 ms [Kilde: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Annuller"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Afslut tidsperioden"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tidsperioden blev startet, interager med siden"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tidesperioden starter…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Vis Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Opdater kontrolværdiudtryk"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Tilføj et sidehoved"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Tilføj tilsidesættelse af sidehoved"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Der opstod en fejl under parsingen af \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Dette skyldes højst sandsynligt, at der er en syntaksfejl i ''{PH1}''. Prøv at åbne denne fil i et eksternt redigeringsprogram for at rette fejlen eller slette filen og oprette tilsidesættelsen igen."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Fjern denne \"ApplyTo\"-sektion"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Fjern dette sidehoved"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivér stoppunkter"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Opdatering af knib"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Forudfyldning"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Forhåndsvisning"

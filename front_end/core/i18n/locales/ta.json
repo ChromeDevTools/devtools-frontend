@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "நம்பகமான வகைகள் - கொள்கை மீறல்"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "பாதுகாப்பானது"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "பாதுகாப்பற்ற"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets மற்றும் SameParty பண்புக்கூறு"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site செயல்படும் விதம்"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite குக்கீகள் சரிசெய்யப்பட்டன"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "கிராஸ் ஆரிஜின் ரிசோர்ஸ் ஷேரிங் (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ஆவண இணக்கத்தன்மைப் பயன்முறை"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "பாதுகாப்பானது"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "பாதுகாப்பற்ற"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets மற்றும் SameParty பண்புக்கூறு"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site செயல்படும் விதம்"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite குக்கீகள் சரிசெய்யப்பட்டன"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer அம்சத்தை இயக்குதல்"
@@ -2556,7 +2556,7 @@
     "message": "குழுவின் தற்போதைய நிலையைப் பார்க்க, ஆர்வமுள்ள குழு ஏதேனும் ஒன்றைக் கிளிக் செய்யவும்"
   },
   "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
-    "message": "தேர்ந்தெடுத்த ஆர்வமுள்ள குழுவிற்கு விவரங்கள் எதுவுமில்லை. குழுவில் இருந்து உலாவியை அகற்றி இருக்கலாம்."
+    "message": "தேர்ந்தெடுத்த ஆர்வமுள்ள குழுவிற்கு விவரங்கள் எதுவுமில்லை. குழுவில் இருந்து உலாவி அகற்றப்பட்டிருக்கலாம்."
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "ஆர்வமுள்ள குழுக்கள்"
@@ -3235,6 +3235,9 @@
   },
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்"
+  },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "நீட்டிப்பு ஐடி: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "நடவடிக்கை எடுக்க முடியாதவை"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "முதன்மையானவற்றில் உள்ள லிசனர்களைக் காட்டும்"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS லேயர்கள்"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS லேயர்கள் காட்சியைக் காட்டும்/மறைக்கும்"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM பிரேக்பாயிண்ட்"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "கணக்கிடப்பட்ட மதிப்பைக் காட்டு"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "லேயர் வரிசையில் லேயரைக் காட்ட கிளிக் செய்யவும்"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "அமைக்கப்பட்ட ஸ்டைல்ஷீட்"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, பண்பின் பெயர்: {PH2}, பண்பின் மதிப்பு: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "லேயர்"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "புதிய ஸ்டைல் விதி"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "செயல்திறன் அளவீட்டைப் பாதிக்கக்கூடிய, சேமித்த தரவு இந்த இடத்தில் இருக்கலாம்: {PH1}. இவை உங்கள் ஸ்கோர்களைப் பாதிப்பதைத் தவிர்க்க, மறைநிலைச் சாளரத்தில் இந்தப் பக்கத்தின் செயல்பாட்டை ஆய்வு செய்யவும்."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "கால அளவு"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "வழிசெலுத்தல் பயன்முறையில் இருக்கும்போது கிளாசிக் Lighthouse மூலம் பக்கத்தைத் தணிக்கை செய்யும்."
+    "message": "வழிசெலுத்தல் பயன்முறையில் இருக்கும்போது கிளாசிக் Lighthouse மூலம் பக்கத்தைப் பகுப்பாய்வு செய்யும்."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "இணைய SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "மேலும் அறிக"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "வழிசெலுத்தலைப் பகுப்பாய்வு செய்"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "ஸ்னாப்ஷாட்டைப் பகுப்பாய்வு செய்"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "பயன்முறை"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "கால அளவைத் தொடங்கு"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016ல் உலகளாவிய மொபைல் பயனர்களில் 75% பேர் 2ஜி/3ஜி சேவையைப் பயன்படுத்தினர் [ஆதாரம்: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "பக்கம் ஏற்றப்படும் வேகத்தில் 100 மிவி அதிகரித்த ஒவ்வொரு முறையும் Walmartடின் வருவாய் 1% அதிகரித்தது [ஆதாரம்: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ரத்துசெய்"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "கால அளவை நிறுத்து"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "கால அளவு தொடங்கியது, பக்கத்தில் மாற்றங்களைச் செய்யவும்"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "கால அளவு தொடங்குகிறது…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse ஐக் காட்டு"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "வாட்ச் எக்ஸ்ப்ரெஷன்களைப் புதுப்பிக்கும்"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "தலைப்பைச் சேர்"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "தலைப்பு ஓவர்-ரைடைச் சேர்"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' ஐப் பாகுபடுத்தும்போது பிழை ஏற்பட்டது."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "''{PH1}'' இல் தொடரியல் பிழை காரணமாக இது நிகழ்ந்திருக்க வாய்ப்புள்ளது. பிழையைச் சரிசெய்ய, இந்த ஃபைலை வெளிப்புற எடிட்டரில் திறக்கவும் அல்லது ஃபைலை நீக்கிவிட்டு ஓவர்-ரைடை மீண்டும் உருவாக்கவும்."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "இந்த 'ApplyTo' பிரிவை அகற்று"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "இந்தத் தலைப்பை அகற்று"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "செயலில் உள்ள பிரேக்பாயிண்ட்டுகள்"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "பின்ச் மாற்றம்"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ப்ரீ-பெயிண்ட்"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "மாதிரிக்காட்சி"

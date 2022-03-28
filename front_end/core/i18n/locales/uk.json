@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – порушення правил"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "a secure"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets і атрибут SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Як працює Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Пояснення файлів cookie з атрибутом SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross Origin Resource Sharing (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим сумісності документів"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "a secure"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets і атрибут SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Як працює Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Пояснення файлів cookie з атрибутом SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Увімкнення SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Зворотний кеш"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Ідентифікатор розширення: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Не можна вирішити"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Показувати прослуховувачі для предків"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Шари CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Перемикач перегляду шарів CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Точка зупинки для DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Переглянути обчислене значення"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Натисніть, щоб розкрити шар у дереві"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "побудована таблиця стилів"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, назва властивості: {PH2}, значення властивості: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Шар"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Нове правило для стилів"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "У цьому місці можуть зберігатися дані, що впливають на тривалість завантаження: {PH1}. Щоб такі ресурси не впливали на ваші показники, перевірте цю сторінку у вікні в режимі анонімного перегляду."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Період часу"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Перевірити сторінку за допомогою класичної версії Lighthouse у режимі навігації."
+    "message": "Аналізувати сторінку за допомогою класичної версії Lighthouse у режимі навігації."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Докладніше"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Аналізувати навігацію"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Аналізувати знімок екрана"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Режим"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Розпочати період часу"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "У 2016 році 75% усіх користувачів мобільних пристроїв використовували мережі 2G або 3G. [Джерело: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Прискорюючи завантаження сторінок, компанія Walmart змогла збільшити свій дохід: він зростав на 1% на кожні 100 мс прискорення [джерело: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Скасувати"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Завершити період часу"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Період часу розпочався. Почніть взаємодію зі сторінкою"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Період часу починається…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Показати Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Оновити вирази відстеження"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Додати заголовок"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Додати перевизначення заголовка"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Під час виконання синтаксичного аналізу файлу \"{PH1}\" сталася помилка."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Найімовірніша причина – синтаксична помилка у файлі \"{PH1}\". Спробуйте відкрити файл у зовнішньому редакторі, щоб виправити помилку, або видаліть його та замініть новим."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Вилучити розділ \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Вилучити заголовок"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активувати точки зупину"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Зміна стану стискання"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Попередня візуалізація"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Попередній перегляд"

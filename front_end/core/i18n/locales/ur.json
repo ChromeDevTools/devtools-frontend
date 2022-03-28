@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "معتبر اقسام - پالیسی کی خلاف ورزی"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "محفوظ"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets اور SameParty انتساب"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site کس طرح کام کرتی ہے"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite کوکیز کے متعلق وضاحت کی گئی"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "کراس اوریجن کے وسیلے کا اشتراک کرنا (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "دستاویز موافقت پذیری وضع"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "محفوظ"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets اور SameParty انتساب"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site کس طرح کام کرتی ہے"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite کوکیز کے متعلق وضاحت کی گئی"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer فعال ہو رہا ہے"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "بیک/فارورڈ کیش"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ایکسٹینشن Id: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "قابل کارروائی نہیں ہے"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "اینسسٹرز پر لسنرز دکھائيں"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS پرتیں"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS پرتوں کے منظر کو ٹوگل کریں"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM بریک پوائنٹ"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "حساب لگائی گئی قدر ملاحظہ کریں"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "پرت کے درخت میں پرت کو ظاہر کرنے کے لیے کلک کریں"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "تخلیق کردہ اسٹائل شیٹ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}، پراپرٹی کا نام: {PH2}، پراپرٹی کی قدر: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "پرت"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "اسٹائل کا نیا اصول"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "اس مقام میں لوڈ ہونے والی کارکردگی کو متاثر کرنے والا ڈیٹا اسٹور ہو سکتا ہے: {PH1}۔ ان وسائل کو اپنے اسکورز متاثر کرنے سے روکنے کے لیے اس صفحے کو کسی پوشیدگی ونڈو میں آڈٹ کریں۔"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ٹائم اسپین"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "نیویگیشن وضع میں ہونے پر کلاسک Lighthouse کا استعمال کر کے صفحہ آڈٹ کریں۔"
+    "message": "نیویگیشن وضع میں ہونے پر کلاسک Lighthouse کا استعمال کر کے صفحہ کا تجزیہ کریں۔"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ویب SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "مزید جانیں"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "نیویگیشن کا تجزیہ کریں"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "اسنیپ شاٹ کا تجزیہ کریں"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "وضع"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ٹائم اسپین شروع کریں"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "دنیا کے 75 فیصد موبائل صارفین 2016 میں 2G یا 3G پر تھے [ماخذ: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "صفحہ لوڈ میں ہر 100ms بہتری پر Walmart کی آمدنی میں 1 فیصد اضافہ ہوا [ماخذ: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "منسوخ کریں"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "ٹائم اسپین کا اختتام"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "ٹائم اسپین شروع ہوا، صفحہ کے ساتھ تعامل کریں"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "ٹائم اسپین شروع ہو رہا ہے…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse دکھائیں"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "واچ ایکسپریشنز کو ریفریش کریں"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ایک ہیڈر شامل کریں"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ہیڈر اوور رائیڈ شامل کریں"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' پارس کرتے وقت خرابی۔"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "یہ غالباً ''{PH1}'' میں نحوی غلطی کی وجہ سے ہے۔ غلطی کو ٹھیک کرنے یا فائل کو حذف کرنے اور اوور رائڈ کو دوبارہ تخلیق کرنے کے لیے اس فائل کو کسی بیرونی ایڈیٹر میں کھولنے کی کوشش کریں۔"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "اس 'ApplyTo'- سیکشن کو ہٹائیں"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "اس ہیڈر کو ہٹائیں"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "بریک پوائنٹس فعال کریں"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "اپ ڈیٹ پر چٹکی بھریں"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "پری پینٹ"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "پیش منظر"

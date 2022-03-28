@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Betrodda typer – överträdelse av policy"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "säker"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "osäker"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets och SameParty-attributet"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Så här påverkas webbadresscheman av ändringar av Same-Site-attributet"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Beskrivning av SameSite-cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Delning av resurser med korsursprung (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetsläge för dokumentet"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "säker"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "osäker"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets och SameParty-attributet"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Så här påverkas webbadresscheman av ändringar av Same-Site-attributet"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Beskrivning av SameSite-cookies"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktiverar SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Vilocacheminne"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Tilläggs-id: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ingen åtgärd kan vidtas"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Visa lyssnare vid överordnade element"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-lager"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Visa eller dölj vyn CSS-lager"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-brytpunkt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Visa beräknat värde"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klicka här för att visa trädvyn med lager"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "konstruerad formatmall"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, egendomens namn: {PH2}, egendomens värde: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lager"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Ny formatregel"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "På följande plats kan det finnas lagrad data som påverkar inläsningen: {PH1}. Granska sidan i ett inkognitofönster för att förhindra att resurserna påverkar dina resultat."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tidsintervall"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Granska sidan med klassiska Lighthouse i navigeringsläget."
+    "message": "Analysera sidan med klassiska Lighthouse i navigeringsläget."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Webbversionen av SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Läs mer"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analysera navigering"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analysera ögonblicksbild"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Läge"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Påbörja tidsintervall"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Under 2016 användes 2G eller 3G av 75 % av användarna på mobila enheter [Källa: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart upptäckte att intäkterna ökade med 1 % varje gång hämtningstiden för sidan förbättrades med 100 ms [Källa: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Avbryt"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Avsluta tidsintervall"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tidsintervallet har påbörjats, interagera med sidan"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tidsintervallet påbörjas …"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Visa Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Uppdatera bevakningsuttryck"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Lägg till ett huvud"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Lägg till åsidosättande av huvud"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Det gick inte att analysera {PH1}."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Det beror sannolikt på ett syntaxfel i {PH1}. Testa att öppna filen i en extern editor och åtgärda felet. Du kan också radera filen och återskapa åsidosättningen."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Ta bort det här ApplyTo-avsnittet"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Ta bort det här huvudet"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivera brytpunkter"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Uppdatering vid nyp"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Förberedelse inför uppritning"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Förhandsgranskning"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ປະເພດທີ່ເຊື່ອຖືໄດ້ - ການລະເມີດນະໂຍບາຍ"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "ຄວາມປອດໄພ"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "ຄຸນສົມບັດ First-Party Sets ແລະ SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site ເຮັດວຽກແນວໃດ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "ອະທິບາຍຄຸກກີ້ SameSite ແລ້ວ"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ກົນໄກການແບ່ງປັນຊັບພະຍາກອນຂ້າມໂດເມນ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ໂໝດຄວາມເຂົ້າກັນໄດ້ຂອງເອກະສານ"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "ຄວາມປອດໄພ"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "ຄຸນສົມບັດ First-Party Sets ແລະ SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site ເຮັດວຽກແນວໃດ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "ອະທິບາຍຄຸກກີ້ SameSite ແລ້ວ"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "ກຳລັງເປີດການນຳໃຊ້ SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ແຄສຍ້ອນຫຼັງ"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID ສ່ວນຂະຫຍາຍ: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "ບໍ່ສາມາດດຳເນີນການໄດ້"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ສະແດງຕົວຟັງຢູ່ລະດັບເທິງ"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "ຊັ້ນຂໍ້ມູນ CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "ສະຫຼັບມຸມມອງຊັ້ນຂໍ້ມູນ CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "ຈຸດເບຣກພອຍ DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ເບິ່ງຄ່າທີ່ຄຳນວນແລ້ວ"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ຄລິກເພື່ອເປີດເຜີຍຊັ້ນຂໍ້ມູນໃນຜັງຊັ້ນຂໍ້ມູນ"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ຊີດຮູບແບບທີ່ສ້າງຂຶ້ນ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ຊື່ຄຸນສົມບັດ: {PH2}, ຄ່າຄຸນສົມບັດ: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ຊັ້ນຂໍ້ມູນ"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "ກົດລະບຽບຮູບແບບໃໝ່"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ອາດຈະມີຂໍ້ມູນທີ່ເກັບໄວ້ທີ່ກະທົບກັບປະສິດທິພາບການໂຫຼດໃນສະຖານທີ່ນີ້: {PH1}. ກວດສອບໜ້ານີ້ໃນໜ້າຈໍທີ່ບໍ່ເປີດເຜີຍຕົວຕົນເພື່ອປ້ອງກັນບໍ່ໃຫ້ຊັບພະຍາກອນເຫຼົ່ານີ້ກະທົບກັບຄະແນນຂອງທ່ານ."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ຊ່ວງເວລາ"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ກວດສອບໜ້າໂດຍໃຊ້ Lighthouse ແບບຄລາດສິກເມື່ອຢູ່ໃນໂໝດການນຳທາງ."
+    "message": "ວິເຄາະໜ້າໂດຍໃຊ້ Lighthouse ແບບຄລາດສິກເມື່ອຢູ່ໃນໂໝດການນຳທາງ."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ຂອງເວັບ"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ສຶກສາເພີ່ມເຕີມ"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "ວິເຄາະການນຳທາງ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "ວິເຄາະພາບຮວມ"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "ໂໝດ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ເລີ່ມຊ່ວງເວລາ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% ຂອງຜູ້ໃຊ້ມືຖືທົ່ວໂລກໃນປີ 2016 ໃຊ້ລະບົບ 2G ຫຼື 3G [ແຫຼ່ງທີ່ມາ: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart ມີລາຍໄດ້ເພີ່ມຂຶ້ນ 1% ທຸກໆຄັ້ງທີ່ໜ້າເວັບໂຫຼດໄວຂຶ້ນ 100 ມິລິວິນາທີ [ແຫຼ່ງທີ່ມາ: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ຍົກເລີກ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "ສິ້ນສຸດຊ່ວງເວລາ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "ເລີ່ມຊ່ວງເວລາແລ້ວ, ໂຕ້ຕອບກັບໜ້າ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "ກຳລັງເລີ່ມຊ່ວງເວລາ…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "ສະແດງ Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ໂຫຼດນິກົດໃນການເບິ່ງ"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ເພີ່ມສ່ວນຫົວ"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ເພີ່ມການຍົກເລີກສ່ວນຫົວ"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "ເກີດຄວາມຜິດພາດໃນການແຍກວິເຄາະ ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ນີ້ໜ້າຈະເປັນຍ້ອນຂໍ້ຜິດພາດຂອງໄວຍາກອນ ''{PH1}''. ໃຫ້ລອງເປິດໄຟລ໌ນີ້ໃນຕົວແກ້ໄຂພາຍນອກເພື່ອແກ້ໄຂຂໍ້ຜິດພາດ ຫຼື ລຶບໄຟລ໌ແລ້ວສ້າງການຍົກເລີກອີກເທື່ອໜຶ່ງ."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ລຶບພາກສ່ວນ 'ApplyTo' ນີ້ອອກ"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ລຶບສ່ວນຫົວນີ້ອອກ"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ເປີດການນຳໃຊ້ເບຣກພອຍ"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "ອັບເດດການບີບ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ກ່ອນສະແດງຜົນ"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "ຕົວຢ່າງ"

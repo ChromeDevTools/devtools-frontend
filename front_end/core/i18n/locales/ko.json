@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "신뢰할 수 있는 유형 - 정책 위반"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "보안"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "안전하지 않음"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets 및 SameParty 속성"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site의 작동 방식"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite 쿠키 설명됨"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "교차 출처 리소스 공유(CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "문서 호환성 모드"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "보안"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "안전하지 않음"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets 및 SameParty 속성"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site의 작동 방식"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite 쿠키 설명됨"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer 사용 설정"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "뒤로-앞으로 캐시"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "확장 프로그램 ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "조치를 취할 수 없음"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "상위의 리스너 표시"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS 레이어"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS 레이어 보기 전환"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM 중단점"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "계산된 값 보기"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "클릭하여 레이어 트리에서 레이어를 표시합니다."
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "구성된 스타일시트"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, 속성 이름: {PH2}, 속성 값: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "레이어"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "새 스타일 규칙"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "{PH1}에 저장된 데이터가 로드 성능에 영향을 줄 수 있습니다. 시크릿 창에서 페이지를 감사하여 이러한 리소스가 점수에 영향을 주지 않도록 하세요."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "기간"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "기존 탐색 모드로 Lighthouse를 사용하여 페이지를 감사합니다."
+    "message": "Lighthouse의 기존 탐색 모드로 페이지를 분석합니다."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "웹 SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "자세히 알아보기"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "탐색 분석"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "개요 분석"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "모드"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "기간 모드 시작"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016년에는 전 세계 모바일 사용자의 75%가 2G 또는 3G를 사용했습니다. [출처: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart는 페이지 로드가 100밀리초 개선될 때마다 수익이 1% 증가했습니다. [출처: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "취소"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "기간 모드 종료"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "기간 모드가 시작되었습니다. 페이지를 탐색하세요"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "기간 모드 시작 중…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse 표시"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "감시 표현식 새로고침"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "헤더 추가"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "헤더 재정의 추가"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' 분석 중에 오류가 발생했습니다."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "\"{PH1}\"의 문법 오류가 원인일 가능성이 큽니다. 외부 편집기에서 파일을 열고 오류를 해결하거나 파일을 삭제한 후 다시 만들어 재정의하세요."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "'ApplyTo' 섹션 삭제"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "헤더 삭제"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "중단점 활성화"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "손가락 모으기 업데이트"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "사전 페인트"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "미리보기"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Tipos fidedignos — violação de política"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "um seguro"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "um inseguro"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets e o atributo SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Como funciona Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Cookies SameSite explicados"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Partilha de recursos de origem cruzada (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modo de compatibilidade do documento"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "um seguro"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "um inseguro"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets e o atributo SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Como funciona Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Cookies SameSite explicados"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "A ativar SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Cache para a frente/para trás"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID de extensão: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Não acionáveis"
   },
@@ -3516,7 +3519,7 @@
     "message": "Não é possível renderizar o rastreio de pilha"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Mostrar mais # frame}one{Mostrar mais # frame(s)}other{Mostrar mais # frames}}"
+    "message": "{n,plural, =1{Mostrar mais # frame}other{Mostrar mais # frames}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Todos os símbolos fidedignos armazenados disponíveis nesta instância do navegador."
@@ -3681,10 +3684,10 @@
     "message": "Reverter todas as alterações para o ficheiro atual"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# eliminação (-)}one{# eliminação(ões) (-)}other{# eliminações (-)}}"
+    "message": "{n,plural, =1{# eliminação (-)}other{# eliminações (-)}}"
   },
   "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# inserção (+)}one{# inserção(ões) (+)}other{# inserções (+)}}"
+    "message": "{n,plural, =1{# inserção (+)}other{# inserções (+)}}"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Alterações"
@@ -3729,22 +3732,22 @@
     "message": "Pedido da consola"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
-    "message": "{n,plural, =0{Nenhum erro}=1{# erro}one{# erro(s)}other{# erros}}"
+    "message": "{n,plural, =0{Nenhum erro}=1{# erro}other{# erros}}"
   },
   "panels/console/ConsoleSidebar.ts | dInfo": {
-    "message": "{n,plural, =0{Nenhuma informação}=1{# informação}one{# info}other{# informações}}"
+    "message": "{n,plural, =0{Nenhuma informação}=1{# informação}other{# informações}}"
   },
   "panels/console/ConsoleSidebar.ts | dMessages": {
-    "message": "{n,plural, =0{Sem mensagens}=1{# mensagem}one{# mensagem(ns)}other{# mensagens}}"
+    "message": "{n,plural, =0{Sem mensagens}=1{# mensagem}other{# mensagens}}"
   },
   "panels/console/ConsoleSidebar.ts | dUserMessages": {
-    "message": "{n,plural, =0{Sem mensagens do utilizador}=1{# mensagem do utilizador}one{# mensagem(ns) do utilizador}other{# mensagens do utilizador}}"
+    "message": "{n,plural, =0{Sem mensagens do utilizador}=1{# mensagem do utilizador}other{# mensagens do utilizador}}"
   },
   "panels/console/ConsoleSidebar.ts | dVerbose": {
-    "message": "{n,plural, =0{Sem mensagens verbosas}=1{# mensagem(ns) verbosa(s)}one{# verbose}other{# mensagens verbosas}}"
+    "message": "{n,plural, =0{Sem mensagens verbosas}=1{# mensagem(ns) verbosa(s)}other{# mensagens verbosas}}"
   },
   "panels/console/ConsoleSidebar.ts | dWarnings": {
-    "message": "{n,plural, =0{Nenhum aviso}=1{# aviso}one{# aviso(s)}other{# avisos}}"
+    "message": "{n,plural, =0{Nenhum aviso}=1{# aviso}other{# avisos}}"
   },
   "panels/console/ConsoleSidebar.ts | other": {
     "message": "<outro>"
@@ -3825,7 +3828,7 @@
     "message": "Alguns problemas já não geram mensagens da consola, mas são apresentados no separador Problemas."
   },
   "panels/console/ConsoleView.ts | issuesWithColon": {
-    "message": "{n,plural, =0{Nenhum problema}=1{# problema:}one{# problema(s):}other{# problemas:}}"
+    "message": "{n,plural, =0{Nenhum problema}=1{# problema:}other{# problemas:}}"
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Nível de registo: {PH1}"
@@ -3846,7 +3849,7 @@
     "message": "Repetir XHR"
   },
   "panels/console/ConsoleView.ts | sHidden": {
-    "message": "{n,plural, =1{# oculto}one{# hidden}other{# ocultos}}"
+    "message": "{n,plural, =1{# oculto}other{# ocultos}}"
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "Apenas {PH1}"
@@ -3903,7 +3906,7 @@
     "message": "Erro"
   },
   "panels/console/ConsoleViewMessage.ts | errorS": {
-    "message": "{n,plural, =1{Erro, repetido # vez}one{Erro, repetido # vez(es)}other{Erro, repetido # vezes}}"
+    "message": "{n,plural, =1{Erro, repetido # vez}other{Erro, repetido # vezes}}"
   },
   "panels/console/ConsoleViewMessage.ts | exception": {
     "message": "<exceção>"
@@ -3918,7 +3921,7 @@
     "message": "[Intervention] {PH1}"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
-    "message": "{n,plural, =1{Repetida # vez}one{Repetida # vez(es)}other{Repetida # vezes}}"
+    "message": "{n,plural, =1{Repetida # vez}other{Repetida # vezes}}"
   },
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<algum> evento"
@@ -3951,7 +3954,7 @@
     "message": "Aviso"
   },
   "panels/console/ConsoleViewMessage.ts | warningS": {
-    "message": "{n,plural, =1{Aviso, repetido # vez}one{Aviso, repetido # vez(es)}other{Aviso, repetido # vezes}}"
+    "message": "{n,plural, =1{Aviso, repetido # vez}other{Aviso, repetido # vezes}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Preencher automaticamente a partir do histórico"
@@ -4032,13 +4035,13 @@
     "message": "Abrir consola para ver {PH1}"
   },
   "panels/console_counters/WarningErrorCounter.ts | openIssuesToView": {
-    "message": "{n,plural, =1{Abra Problemas para ver # problema:}one{Abra Problemas para ver # problema(s):}other{Abra Problemas para ver # problemas:}}"
+    "message": "{n,plural, =1{Abra Problemas para ver # problema:}other{Abra Problemas para ver # problemas:}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sErrors": {
-    "message": "{n,plural, =1{# erro}one{# erro(s)}other{# erros}}"
+    "message": "{n,plural, =1{# erro}other{# erros}}"
   },
   "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
-    "message": "{n,plural, =1{# aviso}one{# aviso(s)}other{# avisos}}"
+    "message": "{n,plural, =1{# aviso}other{# avisos}}"
   },
   "panels/coverage/CoverageListView.ts | codeCoverage": {
     "message": "Utilização de código"
@@ -4059,10 +4062,10 @@
     "message": "JS (por função)"
   },
   "panels/coverage/CoverageListView.ts | sBytes": {
-    "message": "{n,plural, =1{# byte}one{# byte(s)}other{# bytes}}"
+    "message": "{n,plural, =1{# byte}other{# bytes}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesS": {
-    "message": "{n,plural, =1{# byte, {percentage}}one{# byte(s), {percentage}}other{# bytes, {percentage}}}"
+    "message": "{n,plural, =1{# byte, {percentage}}other{# bytes, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
     "message": "{PH1} bytes ({PH2}) pertencem a blocos de JavaScript que (ainda) não foram executados."
@@ -4221,7 +4224,7 @@
     "message": "Consultas de multimédia"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | nOccurrences": {
-    "message": "{n,plural, =1{# ocorrência}one{# ocorrência(s)}other{# ocorrências}}"
+    "message": "{n,plural, =1{# ocorrência}other{# ocorrências}}"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | nonsimpleSelectors": {
     "message": "Seletores complexos"
@@ -4335,7 +4338,7 @@
     "message": "pendente"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | sBytes": {
-    "message": "{n,plural, =1{# byte}one{# byte(s)}other{# bytes}}"
+    "message": "{n,plural, =1{# byte}other{# bytes}}"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | status": {
     "message": "Estado"
@@ -4359,7 +4362,7 @@
     "message": "Carregar recursos para programadores HTTP(S) através do destino inspecionado"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
-    "message": "{n,plural, =1{# recurso}one{# recurso(s)}other{# recursos}}"
+    "message": "{n,plural, =1{# recurso}other{# recursos}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} recursos, {PH2} a carregar atualmente."
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Mostrar ouvintes nos predecessores"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Camadas de CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Ative/desative a vista de camadas de CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Breakpoint do DOM"
   },
@@ -4632,7 +4641,7 @@
     "message": "Nenhum rastreio de pilha disponível"
   },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
-    "message": "{n,plural, =1{(# glifo)}one{(# glifo(s))}other{(# glifos)}}"
+    "message": "{n,plural, =1{(# glifo)}other{(# glifos)}}"
   },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
     "message": "Ficheiro local"
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ver valor calculado"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Clique para mostrar a camada na árvore de camadas"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "Folha de estilos criada"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, nome da propriedade: {PH2}, valor da propriedade: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Camada"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nova regra de estilos"
@@ -5121,7 +5136,7 @@
     "message": "Recurso bloqueado"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | nRequests": {
-    "message": "{n,plural, =1{# pedido}one{# pedido(s)}other{# pedidos}}"
+    "message": "{n,plural, =1{# pedido}other{# pedidos}}"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | parentFrame": {
     "message": "Frame superior"
@@ -5136,10 +5151,10 @@
     "message": "Mostrar pedidos de rede que incluem este cabeçalho Set-Cookie no Painel de rede"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
-    "message": "{n,plural, =1{# cookie}one{# cookie(s)}other{# cookies}}"
+    "message": "{n,plural, =1{# cookie}other{# cookies}}"
   },
   "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
-    "message": "{n,plural, =1{1 cabeçalho Set-Cookie sem formatação}one{# cabeçalho(s) Set-Cookie sem formatação}other{# cabeçalhos Set-Cookie sem formatação}}"
+    "message": "{n,plural, =1{1 cabeçalho Set-Cookie sem formatação}other{# cabeçalhos Set-Cookie sem formatação}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nome"
@@ -5160,7 +5175,7 @@
     "message": "Elemento"
   },
   "panels/issues/AffectedDirectivesView.ts | nDirectives": {
-    "message": "{n,plural, =1{# diretiva}one{# diretiva(s)}other{# diretivas}}"
+    "message": "{n,plural, =1{# diretiva}other{# diretivas}}"
   },
   "panels/issues/AffectedDirectivesView.ts | reportonly": {
     "message": "apenas relatórios"
@@ -5181,13 +5196,13 @@
     "message": "Modo"
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | nDocuments": {
-    "message": "{n,plural, =1{ documento}one{ documento(s)}other{ documentos}}"
+    "message": "{n,plural, =1{ documento}other{ documentos}}"
   },
   "panels/issues/AffectedDocumentsInQuirksModeView.ts | url": {
     "message": "URL"
   },
   "panels/issues/AffectedElementsView.ts | nElements": {
-    "message": "{n,plural, =1{# elemento}one{# elemento(s)}other{# elementos}}"
+    "message": "{n,plural, =1{# elemento}other{# elementos}}"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | contrastRatio": {
     "message": "Relação de contraste"
@@ -5220,7 +5235,7 @@
     "message": "Limite excedido"
   },
   "panels/issues/AffectedHeavyAdView.ts | nResources": {
-    "message": "{n,plural, =1{# recurso}one{# recurso(s)}other{# recursos}}"
+    "message": "{n,plural, =1{# recurso}other{# recursos}}"
   },
   "panels/issues/AffectedHeavyAdView.ts | networkLimit": {
     "message": "Limite da rede"
@@ -5253,7 +5268,7 @@
     "message": "Instanciação"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | nViolations": {
-    "message": "{n,plural, =1{# violação}one{# violação(ões)}other{# violações}}"
+    "message": "{n,plural, =1{# violação}other{# violações}}"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | sharedarraybufferWasTransferedTo": {
     "message": "O SharedArrayBuffer foi transferido para um contexto que não está isolado da origem cruzada"
@@ -5274,10 +5289,10 @@
     "message": "aviso"
   },
   "panels/issues/AffectedSourcesView.ts | nSources": {
-    "message": "{n,plural, =1{# origem}one{# origem(ns)}other{# origens}}"
+    "message": "{n,plural, =1{# origem}other{# origens}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# recurso}one{# recurso(s)}other{# recursos}}"
+    "message": "{n,plural, =1{# recurso}other{# recursos}}"
   },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
     "message": "Nome do pacote"
@@ -5319,7 +5334,7 @@
     "message": "Valor de priority inválido"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
-    "message": "{n,plural, =1{# violação}one{# violação(ões)}other{# violações}}"
+    "message": "{n,plural, =1{# violação}other{# violações}}"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
     "message": "Pedir"
@@ -5364,7 +5379,7 @@
     "message": "Valor inválido (se disponível)"
   },
   "panels/issues/CorsIssueDetailsView.ts | nRequests": {
-    "message": "{n,plural, =1{# pedido}one{# pedido(s)}other{# pedidos}}"
+    "message": "{n,plural, =1{# pedido}other{# pedidos}}"
   },
   "panels/issues/CorsIssueDetailsView.ts | preflightDisallowedRedirect": {
     "message": "A resposta à verificação prévia foi um redirecionamento"
@@ -5415,7 +5430,7 @@
     "message": "Frame"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# recurso}one{# recurso(s)}other{# recursos}}"
+    "message": "{n,plural, =1{# recurso}other{# recursos}}"
   },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemas ocultos"
@@ -5448,10 +5463,10 @@
     "message": "Saiba mais: {PH1}"
   },
   "panels/issues/IssueView.ts | nRequests": {
-    "message": "{n,plural, =1{# pedido}one{# pedido(s)}other{# pedidos}}"
+    "message": "{n,plural, =1{# pedido}other{# pedidos}}"
   },
   "panels/issues/IssueView.ts | nResources": {
-    "message": "{n,plural, =1{# recurso}one{# recurso(s)}other{# recursos}}"
+    "message": "{n,plural, =1{# recurso}other{# recursos}}"
   },
   "panels/issues/IssueView.ts | name": {
     "message": "Nome"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Podem existir dados armazenados que estão a afetar o desempenho do carregamento nesta localização: {PH1}. Audite esta página numa janela de navegação anónima para impedir esses recursos de afetarem as suas pontuações."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Período"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Audite a página com o Lighthouse clássico quando estiver no modo de navegação."
+    "message": "Analise a página com o Lighthouse clássico quando estiver no modo de navegação."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL da Web"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Saiba mais"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analisar navegação"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analisar instantâneo"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modo"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Iniciar período"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% dos utilizadores de dispositivos móveis globais em 2016 utilizavam 2G ou 3G. [Fonte: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "O Walmart verificou um aumento de 1% na receita para cada 100 ms de melhoria no carregamento de página. [Fonte: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Cancelar"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Terminar período"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Período iniciado, interagir com a página"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "A iniciar o período…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Mostrar Lighthouse"
@@ -8604,7 +8643,7 @@
     "message": "Ver certificado"
   },
   "panels/security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
-    "message": "{n,plural, =1{Veja # pedido no painel Rede}one{Veja # pedido(s) no painel Rede}other{Veja # pedidos no painel Rede}}"
+    "message": "{n,plural, =1{Veja # pedido no painel Rede}other{Veja # pedidos no painel Rede}}"
   },
   "panels/security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
     "message": "Ver pedidos no painel de rede"
@@ -9303,13 +9342,13 @@
     "message": "Configurar"
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
-    "message": "{n,plural, =1{Desativar ponto de interrupção}one{Desativar todos os pontos de interrupção na linha}other{Desativar todos os pontos de interrupção na linha}}"
+    "message": "{n,plural, =1{Desativar ponto de interrupção}other{Desativar todos os pontos de interrupção na linha}}"
   },
   "panels/sources/DebuggerPlugin.ts | editBreakpoint": {
     "message": "Editar ponto de interrupção…"
   },
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
-    "message": "{n,plural, =1{Ativar ponto de interrupção}one{Ativar todos os pontos de interrupção na linha}other{Ativar todos os pontos de interrupção na linha}}"
+    "message": "{n,plural, =1{Ativar ponto de interrupção}other{Ativar todos os pontos de interrupção na linha}}"
   },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Nunca colocar em pausa aqui"
@@ -9324,7 +9363,7 @@
     "message": "A aplicação de estilos de formatação irá formatar este ficheiro num novo separador onde pode continuar a depuração. Pode também aplicar estilos de formatação a este ficheiro ao clicar no botão {PH1} na barra de estado inferior."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
-    "message": "{n,plural, =1{Remover ponto de interrupção}one{Remover todos os pontos de interrupção na linha}other{Remover todos os pontos de interrupção na linha}}"
+    "message": "{n,plural, =1{Remover ponto de interrupção}other{Remover todos os pontos de interrupção na linha}}"
   },
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Remover da lista de itens a ignorar"
@@ -9697,6 +9736,24 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Atualizar expressões de inspeção"
+  },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Adicionar cabeçalho"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Adicionar substituição do cabeçalho"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Erro ao analisar \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Isto deve-se, muito provavelmente, a um erro de sintaxe em \"{PH1}\". Experimente abrir este ficheiro num editor externo para corrigir o erro ou eliminar o ficheiro e criar novamente a substituição."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Remover esta secção de \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Remover este cabeçalho"
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Ativar pontos de interrupção"
@@ -10874,6 +10931,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Atualização da função de juntar/afastar os dedos"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pré-pintura"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Pré-visualização"
   },
@@ -10956,7 +11016,7 @@
     "message": "{PH1} (em {PH2})"
   },
   "panels/timeline/TimelineUIUtils.ts | sBytes": {
-    "message": "{n,plural, =1{# byte}one{# byte(s)}other{# bytes}}"
+    "message": "{n,plural, =1{# byte}other{# bytes}}"
   },
   "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
     "message": "{PH1} pode resultar em experiências do utilizador fracas. Recentemente, tem {PH2}."
@@ -11451,13 +11511,13 @@
     "message": "Eliminação:"
   },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
-    "message": "{issueCount,plural, =1{# alteração interruptiva}one{# alteração(ões) interruptiva(s)}other{# alterações interruptivas}}"
+    "message": "{issueCount,plural, =1{# alteração interruptiva}other{# alterações interruptivas}}"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
-    "message": "{issueCount,plural, =1{# erro na página}one{# erro(s) na página}other{# erros na página}}"
+    "message": "{issueCount,plural, =1{# erro na página}other{# erros na página}}"
   },
   "ui/components/issue_counter/IssueCounter.ts | possibleImprovements": {
-    "message": "{issueCount,plural, =1{# possível melhoria}one{# possível(eis) melhoria(s)}other{# possíveis melhorias}}"
+    "message": "{issueCount,plural, =1{# possível melhoria}other{# possíveis melhorias}}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
     "message": "Clique para mostrar o problema no separador de problemas"
@@ -12363,7 +12423,7 @@
     "message": "Remover da lista de itens a ignorar"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Mostrar mais # frame}one{Mostrar mais # frame(s)}other{Mostrar mais # frames}}"
+    "message": "{n,plural, =1{Mostrar mais # frame}other{Mostrar mais # frames}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "desconhecido"

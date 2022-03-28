@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "විශ්වාසදායී වර්ග - ප්‍රතිපත්ති උල්ලංඝනය"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "සුරක්ෂිත"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "අනාරක්ෂිත"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets සහ SameParty උපලක්ෂණය"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "යෝජනා ක්‍රම සහිත එකම අඩවිය ක්‍රියා කරන ආකාරය"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite කුකි විස්තර කරන ලදි"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "හරස්-මූලාරම්භ සම්පත් බෙදා ගැනීම (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ලේඛන ගැළපුම් ප්‍රකාරය"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "සුරක්ෂිත"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "අනාරක්ෂිත"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets සහ SameParty උපලක්ෂණය"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "යෝජනා ක්‍රම සහිත එකම අඩවිය ක්‍රියා කරන ආකාරය"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite කුකි විස්තර කරන ලදි"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer සබල කරමින්"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "පසුපසට ඉදිරියට හැඹිලිය"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "දිගු ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "ක්‍රියාමාර්ග නොගත හැකි"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "මුතුන්මිත්තන්හි සවන් දෙන්නන් පෙන්වන්න"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS ස්ථර"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS ස්තර දසුන ටොගල කරන්න"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM බිඳුම් ලක්ෂ්‍යය"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ගණනය කළ අගය බලන්න"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ස්තර රුකෙහි ස්තරය හෙළිදරව් කිරීමට ක්ලික් කරන්න"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ගොඩනගන ලද මෝස්තර පත්‍රය"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, දේපළ නම: {PH2}, දේපළ අගය: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ස්තරය"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "නව මෝස්තර රීතිය"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "මෙම ස්ථානයේ පූරණය කිරීමේ ක්‍රියාකාරිත්වයට බලපාන ගබඩා කළ දත්ත තිබිය හැකිය: {PH1}. එම සම්පත් ඔබේ ලකුණුවලට බලපෑම වැළැක්වීම සඳහා මෙම පිටුව අප්‍රසිද්ධ කවුළුවක විගණනය කරන්න."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "කාල පරාසය"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "සංචාලන ප්‍රකාරය තුළ සිටින විට පැරණි Lighthouse භාවිතයෙන් පිටුව විගණනය කරන්න."
+    "message": "සංචාලන ප්‍රකාරය තුළ සිටින විට පැරණි Lighthouse භාවිතයෙන් පිටුව විශ්ලේෂණය කරන්න."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "වෙබ් SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "තව දැන ගන්න"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "සංචාලනය විශ්ලේෂණය කරන්න"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "සැණ රුව විශ්ලේෂණය කරන්න"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "ප්‍රකාරය"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "කාල පරාසය ආරම්භ කරන්න"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 ගෝලීය ජංගම දුරකථන පරිශීලකයන්ගෙන් 75%ක් 2G හෝ 3G විය [මූලාශ්‍රය: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "පිටු පූරණය කිරීමේ සෑම 100msක වැඩිදියුණු කිරීමක් සඳහාම Walmart ආදායම 1%කින් ඉහළ යාම දුටුවේය [මූලාශ්‍රය: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "අවලංගු කරන්න"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "කාල පරාසය අවසන් කරන්න"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "කාල පරාසය ආරම්භ විය, පිටුව සමඟ අන්තර් ක්‍රියා කරන්න"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "කාල පරාසය ආරම්භ කරමින්…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse පෙන්වන්න"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ඔරලෝසු ප්‍රකාශන නැවුම් කරන්න"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ශීර්ෂකයක් එක් කරන්න"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ශීර්ෂක ප්‍රතික්ෂේප කිරීම එක් කරන්න"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' විග්‍රහ කරන විට දෝෂයකි."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "මෙය බොහෝ විට ''{PH1}'' හි වාක්‍ය වින්‍යාස දෝෂයක් නිසා විය හැකිය. දෝෂය නිවැරදි කිරීමට හෝ ගොනුව මකා ප්‍රතික්ෂේප කිරීම ප්‍රති-නිර්මාණය කිරීමට මෙම ගොනුව බාහිර සංස්කාරකයක විවෘත කිරීමට උත්සාහ කරන්න."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "මෙම 'ApplyTo'-අංශය ඉවත් කරන්න"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "මෙම ශීර්ෂකය ඉවත් කරන්න"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "බිඳුම් ලක්ෂ්‍ය සක්‍රිය කරන්න"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "යාවත්කාලීනය පින්ච් කරන්න"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "පූර්ව-පින්තාරුව"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "පෙරදසුන"

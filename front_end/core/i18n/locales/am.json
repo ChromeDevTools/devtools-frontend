@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "የታመኑ ዓይነቶች - የመመሪያ ጥሰት"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "ድህንነቱ የተጠበቀ"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "ድህንነቱ ያልተጠበቀ"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets እና SameParty መገለጫ ባህሪ"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "የታቀደ ተመሳሳይ ጣቢያ እንዴት ማቀድ እንደሚሰራ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite ኩኪዎች ተብራርተዋል"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ምንጭ ተሻጋሪ ንብረት ማጋራት (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "የሰነድ የተኳኋኝነት ሁነታ"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "ድህንነቱ የተጠበቀ"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "ድህንነቱ ያልተጠበቀ"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets እና SameParty መገለጫ ባህሪ"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "የታቀደ ተመሳሳይ ጣቢያ እንዴት ማቀድ እንደሚሰራ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite ኩኪዎች ተብራርተዋል"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBufferን ማንቃት"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "የጀርባ/ፊት መሸጎጫ"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "የቅጥያ መታወቂያ፦ "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "ተፈጻሚ ሊሆን የሚችል አይደለም"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "በዘር ማንዘሮች ላይ አዳማጮችን አሳይ"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "የሲኤስኤስ ንብርብሮች"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "የሲኤስኤስ ንብርብሮች እይታን ቀይር"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "የDOM መስበርያ ነጥብ"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "የተሰላውን እሴት ይመልከቱ"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ንብርብርን በንብርብር ዛፍ ላይ ለማሳየት ጠቅ ያድርጉ"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "የተገነባ የቅጥ ሉህ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}፣ የንብረት ስም፦ {PH2}፣ የንብረት ዋጋ፦ {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ንብርብር"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "አዲስ የቅጥ ደንብ"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "በዚህ አካባቢ ላይ በመጫኛ አፈጻጸም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገጽ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "የጊዜ ቆይታ"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "በአሰሳ ሁነታ ላይ ሲሆኑ የታወቀ የብርሃን ማማን በመጠቀም ገጹን ኦዲት ያድርጉ።"
+    "message": "በአሰሳ ሁነታ ላይ ሲሆኑ የታወቀ የብርሃን ማማን በመጠቀም ገጹን ይተንትኑ።"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "የድር SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "አሰሳን ተንትን"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "ቅፅበተ ፎቶን ተንትን"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "ሁነታ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "የቆይታ ጊዜ ጀምር"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "በ2016 ከ75% የአለም ሞባይል ተጠቃሚዎች በ2ጂ ወይም በ3 ጂላይ ነበሩ [ምንጭ፦GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "ዋልማርት በገጽ ጭነት ላይ ላለ እያንዳንዱ 100 ሚሴ የ1% ገቢ ጭማሬ አግኝቷል [ምንጭ፦ WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ይቅር"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "የቆይታ ጊዜ ጨርስ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "የቆይታ ጊዜ ተጀምሯል፣ ከገጹ ጋር ይገናኙ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "የቆይታ ጊዜ በመጀመር ላይ…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouseን አሳይ"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "የሰዓት መግለጫዎችን ዓድስ"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ራስጌን አክል"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "የራስጌ መሻርን አክል"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "«{PH1}»ን ሲተነተን ስህተት"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ይህ በ«{PH1}» ውስጥ ባለው የአገባብ ስህተት ምክንያት የመሆን ትልቅ ዕድል አለው። ስህተቱን ለማስተካከል ወይም ፋይሉን ለመሰረዝ ይህንን ፋይል በውጫዊ አርታዒ ውስጥ ለመክፈት ይሞክሩ እና መሻሪያውን እንደገና ይፍጠሩ።"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ይህን የ«ApplyTo» ክፍል አስወግድ"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ይህን ራስጌ አስወግድ"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "መግቻ ቦታዎችን አግብር"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "የቆንጥጥ ዝማኔ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ቅድመ-ቀለም"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "ቅድመ-ዕይታ"

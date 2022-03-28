@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types: انتهاك السياسة"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "سياق آمن"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "سياق غير آمن"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "السمة First-Party Sets والسمة SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "طريقة عمل ميزة Same-Site المتعددة المخطّطات"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "ملفات تعريف الارتباط الموضّحة للسمة SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "مشاركة الموارد المشتَركة النطاق (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "وضع التوافق مع المستند"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "سياق آمن"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "سياق غير آمن"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "السمة First-Party Sets والسمة SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "طريقة عمل ميزة Same-Site المتعددة المخطّطات"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "ملفات تعريف الارتباط الموضّحة للسمة SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "جارٍ تفعيل SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ميزة \"التخزين المؤقت للصفحات\""
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "معرّف الإضافة: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "أسباب لا يمكن اتخاذ إجراء بشأنها"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "عرض أدوات معالجة الأحداث في الكيانات الأصل"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "طبقات \"صفحات الأنماط المتتالية\" (CSS)"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "تبديل عرض طبقات \"صفحات الأنماط المتتالية\" (CSS)"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "النقطة الفاصلة في DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "عرض القيمة المحتسَبة"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "انقر لعرض طبقة في شجرة الطبقات"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "أوراق الأنماط التي تم إنشاؤها"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}، اسم الخاصية: {PH2}، قيمة الخاصية: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "الطبقة"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "قاعدة أنماط جديدة"
@@ -5796,7 +5811,7 @@
     "message": "عليك محو مساحة التخزين (cache، service workers، إلخ) قبل إجراء التدقيق. (خيار مناسب لتحسين الأداء وإجراء اختبار PWA)"
   },
   "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
-    "message": "تشغيل Lighthouse في وضع التنقّل أو الفترة الزمنية أو وضع اللقطة"
+    "message": "تشغيل Lighthouse في وضع التنقّل أو وضع الفترة الزمنية أو وضع اللقطة"
   },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "تحسين محركات البحث"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "قد تكون هناك بيانات مخزَّنة تؤثر على أداء التحميل في هذا المكان: {PH1} يُرجى إجراء تدقيق لهذه الصفحة في نافذة التصفّح المتخفّي لمنع هذه الموارد من التأثير على نتيجتك."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "الفترة الزمنية"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "يمكنك فحص أداء الصفحة باستخدام وضع Lighthouse الكلاسيكي أثناء التنقّل."
+    "message": "يمكنك تحليل أداء الصفحة باستخدام وضع Lighthouse الكلاسيكي عندما تكون في وضع التنقّل."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "لغة الاستعلامات البنيوية (SQL) على الويب"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "تحليل التنقّل"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "تحليل لقطة"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "الوضع"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "بدء فترة الفحص"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75‏% من مستخدمي الأجهزة الجوّالة حول العالم كانوا يستخدمون شبكتَي الجيل الثاني أو الثالث في العام 2016. [المصدر: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "شهد متجر Walmart زيادة في الأرباح بنسبة 1% لكل تحسُّن خلال 100 ملي ثانية في تحميل الصفحة [المصدر: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "إلغاء"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "إنهاء فترة الفحص"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "تم بدء فترة فحص الصفحة باستخدام وضع Lighthouse، يمكنك التفاعل مع الصفحة"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "جارٍ بدء فترة الفحص…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "إظهار Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "إعادة تحميل تعبيرات المشاهدة"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "إضافة عنوان"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "إضافة تجاوز العنوان"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "حدث خطأ أثناء تحليل ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ويعود سبب ذلك على الأرجح إلى خطأ في بنية \"{PH1}\". يمكنك محاولة فتح هذا الملف في محرِّر خارجي لإصلاح الخطأ أو حذف الملف وإعادة عملية التجاوز."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "إزالة القسم \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "إزالة هذا العنوان"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "تفعيل نقاط الإيقاف"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "تعديل التكبير أو التصغير بإصبعين"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "إعدادات ما قبل عرض محتوى الصفحة"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "معاينة"

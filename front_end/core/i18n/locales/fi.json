@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – käytäntörikkomus"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "suojattu"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "epävarma"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "Määritteet First-Party Sets ja SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Skeemapohjaisen Same-Siten toiminta"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite-evästeiden kuvaus"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Eri lähteistä peräisin olevien resurssien jakaminen (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentti-yhteensopivuustila"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "suojattu"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "epävarma"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "Määritteet First-Party Sets ja SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Skeemapohjaisen Same-Siten toiminta"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite-evästeiden kuvaus"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer otetaan käyttöön"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Siirtymisvälimuisti"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Laajennustunnus: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Toimenpiteet eivät mahdollisia"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Näytä kuuntelijat edeltäjissä"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-tasot"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS-tasojen näkymä päälle/pois"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-raja-arvo"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Katso laskettu arvo"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klikkaa nähdäksesi taso tasopuussa"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "muodostettu tyyliarkki"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ominaisuuden nimi: {PH2}, ominaisuuden arvo: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Taso"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Uusi tyylisääntö"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Tähän sijaintiin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {PH1}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Aikaväli"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Tarkasta sivu navigointitilassa klassisella Lighthousella."
+    "message": "Analysoi sivu navigointitilassa klassisella Lighthousella."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Lue lisää"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analysoi sivulla siirtyminen"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analysoi sivun tila"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Tila"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Aloita aikaväli"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Vuonna 2016 75 % kaikista maailman puhelinkäyttäjistä oli joko 2G- tai 3G-verkossa [Lähde: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmartin tulot kasvoivat 1 %:n aina kun sivun lataus parantui 100 ms [Lähde: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Peru"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Lopeta aikaväli"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Aikaväli alkanut, käytä sivua"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Aikaväli alkaa…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Näytä Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Päivitä katselun lausekkeet"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Lisää otsikko"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Lisää otsikon ohitus"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Virhe jäsentämisessä: {PH1}."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Tämä johtuu todennäköisesti syntaksivirheestä: {PH1}. Kokeile avata tiedosto ulkoisella muokkausohjelmalla, jotta voit korjata virheen tai poistaa tiedoston ja luoda ohitukset uudelleen."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Poista tämä ApplyTo-osio"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Poista tämä otsikko"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivoi pysäytyspisteet"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Nipistyksen päivitys"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Esipiirtäminen"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Esikatselu"

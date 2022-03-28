@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Etibarlı Növlər - Siyasətin Pozulması"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "təhlükəsiz"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "güvənsiz kontekst"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets və SameParty atributu"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site necə işləyir"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite kukiləri izah edildi"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Mənbələrarası Resurs Paylaşımı (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Sənəd uyğunluq rejimi"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "təhlükəsiz"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "güvənsiz kontekst"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets və SameParty atributu"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site necə işləyir"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite kukiləri izah edildi"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktivləşdirilir SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Geri/irəli keş"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Artırma ID-si: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "İcra edilə bilmir"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Əvvəlki elementlərdə dinləyiciləri göstərin"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS qatları"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS Qatları görünüşünü keçirin"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Kəsmə nöqtəsi"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hesablanan dəyərə baxın"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Qat sxemində qatı aşkarlamaq üçün tıklayın"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "hazırlanmış üslub vərəqi"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, atribut adı: {PH2}, atribut dəyəri: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Qat"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Yeni Üslub Qaydası"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Bu məkanda yükləmə məhsuldarlığına təsir edən data saxlanmış ola bilər: {PH1}. Həmin resursların xallarınıza təsir etməsinin qarşısını almaq üçün bu səhifəni anonim rejimdə yoxlayın."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Vaxt aralığı"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Naviqasiya rejimində olarkən klassik Mayak istifadə edərək səhifəni yoxlayın."
+    "message": "Naviqasiya rejimində olarkən klassik Mayak istifadə edərək səhifəni təhlil edin."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Veb SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Ətraflı məlumat"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Naviqasiyanı təhlil edin"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Snepşotu təhlil edin"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Rejim"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Vaxt aralığını başladın"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016-cı ildə qlobal mobil cihaz istifadəçilərinin 75%-i 2G və ya 3G şəbəkəsindən istifadə edib [Mənbə: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart səhifənin yüklənməsindəki hər 100ms artıma görə gəlirdə 1% artım müşahidə edib [Mənbə: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Ləğv edin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Vaxt aralığını bitirin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Vaxt aralığı başladılıb, səhifədə əməliyyat icra edin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Vaxt aralığı başladılır…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Göstərin: Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "İzləmə ifadələrini təzələyin"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Başlıq əlavə edin"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Başlıq əvəzləyicisi əlavə edin"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' təhlil edilərkən xəta oldu."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Bu, çox güman ki, ''{PH1}'' üzrə sintaksis xətası ilə bağlıdır. Xətanı düzəltmək üçün bu faylı xarici redaktorda açmağa çalışın və ya faylı silin və əvəzləyicini yenidən yaradın."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Bu 'ApplyTo' bölməsini silin"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Bu başlığı silin"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Kəsilmə nöqtələrini aktivləşdirin"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Yeniləmə üzərinə toxunun"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Ön boyama"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Önbaxış keçirin"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types - การละเมิดนโยบาย"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "ที่ปลอดภัย"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets และแอตทริบิวต์ SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "การทำงานของ Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "คำอธิบายเกี่ยวกับคุกกี้ SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "กลไกการแชร์ทรัพยากรข้ามโดเมน (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "โหมดความเข้ากันได้กับเอกสาร"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "ที่ปลอดภัย"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets และแอตทริบิวต์ SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "การทำงานของ Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "คำอธิบายเกี่ยวกับคุกกี้ SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "กำลังเปิดใช้ SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "แคชย้อนหลัง"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "รหัสส่วนขยาย: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "ดำเนินการไม่ได้"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "แสดง Listener ในระดับบน"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "เลเยอร์ CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "สลับมุมมองเลเยอร์ CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "เบรกพอยท์ DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ดูค่าที่คำนวณแล้ว"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "คลิกเพื่อแสดงเลเยอร์ในแผนผังเลเยอร์"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "สไตล์ชีตที่สร้างขึ้น"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ชื่อพร็อพเพอร์ตี้: {PH2}, ค่าพร็อพเพอร์ตี้: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "เลเยอร์"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "กฎของรูปแบบใหม่"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "อาจมีข้อมูลที่จัดเก็บไว้ที่ส่งผลกระทบต่อประสิทธิภาพการโหลดในตำแหน่ง {PH1} ตรวจสอบหน้านี้ในหน้าต่างที่ไม่ระบุตัวตนเพื่อป้องกันไม่ให้ทรัพยากรเหล่านั้นส่งผลกระทบต่อคะแนนของคุณ"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ช่วงเวลา"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ตรวจสอบหน้าเว็บโดยใช้ Lighthouse แบบคลาสสิกเมื่ออยู่ในโหมดการนำทาง"
+    "message": "วิเคราะห์หน้าเว็บโดยใช้ Lighthouse แบบคลาสสิกเมื่ออยู่ในโหมดการนำทาง"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ของเว็บ"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "วิเคราะห์การนำทาง"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "วิเคราะห์ภาพรวม"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "โหมด"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "เริ่มระยะเวลา"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% ของผู้ใช้อุปกรณ์เคลื่อนที่ทั่วโลกในปี 2016 ใช้ระบบ 2G หรือ 3G [แหล่งที่มา: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart มีรายได้เพิ่มขึ้น 1% ทุกครั้งที่หน้าเว็บโหลดเร็วขึ้น 100 มิลลิวินาที [แหล่งที่มา: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ยกเลิก"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "สิ้นสุดระยะเวลา"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "ระยะเวลาเริ่มแล้ว โต้ตอบกับหน้าเว็บ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "กำลังเริ่มระยะเวลา…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "แสดง Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "รีเฟรชนิพจน์การดู"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "เพิ่มส่วนหัว"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "เพิ่มการลบล้างส่วนหัว"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "เกิดข้อผิดพลาดเมื่อแยกวิเคราะห์ ''{PH1}''"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ปัญหานี้น่าจะเกิดจากข้อผิดพลาดทางไวยากรณ์ใน ''{PH1}'' ลองเปิดไฟล์นี้ในเครื่องมือแก้ไขภายนอกเพื่อแก้ไขข้อผิดพลาด หรือลบไฟล์แล้วสร้างการลบล้างใหม่"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "นำส่วน \"ApplyTo\" นี้ออก"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "นำส่วนหัวนี้ออก"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "เปิดใช้งานเบรกพอยท์"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "การอัปเดตการบีบ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ก่อนแสดงผล"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "พรีวิว"

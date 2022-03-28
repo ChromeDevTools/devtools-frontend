@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Loại đáng tin cậy – Lỗi vi phạm chính sách"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "a secure"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "Thuộc tính First-Party Sets và SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Cách hoạt động của Same-Site có lược đồ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Cookie SameSite đã được giải thích"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Chia sẻ tài nguyên trên nhiều nguồn gốc (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Chế độ tương thích với tài liệu"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "a secure"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "Thuộc tính First-Party Sets và SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Cách hoạt động của Same-Site có lược đồ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Cookie SameSite đã được giải thích"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Bật SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Bộ nhớ đệm cho thao tác tiến/lùi"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Mã nhận dạng tiện ích: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Không thể thực hiện"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Hiển thị trình xử lý trên đối tượng cấp trên"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Lớp CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Bật/tắt chế độ xem lớp CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Điểm ngắt của DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Xem giá trị đã tính"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Nhấn để xem các lớp trong cây phân lớp (layer tree)"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "biểu định kiểu được tạo"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, tên thuộc tính: {PH2}, giá trị thuộc tính: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lớp"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Quy tắc kiểu mới"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Dữ liệu đã lưu trữ có thể ảnh hưởng đến hiệu suất tải ở vị trí này: {PH1}. Hãy kiểm tra trang này trong một cửa sổ ẩn danh để ngăn các tài nguyên đó ảnh hưởng đến điểm hiệu suất của bạn."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Khoảng thời gian"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Kiểm tra trang bằng Lighthouse cũ khi ở chế độ điều hướng."
+    "message": "Phân tích trang bằng Lighthouse cũ khi ở chế độ điều hướng."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Tìm hiểu thêm"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Phân tích chế độ điều hướng"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Phân tích tổng quan nhanh"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Chế độ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Bắt đầu khoảng thời gian"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Trong năm 2016, 75% số người dùng thiết bị di động trên toàn cầu đã dùng mạng 2G hoặc 3G [Nguồn: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart nhận thấy rằng cứ mỗi lần thời gian tải trang tăng lên 100 mili giây thì doanh thu sẽ tăng 1% [Nguồn: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Huỷ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Kết thúc khoảng thời gian"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Đã bắt đầu khoảng thời gian, hãy tương tác với trang"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Đang bắt đầu khoảng thời gian…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Hiển thị Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Làm mới biểu thức canh gác"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Thêm tiêu đề"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Thêm tiêu đề ghi đè"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Đã có lỗi trong khi phân tích cú pháp ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Tình trạng này có thể xảy ra do lỗi cú pháp ''{PH1}''. Hãy thử mở tệp này trong một trình chỉnh sửa bên ngoài để khắc phục lỗi hoặc xoá tệp rồi tạo lại nội dung ghi đè."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Xoá mục \"ApplyTo\" này"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Xoá tiêu đề này"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Kích hoạt điểm ngắt"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Cập nhật cử chỉ chụm"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Trước khi tạo điểm ảnh"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Xem trước"

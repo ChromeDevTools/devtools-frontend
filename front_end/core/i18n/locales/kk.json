@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Сенімді түрлер – саясатты бұзу жағдайы"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "қауіпсіз"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "қауіпті"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets және SameParty төлсипаты"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Схемалық бірдей сайт қалай жұмыс істейді"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite cookie файлдары түсіндірілді."
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ресурсты әртүрлі көздер арасында бөлісу (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Құжатпен үйлесімділік режимі"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "қауіпсіз"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "қауіпті"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets және SameParty төлсипаты"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Схемалық бірдей сайт қалай жұмыс істейді"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite cookie файлдары түсіндірілді."
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer қосылуда"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Алға-артқа өту кэші"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Кеңейтім идентификаторы: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Мәселені шешу мүмкін емес"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Бұрынғы элементтердегі тыңдаушыларды көрсету"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS қабаттары"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS қабаттарын көрсету/жасыру"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM бақылау нүктесі"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Есептелген мәнді көру"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Қабаттар ағашында қабатты ашу үшін түймені басыңыз."
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "құрастырылған стильдер кестесі"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, сипат атауы: {PH2}, сипат мәні: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Қабат"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Жаңа стиль ережесі"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Осы орында жүктеу жұмысына әсер ететін деректер сақталған болуы мүмкін: {PH1}. Сол ресурстардың ұпайларыңызға әсер етпеуі үшін бұл бетті инкогнито терезесінде тексеріңіз."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Уақыт аралығы"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Навигация режимінде болғанда, бетті классикалық Lighthouse арқылы тексере аласыз."
+    "message": "Навигация режимінде болғанда, бетті классикалық Lighthouse арқылы талдай аласыз."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Веб SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Толығырақ"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Навигацияны талдау"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Снапшотты талдау"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Режим"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Уақыт аралығын бастау"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 жылы әлемдегі мобильдік құрылғы пайдаланушыларының 75%-ы 2G немесе 3G желісін қолданды [дереккөз: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart бет жүктемесіндегі әр 100 мс-тың жақсарғаны үшін табыстың 1% артқанын көрді [Дереккөз: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Тоқтату"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Уақыт аралығын аяқтау"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Уақыт аралығы басталды, бетте тиісті әрекетті орындаңыз"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Уақыт аралығы басталуда…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse көрсету"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Мәндер өрнектерін жаңарту"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Тақырып қосу"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Тақырыпты қайта анықтау опциясын қосу"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' талдау кезінде қате шықты."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Бұл жағдай ''{PH1}'' бойынша синтаксистік қатеге байланысты болуы ықтимал. Қатені түзету үшін файлды сыртқы редактормен ашып көріңіз, немесе файлды жойып, қайта анықтаңыз."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Осы \"ApplyTo\" бөлімін жою"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Тақырыпты жою"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Тоқтату нүктелерін белсендіру"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Екі саусақты жақындату қимылын жаңарту"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Сурет салуға дейінгі қадам"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Алдын ала қарау"

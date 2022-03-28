@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "విశ్వసనీయ రకాలు - పాలసీ ఉల్లంఘన"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "సురక్షితమైన"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "సురక్షితం కాదు"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets, SameParty ఆట్రిబ్యూట్"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site ఎలా పనిచేస్తుంది"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite కుక్కీలు వివరించబడ్డాయి"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "క్రాస్-ఆరిజిన్ రిసోర్స్ షేరింగ్ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "డాక్యుమెంట్ అనుకూలత మోడ్"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "సురక్షితమైన"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "సురక్షితం కాదు"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets, SameParty ఆట్రిబ్యూట్"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site ఎలా పనిచేస్తుంది"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite కుక్కీలు వివరించబడ్డాయి"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer ఎనేబుల్ చేస్తోంది"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "వెనుకకు/ముందుకు కాష్"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ఎక్స్‌టెన్షన్ ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "చర్య తీసుకోదగనివి"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "పూర్వీకుల దానిలో లిజనర్‌లను చూపండి"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS లేయర్‌లు"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS లేయర్‌ల వీక్షణను టోగుల్ చేయండి"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM బ్రేక్‌పాయింట్"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "కంప్యూట్ చేయబడిన విలువను చూడండి"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "లేయర్‌లో లేయర్ గల ట్రీ వీక్షణను చూడటానికి క్లిక్ చేయండి"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "నిర్మాణం చేయబడిన స్టయిల్‌షీట్"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ప్రాపర్టీ పేరు: {PH2}, ప్రాపర్టీ విలువ: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "లేయర్"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "కొత్త స్టయిల్ రూల్"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {PH1}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "కాల వ్యవధి"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "నావిగేషన్ మోడ్‌లో ఉన్నప్పుడు క్లాసిక్ లైట్‌హౌస్‌ను ఉపయోగించి పేజీని ఆడిట్ చేయండి."
+    "message": "నావిగేషన్ మోడ్‌లో ఉన్నప్పుడు క్లాసిక్ లైట్‌హౌస్‌ను ఉపయోగించి పేజీని విశ్లేషించండి."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "వెబ్ SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "నావిగేషన్‌ను విశ్లేషించండి"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "స్నాప్‌షాట్‌ను విశ్లేషించండి"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "మోడ్"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "కాలవ్యవధిని ప్రారంభించండి"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016లో 75% మంది గ్లోబల్ మొబైల్ యూజర్‌లు 2G లేదా 3Gని ఉపయోగించే వారు [సోర్స్: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "పేజీని లోడ్ చేయడంలో ప్రతి 100 మి.సె. మెరుగుదలకు Walmart ఆదాయం 1% పెరిగింది [సోర్స్: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "రద్దు చేయండి"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "కాలవ్యవధిని ముగించండి"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "కాలవ్యవధి ప్రారంభమైంది, పేజీతో ఇంటరాక్ట్ అవ్వండి"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "కాల వ్యవధి ప్రారంభమవుతోంది…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouseను చూపించు"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "వాచ్ ఎక్స్ప్రెషన్‌లను రిఫ్రెష్ చేయండి"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "హెడర్‌ను జోడించండి"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "హెడర్ ఓవర్‌రైడ్‌ను జోడించండి"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}''ను పార్స్ చేస్తున్నప్పుడు ఎర్రర్ ఏర్పడింది."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "''{PH1}''లో సింటాక్స్ ఎర్రర్ ఉండటం వలన ఇలా జరిగి ఉండవచ్చు. ఎర్రర్‌ను పరిష్కరించడం కోసం ఈ ఫైల్‌ను బాహ్య ఎడిటర్‌లో తెరవడానికి ట్రై చేయండి లేదా ఫైల్‌ను తొలగించి, ఓవర్‌రైడ్‌ను తిరిగి క్రియేట్ చేయండి."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ఈ 'ApplyTo'-విభాగాన్ని తీసివేయండి"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ఈ హెడర్‌ను తీసివేయండి"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "బ్రేక్ పాయింట్‌లను యాక్టివేట్ చేయండి"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "అప్‌డేట్‌ను వేళ్లతో స్క్రీన్‌ను నియంత్రించండి"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ప్రీ-పెయింట్"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "ప్రివ్యూ"

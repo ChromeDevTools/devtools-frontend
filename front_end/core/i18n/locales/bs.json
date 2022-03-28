@@ -630,13 +630,13 @@
     "message": "Zamućeni vid"
   },
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
-    "message": "Snimi asinhrono stanje steka"
+    "message": "Snimi asinhrono stanje stoga"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopija"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
-    "message": "Onemogući asinhrono stanje steka"
+    "message": "Onemogući asinhrono stanje stoga"
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Onemogući format AVIF"
@@ -660,7 +660,7 @@
     "message": "Onemogući format WebP"
   },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
-    "message": "Nemoj snimati asinhrona stanja steka"
+    "message": "Nemoj snimati asinhrona stanja stoga"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateAFocusedPage": {
     "message": "Nemoj emulirati fokusiranu stranicu"
@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Pouzdane vrste – kršenje pravila"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "sigurno"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "nesigurno"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets i atribut SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Kako Schemeful Same-Site funkcionira"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Objašnjenje za SameSite kolačiće"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Dijeljenje izvora različitog porijekla (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Način rada kompatibilnog dokumenta"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "sigurno"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "nesigurno"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets i atribut SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Kako Schemeful Same-Site funkcionira"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Objašnjenje za SameSite kolačiće"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Omogućava se SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Keširanje cijele stranice"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID ekstenzije: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nije moguće poduzeti radnju"
   },
@@ -3513,7 +3516,7 @@
     "message": "Status"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
-    "message": "Nije moguće renderovati stanje steka"
+    "message": "Nije moguće renderovati stanje stoga"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Prikaži još # okvir}one{Prikaži još # okvir}few{Prikaži još # okvira}other{Prikaži još # okvira}}"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Prikaži slušaoce na prethodnicima"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS slojevi"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Uključite/isključite prikaz CSS slojeva"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM tačka prekida"
   },
@@ -4629,7 +4638,7 @@
     "message": "Element je sakriven"
   },
   "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nije dostupno stanje steka"
+    "message": "Nije dostupno stanje stoga"
   },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glif)}one{(# glif)}few{(# glifa)}other{(# glifova)}}"
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Prikaži izračunatu vrijednost"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Kliknite da otkrijete sloj u stablu slojeva"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "izgrađeni listovi stilova"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, naziv svojstva: {PH2}, naziv svojstva: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Sloj"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Novo pravilo stila"
@@ -4899,13 +4914,13 @@
     "message": "Prikaži svojstva"
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Prikaži stanje steka"
+    "message": "Prikaži stanje stoga"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
     "message": "Prikaži DOM sjenu korisničkog agenta"
   },
   "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stanje steka"
+    "message": "Stanje stoga"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "Poništi"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Možda postoje pohranjeni podaci koji utiču na performanse učitavanja na ovoj lokaciji: {PH1}. Pregledajte ovu stranicu u anonimnom prozoru da spriječite uticaj tih izvora na vaše rezultate."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Vremenski raspon"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Izvršite reviziju stranice koristeći klasični Lighthouse u načinu rada navigacije."
+    "message": "Analizirajte stranicu koristeći klasični Lighthouse u načinu rada navigacije."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL za web"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Saznajte više"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analiziraj navigaciju"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analiziraj snimak"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Način rada"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Započni vremenski raspon"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% korisnika mobilnih telefona na svijetu u 2016. godini koristili su 2G ili 3G [Izvor: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart je zabilježio rast prihoda od 1% na svakih 100 ms poboljšanja vremena učitavanja stranice [izvor: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Otkaži"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Završi vremenski raspon"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Vremenski raspon je započet. Stupite u interakciju sa stranicom"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Pokretanje vremenskog raspona…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Prikaži Lighthouse"
@@ -6648,7 +6687,7 @@
     "message": "Kopiraj zaglavlja odgovora"
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
-    "message": "Kopirajnje stanja steka"
+    "message": "Kopirajnje stanja stoga"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "Učitani DOM sadržaj: {PH1}"
@@ -7857,7 +7896,7 @@
     "message": "Perspektiva"
   },
   "panels/profiler/HeapSnapshotView.ts | recordAllocationStacksExtra": {
-    "message": "Snimanje stanja steka dodjela (dodatna prekomjerna vrijednost performansi)"
+    "message": "Snimanje stanja stoga dodjela (dodatna prekomjerna vrijednost performansi)"
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "Snimanje…"
@@ -9192,7 +9231,7 @@
     "message": "Stek poziva"
   },
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
-    "message": "Kopiraj stanje steka"
+    "message": "Kopiraj stanje stoga"
   },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Nije pauzirano"
@@ -9697,6 +9736,24 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Osvježite izraze koji se prate"
+  },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Dodaj zaglavlje"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Dodaj zaobilaženje zaglavlja"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Greška prilikom raščlanjivanja fajla \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Razlog je vjerovatno sintaksička greška u fajlu \"{PH1}\". Pokušajte otvoriti ovaj fajl u vanjskom uređivaču da ispravite grešku ili ga izbrišite i ponovo kreirajte zaobilaženje."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Ukloni ovaj odjeljak \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Ukloni ovo zaglavlje"
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiviraj prijelomne tačke"
@@ -10874,6 +10931,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Ažuriranje hvatanja"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Predbojenje"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Pregled"
   },
@@ -11058,10 +11118,10 @@
     "message": "Veličina"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
-    "message": "Stanje steka"
+    "message": "Stanje stoga"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTraceColon": {
-    "message": "Stanje steka:"
+    "message": "Stanje stoga:"
   },
   "panels/timeline/TimelineUIUtils.ts | state": {
     "message": "Stanje"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ယုံကြည်ရသော အမျိုးအစားများ - မူဝါဒ ချိုးဖောက်ခြင်း"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "လုံခြုံသော"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "မလုံခြုံမှု"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets နှင့် SameParty ရည်ညွှန်းချက်"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "စနစ်အမျိုးမျိုးပါဝင်သော ဝဘ်ဆိုက်တစ်ခုတည်း အလုပ်လုပ်ပုံ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "ဝဘ်ဆိုက်တစ်ခုတည်း၏ ကွတ်ကီးများ ရှင်းပြထားသည်"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ဇာစ်မြစ်အမျိုးမျိုးတွင် ရင်းမြစ်မျှဝေခြင်း (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "မှတ်တမ်းနှင့် တွဲဖက်သုံးနိုင်သောမုဒ်"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "လုံခြုံသော"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "မလုံခြုံမှု"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets နှင့် SameParty ရည်ညွှန်းချက်"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "စနစ်အမျိုးမျိုးပါဝင်သော ဝဘ်ဆိုက်တစ်ခုတည်း အလုပ်လုပ်ပုံ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "ဝဘ်ဆိုက်တစ်ခုတည်း၏ ကွတ်ကီးများ ရှင်းပြထားသည်"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer ကို ဖွင့်နေသည်"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ရှေ့-နောက် ကက်ရှ်"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "နောက်ဆက်တွဲ Id- "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "လုပ်ဆောင်နိုင်ခြင်းမရှိပါ"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ရှေ့ပြေးများပေါ် နားထောင်ခြင်းစနစ်များ ပြရန်"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS အလွှာများ"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS အလွှာပြသခြင်းသို့ ပြောင်းနိုင်သည်"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ဖြတ်တောက်မှတ်"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "တွက်ချက်ထားသော တန်ဖိုး ကြည့်ရန်"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "အလွှာဖွဲ့စည်းပုံတွင် အလွှာထုတ်ဖော်ရန် နှိပ်နိုင်သည်"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ပြုလုပ်ထားသော ပုံစံစာမျက်နှာ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}၊ သတ်မှတ်ချက် အမည်- {PH2}၊ သတ်မှတ်ချက် တန်ဖိုး- {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "အလွှာ"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "ပုံစံစည်းမျဉ်းအသစ်"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ဤနေရာမျာတွင် စွမ်းဆောင်ရည်ဖွင့်ခြင်းကို သက်ရောက်မှုရှိသော သိမ်းထားသည့်ဒေတာများ ရှိနိုင်သည်- {PH1}။ ထိုရင်းမြစ်များက သင့်ရမှတ်များပေါ် သက်ရောက်မှုမရှိစေရန် ဤစာမျက်နှာကို ရုပ်ဖျက်ဝင်ဒိုးတွင် စစ်ဆေးပါ။"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ကြာချိန်"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "လမ်းညွှန်မှုမုဒ်သုံးချိန်တွင် မူရင်း Lighthouse ဖြင့် စာမျက်နှာကို စစ်ဆေးနိုင်သည်။"
+    "message": "လမ်းညွှန်မှုမုဒ် သုံးချိန်တွင် မူရင်း Lighthouse ဖြင့် စာမျက်နှာကို စိတ်ဖြာလေ့လာနိုင်သည်။"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ဝဘ် SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "လမ်းညွှန်မှုကို စိတ်ဖြာလေ့လာရန်"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "လျှပ်တစ်ပြက်ရိုက်ချက်ကို စိတ်ဖြာလေ့လာရန်"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "မုဒ်"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ကြာချိန် စမှတ်ရန်"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "၂၀၁၆ တွင် ကမ္ဘာအနှံ့ရှိ မိုဘိုင်းအသုံးပြုသူများ၏ ၇၅% က 2G (သို့) 3G အသုံးပြုကြသည် [ရင်းမြစ်- GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "စာမျက်နှာဖွင့်ရာတွင် ၁၀၀ ms ပိုမြန်တိုင်း ရရှိငွေ ၁% တိုးလာကြောင်း Walmart က တွေ့ရှိထားပါသည် [ရင်းမြစ်- WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "မလုပ်တော့"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "ကြာချိန် ရပ်ရန်"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "စာမျက်နှာအသုံးပြုမှု ကြာချိန်ကို စမှတ်ထားသည်"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "ကြာချိန် စတင်ထားသည်…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse ကို ပြရန်"
@@ -6078,10 +6117,10 @@
     "message": "ဖရိမ်ပြနှုန်း"
   },
   "panels/media/PlayerPropertiesView.ts | hardwareDecoder": {
-    "message": "ကွန်ပျူတာဆိုင်ရာစက်ပစ္စည်း ကုဒ်ဖြည်ကိရိယာ"
+    "message": "ဟာ့ဒ်ဝဲ ကုဒ်ဖြည်ကိရိယာ"
   },
   "panels/media/PlayerPropertiesView.ts | hardwareEncoder": {
-    "message": "ကွန်ပျူတာဆိုင်ရာစက်ပစ္စည်း ကုဒ်ပြောင်းကိရိယာ"
+    "message": "ဟာ့ဒ်ဝဲ ကုဒ်ပြောင်းကိရိယာ"
   },
   "panels/media/PlayerPropertiesView.ts | noDecoder": {
     "message": "ကုဒ်ဖြည်ကိရိယာ မရှိပါ"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "စောင့်ကြည့်စရာဖော်ပြချက်များ ပြန်လည်စတင်ရန်"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ခေါင်းစီးထည့်ရန်"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "အစားထိုးခေါင်းစီး ထည့်ရန်"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "ခွဲခြမ်းစိတ်ဖြာနေစဉ် အမှားဖြစ်သွားသည် ''{PH1}''။"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "''{PH1}'' တွင် နေရာအထားအသို အမှားတစ်ခုကြောင့် ဖြစ်နိုင်ချေများသည်။ အမှားပြင်ရန် ဤဖိုင်ကို ပြင်ပတည်းဖြတ်စနစ်တွင် ဖွင့်ပါ (သို့) ဖိုင်ကိုဖြတ်ပြီး အစားထိုးမှု ပြန်လုပ်ပါ။"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ဤ ‘ApplyTo’ ကဏ္ဍကို ဖယ်ရှားရန်"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ဤခေါင်းစီးဖယ်ရှားရန်"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ဖြတ်တောက်မှတ်အားလုံး စတင်ရန်"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "လက်နှစ်ချောင်းဖြင့် ချဲ့ချုံ့၍ အပ်ဒိတ်လုပ်ခြင်း"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ကြိုတင်ဆေးခြယ်ခြင်း"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "အစမ်းကြည့်ရှုခြင်း"

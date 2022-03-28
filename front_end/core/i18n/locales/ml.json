@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "വിശ്വസനീയ തരങ്ങൾ - നയ ലംഘനം"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "സുരക്ഷിതം"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "സുരക്ഷിതമല്ലാത്തത്"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets, SameParty ആട്രിബ്യൂട്ട് എന്നിവ"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "സ്കീംഫുൾ Same-Site എങ്ങനെ പ്രവർത്തിക്കുന്നു"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite കുക്കികൾ വിവരിച്ചിരിക്കുന്നു"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ക്രോസ്-ഒറിജിൻ ഉറവിട പങ്കിടൽ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ഡോക്യുമെന്റ് അനുയോജ്യതാ മോഡ്"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "സുരക്ഷിതം"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "സുരക്ഷിതമല്ലാത്തത്"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets, SameParty ആട്രിബ്യൂട്ട് എന്നിവ"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "സ്കീംഫുൾ Same-Site എങ്ങനെ പ്രവർത്തിക്കുന്നു"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite കുക്കികൾ വിവരിച്ചിരിക്കുന്നു"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer പ്രവർത്തനക്ഷമമാക്കുന്നു"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ബാക്ക്/ഫോർവേഡ് കാഷെ"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "വിപുലീകരണ ഐഡി: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "നടപടിയെടുക്കാനാകാത്തവ"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ആൻസെസ്റ്ററുകളിൽ ലിസണറുകൾ കാണിക്കുക"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS ലെയറുകൾ"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS ലെയറുകൾ കാഴ്‌ച മാറ്റുക"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ബ്രേക്ക്‌പോയിന്റ്"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "കണക്കാക്കിയ മൂല്യം കാണുക"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ലെയർ ട്രീയിലെ ലെയർ കാണിക്കാൻ ക്ലിക്ക് ചെയ്യുക"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "കൺസ്ട്രക്ട് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, പ്രോപ്പർട്ടിയുടെ പേര്: {PH2}, പ്രോപ്പർട്ടി മൂല്യം: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ലെയർ"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "പുതിയ സ്റ്റൈൽ നയം"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ഈ ലൊക്കേഷനിലെ ലോഡിംഗ് പ്രകടനത്തെ ബാധിക്കുന്ന സംഭരിച്ച ഡാറ്റ ഉണ്ടായേക്കാം: {PH1}. നിങ്ങളുടെ സ്‌കോറിനെ ബാധിക്കുന്നതിൽ നിന്ന് ആ ഉറവിടങ്ങളെ തടയാൻ, അദൃശ്യ വിൻഡോയിൽ ഈ പേജ് ഓഡിറ്റ് ചെയ്യുക."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ടൈംസ്‌പാൻ"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "നാവിഗേഷൻ മോഡിലായിരിക്കുമ്പോൾ ക്ലാസിക് ലൈറ്റ്‌ഹൗസ് ഉപയോഗിച്ച് പേജ് ഓഡിറ്റ് ചെയ്യുക."
+    "message": "നാവിഗേഷൻ മോഡിലായിരിക്കുമ്പോൾ ക്ലാസിക് ലൈറ്റ്‌ഹൗസ് ഉപയോഗിച്ച് പേജ് വിശകലനം ചെയ്യുക."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "വെബ് SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "നാവിഗേഷൻ വിശകലനം ചെയ്യുക"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "സ്‌നാപ്പ്‌ഷോട്ട് വിശകലനം ചെയ്യുക"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "മോഡ്"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ടൈംസ്‌പാൻ ആരംഭിക്കുക"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016-ൽ 75% ആഗോള മൊബൈൽ ഉപയോക്താക്കൾ 2G-യിലോ 3G-യിലോ ആയിരുന്നു [ഉറവിടം: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "പേജ് ലോഡ് വേഗത ഓരോ 100 മില്ലി സെക്കൻഡ് കൂടുമ്പോഴും Walmart-ന്റെ വരുമാനം 1% വർദ്ധിച്ചു [ഉറവിടം: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "റദ്ദാക്കുക"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "ടൈംസ്‌പാൻ അവസാനിപ്പിക്കുക"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "ടൈംസ്‌പാൻ ആരംഭിച്ചു, പേജുമായി ഇടപഴകുക"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "ടൈംസ്‌പാൻ ആരംഭിക്കുന്നു…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse കാണിക്കുക"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "വാച്ച് എക്‌സ്‌പ്രഷനുകൾ റീഫ്രഷ് ചെയ്യുക"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ഒരു ഹെഡ്ഡർ ചേർക്കുക"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ഹെഡ്ഡർ ഓവർറൈഡ് ചേർക്കുക"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' വിശകലനം ചെയ്യുന്നതിൽ പിശക്."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "''{PH1}'' എന്നതിലെ വാക്യഘടനയുമായി ബന്ധപ്പെട്ട പിശക് കാരണം ഇത് സംഭവിച്ചിരിക്കാനാണ് കൂടുതൽ സാധ്യത. പിശക് പരിഹരിക്കാൻ എക്‌സ്റ്റേണൽ എഡിറ്ററിൽ ഈ ഫയൽ തുറക്കാൻ ശ്രമിക്കുക അല്ലെങ്കിൽ ഫയൽ ഇല്ലാതാക്കിയ ശേഷം, അസാധുവായത് വീണ്ടും സൃഷ്ടിക്കുക."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ഈ 'ApplyTo'-വിഭാഗം നീക്കം ചെയ്യുക"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ഈ ഹെഡ്ഡർ നീക്കം ചെയ്യുക"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ബ്രേക്ക്‌പോയിന്റുകൾ സജീവമാക്കുക"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "പിഞ്ച് അപ്ഡേറ്റ് ചെയ്യുക"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "പ്രീ-പെയിന്റ്"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "പ്രിവ്യൂ ചെയ്യുക"

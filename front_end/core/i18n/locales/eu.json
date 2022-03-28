@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types - Gidalerro-urratzea"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "seguru"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "ez-segurua"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets eta SameParty atributua"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Webgune bereko eskemaren funtzionamendua"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite-ko cookieen azalpena"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Jatorri anitzeko baliabideak partekatzea (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentuen bateragarritasun modua"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "seguru"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "ez-segurua"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets eta SameParty atributua"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Webgune bereko eskemaren funtzionamendua"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite-ko cookieen azalpena"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer gaitzen"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Aurreko orria cachean gordetzeko eginbidea"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Luzapenaren IDa: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ezin da gauzatu arazoa konpontzeko ekintzarik"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Erakutsi hautemaileak aurrekarietan"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS geruzak"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Erakutsi/Ezkutatu CSS geruzen ikuspegia"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOMaren aldatze-puntua"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ikusi kalkulatutako balioa"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Sakatu hau geruza zuhaitzean ager dadin"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "eraikitako estilo-orria"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, propietatearen izena: {PH2}, propietatearen balioa: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Geruza"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Estilo-erregela berria"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Baliteke kargatze-errendimenduari eragiten dioten datuak gordeta egotea kokapen honetan: {PH1}. Auditatu orri hau ezkutuko moduko leiho batean, baliabide horiek zure puntuazioei eragin ez diezaieten."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Denbora tartea"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Nabigatzeko moduan zaudela, erabili Lighthouse klasikoa orria auditatzeko."
+    "message": "Nabigatzeko moduan zaudela, erabili Lighthouse klasikoa orria analizatzeko."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Sareko SQLa"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Lortu informazio gehiago"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analizatu nabigazioa"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analizatu laburpena"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modua"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Hasi denbora tartea"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016an, mundu-mailan, telefono mugikorren erabiltzaileen % 75ek 2G edo 3G konexioa zerabilten. [Iturburua: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart-en diru-sarrerak % 1 igo ziren haren webguneko orriak kargatzeko abiadura 100 ms hobetu zen bakoitzean. [Iturburua: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Utzi"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Amaitu denbora tartea"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Hasi da denbora tartea; izan interakzioak orriarekin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Denbora tartea hasten…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Erakutsi Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Freskatu ikuskapen-adierazpenak"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Gehitu goiburu bat"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Gehitu goiburuaren ordezkapen bat"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Errore bat gertatu da \"{PH1}\" analizatzean."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Seguruenik, \"{PH1}\" fitxategian sintaxi-errore bat dagoelako gertatu da hori. Errorea konpontzeko, ireki fitxategia kanpoko editore batean, edo ezabatu fitxategia eta sortu berriro ordezkapena."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Kendu ApplyTo atala"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Kendu goiburua"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktibatu eten-puntuak"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Atximurkatze-keinuaren eguneratzea"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Margotze aurreko urratsa"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Aurrebista"

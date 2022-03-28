@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Tipos de confianza: incumprimento da política"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "seguro"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets e o atributo SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Como funciona Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Explicación sobre as cookies SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Uso compartido de recursos de orixe cruzada (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modo de compatibilidade de documentos"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "seguro"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets e o atributo SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Como funciona Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Explicación sobre as cookies SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Activando SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Memoria caché de páxinas anteriores e seguintes"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID de extensión: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Ningunha acción posible"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Mostrar detectores nos predecesores"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Capas de CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Mostrar/Ocultar vista de capas de CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Punto de interrupción do DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ver valor calculado"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Facer clic para mostrar a capa na árbore de capas"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "folla de estilo creada"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}; nome da propiedade: {PH2}; valor da propiedade: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Capa"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nova regra de estilo"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Pode que haxa datos almacenados que lle afectan ao desempeño da carga nesta localización: {PH1}. Audita esta páxina cunha ventá do modo de incógnito para evitar que eses recursos lles afecten ás túas puntuacións."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Período"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Auditar a páxina coa versión clásica de Lighthouse no modo de navegación."
+    "message": "Analizar a páxina coa versión clásica de Lighthouse no modo de navegación."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Máis información"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analizar navegación"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analizar vista xeral"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modo"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Iniciar período"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "En 2016, o 75 % dos usuarios de móbiles de todo o mundo usaban redes 2G ou 3G [fonte: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart conseguiu que os seus ingresos aumentasen o 1 % por cada 100 ms de mellora na velocidade de carga da páxina [fonte: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Cancelar"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Finalizar período"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Iniciouse un período. Interactúa coa páxina"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Iniciando período…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Mostrar Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Actualizar todas as expresións supervisadas"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Engadir cabeceira"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Engadir omisión de cabeceira"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Produciuse un erro ao analizar \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "O máis probable é que se deba a un erro de sintaxe en \"{PH1}\". Proba a abrir este ficheiro nun editor externo para solucionar o erro ou elimina o ficheiro e volve crear a omisión."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Quitar sección \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Quitar esta cabeceira"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activar puntos de interrupción"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Beliscar actualización"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Renderización previa"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Mostrar vista previa"

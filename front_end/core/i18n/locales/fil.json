@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Mga Pinagkakatiwalaang Uri - Paglabag sa patakaran"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "isang secure"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "isang hindi secure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets at attribute na SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Paano Gumagana ang Schemeful na Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Ipinapaliwanag ang SameSite cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Pagbabahagi ng Cross-Origin Resource (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Compatibility mode ng dokumento"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "isang secure"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "isang hindi secure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets at attribute na SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Paano Gumagana ang Schemeful na Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Ipinapaliwanag ang SameSite cookies"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Pag-enable sa SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back/forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Extension id: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Hindi Maaaksyunan"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ipakita ang mga listener sa mga pinanggalingan"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Mga CSS layer"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "I-toggle ang view ng Mga CSS Layer"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Breakpoint ng DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Tingnan ang na-compute na value"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "I-click para ilabas ang layer sa layer tree"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "binuong stylesheet"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, pangalan ng property: {PH2}, value ng property: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Layer"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Bagong Panuntunan sa Istilo"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Posibleng may naka-store na data na nakakaapekto sa bilis ng pag-load sa lokasyong ito: {PH1}. I-audit ang page na ito sa incognito window para hindi maapektuhan ng mga resource na iyon ang iyong mga score."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tagal ng panahon"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "I-audit ang page gamit ang classic na Lighthouse kapag nasa navigation mode."
+    "message": "Suriin ang page gamit ang classic na Lighthouse kapag nasa navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ng Web"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Matuto pa"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Suriin ang navigation"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Suriin ang snapshot"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Simulan ang tagal ng panahon"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Naka-2G o 3G ang 75% ng mga user ng mobile sa buong mundo noong 2016 [Source: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Nagkaroon ang Walmart ng 1% pagtaas ng kita sa bawat 100ms na pagbilis sa pag-load ng page [Source: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Kanselahin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Tapusin ang tagal ng panahon"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Nagsimula na ang tagal ng panahon, makipag-ugnayan sa page"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Nagsisimula ang tagal ng panahon…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Ipakita ang Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "I-refresh ang mga expression na babantayan"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Magdagdag ng header"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Magdagdag ng override ng header"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Nagka-error noong pina-parse ang ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Malamang dahil ito sa error sa syntax sa ''{PH1}''. Subukang buksan ang file na ito sa isang panlabas na editor para ayusin ang error o i-delete ang file at gawin ulit ang override."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Alisin ang 'ApplyTo'-na seksyong ito"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Alisin ang header na ito"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "I-activate ang mga breakpoint"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Update sa Pag-pinch"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pre-Paint"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "I-preview"

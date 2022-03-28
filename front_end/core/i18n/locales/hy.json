@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types — Կանոնների խախտում"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "անվտանգ"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "վտանգավոր"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets և SameParty հատկանիշ"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Ինչպես է աշխատում կայքերի վերաորոշման գործառույթը"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite քուքիների մասին"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Տարբեր աղբյուրների ռեսուրսների ուղարկում (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Փաստաթղթերի համատեղելիության ռեժիմ"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "անվտանգ"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "վտանգավոր"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets և SameParty հատկանիշ"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Ինչպես է աշխատում կայքերի վերաորոշման գործառույթը"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite քուքիների մասին"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer օբյեկտի միացում"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Ամբողջ էջի քեշավորում"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Ընդլայնման ID՝ "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Հնարավոր չէ լուծել"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Ցույց տալ ունկնդիրներին վերադաս տարրերի հիման վրա"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS շերտեր"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Փոխել տեսքը CSS շերտերի միջոցով"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-ի կանգի կետ"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ցույց տալ հաշվարկված արժեքը"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Սեղմեք՝ «շերտը շերտի մեջ» ծառը բացելու համար"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ոճերի ստեղված աղյուսակ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, հատկության անվանումը՝ {PH2}, հատկության արժեքը՝ {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Շերտ"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Ոճերի նոր կանոն"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Բեռնման արագության վրա կարող են ազդել հետևյալ տարածքի տվյալները՝ {PH1}։ Ստուգեք այս էջն ինկոգնիտո պատուհանում, որպեսզի այդ ռեսուրսները չազդեն ձեր ցուցանիշների վրա։"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Ժամանակահատված"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Դիտել էջը Lighthouse-ի դասական տարբերակի միջոցով նավիգացիայի ռեժիմում։"
+    "message": "Վերլուծել էջը Lighthouse-ի դասական տարբերակի միջոցով նավիգացիայի ռեժիմում։"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Իմանալ ավելին"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Վերլուծել նավիգացիան"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Վերլուծել սքրինշոթը"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Ռեժիմ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Ժամանակահատվածի սկիզբ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Շարժական սարքեր օգտագործողների 75%-ն ամբողջ աշխարհում 2016 թ․-ին օգտվել է 2G կամ 3G ցանցից [աղբյուրը՝ GSMA Mobile]։"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Էջի բեռնման ժամանակի ամեն 100 միլիվայրկյանով կրճատումը 1%-ով ավելացրել է Walmart-ի եկամուտը [աղբյուրը՝ WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Չեղարկել"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Ժամանակահատվածի ավարտ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Ժամանակահատվածը սկսվում է։ Փոխազդում էջի հետ…"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Ժամանակահատվածը սկսվում է…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Ցուցադրել Lighthouse գործիքը"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Թարմացնել վերահսկիչ արժեքի արտահայտությունները"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Ավելացնել վերնագիր"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Ավելացնել վերնագրի փոխարինում"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Սխալ առաջացավ «{PH1}» տարրը վերլուծելու ժամանակ։"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Ամենայն հավանականությամբ պատճառը «{PH1}» տարրի հետ կապված շարահյուսական սխալն է։ Փորձեք բացել այս ֆայլն արտաքին խմգագրիչում՝ սխալն ուղղելու կամ ֆայլը ջնջելու և նորից փոխարինում ստեղծելու համար։"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Հեռացնել «ApplyTo» բաժինը"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Հեռացնել այս վերնագիրը"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Ակտիվացնել կանգի կետերը"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Սեղմման թարմացում"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Նախնական գույներ"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Նախադիտել"

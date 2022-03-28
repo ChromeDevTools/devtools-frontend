@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ប្រភេទ​ដែលទុកចិត្តបាន - ការបំពាន​គោលការណ៍"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "មានសុវត្ថិភាព"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "គ្មាន​សុវត្ថិភាព"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets និងលក្ខណៈ SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "របៀបដែល​ខូគី​គ្រប់ទម្រង់​នៅលើគេហទំព័រ​ដូចគ្នា​ដំណើរការ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "បានពន្យល់​អំពីខូគី SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ការចែករំលែកធនធានដែលមានប្រភពដើមផ្សេង (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "មុខងារភាពត្រូវគ្នានៃឯកសារ"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "មានសុវត្ថិភាព"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "គ្មាន​សុវត្ថិភាព"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets និងលក្ខណៈ SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "របៀបដែល​ខូគី​គ្រប់ទម្រង់​នៅលើគេហទំព័រ​ដូចគ្នា​ដំណើរការ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "បានពន្យល់​អំពីខូគី SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "ការបើក SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "លេខសម្គាល់​កម្មវិធីបន្ថែម៖ "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "មិនអាចធ្វើសកម្មភាពបានទេ"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "បង្ហាញ​មុខងារស្ដាប់​នៅលើ​ផ្នែកមេ"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "ស្រទាប់ CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "ប៊ូតុងបិទ/បើក​ទិដ្ឋភាព​ស្រទាប់ CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "ចំណុចឈប់​ដំណើរការ DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "មើលតម្លៃដែលបានគណនា"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ចុច ដើម្បីបង្ហាញ​ស្រទាប់នៅក្នុង​មែកធាង​នៃស្រទាប់"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "បញ្ជី​រចនាប័ទ្ម​ដែលបាន​បង្កើត"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ឈ្មោះលក្ខណសម្បត្តិ៖ {PH2}, តម្លៃលក្ខណសម្បត្តិ៖ {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ស្រទាប់"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "វិធាន​រចនាប័ទ្ម​ថ្មី"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "អាចមាន​ទិន្នន័យបាន​រក្សាទុក ដែលប៉ះពាល់​ដល់ប្រតិបត្តិការ​នៃការផ្ទុក​នៅក្នុង​ទីតាំងនេះ៖ {PH1}។ សូមត្រួតពិនិត្យ​ទំព័រនេះ​នៅក្នុង​ផ្ទាំងឯកជន ដើម្បី​ទប់ស្កាត់​កុំឱ្យធនធាន​ទាំងនោះ​ប៉ះពាល់ដល់​ពិន្ទុរបស់អ្នក។"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "រយៈពេល"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ត្រួតពិនិត្យ​ទំព័រនេះ​ដោយប្រើ Lighthouse ចាស់ នៅពេលស្ថិតក្នុង​មុខងាររុករក។"
+    "message": "វិភាគ​ទំព័រនេះ​ដោយប្រើ Lighthouse ចាស់ នៅពេលស្ថិតក្នុង​មុខងាររុករក។"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL បណ្ដាញ"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "វិភាគការរុករកទំព័រ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "វិភាគ​រូបភាព"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "មុខងារ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ចាប់ផ្ដើម​រយៈពេល"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% នៃអ្នកប្រើប្រាស់ឧបករណ៍​ចល័តទូទាំងពិភពលោកក្នុង 2016 បានប្រើប្រាស់បណ្ដាញ 2G ឬ 3G [ប្រភព៖ GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart បានកើនឡើង​ចំណូល 1% សម្រាប់​រាល់ការកែលម្អ​រយៈពេល 100 មិល្លីវិនាទី​នៅក្នុង​ការផ្ទុកទំព័រ [ប្រភព៖ WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "បោះបង់"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "បញ្ចប់រយៈពេល"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "បានចាប់ផ្ដើមរយៈពេល អន្តរកម្មជាមួយទំព័រ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "រយៈពេល​កំពុងចាប់ផ្ដើម…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "បង្ហាញ Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ផ្ទុក​កន្សោម​នៃការមើល​ឡើងវិញ"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "បញ្ចូលផ្នែកក្បាល"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "បញ្ចូលការលុបពីលើផ្នែកក្បាល"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "មានបញ្ហា នៅពេលញែក ''{PH1}''។"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "បញ្ហានេះ​ទំនងជា​កើតឡើង ដោយសារ​បញ្ហាវាក្យសម្ព័ន្ធ​នៅក្នុង ''{PH1}''។ សូមសាកល្បង​បើកឯកសារនេះ​នៅក្នុងកម្មវិធីកែ​ខាងក្រៅ ដើម្បីដោះស្រាយ​បញ្ហា ឬលុប​ឯកសារ និងបង្កើត​ការលុបពីលើ​ឡើងវិញ។"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ដកផ្នែក 'ApplyTo' នេះចេញ"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ដកផ្នែកក្បាលនេះចេញ"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "បើកដំណើរការ​ចំណុចផ្អាក"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "ការធ្វើបច្ចុប្បន្នភាព​ដោយការច្បិច"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "មុនគូរ"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "មើលសាកល្បង"

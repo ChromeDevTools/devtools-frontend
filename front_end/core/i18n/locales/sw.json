@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Aina Zinazoaminika - Ukiukaji wa sera"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "salama"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "usio salama"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets na sifa ya SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Jinsi 'Schemeful Same-Site' Inavyofanya Kazi"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Ufafanuzi kuhusu vidakuzi vya 'SameSite'"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Kushiriki Nyenzo kutoka Asili Mbalimbali (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Hali ya uoanifu wa hati"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "salama"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "usio salama"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets na sifa ya SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Jinsi 'Schemeful Same-Site' Inavyofanya Kazi"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Ufafanuzi kuhusu vidakuzi vya 'SameSite'"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Inawasha SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Kipengele cha kuakibisha ukurasa kamili"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Kitambulisho cha kiendelezi: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Zisizoweza Kuchukuliwa Hatua"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Onyesha visikilizaji kwenye vipengee vikuu"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Safu za CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Geuza mwonekano wa safu za CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Sehemu ya kudhibiti DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Angalia thamani iliyokokotolewa"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Bofya ili uonyeshe safu kwenye mfumo wa ngazi wa safu"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "laha ya muundo iliyowekwa muundo"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, jina la kipengele: {PH2}, thamani ya kipengele: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Safu"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Kanuni Mpya ya Muundo"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Huenda kukawa na data iliyohifadhiwa inayoathiri utendaji katika mahali hapa: {PH1}. Kagua ukurasa huu katika dirisha fiche ili kuzuia nyenzo hizo zisiathiri alama zako."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Muda wa tukio"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Kagua kurasa kwa kutumia zana ya Lighthouse ya awali unapotumia hali ya usogezaji."
+    "message": "Changanua ukurasa kwa kutumia hali ya Lighthouse ya awali unapokuwa kwenye hali ya kusogeza."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL ya Wavuti"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Pata maelezo zaidi"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Changanua usogezaji"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Changanua muhtasari"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Hali"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Anzisha muda wa tukio"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Asilimia 75 ya watumiaji wa vifaa vya mkononi katika mwaka wa 2016 walitumia mtandao wa 2G au 3G [Chanzo: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart ilishuhudia ongezeko la mapato kwa kila maboresho ya milisekunde 100 kwenye upakiaji wa ukurasa [Chanzo: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Ghairi"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Sitisha muda wa tukio"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Muda wa tukio umeanza, tangamana na ukurasa"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Muda wa tukio unaanza…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Onyesha Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Pakia upya vilinganishi vya kutazama utatuzi"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Weka kichwa"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Weka ubatilishaji wa kichwa"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Hitilafu wakati wa kuchanganua ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Hali hii inatokea kwa sababu ya hitilafu ya kisintaksia kwenye ''{PH1}''. Jaribu kufungua faili hii kwenye kihariri cha nje ili kutatua hitilafu au futa faili kisha utengeneze upya ubatilishaji."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Ondoa sehemu hii ya 'ApplyTo'"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Ondoa kichwa hiki"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Sehemu zinazotumika za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Bana Sasisho"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Kabla ya Kuchora"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Kagua kwanza"

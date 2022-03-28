@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Type - ポリシー違反"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "安全な"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "安全ではない"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets と SameParty 属性"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "スキームフル Same-Site の仕組み"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite Cookie の説明"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "クロスオリジン リソース シェアリング（CORS）"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ドキュメント互換モード"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "安全な"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "安全ではない"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets と SameParty 属性"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "スキームフル Same-Site の仕組み"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite Cookie の説明"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer を有効にしています"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "バックフォワード キャッシュ"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "拡張機能 ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "対応不可"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "祖先のリスナーを表示します"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS レイヤ"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS レイヤビューを切り替え"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ブレークポイント"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "計算値を見る"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "クリックするとレイヤツリーでレイヤを表示します"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "作成されたスタイルシート"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}、プロパティ名: {PH2}、プロパティ値: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "レイヤ"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "新しいスタイルルール"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "次の場所に保存されているデータが読み込みパフォーマンスに影響を与えている可能性があります: {PH1}。これらのリソースがスコアに影響しないようにするためには、シークレット ウィンドウでこのページを監査してください。"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "測定期間"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ナビゲーション モードでは従来の Lighthouse を使用してページを監査します。"
+    "message": "ナビゲーション モードでは従来の Lighthouse を使用してページを分析します。"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ウェブ SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "詳細"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "ナビゲーションを分析"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "スナップショットを分析"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "モード"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "測定期間を開始"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 年には全世界のモバイル ユーザーの 75% が 2G または 3G を使用していました [出典: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart では、ページの読み込み速度が 100 ms 改善されるたびに、収益が 1% ずつ向上していきました [ソース: WPO Stats]。"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "キャンセル"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "測定期間を終了"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "測定期間を開始し、ページを監査しています"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "測定期間を開始しています…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse を表示"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Watch 式を更新します"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ヘッダーを追加"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ヘッダーのオーバーライドを追加"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "「{PH1}」の解析中にエラーが発生しました。"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "多くの場合、「{PH1}」の構文エラーが原因です。外部エディタでこのファイルを開いてエラーを修正するか、ファイルを削除してから作成しなおしてください。"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "この「ApplyTo」セクションを削除"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "このヘッダーを削除"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ブレークポイントを有効化"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "ピンチ更新"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "プリペイント"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "プレビュー"

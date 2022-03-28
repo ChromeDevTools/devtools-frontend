@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "इस तरह के लिंक पर भरोसा किया गया - नीति का उल्लंघन"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "सुरक्षित"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "असुरक्षित"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets और SameParty एट्रिब्यूट"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "स्कीमफ़ुल सेम-साइट के काम करने का तरीका"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite कुकी के बारे में बताया गया"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "क्रॉस-ऑरिजिन रिसॉर्स शेयरिंग (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "दस्तावेज़ के साथ काम करने वाला मोड"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "सुरक्षित"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "असुरक्षित"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets और SameParty एट्रिब्यूट"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "स्कीमफ़ुल सेम-साइट के काम करने का तरीका"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite कुकी के बारे में बताया गया"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer को चालू किया जा रहा है"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "बैक/फ़ॉरवर्ड कैश मेमोरी"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "एक्सटेंशन आईडी: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "कार्रवाई नहीं की जा सकती"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ऐनसेस्टर पर लिसनर दिखाएं"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "सीएसएस लेयर"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "सीएसएस लेयर व्यू को टॉगल करें"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "डीओएम ब्रेकपॉइंट"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "कंप्यूटेड (गिनती किया गया) मान देखें"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "लेयर ट्री में मौजूद लेयर देखने के लिए क्लिक करें"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "स्टाइलशीट बनाई गई"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, प्रॉपर्टी का नाम: {PH2}, प्रॉपर्टी की वैल्यू: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "लेयर"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "स्टाइल का नया नियम"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "हो सकता है कि सेव किया गया डेटा इस जगह पर, लोड होने की परफ़ॉर्मेंस पर असर डाल रहा हो: {PH1}. इस पेज को गुप्त विंडो में ऑडिट करें, ताकि उन संसाधनों का आपके स्कोर पर कोई असर न पड़े."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "टाइमस्पैन"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "नेविगेशन मोड में होने पर, क्लासिक लाइटहाउस का इस्तेमाल करके पेज को ऑडिट करें."
+    "message": "नेविगेशन मोड में होने पर, क्लासिक लाइटहाउस का इस्तेमाल करके पेज का विश्लेषण करें."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "वेब SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ज़्यादा जानें"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "पेज नेविगेशन का विश्लेषण करें"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "स्नैपशॉट का विश्लेषण करें"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "मोड"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "टाइमस्पैन शुरू करें"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "दुनिया भर में, 2016 में 75 प्रतिशत मोबाइल उपयोगकर्ता 2G या 3G नेटवर्क इस्तेमाल कर रहे थे [स्रोत: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart ने देखा है कि पेज लोड की स्पीड में हर 100 मि॰से॰ (मिलीसेकंड) बढ़ोतरी पर, आय में 1% की बढ़ोतरी हुई [स्रोत: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "रद्द करें"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "टाइमस्पैन बंद करें"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "टाइमस्पैन शुरू हो चुका है, पेज के साथ इंटरैक्ट किया जा रहा है"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "टाइमस्पैन शुरू हो रहा है…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse दिखाएं"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "वॉच एक्सप्रेशन रीफ़्रेश करें"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "हेडर जोड़ें"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "हेडर ओवरराइड जोड़ें"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' को पार्स करते समय कोई गड़बड़ी हुई."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ऐसा अक्सर ''{PH1}'' में सिंटैक्स की किसी गड़बड़ी की वजह से होता है. गड़बड़ी को ठीक करने के लिए, इस फ़ाइल को किसी दूसरे एडिटर में खोलें. इसके अलावा, फ़ाइल को मिटाकर, इसे फिर से बनाया जा सकता है."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "यह 'ApplyTo' सेक्शन हटाएं"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "यह हेडर हटाएं"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ब्रेकपॉइंट चालू करें"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "बदलाव को पिंच करें"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "प्री-पेंट"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "झलक"

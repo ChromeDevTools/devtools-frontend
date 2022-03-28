@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Tipat e besuar - Shkelje e politikës"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "një i sigurt"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "Atributet First-Party Sets dhe SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Si funksionin Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Shpjegimi i kukive SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ndarja e burimeve me origjinë të ndërthurur (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modaliteti i përputhshmërisë së dokumentit"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "një i sigurt"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "Atributet First-Party Sets dhe SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Si funksionin Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Shpjegimi i kukive SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer po aktivizohet"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Memoria specifike e faqes së plotë"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID-ja e shtesës: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nuk mund të trajtohet"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Shfaq dëgjuesit te paraardhësit"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Shtresat e CSS-së"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Aktivizo/çaktivizo pamjen e shtresave të CSS-së"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Pika e ndërprerjes së DOM-it"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Shiko vlerën e përllogaritur"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Kliko për të shfaqur shtresën në pemën e shtresave"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "fletë e konstruktuar stili"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, emri i karakteristikës: {PH2}, vlera e karakteristikës: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Shtresë"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Rregulli i ri i stilit"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mund të ketë të dhëna të ruajtura që prekin cilësinë e funksionimit në këtë vendndodhje: {PH1}. Auditoje këtë faqe në një dritare \"të fshehtë\" për të parandaluar që ato burime të ndikojnë në rezultatet e tua."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Segmenti kohor"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Audito faqen duke përdorur versioni klasik të Lighthouse kur je në modalitetin e navigimit."
+    "message": "Analizo faqen duke përdorur versioni klasik të Lighthouse kur je në modalitetin e navigimit."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL e uebit"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Mëso më shumë"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analizo navigimin"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analizo shkrepjen"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modaliteti"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Nis segmentin kohor"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% e përdoruesve botërorë të celularëve në 2016 ishin në 2G ose 3G [Burimi: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart pa një rritje prej 1% në të ardhura për çdo 100 milisek. përmirësim në ngarkimin e faqes [Burimi: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Anulo"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Përfundo segmentin kohor"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Segmenti kohor filloi; ndërvepro me faqen"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Segmenti kohor po fillon…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Shfaq Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Rifresko paraqitjet e orës"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Shto një titull"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Shto anulimin e titullit"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Gabim gjatë analizimit të ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Me shumë gjasa, kjo është për shkak të një gabimi sintaksor te ''{PH1}''. Provo të hapësh këtë skedar në një modifikues të jashtëm për të rregulluar gabimin ose të fshish skedarin dhe të rikrijosh anulimin."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Hiq seksionin \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Hiq këtë titull"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivizo pikat e ndërprerjes"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Përditësim me afrim gishtash"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pikturo paraprakisht"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Pamja paraprake"

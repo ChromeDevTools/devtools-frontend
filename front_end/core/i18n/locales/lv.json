@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types — politikas pārkāpums"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "droša"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "nedroša"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets un atribūts SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Kā darbojas shēmai atbilstoša sīkfailu Same-Site definēšana"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Informācija par sīkfailiem SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Citas izcelsmes resursu kopīgošana (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentu saderības režīms"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "droša"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "nedroša"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets un atribūts SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Kā darbojas shēmai atbilstoša sīkfailu Same-Site definēšana"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Informācija par sīkfailiem SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Notiek SharedArrayBuffer iespējošana"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Pilnīga saglabāšana kešatmiņā"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Paplašinājuma ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nav jāveic nekādas darbības"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Rādīt uztvērējus pie priekštečiem"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS slāņi"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Pārslēgt CSS slāņu skata rādīšanu/slēpšanu"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM robežvērtība"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skatīt aprēķināto vērtību"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Lai atklātu šo slāni slāņu kokā, noklikšķiniet uz šīs saites"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "strukturēta stila lapa"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, īpašuma nosaukums: {PH2}, īpašuma vērtība: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Slānis"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Jauna stila kārtula"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Iespējams, ielādes veiktspēju ietekmē dati, kas tiek glabāti šajā atrašanās vietā: {PH1}. Lai šie resursi neietekmētu jūsu rezultātus, pārbaudiet šo lapu inkognito logā."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Laika posms"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Pārbaudiet lapu, izmantojot klasisko Lighthouse versiju navigācijas režīmā."
+    "message": "Analizējiet lapu, izmantojot klasisko Lighthouse versiju navigācijas režīmā."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Tīmekļa SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Uzzināt vairāk"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analizēt navigāciju"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analizēt momentuzņēmumu"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Režīms"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Sākt laika posmu"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016. gadā 75% no mobilo ierīču lietotājiem visā pasaulē izmantoja 2G vai 3G savienojumu [avots: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Uzlabojot lapas ielādes ātrumu, Walmart konstatēja, ka ar katru 100 ms uzlabojumu ieņēmumi pieaug par 1% [avots: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Atcelt"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Beigt laika posmu"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Laika posms ir sākts. Sāciet mijiedarbību ar lapu."
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Notiek laika posma sākšana…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Rādīt Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Atsvaidzināt uzraudzības izteiksmes"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Pievienot galveni"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Pievienot galvenes ignorēšanu"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Analizējot failu {PH1}, radās kļūda."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Visticamāk, tas tāpēc, ka failā {PH1} ir sintakses kļūda. Varat atvērt failu ārējā redaktorā, lai izlabotu kļūdu, vai izdzēst un no jauna izveidot failu, kurā ir noteikta ignorēšana."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Noņemt šo sadaļu: “ApplyTo”"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Noņemt šo galveni"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivizēt pārtraukumpunktus"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Savilkšanas atjauninājums"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pirms krāsošanas"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Priekšskatīt"

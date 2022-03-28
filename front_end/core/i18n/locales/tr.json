@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types - Politika ihlali"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "güvenli"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "güvenli olmayan"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets ve SameParty özelliği"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site Çalışma Şekli"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite çerezleri hakkında açıklama"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Merkezler Arası Kaynak Paylaşımı (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Doküman uyumluluk modu"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "güvenli"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "güvenli olmayan"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets ve SameParty özelliği"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site Çalışma Şekli"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite çerezleri hakkında açıklama"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer etkinleştiriliyor"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Geri-ileri önbellek"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Uzantı kimliği: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "İşlem Yapılamaz"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Üst öğelerde işleyicileri göster"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS katmanları"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS katmanları görünümünü açın/kapatın"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM Ayrılma Noktası"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hesaplanan değeri göster"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Katman ağacındaki katmanı görüntülemek için tıklayın"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "oluşturulan stil sayfası"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, özellik adı: {PH2}, özellik değeri: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Katman"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Yeni Stil Kuralı"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Şu konumda yükleme performansını etkileyen depolanmış veriler olabilir: {PH1}. Bu kaynakların puanlarınızı etkilemesini engellemek için bu sayfayı gizli pencerede denetleyin."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Denetim süreci"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Gezinme modundayken sayfayı klasik Lighthouse kullanarak denetleyin."
+    "message": "Gezinme modundayken sayfayı klasik Lighthouse modunu kullanarak denetleyin."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Daha fazla bilgi"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Gezinmeyi analiz et"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Anlık görüntüyü analiz et"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mod"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Denetim sürecini başlat"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016'da dünyadaki cep telefonu kullanıcılarının %75'i 2G veya 3G üzerinden bağlanıyordu [Kaynak: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart, sayfa yüklemesindeki her 100 milisaniyelik iyileşmeye karşılık gelirinde %1 artış kaydetti [Kaynak: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "İptal"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Denetim sürecini sonlandır"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Denetim süreci başladı, sayfayla etkileşime girin"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Denetim süreci başlatılıyor…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse sekmesini göster"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "İzlenen ifadeleri yenile"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Üstbilgi ekle"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Üstbilgi geçersiz kılma ekle"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' ayrıştırılırken hata oluştu."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Bu durum büyük olasılıkla ''{PH1}'' içindeki bir söz dizimi hatasından kaynaklanmaktadır. Hatayı düzeltmek için bu dosyayı harici bir düzenleyicide açmayı deneyin ya da dosyayı silin ve geçersiz kılmayı yeniden oluşturun."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Bu \"ApplyTo\" bölümünü kaldır"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Bu üstbilgiyi kaldır"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Kesme noktalarını etkinleştir"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Sıkıştırma Güncellemesi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Ön Boyama"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Önizle"

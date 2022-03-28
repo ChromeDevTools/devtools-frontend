@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – Irányelvsértés"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "biztonságos"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "nem biztonságos"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets- és SameParty-attribútum"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "A sémaalapú azonos webhely működése"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "A SameSite cookie-k bemutatása"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Eredeteken átívelő erőforrás-megosztás (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentumkompatibilis mód"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "biztonságos"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "nem biztonságos"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets- és SameParty-attribútum"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "A sémaalapú azonos webhely működése"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "A SameSite cookie-k bemutatása"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer engedélyezése…"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Előre-vissza gyorsítótárazás"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Bővítményazonosító: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nem végrehajtható"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Figyelők megjelenítése az elődökön"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-rétegek"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "A CSS-rétegek nézet megjelenítése vagy elrejtése"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-töréspont"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kiszámított érték megtekintése"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Kattintson a réteg rétegfán való megjelenítéséhez"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "szerkesztett stíluslap"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, tulajdonságnév: {PH2}, tulajdonságérték: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Réteg"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Új stílusszabály"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Előfordulhat, hogy a tárolt adatok befolyásolják a betöltési sebességet ezen a helyen: {PH1}. Ellenőrizze ezt az oldalt inkognitó ablakban, hogy az érintett források ne lehessenek hatással a teljesítmény értékelésére."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Időtartam"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Az oldal auditálása a hagyományos Lighthouse használatával navigációs módban."
+    "message": "Az oldal elemzése a klasszikus Lighthouse használatával navigációs módban."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "További információ"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Navigáció elemzése"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Pillanatkép elemzése"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mód"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Időtartam indítása"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "A világ mobilhasználóinak 75%-a 2016-ban 2G vagy 3G hálózatot használt [forrás: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Minden alkalommal, amikor az oldal betöltési sebessége 100 ms-mal javult, a Walmart 1%-os bevételnövekedést ért el [Forrás: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Megszakítás"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Időtartam lezárása"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Időtartam elindult, használhatja az oldalt"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Időtartam indul…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse megjelenítése"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Figyelendő kifejezések frissítése"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Fejléc hozzáadása"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Fejléc-felülbírálás hozzáadása"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Hiba történt a(z) „{PH1}” elemzésekor"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Ez minden valószínűség szerint a következő helyen előforduló szintaktikai hiba miatt történik: „{PH1}”. Próbálja megnyitni ezt a fájlt, majd javítsa ki a hibát, vagy törölje a fájlt, és hozza létre újra a felülírást."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "A jelen „ApplyTo” szakasz eltávolítása"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Fejléc eltávolítása"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Töréspontok aktiválása"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Összehúzás – Frissítés"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "előfestés"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Előnézet"

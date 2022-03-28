@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ট্রাস্টেড টাইপ - নীতি লঙ্ঘন"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "সুরক্ষিত"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "অসুরক্ষিত"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets এবং SameParty অ্যাট্রিবিউট"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "স্কিমফুল সেম-সাইট যেভাবে কাজ করে"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite কুকি সম্পর্কে বোঝানো হয়েছে"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ক্রস-অরিজিন রিসোর্স শেয়ারিং (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ডকুমেন্টের কম্প্যাটিবিলিটি মোড"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "সুরক্ষিত"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "অসুরক্ষিত"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets এবং SameParty অ্যাট্রিবিউট"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "স্কিমফুল সেম-সাইট যেভাবে কাজ করে"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite কুকি সম্পর্কে বোঝানো হয়েছে"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer চালু করা হচ্ছে"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ব্যাক/ফরোয়ার্ড ক্যাশে"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "এক্সটেনশন আইডি: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "অ্যাকশন নেওয়া যাবে না"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "অ্যানসেস্টরে ইভেন্ট লিসনারদের দেখুন"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS লেয়ার"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS লেয়ার ভিউ টগল করুন"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ব্রেকপয়েন্ট"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "গণনা করা মান দেখুন"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "লেয়ার ট্রিতে থাকা লেয়ার দেখার জন্য ক্লিক করুন"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "তৈরি করা স্টাইলশিট"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, প্রপার্টি নাম: {PH2}, প্রপার্টি মান: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "লেয়ার"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "নতুন স্টাইল নিয়ম"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "এই লোকেশনে স্টোর করা ডেটা থাকতে পারে যার ফলে লোড হওয়ার পারফর্ম্যান্সে প্রভাব পড়তে পারে: {PH1}। আপনার স্কোরকে এইসব রিসোর্স থেকে সুরক্ষিত রাখতে এই পৃষ্ঠাটি ছদ্মবেশী উইন্ডোতে অডিট করুন।"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "টাইমস্প্যান"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "নেভিগেশন মোডে থাকলে ক্লাসিক 'লাইটহাউস' ব্যবহার করে পৃষ্ঠা অডিট করুন।"
+    "message": "নেভিগেশন মোডে থাকলে ক্লাসিক 'লাইটহাউস' ব্যবহার করে পৃষ্ঠা অ্যানালাইজ করুন।"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ওয়েব SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "আরও জানুন"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "নেভিগেশন অ্যানালাইজ করুন"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "স্ন্যাপশট অ্যানালাইজ করুন"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "মোড"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "টাইমস্প্যান শুরু করুন"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "২০১৬ সালে সারা পৃথিবীর ৭৫% মোবাইল ফোন ব্যবহারকারী 2G বা 3G ব্যবহার করতেন [উৎস: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "পৃষ্ঠা লোডের গতিতে প্রতি ১০০ মিলিসেকেন্ড উন্নতি হলে, Walmart-এর মোট উপার্জন ১% বৃদ্ধি পেয়েছে [তথ্যসূত্র: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "বাতিল করুন"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "টাইমস্প্যান শেষ করুন"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "পৃষ্ঠার সাথে ইন্টারঅ্যাক্ট করে টাইমস্প্যান শুরু করা হয়েছে"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "টাইমস্প্যান শুরু হচ্ছে…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse দেখুন"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ওয়াচ এক্সপ্রেশন রিফ্রেশ করুন"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "হেডার যোগ করুন"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "হেডার ওভাররাইড যোগ করুন"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' পার্স করার সময় সমস্যা হয়েছে।"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "এটি প্রায়ই ''{PH1}''-এ সিনট্যাক্স ত্রুটির কারণে হয়ে থাকে।. সমস্যাটি ঠিক করার জন্য, এক্সটার্নাল এডিটরে এই ফাইলটি খুলুন বা ফাইলটি মুছে ফেলে ওভাররাইড আবার তৈরি করুন।"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "এই 'ApplyTo'-বিভাগটি সরান"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "এই হেডারটি সরান"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ব্রেকপয়েন্ট চালু করুন"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "পিঞ্চ আপডেট"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "প্রি-পেন্ট"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "প্রিভিউ"

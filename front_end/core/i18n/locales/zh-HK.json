@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "可信任類型 - 違反政策"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "安全"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "不安全的項目"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets 和 SameParty 屬性"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site 的運作方式"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite Cookie 說明"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "跨來源資源共享 (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "文件兼容模式"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "安全"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "不安全的項目"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets 和 SameParty 屬性"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site 的運作方式"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite Cookie 說明"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "啟用 SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "向前/返回快取"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "擴充程式 ID： "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "無法採取行動"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "顯示祖級項目上的事件監聽器"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS 圖層"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "切換 CSS 圖層檢視模式"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM 中斷點"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "查看已運算的值"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "按一下以在圖層樹狀結構中顯示圖層"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "結構化樣式表"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}，屬性名稱：{PH2}；屬性值：{PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "圖層"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "新增樣式規則"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "可能有儲存資料影響以下位置的載入效能：{PH1}。請透過無痕式視窗審核此頁面，以免這些資源影響分數。"
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "時間範圍"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "在導覽模式時，使用傳統版 Lighthouse 來審核頁面。"
+    "message": "在導覽模式時，使用傳統版 Lighthouse 來分析頁面。"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "網絡 SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "瞭解詳情"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "分析導覽"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "分析快覽"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "模式"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "開始「時間範圍」"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "在 2016 年，全球 75% 流動裝置使用者使用 2G 或 3G [來源：GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "網頁載入速度每改善 100 毫秒，Walmart 的收益便會增長 1% [來源：WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "取消"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "結束「時間範圍」"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "「時間範圍」已開始，與頁面互動"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "正在開始「時間範圍」…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "顯示 Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "重新整理監看運算式"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "新增標題"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "新增標題覆寫"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "剖析「{PH1}」時發生錯誤。"
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "這很可能是因為「{PH1}」中有語法錯誤。請嘗試在外部編輯器中開啟此檔案以修正錯誤，或者刪除檔案，並重新建立覆寫。"
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "移除這個「ApplyTo」版面"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "移除此標題"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "啟用中斷點"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "兩指縮放更新"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "預先繪製"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "預覽"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Ishonchli turlar – Qoidabuzarlik"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "xavfsiz"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "ishonchsiz"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets va SameParty atributlari"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Schemeful Same-Site qanday ishlashi"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite cookie fayllari tavsifi"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Qarama-qarshi manba resursini ulashish (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Hujjat moslik rejimi"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "xavfsiz"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "ishonchsiz"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets va SameParty atributlari"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Schemeful Same-Site qanday ishlashi"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite cookie fayllari tavsifi"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer yoqilmoqda"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Orqaga qaytadigan kesh"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Kengaytma identifikatori: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Harakat qilish shart emas"
   },
@@ -3435,7 +3438,7 @@
     "message": "Ruxsat turi"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
-    "message": "Nomi"
+    "message": "Ism"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Egasi"
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Yuqori elementlardagi aniqlagichlarni chiqarish"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS qatlamlari"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS qatlamlar koʻrinishiga oʻtish"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM uzilish nuqtalari"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hisoblangan qiymatni koʻrish"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Qatlam daraxtidagi qatlamni ochish uchun bosing"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "tuzilgan stylesheet"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, xususiyat nomi: {PH2}, xususiyat qiymati: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Qatlam"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Yangi stil qoidasi"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Bu manzilda saqlanadigan axborotlar unumdorlik tezligiga taʼsir qilishi mumkin: {PH1}. Resurslarni baholaringizdan ajratish uchun bu sahifani inkognito oynada tekshiring."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Davr"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Navigatsiya rejimida eski Lighthouse ishlatadigan sahifani taftish qilish."
+    "message": "Navigatsiya rejimida eski Lighthouse ishlatadigan sahifani tahlil qilish."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Batafsil"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Navigatsiyani tahlil qilish"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Lavhani tahlil qilish"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Rejim"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Davrni boshlash"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016-yilda dunyodagi barcha mobil foydalanuvchilarning 75%i 2G yoki 3G tarmoqdan foydalangan [Manba: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Sahifaning har 100ms tezroq yuklanishi hisobiga Walmart daromadi 1% ga oshgan. [Manba: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Bekor qilish"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Davrni tugatish"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Davr ishga tushdi. Sahifa bilan ishlang"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Davr boshlanmoqda…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Koʻrsatish: Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Tomosha ifodalarini yangilash"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Sarlavha kiritish"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Sarlavhani almashtirish"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "“{PH1}” tahlilida xato yuz berdi."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Bunga katta ehtimol bilan “{PH1}” dagi sintaksis sabab boʻlgan. Xatoni tuzatish uchun ushbu faylni tashqi muharrirda oching yoki faylni oʻchirib, qayta yarating."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Ushbu “ApplyTo” boʻlimi olib tashlansinmi?"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Bu sarlavhani olib tashlash"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Faol uzish nuqtalari"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Chimdish yangilanishi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Oldindan boʻyash"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Razm solish"

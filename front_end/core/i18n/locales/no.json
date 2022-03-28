@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Betrodde typer - brudd på retningslinjer"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "en sikker"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "en usikker"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets og SameParty-attributtet"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Hvordan samme nettsted fungerer skjematisk"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Forklaring av SameSite-informasjonskapsler"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Opphavsuavhengig ressursdeling (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetsmodus for dokument"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "en sikker"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "en usikker"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets og SameParty-attributtet"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Hvordan samme nettsted fungerer skjematisk"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Forklaring av SameSite-informasjonskapsler"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktivering av SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "frem-/tilbake-buffer"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Utvidelses-ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Kan ikke utbedres"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Vis lyttere på overordnede enheter"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-lag"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Slå av/på CSS-lagvisning"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-stoppunkt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Vis beregnet verdi"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klikk for å vise laget i lagtreet"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "konstruert stilark"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, egenskapsnavn: {PH2}, egenskapsverdi: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lag"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Ny stilregel"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Det kan være lagrede data som påvirker innlastingsytelsen, på denne plasseringen: {PH1}. Utfør en revisjon på denne siden i et inkognitovindu for å forhindre disse ressursene fra å påvirke poengsummene."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tidsspenn"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Gjennomgå siden med den klassiske versjonen av Lighthouse når du er i navigeringsmodus."
+    "message": "Analyser siden med den klassiske versjonen av Lighthouse når du er i navigeringsmodus."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Nett-SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Finn ut mer"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analyser navigeringen"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analyser øyeblikksbilde"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modus"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Start tidsspenn"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % av alle mobilbrukere globalt i 2016 brukte 2G eller 3G [Kilde: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart opplevde 1 % økning i inntektene for hver forbedring på 100 ms i sideinnlastingstiden [Kilde: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Avbryt"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Avslutt tidsspenn"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tidsspennet har startet – samhandle med siden"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tidsspennet starter …"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Vis Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Oppdater klokkeuttrykk"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Legg til en topptekst"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Legg til overstyring av topptekst"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Feil ved parsing av «{PH1}»."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Dette skyldes sannsynligvis en syntaksfeil i «{PH1}». Prøv å åpne denne filen i et eksternt redigeringsprogram for å rette feilen, eller slett filen og opprett overstyringen på nytt."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Fjern denne «ApplyTo»-delen"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Fjern denne toppteksten"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiver stoppunkter"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Klypeoppdatering"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Forberedelse til opptegning"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Forhåndsvisning"

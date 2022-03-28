@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Поуздани типови – кршење смерница"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "безбедно"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "небезбедно"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "АтрибутиFirst-Party Sets и SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Како ради Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Објашњење SameSite колачића"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Дељење ресурса из различитих извора (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим компатибилности докумената"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "безбедно"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "небезбедно"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "АтрибутиFirst-Party Sets и SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Како ради Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Објашњење SameSite колачића"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Омогућава се SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Кеширање целе странице"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ИД додатка: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Не може ништа да се предузме"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Прикажи ослушкиваче за претходне елементе"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS слојеви"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Укључите/искључите приказ CSS слојева"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM преломна тачка"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Прикажи израчунату вредност"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Кликните да бисте открили слој у стаблу слојева"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "направљени опис стила"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, назив својства: {PH2}, вредност својства: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Слој"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Правило о новом стилу"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "На овој локацији можда има сачуваних података који утичу на ефикасност учитавања: {PH1}. Проверите ту страницу у прозору без архивирања да бисте спречили да ти ресурси утичу на резултате."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Период"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Проверите страницу помоћу класичног Lighthouse-а када сте у режиму навигације."
+    "message": "Анализирајте страницу помоћу класичног Lighthouse-а када сте у режиму навигације."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL за веб"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Сазнајте више"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Анализирај навигацију"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Анализирај преглед"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Режим"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Започни период"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% корисника мобилних уређаја у целом свету у 2016. је користило 2G или 3G мрежу [Извор: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart је остварио повећање прихода од 1% на сваких 100 ms побољшања времена учитавања странице [Извор: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Откажи"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Заврши период"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Период је започет, остварите интеракцију са страницом"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Период се покреће…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Прикажи Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Освежи изразе за надгледање"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Додај заглавље"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Додај замену заглавља"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Грешка при рашчлањивању ставке {PH1}."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "До овога најчешће долази због грешке у синтакси у ставци {PH1}. Пробајте да отворите овај фајл у спољном уређивачу да бисте отклонили грешку или избрисали фајл и поново направили замену."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Уклони одељак „ApplyTo“"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Уклони ово заглавље"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активирај преломне тачке"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Ажурирање радње скупљања прстију"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Предпреказивање"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Преглед"

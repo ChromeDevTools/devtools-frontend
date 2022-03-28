@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – beleidskending"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "'n veilige"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "'n onveilige"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets en die SameParty-kenmerk"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Hoe Schemeful Same-Site werk"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite-webkoekies verduidelik"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Kruisoorspronghulpbrondeling (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentversoenbaarheidmodus"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "'n veilige"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "'n onveilige"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets en die SameParty-kenmerk"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Hoe Schemeful Same-Site werk"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite-webkoekies verduidelik"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktiveer tans SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Terug-vorentoe-kasgeheue"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Uitbreiding-ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nie uitvoerbaar nie"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Wys luisteraars op voorgangers"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-lae"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Wissel CSS-lae-aansig"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-breekpunt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Bekyk benaderde waarde"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klik om laag in laagvertakking te wys"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "saamgestelde stylblad"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, eienskapnaam: {PH2}, eiendkapwaarde: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Laag"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nuwe stylreël"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Daar kan gestoorde data wees wat laaiwerkverrigting in hierdie ligging raak: {PH1}. Oudit hierdie bladsy in 'n incognito-venster om te keer dat dié hulpbronne jou tellings beïnvloed."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tydsduur"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Oudit die bladsy met klassieke Lighthouse wanneer dit in navigasie-modus is."
+    "message": "Ontleed die bladsy met klassieke Lighthouse wanneer dit in navigasiemodus is."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web se SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Kom meer te wete"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Ontleed navigasie"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analiseer fotogreep"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modus"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Begin tydsduur"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% van gebruikers van mobiele toestelle wêreldwyd was op 2G of 3G [Bron: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart het 'n verhoging van 1% met elke 100 ms wat hul bladsylading toegeneem het, gesien [Bron: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Kanselleer"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Beëindig tydsduur"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tydsduur het begin; begin interaksie met die bladsy"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tydsduur begin tans …"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Wys Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Herlaai dophou-uitdrukkings"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Voeg 'n opskrif by"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Voeg opskriftersydestelling by"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Kon nie ''{PH1}'' ontleed nie."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Dit is bes moontlik weens 'n sintaksfout in ''{PH1}''. Probeer hierdie lêer in 'n eksterne redigeerder oopmaak om die fout reg te stel of vee die lêer uit en herskep die tersydestelling."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Verwyder hierdie \"ApplyTo\"-afdeling"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Verwyder hierdie opskrif"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiveer breekpunte"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Knypopdatering"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Voor verf"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Voorskou"

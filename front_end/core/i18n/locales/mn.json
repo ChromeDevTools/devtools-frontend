@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Итгэмжлэгдсэн төрөл - Бодлого зөрчигдсөн"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "аюулгүй"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "аюултай"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets болон SameParty атрибут"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Схемээр дүүрэн ижил сайт хэрхэн ажилладаг вэ?"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite-н күүкиг тайлбарласан"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Хөндлөнгийн эхээс нөөц хуваалцах (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Документын тохиромжтой байдлын горим"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "аюулгүй"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "аюултай"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets болон SameParty атрибут"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Схемээр дүүрэн ижил сайт хэрхэн ажилладаг вэ?"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite-н күүкиг тайлбарласан"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer-г идэвхжүүлж байна"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back/forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Өргөтгөлийн ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Үйлдэл хийх боломжгүй"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Өвөг дээр сонсогчдыг харуулах"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-н давхарга"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS-н давхаргын харагдах байдлыг асаах/унтраах"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-н хугарлын цэг"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Тооцоолсон утгыг үзэх"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Давхаргын модонд давхаргыг харуулахын тулд товшино уу"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "бүтээсэн загварчлалын хуудас"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, өмчийн нэр: {PH2}, өмчийн утга: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Давхарга"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Загварын шинэ дүрэм"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Энэ байршилд ачааллын гүйцэтгэлд нөлөөлж буй хадгалсан өгөгдөл байж болзошгүй: {PH1}. Эдгээр нөөцийг таны оноонд нөлөөлөхөөс сэргийлэхийн тулд энэ хуудсыг нууцлалтай цонхонд аудит хийнэ үү."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Үргэлжлэх хугацаа"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Навигацын горимд байх үед сонгодог Lighthouse-г ашиглан хуудсыг аудит хийнэ үү."
+    "message": "Навигацын горимд байх үед сонгодог Lighthouse-г ашиглан хуудсыг задлан шинжилнэ үү."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Веб SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Навигацыг задлан шинжлэх"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Агшин зургийг задлан шинжлэх"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Горим"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Үргэлжлэх хугацааг эхлүүлэх"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 онд дэлхийн мобайл хэрэглэгчдийн 75% нь 2G эсвэл 3G сүлжээ ашиглаж байсан [Эх сурвалж: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Хуудасны ачаалал 100мс-ээр сайжрах бүрд Walmart-ын орлого 1%-иар өссөн [Эх сурвалж: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Цуцлах"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Үргэлжлэх хугацааг дуусгах"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Үргэлжлэх хугацааг эхлүүлсэн бөгөөд хуудастай харилцан үйлдэл хийнэ үү"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Үргэлжлэх хугацааг эхлүүлж байна…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse-г харуул"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Үзэх илэрхийллийг сэргээх"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Гарчиг нэмэх"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Гарчгийг дарж бичихийг нэмэх"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}''-г шинжлэх үед алдаа гарлаа."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Энэ нь ''{PH1}'' дахь дүрмийн алдаатай холбоотой бололтой. Алдааг засахын тулд энэ файлыг гадаад засварлагчид нээхээр оролдох эсвэл файлыг устгаж, дарах механизмыг дахин үүсгэнэ үү."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Энэ 'ApplyTo'-хэсгийг устгах"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Энэ гарчгийг хасах"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Хугарлын цэгийг идэвхжүүлэх"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Чимхэхийг шинэчлэх"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Урьдчилан будах"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Урьдчилан үзэх"

@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "વિશ્વસનીય પ્રકારો - પૉલિસીનું ઉલ્લંઘન"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "સુરક્ષિત"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "અસુરક્ષિત"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets અને SameParty વિશેષતા"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "સ્કીમફુલ સમાન-સાઇટની કામ કરવાની રીત"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite કુકી વિશે જાણકારી આપવામાં આવી"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ક્રોસ-ઑરિજિન સંસાધન શેરિંગ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "દસ્તાવેજ સાથે સુસંગત મોડ"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "સુરક્ષિત"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "અસુરક્ષિત"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets અને SameParty વિશેષતા"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "સ્કીમફુલ સમાન-સાઇટની કામ કરવાની રીત"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite કુકી વિશે જાણકારી આપવામાં આવી"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer ચાલુ કરવી"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "બૅક/ફૉરવર્ડ કૅશ"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "એક્સ્ટેન્શન ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "પગલાં લઈ શકાય એવું નથી"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ઍન્સેસ્ટર પર લિસ્નર બતાવો"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSSના સ્તરો"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "ટૉગલ કરીને CSSના સ્તરોને છુપાવો કે બતાવો"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM બ્રેકપૉઇન્ટ"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ગણાયેલું મૂલ્ય જુઓ"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "સ્તરના વૃક્ષમાં સ્તર બતાવવા માટે ક્લિક કરો"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "બનાવેલી સ્ટાઇલશીટ"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, પ્રોપર્ટીનું નામ: {PH2}, પ્રોપર્ટીનું મૂલ્ય: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "સ્તર"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "શૈલીનો નવો નિયમ"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "આ સ્થાનમાં લોડ થવાની ક્રિયાને અસર કરનારો સ્ટોર કરેલો ડેટા હોઈ શકે છે: {PH1}. તે સંસાધનોને તમારા સ્કોર પર અસર કરતા અટકાવવા માટે, આ પેજને છૂપી વિન્ડોમાં ઑડિટ કરો."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "સમયગાળો"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "નૅવિગેશન મોડમાં હો, ત્યારે ક્લાસિક Lighthouse વડે પેજનું ઑડિટ કરો."
+    "message": "નૅવિગેશન મોડમાં હો, ત્યારે ક્લાસિક Lighthouse વડે પેજનું વિશ્લેષણ કરો."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "વેબ SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "વધુ જાણો"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "નૅવિગેશનનું વિશ્લેષણ કરો"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "સ્નૅપશૉટનું વિશ્લેષણ કરો"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "મોડ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "સમયગાળો શરૂ કરો"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016માં વિશ્વના 75% મોબાઇલ વપરાશકર્તાઓ 2G કે 3Gનો ઉપયોગ કરતા હતા [સૉર્સ: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "પેજ લોડ થવામાં પ્રતિ 100 મિ.સે.નો સુધાર થવાને કારણે Walmartની આવકમાં 1%નો વધારો જોવા મળ્યો છે [Source: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "રદ કરો"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "સમયગાળો સમાપ્ત કરો"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "સમયગાળો શરૂ કર્યો, પેજ સાથે ક્રિયાપ્રતિક્રિયા કરો"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "સમયગાળો શરૂ કરી રહ્યાં છીએ…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse બતાવો"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "વૉચ એક્સપ્રેશન રિફ્રેશ કરો"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "કોઈ હેડર ઉમેરો"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "હેડર ઓવરરાઇડ ઉમેરો"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}''નું વિશ્લેષણ કરતી વખતે ભૂલ આવી."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "આવું મોટે ભાગે ''{PH1}''માં વાક્યરચનાની ભૂલને કારણે થાય છે. ભૂલ સુધારવા માટે આ ફાઇલને બાહ્ય એડિટરમાં ખોલવાનો પ્રયાસ કરો અથવા ફાઇલ ડિલીટ કરો અને ઓવરરાઇડ ફરીથી બનાવો."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "આ 'ApplyTo'-વિભાગ કાઢી નાખો"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "આ હેડર કાઢી નાખો"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "બ્રેકપૉઇન્ટ સક્રિય કરો"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "અપડેટ પર પિન્ચ કરો"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "રંગ કરવા પહેલાંનું પગલું"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "પ્રીવ્યૂ કરો"

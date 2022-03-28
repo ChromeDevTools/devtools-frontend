@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Jenis Dipercayai - Pelanggaran dasar"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "selamat"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "tidak selamat"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets dan atribut SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Cara Laman Sama Berskema Berfungsi"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Penjelasan tentang kuki SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Perkongsian Sumber Rentas Asalan (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mod keserasian dokumen"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "selamat"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "tidak selamat"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets dan atribut SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Cara Laman Sama Berskema Berfungsi"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Penjelasan tentang kuki SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Mendayakan SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Cache kembali-maju"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Id sambungan: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Tidak Boleh Diambil Tindakan"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Paparkan pendengar pada moyang"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Lapisan CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Togol paparan Lapisan CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Titik Putus DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Lihat nilai yang dihitung"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klik untuk mendedahkan lapisan dalam pepohon lapisan"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "helaian gaya yang dibina"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, nama sifat: {PH2}, nilai sifat: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lapisan"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Peraturan Gaya Baharu"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mungkin terdapat data yang disimpan yang menjejaskan prestasi pemuatan di lokasi ini: {PH1}. Audit halaman ini dalam tetingkap inkognito untuk menghalang sumber tersebut daripada menjejaskan markah anda."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Jangka masa"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Audit halaman menggunakan Lighthouse klasik apabila dalam mod navigasi."
+    "message": "Analisis halaman menggunakan Lighthouse klasik apabila dalam mod navigasi."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL Web"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Ketahui lebih lanjut"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analisis navigasi"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analisis gambar"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mod"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Mulakan jangka masa"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% pengguna mudah alih global pada tahun 2016 menggunakan sambungan 2G atau 3G [Sumber: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart menyaksikan kenaikan pendapatan sebanyak 1% bagi setiap 100 ms peningkatan dalam pemuatan halaman [Sumber: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Batal"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Tamatkan jangka masa"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Jangka masa bermula, berinteraksi dengan halaman"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Jangka masa bermula…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Paparkan Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Muat semula ungkapan tontonan"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Tambahkan pengepala"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Tambahkan pengepala batal"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Ralat semasa menghuraikan ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Ini berkemungkinan besar disebabkan oleh ralat sintaks dalam ''{PH1}''. Cuba buka fail ini dalam editor luaran untuk membetulkan ralat atau memadam fail dan mencipta semula penggantian."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Alih keluar bahagian 'ApplyTo' ini"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Alih keluar pengepala ini"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktifkan titik putus"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Kemaskinian Cubitan"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Prakemasan Dinding"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Pratonton"

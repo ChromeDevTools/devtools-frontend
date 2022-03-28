@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Vertrouwde typen: beleidsschending"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "een beveiligde"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "onveilig"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets en het kenmerk SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Hoe Schemeful Same-Site werkt"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Uitleg van SameSite-cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Resources van verschillende bronnen delen (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Compatibiliteitsmodus voor documenten"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "een beveiligde"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "onveilig"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets en het kenmerk SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Hoe Schemeful Same-Site werkt"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Uitleg van SameSite-cookies"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer aanzetten"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-Forward Cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Extensie-ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Niet actiegericht"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Listeners in de bovenliggende entiteit bekijken"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Css-lagen"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "De weergave Css-lagen schakelen"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-breakpoint"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Berekende waarde bekijken"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klik om de laag zichtbaar te maken in de laagstructuur"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "samengestelde stylesheet"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, propertynaam: {PH2}, propertywaarde: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Laag"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nieuw stijlregel"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Er kunnen op de volgende locatie gegevens zijn opgeslagen die van invloed zijn op de laadprestaties: {PH1}. Controleer deze pagina in een incognitovenster om te voorkomen dat die resources van invloed zijn op je scores."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Tijdsduur"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Controleer de pagina met de klassieke versie van Lighthouse indien in de navigatiemodus."
+    "message": "Analyseer de pagina met de klassieke versie van Lighthouse indien in de navigatiemodus."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Meer informatie"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Navigatie analyseren"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Momentopname analyseren"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modus"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Tijdsduur starten"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% van de mobiele gebruikers wereldwijd zat in 2016 op 2G en 3G [Bron: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart heeft een opbrengststijging van 1% gerealiseerd voor elke verbetering van 100 ms in het laden van pagina's [Bron: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Annuleren"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Tijdsduur beëindigen"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Tijdsduur gestart, heb interactie met de pagina"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Tijdsduur starten…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse bekijken"
@@ -6147,7 +6186,7 @@
     "message": "Geavanceerd"
   },
   "panels/mobile_throttling/MobileThrottlingSelector.ts | disabled": {
-    "message": "Uit"
+    "message": "Uitgezet"
   },
   "panels/mobile_throttling/MobileThrottlingSelector.ts | presets": {
     "message": "Voorinstellingen"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Watch-expressies vernieuwen"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Een kop toevoegen"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Overschrijving van kop toevoegen"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Fout bij parseren van {PH1}."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Dit komt waarschijnlijk door een syntaxisfout in {PH1}. Open dit bestand in een externe editor om de fout op te lossen of verwijder het bestand en maak de overschrijving opnieuw."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Deze sectie ApplyTo verwijderen"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Deze kop verwijderen"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Breakpoints activeren"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Updaten door te knijpen"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Voorafgaand aan weergave"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Voorbeeld"

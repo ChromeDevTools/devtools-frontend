@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಕಾರಗಳು - ನೀತಿ ಉಲ್ಲಂಘನೆ"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "ಸುರಕ್ಷಿತ"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "ಅಸುರಕ್ಷಿತ"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets ಮತ್ತು SameParty ಗುಣಲಕ್ಷಣಗಳು"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "ಸ್ಕೀಮ್‌ಫುಲ್ Same-Site ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite ಕುಕೀಗಳ ಕುರಿತು ವಿವರಣೆ"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ಕ್ರಾಸ್ ಒರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ಹಂಚಿಕೊಳ್ಳುವಿಕೆ (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ಡಾಕ್ಯುಮೆಂಟ್ ಹೊಂದಾಣಿಕೆ ಮೋಡ್"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "ಸುರಕ್ಷಿತ"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "ಅಸುರಕ್ಷಿತ"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets ಮತ್ತು SameParty ಗುಣಲಕ್ಷಣಗಳು"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "ಸ್ಕೀಮ್‌ಫುಲ್ Same-Site ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite ಕುಕೀಗಳ ಕುರಿತು ವಿವರಣೆ"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer ಸಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ವಿಸ್ತರಣೆ ಐಡಿ: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಸಾಧ್ಯವಾಗದು"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "ಪೂರ್ವಿಕಗಳಲ್ಲಿ ಲಿಸನರ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS ಲೇಯರ್‌ಗಳು"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS ಲೇಯರ್‌ಗಳ ವೀಕ್ಷಣೆಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ಕಂಪ್ಯೂಟೆಡ್ ಮೌಲ್ಯದ ವೀಕ್ಷಣೆ"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ಲೇಯರ್ ಟ್ರೀನಲ್ಲಿನ ಲೇಯರ್ ಅನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "ರಚಿಸಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, ಪ್ರಾಪರ್ಟಿ ಹೆಸರು: {PH2}, ಪ್ರಾಪರ್ಟಿ ಮೌಲ್ಯ: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "ಲೇಯರ್"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "ಹೊಸ ಶೈಲಿಯ ರೂಲ್"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ಈ ಸ್ಥಳದಲ್ಲಿ, ಲೋಡಿಂಗ್ ಕಾರ್ಯಕ್ಷಮತೆಯ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವ, ಸಂಗ್ರಹಣೆ ಮಾಡಲಾದ ಡೇಟಾ ಇರಬಹುದು: {PH1}. ಆ ಮಾಹಿತಿ ಮೂಲಗಳು ನಿಮ್ಮ ಸ್ಕೋರ್‌ಗಳ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರದ ಹಾಗೆ ತಡೆಯಲು ಈ ಪುಟವನ್ನು ಅದೃಶ್ಯ ವಿಂಡೋದಲ್ಲಿ ಆಡಿಟ್ ಮಾಡಿ."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "ಟೈಮ್‌ಸ್ಪಾನ್"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ನ್ಯಾವಿಗೇಶನ್‌ನಲ್ಲಿರುವಾಗ ಕ್ಲಾಸಿಕ್ ಲೈಟ್‌ಹೌಸ್ ಬಳಸಿಕೊಂಡು ಪುಟವನ್ನು ಆಡಿಟ್ ಮಾಡಿ."
+    "message": "ನ್ಯಾವಿಗೇಶನ್ ಮೋಡ್‌ನಲ್ಲಿರುವಾಗ ಕ್ಲಾಸಿಕ್ ಲೈಟ್‌ಹೌಸ್ ಬಳಸಿಕೊಂಡು ಪುಟವನ್ನು ವಿಶ್ಲೇಷಿಸಿ."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ವೆಬ್ SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ವಿಶ್ಲೇಷಿಸಿ"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "ಸ್ನ್ಯಾಪ್‌ಶಾಟ್ ಅನ್ನು ವಿಶ್ಲೇಷಿಸಿ"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "ಮೋಡ್"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "ಟೈಮ್‌ಸ್ಪಾನ್ ಪ್ರಾರಂಭಿಸಿ"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016 ರಲ್ಲಿ, ಶೇಕಡಾ 75 ರಷ್ಟು ಜಾಗತಿಕ ಮೊಬೈಲ್ ಬಳಕೆದಾರರು 2G ಅಥವಾ 3G ಬಳಸುತ್ತಿದ್ದರು [ಮೂಲ: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "ಪುಟ ಲೋಡ್‌ನಲ್ಲಿ ಪ್ರತಿ 100ms ಸುಧಾರಣೆಗೆ Walmart ಆದಾಯದಲ್ಲಿ 1% ಹೆಚ್ಚಳವನ್ನು ಕಂಡಿದೆ [ಮೂಲ: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ರದ್ದುಮಾಡಿ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "ಟೈಮ್‌ಸ್ಪಾನ್ ಕೊನೆಗೊಳಿಸಿ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "ಟೈಮ್‌ಸ್ಪಾನ್ ಪ್ರಾರಂಭವಾಗಿದೆ, ಪುಟದ ಜೊತೆಗೆ ಸಂವಹಿಸಿ"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "ಟೈಮ್‌ಸ್ಪಾನ್ ಪ್ರಾರಂಭವಾಗುತ್ತಿದೆ…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Lighthouse ತೋರಿಸಿ"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "ಶಿರೋಲೇಖವನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "ಶಿರೋಲೇಖದ ಓವರ್‌ರೈಡ್ ಸೇರಿಸಿ"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "''{PH1}'' ಪಾರ್ಸ್ ಮಾಡುವಾಗ ದೋಷ ಕಂಡುಬಂದಿದೆ."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "ಇದು ಬಹುತೇಕ '{PH1}'' ನಲ್ಲಿನ ಸಿಂಟ್ಯಾಕ್ಸ್ ದೋಷದ ಕಾರಣದಿಂದಾಗಿರಬಹುದು. ದೋಷವನ್ನು ಸರಿಪಡಿಸಲು ಅಥವಾ ಫೈಲ್ ಅನ್ನು ಅಳಿಸಲು ಮತ್ತು ಅತಿಕ್ರಮಣವನ್ನು ಮರು-ರಚಿಸಲು ಈ ಫೈಲ್ ಅನ್ನು ಬಾಹ್ಯ ಎಡಿಟರ್‌ನಲ್ಲಿ ತೆರೆಯಲು ಪ್ರಯತ್ನಿಸಿ."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "ಈ 'ApplyTo' ವಿಭಾಗವನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "ಈ ಶಿರೋಲೇಖವನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "ಪಿಂಚ್ ಅಪ್‌ಡೇಟ್"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "ಪ್ರಿ-ಪೈಂಟ್"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "ಪೂರ್ವವೀಕ್ಷಣೆ"

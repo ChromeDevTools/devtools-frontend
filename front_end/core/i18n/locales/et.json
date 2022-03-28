@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Usaldusväärsed tüübid – eeskirjade rikkumine"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "turvaline"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "ebaturvaline"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "Atribuudid First-Party Sets ja SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Kuidas skeemipõhine Same-Site töötab?"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite'i küpsisefailide selgitus"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Lähtekohaülene ressursside jagamine (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumendi ühilduvusrežiim"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "turvaline"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "ebaturvaline"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "Atribuudid First-Party Sets ja SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Kuidas skeemipõhine Same-Site töötab?"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite'i küpsisefailide selgitus"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Üksuse SharedArrayBuffer lubamine"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Vahemälu tagasi-edasiliikumiseks"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Laienduse ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Pole toimingut võimaldav"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Kuva eellastel kuulajad"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS-i kihid"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "CSS-i kihtide kuva lüliti"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-i murdepunkt"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kuva arvutatud väärtus"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klõpsake kihi kuvamiseks kihipuus"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "koostatud stiilileht"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, vara nimi: {PH2}, vara väärtus: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Kiht"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Uus stiilireegel"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Järgmises asukohas võivad olla salvestatud andmed, mis mõjutavad laadimise toimivust: {PH1}. Auditeerige seda lehte inkognito aknas, et need ressursid ei mõjutaks teie tulemusi."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Ajavahemik"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Lehele tehakse audit klassikalise Lighthouse'iga, kui kasutatakse navigeerimisrežiimi."
+    "message": "Lehte analüüsitakse klassikalise Lighthouse'iga, kui kasutatakse navigeerimisrežiimi."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Veebipõhine SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Lisateave"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analüüsi navigeerimist"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analüüsi ülevaadet"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Režiim"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Alusta ajavahemikku"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "2016. aastal kasutasid 75% mobiilikasutajatest üle maailma 2G- või 3G-ühendust [allikas: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmarti tulu suurenes 1% võrra iga 100 ms kohta, mille võrra lehe laadimise aeg lühenes [allikas: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Tühista"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Lõpeta ajavahemik"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Ajavahemikku alustati, interaktsioon lehega"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Ajavahemikku alustatakse …"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Kuva Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Värskenda vaatamisavaldisi"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Lisa päis"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Lisa päise alistus"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Viga üksuse „{PH1}“ sõelumisel."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Selle põhjus on tõenäoliselt süntaksiviga üksuses „{PH1}“. Proovige see fail avada välises redaktoris, et viga parandada, või kustutage fail ja looge alistamine uuesti."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Eemalda jaotis „ApplyTo“"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Eemalda see päis"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktiveeri katkestuspunktid"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Sõrmede kokku-lahku liigutamise värskendus"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Värvimiseelne"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Eelvaade"

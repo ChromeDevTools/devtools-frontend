@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – policy violation"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "a secure"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets and the SameParty attribute"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "How Schemeful Same-Site works"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "SameSite cookies explained"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-origin resource sharing (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Document compatibility mode"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "a secure"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets and the SameParty attribute"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "How Schemeful Same-Site works"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "SameSite cookies explained"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Enabling SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Extension ID: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Not actionable"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Show listeners on the ancestors"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "CSS layers"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Toggle CSS layers view"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM breakpoint"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "View computed value"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Click to reveal layer in layer tree"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, property name: {PH2}, property value: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Layer"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "New style rule"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Timespan"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Audit the page using classic Lighthouse when in navigation mode."
+    "message": "Analyse the page using classic Lighthouse when in navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Learn more"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analyse navigation"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analyse snapshot"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Start timespan"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Cancel"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "End timespan"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Timespan started; interact with the page"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Timespan starting…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Show Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Add a header"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Add header override"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Error when parsing '{PH1}'."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "This is most likely due to a syntax error in '{PH1}'. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Remove this 'ApplyTo'-section"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Remove this header"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activate breakpoints"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Pinch update"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Pre-paint"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Preview"

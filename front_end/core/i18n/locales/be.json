@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – Парушэнне палітыкі"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "бяспечн."
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "небяспечн."
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets і атрыбут SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Як працуе Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Тлумачэнне запыту cookie SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Сумеснае выкарыстанне рэсурсаў, якія паходзяць з іншых крыніц (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Рэжым сумяшчальнасці дакументаў"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "бяспечн."
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "небяспечн."
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets і атрыбут SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Як працуе Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Тлумачэнне запыту cookie SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer: уключэнне"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Кэш пераходу назад і наперад"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Ідэнтыфікатар пашырэння: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Дзеянні немагчымыя"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Паказваць слухачы на элементах-продках"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Слаі CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Уключыць або выключыць паказ слаёў CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Пункт прыпынення DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Праглядзець вылічанае значэнне"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Націсніце, каб пабачыць слой у дрэве слаёў"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "сканструяваная табліца стыляў"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, імя ўласцівасці: {PH2}, значэнне ўласцівасці: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Слой"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Новае правіла стылю"
@@ -5816,6 +5831,9 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "У гэтым месцы могуць захоўвацца даныя, якія ўплываюць на прадукцыйнасць загрузкі: {PH1}. Правядзіце аўдыт гэтай старонкі ў акне ў рэжыме інкогніта, каб прадухіліць уплыў гэтых рэсурсаў на вашы ацэнкі."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Прамежак часу"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Аналізаваць старонку з дапамогай класічнай версіі Lighthouse у рэжыме навігацыі."
   },
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Даведацца больш"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Аналізаваць навігацыю"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Аналізаваць здымак"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Рэжым"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Распачаць прамежак часу"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75% карыстальнікаў мабільнай сувязі ў свеце выкарыстоўвалі тэхналогію 2G або 3G [Крыніца: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Кожнае скарачэнне часу загрузкі старонкі на 100 мс павялічыла даход кампаніі Walmart на 1% [Крыніца: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Скасаваць"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Завяршыць прамежак часу"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Рэжым \"Прамежак часу\" запушчаны. Пачынайце ўзаемадзейнічаць са старонкай."
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Пачынаецца прамежак часу…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Паказаць інструмент Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Абнавіць выразы кантрольнага значэння"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Дадаць загаловак"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Дадаць перавызначэнне загалоўка"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Памылка пры аналізе файла \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Хутчэй за ўсё гэта звязана з сінтаксічнай памылкай у файле ''{PH1}''. Паспрабуйце выправіць яе, адкрыўшы файл у знешнім рэдактары, або выдаліце файл і стварыце файл з перавызначэннем."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Выдаліць гэты раздзел \"ApplyTo\""
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Выдаліць гэты загаловак"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Актываваць пункты прыпынення"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Абнаўленне жэста звядзення (развядзення) пальцаў"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Папярэдняя адмалёўка"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Перадпрагляд"

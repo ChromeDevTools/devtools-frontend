@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "סוגים מהימנים – הפרת מדיניות"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "מאובטח"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "הקשר לא מאובטח"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets והמאפיין SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "איך אתרים באותה סכימה פועלים"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "הסבר על קובצי cookie מסוג SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "שיתוף משאבים בין מקורות (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "מצב תאימות למסמך"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "מאובטח"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "הקשר לא מאובטח"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets והמאפיין SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "איך אתרים באותה סכימה פועלים"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "הסבר על קובצי cookie מסוג SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "הפעלת SharedArrayBuffer מתבצעת"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "מטמון לדף הקודם/הבא"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "מזהה התוסף: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "לא ניתן לנקוט פעולה"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "הצגת פונקציות ה-listener של ישויות האב"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "שכבות CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "החלפת מצב התצוגה של שכבות ה‑CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "נקודת עצירה של DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "צפייה בערך המחושב"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "ניתן ללחוץ כדי לחשוף שכבה בעץ השכבות"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "גיליון סגנונות שנוצר"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, שם הנכס: {PH2}, ערך הנכס: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "שכבה"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "כלל סגנון חדש"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ייתכן שיש נתונים שמורים שמשפיעים על ביצועי הטעינה במיקום הזה: {PH1}. יש לבדוק את הדף הזה בחלון אנונימי כדי למנוע ממקורות המידע האלה להשפיע על תוצאות הניקוד."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "טווח זמן"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "ניתן לבדוק את הדף באמצעות Lighthouse קלאסי במצב ניווט."
+    "message": "ניתן לנתח את הדף באמצעות Lighthouse קלאסי במצב ניווט."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "מידע נוסף"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "ניתוח הניווט"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "ניתוח תמונת המצב"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "מצב"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "הפעלת המצב 'טווח זמן'"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "בשנת 2016, 75% מהמשתמשים בנייד ברחבי העולם השתמשו ב-2G או ב-3G [מקור: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "כל שיפור של 100 אלפיות השנייה בזמן הטעינה של דפים באתר של Walmart הגדיל את הכנסות החברה ב-1% [מקור: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "ביטול"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "הפסקת המצב 'טווח זמן'"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "המצב 'טווח זמן' הופעל, אפשר לבצע פעולות בדף"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "מתבצעת הפעלה של המצב 'טווח זמן'…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "הצגה של Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "רענון של ביטויי מעקב"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "הוספת כותרת"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "הוספת אפשרות לביטול הכותרת"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "שגיאה בזמן הניתוח של '{PH1}'."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "הסיבה לכך היא כנראה שגיאת תחביר ב‑'{PH1}'. אפשר לנסות לפתוח את הקובץ בכלי עריכה חיצוני כדי לתקן את השגיאה, או למחוק את הקובץ וליצור מחדש את השינוי מברירת המחדל."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "הסרת הקטע 'ApplyTo'"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "הסרת הכותרת"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "הפעלת נקודות עצירה (breakpoint)"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "עדכון תנועת הצביטה"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "לפני ציור"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "תצוגה מקדימה"

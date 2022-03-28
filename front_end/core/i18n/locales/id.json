@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Jenis Tepercaya - Pelanggaran kebijakan"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "aman"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets dan atribut SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Cara Kerja Schemeful Same-Site"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Cookie SameSite dijelaskan"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-Origin Resource Sharing (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mode kompatibilitas dokumen"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "aman"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets dan atribut SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Cara Kerja Schemeful Same-Site"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Cookie SameSite dijelaskan"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Mengaktifkan SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "ID ekstensi: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Tidak Dapat Ditindaklanjuti"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Tampilkan pemroses pada ancestor"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Lapisan CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Tampilkan/sembunyikan tampilan Lapisan CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Titik henti sementara DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Lihat nilai yang dihitung"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Klik untuk menampilkan lapisan di hierarki lapisan"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "stylesheet yang dikonstruksi"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, nama properti: {PH2}, nilai properti: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Lapisan"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Aturan Gaya Baru"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini: {PH1}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Rentang waktu"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Lakukan audit halaman menggunakan Lighthouse klasik saat dalam mode navigasi."
+    "message": "Lakukan analisis halaman menggunakan Lighthouse klasik saat dalam mode navigasi."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL Web"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Pelajari lebih lanjut"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analisis navigasi"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analisis ringkasan"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Mulai rentang waktu"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "Terdapat 75% pengguna seluler global pada 2016 yang menggunakan jaringan 2G atau 3G [Sumber: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Pendapatan Walmart naik 1% untuk setiap peningkatan 100 milidetik pemuatan halaman [Sumber: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Batal"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Akhiri rentang waktu"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Rentang waktu dimulai, berinteraksi dengan halaman"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Memulai rentang waktu …"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Tampilkan Lighthouse"
@@ -8058,7 +8097,7 @@
     "message": "Mulai"
   },
   "panels/profiler/ProfileLauncherView.ts | stop": {
-    "message": "Berhenti"
+    "message": "Hentikan"
   },
   "panels/profiler/ProfileLauncherView.ts | takeSnapshot": {
     "message": "Ambil snapshot"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Muat ulang ekspresi watch"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Tambahkan header"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Tambahkan penggantian header"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Terjadi error saat menguraikan ''{PH1}''."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Hal ini kemungkinan besar dikarenakan oleh error sintaksis di ''{PH1}''. Coba buka file ini di editor eksternal untuk memperbaiki error atau menghapus file dan membuat ulang penggantinya."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Hapus bagian 'ApplyTo' ini"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Hapus header ini"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktifkan titik henti sementara"
   },
@@ -10284,7 +10341,7 @@
     "message": "Status"
   },
   "panels/timeline/TimelinePanel.ts | stop": {
-    "message": "Berhenti"
+    "message": "Hentikan"
   },
   "panels/timeline/TimelinePanel.ts | stoppingTimeline": {
     "message": "Menghentikan linimasa…"
@@ -10874,6 +10931,9 @@
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Update Cubit"
   },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Langkah Sebelum Menggambar"
+  },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Pratinjau"
   },
@@ -11295,7 +11355,7 @@
     "message": "Mulai/berhenti merekam"
   },
   "panels/timeline/timeline-meta.ts | stop": {
-    "message": "Berhenti"
+    "message": "Hentikan"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Ukuran Buffer Callback"

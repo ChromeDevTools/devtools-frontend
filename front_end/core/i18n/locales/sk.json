@@ -1325,6 +1325,21 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Dôveryhodné typy – porušenie pravidiel"
   },
+  "models/issues_manager/CookieIssue.ts | aSecure": {
+    "message": "zabezpečené"
+  },
+  "models/issues_manager/CookieIssue.ts | anInsecure": {
+    "message": "nezabezpečené"
+  },
+  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets a atribút SameParty"
+  },
+  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
+    "message": "Ako Schemeful Same-Site funguje"
+  },
+  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
+    "message": "Vysvetlenie súborov cookie typu SameSite"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Zdieľanie zdrojov zmiešaného pôvodu (CORS)"
   },
@@ -1375,21 +1390,6 @@
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Režim kompatibility dokumentu"
-  },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "zabezpečené"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "nezabezpečené"
-  },
-  "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets a atribút SameParty"
-  },
-  "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "Ako Schemeful Same-Site funguje"
-  },
-  "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
-    "message": "Vysvetlenie súborov cookie typu SameSite"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktivuje sa SharedArrayBuffer"
@@ -3236,6 +3236,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Spätná vyrovnávacia pamäť"
   },
+  "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
+    "message": "Identifikátor rozšírenia: "
+  },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Nemožno vykonať akciu"
   },
@@ -4622,6 +4625,12 @@
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
     "message": "Zobrazovať prijímače na nadradených položkách"
   },
+  "panels/elements/LayersWidget.ts | cssLayersTitle": {
+    "message": "Vrstvy šablón CSS"
+  },
+  "panels/elements/LayersWidget.ts | toggleCSSLayers": {
+    "message": "Prepnúť zobrazenie vrstiev šablón CSS"
+  },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Zlomový bod DOM"
   },
@@ -4703,6 +4712,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Zobraziť vypočítanú hodnotu"
   },
+  "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
+    "message": "Kliknutím zobrazíte vrstvu v strome vrstiev"
+  },
   "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
     "message": "zostavená šablóna so štýlmi"
   },
@@ -4756,6 +4768,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | invalidString": {
     "message": "{PH1}, názov vlastnosti: {PH2}, hodnota vlastnosti: {PH3}"
+  },
+  "panels/elements/StylesSidebarPane.ts | layer": {
+    "message": "Vrstva"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Nové pravidlo pre štýl"
@@ -5816,8 +5831,11 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "V nasledujúcom umiestnení môžu byť uložené údaje, ktoré ovplyvňujú výkonnosť načítavania: {PH1}. Skontrolujte túto stránku v okne inkognito, aby príslušné zdroje neovplyvnili vaše skóre."
   },
+  "panels/lighthouse/LighthouseController.ts | timespan": {
+    "message": "Časový rozsah"
+  },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Skontrolujte stránku pomocou klasickej verzie nástroja Lighthouse v navigačnom režime."
+    "message": "Analyzujte stránku pomocou klasickej verzie nástroja Lighthouse v navigačnom režime."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5876,8 +5894,17 @@
   "panels/lighthouse/LighthouseStartView.ts | learnMore": {
     "message": "Ďalšie informácie"
   },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
+    "message": "Analyzovať navigáciu"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
+    "message": "Analyzovať prehľad stavu"
+  },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Režim"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
+    "message": "Spustiť časový rozsah"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % globálnych mobilných používateľov v roku 2016 používalo sieť 2G alebo 3G [zdroj: GSMA Mobile]"
@@ -5965,6 +5992,18 @@
   },
   "panels/lighthouse/LighthouseStatusView.ts | walmartSawAIncreaseInRevenueFor": {
     "message": "Za každé zrýchlenie načítavania stránky o 100 ms sa firme Walmart zvýšili výnosy o 1 % [zdroj: WPO Stats]"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
+    "message": "Zrušiť"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
+    "message": "Ukončiť časový rozsah"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
+    "message": "Časový rozsah bol spustený, interagujte so stránkou"
+  },
+  "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
+    "message": "Spúšťa sa časový rozsah…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Zobraziť Lighthouse"
@@ -9698,6 +9737,24 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Obnoviť výrazy sledovania"
   },
+  "panels/sources/components/HeadersView.ts | addHeader": {
+    "message": "Pridať hlavičku"
+  },
+  "panels/sources/components/HeadersView.ts | addHeaderOverride": {
+    "message": "Pridať prepísanie hlavičky"
+  },
+  "panels/sources/components/HeadersView.ts | errorWhenParsing": {
+    "message": "Pri analýze položky {PH1} sa vyskytla chyba."
+  },
+  "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
+    "message": "Najpravdepodobnejšou príčinou je chyba syntaxe v položke {PH1}. Skúste tento súbor otvoriť v externom editore a chybu vyriešiť alebo ho odstráňte a znova vytvorte prepísanú verziu."
+  },
+  "panels/sources/components/HeadersView.ts | removeBlock": {
+    "message": "Odstrániť túto sekciu ApplyTo"
+  },
+  "panels/sources/components/HeadersView.ts | removeHeader": {
+    "message": "Odstrániť túto hlavičku"
+  },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivovať zlomové body"
   },
@@ -10873,6 +10930,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | pinchUpdate": {
     "message": "Aktualizácia stiahnutia prstov"
+  },
+  "panels/timeline/TimelineUIUtils.ts | prePaint": {
+    "message": "Krok pred maľbou"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Ukážka"

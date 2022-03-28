@@ -442,6 +442,7 @@ export class TreeElement {
   expanded: boolean;
   selected: boolean;
   private expandable!: boolean;
+  #expandRecursively: boolean = true;
   private collapsible: boolean;
   toggleOnClick: boolean;
   button: HTMLButtonElement|null;
@@ -846,6 +847,14 @@ export class TreeElement {
     }
   }
 
+  isExpandRecursively(): boolean {
+    return this.#expandRecursively;
+  }
+
+  setExpandRecursively(expandRecursively: boolean): void {
+    this.#expandRecursively = expandRecursively;
+  }
+
   isCollapsible(): boolean {
     return this.collapsible;
   }
@@ -1044,16 +1053,17 @@ export class TreeElement {
       maxDepth = 3;
     }
 
-    while (item) {
-      await item.populateIfNeeded();
+    do {
+      if (item.isExpandRecursively()) {
+        await item.populateIfNeeded();
 
-      if (depth < maxDepth) {
-        item.expand();
+        if (depth < maxDepth) {
+          item.expand();
+        }
       }
-
-      item = item.traverseNextTreeElement(false, this, (depth >= maxDepth), info);
+      item = item.traverseNextTreeElement(!item.isExpandRecursively(), this, true, info);
       depth += info.depthChange;
-    }
+    } while (item !== null);
   }
 
   collapseOrAscend(altKey: boolean): boolean {

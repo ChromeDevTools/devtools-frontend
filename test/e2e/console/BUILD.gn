@@ -14,6 +14,7 @@ node_ts_library("console") {
     "console-eval-blocked-by-CSP_test.ts",
     "console-eval-fake_test.ts",
     "console-eval-global_test.ts",
+    "console-expand-recursively_test.ts",
     "console-filter_test.ts",
     "console-last-result_test.ts",
     "console-log_test.ts",

@@ -29,6 +29,7 @@
  */
 
 import {NodeURL} from './NodeURL.js';
+import type * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -53,7 +54,7 @@ export interface MessageError {
 
 export type Message = {
   sessionId?: string,
-  url?: string,
+  url?: Platform.DevToolsPath.UrlString,
   id?: number,
   error?: MessageError|null,
   result?: Object|null,

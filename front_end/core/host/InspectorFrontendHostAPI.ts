@@ -177,7 +177,7 @@ export interface InspectorFrontendHostAPI {
 
   loadCompleted(): void;
 
-  indexPath(requestId: number, fileSystemPath: string, excludedFolders: string): void;
+  indexPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, excludedFolders: string): void;
 
   /**
    * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
@@ -199,9 +199,9 @@ export interface InspectorFrontendHostAPI {
 
   openInNewTab(url: Platform.DevToolsPath.UrlString): void;
 
-  showItemInFolder(fileSystemPath: string): void;
+  showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void;
 
-  removeFileSystem(fileSystemPath: string): void;
+  removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void;
 
   requestFileSystems(): void;
 
@@ -211,7 +211,7 @@ export interface InspectorFrontendHostAPI {
 
   close(url: Platform.DevToolsPath.UrlString): void;
 
-  searchInPath(requestId: number, fileSystemPath: string, query: string): void;
+  searchInPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, query: string): void;
 
   stopIndexing(requestId: number): void;
 
@@ -221,7 +221,7 @@ export interface InspectorFrontendHostAPI {
 
   copyText(text: string|null|undefined): void;
 
-  inspectedURLChanged(url: string): void;
+  inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void;
 
   isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem|null;
 

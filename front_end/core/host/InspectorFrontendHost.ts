@@ -137,7 +137,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     window.open(url, '_blank');
   }
 
-  showItemInFolder(fileSystemPath: string): void {
+  showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
     Common.Console.Console.instance().error(
         'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
@@ -212,7 +212,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   addFileSystem(type?: string): void {
   }
 
-  removeFileSystem(fileSystemPath: string): void {
+  removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
   }
 
   isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem|null {
@@ -287,13 +287,13 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void {
   }
 
-  indexPath(requestId: number, fileSystemPath: string, excludedFolders: string): void {
+  indexPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, excludedFolders: string): void {
   }
 
   stopIndexing(requestId: number): void {
   }
 
-  searchInPath(requestId: number, fileSystemPath: string, query: string): void {
+  searchInPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, query: string): void {
   }
 
   zoomFactor(): number {

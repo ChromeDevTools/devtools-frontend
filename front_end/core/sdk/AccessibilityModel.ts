@@ -298,16 +298,17 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
       return parent.children();
     }
 
-    let nodes;
     const request = this.#pendingChildRequests.get(nodeId);
     if (request) {
       await request;
     } else {
-      const req = this.agent.invoke_getChildAXNodes({id: nodeId, frameId});
-      this.#pendingChildRequests.set(nodeId, req);
-      nodes = (await req).nodes;
-      this.createNodesFromPayload(nodes);
-      this.#pendingChildRequests.delete(nodeId);
+      const request = this.agent.invoke_getChildAXNodes({id: nodeId, frameId});
+      this.#pendingChildRequests.set(nodeId, request);
+      const result = await request;
+      if (!result.getError()) {
+        this.createNodesFromPayload(result.nodes);
+        this.#pendingChildRequests.delete(nodeId);
+      }
     }
     return parent.children();
   }

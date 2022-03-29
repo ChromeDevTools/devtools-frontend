@@ -444,7 +444,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         this.rawContent = deferredContent.error;
       } else {
         content = deferredContent.content;
-        this.rawContent = deferredContent.isEncoded ? window.atob(deferredContent.content) : deferredContent.content;
+        if (deferredContent.isEncoded) {
+          const view = new DataView(Common.Base64.decode(deferredContent.content));
+          const decoder = new TextDecoder();
+          this.rawContent = decoder.decode(view, {stream: true});
+        } else {
+          this.rawContent = deferredContent.content;
+        }
       }
 
       progressIndicator.setWorked(1);

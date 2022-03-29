@@ -278,6 +278,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
   inspectorBackend.registerEnum(
+      'Audits.DeprecationIssueType', {DeprecationExample: 'DeprecationExample', Untranslated: 'Untranslated'});
+  inspectorBackend.registerEnum(
       'Audits.ClientHintIssueReason',
       {MetaTagAllowListInvalidOrigin: 'MetaTagAllowListInvalidOrigin', MetaTagModifiedHTML: 'MetaTagModifiedHTML'});
   inspectorBackend.registerEnum('Audits.FederatedAuthRequestIssueReason', {
@@ -3029,8 +3031,6 @@ export function registerCommands(inspectorBackend) {
   // Media.
   inspectorBackend.registerEnum(
       'Media.PlayerMessageLevel', {Error: 'error', Warning: 'warning', Info: 'info', Debug: 'debug'});
-  inspectorBackend.registerEnum(
-      'Media.PlayerErrorType', {Pipeline_error: 'pipeline_error', Media_error: 'media_error'});
   inspectorBackend.registerEvent('Media.playerPropertiesChanged', ['playerId', 'properties']);
   inspectorBackend.registerEvent('Media.playerEventsAdded', ['playerId', 'events']);
   inspectorBackend.registerEvent('Media.playerMessagesLogged', ['playerId', 'messages']);

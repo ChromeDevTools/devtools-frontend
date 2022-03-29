@@ -1024,6 +1024,11 @@ export namespace Audits {
     frameId?: Page.FrameId;
   }
 
+  export const enum DeprecationIssueType {
+    DeprecationExample = 'DeprecationExample',
+    Untranslated = 'Untranslated',
+  }
+
   /**
    * This issue tracks information needed to print a deprecation message.
    * The formatting is inherited from the old console.log version, see more at:
@@ -1045,7 +1050,8 @@ export namespace Audits {
     /**
      * The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
      */
-    deprecationType: string;
+    deprecationType?: string;
+    type: DeprecationIssueType;
   }
 
   export const enum ClientHintIssueReason {
@@ -14476,24 +14482,38 @@ export namespace Media {
     value: string;
   }
 
-  export const enum PlayerErrorType {
-    Pipeline_error = 'pipeline_error',
-    Media_error = 'media_error',
+  /**
+   * Represents logged source line numbers reported in an error.
+   * NOTE: file and line are from chromium c++ implementation code, not js.
+   */
+  export interface PlayerErrorSourceLocation {
+    file: string;
+    line: integer;
   }
 
   /**
    * Corresponds to kMediaError
    */
   export interface PlayerError {
-    type: PlayerErrorType;
+    errorType: string;
     /**
-     * When this switches to using media::Status instead of PipelineStatus
-     * we can remove "errorCode" and replace it with the fields from
-     * a Status instance. This also seems like a duplicate of the error
-     * level enum - there is a todo bug to have that level removed and
-     * use this instead. (crbug.com/1068454)
+     * Code is the numeric enum entry for a specific set of error codes, such
+     * as PipelineStatusCodes in media/base/pipeline_status.h
      */
-    errorCode: string;
+    code: integer;
+    /**
+     * A trace of where this error was caused / where it passed through.
+     */
+    stack: PlayerErrorSourceLocation[];
+    /**
+     * Errors potentially have a root cause error, ie, a DecoderError might be
+     * caused by an WindowsError
+     */
+    cause: PlayerError[];
+    /**
+     * Extra data attached to an error, such as an HRESULT, Video Codec, etc.
+     */
+    data: any;
   }
 
   /**

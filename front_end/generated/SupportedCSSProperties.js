@@ -142,7 +142,7 @@ export const generatedProperties = [
     ]
   },
   {'name': 'background-clip', 'keywords': ['border-box', 'padding-box', 'content-box']},
-  {'name': 'background-color', 'keywords': ['currentcolor']},
+  {'keywords': ['currentcolor'], 'name': 'background-color'},
   {'name': 'background-image', 'keywords': ['auto', 'none']},
   {'name': 'background-origin', 'keywords': ['border-box', 'padding-box', 'content-box']},
   {'longhands': ['background-position-x', 'background-position-y'], 'name': 'background-position'},
@@ -332,7 +332,7 @@ export const generatedProperties = [
   {'name': 'contain-intrinsic-width', 'keywords': ['auto', 'none']},
   {'longhands': ['container-type', 'container-name'], 'name': 'container'},
   {'name': 'container-name', 'keywords': ['none']},
-  {'name': 'container-type', 'keywords': ['none', 'block-size', 'inline-size', 'size']},
+  {'name': 'container-type', 'keywords': ['none', 'inline-size', 'size']},
   {'name': 'content'},
   {'name': 'content-visibility', 'keywords': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   {'name': 'counter-increment', 'keywords': ['none']},
@@ -486,11 +486,11 @@ export const generatedProperties = [
   {'name': 'forced-color-adjust', 'inherited': true, 'keywords': ['auto', 'none', 'preserve-parent-color']},
   {'longhands': ['row-gap', 'column-gap'], 'name': 'gap'},
   {
+    'name': 'grid',
     'longhands': [
       'grid-template-rows', 'grid-template-columns', 'grid-template-areas', 'grid-auto-flow', 'grid-auto-rows',
       'grid-auto-columns'
-    ],
-    'name': 'grid'
+    ]
   },
   {'longhands': ['grid-row-start', 'grid-column-start', 'grid-row-end', 'grid-column-end'], 'name': 'grid-area'},
   {'name': 'grid-auto-columns', 'keywords': ['auto', 'min-content', 'max-content']},
@@ -505,7 +505,7 @@ export const generatedProperties = [
   {'name': 'grid-row-end', 'keywords': ['auto']},
   {'longhands': ['row-gap'], 'name': 'grid-row-gap'},
   {'name': 'grid-row-start', 'keywords': ['auto']},
-  {'longhands': ['grid-template-rows', 'grid-template-columns', 'grid-template-areas'], 'name': 'grid-template'},
+  {'name': 'grid-template', 'longhands': ['grid-template-rows', 'grid-template-columns', 'grid-template-areas']},
   {'keywords': ['none'], 'name': 'grid-template-areas'},
   {'name': 'grid-template-columns', 'keywords': ['none']},
   {'name': 'grid-template-rows', 'keywords': ['none']},
@@ -589,7 +589,9 @@ export const generatedProperties = [
   },
   {'name': 'negative'},
   {'name': 'object-fit', 'keywords': ['fill', 'contain', 'cover', 'none', 'scale-down']},
+  {'name': 'object-overflow', 'keywords': ['clip', 'visible']},
   {'name': 'object-position'},
+  {'name': 'object-view-box', 'keywords': ['none']},
   {
     'longhands': ['offset-position', 'offset-path', 'offset-distance', 'offset-rotate', 'offset-anchor'],
     'name': 'offset'
@@ -944,7 +946,7 @@ export const generatedPropertyValues = {
   'contain-intrinsic-height': {'values': ['auto', 'none']},
   'contain-intrinsic-width': {'values': ['auto', 'none']},
   'container-name': {'values': ['none']},
-  'container-type': {'values': ['none', 'block-size', 'inline-size', 'size']},
+  'container-type': {'values': ['none', 'inline-size', 'size']},
   'content-visibility': {'values': ['visible', 'auto', 'hidden', 'hidden-matchable']},
   'counter-increment': {'values': ['none']},
   'counter-reset': {'values': ['none']},
@@ -1095,6 +1097,8 @@ export const generatedPropertyValues = {
     ]
   },
   'object-fit': {'values': ['fill', 'contain', 'cover', 'none', 'scale-down']},
+  'object-overflow': {'values': ['clip', 'visible']},
+  'object-view-box': {'values': ['none']},
   'offset-anchor': {'values': ['auto']},
   'offset-path': {'values': ['none']},
   'offset-position': {'values': ['auto']},

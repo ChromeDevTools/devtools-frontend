@@ -622,6 +622,18 @@ describe('TextSourceMap', () => {
         sourceMapURL: 'http://example.com/foo.js.map',
         expected: 'webpack://example/src/a/b/foo.ts',
       },
+      {
+        sourceRoot: noSourceRoot,
+        sourceURL: 'file.ts',
+        sourceMapURL: 'https://example.com/some///random/file.js.map',
+        expected: 'https://example.com/some///random/file.ts',
+      },
+      {
+        sourceRoot: noSourceRoot,
+        sourceURL: 'https://example.com/some///random/file.ts',
+        sourceMapURL: 'https://example.com/some///random/file.js.map',
+        expected: 'https://example.com/some///random/file.ts',
+      },
     ];
 
     for (const {sourceRoot, sourceURL, sourceMapURL, expected} of cases) {

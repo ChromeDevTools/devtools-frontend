@@ -369,10 +369,7 @@ export class TextSourceMap implements SourceMap {
 
   private parseSources(sourceMap: SourceMapV3): void {
     const sourcesList = [];
-    let sourceRoot = sourceMap.sourceRoot || Platform.DevToolsPath.EmptyUrlString;
-    if (sourceRoot && !sourceRoot.endsWith('/')) {
-      sourceRoot = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, '/');
-    }
+    const sourceRoot = sourceMap.sourceRoot || Platform.DevToolsPath.EmptyUrlString;
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
       // The source map v3 proposal says to prepend the sourceRoot to the source URL
@@ -381,7 +378,11 @@ export class TextSourceMap implements SourceMap {
       // be meaningful or useful if the source URL is already absolute though. In this
       // case, use the source URL as is without prepending the sourceRoot.
       if (Common.ParsedURL.ParsedURL.isRelativeURL(href)) {
-        href = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, href);
+        if (sourceRoot && !sourceRoot.endsWith('/') && href && !href.startsWith('/')) {
+          href = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, '/', href);
+        } else {
+          href = Common.ParsedURL.ParsedURL.concatenate(sourceRoot, href);
+        }
       }
       let url = Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];

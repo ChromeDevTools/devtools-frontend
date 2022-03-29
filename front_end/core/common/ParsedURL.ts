@@ -38,26 +38,26 @@ export function normalizePath(path: string): string {
     return path;
   }
 
+  // Remove leading slash (will be added back below) so we
+  // can handle all (including empty) segments consistently.
+  const segments = (path[0] === '/' ? path.substring(1) : path).split('/');
   const normalizedSegments = [];
-  const segments = path.split('/');
   for (const segment of segments) {
     if (segment === '.') {
       continue;
     } else if (segment === '..') {
       normalizedSegments.pop();
-    } else if (segment) {
+    } else {
       normalizedSegments.push(segment);
     }
   }
   let normalizedPath = normalizedSegments.join('/');
-  if (normalizedPath[normalizedPath.length - 1] === '/') {
-    return normalizedPath;
-  }
   if (path[0] === '/' && normalizedPath) {
     normalizedPath = '/' + normalizedPath;
   }
-  if ((path[path.length - 1] === '/') || (segments[segments.length - 1] === '.') ||
-      (segments[segments.length - 1] === '..')) {
+  if (normalizedPath[normalizedPath.length - 1] !== '/' &&
+      ((path[path.length - 1] === '/') || (segments[segments.length - 1] === '.') ||
+       (segments[segments.length - 1] === '..'))) {
     normalizedPath = normalizedPath + '/';
   }
 

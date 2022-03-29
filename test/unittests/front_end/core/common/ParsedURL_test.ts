@@ -28,6 +28,7 @@ describe('Parsed URL', () => {
       {path: 'a/b/c/d/../../../g', expected: 'a/g'},
       {path: 'a/b/c/d/e/../../../../g', expected: 'a/g'},
       {path: '/./g', expected: '/g'},
+      {path: '/.//g', expected: '//g'},
       {path: '/../g', expected: '/g'},
       {path: 'g.', expected: 'g.'},
       {path: '.g', expected: '.g'},
@@ -37,6 +38,10 @@ describe('Parsed URL', () => {
       {path: './g/.', expected: 'g/'},
       {path: 'g/./h', expected: 'g/h'},
       {path: 'g/../h', expected: 'h'},
+      {path: './h/g/', expected: 'h/g/'},
+      {path: 'g///h.ts', expected: 'g///h.ts'},
+      {path: '/b/c/./', expected: '/b/c/'},
+      {path: '///', expected: '///'},
     ];
 
     for (const {path, expected} of cases) {
@@ -655,5 +660,4 @@ describe('Parsed URL', () => {
     assert.strictEqual(ParsedURL.rawPathToUrlString(platformPathTest), urlTest);
     assert.strictEqual(ParsedURL.urlToRawPathString(urlTest), platformPathTest);
   });
-
 });

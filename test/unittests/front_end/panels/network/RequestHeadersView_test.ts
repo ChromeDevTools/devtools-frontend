@@ -13,10 +13,11 @@ import * as Persistence from '../../../../../front_end/models/persistence/persis
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {assertElement, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 const {assert} = chai;
 
-async function setUpEnvironment() {
+function setUpEnvironment() {
   createTarget();
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -25,26 +26,7 @@ async function setUpEnvironment() {
   const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
       {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
   Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-  const networkPersistenceManager =
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-
-  const fileSystem = {
-    fileSystemPath: () => 'file:///path/to/overrides',
-    fileSystemBaseURL: 'file:///path/to/overrides/',
-    type: () => Workspace.Workspace.projectTypes.FileSystem,
-  } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
-
-  const mockProject = {
-    uiSourceCodes: () => [],
-    id: () => 'file:///path/to/overrides',
-    fileSystemPath: () => 'file:///path/to/overrides',
-    type: () => Workspace.Workspace.projectTypes.Network,
-    uiSourceCodeForURL: () => null,
-  } as unknown as Workspace.Workspace.Project;
-  workspace.addProject(mockProject);
-  await networkPersistenceManager.setProject(mockProject);
-
-  return {fileSystem, mockProject};
+  Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 }
 
 function renderHeadersView(request: SDK.NetworkRequest.NetworkRequest): Network.RequestHeadersView.RequestHeadersView {
@@ -66,7 +48,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('does not render a link to \'.headers\' if that file does not exist', async () => {
-    await setUpEnvironment();
+    setUpEnvironment();
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
@@ -82,20 +64,17 @@ describeWithMockConnection('RequestHeadersView', () => {
   });
 
   it('renders a link to \'.headers\'', async () => {
-    const {fileSystem, mockProject} = await setUpEnvironment();
+    setUpEnvironment();
+    const {project} = createUISourceCode({
+      url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
+      mimeType: 'text/plain',
+    });
 
-    const uiSourceCode = {
-      url: () => 'file:///path/to/overrides/www.example.com/.headers',
-      project: () => fileSystem,
-      name: () => '.headers',
-    } as unknown as Workspace.UISourceCode.UISourceCode;
-    const uiSourceCodeMap = new Map<string, Workspace.UISourceCode.UISourceCode>();
-    uiSourceCodeMap.set(uiSourceCode.url(), uiSourceCode);
-
-    mockProject.uiSourceCodes = () => [uiSourceCode];
-    mockProject.uiSourceCodeForURL = (url: string): Workspace.UISourceCode.UISourceCode|null => {
-      return uiSourceCodeMap.get(url) || null;
-    };
+    // @ts-ignore
+    project.fileSystemPath = () => 'file:///path/to/overrides';
+    // @ts-ignore
+    project.fileSystemBaseURL = 'file:///path/to/overrides';
+    await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,

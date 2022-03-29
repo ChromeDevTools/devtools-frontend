@@ -4,14 +4,13 @@
 
 const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
+import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describeWithRealConnection('BreakpointManager', () => {
   it('allows awaiting on scheduled update in debugger', async () => {
@@ -20,15 +19,11 @@ describeWithRealConnection('BreakpointManager', () => {
       assert.fail('Cannot get breakpointManager');
       return;
     }
-    const fileSystem = {
-      id: () => 'FILE_SYSTEM_ID',
-    } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
 
     const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
     const SCRIPT_ID = 'SCRIPT_ID' as Protocol.Runtime.ScriptId;
     const BREAKPOINT_ID = 'BREAKPOINT_ID' as Protocol.Debugger.BreakpointId;
-    const uiSourceCode =
-        new Workspace.UISourceCode.UISourceCode(fileSystem, URL, Common.ResourceType.resourceTypes.Document);
+    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: 'text/javascript'});
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.mainTarget();
     if (!target) {
@@ -77,5 +72,6 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     breakpointManager.removeBreakpoint(breakpoint, true);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
 });

@@ -7,9 +7,8 @@ import * as SourcesComponents from '../../../../../../front_end/panels/sources/c
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertElement, assertShadowRoot, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
+import {createUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
 
-import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
-import * as Common from '../../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
@@ -79,23 +78,21 @@ describe('HeadersView', async () => {
         }
       }
     ]`;
-    const fileSystem = {
-      mimeType: () => 'text/html',
-      canSetFileContent: () => true,
-      requestFileContent: () => ({isEncoded: false, content: headers}),
-      workspace: () => workspace,
-      type: () => Workspace.Workspace.projectTypes.FileSystem,
-    } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
-    const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
-        fileSystem, 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
-        Common.ResourceType.resourceTypes.Document);
+    const {uiSourceCode, project} = createUISourceCode({
+      url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
+      mimeType: 'text/html',
+      content: headers,
+    });
+    project.canSetFileContent = () => true;
 
     const editorWrapper = new SourcesComponents.HeadersView.HeadersView(uiSourceCode);
+    await uiSourceCode.requestContent();
     await coordinator.done();
     const editor = editorWrapper.getComponent();
     renderElementIntoDOM(editor);
     assertShadowRoot(editor.shadowRoot);
     await coordinator.done();
+    workspace.removeProject(project);
     return editor;
   }
 

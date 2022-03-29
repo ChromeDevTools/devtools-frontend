@@ -16,6 +16,7 @@ import * as SourcesComponents from '../../../../../front_end/panels/sources/comp
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {initializeGlobalVars, deinitializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describe('SourcesView', () => {
   beforeEach(async () => {
@@ -40,28 +41,26 @@ describe('SourcesView', () => {
   it('creates new source view of updated type when renamed file requires a different viewer', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const fileSystem = {
-      mimeType: () => 'text/html',
-      canSetFileContent: () => true,
-      rename: (
-          uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
-          callback: (arg0: boolean, arg1?: string, arg2?: string, arg3?: Common.ResourceType.ResourceType) => void) => {
-        const newURL = 'file:///path/to/overrides/' + newName;
-        let newContentType = Common.ResourceType.resourceTypes.Document;
-        if (newName.endsWith('.jpg')) {
-          newContentType = Common.ResourceType.resourceTypes.Image;
-        } else if (newName.endsWith('.woff')) {
-          newContentType = Common.ResourceType.resourceTypes.Font;
-        }
-        callback(true, newName, newURL, newContentType);
-      },
-      workspace: () => workspace,
-      type: () => Workspace.Workspace.projectTypes.FileSystem,
-    } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
+    const {uiSourceCode, project} = createUISourceCode({
+      url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
+      mimeType: 'text/html',
+    });
+    project.canSetFileContent = () => true;
+    project.rename =
+        (uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
+         callback: (
+             arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
+             arg3?: Common.ResourceType.ResourceType) => void) => {
+          const newURL = ('file:///path/to/overrides/' + newName) as Platform.DevToolsPath.UrlString;
+          let newContentType = Common.ResourceType.resourceTypes.Document;
+          if (newName.endsWith('.jpg')) {
+            newContentType = Common.ResourceType.resourceTypes.Image;
+          } else if (newName.endsWith('.woff')) {
+            newContentType = Common.ResourceType.resourceTypes.Font;
+          }
+          callback(true, newName, newURL, newContentType);
+        };
 
-    const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
-        fileSystem, 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
-        Common.ResourceType.resourceTypes.Document);
     sourcesView.viewForFile(uiSourceCode);
 
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof Sources.UISourceCodeFrame.UISourceCodeFrame);
@@ -77,6 +76,7 @@ describe('SourcesView', () => {
     // Rename which changes contentType
     await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.FontView.FontView);
+    workspace.removeProject(project);
   });
 
   it('creates a HeadersView when the filename is \'.headers\'', async () => {

@@ -5,10 +5,11 @@
 import {assert} from 'chai';
 
 import type {ElementHandle} from 'puppeteer';
-import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, getBrowserAndPages} from '../../shared/helper.js';
+import {expectError} from '../../conductor/events.js';
+import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, getBrowserAndPages, getResourcesPath} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
-import {navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {getAllRequestNames, navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 2;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
@@ -67,6 +68,45 @@ describe('The Network Request view', async () => {
     await waitForElementWithTextContent('webbundle.wbn', networkView);
     await waitForElementWithTextContent('urn:uuid:429fcc4e-0696-4bad-b099-ee9175f023ae', networkView);
     await waitForElementWithTextContent('urn:uuid:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
+  });
+
+  it('prevents requests on the preview tab.', async () => {
+    await navigateToNetworkTab('embedded_requests.html');
+
+    // For the issue to manifest it's mandatory to load the stylesheet by absolute URL. A relative URL would be treated
+    // relative to the data URL in the preview iframe and thus not work. We need to generate the URL because the
+    // resources path is dynamic, but we can't have any scripts in the resource page since they would be disabled in the
+    // preview. Therefore, the resource page contains just an iframe and we're filling it dynamically with content here.
+    const stylesheet = `${getResourcesPath()}/network/style.css`;
+    const contents = `<head><link rel="stylesheet" href="${stylesheet}"></head><body><p>Content</p></body>`;
+    const {target} = getBrowserAndPages();
+    await waitForFunction(async () => (await target.$('iframe')) ?? undefined);
+    const dataUrl = `data:text/html,${contents}`;
+    await target.evaluate((dataUrl: string) => {
+      (document.querySelector('iframe') as HTMLIFrameElement).src = dataUrl;
+    }, dataUrl);
+
+    await waitForSomeRequestsToAppear(3);
+
+    const names = await getAllRequestNames();
+    const name = names.find(v => v && v.startsWith('data:'));
+    assert.isNotNull(name);
+    await selectRequestByName(name as string);
+
+    const styleSrcError = expectError(`Refused to load the stylesheet '${stylesheet}'`);
+    const networkView = await waitFor('.network-item-view');
+    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
+    await click(previewTabHeader);
+    await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
+
+    const frame = await waitFor('.html-preview-frame');
+    const content = await waitForFunction(async () => (await frame.contentFrame() ?? undefined));
+    const p = await waitForFunction(async () => (await content.$('p') ?? undefined));
+
+    const color = await p.evaluate(e => getComputedStyle(e).color);
+
+    assert.deepEqual(color, 'rgb(0, 0, 0)');
+    await waitForFunction(async () => await styleSrcError.caught);
   });
 
   it('stores websocket filter', async () => {

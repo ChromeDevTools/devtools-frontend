@@ -106,7 +106,7 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
             message += '\n' + formatStackFrame(frame);
           }
         }
-        if (ALLOWED_ASSERTION_FAILURES.includes(msg.text())) {
+        if (isExpectedError(msg)) {
           expectedErrors.push(message);
           console.log('(expected) ' + message);
         } else {
@@ -118,6 +118,46 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
       }
     }
   });
+}
+
+function isExpectedError(consoleMessage: puppeteer.ConsoleMessage) {
+  if (ALLOWED_ASSERTION_FAILURES.includes(consoleMessage.text())) {
+    return true;
+  }
+  for (const expectation of pendingErrorExpectations) {
+    if (expectation.check(consoleMessage)) {
+      pendingErrorExpectations.delete(expectation);
+      return true;
+    }
+  }
+  return false;
+}
+
+export class ErrorExpectation {
+  #caught: puppeteer.ConsoleMessage|undefined;
+  readonly #msg: string|RegExp;
+  constructor(msg: string|RegExp) {
+    this.#msg = msg;
+  }
+
+  get caught() {
+    return this.#caught;
+  }
+
+  check(consoleMessage: puppeteer.ConsoleMessage) {
+    const text = consoleMessage.text();
+    const match = (this.#msg instanceof RegExp) ? Boolean(text.match(this.#msg)) : text.includes(this.#msg);
+    if (match) {
+      this.#caught = consoleMessage;
+    }
+    return match;
+  }
+}
+
+export function expectError(msg: string|RegExp) {
+  const expectation = new ErrorExpectation(msg);
+  pendingErrorExpectations.add(expectation);
+  return expectation;
 }
 
 function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string {
@@ -136,5 +176,6 @@ export function dumpCollectedErrors(): void {
   }
 }
 
+const pendingErrorExpectations = new Set<ErrorExpectation>();
 export const fatalErrors: string[] = [];
 export const expectedErrors: string[] = [];

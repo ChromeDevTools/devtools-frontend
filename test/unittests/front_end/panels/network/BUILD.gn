@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("network") {
   testonly = true
-  sources = [ "RequestHeadersView_test.ts" ]
+  sources = [
+    "RequestHeadersView_test.ts",
+    "RequestPreviewView_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/panels/network:bundle",

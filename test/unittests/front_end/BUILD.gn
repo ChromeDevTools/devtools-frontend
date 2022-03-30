@@ -26,6 +26,7 @@ group("front_end") {
     "models/persistence",
     "models/text_utils",
     "models/timeline_model",
+    "models/workspace_diff",
     "panels/animation",
     "panels/application",
     "panels/console",

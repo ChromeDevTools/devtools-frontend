@@ -12,6 +12,7 @@ ts_library("persistence") {
   ]
 
   deps = [
+    "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/models/persistence:bundle",
     "../../helpers",
   ]

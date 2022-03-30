@@ -157,6 +157,13 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   addSourceMapping(sourceMapping: SourceMapping): void {
     this.#sourceMappings.push(sourceMapping);
   }
+
+  removeSourceMapping(sourceMapping: SourceMapping): void {
+    const index = this.#sourceMappings.indexOf(sourceMapping);
+    if (index !== -1) {
+      this.#sourceMappings.splice(index, 1);
+    }
+  }
 }
 
 export interface SourceMapping {

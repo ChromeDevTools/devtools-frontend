@@ -11,14 +11,12 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 describeWithRealConnection('BreakpointManager', () => {
   it('allows awaiting on scheduled update in debugger', async () => {
     const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
-    if (!breakpointManager) {
-      assert.fail('Cannot get breakpointManager');
-      return;
-    }
+    assertNotNullOrUndefined(breakpointManager);
 
     const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
     const SCRIPT_ID = 'SCRIPT_ID' as Protocol.Runtime.ScriptId;
@@ -26,10 +24,7 @@ describeWithRealConnection('BreakpointManager', () => {
     const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: 'text/javascript'});
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.mainTarget();
-    if (!target) {
-      assert.fail('Cannot get target');
-      return;
-    }
+    assertNotNullOrUndefined(target);
 
     class TestDebuggerModel extends SDK.DebuggerModel.DebuggerModel {
       constructor(target: SDK.Target.Target) {

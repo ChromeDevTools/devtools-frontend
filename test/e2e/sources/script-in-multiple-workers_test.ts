@@ -27,7 +27,9 @@ async function validateSourceTabs() {
 
 describe('Multi-Workers', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
-  this.timeout(10000);
+  if (this.timeout() !== 0) {
+    this.timeout(10000);
+  }
 
   [false, true].forEach(sourceMaps => {
     const withOrWithout = sourceMaps ? 'with source maps' : 'without source maps';

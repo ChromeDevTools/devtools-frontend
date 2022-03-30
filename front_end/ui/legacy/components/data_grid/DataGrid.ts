@@ -222,6 +222,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dataTableBody = this.dataTable.createChild('tbody');
     this.topFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
     this.bottomFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
+    UI.ARIAUtils.setHidden(this.bottomFillerRow, true);
 
     this.setVerticalPadding(0, 0, true);
     this.refreshHeader();
@@ -487,11 +488,16 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       nodeToColumnIdMap.set(bottomFillerRowChild, columnId);
     }
 
-    this.headerRow.createChild('th', 'corner');
+    const headerCorner = this.headerRow.createChild('th', 'corner');
+    UI.ARIAUtils.setHidden(headerCorner, true);
+
     const topFillerRowCornerCell = (this.topFillerRow.createChild('th', 'corner') as HTMLTableCellElement);
     topFillerRowCornerCell.classList.add('top-filler-td');
     topFillerRowCornerCell.scope = 'col';
+    UI.ARIAUtils.setHidden(topFillerRowCornerCell, true);
+
     this.bottomFillerRow.createChild('td', 'corner').classList.add('bottom-filler-td');
+
     this.headerTableColumnGroup.createChild('col', 'corner');
     this.dataTableColumnGroup.createChild('col', 'corner');
   }
@@ -1732,7 +1738,10 @@ export class DataGridNode<T> {
       accessibleTextArray.push(`${column.title}: ${this.cellAccessibleTextMap.get(column.id) || cell.textContent}`);
     }
     this.nodeAccessibleText = accessibleTextArray.join(', ');
-    element.appendChild(this.createTDWithClass('corner'));
+
+    const cornerCell = this.createTDWithClass('corner');
+    UI.ARIAUtils.setHidden(cornerCell, true);
+    element.appendChild(cornerCell);
   }
 
   get data(): DataGridData {

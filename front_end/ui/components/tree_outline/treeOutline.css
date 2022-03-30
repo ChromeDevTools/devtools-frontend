@@ -89,7 +89,7 @@ li.is-top-level:last-child {
   outline: 0;
 }
 
-[role="treeitem"].selected > .arrow-and-key-wrapper {
+ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper {
   /* stylelint-disable-next-line color-named */
   background-color: var(--legacy-item-selection-bg-color);
 }

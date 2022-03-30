@@ -150,6 +150,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.#defaultRenderer = data.defaultRenderer;
     this.#treeData = data.tree;
     this.#nodeFilter = data.filter;
+
     if (!this.#hasRenderedAtLeastOnce) {
       this.#selectedTreeNode = this.#treeData[0];
     }
@@ -510,15 +511,15 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // clang-format off
       LitHtml.render(LitHtml.html`
       <div class="wrapping-container">
-      <ul role="tree" @keydown=${this.#onTreeKeyDown}>
-        ${this.#treeData.map((topLevelNode, index) => {
-          return this.#renderNode(topLevelNode, {
-            depth: 0,
-            setSize: this.#treeData.length,
-            positionInSet: index,
-          });
-        })}
-      </ul>
+        <ul role="tree" @keydown=${this.#onTreeKeyDown}>
+          ${this.#treeData.map((topLevelNode, index) => {
+            return this.#renderNode(topLevelNode, {
+              depth: 0,
+              setSize: this.#treeData.length,
+              positionInSet: index,
+            });
+          })}
+        </ul>
       </div>
       `, this.#shadow, {
         host: this,

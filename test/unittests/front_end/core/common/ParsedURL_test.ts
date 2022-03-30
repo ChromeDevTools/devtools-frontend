@@ -297,6 +297,14 @@ describe('Parsed URL', () => {
       {href: 'http://a/b/c/g?y/../x', expected: 'http://a/b/c/g?y/../x'},
       {href: 'http://a/b/c/g#s/./x', expected: 'http://a/b/c/g#s/./x'},
       {href: 'http://a/b/c/g#s/../x', expected: 'http://a/b/c/g#s/../x'},
+      {
+        href: 'http://user:password@host:8080/dir/../file.ts?rev=100',
+        expected: 'http://host:8080/file.ts?rev=100',
+      },
+      {
+        href: 'webpack://@scope/chrome-devtool-sourcemap-issue/./main.ts',
+        expected: 'webpack://scope/chrome-devtool-sourcemap-issue/main.ts',
+      },
     ];
 
     for (const {href, expected} of cases) {

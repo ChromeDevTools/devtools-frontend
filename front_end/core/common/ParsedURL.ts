@@ -119,7 +119,7 @@ export class ParsedURL {
       this.port = match[5];
       this.path = match[6] || '/';
       this.queryParams = match[7] || '';
-      this.fragment = match[8];
+      this.fragment = match[8] || '';
     } else {
       if (this.url.startsWith('data:')) {
         this.scheme = 'data';
@@ -359,9 +359,10 @@ export class ParsedURL {
     const parsedHref = this.fromString(trimmedHref);
     if (parsedHref && parsedHref.scheme) {
       const securityOrigin = parsedHref.securityOrigin();
-      const pathText = parsedHref.path;
-      const hrefSuffix = trimmedHref.substring(securityOrigin.length + pathText.length);
-      return securityOrigin + normalizePath(pathText) + hrefSuffix as Platform.DevToolsPath.UrlString;
+      const pathText = normalizePath(parsedHref.path);
+      const queryText = parsedHref.queryParams && `?${parsedHref.queryParams}`;
+      const fragmentText = parsedHref.fragment && `#${parsedHref.fragment}`;
+      return securityOrigin + pathText + queryText + fragmentText as Platform.DevToolsPath.UrlString;
     }
 
     const parsedURL = this.fromString(baseURL);

@@ -34,6 +34,7 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
     }
     await deinitializeGlobalVars();
     await import('../../../../front_end/entrypoints/shell/shell.js');
+    await import('../../../../front_end/panels/elements/elements-meta.js');
     await import('../../../../front_end/panels/sensors/sensors-meta.js');
     await import('../../../../front_end/entrypoints/inspector_main/inspector_main-meta.js');
     const response = await fetch('/json/new');

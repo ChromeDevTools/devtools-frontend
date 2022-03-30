@@ -144,5 +144,9 @@ devtools_entrypoint("meta") {
     "../../ui/legacy:bundle",
   ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [
+    "../../../test/unittests/front_end/helpers/*",
+    "../../../test/unittests/front_end/panels/elements/*",
+    "../../entrypoints/*",
+  ]
 }

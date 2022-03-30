@@ -27,13 +27,16 @@ export interface View {
 
 export class SimpleView extends VBox implements View {
   private readonly titleInternal: string;
-  constructor(title: string, isWebComponent?: boolean) {
+  readonly #viewId: string;
+
+  constructor(title: string, isWebComponent?: boolean, viewId?: string) {
     super(isWebComponent);
     this.titleInternal = title;
+    this.#viewId = viewId ?? title;
   }
 
   viewId(): string {
-    return this.titleInternal;
+    return this.#viewId;
   }
 
   title(): string {

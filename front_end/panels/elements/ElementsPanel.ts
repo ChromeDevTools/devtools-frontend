@@ -151,6 +151,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * These strings need to match the `SidebarPaneCodes` in UserMetrics.ts. DevTools
+ * collects usage metrics for the different sidebar tabs.
+ */
+export const enum SidebarPaneTabId {
+  Computed = 'Computed',
+  Styles = 'Styles',
+}
+
 const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => {
   const button = new Buttons.Button.Button();
   const title =
@@ -1002,10 +1011,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     const tabSelected = (event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void => {
       const {tabId} = event.data;
-      if (tabId === i18nString(UIStrings.computed)) {
+      if (tabId === SidebarPaneTabId.Computed) {
         computedStylePanesWrapper.show(computedView.element);
         showMetricsWidgetInComputedPane();
-      } else if (tabId === i18nString(UIStrings.styles)) {
+      } else if (tabId === SidebarPaneTabId.Styles) {
         stylesSplitWidget.setSidebarWidget(computedStylePanesWrapper);
         showMetricsWidgetInStylesPane();
       }
@@ -1034,12 +1043,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     UI.ARIAUtils.markAsComplementary(contentElement);
     UI.ARIAUtils.setAccessibleName(contentElement, i18nString(UIStrings.sidePanelContent));
 
-    const stylesView = new UI.View.SimpleView(i18nString(UIStrings.styles));
+    const stylesView =
+        new UI.View.SimpleView(i18nString(UIStrings.styles), /* isWebComponent */ undefined, SidebarPaneTabId.Styles);
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add('flex-auto');
     stylesSplitWidget.show(stylesView.element);
 
-    const computedView = new UI.View.SimpleView(i18nString(UIStrings.computed));
+    const computedView = new UI.View.SimpleView(
+        i18nString(UIStrings.computed), /* isWebComponent */ undefined, SidebarPaneTabId.Computed);
     computedView.element.classList.add('composite', 'fill');
 
     tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);

@@ -1060,6 +1060,10 @@ export class NetworkRequestNode extends NetworkNode {
       const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
       UI.UIUtils.createTextChild(cell, networkManager ? networkManager.target().decorateLabel(name) : name);
       this.appendSubtitle(cell, this.requestInternal.path());
+      if (!this.requestInternal.url().startsWith('data')) {
+        // Show the URL as tooltip unless it's a data URL.
+        UI.Tooltip.Tooltip.install(cell, this.requestInternal.url());
+      }
     } else if (text) {
       UI.UIUtils.createTextChild(cell, text);
     }

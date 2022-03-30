@@ -643,6 +643,10 @@ export interface JSONMode {
 }
 
 const emulatedDevices = [
+  // This is used by a python script to keep this list up-to-date with
+  // chromedriver native code.
+  // See //chrome/test/chromedriver/embed_mobile_devices_in_cpp.py in Chromium.
+  // DEVICE-LIST-BEGIN
   {
     'order': 10,
     'show-by-default': true,
@@ -1653,7 +1657,11 @@ const emulatedDevices = [
   },
   {
     'show-by-default': false,
+    /* DEVICE-LIST-IF-JS */
     'title': i18nLazyString(UIStrings.laptopWithTouch),
+    /* DEVICE-LIST-ELSE
+    'title': 'Laptop with touch',
+    DEVICE-LIST-END-IF */
     'screen': {
       'horizontal': {'width': 1280, 'height': 950},
       'device-pixel-ratio': 1,
@@ -1666,7 +1674,11 @@ const emulatedDevices = [
   },
   {
     'show-by-default': false,
+    /* DEVICE-LIST-IF-JS */
     'title': i18nLazyString(UIStrings.laptopWithHiDPIScreen),
+    /* DEVICE-LIST-ELSE
+    'title': 'Laptop with HiDPI screen',
+    DEVICE-LIST-END-IF */
     'screen': {
       'horizontal': {'width': 1440, 'height': 900},
       'device-pixel-ratio': 2,
@@ -1679,7 +1691,11 @@ const emulatedDevices = [
   },
   {
     'show-by-default': false,
+    /* DEVICE-LIST-IF-JS */
     'title': i18nLazyString(UIStrings.laptopWithMDPIScreen),
+    /* DEVICE-LIST-ELSE
+    'title': 'Laptop with MDPI screen',
+    DEVICE-LIST-END-IF */
     'screen': {
       'horizontal': {'width': 1280, 'height': 800},
       'device-pixel-ratio': 1,
@@ -1719,4 +1735,5 @@ const emulatedDevices = [
         {'platform': 'Android', 'platformVersion': '6.0.1', 'architecture': '', 'model': 'Moto G (4)', 'mobile': true},
     'type': 'phone',
   },
+  // DEVICE-LIST-END
 ];

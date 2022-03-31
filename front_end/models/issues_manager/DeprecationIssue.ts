@@ -15,6 +15,13 @@ const UIStrings = {
   *@description Title of issue raised when a deprecated feature is used
   */
   title: 'Deprecated Feature Used',
+
+  // Store alphabetized messages per DeprecationIssueType in this block.
+
+  /**
+  *@description This message is shown when the example deprecated feature is used
+  */
+  deprecationExample: 'This is an example of a translated deprecation issue message.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -23,9 +30,14 @@ export class DeprecationIssue extends Issue {
   #issueDetails: Protocol.Audits.DeprecationIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.DeprecationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+    let type = issueDetails.type;
+    // TODO(crbug.com/1264960): Remove legacy type when issues are translated.
+    if (issueDetails.deprecationType === Protocol.Audits.DeprecationIssueType.Untranslated) {
+      type = issueDetails.deprecationType;
+    }
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.DeprecationIssue,
-      issueDetails.deprecationType,
+      type,
     ].join('::');
     super({code: issueCode, umaCode: 'DeprecationIssue'}, issuesModel);
     this.#issueDetails = issueDetails;
@@ -40,13 +52,22 @@ export class DeprecationIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription {
+    let messageFunction = (): string => '';
+    // Keep case statements alphabetized per DeprecationIssueType.
+    switch (this.#issueDetails.type) {
+      case Protocol.Audits.DeprecationIssueType.DeprecationExample:
+        messageFunction = i18nLazyString(UIStrings.deprecationExample);
+        break;
+      // TODO(crbug.com/1264960): Remove legacy type when issues are translated.
+      case Protocol.Audits.DeprecationIssueType.Untranslated:
+        messageFunction = (): string => this.#issueDetails.message ?? '';
+        break;
+    }
     return resolveLazyDescription({
       file: 'deprecation.md',
       substitutions: new Map([
         ['PLACEHOLDER_title', i18nLazyString(UIStrings.title)],
-        // TODO(crbug.com/1264960): Re-work format to add i18n support per:
-        // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
-        ['PLACEHOLDER_message', (): string => String(this.#issueDetails.message)],
+        ['PLACEHOLDER_message', messageFunction],
       ]),
       links: [],
     });
@@ -72,6 +93,16 @@ export class DeprecationIssue extends Issue {
     const details = inspectorIssue.details.deprecationIssueDetails;
     if (!details) {
       console.warn('Deprecation issue without details received.');
+      return [];
+    }
+    if (details.type !== Protocol.Audits.DeprecationIssueType.Untranslated &&
+        (details.deprecationType || details.message)) {
+      console.warn('Translated deprecation issue with malformed details received.');
+      return [];
+    }
+    if (details.type === Protocol.Audits.DeprecationIssueType.Untranslated &&
+        (!details.deprecationType || !details.message)) {
+      console.warn('Untranslated deprecation issue with malformed details received.');
       return [];
     }
     return [new DeprecationIssue(details, issuesModel)];

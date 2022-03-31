@@ -1352,6 +1352,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site and Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "This is an example of a translated deprecation issue message."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Deprecated Feature Used"
   },

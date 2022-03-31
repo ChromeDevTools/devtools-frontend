@@ -1352,6 +1352,9 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "T̂h́îś îś âń êx́âḿp̂ĺê óf̂ á t̂ŕâńŝĺât́êd́ d̂ép̂ŕêćât́îón̂ íŝśûé m̂éŝśâǵê."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "D̂ép̂ŕêćât́êd́ F̂éât́ûŕê Úŝéd̂"
   },

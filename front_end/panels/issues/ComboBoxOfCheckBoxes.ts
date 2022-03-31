@@ -4,6 +4,16 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+
+const UIStrings = {
+  /**
+  *@description Generic menu name accessibility label
+  */
+  genericMenuLabel: 'Menu',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/issues/ComboBoxOfCheckBoxes.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
   #options = new Array<MenuOption>();
@@ -56,6 +66,7 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
         this.setOptionEnabled(index, !enabled);
       }, enabled);
     }
+    contextMenu.setContextMenuLabel(this.title ?? i18nString(UIStrings.genericMenuLabel));
     void contextMenu.show();
   }
 }

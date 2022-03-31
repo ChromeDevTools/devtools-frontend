@@ -5381,6 +5381,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Ûńt̂ŕûśt̂ẃôŕt̂h́ŷ ór̂íĝín̂"
   },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "M̂én̂ú"
+  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Ĥíd̂é îśŝúêś"
   },

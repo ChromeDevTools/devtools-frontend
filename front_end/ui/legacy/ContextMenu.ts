@@ -352,6 +352,7 @@ export class ContextMenu extends SubMenu {
   private readonly handlers: Map<number, () => void>;
   idInternal: number;
   private softMenu?: SoftContextMenu;
+  private contextMenuLabel?: string;
 
   constructor(event: Event, options: ContextMenuOptions = {}) {
     super(null);
@@ -440,6 +441,9 @@ export class ContextMenu extends SubMenu {
       this.softMenu = new SoftContextMenu(
           (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), undefined, this.onSoftMenuClosed);
       this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
+      if (this.contextMenuLabel) {
+        this.softMenu.setContextMenuElementLabel(this.contextMenuLabel);
+      }
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
           this.x, this.y, menuObject, (ownerDocument as Document));
@@ -455,6 +459,10 @@ export class ContextMenu extends SubMenu {
       // so we skip it before subscribing to the clear event.
       queueMicrotask(listenToEvents.bind(this));
     }
+  }
+
+  setContextMenuLabel(label: string): void {
+    this.contextMenuLabel = label;
   }
 
   setX(x: number): void {

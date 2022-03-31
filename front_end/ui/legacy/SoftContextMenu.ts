@@ -161,6 +161,12 @@ export class SoftContextMenu {
     }
   }
 
+  setContextMenuElementLabel(label: string): void {
+    if (this.contextMenuElement) {
+      ARIAUtils.setAccessibleName(this.contextMenuElement, label);
+    }
+  }
+
   discard(): void {
     if (this.subMenu) {
       this.subMenu.discard();

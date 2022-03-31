@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import accessibilityPropertiesStyles from './accessibilityProperties.css.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import accessibilityNodeStyles from './accessibilityNode.css.js';
@@ -12,7 +13,7 @@ import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.
 export class AccessibilitySubPane extends UI.View.SimpleView {
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   protected nodeInternal?: SDK.DOMModel.DOMNode|null;
-  constructor(name: string) {
+  constructor(name: Platform.UIString.LocalizedString) {
     super(name);
 
     this.axNode = null;

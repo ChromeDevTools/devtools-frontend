@@ -114,12 +114,12 @@ export class ParsedURL {
       } else {
         this.scheme = match[2].toLowerCase();
       }
-      this.user = match[3];
-      this.host = match[4];
-      this.port = match[5];
-      this.path = match[6] || '/';
-      this.queryParams = match[7] || '';
-      this.fragment = match[8] || '';
+      this.user = match[3] ?? '';
+      this.host = match[4] ?? '';
+      this.port = match[5] ?? '';
+      this.path = match[6] ?? '/';
+      this.queryParams = match[7] ?? '';
+      this.fragment = match[8] ?? '';
     } else {
       if (this.url.startsWith('data:')) {
         this.scheme = 'data';

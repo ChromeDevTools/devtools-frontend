@@ -73,6 +73,24 @@ describe('Parsed URL', () => {
     assert.strictEqual(parsedUrl.lastPathComponent, 'test', 'URL last path component is incorrect');
   });
 
+  it('recognizes a valid IPv6 localhost URL', () => {
+    const parsedUrl = new ParsedURL('http://[::]/?queryParam1=value1&queryParam2=value2#fragmentWith/Many//Slashes');
+    assert.isTrue(parsedUrl.isValid, 'the URL should be valid');
+    assert.strictEqual(
+        parsedUrl.url, 'http://[::]/?queryParam1=value1&queryParam2=value2#fragmentWith/Many//Slashes',
+        'URL value is incorrect');
+    assert.strictEqual(parsedUrl.scheme, 'http', 'URL scheme is incorrect');
+    assert.strictEqual(parsedUrl.user, '', 'URL user is incorrect');
+    assert.strictEqual(parsedUrl.host, '[::]', 'URL host is incorrect');
+    assert.strictEqual(parsedUrl.port, '', 'URL port is incorrect');
+    assert.strictEqual(parsedUrl.path, '/', 'URL path is incorrect');
+    assert.strictEqual(
+        parsedUrl.queryParams, 'queryParam1=value1&queryParam2=value2', 'URL query params are incorrect');
+    assert.strictEqual(parsedUrl.fragment, 'fragmentWith/Many//Slashes', 'URL fragment is incorrect');
+    assert.strictEqual(parsedUrl.folderPathComponents, '', 'URL folder path components are incorrect');
+    assert.strictEqual(parsedUrl.lastPathComponent, '', 'URL last path component is incorrect');
+  });
+
   it('recognizes a valid blob URL', () => {
     const parsedUrl = new ParsedURL('blob:http://www.example.com/');
     assert.isTrue(parsedUrl.isValid, 'the URL should be valid');
@@ -141,13 +159,19 @@ describe('Parsed URL', () => {
   });
 
   it('converts URL with a hash to a URL without a hash', () => {
-    const urlTest = 'http://www.example.com#test';
+    const urlTest = 'http://www.example.com#?test';
     const convertedUrl = ParsedURL.urlWithoutHash(urlTest);
     assert.strictEqual(convertedUrl, 'http://www.example.com', 'URL was not converted successfully');
   });
 
   it('returns URL without a hash as it is', () => {
     const urlTest = 'http://www.example.com';
+    const convertedUrl = ParsedURL.urlWithoutHash(urlTest);
+    assert.strictEqual(convertedUrl, urlTest, 'URL was changed');
+  });
+
+  it('returns URL with a question mark but without a hash as it is', () => {
+    const urlTest = 'http://www.example.com?hello';
     const convertedUrl = ParsedURL.urlWithoutHash(urlTest);
     assert.strictEqual(convertedUrl, urlTest, 'URL was changed');
   });
@@ -377,6 +401,14 @@ describe('Parsed URL', () => {
        assert.isUndefined(splitResult.lineNumber, 'line number is not undefined');
        assert.isUndefined(splitResult.columnNumber, 'column number is not undefined');
      });
+
+  it('uses the splitLineAndColumn function to return the line number if the URL contains one', () => {
+    const stringTest = 'http://www.example.com/foo.js:15';
+    const splitResult = ParsedURL.splitLineAndColumn(stringTest);
+    assert.strictEqual(splitResult.url, 'http://www.example.com/foo.js', 'URL is not correct');
+    assert.strictEqual(splitResult.lineNumber, 14, 'line number is incorrect');
+    assert.strictEqual(splitResult.columnNumber, undefined, 'column number is incorrect');
+  });
 
   it('uses the splitLineAndColumn function to return the line and column numbers if the URL contains them', () => {
     const stringTest = 'http://www.example.com:15:20';

@@ -20,6 +20,7 @@ devtools_module("extensions") {
     "../../../extension-api",
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",

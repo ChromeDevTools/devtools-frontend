@@ -29,6 +29,7 @@
  */
 
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -127,7 +128,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
   private idInternal: string;
   private extensionView?: ExtensionView;
   private objectPropertiesView?: ExtensionNotifierView;
-  constructor(server: ExtensionServer, panelName: string, title: string, id: string) {
+  constructor(server: ExtensionServer, panelName: string, title: Platform.UIString.LocalizedString, id: string) {
     super(title);
     this.element.classList.add('fill');
     this.panelNameInternal = panelName;

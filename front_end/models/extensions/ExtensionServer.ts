@@ -35,6 +35,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as Root from '../../core/root/root.js';
@@ -365,8 +366,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const page = this.expandResourcePath(this.getExtensionOrigin(port), message.page) as string;
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s/g, '');
-    const panelView =
-        new ExtensionServerPanelView(persistentId, message.title, new ExtensionPanel(this, persistentId, id, page));
+    const panelView = new ExtensionServerPanelView(
+        persistentId, i18n.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
     this.clientObjects.set(id, panelView);
     UI.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
@@ -440,7 +441,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.CreateSidebarPane}`);
     }
     const id = message.id;
-    const sidebar = new ExtensionSidebarPane(this, message.panel, message.title, id);
+    const sidebar = new ExtensionSidebarPane(this, message.panel, i18n.i18n.lockedString(message.title), id);
     this.sidebarPanesInternal.push(sidebar);
     this.clientObjects.set(id, sidebar);
     this.dispatchEventToListeners(Events.SidebarPaneAdded, sidebar);
@@ -1136,7 +1137,7 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
   private readonly name: string;
   private readonly panel: UI.Panel.Panel;
 
-  constructor(name: string, title: string, panel: UI.Panel.Panel) {
+  constructor(name: string, title: Platform.UIString.LocalizedString, panel: UI.Panel.Panel) {
     super(title);
     this.name = name;
     this.panel = panel;

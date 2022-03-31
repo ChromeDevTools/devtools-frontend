@@ -255,12 +255,22 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return false;
     }
 
-    const cursorPos = dir < 0 ? newText.search(/\n|$/) : newText.length;
+    // Change the prompt input to the history content, and scroll to the end to
+    // bring the full content (potentially multiple lines) into view.
+    const cursorPos = newText.length;
     this.editor.dispatch({
       changes: {from: 0, to: this.editor.state.doc.length, insert: newText},
       selection: CodeMirror.EditorSelection.cursor(cursorPos),
       scrollIntoView: true,
     });
+    if (dir < 0) {
+      // If we are going back in history, put the cursor to the end of the first line
+      // so that the user can quickly go further back in history.
+      const firstLineBreak = newText.search(/\n|$/);
+      this.editor.dispatch({
+        selection: CodeMirror.EditorSelection.cursor(firstLineBreak),
+      });
+    }
     return true;
   }
 

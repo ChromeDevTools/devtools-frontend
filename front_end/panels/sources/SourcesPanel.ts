@@ -276,7 +276,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.editorView.setMainWidget(this.sourcesViewInternal);
 
     this.threadsSidebarPane = null;
-    this.watchSidebarPane = (UI.ViewManager.ViewManager.instance().view('sources.watch') as UI.View.View);
+    this.watchSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.watch');
     this.callstackPane = CallStackSidebarPane.instance();
 
     Common.Settings.Settings.instance()
@@ -354,7 +354,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private showThreadsIfNeeded(): void {
     if (ThreadsSidebarPane.shouldBeShown() && !this.threadsSidebarPane) {
-      this.threadsSidebarPane = (UI.ViewManager.ViewManager.instance().view('sources.threads') as UI.View.View);
+      this.threadsSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.threads');
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
         void this.sidebarPaneStack.showView(
             this.threadsSidebarPane, this.splitWidget.isVertical() ? this.watchSidebarPane : this.callstackPane);
@@ -1058,8 +1058,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       void this.sidebarPaneStack.showView(this.threadsSidebarPane);
     }
 
-    const jsBreakpoints = (UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints') as UI.View.View);
-    const scopeChainView = (UI.ViewManager.ViewManager.instance().view('sources.scopeChain') as UI.View.View);
+    const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints');
+    const scopeChainView = UI.ViewManager.ViewManager.instance().view('sources.scopeChain');
 
     if (this.tabbedLocationHeader) {
       this.splitWidget.uninstallResizer(this.tabbedLocationHeader);

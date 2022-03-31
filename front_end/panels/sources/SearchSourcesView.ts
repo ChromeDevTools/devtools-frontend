@@ -22,14 +22,14 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
   }
 
   static async openSearch(query: string, searchImmediately?: boolean): Promise<UI.Widget.Widget> {
-    const view = (UI.ViewManager.ViewManager.instance().view('sources.search-sources-tab') as UI.View.View);
+    const view = UI.ViewManager.ViewManager.instance().view('sources.search-sources-tab');
     // Deliberately use target location name so that it could be changed
     // based on the setting later.
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const location = (await UI.ViewManager.ViewManager.instance().resolveLocation('drawer-view') as any);
     location.appendView(view);
-    await UI.ViewManager.ViewManager.instance().revealView((view as UI.View.View));
+    await UI.ViewManager.ViewManager.instance().revealView(view);
     const widget = (await view.widget() as Search.SearchView.SearchView);
     void widget.toggle(query, Boolean(searchImmediately));
     return widget;

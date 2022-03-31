@@ -313,7 +313,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     const inputViewId = 'Inputs';
     void UI.ViewManager.ViewManager.instance()
         .showView(inputViewId)
-        .then(() => (UI.ViewManager.ViewManager.instance().view(inputViewId) as UI.View.View).widget())
+        .then(() => UI.ViewManager.ViewManager.instance().view(inputViewId).widget())
         .then(widget => this.innerHandleAction(widget as InputTimeline, actionId));
 
     return true;

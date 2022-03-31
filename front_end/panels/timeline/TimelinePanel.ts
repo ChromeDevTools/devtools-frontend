@@ -772,7 +772,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private async getCoverageViewWidget(): Promise<Coverage.CoverageView.CoverageView> {
-    const view = (UI.ViewManager.ViewManager.instance().view('coverage') as UI.View.View);
+    const view = UI.ViewManager.ViewManager.instance().view('coverage');
     return await view.widget() as Coverage.CoverageView.CoverageView;
   }
 

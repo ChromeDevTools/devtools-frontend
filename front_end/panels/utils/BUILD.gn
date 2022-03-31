@@ -8,9 +8,16 @@ import("../visibility.gni")
 devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
-  deps = [ "../../core/common:bundle" ]
+  deps = [
+    "../../core/common:bundle",
+    "../../models/formatter:bundle",
+    "../../ui/components/diff_view:bundle",
+  ]
 
-  visibility = [ "../*" ]
+  visibility = [
+    "../*",
+    "../../../test/unittests/front_end/panels/utils/*",
+  ]
 
   visibility += devtools_panels_visibility
 }

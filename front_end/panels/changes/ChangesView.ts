@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import {formatCSSChangesFromDiff} from '../../panels/utils/utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -21,6 +23,10 @@ const UIStrings = {
   *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
   */
   revertAllChangesToCurrentFile: 'Revert all changes to current file',
+  /**
+  *@description Screen reader/tooltip label for a button in the Changes tool that copies all changes from the currently open file.
+  */
+  copyAllChangesFromCurrentFile: 'Copy all changes from current file',
   /**
   *@description Text in Changes View of the Changes tab
   */
@@ -41,6 +47,10 @@ const UIStrings = {
   * lines were removed (not translatable).
   */
   sDeletions: '{n, plural, =1 {# deletion (-)} other {# deletions (-)}}',
+  /**
+  *@description Text for a button in the Changes tool that copies all the changes from the currently open file.
+  */
+  copy: 'Copy',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -66,6 +76,8 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats: UI.Toolbar.ToolbarText;
   private readonly diffView: DiffView.DiffView.DiffView;
+  private readonly copyButton: UI.Toolbar.ToolbarButton;
+  private readonly copyButtonSeparator: UI.Toolbar.ToolbarSeparator;
 
   private constructor() {
     super(true);
@@ -98,6 +110,11 @@ export class ChangesView extends UI.Widget.VBox {
     this.toolbar.appendToolbarItem(revertButton);
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);
+
+    this.copyButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.copyAllChangesFromCurrentFile), 'largeicon-copy', UIStrings.copy);
+    this.copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.copyChanges.bind(this));
+    this.copyButtonSeparator = new UI.Toolbar.ToolbarSeparator();
     this.toolbar.setEnabled(false);
 
     this.hideDiff(i18nString(UIStrings.noChanges));
@@ -115,6 +132,13 @@ export class ChangesView extends UI.Widget.VBox {
 
   private selectedUISourceCodeChanged(): void {
     this.revealUISourceCode(this.changesSidebar.selectedUISourceCode());
+    if (this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet) {
+      this.toolbar.appendToolbarItem(this.copyButtonSeparator);
+      this.toolbar.appendToolbarItem(this.copyButton);
+    } else {
+      this.toolbar.removeToolbarItem(this.copyButtonSeparator);
+      this.toolbar.removeToolbarItem(this.copyButton);
+    }
   }
 
   private revert(): void {
@@ -123,6 +147,20 @@ export class ChangesView extends UI.Widget.VBox {
       return;
     }
     void this.workspaceDiff.revertToOriginal(uiSourceCode);
+  }
+
+  private async copyChanges(): Promise<void> {
+    const uiSourceCode = this.selectedUISourceCode;
+    if (!uiSourceCode) {
+      return;
+    }
+    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    // Diff array with real diff will contain at least 2 lines.
+    if (!diffResponse || diffResponse?.diff.length < 2) {
+      return;
+    }
+    const changes = await formatCSSChangesFromDiff(diffResponse.diff);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(changes);
   }
 
   private click(event: MouseEvent): void {

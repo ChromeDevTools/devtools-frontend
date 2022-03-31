@@ -3689,6 +3689,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binary data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copy"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copy all changes from current file"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "No changes"
   },

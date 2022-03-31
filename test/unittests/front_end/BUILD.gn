@@ -43,6 +43,7 @@ group("front_end") {
     "panels/sources",
     "panels/timeline",
     "panels/timeline/components",
+    "panels/utils",
     "test_setup",
     "third_party/i18n",
     "ui",

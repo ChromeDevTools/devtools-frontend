@@ -28,6 +28,7 @@ devtools_module("changes") {
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",
     "../../panels/snippets:bundle",
+    "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
     "../../ui/components/diff_view:bundle",
     "../../ui/legacy:bundle",

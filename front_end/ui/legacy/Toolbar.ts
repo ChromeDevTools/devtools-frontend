@@ -335,6 +335,18 @@ export class Toolbar {
     this.appendToolbarItem(new ToolbarText(text));
   }
 
+  removeToolbarItem(itemToRemove: ToolbarItem): void {
+    const updatedItems = [];
+    for (const item of this.items) {
+      if (item === itemToRemove) {
+        item.element.remove();
+      } else {
+        updatedItems.push(item);
+      }
+    }
+    this.items = updatedItems;
+  }
+
   removeToolbarItems(): void {
     for (const item of this.items) {
       item.toolbar = null;

@@ -3689,6 +3689,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "B̂ín̂ár̂ý d̂át̂á"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Ĉóp̂ý"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Ĉóp̂ý âĺl̂ ćĥán̂ǵêś f̂ŕôḿ ĉúr̂ŕêńt̂ f́îĺê"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "N̂ó ĉh́âńĝéŝ"
   },

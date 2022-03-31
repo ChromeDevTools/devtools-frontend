@@ -40,6 +40,7 @@ devtools_entrypoint("bundle") {
     "../../models/workspace_diff/*",
     "../../panels/coverage/*",
     "../../panels/sources/*",
+    "../../panels/utils/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../../ui/components/text_editor/*",

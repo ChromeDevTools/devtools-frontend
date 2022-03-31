@@ -4,7 +4,6 @@
 
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Diff from '../../../../../front_end/third_party/diff/diff.js';
 import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
@@ -38,43 +37,6 @@ describeWithRealConnection('StylesSidebarPane', async () => {
     assert.strictEqual(
         Elements.StylesSidebarPane.unescapeCssString('"_\\41\n_\\41\t_\\41\x20_"'), '"_A_A_A_"',
         'certain trailing whitespace characters should be consumed as part of the escape sequence');
-  });
-
-  it('formats CSS changes from diff arrays', async () => {
-    const original = `
-      .container {
-        width: 10px;
-        height: 10px;
-      }
-
-      .child {
-        display: grid;
-      }
-      `;
-    const current = `
-      .container {
-        width: 15px;
-        margin: 0;
-      }
-
-      .child {
-        display: grid;
-        padding: 10px;
-      }`;
-    const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), current.split('\n'));
-    const changes = await Elements.StylesSidebarPane.formatCSSChangesFromDiff(diff);
-    assert.strictEqual(
-        changes, `.container {
-  /* width: 10px; */
-  /* height: 10px; */
-  width: 15px;
-  margin: 0;
-}
-
-.child {
-  padding: 10px;
-}`,
-        'formatted CSS changes are not correct');
   });
 
   it('escapes URL as CSS comments', () => {

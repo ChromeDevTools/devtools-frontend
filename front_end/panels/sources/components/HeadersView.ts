@@ -52,7 +52,7 @@ export class HeadersView extends UI.View.SimpleView {
   #uiSourceCode: Workspace.UISourceCode.UISourceCode;
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    super('HeadersView');
+    super(i18n.i18n.lockedString('HeadersView'));
     this.#uiSourceCode = uiSourceCode;
     this.#uiSourceCode.addEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);

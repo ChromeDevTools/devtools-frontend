@@ -17,6 +17,7 @@ node_ts_library("console") {
     "console-expand-recursively_test.ts",
     "console-filter_test.ts",
     "console-last-result_test.ts",
+    "console-live-expressions_test.ts",
     "console-log_test.ts",
     "console-message-format_test.ts",
     "console-repl-mode_test.ts",

@@ -246,6 +246,13 @@ export class ConsolePin {
             },
           },
           {
+            key: 'Enter',
+            run: (): boolean => {
+              this.focusOut();
+              return true;
+            },
+          },
+          {
             key: 'Mod-Enter',
             run: (): boolean => {
               this.focusOut();

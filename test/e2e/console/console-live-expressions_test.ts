@@ -14,11 +14,11 @@ describe('The Console Tab', () => {
     await click(CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR);
 
     const consolePin = await waitFor('.console-pin');
-    const editorFocusedPromise = waitFor('.cm-editor.cm-focused', consolePin);
-    const editorUnfocusedPromise = waitForNone('.cm-editor.cm-focused', consolePin);
 
-    await editorFocusedPromise;
+    await waitFor('.cm-editor.cm-focused', consolePin);
     await typeText('1 + 2 + 3');
+
+    const editorUnfocusedPromise = waitForNone('.cm-editor.cm-focused', consolePin);
     await frontend.keyboard.press('Enter');
     await editorUnfocusedPromise;
   });

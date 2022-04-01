@@ -14,6 +14,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
+import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
@@ -102,7 +103,21 @@ const UIStrings = {
    * @description Text that precedes displaying a link to the extension which blocked the page from being eligible for back/forward cache.
    */
   blockingExtensionId: 'Extension id: ',
+  /**
+   * @description Label for the 'Frames' section of the back/forward cache view, which shows a frame tree of the
+   * page with reasons why the frames can't be cached.
+   */
+  framesTitle: 'Frames',
+  /**
+   * @description Top level summary of the total number of issues found and the number of frames they were found in.
+   */
+  issuesInFrames: '{x, plural, =1 {# issue} other {# issues}} found in {y, plural, =1 {# frame} other {# frames}}.',
+  /**
+   * @description Shows the number of frames with a particular issue.
+   */
+  framesPerIssue: '{n, plural, =1 {# frame} other {# frames}}',
 };
+
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -249,14 +264,15 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       ${this.#renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
-      <div class='url'>
-        <div class='url-key'>
+      <div class='report-line'>
+        <div class='report-key'>
           ${i18nString(UIStrings.url)}
         </div>
-        <div class='url-value'>
+        <div class='report-value'>
           ${this.#frame.url}
         </div>
       </div>
+      ${this.#maybeRenderFrameTree(this.#frame.backForwardCacheDetails.explanationsTree)}
       <${ReportView.ReportView.ReportSection.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .disabled=${isTestRunning || isTestingForbidden}
@@ -271,7 +287,8 @@ export class BackForwardCacheView extends HTMLElement {
       </${ReportView.ReportView.ReportSection.litTagName}>
       <${ReportView.ReportView.ReportSectionDivider.litTagName}>
       </${ReportView.ReportView.ReportSectionDivider.litTagName}>
-        ${this.#maybeRenderExplanations(this.#frame.backForwardCacheDetails.explanations)}
+      ${this.#maybeRenderExplanations(this.#frame.backForwardCacheDetails.explanations,
+          this.#frame.backForwardCacheDetails.explanationsTree)}
       <${ReportView.ReportView.ReportSection.litTagName}>
         <x-link href="https://web.dev/bfcache/" class="link">
           ${i18nString(UIStrings.learnMore)}
@@ -279,6 +296,67 @@ export class BackForwardCacheView extends HTMLElement {
       </${ReportView.ReportView.ReportSection.litTagName}>
     `;
     // clang-format on
+  }
+
+  #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
+                        undefined): LitHtml.TemplateResult|{} {
+    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0)) {
+      return LitHtml.nothing;
+    }
+    const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    treeOutline.registerCSSFiles([backForwardCacheViewStyles]);
+    const urlTreeElement = new UI.TreeOutline.TreeElement();
+    treeOutline.appendChild(urlTreeElement);
+    const {frameCount, issueCount} = this.#maybeAddFrameSubTree(urlTreeElement, explanationTree);
+    urlTreeElement.title = i18nString(UIStrings.issuesInFrames, {x: issueCount, y: frameCount});
+    // The first element is always the root, so expand it by default (and override its icon).
+    const topFrameElement = urlTreeElement.childAt(0);
+    if (topFrameElement) {
+      topFrameElement.expand();
+      topFrameElement.setLeadingIcons([UI.Icon.Icon.create('mediumicon-frame')]);
+    }
+    return LitHtml.html`
+    <div class='report-line'>
+    <div class='report-key'>
+      ${i18nString(UIStrings.framesTitle)}
+    </div>
+    <div class='report-value'>
+      ${treeOutline.element}
+    </div>
+  </div>`;
+  }
+
+  // Potentially adds a subtree of the frame tree, if there are any issues. Returns a tuple of how many frames were added,
+  // and how many issues there were in total over all those frames.
+  #maybeAddFrameSubTree(
+      root: UI.TreeOutline.TreeElement,
+      explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
+      undefined): {frameCount: number, issueCount: number} {
+    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0)) {
+      return {frameCount: 0, issueCount: 0};
+    }
+    const icon = UI.Icon.Icon.create('mediumicon-frame-embedded');
+    let issuecount = explanationTree.explanations.length;
+    let framecount = 0;
+    const urlTreeElement = new UI.TreeOutline.TreeElement();
+    root.appendChild(urlTreeElement);
+    urlTreeElement.setLeadingIcons([icon]);
+    explanationTree.explanations.forEach(explanation => {
+      urlTreeElement.appendChild(new UI.TreeOutline.TreeElement(explanation.reason));
+    });
+    explanationTree.children.forEach(child => {
+      const counts = this.#maybeAddFrameSubTree(urlTreeElement, child);
+      framecount += counts.frameCount;
+      issuecount += counts.issueCount;
+    });
+    if (issuecount > 0) {
+      urlTreeElement.title = '(' + String(issuecount) + ') ' + explanationTree.url;
+      framecount += 1;
+    } else if (framecount === 0) {
+      root.removeChild(urlTreeElement);
+    }
+
+    return {frameCount: framecount, issueCount: issuecount};
   }
 
   #renderBackForwardCacheStatus(status: boolean|undefined): LitHtml.TemplateResult {
@@ -327,8 +405,26 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
-  #maybeRenderExplanations(explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]): LitHtml.TemplateResult
-      |{} {
+  #buildReasonToFramesMap(
+      explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree,
+      outputMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): void {
+    explanationTree.explanations.forEach(explanation => {
+      let frames: string[]|undefined = outputMap.get(explanation.reason);
+      if (frames === undefined) {
+        frames = [explanationTree.url];
+        outputMap.set(explanation.reason, frames);
+      } else {
+        frames.push(explanationTree.url);
+      }
+    });
+    explanationTree.children.map(child => {
+      this.#buildReasonToFramesMap(child, outputMap);
+    });
+  }
+
+  #maybeRenderExplanations(
+      explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
+      explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined): LitHtml.TemplateResult|{} {
     if (explanations.length === 0) {
       return LitHtml.nothing;
     }
@@ -340,19 +436,24 @@ export class BackForwardCacheView extends HTMLElement {
     const circumstantial = explanations.filter(
         explanation => explanation.type === Protocol.Page.BackForwardCacheNotRestoredReasonType.Circumstantial);
 
+    const reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]> = new Map();
+    if (explanationTree) {
+      this.#buildReasonToFramesMap(explanationTree, reasonToFramesMap);
+    }
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-      ${this.#renderExplanations(i18nString(UIStrings.pageSupportNeeded), i18nString(UIStrings.pageSupportNeededExplanation), pageSupportNeeded)}
-      ${this.#renderExplanations(i18nString(UIStrings.supportPending), i18nString(UIStrings.supportPendingExplanation), supportPending)}
-      ${this.#renderExplanations(i18nString(UIStrings.circumstantial), i18nString(UIStrings.circumstantialExplanation), circumstantial)}
+      ${this.#renderExplanations(i18nString(UIStrings.pageSupportNeeded), i18nString(UIStrings.pageSupportNeededExplanation), pageSupportNeeded, reasonToFramesMap)}
+      ${this.#renderExplanations(i18nString(UIStrings.supportPending), i18nString(UIStrings.supportPendingExplanation), supportPending, reasonToFramesMap)}
+      ${this.#renderExplanations(i18nString(UIStrings.circumstantial), i18nString(UIStrings.circumstantialExplanation), circumstantial, reasonToFramesMap)}
     `;
     // clang-format on
   }
 
   #renderExplanations(
       category: Platform.UIString.LocalizedString, explainerText: Platform.UIString.LocalizedString,
-      explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]): LitHtml.TemplateResult {
+      explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
+      reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -369,7 +470,7 @@ export class BackForwardCacheView extends HTMLElement {
             </${IconButton.Icon.Icon.litTagName}>
           </div>
         </${ReportView.ReportView.ReportSectionHeader.litTagName}>
-        ${explanations.map(explanation => this.#renderReason(explanation))}
+        ${explanations.map(explanation => this.#renderReason(explanation, reasonToFramesMap.get(explanation.reason)))}
       ` : LitHtml.nothing}
     `;
     // clang-format on
@@ -389,7 +490,23 @@ export class BackForwardCacheView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
+  #renderFramesPerReason(frames: string[]|undefined): LitHtml.TemplateResult|{} {
+    if (frames === undefined || frames.length === 0) {
+      return LitHtml.nothing;
+    }
+    const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
+    rows.push(...frames.map(url => LitHtml.html`<div class='text-ellipsis' title=${url}>${url}</div>`));
+    return LitHtml.html`
+      <div class='explanation-frames'>
+        <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
+        {rows} as
+        ExpandableList.ExpandableList.ExpandableListData}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
+      </div>
+    `;
+  }
+
+  #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined):
+      LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -413,6 +530,7 @@ export class BackForwardCacheView extends HTMLElement {
       <div class='gray-text'>
         ${explanation.reason}
       </div>
+      ${this.#renderFramesPerReason(frames)}
     `;
     // clang-format on
   }

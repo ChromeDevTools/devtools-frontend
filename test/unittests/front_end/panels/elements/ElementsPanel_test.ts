@@ -21,9 +21,6 @@ describeWithRealConnection('ElementsPanel', () => {
   }
 
   it('records metrics when the styles and computed tabs are selected', () => {
-    // Since metrics are shared between tests, lets clear them out to have a clean slate.
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms.splice(0);
-
     // We need to use the global instance, as some auxiliary code always uses the global instance.
     const panel = Elements.ElementsPanel.ElementsPanel.instance();
     assertNotNullOrUndefined(panel.sidebarPaneView);

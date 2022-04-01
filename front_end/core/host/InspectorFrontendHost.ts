@@ -360,6 +360,12 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   async initialTargetId(): Promise<string|null> {
     return null;
   }
+
+  resetStubState(): void {
+    this.#urlsBeingSaved.clear();
+    this.recordedEnumeratedHistograms.splice(0);
+    this.recordedPerformanceHistograms.splice(0);
+  }
 }
 
 // @ts-ignore Global injected by devtools-compatibility.js

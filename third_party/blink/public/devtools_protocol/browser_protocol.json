@@ -15865,6 +15865,7 @@
                         "Unknown",
                         "ActivationNavigationsDisallowedForBug1234857",
                         "ErrorDocument",
+                        "FencedFramesEmbedder",
                         "WebSocket",
                         "WebTransport",
                         "WebRTC",
@@ -15997,6 +15998,14 @@
                                 "$ref": "BackForwardCacheNotRestoredExplanationTree"
                             }
                         }
+                    ]
+                },
+                {
+                    "id": "PrerenderFinalStatus",
+                    "description": "List of FinalStatus reasons for Prerender2.",
+                    "type": "string",
+                    "enum": [
+                        "Activated"
                     ]
                 }
             ],
@@ -17541,6 +17550,25 @@
                             "description": "Tree structure of reasons why the page could not be cached for each frame.",
                             "optional": true,
                             "$ref": "BackForwardCacheNotRestoredExplanationTree"
+                        }
+                    ]
+                },
+                {
+                    "name": "prerenderAttemptCompleted",
+                    "description": "Fired when a prerender attempt is completed.",
+                    "parameters": [
+                        {
+                            "name": "initiatingFrameId",
+                            "description": "The frame id of the frame initiating prerendering.",
+                            "$ref": "FrameId"
+                        },
+                        {
+                            "name": "prerenderingUrl",
+                            "type": "string"
+                        },
+                        {
+                            "name": "finalStatus",
+                            "$ref": "PrerenderFinalStatus"
                         }
                     ]
                 },

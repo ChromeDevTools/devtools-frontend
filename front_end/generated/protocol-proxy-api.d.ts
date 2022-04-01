@@ -2819,6 +2819,11 @@ declare namespace ProtocolProxyApi {
      */
     backForwardCacheNotUsed(params: Protocol.Page.BackForwardCacheNotUsedEvent): void;
 
+    /**
+     * Fired when a prerender attempt is completed.
+     */
+    prerenderAttemptCompleted(params: Protocol.Page.PrerenderAttemptCompletedEvent): void;
+
     loadEventFired(params: Protocol.Page.LoadEventFiredEvent): void;
 
     /**

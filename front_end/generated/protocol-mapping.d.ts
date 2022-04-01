@@ -405,6 +405,10 @@ export namespace ProtocolMapping {
      * when bfcache navigation fails.
      */
     'Page.backForwardCacheNotUsed': [Protocol.Page.BackForwardCacheNotUsedEvent];
+    /**
+     * Fired when a prerender attempt is completed.
+     */
+    'Page.prerenderAttemptCompleted': [Protocol.Page.PrerenderAttemptCompletedEvent];
     'Page.loadEventFired': [Protocol.Page.LoadEventFiredEvent];
     /**
      * Fired when same-document navigation happens, e.g. due to history API usage or anchor navigation.

@@ -1085,6 +1085,9 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
 
   downloadProgress(): void {
   }
+
+  prerenderAttemptCompleted({}: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+  }
 }
 
 SDKModel.register(ResourceTreeModel, {capabilities: Capability.DOM, autostart: true, early: true});

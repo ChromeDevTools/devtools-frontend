@@ -303,7 +303,7 @@ export const generatedProperties = [
   {'name': 'clip', 'keywords': ['auto']},
   {'name': 'clip-path', 'keywords': ['none']},
   {'name': 'clip-rule', 'inherited': true, 'keywords': ['nonzero', 'evenodd']},
-  {'name': 'color', 'keywords': ['currentcolor'], 'inherited': true},
+  {'keywords': ['currentcolor'], 'inherited': true, 'name': 'color'},
   {'name': 'color-interpolation', 'inherited': true, 'keywords': ['auto', 'srgb', 'linearrgb']},
   {'name': 'color-interpolation-filters', 'inherited': true, 'keywords': ['auto', 'srgb', 'linearrgb']},
   {'name': 'color-rendering', 'inherited': true, 'keywords': ['auto', 'optimizespeed', 'optimizequality']},

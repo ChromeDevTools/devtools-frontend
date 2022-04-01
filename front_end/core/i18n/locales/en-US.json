@@ -2558,6 +2558,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
     "message": "Back/forward cache is disabled due to a document error."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Pages using FencedFrames cannot be stored in bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "The page was evicted from the cache to allow another page to be cached."
   },

@@ -2211,6 +2211,7 @@ export function registerCommands(inspectorBackend) {
     Unknown: 'Unknown',
     ActivationNavigationsDisallowedForBug1234857: 'ActivationNavigationsDisallowedForBug1234857',
     ErrorDocument: 'ErrorDocument',
+    FencedFramesEmbedder: 'FencedFramesEmbedder',
     WebSocket: 'WebSocket',
     WebTransport: 'WebTransport',
     WebRTC: 'WebRTC',
@@ -2286,6 +2287,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Page.BackForwardCacheNotRestoredReasonType',
       {SupportPending: 'SupportPending', PageSupportNeeded: 'PageSupportNeeded', Circumstantial: 'Circumstantial'});
+  inspectorBackend.registerEnum('Page.PrerenderFinalStatus', {Activated: 'Activated'});
   inspectorBackend.registerEvent('Page.domContentEventFired', ['timestamp']);
   inspectorBackend.registerEnum(
       'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
@@ -2314,6 +2316,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent(
       'Page.backForwardCacheNotUsed',
       ['loaderId', 'frameId', 'notRestoredExplanations', 'notRestoredExplanationsTree']);
+  inspectorBackend.registerEvent(
+      'Page.prerenderAttemptCompleted', ['initiatingFrameId', 'prerenderingUrl', 'finalStatus']);
   inspectorBackend.registerEvent('Page.loadEventFired', ['timestamp']);
   inspectorBackend.registerEvent('Page.navigatedWithinDocument', ['frameId', 'url']);
   inspectorBackend.registerEvent('Page.screencastFrame', ['data', 'metadata', 'sessionId']);

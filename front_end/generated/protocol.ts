@@ -10812,6 +10812,7 @@ export namespace Page {
     Unknown = 'Unknown',
     ActivationNavigationsDisallowedForBug1234857 = 'ActivationNavigationsDisallowedForBug1234857',
     ErrorDocument = 'ErrorDocument',
+    FencedFramesEmbedder = 'FencedFramesEmbedder',
     WebSocket = 'WebSocket',
     WebTransport = 'WebTransport',
     WebRTC = 'WebRTC',
@@ -10924,6 +10925,13 @@ export namespace Page {
      * Array of children frame
      */
     children: BackForwardCacheNotRestoredExplanationTree[];
+  }
+
+  /**
+   * List of FinalStatus reasons for Prerender2.
+   */
+  export const enum PrerenderFinalStatus {
+    Activated = 'Activated',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -11923,6 +11931,18 @@ export namespace Page {
      * Tree structure of reasons why the page could not be cached for each frame.
      */
     notRestoredExplanationsTree?: BackForwardCacheNotRestoredExplanationTree;
+  }
+
+  /**
+   * Fired when a prerender attempt is completed.
+   */
+  export interface PrerenderAttemptCompletedEvent {
+    /**
+     * The frame id of the frame initiating prerendering.
+     */
+    initiatingFrameId: FrameId;
+    prerenderingUrl: string;
+    finalStatus: PrerenderFinalStatus;
   }
 
   export interface LoadEventFiredEvent {

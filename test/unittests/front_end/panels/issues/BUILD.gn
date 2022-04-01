@@ -10,6 +10,7 @@ ts_library("issues") {
     "DeprecationIssue_test.ts",
     "GenericIssue_test.ts",
     "IssueAggregator_test.ts",
+    "IssueView_test.ts",
     "LowContrastIssuesAggregation_test.ts",
     "TrustedWebActivityIssuesAggregation_test.ts",
   ]

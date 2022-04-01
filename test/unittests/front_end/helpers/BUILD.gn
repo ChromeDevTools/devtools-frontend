@@ -17,6 +17,7 @@ ts_library("helpers") {
     "SourceMapEncoder.ts",
     "SourceMapEncoder_test.ts",
     "UISourceCodeHelpers.ts",
+    "UserMetricsHelpers.ts",
   ]
 
   deps = [

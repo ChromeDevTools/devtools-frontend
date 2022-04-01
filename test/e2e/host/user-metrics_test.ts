@@ -421,28 +421,6 @@ describe('User Metrics for Issue Panel', () => {
     await openPanelViaMoreTools('Issues');
   });
 
-  it('dispatch events when issue is expanded', async () => {
-    await goToResource('host/cookie-issue.html');
-    await waitFor('.issue');
-
-    await click('.issue');
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.IssueCreated',
-        actionCode: 15,  // CookieIssue
-      },
-      {
-        actionName: 'DevTools.IssueCreated',
-        actionCode: 15,  // CookieIssue
-      },
-      {
-        actionName: 'DevTools.IssuesPanelIssueExpanded',
-        actionCode: 2,  // SameSiteCookie
-      },
-    ]);
-  });
-
   it('dispatches an event when a LowTextContrastIssue is created', async () => {
     await goToResource('elements/low-contrast.html');
     await waitFor('.issue');

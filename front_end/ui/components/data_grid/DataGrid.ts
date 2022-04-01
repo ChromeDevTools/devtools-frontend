@@ -88,11 +88,9 @@ export class DataGrid extends HTMLElement {
     void this.#alignScrollHandlers();
   });
 
-  // These have to be bound as they are put onto the global document, not onto
+  // Thie have to be bound as they are put onto the global document, not onto
   // this element, so LitHtml does not bind them for us.
-  #boundOnResizePointerUp = this.#onResizePointerUp.bind(this);
   #boundOnResizePointerMove = this.#onResizePointerMove.bind(this);
-  #boundOnResizePointerDown = this.#onResizePointerDown.bind(this);
 
   /**
    * Following guidance from
@@ -487,8 +485,8 @@ export class DataGrid extends HTMLElement {
     }
 
     return LitHtml.html`<span class="cell-resize-handle"
-     @pointerdown=${this.#boundOnResizePointerDown}
-     @pointerup=${this.#boundOnResizePointerUp}
+     @pointerdown=${this.#onResizePointerDown}
+     @pointerup=${this.#onResizePointerUp}
      data-column-index=${columnIndex}
     ></span>`;
   }

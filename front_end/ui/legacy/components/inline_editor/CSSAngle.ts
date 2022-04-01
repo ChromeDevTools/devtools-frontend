@@ -66,7 +66,6 @@ export class CSSAngle extends HTMLElement {
   private popoverStyleTop = '';
   private popoverStyleLeft = '';
   private onMinifyingAction = this.minify.bind(this);
-  private onAngleUpdate = this.updateAngle.bind(this);
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [cssAngleStyles];
@@ -247,7 +246,9 @@ export class CSSAngle extends HTMLElement {
       style=${styleMap({top: this.popoverStyleTop, left: this.popoverStyleLeft})}
       .data=${{
         angle: this.angle,
-        onAngleUpdate: this.onAngleUpdate,
+        onAngleUpdate: (angle: Angle):void => {
+          this.updateAngle(angle);
+        },
         background: contextualBackground,
       } as CSSAngleEditorData}
     ></${CSSAngleEditor.litTagName}>

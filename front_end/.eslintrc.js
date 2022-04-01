@@ -30,6 +30,7 @@ module.exports = {
         'rulesdir/no_importing_images_from_src': 2,
         'rulesdir/enforce_custom_event_names': 2,
         'rulesdir/set_data_type_reference': 2,
+        'rulesdir/no_bound_component_methods': 2,
         'rulesdir/lit_html_data_as_type': 2,
         'rulesdir/lit_no_style_interpolation': 2,
         'rulesdir/ban_literal_devtools_component_tag_names': 2,

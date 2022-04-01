@@ -50,7 +50,7 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
   });
 
   beforeEach(() => {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.resetStubState();
+    resetHostBindingStubState();
   });
 
   describe(title, fn);
@@ -100,4 +100,9 @@ export async function getExecutionContext(runtimeModel: SDK.RuntimeModel.Runtime
     throw new Error('Cannot get executionContext');
   }
   return executionContexts[0];
+}
+
+function resetHostBindingStubState() {
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms.splice(0);
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedPerformanceHistograms.splice(0);
 }

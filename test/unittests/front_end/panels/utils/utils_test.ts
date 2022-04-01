@@ -17,6 +17,7 @@ describe('panels/utils', async () => {
 
       .child {
         display: grid;
+        --child-theme-color: 100, 200, 0;
       }
       `;
     const current = `
@@ -27,6 +28,7 @@ describe('panels/utils', async () => {
 
       .child {
         display: grid;
+        --child-theme-color: 5, 10, 15;
         padding: 10px;
       }`;
     const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), current.split('\n'));
@@ -40,6 +42,8 @@ describe('panels/utils', async () => {
 }
 
 .child {
+  /* --child-theme-color: 100, 200, 0; */
+  --child-theme-color: 5, 10, 15;
   padding: 10px;
 }`,
         'formatted CSS changes are not correct');

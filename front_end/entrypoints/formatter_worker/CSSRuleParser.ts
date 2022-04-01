@@ -96,7 +96,7 @@ export function parseCSS(text: string, chunkCallback: ChunkCallback): void {
         }
         break;
       case CSSParserStates.Style:
-        if (tokenType.has('meta') || tokenType.has('property')) {
+        if (tokenType.has('meta') || tokenType.has('property') || tokenType.has('variable-2')) {
           property = {
             name: tokenValue,
             value: '',

@@ -54,6 +54,10 @@ module.exports = {
           return false;
         }
 
+        if (!node.expression.callee) {
+          return false;
+        }
+
         if (node.expression.callee.property) {
           // matches ComponentHelpers.CustomElements.defineComponent()
           return node.expression.callee.property.name === 'defineComponent';

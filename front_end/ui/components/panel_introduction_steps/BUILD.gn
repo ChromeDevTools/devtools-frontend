@@ -1,0 +1,39 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "panelIntroductionSteps.css" ]
+}
+
+devtools_module("panel_introduction_steps") {
+  sources = [ "PanelIntroductionSteps.ts" ]
+  deps = [
+    "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
+    "../../../core/root:bundle",
+    "../../../ui/components/helpers:bundle",
+    "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/lit-html:bundle",
+    "../buttons:bundle",
+    "../input:bundle",
+  ]
+
+  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "panel_introduction_steps.ts"
+
+  deps = [
+    ":css_files",
+    ":panel_introduction_steps",
+  ]
+
+  visibility = default_components_visibility
+}

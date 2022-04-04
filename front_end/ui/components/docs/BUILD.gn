@@ -33,6 +33,7 @@ group("docs") {
     "./markdown_link",
     "./markdown_view",
     "./panel_feedback",
+    "./panel_introduction_steps",
     "./perf_piechart",
     "./report",
     "./request_link_icon",

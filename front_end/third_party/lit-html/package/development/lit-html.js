@@ -8,6 +8,27 @@ const DEV_MODE = true;
 const ENABLE_EXTRA_SECURITY_HOOKS = true;
 const ENABLE_SHADYDOM_NOPATCH = true;
 /**
+ * Useful for visualizing and logging insights into what the Lit template system is doing.
+ *
+ * Compiled out of prod mode builds.
+ */
+const debugLogEvent = DEV_MODE
+    ? (event) => {
+        const shouldEmit = window
+            .emitLitDebugLogEvents;
+        if (!shouldEmit) {
+            return;
+        }
+        window.dispatchEvent(new CustomEvent('lit-debug', {
+            detail: event,
+        }));
+    }
+    : undefined;
+// Used for connecting beginRender and endRender events when there are nested
+// renders when errors are thrown preventing an endRender event from being
+// called.
+let debugLogRenderId = 0;
+/**
  * `true` if we're building for google3 with temporary back-compat helpers.
  * This export is not present in prod builds.
  * @internal
@@ -153,7 +174,7 @@ const doubleQuoteAttrEndRegex = /"/g;
  * Comments are not parsed within raw text elements, so we need to search their
  * text content for marker strings.
  */
-const rawTextElement = /^(?:script|style|textarea)$/i;
+const rawTextElement = /^(?:script|style|textarea|title)$/i;
 /** TemplateResult types */
 const HTML_RESULT = 1;
 const SVG_RESULT = 2;
@@ -200,8 +221,27 @@ const tag = (type) => (strings, ...values) => {
  */
 export const html = tag(HTML_RESULT);
 /**
- * Interprets a template literal as an SVG template that can efficiently
+ * Interprets a template literal as an SVG fragment that can efficiently
  * render to and update a container.
+ *
+ * ```ts
+ * const rect = svg`<rect width="10" height="10"></rect>`;
+ *
+ * const myImage = html`
+ *   <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+ *     ${rect}
+ *   </svg>`;
+ * ```
+ *
+ * The `svg` *tag function* should only be used for SVG fragments, or elements
+ * that would be contained **inside** an `<svg>` HTML element. A common error is
+ * placing an `<svg>` *element* in a template tagged with the `svg` tag
+ * function. The `<svg>` element is an HTML element and should be used within a
+ * template tagged with the {@linkcode html} tag function.
+ *
+ * In LitElement usage, it's invalid to return an SVG fragment from the
+ * `render()` method, as the SVG fragment will be contained within the element's
+ * shadow root and thus cannot be used within an `<svg>` HTML element.
  */
 export const svg = tag(SVG_RESULT);
 /**
@@ -245,10 +285,19 @@ const templateCache = new WeakMap();
  */
 export const render = (value, container, options) => {
     var _a, _b, _c;
+    const renderId = DEV_MODE ? debugLogRenderId++ : 0;
     const partOwnerNode = (_a = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _a !== void 0 ? _a : container;
     // This property needs to remain unminified.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let part = partOwnerNode['_$litPart$'];
+    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+        kind: 'begin render',
+        id: renderId,
+        value,
+        container,
+        options,
+        part,
+    });
     if (part === undefined) {
         const endNode = (_b = options === null || options === void 0 ? void 0 : options.renderBefore) !== null && _b !== void 0 ? _b : null;
         // Internal modification: don't clear container to match lit-html 2.0
@@ -268,6 +317,14 @@ export const render = (value, container, options) => {
         partOwnerNode['_$litPart$'] = part = new ChildPart(container.insertBefore(createMarker(), endNode), endNode, undefined, options !== null && options !== void 0 ? options : {});
     }
     part._$setValue(value);
+    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+        kind: 'end render',
+        id: renderId,
+        value,
+        container,
+        options,
+        part,
+    });
     return part;
 };
 if (ENABLE_EXTRA_SECURITY_HOOKS) {
@@ -432,6 +489,22 @@ const getTemplateHtml = (strings, type) => {
                         (attrNameEndIndex === -2 ? (attrNames.push(undefined), i) : end);
     }
     const htmlResult = html + (strings[l] || '<?>') + (type === SVG_RESULT ? '</svg>' : '');
+    // A security check to prevent spoofing of Lit template results.
+    // In the future, we may be able to replace this with Array.isTemplateObject,
+    // though we might need to make that check inside of the html and svg
+    // functions, because precompiled templates don't come in as
+    // TemplateStringArray objects.
+    if (!Array.isArray(strings) || !strings.hasOwnProperty('raw')) {
+        let message = 'invalid template strings array';
+        if (DEV_MODE) {
+            message =
+                `Internal Error: expected template strings to be an array ` +
+                    `with a 'raw' field. Please file a bug at ` +
+                    `https://github.com/lit/lit/issues/new?template=bug_report.md ` +
+                    `and include information about your build tooling, if any.`;
+        }
+        throw new Error(message);
+    }
     // Returned as an array for terseness
     return [
         policy !== undefined
@@ -582,6 +655,13 @@ class Template {
             }
             nodeIndex++;
         }
+        debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+            kind: 'template prep',
+            template: this,
+            clonableTemplate: this.el,
+            parts: this.parts,
+            strings,
+        });
     }
     // Overridden via `litHtmlPolyfillSupport` to provide platform support.
     /** @nocollapse */
@@ -687,6 +767,14 @@ class TemplateInstance {
         let i = 0;
         for (const part of this._parts) {
             if (part !== undefined) {
+                debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                    kind: 'set part',
+                    part,
+                    value: values[i],
+                    valueIndex: i,
+                    values,
+                    templateInstance: this,
+                });
                 if (part.strings !== undefined) {
                     part._$setValue(values, part, i);
                     // The number of values the part consumes is part.strings.length - 1
@@ -787,6 +875,13 @@ class ChildPart {
             // fallback content.
             if (value === nothing || value == null || value === '') {
                 if (this._$committedValue !== nothing) {
+                    debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                        kind: 'commit nothing to child',
+                        start: this._$startNode,
+                        end: this._$endNode,
+                        parent: this._$parent,
+                        options: this.options,
+                    });
                     this._$clear();
                 }
                 this._$committedValue = nothing;
@@ -843,6 +938,13 @@ class ChildPart {
                     throw new Error(message);
                 }
             }
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'commit node',
+                start: this._$startNode,
+                parent: this._$parent,
+                value: value,
+                options: this.options,
+            });
             this._$committedValue = this._insert(value);
         }
     }
@@ -859,6 +961,12 @@ class ChildPart {
                 }
                 value = this._textSanitizer(value);
             }
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'commit text',
+                node,
+                value,
+                options: this.options,
+            });
             node.data = value;
         }
         else {
@@ -868,15 +976,27 @@ class ChildPart {
                 // When setting text content, for security purposes it matters a lot
                 // what the parent is. For example, <style> and <script> need to be
                 // handled with care, while <span> does not. So first we need to put a
-                // text node into the document, then we can sanitize its contentx.
+                // text node into the document, then we can sanitize its content.
                 if (this._textSanitizer === undefined) {
                     this._textSanitizer = createSanitizer(textNode, 'data', 'property');
                 }
                 value = this._textSanitizer(value);
+                debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                    kind: 'commit text',
+                    node: textNode,
+                    value,
+                    options: this.options,
+                });
                 textNode.data = value;
             }
             else {
                 this._commitNode(d.createTextNode(value));
+                debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                    kind: 'commit text',
+                    node: wrap(this._$startNode).nextSibling,
+                    value,
+                    options: this.options,
+                });
             }
         }
         this._$committedValue = value;
@@ -895,12 +1015,38 @@ class ChildPart {
                 (type.el = Template.createElement(type.h, this.options)),
                 type);
         if (((_a = this._$committedValue) === null || _a === void 0 ? void 0 : _a._$template) === template) {
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'template updating',
+                template,
+                instance: this._$committedValue,
+                parts: this._$committedValue._parts,
+                options: this.options,
+                values,
+            });
             this._$committedValue._update(values);
         }
         else {
             const instance = new TemplateInstance(template, this);
             const fragment = instance._clone(this.options);
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'template instantiated',
+                template,
+                instance,
+                parts: instance._parts,
+                options: this.options,
+                fragment,
+                values,
+            });
             instance._update(values);
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'template instantiated and updated',
+                template,
+                instance,
+                parts: instance._parts,
+                options: this.options,
+                fragment,
+                values,
+            });
             this._commitNode(fragment);
             this._$committedValue = instance;
         }
@@ -1098,6 +1244,13 @@ class AttributePart {
                 }
                 value = this._sanitizer(value !== null && value !== void 0 ? value : '');
             }
+            debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+                kind: 'commit attribute',
+                element: this.element,
+                name: this.name,
+                value,
+                options: this.options,
+            });
             wrap(this.element).setAttribute(this.name, (value !== null && value !== void 0 ? value : ''));
         }
     }
@@ -1115,6 +1268,13 @@ class PropertyPart extends AttributePart {
             }
             value = this._sanitizer(value);
         }
+        debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+            kind: 'commit property',
+            element: this.element,
+            name: this.name,
+            value,
+            options: this.options,
+        });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.element[this.name] = value === nothing ? undefined : value;
     }
@@ -1133,6 +1293,13 @@ class BooleanAttributePart extends AttributePart {
     }
     /** @internal */
     _commitValue(value) {
+        debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+            kind: 'commit boolean attribute',
+            element: this.element,
+            name: this.name,
+            value: !!(value && value !== nothing),
+            options: this.options,
+        });
         if (value && value !== nothing) {
             wrap(this.element).setAttribute(this.name, emptyStringForBooleanAttribute);
         }
@@ -1175,6 +1342,16 @@ class EventPart extends AttributePart {
         // to add the part as a listener.
         const shouldAddListener = newListener !== nothing &&
             (oldListener === nothing || shouldRemoveListener);
+        debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+            kind: 'commit event listener',
+            element: this.element,
+            name: this.name,
+            value: newListener,
+            options: this.options,
+            removeListener: shouldRemoveListener,
+            addListener: shouldAddListener,
+            oldListener,
+        });
         if (shouldRemoveListener) {
             this.element.removeEventListener(this.name, this, oldListener);
         }
@@ -1210,6 +1387,12 @@ class ElementPart {
         return this._$parent._$isConnected;
     }
     _$setValue(value) {
+        debugLogEvent === null || debugLogEvent === void 0 ? void 0 : debugLogEvent({
+            kind: 'commit to element binding',
+            element: this.element,
+            value,
+            options: this.options,
+        });
         resolveDirective(this, value);
     }
 }
@@ -1257,7 +1440,7 @@ const polyfillSupport = DEV_MODE
 polyfillSupport === null || polyfillSupport === void 0 ? void 0 : polyfillSupport(Template, ChildPart);
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
-((_d = globalThis.litHtmlVersions) !== null && _d !== void 0 ? _d : (globalThis.litHtmlVersions = [])).push('2.0.2');
+((_d = globalThis.litHtmlVersions) !== null && _d !== void 0 ? _d : (globalThis.litHtmlVersions = [])).push('2.2.1');
 if (DEV_MODE && globalThis.litHtmlVersions.length > 1) {
     issueWarning('multiple-versions', `Multiple versions of Lit loaded. ` +
         `Loading multiple versions is not recommended.`);

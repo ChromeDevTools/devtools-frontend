@@ -1,7 +1,7 @@
 Name: Lit-HTML
 Short Name: lit-html
 URL: https://github.com/polymer/lit-html
-Version: 2.0.2
+Version: 2.2.1
 License: BSD-3
 License File: package/LICENSE
 Security Critical: no
@@ -9,8 +9,8 @@ Security Critical: no
 Description:
 lit-html lets you write HTML templates in JavaScript, then efficiently render and re-render those templates together with data to create and update DOM.
 
-To update this package, run the following command (replace version number with updated version number) in this directory:
+To update this package, run the following command in this directory:
 
 ```bash
-wget -qO- https://registry.npmjs.org/lit-html/-/lit-html-2.0.2.tgz | tar xzf -
+curl --output - $(npm view lit-html dist.tarball) | tar xzf -
 ```

@@ -8,7 +8,7 @@ import { Directive, PartInfo } from '../directive.js';
 declare class TemplateContentDirective extends Directive {
     private _previousTemplate?;
     constructor(partInfo: PartInfo);
-    render(template: HTMLTemplateElement): typeof noChange | DocumentFragment;
+    render(template: HTMLTemplateElement): DocumentFragment | typeof noChange;
 }
 /**
  * Renders the content of a template element as HTML.

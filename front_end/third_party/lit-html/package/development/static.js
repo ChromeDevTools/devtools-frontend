@@ -3,6 +3,8 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+// Any new exports need to be added to the export statement in
+// `packages/lit/src/index.all.ts`.
 import { html as coreHtml, svg as coreSvg } from './lit-html.js';
 /**
  * Wraps a string so that it behaves like part of the static template
@@ -86,6 +88,11 @@ export const withStatic = (coreTag) => (strings, ...values) => {
         const key = staticStrings.join('$$lit$$');
         strings = stringsCache.get(key);
         if (strings === undefined) {
+            // Beware: in general this pattern is unsafe, and doing so may bypass
+            // lit's security checks and allow an attacker to execute arbitrary
+            // code and inject arbitrary content.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            staticStrings.raw = staticStrings;
             stringsCache.set(key, (strings = staticStrings));
         }
         values = dynamicValues;

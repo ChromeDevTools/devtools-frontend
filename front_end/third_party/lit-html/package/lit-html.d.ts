@@ -6,6 +6,141 @@
 /// <reference types="trusted-types" />
 import type { Directive } from './directive.js';
 /**
+ * Contains types that are part of the unstable debug API.
+ *
+ * Everything in this API is not stable and may change or be removed in the future,
+ * even on patch releases.
+ */
+export declare namespace LitUnstable {
+    /**
+     * When Lit is running in dev mode and `window.emitLitDebugLogEvents` is true,
+     * we will emit 'lit-debug' events to window, with live details about the update and render
+     * lifecycle. These can be useful for writing debug tooling and visualizations.
+     *
+     * Please be aware that running with window.emitLitDebugLogEvents has performance overhead,
+     * making certain operations that are normally very cheap (like a no-op render) much slower,
+     * because we must copy data and dispatch events.
+     */
+    namespace DebugLog {
+        type Entry = TemplatePrep | TemplateInstantiated | TemplateInstantiatedAndUpdated | TemplateUpdating | BeginRender | EndRender | CommitPartEntry | SetPartValue;
+        interface TemplatePrep {
+            kind: 'template prep';
+            template: Template;
+            strings: TemplateStringsArray;
+            clonableTemplate: HTMLTemplateElement;
+            parts: TemplatePart[];
+        }
+        interface BeginRender {
+            kind: 'begin render';
+            id: number;
+            value: unknown;
+            container: HTMLElement | DocumentFragment;
+            options: RenderOptions | undefined;
+            part: ChildPart | undefined;
+        }
+        interface EndRender {
+            kind: 'end render';
+            id: number;
+            value: unknown;
+            container: HTMLElement | DocumentFragment;
+            options: RenderOptions | undefined;
+            part: ChildPart;
+        }
+        interface TemplateInstantiated {
+            kind: 'template instantiated';
+            template: Template | CompiledTemplate;
+            instance: TemplateInstance;
+            options: RenderOptions | undefined;
+            fragment: Node;
+            parts: Array<Part | undefined>;
+            values: unknown[];
+        }
+        interface TemplateInstantiatedAndUpdated {
+            kind: 'template instantiated and updated';
+            template: Template | CompiledTemplate;
+            instance: TemplateInstance;
+            options: RenderOptions | undefined;
+            fragment: Node;
+            parts: Array<Part | undefined>;
+            values: unknown[];
+        }
+        interface TemplateUpdating {
+            kind: 'template updating';
+            template: Template | CompiledTemplate;
+            instance: TemplateInstance;
+            options: RenderOptions | undefined;
+            parts: Array<Part | undefined>;
+            values: unknown[];
+        }
+        interface SetPartValue {
+            kind: 'set part';
+            part: Part;
+            value: unknown;
+            valueIndex: number;
+            values: unknown[];
+            templateInstance: TemplateInstance;
+        }
+        type CommitPartEntry = CommitNothingToChildEntry | CommitText | CommitNode | CommitAttribute | CommitProperty | CommitBooleanAttribute | CommitEventListener | CommitToElementBinding;
+        interface CommitNothingToChildEntry {
+            kind: 'commit nothing to child';
+            start: ChildNode;
+            end: ChildNode | null;
+            parent: Disconnectable | undefined;
+            options: RenderOptions | undefined;
+        }
+        interface CommitText {
+            kind: 'commit text';
+            node: Text;
+            value: unknown;
+            options: RenderOptions | undefined;
+        }
+        interface CommitNode {
+            kind: 'commit node';
+            start: Node;
+            parent: Disconnectable | undefined;
+            value: Node;
+            options: RenderOptions | undefined;
+        }
+        interface CommitAttribute {
+            kind: 'commit attribute';
+            element: Element;
+            name: string;
+            value: unknown;
+            options: RenderOptions | undefined;
+        }
+        interface CommitProperty {
+            kind: 'commit property';
+            element: Element;
+            name: string;
+            value: unknown;
+            options: RenderOptions | undefined;
+        }
+        interface CommitBooleanAttribute {
+            kind: 'commit boolean attribute';
+            element: Element;
+            name: string;
+            value: boolean;
+            options: RenderOptions | undefined;
+        }
+        interface CommitEventListener {
+            kind: 'commit event listener';
+            element: Element;
+            name: string;
+            value: unknown;
+            oldListener: unknown;
+            options: RenderOptions | undefined;
+            removeListener: boolean;
+            addListener: boolean;
+        }
+        interface CommitToElementBinding {
+            kind: 'commit to element binding';
+            element: Element;
+            value: unknown;
+            options: RenderOptions | undefined;
+        }
+    }
+}
+/**
  * Used to sanitize any value before it is written into the DOM. This can be
  * used to implement a security policy of allowed and disallowed values in
  * order to prevent XSS attacks.
@@ -43,6 +178,10 @@ export declare type ValueSanitizer = (value: unknown) => unknown;
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
 declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+declare const ATTRIBUTE_PART = 1;
+declare const CHILD_PART = 2;
+declare const ELEMENT_PART = 6;
+declare const COMMENT_PART = 7;
 /**
  * The return type of the template tag functions.
  */
@@ -76,8 +215,27 @@ export interface CompiledTemplate extends Omit<Template, 'el'> {
  */
 export declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<1>;
 /**
- * Interprets a template literal as an SVG template that can efficiently
+ * Interprets a template literal as an SVG fragment that can efficiently
  * render to and update a container.
+ *
+ * ```ts
+ * const rect = svg`<rect width="10" height="10"></rect>`;
+ *
+ * const myImage = html`
+ *   <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+ *     ${rect}
+ *   </svg>`;
+ * ```
+ *
+ * The `svg` *tag function* should only be used for SVG fragments, or elements
+ * that would be contained **inside** an `<svg>` HTML element. A common error is
+ * placing an `<svg>` *element* in a template tagged with the `svg` tag
+ * function. The `<svg>` element is an HTML element and should be used within a
+ * template tagged with the {@linkcode html} tag function.
+ *
+ * In LitElement usage, it's invalid to return an SVG fragment from the
+ * `render()` method, as the SVG fragment will be contained within the element's
+ * shadow root and thus cannot be used within an `<svg>` HTML element.
  */
 export declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<2>;
 /**
@@ -181,6 +339,29 @@ declare class TemplateInstance implements Disconnectable {
     _clone(options: RenderOptions | undefined): Node;
     _update(values: Array<unknown>): void;
 }
+declare type AttributeTemplatePart = {
+    readonly type: typeof ATTRIBUTE_PART;
+    readonly index: number;
+    readonly name: string;
+};
+declare type NodeTemplatePart = {
+    readonly type: typeof CHILD_PART;
+    readonly index: number;
+};
+declare type ElementTemplatePart = {
+    readonly type: typeof ELEMENT_PART;
+    readonly index: number;
+};
+declare type CommentTemplatePart = {
+    readonly type: typeof COMMENT_PART;
+    readonly index: number;
+};
+/**
+ * A TemplatePart represents a dynamic part in a template, before the template
+ * is instantiated. When a template is instantiated Parts are created from
+ * TemplateParts.
+ */
+declare type TemplatePart = NodeTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
 export declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
 export type { ChildPart };
 declare class ChildPart implements Disconnectable {

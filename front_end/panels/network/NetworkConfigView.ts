@@ -54,6 +54,10 @@ const UIStrings = {
   * @description Status text for successful update of client hints.
   */
   clientHintsStatusText: 'User agent updated.',
+  /**
+  * @description The aria alert message when the Network conditions panel is shown.
+  */
+  networkConditionsPanelShown: 'Network conditions shown',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -348,6 +352,8 @@ export class NetworkConfigView extends UI.Widget.VBox {
   wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([networkConfigViewStyles]);
+
+    UI.ARIAUtils.alert(i18nString(UIStrings.networkConditionsPanelShown));
   }
 }
 

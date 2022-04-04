@@ -6581,6 +6581,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Enter a custom user agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Network conditions shown"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Network throttling"
   },

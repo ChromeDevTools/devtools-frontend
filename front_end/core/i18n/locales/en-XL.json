@@ -6581,6 +6581,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Êńt̂ér̂ á ĉúŝt́ôḿ ûśêŕ âǵêńt̂"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "N̂ét̂ẃôŕk̂ ćôńd̂ít̂íôńŝ śĥóŵń"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "N̂ét̂ẃôŕk̂ t́ĥŕôt́t̂ĺîńĝ"
   },

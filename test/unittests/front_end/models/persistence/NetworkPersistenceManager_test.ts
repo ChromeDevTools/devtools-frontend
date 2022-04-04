@@ -9,8 +9,10 @@ import * as Persistence from '../../../../../front_end/models/persistence/persis
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 async function setUpEnvironment() {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -198,6 +200,23 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
       {name: 'age', value: 'overridden'},
     ];
     assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+  });
+
+  it('updates active state when target detach and attach', async () => {
+    const {networkPersistenceManager} = await setUpEnvironment();
+    const {project} =
+        createUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
+    await networkPersistenceManager.setProject(project);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    assert.isNull(targetManager.mainTarget());
+    assert.isFalse(networkPersistenceManager.active());
+
+    const target = await createTarget();
+    assert.isTrue(networkPersistenceManager.active());
+
+    await targetManager.removeTarget(target);
+
+    assert.isFalse(networkPersistenceManager.active());
   });
 });
 

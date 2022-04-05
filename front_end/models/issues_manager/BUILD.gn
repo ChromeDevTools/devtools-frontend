@@ -76,6 +76,7 @@ devtools_issue_description_files = [
   "CoepCorpNotSameSite.md",
   "CoepFrameResourceNeedsCoepHeader.md",
   "CompatibilityModeQuirks.md",
+  "CookieAttributeValueExceedsMaxSize.md",
   "corsAllowCredentialsRequired.md",
   "corsDisabledScheme.md",
   "corsDisallowedByMode.md",

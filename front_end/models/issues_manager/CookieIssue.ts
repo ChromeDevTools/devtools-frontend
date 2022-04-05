@@ -426,6 +426,11 @@ const samePartyCrossPartyContextSet: LazyMarkdownIssueDescription = {
   }],
 };
 
+const attributeValueExceedsMaxSize: LazyMarkdownIssueDescription = {
+  file: 'CookieAttributeValueExceedsMaxSize.md',
+  links: [],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
   ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
@@ -455,4 +460,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
   ['CookieIssue::ExcludeInvalidSameParty::SetCookie', sameSiteInvalidSameParty],
   ['CookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie', samePartyCrossPartyContextSet],
+  ['CookieIssue::WarnAttributeValueExceedsMaxSize::ReadCookie', attributeValueExceedsMaxSize],
+  ['CookieIssue::WarnAttributeValueExceedsMaxSize::SetCookie', attributeValueExceedsMaxSize],
 ]);

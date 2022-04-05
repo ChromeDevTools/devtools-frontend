@@ -254,6 +254,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/CoepCorpNotSameSite.md",
   "front_end/models/issues_manager/descriptions/CoepFrameResourceNeedsCoepHeader.md",
   "front_end/models/issues_manager/descriptions/CompatibilityModeQuirks.md",
+  "front_end/models/issues_manager/descriptions/CookieAttributeValueExceedsMaxSize.md",
   "front_end/models/issues_manager/descriptions/LowTextContrast.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeSet.md",

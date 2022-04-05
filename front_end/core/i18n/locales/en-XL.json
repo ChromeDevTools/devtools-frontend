@@ -3869,6 +3869,9 @@
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Âĺl̂ ĺêv́êĺŝ"
   },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Âút̂óĉóm̂ṕl̂ét̂é f̂ŕôḿ ĥíŝt́ôŕŷ"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Ĉón̂śôĺê ćl̂éâŕêd́"
   },
@@ -3950,6 +3953,9 @@
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "L̂óĝ ĺêv́êĺ: {PH1}"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "L̂óĝ X́M̂ĹĤt́t̂ṕR̂éq̂úêśt̂ś"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ôńl̂ý ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ t̂h́ê ćûŕr̂én̂t́ ĉón̂t́êx́t̂ (top, iframe, worker, éx̂t́êńŝíôń)"
   },
@@ -3982,6 +3988,9 @@
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} ôńl̂ý"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "T̂ŕêát̂ év̂ál̂úât́îón̂ áŝ úŝér̂ áĉt́îv́ât́îón̂"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "V̂ér̂b́ôśê"

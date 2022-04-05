@@ -137,9 +137,21 @@ const UIStrings = {
   */
   selectedContextOnly: 'Selected context only',
   /**
+   *@description Description of a setting that controls whether XMLHttpRequests are logged in the console.
+   */
+  logXMLHttpRequests: 'Log XMLHttpRequests',
+  /**
   *@description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
   */
   eagerlyEvaluateTextInThePrompt: 'Eagerly evaluate text in the prompt',
+  /**
+   *@description Description of a setting that controls whether text typed in the console should be autocompleted from commands executed in the local console history.
+   */
+  autocompleteFromHistory: 'Autocomplete from history',
+  /**
+   *@description Description of a setting that controls whether user activation is triggered by evaluation'.
+  */
+  treatEvaluationAsUserActivation: 'Treat evaluation as user activation',
   /**
   * @description Text in Console View of the Console panel, indicating that a number of console
   * messages have been hidden.
@@ -271,8 +283,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
   private readonly groupSimilarSetting: Common.Settings.Setting<boolean>;
   private readonly showCorsErrorsSetting: Common.Settings.Setting<boolean>;
-  private readonly preserveLogCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
-  private readonly hideNetworkMessagesCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   private readonly timestampsSetting: Common.Settings.Setting<unknown>;
   private readonly consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
   readonly pinPane: ConsolePinPane;
@@ -376,15 +386,12 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('consoleGroupSimilar');
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
-    const groupSimilarToggle = new UI.Toolbar.ToolbarSettingCheckbox(
-        this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole));
+
     this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('consoleShowsCorsErrors');
     this.showCorsErrorsSetting.addChangeListener(() => {
       Host.userMetrics.showCorsErrorsSettingChanged(this.showCorsErrorsSetting.get());
       this.updateMessageList();
     });
-    const showCorsErrorsToggle = new UI.Toolbar.ToolbarSettingCheckbox(
-        this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
     toolbar.makeWrappable(true);
@@ -422,15 +429,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     rightToolbar.appendToolbarItem(this.filterStatusText);
     rightToolbar.appendToolbarItem(this.showSettingsPaneButton);
 
-    this.preserveLogCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog'),
-        i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog));
-    this.hideNetworkMessagesCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title(),
-        i18nString(UIStrings.hideNetwork));
-    const filterByExecutionContextCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        this.filter.filterByExecutionContextSetting, i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext),
-        i18nString(UIStrings.selectedContextOnly));
     const monitoringXHREnabledSetting = Common.Settings.Settings.instance().moduleSetting('monitoringXHREnabled');
     this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled');
     this.consoleHistoryAutocompleteSetting =
@@ -442,26 +440,36 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     UI.ARIAUtils.setAccessibleName(settingsPane.element, i18nString(UIStrings.consoleSettings));
     UI.ARIAUtils.markAsGroup(settingsPane.element);
+
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', settingsPane.element);
     settingsToolbarLeft.makeVertical();
-    settingsToolbarLeft.appendToolbarItem(this.hideNetworkMessagesCheckbox);
-    settingsToolbarLeft.appendToolbarItem(this.preserveLogCheckbox);
-    settingsToolbarLeft.appendToolbarItem(filterByExecutionContextCheckbox);
-    settingsToolbarLeft.appendToolbarItem(groupSimilarToggle);
-    settingsToolbarLeft.appendToolbarItem(showCorsErrorsToggle);
+
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarLeft, this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title(),
+        i18nString(UIStrings.hideNetwork));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarLeft, 'preserveConsoleLog', i18nString(UIStrings.doNotClearLogOnPageReload),
+        i18nString(UIStrings.preserveLog));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarLeft, this.filter.filterByExecutionContextSetting,
+        i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext), i18nString(UIStrings.selectedContextOnly));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarLeft, this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarLeft, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
 
     const settingsToolbarRight = new UI.Toolbar.Toolbar('', settingsPane.element);
     settingsToolbarRight.makeVertical();
-    settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(monitoringXHREnabledSetting));
-    const eagerEvalCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        Common.Settings.Settings.instance().moduleSetting('consoleEagerEval'),
-        i18nString(UIStrings.eagerlyEvaluateTextInThePrompt));
-    settingsToolbarRight.appendToolbarItem(eagerEvalCheckbox);
-    settingsToolbarRight.appendToolbarItem(
-        new UI.Toolbar.ToolbarSettingCheckbox(this.consoleHistoryAutocompleteSetting));
-    const userGestureCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval'));
-    settingsToolbarRight.appendToolbarItem(userGestureCheckbox);
+
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarRight, monitoringXHREnabledSetting, i18nString(UIStrings.logXMLHttpRequests));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarRight, 'consoleEagerEval', i18nString(UIStrings.eagerlyEvaluateTextInThePrompt));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarRight, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory));
+    ConsoleView.appendSettingsCheckboxToToolbar(
+        settingsToolbarRight, 'consoleUserActivationEval', i18nString(UIStrings.treatEvaluationAsUserActivation));
+
     if (!this.showSettingsPaneSetting.get()) {
       settingsPane.element.classList.add('hidden');
     }
@@ -568,6 +576,20 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.IssuesCountUpdated,
         () => this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem()), this);
+  }
+  static appendSettingsCheckboxToToolbar(
+      toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string, title: string,
+      alternateTitle?: string): UI.Toolbar.ToolbarSettingCheckbox {
+    let setting: Common.Settings.Setting<boolean>;
+    if (typeof settingOrSetingName === 'string') {
+      setting = Common.Settings.Settings.instance().moduleSetting(settingOrSetingName);
+    } else {
+      setting = settingOrSetingName;
+    }
+
+    const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(setting, title, alternateTitle);
+    toolbar.appendToolbarItem(checkbox);
+    return checkbox;
   }
 
   static instance(): ConsoleView {
@@ -757,6 +779,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.scheduleViewportRefreshForTest(false);
 
     this.scheduledRefreshPromiseForTest = this.viewportThrottler.schedule(this.invalidateViewport.bind(this));
+  }
+
+  getScheduledRefreshPromiseForTest(): Promise<void>|undefined {
+    return this.scheduledRefreshPromiseForTest;
   }
 
   private scheduleViewportRefreshForTest(_muted: boolean): void {

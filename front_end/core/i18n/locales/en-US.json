@@ -3869,6 +3869,9 @@
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "All levels"
   },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autocomplete from history"
+  },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console cleared"
   },
@@ -3950,6 +3953,9 @@
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Log level: {PH1}"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Log XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
   },
@@ -3982,6 +3988,9 @@
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} only"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Treat evaluation as user activation"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Verbose"

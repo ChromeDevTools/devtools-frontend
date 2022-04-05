@@ -8,6 +8,7 @@ ts_library("console") {
   testonly = true
   sources = [
     "ConsoleFormat_test.ts",
+    "ConsoleView_test.ts",
     "ErrorStackParser_test.ts",
   ]
 

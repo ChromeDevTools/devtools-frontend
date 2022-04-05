@@ -138,6 +138,30 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.PERSISTENCE, 'persistenceNetworkOverridesEnabled', true,
         Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.NETWORK, 'network_log.record-log', true, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'hideNetworkMessages', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'selectedContextFilterEnabled', false,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleGroupSimilar', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleShowsCorsErrors', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleTimestampsEnabled', false,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleHistoryAutocomplete', false,
+        Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'preserveConsoleLog', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleEagerEval', false, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.CONSOLE, 'consoleUserActivationEval', false,
+        Common.Settings.SettingType.BOOLEAN),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

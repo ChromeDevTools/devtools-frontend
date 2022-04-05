@@ -1741,6 +1741,15 @@ export enum RecordType {
   Coherent_ProcessLayer = 'Coherent_ProcessLayer',
   Coherent_BatchCommands = 'Coherent_BatchCommands',
   Coherent_DistributeLayers = 'Coherent_DistributeLayers',
+
+  Coherent_SubmitGlyphs = 'Coherent_SubmitGlyphs',
+  Coherent_SubmitManagerChanges = 'Coherent_SubmitManagerChanges',
+  Coherent_ProcessFrontendCommandsOnly = 'Coherent_ProcessFrontendCommandsOnly',
+  Coherent_DrawSDFGlyphs = 'Coherent_DrawSDFGlyphs',
+  Coherent_DrawSubLayerWithShaderFilter = 'Coherent_DrawSubLayerWithShaderFilter',
+  Coherent_Backend_Execute = 'Coherent_Backend_Execute',
+  Coherent_ProcessSimpleSublayer = 'Coherent_ProcessSimpleSublayer',
+
   // COHERENT END
 }
 

@@ -1229,6 +1229,14 @@ const UIStrings = {
   processLayer: 'ProcessLayer',
   distributeLayers: 'Distribute Layers',
 
+  submitGlyphs: 'Submit Glyphs',
+  submitManagerChanges: 'Submit Manager Changes',
+  processFrontendCommandsOnly: 'Process Frontend Commands Only',
+  drawSDFGlyphs: 'Draw SDF Glyphs',
+  drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
+  backend_Execute: 'Backend_Execute',
+  processSimpleSublayer: 'Process Simple Sublayer',
+
   processFrontendCommands: 'Process Frontend Commands',
   customAttributeInit: 'Custom data-bind Attribute Initialization',
   customAttributeUpdate: 'Custom data-bind Attribute Update',
@@ -1440,6 +1448,14 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_ProcessLayer] = new TimelineRecordStyle(UIStrings.processLayer, painting);
     eventStyles[type.Coherent_BatchCommands] = new TimelineRecordStyle(UIStrings.batchCommands, painting);
     eventStyles[type.Coherent_DistributeLayers] = new TimelineRecordStyle(UIStrings.distributeLayers, painting);
+    eventStyles[type.Coherent_SubmitGlyphs] = new TimelineRecordStyle(UIStrings.submitGlyphs, painting);
+    eventStyles[type.Coherent_SubmitManagerChanges] = new TimelineRecordStyle(UIStrings.submitManagerChanges, painting);
+    eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
+    eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
+    eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
+    eventStyles[type.Coherent_Backend_Execute] = new TimelineRecordStyle(UIStrings.backend_Execute, painting);
+    eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
+
     // COHERENT END
     eventStylesMap = eventStyles;
     return eventStyles;

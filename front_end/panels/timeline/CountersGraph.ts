@@ -50,10 +50,7 @@ const UIStrings = {
   *@description Text for documents, a type of resources
   */
   documents: 'Documents',
-  /**
-  *@description Text in Counters Graph of the Performance panel
-  */
-  nodes: 'Nodes',
+
   /**
   *@description Text in Counters Graph of the Performance panel
   */
@@ -127,17 +124,13 @@ export class CountersGraph extends UI.Widget.VBox {
     this._counterUI = [];
 
     this._countersByName = new Map();
-    this._countersByName.set(
-        'jsHeapSizeUsed',
-        this._createCounter(
-            i18nString(UIStrings.jsHeap), 'hsl(220, 90%, 43%)', Platform.NumberUtilities.bytesToString));
-    this._countersByName.set('documents', this._createCounter(i18nString(UIStrings.documents), 'hsl(0, 90%, 43%)'));
-    this._countersByName.set('nodes', this._createCounter(i18nString(UIStrings.nodes), 'hsl(120, 90%, 43%)'));
-    this._countersByName.set(
-        'jsEventListeners', this._createCounter(i18nString(UIStrings.listeners), 'hsl(38, 90%, 43%)'));
+
+    this._countersByName.set('Coherent_LayerTextures', this._createCounter('Layer Textures', 'hsl(239, 100%, 50%)'));
+    this._countersByName.set('Coherent_ScratchTextures', this._createCounter('Scratch Textures', 'hsl(120, 90%, 43%)'));
 
     this._gpuMemoryCounter = this._createCounter(
         i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.bytesToString);
+
     this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
   }
 
@@ -175,8 +168,7 @@ export class CountersGraph extends UI.Widget.VBox {
       for (const name in counters) {
         const counter = this._countersByName.get(name);
         if (counter) {
-          counter.appendSample(event.startTime, counters[name]);
-        }
+          counter.appendSample(event.startTime, counters[name]);}
       }
 
       const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';

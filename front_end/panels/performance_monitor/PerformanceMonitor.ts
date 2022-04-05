@@ -32,7 +32,7 @@ const UIStrings = {
   /**
   *@description Text in Performance Monitor of the Performance monitor tab
   */
-  domNodes: 'DOM Nodes',
+  domNodes: 'Scratch Textures',
   /**
   *@description Text in Performance Monitor of the Performance monitor tab
   */
@@ -487,7 +487,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
         format: Format.Bytes,
         color: 'blue',
       },
-      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]},
+      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'textures', color: 'green'}]},
       {
         ...defaults,
         title: i18nString(UIStrings.jsEventListeners),

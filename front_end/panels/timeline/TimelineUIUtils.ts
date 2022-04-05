@@ -1225,6 +1225,11 @@ const UIStrings = {
   frontEnd: 'Frontend',
   backEnd: 'Backend',
   buildDOM: 'Build DOM',
+  batchCommands: 'Batch Commands',
+  processLayer: 'ProcessLayer',
+  distributeLayers: 'Distribute Layers',
+
+  processFrontendCommands: 'Process Frontend Commands',
   customAttributeInit: 'Custom data-bind Attribute Initialization',
   customAttributeUpdate: 'Custom data-bind Attribute Update',
   customAttributeDeinit: 'Custom data-bind Attribute Deinitialization',
@@ -1431,6 +1436,10 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_CustomAttributeInit] = new TimelineRecordStyle(UIStrings.customAttributeInit, scripting);
     eventStyles[type.Coherent_CustomAttributeUpdate] = new TimelineRecordStyle(UIStrings.customAttributeUpdate, scripting);
     eventStyles[type.Coherent_CustomAttributeDeinit] = new TimelineRecordStyle(UIStrings.customAttributeDeinit, scripting);
+    eventStyles[type.Coherent_ProcessFrontendCommands] = new TimelineRecordStyle(UIStrings.processFrontendCommands, painting);
+    eventStyles[type.Coherent_ProcessLayer] = new TimelineRecordStyle(UIStrings.processLayer, painting);
+    eventStyles[type.Coherent_BatchCommands] = new TimelineRecordStyle(UIStrings.batchCommands, painting);
+    eventStyles[type.Coherent_DistributeLayers] = new TimelineRecordStyle(UIStrings.distributeLayers, painting);
     // COHERENT END
     eventStylesMap = eventStyles;
     return eventStyles;
@@ -2488,7 +2497,7 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_RecalcVisualStyle:
       case recordTypes.Coherent_UpdateNodeTransforms:
       case recordTypes.Coherent_Paint:
-      case recordTypes.Coherent_WaitPendingFrame: 
+      case recordTypes.Coherent_WaitPendingFrame:
       case recordTypes.Coherent_MatchElements: {
         contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
         break;

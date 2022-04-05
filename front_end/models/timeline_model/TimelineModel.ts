@@ -1022,7 +1022,7 @@ export class TimelineModelImpl {
           let invalidateLayoutEventTimelineData = TimelineData.forEvent(event);
           invalidateLayoutEventTimelineData.setUrl(this.currentLoadedUrls[urlIndex])
           this.scheduledLayoutInvalidate.push(event);
-        } else if (this.lastRecalculateStylesEvent 
+        } else if (this.lastRecalculateStylesEvent
           && this.lastRecalculateStylesEvent.endTime
           && this.lastRecalculateStylesEvent.endTime > event.startTime) {
             let recalcInitiators = TimelineData.forEvent(this.lastRecalculateStylesEvent).initiators();
@@ -1038,7 +1038,7 @@ export class TimelineModelImpl {
             // Coherent: and hide this event since we won't need it on the timeline
             event.name = RecordType.Coherent_Disabled;
           }
-            
+
         } else {
             this.scheduledLayoutInvalidate.push(event);
         }
@@ -1056,7 +1056,7 @@ export class TimelineModelImpl {
                 timelineData.setInitiators(initiators);
             }
         }
-        
+
         break;
       }
       // COHERENT END
@@ -1737,6 +1737,10 @@ export enum RecordType {
   Coherent_CustomAttributeUpdate = 'Coherent_CustomAttributeUpdate',
   Coherent_CustomAttributeDeinit = 'Coherent_CustomAttributeDeinit',
   Coherent_Disabled = 'Coherent_Disabled',
+  Coherent_ProcessFrontendCommands = 'Coherent_ProcessFrontendCommands',
+  Coherent_ProcessLayer = 'Coherent_ProcessLayer',
+  Coherent_BatchCommands = 'Coherent_BatchCommands',
+  Coherent_DistributeLayers = 'Coherent_DistributeLayers',
   // COHERENT END
 }
 
@@ -2497,7 +2501,7 @@ export class TimelineData {
   }
 
   // COHERENT END
-  
+
   setInitiator(initiator: SDK.TracingModel.Event|null): void {
     this.initiatorInternal = initiator;
     if (!initiator || this.url) {

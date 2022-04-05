@@ -814,8 +814,8 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
-  get itemURL(): string {
-    return `background-service://${this.serviceName}`;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return `background-service://${this.serviceName}` as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -848,8 +848,8 @@ export class DatabaseTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'database://' + encodeURI(this.database.name);
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'database://' + encodeURI(this.database.name) as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -886,8 +886,9 @@ export class DatabaseTableTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'database://' + encodeURI(this.database.name) + '/' + encodeURI(this.tableName);
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'database://' + encodeURI(this.database.name) + '/' + encodeURI(this.tableName) as
+        Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -907,8 +908,8 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'service-workers://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'service-workers://' as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -930,8 +931,8 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'manifest://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'manifest://' as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -953,8 +954,8 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'clear-storage://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'clear-storage://' as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -1101,8 +1102,9 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     this.model.addEventListener(IndexedDBModelEvents.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
   }
 
-  get itemURL(): string {
-    return 'indexedDB://' + this.databaseId.securityOrigin + '/' + this.databaseId.name;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'indexedDB://' + this.databaseId.securityOrigin + '/' + this.databaseId.name as
+        Platform.DevToolsPath.UrlString;
   }
 
   onattach(): void {
@@ -1215,8 +1217,9 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'indexedDB://' + this.databaseId.securityOrigin + '/' + this.databaseId.name + '/' + this.objectStore.name;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'indexedDB://' + this.databaseId.securityOrigin + '/' + this.databaseId.name + '/' + this.objectStore.name as
+        Platform.DevToolsPath.UrlString;
   }
 
   onattach(): void {
@@ -1351,9 +1354,9 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
     this.refreshObjectStore = refreshObjectStore;
   }
 
-  get itemURL(): string {
+  get itemURL(): Platform.DevToolsPath.UrlString {
     return 'indexedDB://' + this.databaseId.securityOrigin + '/' + this.databaseId.name + '/' + this.objectStore.name +
-        '/' + this.index.name;
+        '/' + this.index.name as Platform.DevToolsPath.UrlString;
   }
 
   markNeedsRefresh(): void {
@@ -1420,8 +1423,9 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'storage://' + this.domStorage.securityOrigin + '/' + (this.domStorage.isLocalStorage ? 'local' : 'session');
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'storage://' + this.domStorage.securityOrigin + '/' +
+        (this.domStorage.isLocalStorage ? 'local' : 'session') as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -1456,8 +1460,8 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'cookies://' + this.cookieDomainInternal;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'cookies://' + this.cookieDomainInternal as Platform.DevToolsPath.UrlString;
   }
 
   cookieDomain(): string {
@@ -1804,14 +1808,14 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
-  get itemURL(): string {
+  get itemURL(): Platform.DevToolsPath.UrlString {
     // This is used to persist over reloads/navigation which frame was selected.
     // A frame's title can change on DevTools refresh, so we resort to using
     // the URL instead (even though it is not guaranteed to be unique).
     if (this.frame.isTopFrame()) {
-      return 'frame://';
+      return 'frame://' as Platform.DevToolsPath.UrlString;
     }
-    return 'frame://' + encodeURI(this.frame.url);
+    return 'frame://' + encodeURI(this.frame.url) as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -1965,7 +1969,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     return resourceToFrameResourceTreeElement.get(resource);
   }
 
-  get itemURL(): string {
+  get itemURL(): Platform.DevToolsPath.UrlString {
     return this.resource.url;
   }
 
@@ -2082,8 +2086,8 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
     return false;
   }
 
-  get itemURL(): string {
-    return this.targetInfo.url;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return this.targetInfo.url as Platform.DevToolsPath.UrlString;
   }
 }
 
@@ -2111,7 +2115,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
     return false;
   }
 
-  get itemURL(): string {
-    return this.targetInfo.url;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return this.targetInfo.url as Platform.DevToolsPath.UrlString;
   }
 }

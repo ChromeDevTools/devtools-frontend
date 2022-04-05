@@ -152,11 +152,11 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     return true;
   }
 
-  private setBreakpoint(url: string): void {
-    if (this.#breakpoints.indexOf(url) !== -1) {
-      this.#list.refreshItem(url);
+  private setBreakpoint(breakKeyword: string): void {
+    if (this.#breakpoints.indexOf(breakKeyword) !== -1) {
+      this.#list.refreshItem(breakKeyword);
     } else {
-      this.#breakpoints.insertWithComparator(url, (a, b) => {
+      this.#breakpoints.insertWithComparator(breakKeyword, (a, b) => {
         if (a > b) {
           return 1;
         }
@@ -251,12 +251,12 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     return true;
   }
 
-  private removeBreakpoint(url: string): void {
-    const index = this.#breakpoints.indexOf(url);
+  private removeBreakpoint(breakKeyword: string): void {
+    const index = this.#breakpoints.indexOf(breakKeyword);
     if (index >= 0) {
       this.#breakpoints.remove(index);
     }
-    this.#breakpointElements.delete(url);
+    this.#breakpointElements.delete(breakKeyword);
     this.update();
   }
 
@@ -274,12 +274,12 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     }
   }
 
-  private contextMenu(url: string, event: Event): void {
+  private contextMenu(breakKeyword: string, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
     function removeBreakpoint(this: XHRBreakpointsSidebarPane): void {
-      SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(url);
-      this.removeBreakpoint(url);
+      SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(breakKeyword);
+      this.removeBreakpoint(breakKeyword);
     }
 
     function removeAllBreakpoints(this: XHRBreakpointsSidebarPane): void {
@@ -297,21 +297,21 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     void contextMenu.show();
   }
 
-  private checkboxClicked(url: string, checked: boolean): void {
+  private checkboxClicked(breakKeyword: string, checked: boolean): void {
     const hadFocus = this.hasFocus();
-    SDK.DOMDebuggerModel.DOMDebuggerManager.instance().toggleXHRBreakpoint(url, !checked);
-    this.#list.refreshItem(url);
-    this.#list.selectItem(url);
+    SDK.DOMDebuggerModel.DOMDebuggerManager.instance().toggleXHRBreakpoint(breakKeyword, !checked);
+    this.#list.refreshItem(breakKeyword);
+    this.#list.selectItem(breakKeyword);
     if (hadFocus) {
       this.focus();
     }
   }
 
-  private labelClicked(url: string): void {
-    const element = this.#breakpointElements.get(url);
+  private labelClicked(breakKeyword: string): void {
+    const element = this.#breakpointElements.get(breakKeyword);
     const inputElement = document.createElement('span');
     inputElement.classList.add('breakpoint-condition');
-    inputElement.textContent = url;
+    inputElement.textContent = breakKeyword;
     if (element) {
       this.#list.element.insertBefore(inputElement, element);
       element.classList.add('hidden');
@@ -320,8 +320,8 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     function finishEditing(this: XHRBreakpointsSidebarPane, accept: boolean, e: Element, text: string): void {
       this.removeListElement(inputElement);
       if (accept) {
-        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(url);
-        this.removeBreakpoint(url);
+        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(breakKeyword);
+        this.removeBreakpoint(breakKeyword);
         let enabled = true;
         if (element) {
           const breakpointEntryElement = containerToBreakpointEntry.get(element);

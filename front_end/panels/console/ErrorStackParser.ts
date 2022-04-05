@@ -3,13 +3,16 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+
+// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
 
 export interface ParsedErrorFrame {
   line: string;
   link?: {
-    url: string,
+    url: Platform.DevToolsPath.UrlString,
     prefix: string,
     suffix: string,
     lineNumber?: number,
@@ -101,13 +104,14 @@ export function parseSourcePositionsFromErrorStack(
   return linkInfos;
 }
 
-function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string|null): string|null {
+function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString|null):
+    Platform.DevToolsPath.UrlString|null {
   if (!url) {
     return null;
   }
   const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
   if (parsedURL) {
-    return parsedURL.url;
+    return parsedURL.url as Platform.DevToolsPath.UrlString;
   }
   if (debuggerModel.scriptsForSourceURL(url).length) {
     return url;
@@ -115,7 +119,7 @@ function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel, url:
   // nodejs stack traces contain (absolute) file paths, but v8 reports them as file: urls.
   const fileUrl = new URL(url, 'file://');
   if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
-    return fileUrl.href;
+    return fileUrl.href as Platform.DevToolsPath.UrlString;
   }
   return null;
 }

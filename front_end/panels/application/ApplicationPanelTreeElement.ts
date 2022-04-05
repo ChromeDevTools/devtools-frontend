@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -16,7 +17,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     UI.ARIAUtils.setAccessibleName(this.listItemElement, title);
   }
 
-  get itemURL(): string {
+  get itemURL(): Platform.DevToolsPath.UrlString {
     throw new Error('Unimplemented Method');
   }
 
@@ -25,7 +26,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
       return false;
     }
 
-    const path: string[] = [];
+    const path: Platform.DevToolsPath.UrlString[] = [];
     for (let el: UI.TreeOutline.TreeElement|null = this; el; el = el.parent) {
       const url = el instanceof ApplicationPanelTreeElement && el.itemURL;
       if (!url) {
@@ -56,8 +57,8 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     this.categoryLink = null;
   }
 
-  get itemURL(): string {
-    return 'category://' + this.categoryName;
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'category://' + this.categoryName as Platform.DevToolsPath.UrlString;
   }
 
   setLink(link: string): void {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -32,8 +33,8 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'trustTokens://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'trustTokens://' as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {

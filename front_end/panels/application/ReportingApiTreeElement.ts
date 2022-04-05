@@ -4,6 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
@@ -28,8 +29,8 @@ export class ReportingApiTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): string {
-    return 'reportingApi://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'reportingApi://' as Platform.DevToolsPath.UrlString;
   }
 
   onselect(selectedByUser?: boolean): boolean {

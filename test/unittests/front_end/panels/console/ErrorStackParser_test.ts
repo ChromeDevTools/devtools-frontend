@@ -14,6 +14,7 @@ const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
 describe('ErrorStackParser', () => {
   let runtimeModel;
   let parseErrorStack: (stack: string) => Console.ErrorStackParser.ParsedErrorFrame[] | null;
+  const fileTestingUrl = 'file:///testing.js' as Platform.DevToolsPath.UrlString;
 
   beforeEach(() => {
     // TODO(crbug/1280141): Remove complicated stubbing code once `parseSourcePositionsFromErrorStack`
@@ -85,7 +86,7 @@ describe('ErrorStackParser', () => {
 
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
-      url: 'file:///testing.js',
+      url: fileTestingUrl,
       prefix: '        at foo (',
       suffix: ')',
       lineNumber: 9,    // 0-based.
@@ -100,7 +101,7 @@ describe('ErrorStackParser', () => {
 
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
-      url: 'file:///testing.js',
+      url: fileTestingUrl,
       prefix: '        at foo (',
       suffix: ')',
       lineNumber: undefined,
@@ -115,7 +116,7 @@ describe('ErrorStackParser', () => {
 
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
-      url: 'file:///testing.js',
+      url: fileTestingUrl,
       prefix: '        at ',
       suffix: '',
       lineNumber: 41,   // 0-based.
@@ -130,7 +131,7 @@ describe('ErrorStackParser', () => {
 
     assertNotNullOrUndefined(frames);
     assert.deepStrictEqual(frames[1].link, {
-      url: 'file:///testing.js',
+      url: fileTestingUrl,
       prefix: '        at async ',
       suffix: '',
       lineNumber: 41,   // 0-based.
@@ -144,7 +145,7 @@ describe('ErrorStackParser', () => {
         at foo (testing.js:10:3)`);
 
     assertNotNullOrUndefined(frames);
-    assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js');
+    assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js' as Platform.DevToolsPath.UrlString);
   });
 
   describe('augmentErrorStackWithScriptIds', () => {

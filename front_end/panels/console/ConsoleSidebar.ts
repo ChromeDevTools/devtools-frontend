@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -259,7 +260,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     this.updateCounter();
   }
 
-  private childElement(url?: string): URLGroupTreeElement {
+  private childElement(url?: Platform.DevToolsPath.UrlString): URLGroupTreeElement {
     const urlValue = url || null;
     let child = this.urlTreeElements.get(urlValue);
     if (child) {

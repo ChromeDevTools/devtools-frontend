@@ -409,7 +409,7 @@ export class ParsedURL {
   }
 
   static splitLineAndColumn(string: string): {
-    url: string,
+    url: Platform.DevToolsPath.UrlString,
     lineNumber: (number|undefined),
     columnNumber: (number|undefined),
   } {
@@ -428,7 +428,7 @@ export class ParsedURL {
     let columnNumber;
     console.assert(Boolean(lineColumnMatch));
     if (!lineColumnMatch) {
-      return {url: string, lineNumber: 0, columnNumber: 0};
+      return {url: string as Platform.DevToolsPath.UrlString, lineNumber: 0, columnNumber: 0};
     }
 
     if (typeof (lineColumnMatch[1]) === 'string') {
@@ -441,7 +441,9 @@ export class ParsedURL {
       columnNumber = isNaN(columnNumber) ? undefined : columnNumber - 1;
     }
 
-    let url: string = beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length);
+    let url: Platform.DevToolsPath.UrlString =
+        beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length) as
+        Platform.DevToolsPath.UrlString;
     if (lineColumnMatch[1] === undefined && lineColumnMatch[2] === undefined) {
       const wasmCodeOffsetRegex = /wasm-function\[\d+\]:0x([a-z0-9]+)$/g;
       const wasmCodeOffsetMatch = wasmCodeOffsetRegex.exec(pathAndAfter);
@@ -455,13 +457,13 @@ export class ParsedURL {
     return {url, lineNumber, columnNumber};
   }
 
-  static removeWasmFunctionInfoFromURL(url: string): string {
+  static removeWasmFunctionInfoFromURL(url: string): Platform.DevToolsPath.UrlString {
     const wasmFunctionRegEx = /:wasm-function\[\d+\]/;
     const wasmFunctionIndex = url.search(wasmFunctionRegEx);
     if (wasmFunctionIndex === -1) {
-      return url;
+      return url as Platform.DevToolsPath.UrlString;
     }
-    return url.substring(0, wasmFunctionIndex);
+    return ParsedURL.substring(url as Platform.DevToolsPath.UrlString, 0, wasmFunctionIndex);
   }
 
   static isRelativeURL(url: string): boolean {

@@ -925,7 +925,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     return errorMessages;
   }
 
-  private async loadImage(url: string): Promise<{
+  private async loadImage(url: Platform.DevToolsPath.UrlString): Promise<{
     image: HTMLImageElement,
     wrapper: Element,
   }|null> {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -20,7 +21,7 @@ import {StorageItemsView} from './StorageItemsView.js';
 let resourcesPanelInstance: ResourcesPanel;
 
 export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
-  private readonly resourcesLastSelectedItemSetting: Common.Settings.Setting<string[]>;
+  private readonly resourcesLastSelectedItemSetting: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
   visibleView: UI.Widget.Widget|null;
   private pendingViewPromise: Promise<UI.Widget.Widget>|null;
   private categoryView: StorageCategoryView|null;
@@ -90,11 +91,11 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.sidebar.focus();
   }
 
-  lastSelectedItemPath(): string[] {
+  lastSelectedItemPath(): Platform.DevToolsPath.UrlString[] {
     return this.resourcesLastSelectedItemSetting.get();
   }
 
-  setLastSelectedItemPath(path: string[]): void {
+  setLastSelectedItemPath(path: Platform.DevToolsPath.UrlString[]): void {
     this.resourcesLastSelectedItemSetting.set(path);
   }
 

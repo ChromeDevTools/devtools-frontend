@@ -1694,7 +1694,7 @@ export class ConsoleViewFilter {
     }
   }
 
-  addMessageURLFilter(url: string): void {
+  addMessageURLFilter(url: Platform.DevToolsPath.UrlString): void {
     if (!url) {
       return;
     }

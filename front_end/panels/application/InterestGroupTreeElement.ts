@@ -4,6 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -35,8 +36,8 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
     this.view = new InterestGroupStorageView(this);
   }
 
-  get itemURL(): string {
-    return 'interest-groups://';
+  get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'interest-groups://' as Platform.DevToolsPath.UrlString;
   }
 
   async getInterestGroupDetails(owner: string, name: string): Promise<Protocol.Storage.InterestGroupDetails|null> {

@@ -456,7 +456,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected buildMessageAnchor(): HTMLElement|null {
     const linkify = (message: SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
       if (message.scriptId) {
-        return this.linkifyScriptId(message.scriptId, message.url || '', message.line, message.column);
+        return this.linkifyScriptId(
+            message.scriptId, message.url || Platform.DevToolsPath.EmptyUrlString, message.line, message.column);
       }
       if (message.stackTrace && message.stackTrace.callFrames.length) {
         return this.linkifyStackTraceTopFrame(message.stackTrace);
@@ -542,7 +543,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return toggleElement;
   }
 
-  private linkifyLocation(url: string, lineNumber: number, columnNumber: number): HTMLElement|null {
+  private linkifyLocation(url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): HTMLElement
+      |null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
@@ -559,8 +561,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
   }
 
-  private linkifyScriptId(scriptId: Protocol.Runtime.ScriptId, url: string, lineNumber: number, columnNumber: number):
-      HTMLElement|null {
+  private linkifyScriptId(
+      scriptId: Protocol.Runtime.ScriptId, url: Platform.DevToolsPath.UrlString, lineNumber: number,
+      columnNumber: number): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
@@ -1382,15 +1385,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private async getInlineFrames(
-      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: string, lineNumber: number|undefined,
-      columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
+      lineNumber: number|undefined, columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     if (debuggerWorkspaceBinding.pluginManager) {
       const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString))
-                                .flat()
-                                .filter(f => Boolean(f)) as Workspace.UISourceCode.UISourceCode[];
+      const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
+          Workspace.UISourceCode.UISourceCode[];
       const scripts =
           uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
       if (scripts.length) {
@@ -1406,9 +1407,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   // Expand inline stack frames in the formatted error in the stackTrace element, inserting new elements before the
   // insertBefore anchor.
   private async expandInlineStackFrames(
-      debuggerModel: SDK.DebuggerModel.DebuggerModel, prefix: string, suffix: string, url: string,
-      lineNumber: number|undefined, columnNumber: number|undefined, stackTrace: HTMLElement,
-      insertBefore: HTMLElement): Promise<boolean> {
+      debuggerModel: SDK.DebuggerModel.DebuggerModel, prefix: string, suffix: string,
+      url: Platform.DevToolsPath.UrlString, lineNumber: number|undefined, columnNumber: number|undefined,
+      stackTrace: HTMLElement, insertBefore: HTMLElement): Promise<boolean> {
     const {frames} = await this.getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
     if (!frames.length) {
       return false;

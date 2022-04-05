@@ -266,9 +266,7 @@ export class CoverageListView extends UI.Widget.VBox {
       return;
     }
     const coverageInfo = (node as GridNode).coverageInfo;
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
-        coverageInfo.url() as Platform.DevToolsPath.UrlString);
+    let sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode) {
       return;
     }
@@ -317,7 +315,7 @@ function getPercentageFormatter(): Intl.NumberFormat {
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
   coverageInfo: URLCoverageInfo;
   private lastUsedSize!: number|undefined;
-  private url: string;
+  private url: Platform.DevToolsPath.UrlString;
   private maxSize: number;
   private highlightRegExp: RegExp|null;
 

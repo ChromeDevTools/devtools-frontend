@@ -808,9 +808,9 @@ export class DOMNode {
     traverse(this);
   }
 
-  resolveURL(url: string): string|null {
+  resolveURL(url: string): Platform.DevToolsPath.UrlString|null {
     if (!url) {
-      return url;
+      return url as Platform.DevToolsPath.UrlString;
     }
     for (let frameOwnerCandidate: (DOMNode|null) = (this as DOMNode | null); frameOwnerCandidate;
          frameOwnerCandidate = frameOwnerCandidate.parentNode) {

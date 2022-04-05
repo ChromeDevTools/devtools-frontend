@@ -1183,9 +1183,7 @@ export class NetworkRequestNode extends NetworkNode {
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser: {
         UI.Tooltip.Tooltip.install(cell, initiator.url + ':' + (initiator.lineNumber + 1));
-        // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
-            initiator.url as Platform.DevToolsPath.UrlString);
+        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
         cell.appendChild(
             Components.Linkifier.Linkifier.linkifyURL(initiator.url, ({
                                                         text: uiSourceCode ? uiSourceCode.displayName() : undefined,

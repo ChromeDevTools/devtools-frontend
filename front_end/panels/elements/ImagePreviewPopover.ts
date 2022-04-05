@@ -60,14 +60,14 @@ export class ImagePreviewPopover {
     this.popover.hidePopover();
   }
 
-  static setImageUrl(element: Element, url: string): Element {
+  static setImageUrl(element: Element, url: Platform.DevToolsPath.UrlString): Element {
     elementToURLMap.set(element, url);
     return element;
   }
 
-  static getImageURL(element: Element): string|undefined {
+  static getImageURL(element: Element): Platform.DevToolsPath.UrlString|undefined {
     return elementToURLMap.get(element);
   }
 }
 
-const elementToURLMap = new WeakMap<Element, string>();
+const elementToURLMap = new WeakMap<Element, Platform.DevToolsPath.UrlString>();

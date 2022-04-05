@@ -31,8 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -260,7 +258,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly resizeThrottler: Common.Throttler.Throttler;
   private readonly imagePreviewPopover: ImagePreviewPopover;
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
-  #urlToChangeTracker: Map<string, ChangeTracker> = new Map();
+  #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
 
   static instance(): StylesSidebarPane {
     if (!stylesSidebarPaneInstance) {
@@ -1087,7 +1085,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return sections;
   }
 
-  async trackURLForChanges(url: string): Promise<void> {
+  async trackURLForChanges(url: Platform.DevToolsPath.UrlString): Promise<void> {
     const currentTracker = this.#urlToChangeTracker.get(url);
     if (currentTracker) {
       WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(
@@ -1095,8 +1093,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     // We get a refreshed uiSourceCode each time because the underlying instance may be recreated.
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (!uiSourceCode) {
       return;
     }
@@ -3394,14 +3391,14 @@ export class StylesSidebarPropertyRenderer {
 
   private processURL(text: string): Node {
     // Strip "url(" and ")" along with whitespace.
-    let url = text.substring(4, text.length - 1).trim();
+    let url = text.substring(4, text.length - 1).trim() as Platform.DevToolsPath.UrlString;
     const isQuoted = /^'.*'$/s.test(url) || /^".*"$/s.test(url);
     if (isQuoted) {
-      url = url.substring(1, url.length - 1);
+      url = Common.ParsedURL.ParsedURL.substring(url, 1, url.length - 1);
     }
     const container = document.createDocumentFragment();
     UI.UIUtils.createTextChild(container, 'url(');
-    let hrefUrl: (string|null)|null = null;
+    let hrefUrl: Platform.DevToolsPath.UrlString|null = null;
     if (this.rule && this.rule.resourceURL()) {
       hrefUrl = Common.ParsedURL.ParsedURL.completeURL(this.rule.resourceURL(), url);
     } else if (this.node) {

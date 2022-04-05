@@ -202,15 +202,15 @@ export class RenderCoordinator extends EventTarget {
   }
 
   async #handleWork(handler: CoordinatorCallback): Promise<void> {
-    const data = await handler.call(undefined);
     const resolver = this.#resolvers.get(handler);
+    this.#resolvers.delete(handler);
+    this.#rejectors.delete(handler);
+    const data = await handler.call(undefined);
     if (!resolver) {
       throw new Error('Unable to locate resolver');
     }
 
     resolver.call(undefined, data);
-    this.#resolvers.delete(handler);
-    this.#rejectors.delete(handler);
   }
 
   #scheduleWork(): void {

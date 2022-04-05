@@ -18,6 +18,7 @@ devtools_module("components") {
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/panel_feedback:bundle",
+    "../../../ui/components/panel_introduction_steps:bundle",
     "../../../ui/lit-html:bundle",
   ]
 }

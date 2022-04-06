@@ -1228,6 +1228,7 @@ const UIStrings = {
   batchCommands: 'Batch Commands',
   processLayer: 'ProcessLayer',
   distributeLayers: 'Distribute Layers',
+  executeBackendBuffers: 'Execute Backend Buffes',
 
   submitGlyphs: 'Submit Glyphs',
   submitManagerChanges: 'Submit Manager Changes',
@@ -1455,6 +1456,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
     eventStyles[type.Coherent_Backend_Execute] = new TimelineRecordStyle(UIStrings.backend_Execute, painting);
     eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
+    eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
 
     // COHERENT END
     eventStylesMap = eventStyles;

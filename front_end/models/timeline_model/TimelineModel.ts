@@ -1749,6 +1749,7 @@ export enum RecordType {
   Coherent_DrawSubLayerWithShaderFilter = 'Coherent_DrawSubLayerWithShaderFilter',
   Coherent_Backend_Execute = 'Coherent_Backend_Execute',
   Coherent_ProcessSimpleSublayer = 'Coherent_ProcessSimpleSublayer',
+  Coherent_ExecuteBackendBuffers = 'Coherent_ExecuteBackendBuffers',
 
   // COHERENT END
 }

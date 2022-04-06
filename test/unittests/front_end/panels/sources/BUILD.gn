@@ -8,6 +8,7 @@ ts_library("sources") {
   testonly = true
   sources = [
     "FilePathScoreFunction_test.ts",
+    "ScriptSnippetFileSystem_test.ts",
     "SourcesView_test.ts",
   ]
 

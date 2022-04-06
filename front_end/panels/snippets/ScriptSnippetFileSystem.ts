@@ -170,7 +170,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
         generatePreview: true,
         replMode: true,
       } as SDK.RuntimeModel.EvaluationOptions,
-      false, true);
+      true, true);
 
   if ('exceptionDetails' in result && result.exceptionDetails) {
     SDK.ConsoleModel.ConsoleModel.instance().addMessage(SDK.ConsoleModel.ConsoleMessage.fromException(

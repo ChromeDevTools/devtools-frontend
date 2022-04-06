@@ -15649,12 +15649,6 @@
                             "description": "The fantasy font-family.",
                             "optional": true,
                             "type": "string"
-                        },
-                        {
-                            "name": "pictograph",
-                            "description": "The pictograph font-family.",
-                            "optional": true,
-                            "type": "string"
                         }
                     ]
                 },

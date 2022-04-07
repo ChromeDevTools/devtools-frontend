@@ -206,7 +206,8 @@ describe('The Network Tab', async function() {
     });
   });
 
-  it('indicates resources from the web bundle in the size column', async () => {
+  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
+  it.skip('[crbug.com/1314256] indicates resources from the web bundle in the size column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle.html');
@@ -226,7 +227,8 @@ describe('The Network Tab', async function() {
     ]);
   });
 
-  it('shows web bundle metadata error in the status column', async () => {
+  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
+  it.skip('[crbug.com/1314256] shows web bundle metadata error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-metadata.html');
@@ -243,7 +245,8 @@ describe('The Network Tab', async function() {
     assert.sameMembers(await getNetworkRequestStatus(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
   });
 
-  it('shows web bundle inner request error in the status column', async () => {
+  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
+  it.skip('[crbug.com/1314256] shows web bundle inner request error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-inner-request.html');
@@ -260,7 +263,8 @@ describe('The Network Tab', async function() {
     assert.sameMembers(await getNetworkRequestSize(), ['200OK', 'Web Bundle error']);
   });
 
-  it('shows web bundle icons', async () => {
+  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
+  it.skip('[crbug.com/1314256] shows web bundle icons', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle.html');

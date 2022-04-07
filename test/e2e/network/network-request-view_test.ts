@@ -53,7 +53,8 @@ describe('The Network Request view', async () => {
        });
      });
 
-  it('shows webbundle content on preview tab', async () => {
+  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
+  it.skip('[crbug.com/1314256] shows webbundle content on preview tab', async () => {
     await navigateToNetworkTab('resources-from-webbundle.html');
 
     await waitForSomeRequestsToAppear(3);

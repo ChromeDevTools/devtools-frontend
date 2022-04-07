@@ -11,9 +11,9 @@ if ! command -v gen-bundle > /dev/null 2>&1; then
 fi
 
 gen-bundle \
-  -version b1 \
+  -version b2 \
   -har webbundle.har \
-  -primaryURL urn:uuid:020111b3-437a-4c5c-ae07-adb6bbffb720 \
+  -primaryURL uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720 \
   -o webbundle.wbn
 
 cp webbundle.wbn webbundle_bad_metadata.wbn
@@ -23,4 +23,4 @@ echo 'XX' | dd of=webbundle_bad_metadata.wbn bs=1 count=2 conv=notrunc
 
 cp webbundle.wbn webbundle_bad_inner_request.wbn
 # corrupt headers
-echo 'XXXX'  | dd of=webbundle_bad_inner_request.wbn bs=1 seek=205 count=4 conv=notrunc
+echo 'XXXX'  | dd of=webbundle_bad_inner_request.wbn bs=1 seek=170 count=4 conv=notrunc

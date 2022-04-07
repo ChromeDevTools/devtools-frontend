@@ -53,8 +53,7 @@ describe('The Network Request view', async () => {
        });
      });
 
-  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
-  it.skip('[crbug.com/1314256] shows webbundle content on preview tab', async () => {
+  it('shows webbundle content on preview tab', async () => {
     await navigateToNetworkTab('resources-from-webbundle.html');
 
     await waitForSomeRequestsToAppear(3);
@@ -67,8 +66,8 @@ describe('The Network Request view', async () => {
     await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
 
     await waitForElementWithTextContent('webbundle.wbn', networkView);
-    await waitForElementWithTextContent('urn:uuid:429fcc4e-0696-4bad-b099-ee9175f023ae', networkView);
-    await waitForElementWithTextContent('urn:uuid:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
+    await waitForElementWithTextContent('uuid-in-package:429fcc4e-0696-4bad-b099-ee9175f023ae', networkView);
+    await waitForElementWithTextContent('uuid-in-package:020111b3-437a-4c5c-ae07-adb6bbffb720', networkView);
   });
 
   it('prevents requests on the preview tab.', async () => {

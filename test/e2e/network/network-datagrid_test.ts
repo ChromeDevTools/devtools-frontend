@@ -206,8 +206,7 @@ describe('The Network Tab', async function() {
     });
   });
 
-  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
-  it.skip('[crbug.com/1314256] indicates resources from the web bundle in the size column', async () => {
+  it('indicates resources from the web bundle in the size column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle.html');
@@ -222,13 +221,12 @@ describe('The Network Tab', async function() {
     });
 
     assert.sameMembers(await getNetworkRequestSize(), [
-      `${formatByteSize(688)}${formatByteSize(0)}`,
+      `${formatByteSize(653)}${formatByteSize(0)}`,
       `(Web Bundle)${formatByteSize(27)}`,
     ]);
   });
 
-  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
-  it.skip('[crbug.com/1314256] shows web bundle metadata error in the status column', async () => {
+  it('shows web bundle metadata error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-metadata.html');
@@ -245,8 +243,7 @@ describe('The Network Tab', async function() {
     assert.sameMembers(await getNetworkRequestStatus(), ['Web Bundle error', '(failed)net::ERR_INVALID_WEB_BUNDLE']);
   });
 
-  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
-  it.skip('[crbug.com/1314256] shows web bundle inner request error in the status column', async () => {
+  it('shows web bundle inner request error in the status column', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle-with-bad-inner-request.html');
@@ -263,8 +260,7 @@ describe('The Network Tab', async function() {
     assert.sameMembers(await getNetworkRequestSize(), ['200OK', 'Web Bundle error']);
   });
 
-  // urn:uuid: URLs are no longer supported (https://crrev.com/c/3560841)
-  it.skip('[crbug.com/1314256] shows web bundle icons', async () => {
+  it('shows web bundle icons', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await navigateToNetworkTab('resources-from-webbundle.html');

@@ -775,6 +775,7 @@ grd_files_debug_sources = [
   "front_end/models/persistence/editFileSystemView.css.js",
   "front_end/models/persistence/workspaceSettingsTab.css.js",
   "front_end/models/source_map_scopes/NamesResolver.js",
+  "front_end/models/text_utils/CodeMirrorUtils.js",
   "front_end/models/text_utils/ContentProvider.js",
   "front_end/models/text_utils/StaticContentProvider.js",
   "front_end/models/text_utils/Text.js",

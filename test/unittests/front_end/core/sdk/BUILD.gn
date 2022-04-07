@@ -14,6 +14,7 @@ ts_library("sdk") {
     "CookieModel_test.ts",
     "CookieParser_test.ts",
     "Cookie_test.ts",
+    "CSSProperty_test.ts",
     "DOMModel_test.ts",
     "DebuggerModel_test.ts",
     "FrameManager_test.ts",

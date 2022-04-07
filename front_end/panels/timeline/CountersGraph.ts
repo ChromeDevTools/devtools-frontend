@@ -58,7 +58,7 @@ const UIStrings = {
   /**
   *@description Text in Counters Graph of the Performance panel
   */
-  gpuMemory: 'GPU Memory',
+  gpuMemory: 'GPU Memory KB',
   /**
   *@description Range text content in Counters Graph of the Performance panel
   *@example {2} PH1
@@ -131,7 +131,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_ImagesCounter', this._createCounter('Images Textures', 'hsl(304, 900%, 50%)'));
 
     this._gpuMemoryCounter = this._createCounter(
-        i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.bytesToString);
+        i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.kilobytesToString);
 
     this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
   }

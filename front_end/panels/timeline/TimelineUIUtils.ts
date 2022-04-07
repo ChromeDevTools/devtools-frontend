@@ -1230,6 +1230,11 @@ const UIStrings = {
   distributeLayers: 'Distribute Layers',
   executeBackendBuffers: 'Execute Backend Buffes',
 
+  textureCreated: 'Texture Create',
+  textureDestroyed: 'Texture Destroy',
+  VBCreated: 'VB Create',
+  VBDestroyed: 'VB Destroy',
+
   submitGlyphs: 'Submit Glyphs',
   submitManagerChanges: 'Submit Manager Changes',
   processFrontendCommandsOnly: 'Process Frontend Commands Only',
@@ -1298,6 +1303,7 @@ export class TimelineUIUtils {
     const loading = categories['loading'];
     const experience = categories['experience'];
     const painting = categories['painting'];
+    const gpu_objects = categories['gpu_objects'];
     const other = categories['other'];
     const idle = categories['idle'];
 
@@ -1457,6 +1463,11 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_Backend_Execute] = new TimelineRecordStyle(UIStrings.backend_Execute, painting);
     eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
     eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
+
+    eventStyles[type.Coherent_TextureCreated] = new TimelineRecordStyle(UIStrings.textureCreated, gpu_objects);
+    eventStyles[type.Coherent_TextureDestroyed] = new TimelineRecordStyle(UIStrings.textureDestroyed, gpu_objects);
+    eventStyles[type.Coherent_VBCreated] = new TimelineRecordStyle(UIStrings.VBCreated, gpu_objects);
+    eventStyles[type.Coherent_VBDestroyed] = new TimelineRecordStyle(UIStrings.VBDestroyed, gpu_objects);
 
     // COHERENT END
     eventStylesMap = eventStyles;
@@ -3183,6 +3194,7 @@ export class TimelineUIUtils {
       painting: new TimelineCategory(
           'painting', i18nString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
       gpu: new TimelineCategory('gpu', i18nString(UIStrings.gpu), false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
+      gpu_objects: new TimelineCategory('gpu_objects', 'GPU Object Creation', true, 'hsl(195, 100%, 50%)', 'hsl(195, 100%, 50%)'),
       async:
           new TimelineCategory('async', i18nString(UIStrings.async), false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
       other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),

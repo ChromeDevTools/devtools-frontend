@@ -38,6 +38,18 @@ export const bytesToString = (bytes: number): string => {
   return StringUtilities.vsprintf('%.0f\xA0MB', [megabytes]);
 };
 
+export const kilobytesToString = (kilobytes: number): string => {
+  if (kilobytes < 1000) {
+    return StringUtilities.vsprintf('%.0f\xA0kB', [kilobytes]);
+  }
+
+  const megabytes = kilobytes / 1000;
+  if (megabytes < 100) {
+    return StringUtilities.vsprintf('%.1f\xA0MB', [megabytes]);
+  }
+  return StringUtilities.vsprintf('%.0f\xA0MB', [megabytes]);
+};
+
 export const toFixedIfFloating = (value: string): string => {
   if (!value || Number.isNaN(Number(value))) {
     return value;

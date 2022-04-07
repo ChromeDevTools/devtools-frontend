@@ -99,6 +99,7 @@ devtools_svg_sources = [
   "ic_page_prev_16x16_icon.svg",
   "ic_preview_feature.svg",
   "ic_redo_16x16_icon.svg",
+  "ic_rendering.svg",
   "ic_request_response.svg",
   "ic_response.svg",
   "ic_show_node_16x16.svg",

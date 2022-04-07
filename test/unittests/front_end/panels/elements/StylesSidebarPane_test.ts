@@ -79,9 +79,9 @@ describeWithRealConnection('StylesSidebarPane', async () => {
       isConstructedByNew: () => false,
     } as unknown as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
 
-    const cssWorksapceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance();
-    cssWorksapceBinding.modelAdded(cssModel);
-    cssWorksapceBinding.addSourceMapping({
+    const cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance();
+    cssWorkspaceBinding.modelAdded(cssModel);
+    cssWorkspaceBinding.addSourceMapping({
       rawLocationToUILocation: (loc: SDK.CSSModel.CSSLocation) => new Workspace.UISourceCode.UILocation(
           uiSourceCode as Workspace.UISourceCode.UISourceCode, loc.lineNumber, loc.columnNumber),
       uiLocationToRawLocations: (_: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] => [],

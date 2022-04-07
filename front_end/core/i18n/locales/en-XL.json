@@ -4877,6 +4877,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "V̂íêẃ ĉóm̂ṕût́êd́ v̂ál̂úê"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Âút̂óm̂át̂íĉ d́âŕk̂ ḿôd́ê"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ĺâýêŕ îń l̂áŷér̂ t́r̂éê"
   },
@@ -4957,6 +4960,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | styleAttribute": {
     "message": "style ât́t̂ŕîb́ût́ê"
+  },
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "T̂óĝǵl̂é ĉóm̂ḿôń r̂én̂d́êŕîńĝ ém̂úl̂át̂íôńŝ"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ûńk̂ńôẃn̂ ṕr̂óp̂ér̂t́ŷ ńâḿê"

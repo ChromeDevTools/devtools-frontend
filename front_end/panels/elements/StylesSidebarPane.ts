@@ -190,6 +190,14 @@ const UIStrings = {
   */
   copyAllCSSChanges: 'Copy all the CSS changes',
   /**
+  *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
+  */
+  toggleRenderingEmulations: 'Toggle common rendering emulations',
+  /**
+  *@description Rendering emulation option for toggling the automatic dark mode
+  */
+  automaticDarkMode: 'Automatic dark mode',
+  /**
   *@description Tooltip text that appears after clicking on the copy CSS changes button
   */
   copiedToClipboard: 'Copied to clipboard',
@@ -630,6 +638,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     await this.innerRebuildUpdate(matchedStyles);
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
+      this.appendToolbarItem(this.createRenderingShortcuts());
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
         this.appendToolbarItem(this.createCopyAllChangesButton());
       }
@@ -1263,6 +1272,50 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         this.pendingWidget = null;
       }
     }
+  }
+
+  private createRenderingShortcuts(): UI.Toolbar.ToolbarButton {
+    const prefersColorSchemeSetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersColorScheme');
+    const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode');
+    const decorateStatus = (condition: boolean, title: string): string => `${condition ? '✓ ' : ''}${title}`;
+
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {
+      iconName: 'ic_rendering',
+      color: 'var(--color-text-secondary)',
+      width: '18px',
+      height: '18px',
+    };
+    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.toggleRenderingEmulations), icon);
+
+    button.element.addEventListener('click', event => {
+      const menu = new UI.ContextMenu.ContextMenu(event);
+      const preferredColorScheme = prefersColorSchemeSetting.get();
+      const isLightColorScheme = preferredColorScheme === 'light';
+      const isDarkColorScheme = preferredColorScheme === 'dark';
+      const isAutoDarkEnabled = autoDarkModeSetting.get();
+      const lightColorSchemeOption = decorateStatus(isLightColorScheme, 'prefers-color-scheme: light');
+      const darkColorSchemeOption = decorateStatus(isDarkColorScheme, 'prefers-color-scheme: dark');
+      const autoDarkModeOption = decorateStatus(isAutoDarkEnabled, i18nString(UIStrings.automaticDarkMode));
+
+      menu.defaultSection().appendItem(lightColorSchemeOption, () => {
+        autoDarkModeSetting.set(false);
+        prefersColorSchemeSetting.set(isLightColorScheme ? '' : 'light');
+      });
+      menu.defaultSection().appendItem(darkColorSchemeOption, () => {
+        autoDarkModeSetting.set(false);
+        prefersColorSchemeSetting.set(isDarkColorScheme ? '' : 'dark');
+      });
+      menu.defaultSection().appendItem(autoDarkModeOption, () => {
+        autoDarkModeSetting.set(!isAutoDarkEnabled);
+      });
+
+      void menu.show();
+      event.stopPropagation();
+    }, {capture: true});
+
+    return button;
   }
 
   private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {

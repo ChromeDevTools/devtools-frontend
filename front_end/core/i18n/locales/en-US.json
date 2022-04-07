@@ -4877,6 +4877,9 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "View computed value"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatic dark mode"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Click to reveal layer in layer tree"
   },
@@ -4957,6 +4960,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | styleAttribute": {
     "message": "style attribute"
+  },
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Toggle common rendering emulations"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Unknown property name"

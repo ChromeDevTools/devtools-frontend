@@ -4,11 +4,11 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
 
 const fakeInitiator = {
   target: null,
@@ -312,7 +312,7 @@ describe('TextSourceMap', () => {
           offset: {line: 2, 'column': 10},
           map: {
             mappings: 'AAAA,CAEC',
-            sources: ['source2.js' as Platform.DevToolsPath.UrlString],
+            sources: ['source3.js' as Platform.DevToolsPath.UrlString],
             version: 1,
             file: undefined,
             sections: undefined,
@@ -331,11 +331,11 @@ describe('TextSourceMap', () => {
     };
     const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
 
-    assert.lengthOf(sourceMap.sourceURLs(), 2, 'unexpected number of original source URLs');
+    assert.lengthOf(sourceMap.sourceURLs(), 3, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 'source1.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 1), 'source1.js', 2, 1);
-    assertMapping(sourceMap.findEntry(2, 10), 'source2.js', 0, 0);
-    assertMapping(sourceMap.findEntry(2, 11), 'source2.js', 2, 1);
+    assertMapping(sourceMap.findEntry(2, 10), 'source3.js', 0, 0);
+    assertMapping(sourceMap.findEntry(2, 11), 'source3.js', 2, 1);
   });
 
   describe('source URL resolution', () => {

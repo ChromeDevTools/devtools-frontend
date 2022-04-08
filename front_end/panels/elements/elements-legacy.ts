@@ -94,6 +94,9 @@ Elements.NodeStackTraceWidget = ElementsModule.NodeStackTraceWidget.NodeStackTra
 Elements.PropertiesWidget = ElementsModule.PropertiesWidget.PropertiesWidget;
 
 /** @constructor */
+Elements.StylePropertiesSection = ElementsModule.StylePropertiesSection.StylePropertiesSection;
+
+/** @constructor */
 Elements.StylePropertyTreeElement = ElementsModule.StylePropertyTreeElement.StylePropertyTreeElement;
 
 /** @constructor */
@@ -104,6 +107,3 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = ElementsModule.StylesSidebarPane.
 
 /** @constructor */
 Elements.StylesSidebarPane.ButtonProvider = ElementsModule.StylesSidebarPane.ButtonProvider;
-
-/** @constructor */
-Elements.StylePropertiesSection = ElementsModule.StylesSidebarPane.StylePropertiesSection;

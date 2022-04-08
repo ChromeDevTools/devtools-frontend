@@ -16,6 +16,7 @@ import './MetricsSidebarPane.js';
 import './PlatformFontsWidget.js';
 import './PropertiesWidget.js';
 import './NodeStackTraceWidget.js';
+import './StylePropertiesSection.js';
 import './StylePropertyHighlighter.js';
 import './StylesSidebarPane.js';
 import './StylePropertyTreeElement.js';
@@ -47,6 +48,7 @@ import * as NodeStackTraceWidget from './NodeStackTraceWidget.js';
 import * as PlatformFontsWidget from './PlatformFontsWidget.js';
 import * as PropertiesWidget from './PropertiesWidget.js';
 import * as StyleEditorWidget from './StyleEditorWidget.js';
+import * as StylePropertiesSection from './StylePropertiesSection.js';
 import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
 import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylePropertyUtils from './StylePropertyUtils.js';
@@ -75,6 +77,7 @@ export {
   PlatformFontsWidget,
   PropertiesWidget,
   StyleEditorWidget,
+  StylePropertiesSection,
   StylePropertyHighlighter,
   StylePropertyTreeElement,
   StylePropertyUtils,

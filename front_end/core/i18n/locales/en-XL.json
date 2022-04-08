@@ -4832,6 +4832,42 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Ŵh́êń ûńĉh́êćk̂éd̂, ón̂ĺŷ ṕr̂óp̂ér̂t́îéŝ ẃĥóŝé v̂ál̂úêś âŕê ńêít̂h́êŕ n̂úl̂ĺ n̂ór̂ ún̂d́êf́îńêd́ ŵíl̂ĺ b̂é ŝh́ôẃn̂"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Ĉóp̂ý r̂úl̂é"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Ĉóp̂ý selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS ŝél̂éĉt́ôŕ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "îńĵéĉt́êd́ ŝt́ŷĺêśĥéêt́"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Îńŝér̂t́ Ŝt́ŷĺê Ŕûĺê B́êĺôẃ"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Ât́t̂ŕîb́ût́êś Ŝt́ŷĺê]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Ŝh́ôẃ Âĺl̂ Ṕr̂óp̂ér̂t́îéŝ ({PH1} ḿôŕê)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style ât́t̂ŕîb́ût́ê"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ûśêŕ âǵêńt̂ śt̂ýl̂éŝh́êét̂"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ áŝ J́Ŝ"
   },
@@ -4883,32 +4919,17 @@
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ĺâýêŕ îń l̂áŷér̂ t́r̂éê"
   },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "ĉón̂śt̂ŕûćt̂éd̂ śt̂ýl̂éŝh́êét̂"
-  },
   "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
     "message": "Ĉóp̂íêd́ t̂ó ĉĺîṕb̂óâŕd̂"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
     "message": "Ĉóp̂ý âĺl̂ t́ĥé ĈŚŜ ćĥán̂ǵêś"
   },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Ĉóp̂ý r̂úl̂é"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Ĉóp̂ý selector"
-  },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS p̂ŕôṕêŕt̂ý n̂ám̂é: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS p̂ŕôṕêŕt̂ý v̂ál̂úê: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS ŝél̂éĉt́ôŕ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "F̂íl̂t́êŕ"
@@ -4928,12 +4949,6 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
     "message": "Îńĥér̂ít̂éd̂ f́r̂óm̂ ::{PH1} ṕŝéûd́ô óf̂ "
   },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "îńĵéĉt́êd́ ŝt́ŷĺêśĥéêt́"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Îńŝér̂t́ Ŝt́ŷĺê Ŕûĺê B́êĺôẃ"
-  },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Îńv̂ál̂íd̂ ṕr̂óp̂ér̂t́ŷ v́âĺûé"
   },
@@ -4952,26 +4967,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "P̂śêúd̂ó ::{PH1} êĺêḿêńt̂"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Ât́t̂ŕîb́ût́êś Ŝt́ŷĺê]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Ŝh́ôẃ Âĺl̂ Ṕr̂óp̂ér̂t́îéŝ ({PH1} ḿôŕê)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style ât́t̂ŕîb́ût́ê"
-  },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "T̂óĝǵl̂é ĉóm̂ḿôń r̂én̂d́êŕîńĝ ém̂úl̂át̂íôńŝ"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ûńk̂ńôẃn̂ ṕr̂óp̂ér̂t́ŷ ńâḿê"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ûśêŕ âǵêńt̂ śt̂ýl̂éŝh́êét̂"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "v̂íâ ín̂śp̂éĉt́ôŕ"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Âd́d̂ d́êv́îćê ṕîx́êĺ r̂át̂íô"

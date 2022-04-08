@@ -952,6 +952,7 @@ grd_files_debug_sources = [
   "front_end/panels/elements/PropertiesWidget.js",
   "front_end/panels/elements/PropertyNameCategories.js",
   "front_end/panels/elements/StyleEditorWidget.js",
+  "front_end/panels/elements/StylePropertiesSection.js",
   "front_end/panels/elements/StylePropertyHighlighter.js",
   "front_end/panels/elements/StylePropertyTreeElement.js",
   "front_end/panels/elements/StylePropertyUtils.js",

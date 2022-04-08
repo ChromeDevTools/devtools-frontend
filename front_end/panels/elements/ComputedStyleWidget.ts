@@ -48,7 +48,8 @@ import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import type {Category} from './PropertyNameCategories.js';
 import {categorizePropertyName, DefaultCategoryOrder} from './PropertyNameCategories.js';
-import {IdleCallbackManager, StylePropertiesSection, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
+import {StylePropertiesSection} from './StylePropertiesSection.js';
+import {IdleCallbackManager, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**

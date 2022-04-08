@@ -48,7 +48,8 @@ describe('Sources Tab', async function() {
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
   });
 
-  it('hits two breakpoints that are set and activated separately', async function() {
+  // Broken by https://crrev.com/c/3574665
+  it.skip('[crbug.com/1314707] hits two breakpoints that are set and activated separately', async function() {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'add.wasm';
 
@@ -147,7 +148,8 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(), [0x023]);
   });
 
-  it('is able to step with state', async () => {
+  // Broken by https://crrev.com/c/3574665
+  it.skip('[crbug.com/1314707] is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'stepping-with-state.wasm';
 

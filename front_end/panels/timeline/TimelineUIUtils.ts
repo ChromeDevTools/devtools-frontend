@@ -1261,10 +1261,26 @@ const UIStrings = {
   elementsChangedLayout: 'Elements Changed Layout',
   styleMatchCacheMisses: 'Style Match Cache Misses',
 
+  textureId : 'Texture Id',
+  textureType : 'Type',
+
+  VBId : 'Vertex Buffer Id',
+  VBType : 'Type',
   // COHERENT END
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const textureTypes = ['Scratch Texture',
+	                    'Layer Texture',
+	                    'Image Texture',
+	                    'Surface Texture',
+	                    'Compositor Texture',
+	                    'Glyph Atlas'];
+
+const VBTypes = ['Geometry Buffer',
+	               'Path Buffer',
+	               'Glyph Buffer'];
 
 let eventStylesMap: EventStylesMap;
 
@@ -2575,6 +2591,18 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(UIStrings.elementsAffected, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.elementsChangedLayout, event.args['int1']);
         contentHelper.appendTextRow(UIStrings.styleMatchCacheMisses, event.args['int2']);
+        break;
+      }
+      case recordTypes.Coherent_TextureCreated:
+      case recordTypes.Coherent_TextureDestroyed: {
+        contentHelper.appendTextRow(UIStrings.textureId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.textureType, textureTypes[parseInt(event.args['int1'])]);
+        break;
+      }
+      case recordTypes.Coherent_VBCreated:
+      case recordTypes.Coherent_VBDestroyed: {
+        contentHelper.appendTextRow(UIStrings.VBId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.VBType, VBTypes[parseInt(event.args['int1'])]);
         break;
       }
       // COHERENT END

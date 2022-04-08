@@ -2,11 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
+import {assert, expect} from 'chai';
+import type {BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
 import {click, getBrowserAndPages, pressKey, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getAllRequestNames, navigateToNetworkTab, selectRequestByName, setCacheDisabled, setPersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+
+async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: string) {
+  const statusColumn = await frontend.evaluate(() => {
+    return Array.from(document.querySelectorAll('.status-column')).map(node => node.textContent);
+  });
+  const timeColumn = await frontend.evaluate(() => {
+    return Array.from(document.querySelectorAll('.time-column')).map(node => node.textContent);
+  });
+  const typeColumn = await frontend.evaluate(() => {
+    return Array.from(document.querySelectorAll('.type-column')).map(node => node.textContent);
+  });
+  const nameColumn = await frontend.evaluate(() => {
+    return Array.from(document.querySelectorAll('.name-column')).map(node => node.textContent);
+  });
+  const index = nameColumn.findIndex(x => x === name);
+  return {status: statusColumn[index], time: timeColumn[index], type: typeColumn[index]};
+}
 
 describe('The Network Tab', async function() {
   if (this.timeout() !== 0.0) {
@@ -304,23 +322,9 @@ describe('The Network Tab', async function() {
     await navigateToNetworkTab('fetch.html');
     await waitForSomeRequestsToAppear(1);
 
-    async function getStatusAndTime(name: string) {
-      const statusColumn = await frontend.evaluate(() => {
-        return Array.from(document.querySelectorAll('.status-column')).map(node => node.textContent);
-      });
-      const timeColumn = await frontend.evaluate(() => {
-        return Array.from(document.querySelectorAll('.time-column')).map(node => node.textContent);
-      });
-      const nameColumn = await frontend.evaluate(() => {
-        return Array.from(document.querySelectorAll('.name-column')).map(node => node.textContent);
-      });
-      const index = nameColumn.findIndex(x => x === name);
-      return {status: statusColumn[index], time: timeColumn[index]};
-    }
-
     // We need to wait for the network log to update.
     await waitForFunction(async () => {
-      const {status, time} = await getStatusAndTime('sendBeacon');
+      const {status, time} = await getRequestRowInfo(frontend, 'sendBeacon');
       // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
       return (status === '(unknown)' || status === '404') && time === '(unknown)';
     });
@@ -352,5 +356,23 @@ describe('The Network Tab', async function() {
     await selectRequestByName('localhost', {delay: 300});
 
     await waitFor('.network-item-view');
+  });
+
+  // This is currently skipped while we fix the alignment of requestId+networkId in the CDP
+  // events that apply to the main service worker request
+  it.skip('[crbug.com/1304795] shows the main service worker request as complete', async () => {
+    await navigateToNetworkTab('service-worker.html');
+    const {target, frontend} = getBrowserAndPages();
+    await target.waitForXPath('//div[@id="content" and text()="pong"]');
+    const html = await getRequestRowInfo(frontend, 'service-worker.html/test/e2e/resources/network');
+    expect(html).to.contain({
+      status: '200OK',
+      type: 'document',
+    });
+    const sw = await getRequestRowInfo(frontend, '⚙ service-worker.js/test/e2e/resources/network');
+    expect(sw).to.contain({
+      status: '200OK',
+      type: 'script',
+    });
   });
 });

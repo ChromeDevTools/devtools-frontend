@@ -1,0 +1,11 @@
+<div id="content"></div>
+<script>
+  navigator.serviceWorker.register('./service-worker.js');
+  navigator.serviceWorker.addEventListener('message', event => {
+    document.getElementById('content').innerText = event.data;
+  });
+
+  navigator.serviceWorker.ready.then(registration => {
+    registration.active.postMessage('ping');
+  });
+</script>

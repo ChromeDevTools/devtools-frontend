@@ -20,6 +20,8 @@ copy_to_gen("network") {
     "resources-from-webbundle-with-bad-metadata.html",
     "resources-from-webbundle.html",
     "send_beacon_on_unload.html",
+    "service-worker.html",
+    "service-worker.js",
     "style.css",
     "third-party-resources.html",
     "trusted-type-policy-violation-report-only.rawresponse",

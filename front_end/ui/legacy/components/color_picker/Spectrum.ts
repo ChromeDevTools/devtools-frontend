@@ -34,6 +34,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
@@ -174,6 +175,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   };
   private closeButton?: UI.Toolbar.ToolbarButton;
   private paletteContainerMutable?: boolean;
+  private eyeDropperExperimentEnabled?: boolean;
   private shadesCloseHandler?: (() => void);
   private dragElement?: HTMLElement;
   private dragHotSpotX?: number;
@@ -441,7 +443,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     data: unknown,
   }): void {
     if (event.data) {
-      this.toggleColorPicker(false);
+      void this.toggleColorPicker(false);
     }
   }
 
@@ -1161,7 +1163,15 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.dragHeight = this.colorElement.offsetHeight;
     this.colorDragElementHeight = this.colorDragElement.offsetHeight / 2;
     this.innerSetColor(undefined, undefined, undefined /* colorName */, undefined, ChangeSource.Model);
-    this.toggleColorPicker(true);
+    this.eyeDropperExperimentEnabled =
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER);
+    // When flag is turned on, eye dropper is not turned on by default.
+    // This is because the global change of the cursor into a dropper will disturb the user.
+    if (!this.eyeDropperExperimentEnabled) {
+      void this.toggleColorPicker(true);
+    } else {
+      this.colorPickerButton.setToggled(false);
+    }
 
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
       this.contrastDetails.addEventListener(
@@ -1171,7 +1181,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   willHide(): void {
-    this.toggleColorPicker(false);
+    void this.toggleColorPicker(false);
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
       this.contrastDetails.removeEventListener(
           ContrastDetailsEvents.BackgroundColorPickerWillBeToggled,
@@ -1179,7 +1189,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private toggleColorPicker(enabled?: boolean): void {
+  private async toggleColorPicker(enabled?: boolean): Promise<void> {
+    const eyeDropperExperimentEnabled = this.eyeDropperExperimentEnabled;
+
     if (enabled === undefined) {
       enabled = !this.colorPickerButton.toggled();
     }
@@ -1191,13 +1203,33 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       this.contrastDetails.toggleBackgroundColorPicker(false);
     }
 
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setEyeDropperActive(enabled);
-    if (enabled) {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
-    } else {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-          Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
+    // With the old color picker, colors can only be picked up within the page.
+    if (!eyeDropperExperimentEnabled) {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.setEyeDropperActive(enabled);
+      if (enabled) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+            Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
+      } else {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+            Host.InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this.colorPickedBound);
+      }
+    } else if (eyeDropperExperimentEnabled && enabled) {
+      // Use EyeDropper API, can pick up colors outside the browser window,
+      // Note: The current EyeDropper API is not designed to pick up colors continuously.
+      // Wait for TypeScript to support the definition of EyeDropper API:
+      // https://github.com/microsoft/TypeScript/issues/48638
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
+      const eyeDropper = new (<any>window).EyeDropper();
+
+      try {
+        const hexColor = await eyeDropper.open();
+        const color = Common.Color.Color.parse(hexColor.sRGBHex);
+        this.innerSetColor(color?.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);
+      } catch (error) {
+        console.error(error);
+      }
+
+      this.colorPickerButton.setToggled(false);
     }
   }
 

@@ -129,6 +129,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_ScratchTextures', this._createCounter('Scratch Textures', 'hsl(120, 90%, 43%)'));
     this._countersByName.set('Coherent_SurfacesCounter', this._createCounter('Surface Textures', 'hsl(181, 90%, 43%)'));
     this._countersByName.set('Coherent_ImagesCounter', this._createCounter('Images Textures', 'hsl(304, 900%, 50%)'));
+    this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory (Bytes)', 'hsl(304, 900%, 50%)', Platform.NumberUtilities.bytesToString));
 
     this._gpuMemoryCounter = this._createCounter(
         i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.kilobytesToString);

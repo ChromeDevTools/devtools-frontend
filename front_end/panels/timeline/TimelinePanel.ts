@@ -284,6 +284,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _showMemorySetting: Common.Settings.Setting<any>;
+  _timelineCounters: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _showWebVitalsSetting: Common.Settings.Setting<any>;
@@ -307,6 +308,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   _loader?: TimelineLoader;
   _showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   _showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
+  _showTimelineCountersCheckbox?: UI.Toolbar.ToolbarItem;
   _showWebVitalsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   _startCoverageCheckbox?: UI.Toolbar.ToolbarItem;
   _networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
@@ -358,6 +360,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this._showMemorySetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this._showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
+
+    this._timelineCounters = Common.Settings.Settings.instance().createSetting('timelineCounters', false);
+    this._timelineCounters.setTitle('Counters');
+    this._timelineCounters.addChangeListener(this._onModeChanged, this);
 
     this._showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
     this._showWebVitalsSetting.setTitle(i18nString(UIStrings.webVitals));
@@ -508,6 +514,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this._showMemoryToolbarCheckbox =
         this._createSettingCheckbox(this._showMemorySetting, i18nString(UIStrings.showMemoryTimeline));
     this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
+
+    this._showTimelineCountersCheckbox = this._createSettingCheckbox(this._timelineCounters, 'Counters');
+    this._panelToolbar.appendToolbarItem(this._showTimelineCountersCheckbox);
 
     this._showWebVitalsToolbarCheckbox =
         this._createSettingCheckbox(this._showWebVitalsSetting, i18nString(UIStrings.showWebVitals));

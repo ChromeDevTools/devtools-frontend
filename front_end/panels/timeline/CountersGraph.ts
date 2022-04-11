@@ -58,7 +58,7 @@ const UIStrings = {
   /**
   *@description Text in Counters Graph of the Performance panel
   */
-  gpuMemory: 'GPU Memory KB',
+  gpuMemory: 'GPU Memory (Kilobytes)',
   /**
   *@description Range text content in Counters Graph of the Performance panel
   *@example {2} PH1
@@ -68,6 +68,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+enum CounterType {
+  SimpleCounter,
+  MemoryCounter
+}
 
 export class CountersGraph extends UI.Widget.VBox {
   _delegate: TimelineModeViewDelegate;
@@ -86,6 +91,8 @@ export class CountersGraph extends UI.Widget.VBox {
   _track?: TimelineModel.TimelineModel.Track|null;
   _currentValuesBar?: HTMLElement;
   _markerXPosition?: number;
+  _showSimpleCounters: Common.Settings.Setting<any>;
+  _showMemoryCounters: Common.Settings.Setting<any>;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -125,16 +132,34 @@ export class CountersGraph extends UI.Widget.VBox {
 
     this._countersByName = new Map();
 
-    this._countersByName.set('Coherent_LayerTextures', this._createCounter('Layer Textures', 'hsl(239, 100%, 50%)'));
-    this._countersByName.set('Coherent_ScratchTextures', this._createCounter('Scratch Textures', 'hsl(120, 90%, 43%)'));
-    this._countersByName.set('Coherent_SurfacesCounter', this._createCounter('Surface Textures', 'hsl(181, 90%, 43%)'));
-    this._countersByName.set('Coherent_ImagesCounter', this._createCounter('Images Textures', 'hsl(304, 900%, 50%)'));
-    this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory (Bytes)', 'hsl(304, 900%, 50%)', Platform.NumberUtilities.bytesToString));
-
-    this._gpuMemoryCounter = this._createCounter(
-        i18nString(UIStrings.gpuMemory), 'hsl(300, 90%, 43%)', Platform.NumberUtilities.kilobytesToString);
+    this._countersByName.set('Coherent_LayerTextures', this._createCounter('Layer Textures', 'hsl(239, 100%, 50%)', CounterType.SimpleCounter));
+    this._countersByName.set('Coherent_ScratchTextures', this._createCounter('Scratch Textures', 'hsl(120, 90%, 43%)', CounterType.SimpleCounter));
+    this._countersByName.set('Coherent_SurfacesCounter', this._createCounter('Surface Textures', 'hsl(181, 90%, 43%)', CounterType.SimpleCounter));
+    this._countersByName.set('Coherent_ImagesCounter', this._createCounter('Images Textures', 'hsl(304, 900%, 50%)', CounterType.SimpleCounter));
+    this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory (Bytes)', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
+    this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.kilobytesToString);
 
     this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
+
+    this._showMemoryCounters = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
+    this._showSimpleCounters = Common.Settings.Settings.instance().createSetting('timelineCounters', false);
+
+    this._showMemoryCounters.addChangeListener(this._onShowCountersChanged, this);
+    this._showSimpleCounters.addChangeListener(this._onShowCountersChanged, this);
+  }
+
+  _onShowCountersChanged(): void {
+
+    for (const counterUI of this._counterUI)
+    {
+      const shouldDisplay =
+        (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
+        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+
+      counterUI._filter.inputElement.classList.toggle('hidden', !shouldDisplay);
+      counterUI._filter.element.classList.toggle('hidden', !shouldDisplay);
+    }
+
   }
 
   setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
@@ -186,10 +211,11 @@ export class CountersGraph extends UI.Widget.VBox {
     this._currentValuesBar.id = 'counter-values-bar';
   }
 
-  _createCounter(uiName: string, color: string, formatter?: ((arg0: number) => string)): Counter {
-    const counter = new Counter();
+  _createCounter(uiName: string, color: string, counterType: CounterType, formatter?: ((arg0: number) => string)): Counter {
+    const counter = new Counter(counterType);
     this._counters.push(counter);
-    this._counterUI.push(new CounterUI(this, uiName, color, counter, formatter));
+    const counterUI = new CounterUI(this, uiName, color, counter, counterType, formatter);
+    this._counterUI.push(counterUI);
     return counter;
   }
 
@@ -218,11 +244,26 @@ export class CountersGraph extends UI.Widget.VBox {
   draw(): void {
     this._clear();
     for (const counter of this._counters) {
-      counter._calculateVisibleIndexes(this._calculator);
-      counter._calculateXValues(this._canvas.width);
+      const shouldDisplay =
+        (counter.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
+        || (counter.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+
+      if (shouldDisplay)
+      {
+        counter._calculateVisibleIndexes(this._calculator);
+        counter._calculateXValues(this._canvas.width);
+      }
+
     }
     for (const counterUI of this._counterUI) {
-      counterUI._drawGraph(this._canvas);
+      const shouldDisplay =
+        (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
+        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+
+      if (shouldDisplay)
+      {
+        counterUI._drawGraph(this._canvas);
+      }
     }
   }
 
@@ -297,8 +338,10 @@ export class Counter {
   _maxTime: number;
   _minTime: number;
   _limitValue?: number;
+  _type: CounterType;
 
-  constructor() {
+
+  constructor(counterType: CounterType) {
     this.times = [];
     this.values = [];
     this.x = [];
@@ -306,6 +349,7 @@ export class Counter {
     this._maximumIndex = 0;
     this._maxTime = 0;
     this._minTime = 0;
+    this._type = counterType;
   }
 
   appendSample(time: number, value: number): void {
@@ -382,6 +426,10 @@ export class Counter {
       this.x[i] = xFactor * (this.times[i] - this._minTime);
     }
   }
+
+  getType(): CounterType {
+    return this._type;
+  }
 }
 
 export class CounterUI {
@@ -400,9 +448,10 @@ export class CounterUI {
   _verticalPadding: number;
   _currentValueLabel: string;
   _marker: HTMLElement;
+  _type: CounterType;
 
   constructor(
-      countersPane: CountersGraph, title: string, graphColor: string, counter: Counter,
+      countersPane: CountersGraph, title: string, graphColor: string, counter: Counter, counterType: CounterType,
       formatter?: (arg0: number) => string) {
     this._countersPane = countersPane;
     this.counter = counter;
@@ -438,6 +487,8 @@ export class CounterUI {
     this._marker = countersPane._canvasContainer.createChild('div', 'memory-counter-marker');
     this._marker.style.backgroundColor = graphColor;
     this._clearCurrentValueAndMarker();
+
+    this._type = counterType;
   }
 
   reset(): void {
@@ -552,6 +603,10 @@ export class CounterUI {
 
   visible(): boolean {
     return this._filter.checked();
+  }
+
+  getType(): CounterType {
+    return this._type;
   }
 }
 

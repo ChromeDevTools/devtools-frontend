@@ -7,6 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Root from '../../../core/root/root.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -300,7 +301,8 @@ export class BackForwardCacheView extends HTMLElement {
 
   #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
                         undefined): LitHtml.TemplateResult|{} {
-    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0)) {
+    if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0) ||
+        !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
       return LitHtml.nothing;
     }
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
@@ -491,7 +493,7 @@ export class BackForwardCacheView extends HTMLElement {
   }
 
   #renderFramesPerReason(frames: string[]|undefined): LitHtml.TemplateResult|{} {
-    if (frames === undefined || frames.length === 0) {
+    if (frames === undefined || frames.length === 0 || !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
       return LitHtml.nothing;
     }
     const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];

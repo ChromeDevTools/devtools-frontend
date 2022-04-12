@@ -376,6 +376,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       const retainmentViewHeader = document.createElement('div');
       retainmentViewHeader.classList.add('heap-snapshot-view-resizer');
       const retainingPathsTitleDiv = retainmentViewHeader.createChild('div', 'title');
+      retainmentViewHeader.createChild('div', 'verticalResizerIcon');
       const retainingPathsTitle = retainingPathsTitleDiv.createChild('span');
       retainingPathsTitle.textContent = i18nString(UIStrings.retainers);
 
@@ -1123,6 +1124,7 @@ export class AllocationPerspective extends Perspective {
     const resizer = document.createElement('div');
     resizer.classList.add('heap-snapshot-view-resizer');
     const title = resizer.createChild('div', 'title').createChild('span');
+    resizer.createChild('div', 'verticalResizerIcon');
     title.textContent = i18nString(UIStrings.liveObjects);
     this.allocationSplitWidget.hideDefaultResizer();
     this.allocationSplitWidget.installResizer(resizer);

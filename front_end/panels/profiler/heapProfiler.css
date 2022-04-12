@@ -77,16 +77,28 @@
 }
 
 .heap-snapshot-view .heap-snapshot-view-resizer {
-  background-image: var(--image-file-toolbarResizerVertical);
   background-color: var(--color-background-elevation-1);
   border-bottom: 1px solid var(--color-details-hairline);
-  background-repeat: no-repeat;
-  background-position: right center, center;
+  display: flex;
   flex: 0 0 21px;
 }
 
 .heap-snapshot-view td.object-column > div > span {
   margin-right: 6px;
+}
+
+.heap-snapshot-view .heap-snapshot-view-resizer .title {
+  flex: 0 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.heap-snapshot-view .heap-snapshot-view-resizer .verticalResizerIcon {
+  background-image: var(--image-file-toolbarResizerVertical);
+  background-repeat: no-repeat;
+  background-position: center;
+  flex: 0 0 28px;
+  margin-left: auto;
 }
 
 .heap-snapshot-view .heap-snapshot-view-resizer .title > span {

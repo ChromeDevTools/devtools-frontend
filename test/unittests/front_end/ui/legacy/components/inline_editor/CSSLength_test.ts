@@ -28,7 +28,7 @@ describe('CSSLength', () => {
     assert.strictEqual(unitElement.textContent, 'px', 'CSSLength unit content is not rendered correctly');
   });
 
-  it('can +/- length values when the value is dragged', () => {
+  it('can +/- length values when the value is dragged', async () => {
     const component = new InlineEditor.CSSLength.CSSLength();
     renderElementIntoDOM(component);
     component.data = initialData;
@@ -49,6 +49,8 @@ describe('CSSLength', () => {
 
     let mousePositionX = 1;
     lengthValueElement.dispatchEvent(new MouseEvent('mousedown', {clientX: mousePositionX}));
+    // Wait enough to let CSSLength think it is not a click.
+    await new Promise<void>(res => setTimeout(() => res(), 1000));
 
     const mousemoveRight = new MouseEvent('mousemove', {
       clientX: ++mousePositionX,

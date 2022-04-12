@@ -4835,6 +4835,9 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "constructed stylesheet"
   },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copy all CSS changes"
+  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Copy all declarations"
   },
@@ -4867,6 +4870,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "via inspector"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copy all CSS changes"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copy all declarations as JS"
@@ -4918,12 +4924,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Click to reveal layer in layer tree"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Copied to clipboard"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copy all the CSS changes"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS property name: {PH1}"

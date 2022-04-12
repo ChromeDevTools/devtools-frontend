@@ -133,10 +133,6 @@ const UIStrings = {
   */
   cssPropertyValue: '`CSS` property value: {PH1}',
   /**
-  *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
-  */
-  copyAllCSSChanges: 'Copy all the CSS changes',
-  /**
   *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
   */
   toggleRenderingEmulations: 'Toggle common rendering emulations',
@@ -144,10 +140,6 @@ const UIStrings = {
   *@description Rendering emulation option for toggling the automatic dark mode
   */
   automaticDarkMode: 'Automatic dark mode',
-  /**
-  *@description Tooltip text that appears after clicking on the copy CSS changes button
-  */
-  copiedToClipboard: 'Copied to clipboard',
   /**
   *@description Text displayed on layer separators in the styles sidebar pane.
   */
@@ -581,9 +573,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
-        this.appendToolbarItem(this.createCopyAllChangesButton());
-      }
       this.dispatchEventToListeners(Events.InitialUpdateCompleted);
     }
 
@@ -1104,7 +1093,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     changeTracker.formattedCurrentMapping = formattedCurrentMapping;
   }
 
-  private async getFormattedChanges(): Promise<string> {
+  async getFormattedChanges(): Promise<string> {
     let allChanges = '';
     for (const [url, {uiSourceCode}] of this.#urlToChangeTracker) {
       const diffResponse =
@@ -1258,35 +1247,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }, {capture: true});
 
     return button;
-  }
-
-  private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {
-    const copyAllIcon = new IconButton.Icon.Icon();
-    copyAllIcon.data = {
-      iconName: 'ic_changes',
-      color: 'var(--color-text-secondary)',
-      width: '18px',
-      height: '18px',
-    };
-    const copyAllChangesButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), copyAllIcon);
-    // TODO(1296947): implement a dedicated component to share between all copy buttons
-    copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
-    let timeout: number|undefined;
-    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
-      const allChanges = await this.getFormattedChanges();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      copyAllChangesButton.element.classList.add('copied-to-clipboard');
-      timeout = window.setTimeout(() => {
-        copyAllChangesButton.element.classList.remove('copied-to-clipboard');
-        timeout = undefined;
-      }, 2000);
-    });
-    return copyAllChangesButton;
   }
 }
 

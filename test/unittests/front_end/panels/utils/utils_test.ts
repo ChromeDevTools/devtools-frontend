@@ -19,17 +19,28 @@ describe('panels/utils', async () => {
         display: grid;
         --child-theme-color: 100, 200, 0;
       }
-      `;
+
+      @supports (display: grid) {
+        .container {
+          display: grid;
+        }
+      }`;
     const current = `
       .container {
         width: 15px;
         margin: 0;
       }
 
-      .child {
+      .child2 {
         display: grid;
         --child-theme-color: 5, 10, 15;
         padding: 10px;
+      }
+
+      @supports (display: flex) {
+        .container {
+          display: flex;
+        }
       }`;
     const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), current.split('\n'));
     const changes = await utils.formatCSSChangesFromDiff(diff);
@@ -41,10 +52,18 @@ describe('panels/utils', async () => {
   margin: 0;
 }
 
-.child {
+/* .child { */
+.child2 {
   /* --child-theme-color: 100, 200, 0; */
   --child-theme-color: 5, 10, 15;
   padding: 10px;
+}
+
+/* @supports (display: grid) { */
+@supports (display: flex) {
+.container {
+  /* display: grid; */
+  display: flex;
 }`,
         'formatted CSS changes are not correct');
   });

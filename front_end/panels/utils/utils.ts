@@ -30,75 +30,70 @@ export function imageNameForResourceType(resourceType: Common.ResourceType.Resou
 }
 
 export async function formatCSSChangesFromDiff(diff: Diff.Diff.DiffArray): Promise<string> {
+  const indent = '  ';
   const {originalLines, currentLines, rows} = DiffView.DiffView.buildDiffRows(diff);
+  const originalRuleMaps = await buildStyleRuleMaps(originalLines.join('\n'));
+  const currentRuleMaps = await buildStyleRuleMaps(currentLines.join('\n'));
 
-  const {propertyToSelector: originalPropertyToSelector, ruleToSelector: originalRuleToSelector} =
-      await buildPropertyRuleMaps(originalLines.join('\n'));
-  const {propertyToSelector: currentPropertyToSelector, ruleToSelector: currentRuleToSelector} =
-      await buildPropertyRuleMaps(currentLines.join('\n'));
   let changes = '';
   let recordedOriginalSelector, recordedCurrentSelector;
+  let hasOpenDeclarationBlock = false;
   for (const {currentLineNumber, originalLineNumber, type} of rows) {
-    // diff line arrays starts at 0, but line numbers start at 1.
-    const currentLineIndex = currentLineNumber - 1;
-    const originalLineIndex = originalLineNumber - 1;
-    switch (type) {
-      case DiffView.DiffView.RowType.Deletion: {
-        const originalLine = originalLines[originalLineIndex].trim();
-        if (originalRuleToSelector.has(originalLineIndex)) {
-          changes += `/* ${originalLine} { */\n`;
-          recordedOriginalSelector = originalLine;
-          continue;
-        }
+    if (type !== DiffView.DiffView.RowType.Deletion && type !== DiffView.DiffView.RowType.Addition) {
+      continue;
+    }
 
-        const originalSelector = originalPropertyToSelector.get(originalLineIndex);
-        if (!originalSelector) {
-          continue;
-        }
-        if (originalSelector !== recordedOriginalSelector && originalSelector !== recordedCurrentSelector) {
-          if (recordedOriginalSelector || recordedCurrentSelector) {
-            changes += '}\n\n';
-          }
-          changes += `${originalSelector} {\n`;
-        }
-        recordedOriginalSelector = originalSelector;
-        changes += `  /* ${originalLine} */\n`;
-        break;
+    const isDeletion = type === DiffView.DiffView.RowType.Deletion;
+    const lines = isDeletion ? originalLines : currentLines;
+    // Diff line arrays starts at 0, but line numbers start at 1.
+    const lineIndex = isDeletion ? originalLineNumber - 1 : currentLineNumber - 1;
+    const line = lines[lineIndex].trim();
+    const {declarationIDToStyleRule, styleRuleIDToStyleRule} = isDeletion ? originalRuleMaps : currentRuleMaps;
+    let styleRule;
+    let prefix = '';
+    if (declarationIDToStyleRule.has(lineIndex)) {
+      styleRule = declarationIDToStyleRule.get(lineIndex) as FormattableStyleRule;
+      const selector = styleRule.selector;
+      // Use the equality of selector strings as a best-effort check for the equality of style rules.
+      if (selector !== recordedOriginalSelector && selector !== recordedCurrentSelector) {
+        prefix += `${selector} {\n`;
       }
-      case DiffView.DiffView.RowType.Addition: {
-        const currentLine = currentLines[currentLineIndex].trim();
-        if (currentRuleToSelector.has(currentLineIndex)) {
-          changes += `${currentLine} {\n`;
-          recordedCurrentSelector = currentLine;
-          continue;
-        }
+      prefix += indent;
+      hasOpenDeclarationBlock = true;
+    } else {
+      if (hasOpenDeclarationBlock) {
+        prefix = '}\n\n';
+        hasOpenDeclarationBlock = false;
+      }
+      if (styleRuleIDToStyleRule.has(lineIndex)) {
+        styleRule = styleRuleIDToStyleRule.get(lineIndex);
+      }
+    }
 
-        const currentSelector = currentPropertyToSelector.get(currentLineIndex);
-        if (!currentSelector) {
-          continue;
-        }
-        if (currentSelector !== recordedOriginalSelector && currentSelector !== recordedCurrentSelector) {
-          if (recordedOriginalSelector || recordedCurrentSelector) {
-            changes += '}\n\n';
-          }
-          changes += `${currentSelector} {\n`;
-        }
-        recordedCurrentSelector = currentSelector;
-        changes += `  ${currentLine}\n`;
-        break;
-      }
-      default:
-        break;
+    const processedLine = isDeletion ? `/* ${line} */` : line;
+    changes += prefix + processedLine + '\n';
+    if (isDeletion) {
+      recordedOriginalSelector = styleRule?.selector;
+    } else {
+      recordedCurrentSelector = styleRule?.selector;
     }
   }
+
   if (changes.length > 0) {
     changes += '}';
   }
   return changes;
 }
 
-async function buildPropertyRuleMaps(content: string):
-    Promise<{propertyToSelector: Map<number, string>, ruleToSelector: Map<number, string>}> {
+interface FormattableStyleRule {
+  rule: Formatter.FormatterWorkerPool.CSSRule;
+  selector: string;
+}
+
+async function buildStyleRuleMaps(content: string): Promise<{
+  declarationIDToStyleRule: Map<number, FormattableStyleRule>,
+  styleRuleIDToStyleRule: Map<number, FormattableStyleRule>,
+}> {
   const rules = await new Promise<Formatter.FormatterWorkerPool.CSSRule[]>(res => {
     const rules: Formatter.FormatterWorkerPool.CSSRule[] = [];
     Formatter.FormatterWorkerPool.formatterWorkerPool().parseCSS(content, (isLastChunk, currentRules) => {
@@ -108,19 +103,22 @@ async function buildPropertyRuleMaps(content: string):
       }
     });
   });
-  const propertyToSelector = new Map<number, string>();
-  const ruleToSelector = new Map<number, string>();
+
+  // We use line numbers as unique IDs for rules and declarations
+  const declarationIDToStyleRule = new Map<number, FormattableStyleRule>();
+  const styleRuleIDToStyleRule = new Map<number, FormattableStyleRule>();
   for (const rule of rules) {
     if ('styleRange' in rule) {
       const selector = rule.selectorText.split('\n').pop()?.trim();
       if (!selector) {
         continue;
       }
-      ruleToSelector.set(rule.styleRange.startLine, selector);
+      const styleRule = {rule, selector};
+      styleRuleIDToStyleRule.set(rule.styleRange.startLine, styleRule);
       for (const property of rule.properties) {
-        propertyToSelector.set(property.range.startLine, selector);
+        declarationIDToStyleRule.set(property.range.startLine, styleRule);
       }
     }
   }
-  return {propertyToSelector, ruleToSelector};
+  return {declarationIDToStyleRule, styleRuleIDToStyleRule};
 }

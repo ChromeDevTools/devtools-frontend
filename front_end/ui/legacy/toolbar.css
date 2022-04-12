@@ -208,6 +208,19 @@ it. */
   --icon-color: var(--color-primary);
 }
 
+.toolbar-state-on devtools-icon.toolbar-icon::after {
+  --override-background-color: var(--icon-color);
+
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  background-color: var(--override-background-color);
+  width: 0.4em;
+  height: 0.4em;
+  border: 0.2em solid var(--override-toolbar-background-color, --color-background);
+  border-radius: 50%;
+}
+
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
   background-color: var(--color-accent-red) !important; /* stylelint-disable-line declaration-no-important */

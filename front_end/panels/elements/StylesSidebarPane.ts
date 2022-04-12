@@ -1218,7 +1218,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       width: '18px',
       height: '18px',
     };
-    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.toggleRenderingEmulations), icon);
+    const button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), icon);
 
     button.element.addEventListener('click', event => {
       const menu = new UI.ContextMenu.ContextMenu(event);
@@ -1233,13 +1233,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       menu.defaultSection().appendItem(lightColorSchemeOption, () => {
         autoDarkModeSetting.set(false);
         prefersColorSchemeSetting.set(isLightColorScheme ? '' : 'light');
+        button.setToggled(Boolean(prefersColorSchemeSetting.get()));
       });
       menu.defaultSection().appendItem(darkColorSchemeOption, () => {
         autoDarkModeSetting.set(false);
         prefersColorSchemeSetting.set(isDarkColorScheme ? '' : 'dark');
+        button.setToggled(Boolean(prefersColorSchemeSetting.get()));
       });
       menu.defaultSection().appendItem(autoDarkModeOption, () => {
         autoDarkModeSetting.set(!isAutoDarkEnabled);
+        button.setToggled(Boolean(prefersColorSchemeSetting.get()));
       });
 
       void menu.show();

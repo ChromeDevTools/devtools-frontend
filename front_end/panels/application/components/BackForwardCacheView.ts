@@ -410,15 +410,17 @@ export class BackForwardCacheView extends HTMLElement {
   #buildReasonToFramesMap(
       explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree,
       outputMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): void {
-    explanationTree.explanations.forEach(explanation => {
-      let frames: string[]|undefined = outputMap.get(explanation.reason);
-      if (frames === undefined) {
-        frames = [explanationTree.url];
-        outputMap.set(explanation.reason, frames);
-      } else {
-        frames.push(explanationTree.url);
-      }
-    });
+    if (explanationTree.url.length > 0) {
+      explanationTree.explanations.forEach(explanation => {
+        let frames: string[]|undefined = outputMap.get(explanation.reason);
+        if (frames === undefined) {
+          frames = [explanationTree.url];
+          outputMap.set(explanation.reason, frames);
+        } else {
+          frames.push(explanationTree.url);
+        }
+      });
+    }
     explanationTree.children.map(child => {
       this.#buildReasonToFramesMap(child, outputMap);
     });

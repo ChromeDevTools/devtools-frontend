@@ -50,7 +50,7 @@ describe('CSSLength', () => {
     let mousePositionX = 1;
     lengthValueElement.dispatchEvent(new MouseEvent('mousedown', {clientX: mousePositionX}));
     // Wait enough to let CSSLength think it is not a click.
-    await new Promise<void>(res => setTimeout(() => res(), 1000));
+    await new Promise<void>(res => setTimeout(() => res(), 400));
 
     const mousemoveRight = new MouseEvent('mousemove', {
       clientX: ++mousePositionX,

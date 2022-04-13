@@ -104,10 +104,6 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   }
 
   private update(): void {
-    if (!this.isShowing()) {
-      return;
-    }
-
     let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
@@ -127,6 +123,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         input.checked = false;
       }
     }
+    ButtonProvider.instance().item().setToggled(this.inputs.some(input => input.checked));
   }
 }
 
@@ -138,6 +135,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private constructor() {
     this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleElementState), '');
     this.button.setText(i18n.i18n.lockedString(':hov'));
+    this.button.setToggleWithDot(true);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.button.element.classList.add('monospace');
     this.view = new ElementStatePaneWidget();
@@ -155,10 +153,10 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   }
 
   private clicked(): void {
-    ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, this.button);
+    ElementsPanel.instance().showToolbarPane(!this.view.isShowing() ? this.view : null, null);
   }
 
-  item(): UI.Toolbar.ToolbarItem {
+  item(): UI.Toolbar.ToolbarToggle {
     return this.button;
   }
 }

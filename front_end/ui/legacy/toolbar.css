@@ -208,17 +208,20 @@ it. */
   --icon-color: var(--color-primary);
 }
 
-.toolbar-state-on devtools-icon.toolbar-icon::after {
-  --override-background-color: var(--icon-color);
-
+.toolbar-state-on.toolbar-toggle-with-dot .toolbar-icon::after,
+.toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
   content: "";
   position: absolute;
   bottom: 2px;
-  background-color: var(--override-background-color);
-  width: 0.4em;
-  height: 0.4em;
-  border: 0.2em solid var(--override-toolbar-background-color, --color-background);
+  background-color: var(--color-primary);
+  width: 4.5px;
+  height: 4.5px;
+  border: 2px solid var(--override-toolbar-background-color, --color-background);
   border-radius: 50%;
+}
+
+.toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
+  right: 0;
 }
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,

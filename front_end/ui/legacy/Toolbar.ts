@@ -799,6 +799,10 @@ export class ToolbarToggle extends ToolbarButton {
   setToggleWithRedColor(toggleWithRedColor: boolean): void {
     this.element.classList.toggle('toolbar-toggle-with-red-color', toggleWithRedColor);
   }
+
+  setToggleWithDot(toggleWithDot: boolean): void {
+    this.element.classList.toggle('toolbar-toggle-with-dot', toggleWithDot);
+  }
 }
 
 export class ToolbarMenuButton extends ToolbarButton {

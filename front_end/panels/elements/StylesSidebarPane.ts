@@ -1219,6 +1219,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       height: '18px',
     };
     const button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), icon);
+    button.setToggleWithDot(true);
 
     button.element.addEventListener('click', event => {
       const menu = new UI.ContextMenu.ContextMenu(event);

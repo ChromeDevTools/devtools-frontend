@@ -62,7 +62,7 @@ export class CSSLength extends HTMLElement {
   private dragValue(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    if (new Date().getTime() - this.#valueMousedownTime <= 300) {
+    if (Date.now() - this.#valueMousedownTime <= 300) {
       // Delay drag callback by 300ms to prioritize click over drag.
       return;
     }
@@ -86,7 +86,7 @@ export class CSSLength extends HTMLElement {
       return;
     }
 
-    this.#valueMousedownTime = new Date().getTime();
+    this.#valueMousedownTime = Date.now();
 
     this.currentMouseClientX = event.clientX;
     const targetDocument = event.target instanceof Node && event.target.ownerDocument;

@@ -3,25 +3,17 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
 import {$$, click, getBrowserAndPages, goToResource, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getExecutionLine, getOpenSources, openNestedWorkerFile, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getOpenSources, openNestedWorkerFile, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
   await step('Validate exactly one source file is open', async () => {
     const openSources = await waitForFunction(async () => {
       const sources = await getOpenSources();
-      return (sources.length === 1 || sources.length === 2) ? sources : undefined;
+      return sources.length ? sources : undefined;
     });
-    if (openSources.length === 2) {
-      // TODO (crbug.com/1157455): Fix race condition where we sometimes open both,
-      // then remove this case.
-      assert.deepEqual(openSources, ['multi-workers.js', 'multi-workers.min.js']);
-
-    } else {
-      assert.deepEqual(openSources, ['multi-workers.js']);
-    }
+    assert.deepEqual(openSources, ['multi-workers.js']);
   });
 }
 
@@ -50,61 +42,47 @@ describe('Multi-Workers', async function() {
       assert.deepEqual(await getBreakpointDecorators(true), [6]);
     }
 
-    it(`loads scripts exactly once on reload ${withOrWithout}`, async () => {
-      // Have the target load the page.
-      await goToResource(targetPage);
+    describe(`loads scripts exactly once ${withOrWithout}`, () => {
+      beforeEach(async () => {
+        // Have the target load the page.
+        await goToResource(targetPage);
 
-      await click('#tab-sources');
-      await validateNavigationTree();
-      await openNestedWorkerFile(workerFileSelectors(1));
+        await step('Open sources panel', async () => {
+          await click('#tab-sources');
+        });
 
-      // Look at source tabs
-      await validateSourceTabs();
+        await validateNavigationTree();
 
-      // Reload page
-      await goToResource(targetPage);
+        await step('Open first worker file', async () => {
+          await openNestedWorkerFile(workerFileSelectors(1));
+        });
 
-      // Check workers again
-      await validateNavigationTree();
+        // Look at source tabs
+        await validateSourceTabs();
+      });
 
-      // Look at source tabs again
-      await validateSourceTabs();
-    });
+      afterEach(async () => {
+        // Look at source tabs
+        await validateSourceTabs();
+      });
 
-    // Flaky test
-    it.skip(`[crbug.com/1157455] loads scripts exactly once on break ${withOrWithout}`, async () => {
-      const {target} = getBrowserAndPages();
+      it('on reload', async () => {
+        // Reload page
+        await goToResource(targetPage);
 
-      // Have the target load the page.
-      await goToResource(targetPage);
+        // Check workers again
+        await validateNavigationTree();
+      });
 
-      await click('#tab-sources');
+      it('upon break', async () => {
+        const {target} = getBrowserAndPages();
 
-      await validateNavigationTree();
+        // Send message to a worker to trigger break
+        await target.evaluate('workers[3].postMessage({command:"break"});');
 
-      // Send message to a worker to trigger break
-      await target.evaluate('workers[3].postMessage({command:"break"});');
-
-      // Should automatically switch to sources tab.
-
-      // Validate that we are paused by locating the resume button
-      await waitFor(RESUME_BUTTON);
-
-      // Look at source tabs
-      await validateSourceTabs();
-
-      // Continue
-      await click(RESUME_BUTTON);
-      // Verify that we have resumed.
-      await waitFor(PAUSE_BUTTON);
-
-      await target.evaluate('workers[7].postMessage({command:"break"});');
-
-      // Validate that we are paused
-      await waitFor(RESUME_BUTTON);
-
-      // Look at source tabs
-      await validateSourceTabs();
+        // Validate that we are paused by locating the resume button
+        await waitFor(RESUME_BUTTON);
+      });
     });
 
     it(`shows exactly one breakpoint ${withOrWithout}`, async () => {
@@ -217,8 +195,7 @@ describe('Multi-Workers', async function() {
         });
       });
 
-      // Flaky test
-      it.skip('[crbug.com/1157455] for pre-loaded workers', async () => {
+      it('for pre-loaded workers', async () => {
         const {target} = getBrowserAndPages();
         // Send message to a worker to trigger break
         await target.evaluate('workers[5].postMessage({});');
@@ -226,27 +203,23 @@ describe('Multi-Workers', async function() {
         // Validate that we are paused by locating the resume button
         await waitFor(RESUME_BUTTON);
 
-        // Validate that the source line is highlighted
-        assert.strictEqual(await getExecutionLine(), 6);
+        // Validate that the code has paused on the breakpoint at the correct script location
+        assert.deepEqual(await retrieveTopCallFrameWithoutResuming(), 'multi-workers.js:6');
 
         // Look at source tabs
         await validateSourceTabs();
       });
 
-      // Flaky test
-      it.skip('[crbug.com/1157455] for newly created workers', async () => {
+      it('for newly created workers', async () => {
         const {target} = getBrowserAndPages();
-        await step('Launch new worker to hit breakpoint', async () => {
-          await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);
-        });
+        // Launch new worker to hit breakpoint
+        await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);
 
-        await step('Validate that we are paused', async () => {
-          await waitFor(RESUME_BUTTON);
-        });
+        // Validate that we are paused by locating the resume button
+        await waitFor(RESUME_BUTTON);
 
-        await step('Validate source line is highlighted', async () => {
-          assert.strictEqual(await getExecutionLine(), 6);
-        });
+        // Validate that the code has paused on the breakpoint at the correct script location
+        assert.deepEqual(await retrieveTopCallFrameWithoutResuming(), 'multi-workers.js:6');
 
         await validateSourceTabs();
       });

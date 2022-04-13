@@ -251,16 +251,6 @@ export async function executionLineHighlighted() {
   return await waitFor('.cm-executionLine');
 }
 
-export async function getExecutionLine() {
-  const activeLine = await waitFor('.cm-execution-line-outline');
-  return await activeLine.evaluate(n => parseInt(n.textContent as string, 10));
-}
-
-export async function getExecutionLineText() {
-  const activeLine = await waitFor('.cm-execution-line pre');
-  return await activeLine.evaluate(n => n.textContent as string);
-}
-
 export async function getCallFrameNames() {
   await waitFor('.call-frame-item-title');
   const items = await $$('.call-frame-item-title');

@@ -333,18 +333,12 @@ describe('NetworkPersistenceManager', () => {
       }
     ]`;
 
-    const fileSystem = {
-      fileSystemPath: () => 'file:///path/to/overrides',
-      fileSystemBaseURL: 'file:///path/to/overrides/',
-    } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
-
-    const uiSourceCode = {
-      requestContent: () => {
-        return Promise.resolve({content: headers});
-      },
-      url: () => 'file:///path/to/overrides/www.example.com/.headers',
-      project: () => fileSystem,
-    } as unknown as Workspace.UISourceCode.UISourceCode;
+    const {uiSourceCode} = createUISourceCode({
+      url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
+      content: headers,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
+    });
 
     const expectedPatterns = [
       'http?://www.example.com/*',

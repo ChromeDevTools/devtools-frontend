@@ -13,6 +13,7 @@ export function createUISourceCode(options: {
   content?: string, mimeType: string,
   projectType?: Workspace.Workspace.projectTypes,
   projectId?: string,
+  fileSystemPath?: string,
 }): {
   project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
   uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -27,5 +28,11 @@ export function createUISourceCode(options: {
   const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
       options.url, resourceType, options.content || '');
   project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null /* metadata*/, options.mimeType);
+  if (options.fileSystemPath) {
+    // @ts-ignore
+    project.fileSystemPath = () => options.fileSystemPath;
+    // @ts-ignore
+    project.fileSystemBaseURL = options.fileSystemPath + '/';
+  }
   return {uiSourceCode, project};
 }

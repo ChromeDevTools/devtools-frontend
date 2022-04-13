@@ -68,12 +68,9 @@ describeWithMockConnection('RequestHeadersView', () => {
     const {project} = createUISourceCode({
       url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
       mimeType: 'text/plain',
+      fileSystemPath: 'file:///path/to/overrides',
     });
 
-    // @ts-ignore
-    project.fileSystemPath = () => 'file:///path/to/overrides';
-    // @ts-ignore
-    project.fileSystemBaseURL = 'file:///path/to/overrides';
     await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(project);
 
     const request = SDK.NetworkRequest.NetworkRequest.create(

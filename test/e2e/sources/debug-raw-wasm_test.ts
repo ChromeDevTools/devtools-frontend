@@ -48,8 +48,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
   });
 
-  // Broken by https://crrev.com/c/3574665
-  it.skip('[crbug.com/1314707] hits two breakpoints that are set and activated separately', async function() {
+  it('hits two breakpoints that are set and activated separately', async function() {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'add.wasm';
 
@@ -74,6 +73,11 @@ describe('Sources Tab', async function() {
 
     await step('remove the breakpoint from the line 0x027', async () => {
       await removeBreakpointForLine(frontend, '0x027');
+    });
+
+    await step('resume script execution', async () => {
+      await frontend.keyboard.press('F8');
+      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
     });
 
     await step('reload the page', async () => {
@@ -148,8 +152,7 @@ describe('Sources Tab', async function() {
     assert.deepEqual(await getBreakpointDecorators(), [0x023]);
   });
 
-  // Broken by https://crrev.com/c/3574665
-  it.skip('[crbug.com/1314707] is able to step with state', async () => {
+  it('is able to step with state', async () => {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'stepping-with-state.wasm';
 
@@ -184,6 +187,11 @@ describe('Sources Tab', async function() {
         '$var1: i32 {value: 8}',
         '$var2: i32 {value: 5}',
       ]);
+    });
+
+    await step('resume script execution', async () => {
+      await frontend.keyboard.press('F8');
+      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {

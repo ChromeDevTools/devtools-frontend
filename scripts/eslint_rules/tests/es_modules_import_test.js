@@ -124,6 +124,10 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as FrontendHelpers from \'../../../test/unittests/front_end/helpers/EnvironmentHelpers.js\'',
       filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
+    {
+      code: 'import checkboxStyles from \'./checkbox.css.js\';',
+      filename: 'front_end/ui/components/input/input.ts',
+    }
   ],
 
   invalid: [
@@ -248,5 +252,13 @@ ruleTester.run('es_modules_import', rule, {
             'Incorrect cross-namespace import: "../third_party/marked/package/lib/marked.esm.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.'
       }],
     },
+    {
+      code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
+      filename: 'front_end/ui/panels/foo/FooPanel.ts',
+      errors: [{
+        message:
+            'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.'
+      }],
+    }
   ]
 });

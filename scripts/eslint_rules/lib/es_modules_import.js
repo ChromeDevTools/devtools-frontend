@@ -94,6 +94,7 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
     // Therefore, they are allowed to import using a same-namespace star-import.
     const importingFileIsEntrypoint =
         importingFileName.endsWith('-entrypoint.ts') || importingFileName.endsWith('-meta.ts');
+
     if (!importingFileIsEntrypoint) {
       context.report({
         node,
@@ -209,6 +210,11 @@ module.exports = {
                * entrypoint, but we don't treat it as such, it's just a file
                * that Karma runs to setup the environment.
                */
+              return;
+            }
+
+            if (importPath.endsWith('.css.js')) {
+              // We allow files to import CSS files within the same module.
               return;
             }
             context.report({

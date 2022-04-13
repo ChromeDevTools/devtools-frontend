@@ -95,6 +95,11 @@
   letter-spacing: 0;
 }
 
+.color-text {
+  cursor: text;
+  user-select: text;
+}
+
 .results-section {
   flex-shrink: 0;
   border-bottom: 1px solid var(--color-details-hairline);

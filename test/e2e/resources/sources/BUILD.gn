@@ -18,7 +18,6 @@ copy_to_gen("sources") {
     "filesystem/special-characters.html",
     "filesystem/with space.js",
     "filesystem/with%20space.js",
-    "inline-script.html",
     "live-edit-moving-breakpoint.html",
     "live-edit-moving-breakpoint.js",
     "memory-worker1.js",

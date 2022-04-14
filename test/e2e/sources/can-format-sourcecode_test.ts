@@ -140,15 +140,4 @@ describe('The Sources Tab', async function() {
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
     assert.deepEqual(scriptLocation, 'minified-source…s:formatted:10');
   });
-
-  // This requires additional fixes
-  it.skip('[crbug.com/1003497] can add breakpoint for inline scripts in HTML file', async () => {
-    const {target, frontend} = getBrowserAndPages();
-
-    await openSourceCodeEditorForFile('inline-script.html', 'inline-script.html');
-    await addBreakpointForLine(frontend, 16);
-
-    const scriptLocation = await retrieveTopCallFrameScriptLocation('functionInInlineScriptWithSourceURL();', target);
-    assert.deepEqual(scriptLocation, 'named-inline-script.js:2');
-  });
 });

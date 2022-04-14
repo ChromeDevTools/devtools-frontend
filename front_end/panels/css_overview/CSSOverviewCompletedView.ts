@@ -257,6 +257,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#mainContainer.setSidebarMinimized(true);
 
     this.#sideBar = new CSSOverviewSidebarPanel();
+    this.#sideBar.setMinimumSize(100, 25);
     this.splitWidget().setSidebarWidget(this.#sideBar);
     this.splitWidget().setMainWidget(this.#mainContainer);
 

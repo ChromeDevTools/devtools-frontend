@@ -16,7 +16,8 @@ beforeEach(resetTestDOM);
 before(async function() {
   /* Larger than normal timeout because we've seen some slowness on the bots */
   this.timeout(10000);
-  markStaticTestsLoaded();
+  // @ts-ignore
+  markStaticTestsLoaded({hasOnly: this.test.parent.hasOnly()});
 });
 
 afterEach(() => {

@@ -16,8 +16,12 @@ import {deinitializeGlobalVars} from './EnvironmentHelpers.js';
 // In describeWithRealConnection we await this promise and call real `describe`
 // only when the promise is resolved. This ensures that tests suites with real
 // connection get registered last, which makes mocha also run them last.
-export let markStaticTestsLoaded: () => void;
-const staticTestsLoaded = new Promise<void>(resolve => {
+export interface StaticTestsLoadedEvent {
+  hasOnly: boolean;
+}
+
+export let markStaticTestsLoaded: (event: StaticTestsLoadedEvent) => void;
+const staticTestsLoaded = new Promise<StaticTestsLoadedEvent>(resolve => {
   markStaticTestsLoaded = resolve;
 });
 
@@ -62,8 +66,8 @@ export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite
     return;
   }
   staticTestsLoaded
-      .then(() => {
-        if (hasOnly) {
+      .then(event => {
+        if (hasOnly || event.hasOnly) {
           return;
         }
         describe(`real-${title}`, () => {

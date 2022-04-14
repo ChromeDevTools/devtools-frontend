@@ -419,9 +419,7 @@ export class SoftContextMenu {
 
     this.highlightedMenuItemElement = menuItemElement;
     if (this.highlightedMenuItemElement) {
-      if (ThemeSupport.ThemeSupport.instance().hasTheme() || Host.Platform.isMac()) {
-        this.highlightedMenuItemElement.classList.add('force-white-icons');
-      }
+      this.highlightedMenuItemElement.classList.add('force-white-icons');
       this.highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
       if (detailsForElement && detailsForElement.customElement) {

@@ -36,6 +36,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #blockedByResponseDetails = new Map<string, Protocol.Audits.BlockedByResponseIssueDetails>();
   #corsIssues = new Set<IssuesManager.CorsIssue.CorsIssue>();
   #cspIssues = new Set<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>();
+  #deprecationIssues = new Set<IssuesManager.DeprecationIssue.DeprecationIssue>();
   #issueKind = IssuesManager.Issue.IssueKind.Improvement;
   #lowContrastIssues = new Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>();
   #mixedContentIssues = new Set<IssuesManager.MixedContentIssue.MixedContentIssue>();
@@ -102,6 +103,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getCspIssues(): Iterable<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue> {
     return this.#cspIssues;
+  }
+
+  getDeprecationIssues(): Iterable<IssuesManager.DeprecationIssue.DeprecationIssue> {
+    return this.#deprecationIssues;
   }
 
   getLowContrastIssues(): Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue> {
@@ -200,6 +205,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this.#cspIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.DeprecationIssue.DeprecationIssue) {
+      this.#deprecationIssues.add(issue);
     }
     if (issue instanceof IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue) {
       this.#sharedArrayBufferIssues.add(issue);

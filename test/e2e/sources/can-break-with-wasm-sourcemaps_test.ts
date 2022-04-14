@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {getBrowserAndPages, step, timeout, waitForFunction} from '../../shared/helper.js';
+import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, isBreakpointSet, openFileInEditor, openSourceCodeEditorForFile, reloadPageAndWaitForSourceFile, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, sourceLineNumberSelector} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, checkBreakpointDidNotActivate, isBreakpointSet, openFileInEditor, openSourceCodeEditorForFile, reloadPageAndWaitForSourceFile, removeBreakpointForLine, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, TURNED_OFF_PAUSE_BUTTON_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('can add breakpoint for a sourcemapped wasm module', async () => {
@@ -19,8 +18,7 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(scriptLocation, 'with-sourcemap.ll:5');
   });
 
-  // Flaky on linux bot
-  it.skip('[crbug.com/1252330] hits two breakpoints that are set and activated separately', async function() {
+  it('hits two breakpoints that are set and activated separately', async function() {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'with-sourcemap.ll';
 
@@ -43,16 +41,18 @@ describe('The Sources Tab', async () => {
       assert.deepEqual(scriptLocation, 'with-sourcemap.ll:5');
     });
 
+    await step('resume script execution', async () => {
+      await frontend.keyboard.press('F8');
+      await waitFor(TURNED_OFF_PAUSE_BUTTON_SELECTOR);
+    });
+
     await step('remove the breakpoint from the fifth line', async () => {
-      await frontend.click(sourceLineNumberSelector(5));
+      await removeBreakpointForLine(frontend, '5');
     });
 
     await step('reload the page', async () => {
-      await target.reload();
+      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
     });
-
-    // FIXME(crbug/1112692): Refactor test to remove the timeout.
-    await timeout(100);
 
     await step('open original source file', async () => {
       await openFileInEditor('with-sourcemap.ll');

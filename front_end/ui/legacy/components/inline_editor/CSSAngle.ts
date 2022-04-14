@@ -112,15 +112,8 @@ export class CSSAngle extends HTMLElement {
     const miniIconBottom = this.swatchElement.getBoundingClientRect().bottom;
     const miniIconLeft = this.swatchElement.getBoundingClientRect().left;
     if (miniIconBottom && miniIconLeft) {
-      // We offset mini icon's X and Y positions with the containing styles
-      // pane's positions because DevTools' root SplitWidget's
-      // insertion-point-sidebar slot, where most of the DevTools content lives,
-      // has an offset of positions, which makes all of its children's DOMRect
-      // positions to have this offset.
-      const offsetTop = this.containingPane.getBoundingClientRect().top;
-      const offsetLeft = this.containingPane.getBoundingClientRect().left;
-      this.popoverStyleTop = `${miniIconBottom - offsetTop}px`;
-      this.popoverStyleLeft = `${miniIconLeft - offsetLeft}px`;
+      this.popoverStyleTop = `${miniIconBottom}px`;
+      this.popoverStyleLeft = `${miniIconLeft}px`;
     }
 
     this.popoverOpen = true;

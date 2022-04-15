@@ -11,7 +11,7 @@
 .object-properties-section {
   padding: 0;
   color: var(--color-text-primary);
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
 }
 

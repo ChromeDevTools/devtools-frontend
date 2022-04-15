@@ -4,9 +4,13 @@
  * found in the LICENSE file.
  */
 
+.properties-widget-container {
+  overflow: hidden;
+}
+
 .properties-widget-section {
-  padding: 2px 0 2px 5px;
-  flex: none;
+  overflow: auto;
+  height: 100%;
 }
 
 .properties-widget-toolbar {

@@ -23,6 +23,10 @@ button.soft-dropdown > .title {
   text-overflow: ellipsis;
 }
 
+button.soft-dropdown:hover:not(:active) > .title {
+  color: var(--color-text-primary);
+}
+
 @media (forced-colors: active) {
   button.soft-dropdown {
     border: 1px solid ButtonText;

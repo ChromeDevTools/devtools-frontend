@@ -405,6 +405,7 @@ export class MainImpl {
       'reportingApiDebugging',
       Root.Runtime.ExperimentName.SYNC_SETTINGS,
       Root.Runtime.ExperimentName.CSS_LAYERS,
+      Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER,
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

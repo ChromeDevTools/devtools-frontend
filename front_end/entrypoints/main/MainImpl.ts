@@ -712,7 +712,7 @@ export class MainImpl {
     // @ts-ignore Used in ElementsTreeOutline
     eventCopy['original'] = event;
     const document = event.target && (event.target as HTMLElement).ownerDocument;
-    const target = document ? document.deepActiveElement() : null;
+    const target = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
     if (target) {
       target.dispatchEvent(eventCopy);
     }
@@ -798,7 +798,9 @@ export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegat
   }
 
   handleAction(context: UI.Context.Context, actionId: string): boolean {
-    let searchableView = UI.SearchableView.SearchableView.fromElement(document.deepActiveElement());
+    let searchableView = UI.SearchableView.SearchableView.fromElement(
+        Platform.DOMUtilities.deepActiveElement(document),
+    );
     if (!searchableView) {
       const currentPanel = (UI.InspectorView.InspectorView.instance().currentPanelDeprecated() as UI.Panel.Panel);
       if (currentPanel && currentPanel.searchableView) {

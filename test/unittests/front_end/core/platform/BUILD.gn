@@ -8,6 +8,7 @@ ts_library("platform") {
   testonly = true
   sources = [
     "ArrayUtilities_test.ts",
+    "DOMUtilities_test.ts",
     "DateUtilities_test.ts",
     "DevToolsPath_test.ts",
     "KeyboardUtilities_test.ts",
@@ -17,5 +18,8 @@ ts_library("platform") {
     "StringUtilities_test.ts",
   ]
 
-  deps = [ "../../../../../front_end/core/platform:bundle" ]
+  deps = [
+    "../../../../../front_end/core/platform:bundle",
+    "../../helpers/",
+  ]
 }

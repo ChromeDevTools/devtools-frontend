@@ -29,6 +29,7 @@
  */
 
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
@@ -677,7 +678,7 @@ export class WidgetFocusRestorer {
   private previous: HTMLElement|null;
   constructor(widget: Widget) {
     this.widget = widget;
-    this.previous = (widget.element.ownerDocument.deepActiveElement() as HTMLElement | null);
+    this.previous = (Platform.DOMUtilities.deepActiveElement(widget.element.ownerDocument) as HTMLElement | null);
     widget.focus();
   }
 

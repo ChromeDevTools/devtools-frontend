@@ -29,6 +29,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -159,7 +160,7 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
 
     const selectedElement = index >= 0 ? this.queryResults[index] : null;
     const changed = this.lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.queryWrapper === this.element.ownerDocument.deepActiveElement();
+    const containerHasFocus = this.queryWrapper === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument);
 
     if (selectedElement && (changed || containerHasFocus) && this.element.hasFocus()) {
       if (!selectedElement.hasFocus()) {

@@ -358,7 +358,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // Update the label with the provided text or the current selected node
     const accessibleText =
         (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
-    if (this.element === this.element.ownerDocument.deepActiveElement()) {
+    if (this.element === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument)) {
       // Only alert if the datagrid has focus
       UI.ARIAUtils.alert(text ? text : accessibleText);
     }

@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import type {ActionDelegate} from './ActionRegistration.js';
 import type {Context} from './Context.js';
@@ -162,7 +163,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
       this.lastDockStateSetting.set(this.dockSideInternal);
     }
 
-    this.savedFocus = document.deepActiveElement();
+    this.savedFocus = Platform.DOMUtilities.deepActiveElement(document);
     const eventData = {from: this.dockSideInternal, to: dockSide};
     this.dispatchEventToListeners(Events.BeforeDockSideChanged, eventData);
     console.timeStamp('DockController.setIsDocked');

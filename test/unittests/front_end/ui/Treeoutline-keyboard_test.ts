@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as UI from '../../../../front_end/ui/legacy/legacy.js';
+import * as Platform from '../../../../front_end/core/platform/platform.js';
 
 import {assertNotNullOrUndefined} from '../../../../front_end/core/platform/platform.js';
 import {renderElementIntoDOM} from '../helpers/DOMHelpers.js';
@@ -81,7 +82,7 @@ describe('TreeOutline', () => {
     assert.isTrue(innerFirstChild.expanded, 'child is not expanded');
 
     function sendKey(key: string) {
-      const deepActiveElement = document.deepActiveElement();
+      const deepActiveElement = Platform.DOMUtilities.deepActiveElement(document);
       assertNotNullOrUndefined(deepActiveElement);
       const keyEvent = new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key});
       deepActiveElement.dispatchEvent(keyEvent);

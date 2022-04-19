@@ -345,7 +345,7 @@ export function isEditing(): boolean {
     return true;
   }
 
-  const focused = document.deepActiveElement();
+  const focused = Platform.DOMUtilities.deepActiveElement(document);
   if (!focused) {
     return false;
   }
@@ -645,7 +645,7 @@ export class ElementFocusRestorer {
   private previous: HTMLElement|null;
   constructor(element: Element) {
     this.element = (element as HTMLElement | null);
-    this.previous = (element.ownerDocument.deepActiveElement() as HTMLElement | null);
+    this.previous = (Platform.DOMUtilities.deepActiveElement(element.ownerDocument) as HTMLElement | null);
     (element as HTMLElement).focus();
   }
 

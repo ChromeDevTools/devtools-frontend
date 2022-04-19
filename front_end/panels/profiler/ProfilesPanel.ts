@@ -29,6 +29,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -235,7 +236,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     if (!this.toggleRecordAction.enabled()) {
       return true;
     }
-    const toggleButton = this.element.ownerDocument.deepActiveElement();
+    const toggleButton = Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     const type = this.selectedProfileType;
     if (!type) {
       return true;

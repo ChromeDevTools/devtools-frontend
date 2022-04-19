@@ -60,10 +60,6 @@ declare namespace Adb {
   type NetworkDiscoveryConfig = string[];
 }
 
-interface Document {
-  deepActiveElement(): Element|null;
-}
-
 interface HTMLElement {
   createChild(tagName: string, className?: string, content?: string): HTMLElement;
   totalOffset(): {left: number, top: number};

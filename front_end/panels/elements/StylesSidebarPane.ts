@@ -412,7 +412,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private sectionsContainerKeyDown(event: Event): void {
-    const activeElement = this.sectionsContainer.ownerDocument.deepActiveElement();
+    const activeElement = Platform.DOMUtilities.deepActiveElement(this.sectionsContainer.ownerDocument);
     if (!activeElement) {
       return;
     }

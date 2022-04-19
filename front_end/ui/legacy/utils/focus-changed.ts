@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
+
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function WidgetfocusWidgetForNode(node: Node|null): void {
@@ -50,7 +52,7 @@ function XWidgetfocusWidgetForNode(node: Node|null): void {
 export function focusChanged(event: Event): void {
   const target = event.target as HTMLElement;
   const document = target ? target.ownerDocument : null;
-  const element = document ? document.deepActiveElement() : null;
+  const element = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
   WidgetfocusWidgetForNode(element);
   XWidgetfocusWidgetForNode(element);
 }

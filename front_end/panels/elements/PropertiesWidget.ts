@@ -88,8 +88,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true /* isWebComponent */);
 
-    this.contentElement.classList.add('properties-widget-container');
-
     this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('showAllProperties', false);
     this.showAllPropertiesSetting.addChangeListener(this.filterList.bind(this));
 
@@ -119,7 +117,6 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
-    this.treeOutline.element.classList.add('properties-widget-section');
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
     this.expandController =
         new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);

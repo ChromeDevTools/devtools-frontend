@@ -1750,6 +1750,7 @@ export enum RecordType {
   Coherent_Backend_Execute = 'Coherent_Backend_Execute',
   Coherent_ProcessSimpleSublayer = 'Coherent_ProcessSimpleSublayer',
   Coherent_ExecuteBackendBuffers = 'Coherent_ExecuteBackendBuffers',
+  Coherent_CaptureTextureData = 'Coherent_CaptureTextureData',
 
   Coherent_TextureCreated = 'Coherent_TextureCreated',
   Coherent_TextureDestroyed = 'Coherent_TextureDestroyed',

@@ -1229,6 +1229,7 @@ const UIStrings = {
   processLayer: 'ProcessLayer',
   distributeLayers: 'Distribute Layers',
   executeBackendBuffers: 'Execute Backend Buffes',
+  captureTextureData: 'Capture Texture data',
 
   textureCreated: 'Texture Create',
   textureDestroyed: 'Texture Destroy',
@@ -1479,6 +1480,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_Backend_Execute] = new TimelineRecordStyle(UIStrings.backend_Execute, painting);
     eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
     eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
+    eventStyles[type.Coherent_CaptureTextureData] = new TimelineRecordStyle(UIStrings.captureTextureData, painting);
 
     eventStyles[type.Coherent_TextureCreated] = new TimelineRecordStyle(UIStrings.textureCreated, gpu_objects);
     eventStyles[type.Coherent_TextureDestroyed] = new TimelineRecordStyle(UIStrings.textureDestroyed, gpu_objects);

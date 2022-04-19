@@ -1355,6 +1355,12 @@
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "This is an example of a translated deprecation issue message."
   },
+  "models/issues_manager/DeprecationIssue.ts | feature": {
+    "message": "Check the feature status page for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | milestone": {
+    "message": "This change will go into effect with milestone {milestone}."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Deprecated Feature Used"
   },

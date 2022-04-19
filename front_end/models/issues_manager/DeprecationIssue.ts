@@ -11,16 +11,25 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 import {resolveLazyDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
+  // Store strings used across messages in this block.
   /**
-  *@description Title of issue raised when a deprecated feature is used
-  */
+   * @description This links to the chrome feature status page when one exists.
+   */
+  feature: 'Check the feature status page for more details.',
+  /**
+   * @description This links to the chromium dash schedule when a milestone is set.
+   * @example {100} milestone
+   */
+  milestone: 'This change will go into effect with milestone {milestone}.',
+  /**
+   *@description Title of issue raised when a deprecated feature is used
+   */
   title: 'Deprecated Feature Used',
 
   // Store alphabetized messages per DeprecationIssueType in this block.
-
   /**
-  *@description This message is shown when the example deprecated feature is used
-  */
+   *@description This message is shown when the example deprecated feature is used
+   */
   deprecationExample: 'This is an example of a translated deprecation issue message.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
@@ -53,15 +62,32 @@ export class DeprecationIssue extends Issue {
 
   getDescription(): MarkdownIssueDescription {
     let messageFunction = (): string => '';
+    let feature = 0;
+    let milestone = 0;
     // Keep case statements alphabetized per DeprecationIssueType.
     switch (this.#issueDetails.type) {
       case Protocol.Audits.DeprecationIssueType.DeprecationExample:
         messageFunction = i18nLazyString(UIStrings.deprecationExample);
+        feature = 5684289032159232;
+        milestone = 100;
         break;
       // TODO(crbug.com/1264960): Remove legacy type when issues are translated.
       case Protocol.Audits.DeprecationIssueType.Untranslated:
         messageFunction = (): string => this.#issueDetails.message ?? '';
         break;
+    }
+    const links = [];
+    if (feature !== 0) {
+      links.push({
+        link: `https://chromestatus.com/feature/${feature}`,
+        linkTitle: i18nLazyString(UIStrings.feature),
+      });
+    }
+    if (milestone !== 0) {
+      links.push({
+        link: 'https://chromiumdash.appspot.com/schedule',
+        linkTitle: i18nLazyString(UIStrings.milestone, {milestone}),
+      });
     }
     return resolveLazyDescription({
       file: 'deprecation.md',
@@ -69,7 +95,7 @@ export class DeprecationIssue extends Issue {
         ['PLACEHOLDER_title', i18nLazyString(UIStrings.title)],
         ['PLACEHOLDER_message', messageFunction],
       ]),
-      links: [],
+      links,
     });
   }
 

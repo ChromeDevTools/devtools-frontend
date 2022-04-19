@@ -15,7 +15,8 @@ describe('The Console Tab', async () => {
     await waitForIssueButtonLabel('No Issues');
   });
 
-  it('shows the toolbar button for one issue correctly', async () => {
+  // Flaky test on mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1317582]: shows the toolbar button for one issue correctly', async () => {
     // Navigate to page which causes a CookieIssue.
     await goToResource('console/cookie-issue.html');
     await navigateToConsoleTab();
@@ -23,7 +24,8 @@ describe('The Console Tab', async () => {
     await waitForIssueButtonLabel('1 Issue:');
   });
 
-  it('shows the toolbar button for two issues correctly', async () => {
+  // Flaky test on mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1317582]:shows the toolbar button for two issues correctly', async () => {
     // Navigate to page which causes two CookieIssue.
     await goToResource('console/two-cookie-issues.html');
     await navigateToConsoleTab();

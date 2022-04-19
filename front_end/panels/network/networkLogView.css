@@ -88,33 +88,25 @@
   height: 21px;
 }
 
-.network-waterfall-header,
 .network-log-grid.data-grid th {
-  border-bottom: 1px solid var(--color-details-hairline);
-  border-left: 1px solid var(--color-details-hairline);
-}
-
-.network-log-grid.data-grid table.data th {
   border-bottom: none;
 }
 
 .network-waterfall-header,
-.network-log-grid.data-grid .header-container {
+.network-log-grid.data-grid thead th {
+  border-bottom: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--color-details-hairline);
+}
+
+.network-waterfall-header,
+.network-log-grid.data-grid thead {
   height: 31px;
   background-color: var(--color-background-elevation-1);
 }
 
-.network-log-grid.data-grid .data-container {
-  top: 31px;
-}
-
 .network-waterfall-header.small,
-.network-log-grid.data-grid.small .header-container {
+.network-log-grid.data-grid.small thead {
   height: 27px;
-}
-
-.network-log-grid.data-grid.small .data-container {
-  top: 27px;
 }
 
 .network-log-grid.data-grid select {
@@ -437,8 +429,8 @@
   }
 
   .network-waterfall-header.small,
-  .network-log-grid.data-grid.small .header-container .network-waterfall-header,
-  .network-log-grid.data-grid .header-container {
+  .network-log-grid.data-grid.small thead .network-waterfall-header,
+  .network-log-grid.data-grid thead {
     background-color: canvas;
   }
 

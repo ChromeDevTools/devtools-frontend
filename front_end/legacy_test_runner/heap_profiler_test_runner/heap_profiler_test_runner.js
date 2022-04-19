@@ -474,7 +474,7 @@ HeapProfilerTestRunner.checkArrayIsSorted = function(contents, sortType, sortOrd
 
 HeapProfilerTestRunner.clickColumn = function(column, callback) {
   callback = TestRunner.safeWrap(callback);
-  const cell = this.currentGrid().headerTableHeaders[column.id];
+  const cell = this.currentGrid().dataTableHeaders[column.id];
 
   const event = {target: cell};
 

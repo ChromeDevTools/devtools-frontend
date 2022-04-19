@@ -406,7 +406,6 @@
 
 .timeline-tree-view .data-grid .data-container {
   overflow-y: scroll;
-  top: 21px;
 }
 
 .timeline-tree-view .data-grid.data-grid-fits-viewport .corner {
@@ -519,7 +518,7 @@
   width: 120px;
 }
 
-.timeline-tree-view .data-grid .header-container {
+.timeline-tree-view .data-grid thead {
   height: 21px;
 }
 

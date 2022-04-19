@@ -51,7 +51,7 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     return this.#options;
   }
 
-  #showLevelContextMenu({data: mouseEvent}: Common.EventTarget.EventTargetEvent<Event>): void {
+  async #showLevelContextMenu({data: mouseEvent}: Common.EventTarget.EventTargetEvent<Event>): Promise<void> {
     const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
       useSoftMenu: true,
       x: this.element.totalOffsetLeft(),
@@ -67,7 +67,8 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
       }, enabled);
     }
     contextMenu.setContextMenuLabel(this.title ?? i18nString(UIStrings.genericMenuLabel));
-    void contextMenu.show();
+    await contextMenu.show();
+    contextMenu.markAsMenuItemCheckBox();
   }
 }
 

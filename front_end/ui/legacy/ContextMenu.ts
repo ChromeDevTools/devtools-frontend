@@ -512,6 +512,12 @@ export class ContextMenu extends SubMenu {
     this.pendingTargets.push(target);
   }
 
+  markAsMenuItemCheckBox(): void {
+    if (this.softMenu) {
+      this.softMenu.markAsMenuItemCheckBox();
+    }
+  }
+
   private static pendingMenu: ContextMenu|null = null;
   private static useSoftMenu = false;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

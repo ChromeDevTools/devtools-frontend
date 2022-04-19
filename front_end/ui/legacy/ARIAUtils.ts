@@ -95,6 +95,10 @@ export function markAsMenuItem(element: Element): void {
   element.setAttribute('role', 'menuitem');
 }
 
+export function markAsMenuItemCheckBox(element: Element): void {
+  element.setAttribute('role', 'menuitemcheckbox');
+}
+
 export function markAsMenuItemSubMenu(element: Element): void {
   markAsMenuItem(element);
   element.setAttribute('aria-haspopup', 'true');

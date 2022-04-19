@@ -538,6 +538,15 @@ export class SoftContextMenu {
         keyboardEvent.consume(true);
     }
   }
+
+  markAsMenuItemCheckBox(): void {
+    if (!this.contextMenuElement) {
+      return;
+    }
+    for (const child of this.contextMenuElement.children) {
+      ARIAUtils.markAsMenuItemCheckBox(child);
+    }
+  }
 }
 export interface SoftContextMenuDescriptor {
   type: string;

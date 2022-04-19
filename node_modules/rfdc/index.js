@@ -38,6 +38,8 @@ function rfdc (opts) {
     if (typeof o !== 'object' || o === null) return o
     if (o instanceof Date) return new Date(o)
     if (Array.isArray(o)) return cloneArray(o, clone)
+    if (o instanceof Map) return new Map(cloneArray(Array.from(o), clone))
+    if (o instanceof Set) return new Set(cloneArray(Array.from(o), clone))
     var o2 = {}
     for (var k in o) {
       if (Object.hasOwnProperty.call(o, k) === false) continue
@@ -46,6 +48,10 @@ function rfdc (opts) {
         o2[k] = cur
       } else if (cur instanceof Date) {
         o2[k] = new Date(cur)
+      } else if (cur instanceof Map) {
+        o2[k] = new Map(cloneArray(Array.from(cur), clone))
+      } else if (cur instanceof Set) {
+        o2[k] = new Set(cloneArray(Array.from(cur), clone))
       } else if (ArrayBuffer.isView(cur)) {
         o2[k] = copyBuffer(cur)
       } else {
@@ -59,6 +65,8 @@ function rfdc (opts) {
     if (typeof o !== 'object' || o === null) return o
     if (o instanceof Date) return new Date(o)
     if (Array.isArray(o)) return cloneArray(o, cloneProto)
+    if (o instanceof Map) return new Map(cloneArray(Array.from(o), cloneProto))
+    if (o instanceof Set) return new Set(cloneArray(Array.from(o), cloneProto))
     var o2 = {}
     for (var k in o) {
       var cur = o[k]
@@ -66,6 +74,10 @@ function rfdc (opts) {
         o2[k] = cur
       } else if (cur instanceof Date) {
         o2[k] = new Date(cur)
+      } else if (cur instanceof Map) {
+        o2[k] = new Map(cloneArray(Array.from(cur), cloneProto))
+      } else if (cur instanceof Set) {
+        o2[k] = new Set(cloneArray(Array.from(cur), cloneProto))
       } else if (ArrayBuffer.isView(cur)) {
         o2[k] = copyBuffer(cur)
       } else {
@@ -110,6 +122,8 @@ function rfdcCircles (opts) {
     if (typeof o !== 'object' || o === null) return o
     if (o instanceof Date) return new Date(o)
     if (Array.isArray(o)) return cloneArray(o, clone)
+    if (o instanceof Map) return new Map(cloneArray(Array.from(o), clone))
+    if (o instanceof Set) return new Set(cloneArray(Array.from(o), clone))
     var o2 = {}
     refs.push(o)
     refsNew.push(o2)
@@ -120,6 +134,10 @@ function rfdcCircles (opts) {
         o2[k] = cur
       } else if (cur instanceof Date) {
         o2[k] = new Date(cur)
+      } else if (cur instanceof Map) {
+        o2[k] = new Map(cloneArray(Array.from(cur), clone))
+      } else if (cur instanceof Set) {
+        o2[k] = new Set(cloneArray(Array.from(cur), clone))
       } else if (ArrayBuffer.isView(cur)) {
         o2[k] = copyBuffer(cur)
       } else {
@@ -140,6 +158,8 @@ function rfdcCircles (opts) {
     if (typeof o !== 'object' || o === null) return o
     if (o instanceof Date) return new Date(o)
     if (Array.isArray(o)) return cloneArray(o, cloneProto)
+    if (o instanceof Map) return new Map(cloneArray(Array.from(o), cloneProto))
+    if (o instanceof Set) return new Set(cloneArray(Array.from(o), cloneProto))
     var o2 = {}
     refs.push(o)
     refsNew.push(o2)
@@ -149,6 +169,10 @@ function rfdcCircles (opts) {
         o2[k] = cur
       } else if (cur instanceof Date) {
         o2[k] = new Date(cur)
+      } else if (cur instanceof Map) {
+        o2[k] = new Map(cloneArray(Array.from(cur), cloneProto))
+      } else if (cur instanceof Set) {
+        o2[k] = new Set(cloneArray(Array.from(cur), cloneProto))
       } else if (ArrayBuffer.isView(cur)) {
         o2[k] = copyBuffer(cur)
       } else {

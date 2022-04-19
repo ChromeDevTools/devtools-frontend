@@ -265,4 +265,24 @@ function types (clone, label) {
     deepEqual(Array.from(cloned.view2), [input2, input3], 'cloned value content is correct')
     deepEqual(Array.from(cloned.view3), [input1, 0, input2, input3], 'cloned value content is correct')
   })
+  test(`${label} - maps`, async ({ same, isNot }) => {
+    const map = new Map([['a', 1]])
+    same(Array.from(clone(map)), [['a', 1]], 'same value')
+    isNot(clone(map), map, 'different object')
+  })
+  test(`${label} - sets`, async ({ same, isNot }) => {
+    const set = new Set([1])
+    same(Array.from(clone(set)), [1])
+    isNot(clone(set), set, 'different object')
+  })
+  test(`${label} - nested maps`, async ({ same, isNot }) => {
+    const data = { m: new Map([['a', 1]]) }
+    same(Array.from(clone(data).m), [['a', 1]], 'same value')
+    isNot(clone(data).m, data.m, 'different object')
+  })
+  test(`${label} - nested sets`, async ({ same, isNot }) => {
+    const data = { s: new Set([1]) }
+    same(Array.from(clone(data).s), [1], 'same value')
+    isNot(clone(data).s, data.s, 'different object')
+  })
 }

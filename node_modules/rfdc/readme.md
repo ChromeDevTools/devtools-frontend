@@ -73,6 +73,8 @@ With additional support for:
 * `undefined` (copied)
 * `Buffer` (copied)
 * `TypedArray` (copied)
+* `Map` (copied)
+* `Set` (copied)
 * `Function` (referenced)
 * `AsyncFunction` (referenced)
 * `GeneratorFunction` (referenced)

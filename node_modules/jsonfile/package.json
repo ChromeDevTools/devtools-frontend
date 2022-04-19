@@ -1,6 +1,6 @@
 {
   "name": "jsonfile",
-  "version": "4.0.0",
+  "version": "6.1.0",
   "description": "Easily read/write JSON files.",
   "repository": {
     "type": "git",
@@ -16,18 +16,21 @@
   ],
   "author": "JP Richardson <jprichardson@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "universalify": "^2.0.0"
+  },
   "optionalDependencies": {
     "graceful-fs": "^4.1.6"
   },
   "devDependencies": {
-    "mocha": "2.x",
+    "mocha": "^8.2.0",
     "rimraf": "^2.4.0",
-    "standard": "^10.0.3"
+    "standard": "^16.0.1"
   },
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "utils.js"
   ],
   "scripts": {
     "lint": "standard",

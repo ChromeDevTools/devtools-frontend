@@ -14,22 +14,32 @@ function move (src, dest, opts, cb) {
     opts = {}
   }
 
+  opts = opts || {}
+
   const overwrite = opts.overwrite || opts.clobber || false
 
-  stat.checkPaths(src, dest, 'move', (err, stats) => {
+  stat.checkPaths(src, dest, 'move', opts, (err, stats) => {
     if (err) return cb(err)
-    const { srcStat } = stats
+    const { srcStat, isChangingCase = false } = stats
     stat.checkParentPaths(src, srcStat, dest, 'move', err => {
       if (err) return cb(err)
+      if (isParentRoot(dest)) return doRename(src, dest, overwrite, isChangingCase, cb)
       mkdirp(path.dirname(dest), err => {
         if (err) return cb(err)
-        return doRename(src, dest, overwrite, cb)
+        return doRename(src, dest, overwrite, isChangingCase, cb)
       })
     })
   })
 }
 
-function doRename (src, dest, overwrite, cb) {
+function isParentRoot (dest) {
+  const parent = path.dirname(dest)
+  const parsedPath = path.parse(parent)
+  return parsedPath.root === parent
+}
+
+function doRename (src, dest, overwrite, isChangingCase, cb) {
+  if (isChangingCase) return rename(src, dest, overwrite, cb)
   if (overwrite) {
     return remove(dest, err => {
       if (err) return cb(err)

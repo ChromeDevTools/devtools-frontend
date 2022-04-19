@@ -21,7 +21,7 @@ npm install universalify
 
 Takes a callback-based function to universalify, and returns the universalified  function.
 
-Function must take a callback as the last parameter that will be called with the signature `(error, result)`. `universalify` does not support calling the callback with more than three arguments, and does not ensure that the callback is only called once.
+Function must take a callback as the last parameter that will be called with the signature `(error, result)`. `universalify` does not support calling the callback with three or more arguments, and does not ensure that the callback is only called once.
 
 ```js
 function callbackFn (n, cb) {

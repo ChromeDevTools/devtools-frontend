@@ -21,7 +21,7 @@ class FunctionScope extends ScopeBase_1.ScopeBase {
     //     }
     isValidResolution(ref, variable) {
         var _a, _b;
-        // If `options.gloablReturn` is true, `this.block` becomes a Program node.
+        // If `options.globalReturn` is true, `this.block` becomes a Program node.
         if (this.block.type === types_1.AST_NODE_TYPES.Program) {
             return true;
         }

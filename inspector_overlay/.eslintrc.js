@@ -38,6 +38,15 @@ module.exports = {
           'selector': 'parameter',
           'format': ['camelCase'],
           'leadingUnderscore': 'allow',
+        },
+        {
+          // Ignore type properties that require quotes
+          'selector': [
+            'typeProperty',
+            'enumMember'
+          ],
+          'format': null,
+          'modifiers': ['requiresQuotes']
         }
       ]
     }

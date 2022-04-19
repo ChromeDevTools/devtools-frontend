@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFunctionHeadLoc = void 0;
-const experimental_utils_1 = require("@typescript-eslint/experimental-utils");
+const utils_1 = require("@typescript-eslint/utils");
 /**
  * Creates a report location for the given function.
  * The location only encompasses the "start" of the function, and not the body
@@ -21,7 +21,7 @@ const experimental_utils_1 = require("@typescript-eslint/experimental-utils");
  */
 function getFunctionHeadLoc(node, sourceCode) {
     function getLocStart() {
-        if (node.parent && node.parent.type === experimental_utils_1.AST_NODE_TYPES.MethodDefinition) {
+        if (node.parent && node.parent.type === utils_1.AST_NODE_TYPES.MethodDefinition) {
             // return the start location for class method
             if (node.parent.decorators && node.parent.decorators.length > 0) {
                 // exclude decorators
@@ -30,7 +30,7 @@ function getFunctionHeadLoc(node, sourceCode) {
             return node.parent.loc.start;
         }
         if (node.parent &&
-            node.parent.type === experimental_utils_1.AST_NODE_TYPES.Property &&
+            node.parent.type === utils_1.AST_NODE_TYPES.Property &&
             node.parent.method) {
             // return the start location for object method shorthand
             return node.parent.loc.start;
@@ -39,9 +39,9 @@ function getFunctionHeadLoc(node, sourceCode) {
         return node.loc.start;
     }
     function getLocEnd() {
-        if (node.type === experimental_utils_1.AST_NODE_TYPES.ArrowFunctionExpression) {
+        if (node.type === utils_1.AST_NODE_TYPES.ArrowFunctionExpression) {
             // find the end location for arrow function expression
-            return sourceCode.getTokenBefore(node.body, token => token.type === experimental_utils_1.AST_TOKEN_TYPES.Punctuator && token.value === '=>').loc.end;
+            return sourceCode.getTokenBefore(node.body, token => token.type === utils_1.AST_TOKEN_TYPES.Punctuator && token.value === '=>').loc.end;
         }
         // return the end location for a regular function
         return sourceCode.getTokenBefore(node.body).loc.end;

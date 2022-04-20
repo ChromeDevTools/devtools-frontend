@@ -203,10 +203,6 @@ export async function removeBreakpointForLine(frontend: puppeteer.Page, index: n
   await waitForFunction(async () => !(await isBreakpointSet(index)));
 }
 
-export function sourceLineNumberSelector(lineNumber: number) {
-  return `div.CodeMirror-code > div:nth-child(${lineNumber}) div.CodeMirror-linenumber.CodeMirror-gutter-elt`;
-}
-
 export async function isBreakpointSet(lineNumber: number|string) {
   const lineNumberElement = await getLineNumberElement(lineNumber);
   const breakpointLineParentClasses = await lineNumberElement?.evaluate(n => n.className);

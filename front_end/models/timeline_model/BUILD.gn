@@ -35,6 +35,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/models/timeline_model/*",
+    "../../../test/unittests/front_end/panels/timeline/components/*",
     "../../panels/timeline/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

@@ -165,6 +165,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+type TimelineFlameChartEntry = (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|
+                                TimelineModel.TimelineFrameModel.TimelineFrame|TimelineModel.TimelineIRModel.Phases);
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private readonly font: string;
@@ -190,8 +192,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly interactionsHeaderLevel2: PerfUI.FlameChart.GroupStyle;
   private readonly experienceHeader: PerfUI.FlameChart.GroupStyle;
   private readonly flowEventIndexById: Map<string, number>;
-  private entryData!: (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|
-                       TimelineModel.TimelineFrameModel.TimelineFrame|TimelineModel.TimelineIRModel.Phases)[];
+  private entryData!: TimelineFlameChartEntry[];
   private entryTypeByLevel!: EntryType[];
   private markers!: TimelineFlameChartMarker[];
   private asyncColorByInteractionPhase!: Map<TimelineModel.TimelineIRModel.Phases, string>;
@@ -1345,11 +1346,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private appendAsyncEvent(asyncEvent: SDK.TracingModel.AsyncEvent, level: number): void {
-    if (SDK.TracingModel.TracingModel.isNestableAsyncPhase(asyncEvent.phase)) {
-      // FIXME: also add steps once we support event nesting in the FlameChart.
-      this.appendEvent(asyncEvent, level);
-      return;
-    }
     const steps = asyncEvent.steps;
     // If we have past steps, put the end event for each range rather than start one.
     const eventOffset = steps.length > 1 && steps[1].phase === SDK.TracingModel.Phase.AsyncStepPast ? 1 : 0;
@@ -1465,6 +1461,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return entryIndex >= 0 && this.entryType(entryIndex) === EntryType.Event ?
         this.entryData[entryIndex] as SDK.TracingModel.Event :
         null;
+  }
+
+  entryDataByIndex(entryIndex: number): TimelineFlameChartEntry {
+    return this.entryData[entryIndex];
   }
 
   setEventColorMapping(colorForEvent: (arg0: SDK.TracingModel.Event) => string): void {

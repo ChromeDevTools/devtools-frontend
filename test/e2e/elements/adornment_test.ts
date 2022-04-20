@@ -46,14 +46,15 @@ describe('Adornment in the Elements Tab', async function() {
     ]);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1134593] can toggle adorners', async () => {
+  it('can toggle adorners', async () => {
     await goToResource('elements/adornment.html');
     await prepareElementsTab();
 
     await waitForAdorners([
       {textContent: 'grid', isActive: false},
       {textContent: 'grid', isActive: false},
+      {textContent: 'flex', isActive: false},
+      {textContent: 'flex', isActive: false},
     ]);
 
     // Toggle both grid adorners on and try to select them with the active selector
@@ -63,6 +64,8 @@ describe('Adornment in the Elements Tab', async function() {
     await waitForAdorners([
       {textContent: 'grid', isActive: true},
       {textContent: 'grid', isActive: true},
+      {textContent: 'flex', isActive: false},
+      {textContent: 'flex', isActive: false},
     ]);
   });
 

@@ -167,7 +167,7 @@ be fixed to the right so it never goes out of the viewport even if other items
 push it. And the main menu button next to it that needs to make some space for
 it. */
 .toolbar-button.close-devtools {
-  position: fixed;
+  position: absolute;
   right: 0;
 }
 

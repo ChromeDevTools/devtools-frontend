@@ -10797,7 +10797,6 @@ export namespace Page {
     ForegroundCacheLimit = 'ForegroundCacheLimit',
     BrowsingInstanceNotSwapped = 'BrowsingInstanceNotSwapped',
     BackForwardCacheDisabledForDelegate = 'BackForwardCacheDisabledForDelegate',
-    OptInUnloadHeaderNotPresent = 'OptInUnloadHeaderNotPresent',
     UnloadHandlerExistsInMainFrame = 'UnloadHandlerExistsInMainFrame',
     UnloadHandlerExistsInSubFrame = 'UnloadHandlerExistsInSubFrame',
     ServiceWorkerUnregistration = 'ServiceWorkerUnregistration',

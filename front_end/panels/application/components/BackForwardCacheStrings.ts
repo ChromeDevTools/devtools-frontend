@@ -552,7 +552,6 @@ export const NotRestoredReasonDescription = {
   'UserAgentOverrideDiffers': {name: i18nLazyString(UIStrings.userAgentOverrideDiffers)},
   'ForegroundCacheLimit': {name: i18nLazyString(UIStrings.foregroundCacheLimit)},
   'BackForwardCacheDisabledForDelegate': {name: i18nLazyString(UIStrings.backForwardCacheDisabledForDelegate)},
-  'OptInUnloadHeaderNotPresent': {name: i18nLazyString(UIStrings.unloadHandlerExistsInMainFrame)},
   'UnloadHandlerExistsInMainFrame': {name: i18nLazyString(UIStrings.unloadHandlerExistsInMainFrame)},
   'UnloadHandlerExistsInSubFrame': {name: i18nLazyString(UIStrings.unloadHandlerExistsInSubFrame)},
   'ServiceWorkerUnregistration': {name: i18nLazyString(UIStrings.serviceWorkerUnregistration)},

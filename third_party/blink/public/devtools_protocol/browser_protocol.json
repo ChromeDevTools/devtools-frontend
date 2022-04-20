@@ -15848,7 +15848,6 @@
                         "ForegroundCacheLimit",
                         "BrowsingInstanceNotSwapped",
                         "BackForwardCacheDisabledForDelegate",
-                        "OptInUnloadHeaderNotPresent",
                         "UnloadHandlerExistsInMainFrame",
                         "UnloadHandlerExistsInSubFrame",
                         "ServiceWorkerUnregistration",

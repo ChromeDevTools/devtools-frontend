@@ -2200,7 +2200,6 @@ export function registerCommands(inspectorBackend) {
     ForegroundCacheLimit: 'ForegroundCacheLimit',
     BrowsingInstanceNotSwapped: 'BrowsingInstanceNotSwapped',
     BackForwardCacheDisabledForDelegate: 'BackForwardCacheDisabledForDelegate',
-    OptInUnloadHeaderNotPresent: 'OptInUnloadHeaderNotPresent',
     UnloadHandlerExistsInMainFrame: 'UnloadHandlerExistsInMainFrame',
     UnloadHandlerExistsInSubFrame: 'UnloadHandlerExistsInSubFrame',
     ServiceWorkerUnregistration: 'ServiceWorkerUnregistration',

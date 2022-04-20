@@ -121,6 +121,17 @@ describe('i18n', () => {
 
       assert.throws(() => stringSet.getLocalizedString(uiStrings.plural));
     });
+
+    it('should allow nested placeholders in message with plurals', () => {
+      const uiStrings = {plural: '{count, plural, =1 {1 row in {item}} other {# rows in {item}}}'};
+      const stringSet = stringSetWith('test.ts', uiStrings, 'en-US');
+
+      const pluralString1 = stringSet.getLocalizedString(uiStrings.plural, {count: 1, item: 'table'});
+      const pluralString3 = stringSet.getLocalizedString(uiStrings.plural, {count: 3, item: 'page'});
+
+      assert.strictEqual(pluralString1, '1 row in table');
+      assert.strictEqual(pluralString3, '3 rows in page');
+    });
   });
 
   describe('locales', () => {

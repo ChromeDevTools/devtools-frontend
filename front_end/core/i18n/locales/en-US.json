@@ -2798,8 +2798,11 @@
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
     "message": "Frames"
   },
-  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
-    "message": "{x, plural, =1 {# issue} other {# issues}} found in {y, plural, =1 {# frame} other {# frames}}."
+  "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
+    "message": "{n, plural, =1 {# issue found in {m} frames.} other {# issues found in {m} frames.}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
+    "message": "{n, plural, =1 {# issue found in 1 frame.} other {# issues found in 1 frame.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Learn more: back/forward cache eligibility"

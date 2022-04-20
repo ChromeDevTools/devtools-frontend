@@ -110,9 +110,15 @@ const UIStrings = {
    */
   framesTitle: 'Frames',
   /**
-   * @description Top level summary of the total number of issues found and the number of frames they were found in.
+   * @description Top level summary of the total number of issues found in a single frame.
    */
-  issuesInFrames: '{x, plural, =1 {# issue} other {# issues}} found in {y, plural, =1 {# frame} other {# frames}}.',
+  issuesInSingleFrame: '{n, plural, =1 {# issue found in 1 frame.} other {# issues found in 1 frame.}}',
+  /**
+   * @description Top level summary of the total number of issues found and the number of frames they were found in.
+   * 'm' is never less than 2.
+   * @example {3} m
+   */
+  issuesInMultipleFrames: '{n, plural, =1 {# issue found in {m} frames.} other {# issues found in {m} frames.}}',
   /**
    * @description Shows the number of frames with a particular issue.
    */
@@ -315,7 +321,13 @@ export class BackForwardCacheView extends HTMLElement {
     const urlTreeElement = new UI.TreeOutline.TreeElement();
     treeOutline.appendChild(urlTreeElement);
     const {frameCount, issueCount} = this.#maybeAddFrameSubTree(urlTreeElement, {blankCount: 1}, explanationTree);
-    urlTreeElement.title = i18nString(UIStrings.issuesInFrames, {x: issueCount, y: frameCount});
+    // The translation pipeline does not support nested plurals. We avoid this
+    // here by pulling out the logic for one of the plurals into code instead.
+    if (frameCount === 1) {
+      urlTreeElement.title = i18nString(UIStrings.issuesInSingleFrame, {n: issueCount});
+    } else {
+      urlTreeElement.title = i18nString(UIStrings.issuesInMultipleFrames, {n: issueCount, m: frameCount});
+    }
     // The first element is always the root, so expand it by default (and override its icon).
     const topFrameElement = urlTreeElement.childAt(0);
     if (topFrameElement) {

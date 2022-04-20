@@ -2798,8 +2798,11 @@
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
     "message": "F̂ŕâḿêś"
   },
-  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
-    "message": "{x, plural, =1 {# îśŝúê} other {# íŝśûéŝ}} f́ôún̂d́ îń {y, plural, =1 {# f̂ŕâḿê} other {# f́r̂ám̂éŝ}}."
+  "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
+    "message": "{n, plural, =1 {# îśŝúê f́ôún̂d́ îń {m} f̂ŕâḿêś.} other {# îśŝúêś f̂óûńd̂ ín̂ {m} f́r̂ám̂éŝ.}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
+    "message": "{n, plural, =1 {# îśŝúê f́ôún̂d́ îń 1 f̂ŕâḿê.} other {# íŝśûéŝ f́ôún̂d́ îń 1 f̂ŕâḿê.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "L̂éâŕn̂ ḿôŕê: b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê él̂íĝíb̂íl̂ít̂ý"

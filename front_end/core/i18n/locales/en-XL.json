@@ -2780,6 +2780,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé"
   },
+  "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
+    "message": "B̂ĺâńk̂ ÚR̂Ĺ [{PH1}]"
+  },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
     "message": "Êx́t̂én̂śîón̂ íd̂: "
   },

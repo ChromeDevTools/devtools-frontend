@@ -2780,6 +2780,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back/forward cache"
   },
+  "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
+    "message": "Blank URL [{PH1}]"
+  },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
     "message": "Extension id: "
   },

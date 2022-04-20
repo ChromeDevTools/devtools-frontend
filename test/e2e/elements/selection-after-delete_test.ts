@@ -7,16 +7,15 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {expandSelectedNodeRecursively, getContentOfSelectedNode, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
-  // Flaky test
-  it.skip('[crbug.com/1071851]: can delete elements in the tree', async () => {
+  it('can delete elements in the tree', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/selection-after-delete.html');
 
-    // Wait for the file to be loaded and selectors to be shown
+    // Wait for the file to be loaded and selectors to be shown.
     await waitForElementsStyleSection();
 
-    // Check to make sure we have the correct node selected after opening a file
+    // Check to make sure we have the correct node selected after opening a file.
     await waitForContentOfSelectedElementsNode('<body>\u200B');
     await expandSelectedNodeRecursively();
 
@@ -25,10 +24,10 @@ describe('The Elements tab', async () => {
     await click(child);
 
     const expected = [
-      '<div class=​"child3">\u200B</div>\u200B',
-      '<div class=​"child1">\u200B</div>\u200B',
-      '<div class=​"left">\u200B</div>\u200B',
-      '<div id=​"testTreeContainer">\u200B</div>\u200B',
+      '<div class=\u200B"child3">\u200B</div>\u200B',
+      '<div class=\u200B"child1">\u200B</div>\u200B',
+      '<div class=\u200B"left">\u200B</div>\u200B',
+      '<div id=\u200B"testTreeContainer">\u200B</div>\u200B',
       '<body>\u200B</body>\u200B',
     ];
 

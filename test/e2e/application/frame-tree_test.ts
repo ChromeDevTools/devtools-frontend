@@ -38,14 +38,12 @@ declare global {
     iFrameWindow: Window|null|undefined;
   }
 }
-describe('[crbug.com/12]: The Application Tab', async () => {
+describe('The Application Tab', async () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
       const registrations = await navigator.serviceWorker.getRegistrations();
-      for (const registration of registrations) {
-        void registration.unregister();
-      }
+      await Promise.all(registrations.map(registration => registration.unregister()));
     });
   });
 
@@ -175,8 +173,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
     assert.deepEqual(fieldValuesTextContent, expected);
   });
 
-  // Flaky test
-  it.skipOnPlatforms(['win32', 'mac'], '[crbug.com/1231056]: shows service workers in the frame tree', async () => {
+  it('shows service workers in the frame tree', async () => {
     await goToResource('application/service-worker-network.html');
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);

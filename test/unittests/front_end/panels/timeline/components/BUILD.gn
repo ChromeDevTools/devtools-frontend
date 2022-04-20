@@ -6,9 +6,13 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "WebVitalsTimeline_test.ts" ]
+  sources = [
+    "Interactions_test.ts",
+    "WebVitalsTimeline_test.ts",
+  ]
 
   deps = [
+    "../../../../../../front_end/models/timeline_model:bundle",
     "../../../../../../front_end/panels/timeline/components:bundle",
     "../../../helpers",
   ]

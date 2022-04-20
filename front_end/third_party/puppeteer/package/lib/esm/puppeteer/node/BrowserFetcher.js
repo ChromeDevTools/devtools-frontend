@@ -439,6 +439,9 @@ function httpRequest(url, method, response) {
     let options = {
         ...urlParsed,
         method,
+        headers: {
+            Connection: 'keep-alive',
+        },
     };
     const proxyURL = getProxyForUrl(url);
     if (proxyURL) {

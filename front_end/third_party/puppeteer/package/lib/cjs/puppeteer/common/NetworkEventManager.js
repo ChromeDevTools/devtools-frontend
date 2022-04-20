@@ -93,7 +93,7 @@ class NetworkEventManager {
         return this._requestWillBeSentMap.get(networkRequestId);
     }
     forgetRequestWillBeSent(networkRequestId) {
-        this._requestPausedMap.delete(networkRequestId);
+        this._requestWillBeSentMap.delete(networkRequestId);
     }
     getRequestPaused(networkRequestId) {
         return this._requestPausedMap.get(networkRequestId);
@@ -118,6 +118,9 @@ class NetworkEventManager {
     }
     queueEventGroup(networkRequestId, event) {
         this._queuedEventGroupMap.set(networkRequestId, event);
+    }
+    forgetQueuedEventGroup(networkRequestId) {
+        this._queuedEventGroupMap.delete(networkRequestId);
     }
 }
 exports.NetworkEventManager = NetworkEventManager;

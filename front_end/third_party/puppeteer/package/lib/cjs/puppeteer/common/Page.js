@@ -1377,9 +1377,20 @@ class Page extends EventEmitter_js_1.EventEmitter {
                 return !!(await urlOrPredicate(frame));
             return false;
         }
-        return Promise.race([
+        const eventRace = Promise.race([
             helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, this._sessionClosePromise()),
             helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, this._sessionClosePromise()),
+        ]);
+        return Promise.race([
+            eventRace,
+            (async () => {
+                for (const frame of this.frames()) {
+                    if (await predicate(frame)) {
+                        return frame;
+                    }
+                }
+                await eventRace;
+            })(),
         ]);
     }
     /**

@@ -90,7 +90,7 @@ export class NetworkEventManager {
         return this._requestWillBeSentMap.get(networkRequestId);
     }
     forgetRequestWillBeSent(networkRequestId) {
-        this._requestPausedMap.delete(networkRequestId);
+        this._requestWillBeSentMap.delete(networkRequestId);
     }
     getRequestPaused(networkRequestId) {
         return this._requestPausedMap.get(networkRequestId);
@@ -115,6 +115,9 @@ export class NetworkEventManager {
     }
     queueEventGroup(networkRequestId, event) {
         this._queuedEventGroupMap.set(networkRequestId, event);
+    }
+    forgetQueuedEventGroup(networkRequestId) {
+        this._queuedEventGroupMap.delete(networkRequestId);
     }
 }
 //# sourceMappingURL=NetworkEventManager.js.map

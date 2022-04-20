@@ -129,7 +129,7 @@ export class BrowserRunner {
     close() {
         if (this._closed)
             return Promise.resolve();
-        if (this._isTempUserDataDir && this._product !== 'firefox') {
+        if (this._isTempUserDataDir) {
             this.kill();
         }
         else if (this.connection) {

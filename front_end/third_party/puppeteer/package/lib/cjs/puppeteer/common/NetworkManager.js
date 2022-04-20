@@ -173,6 +173,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             const requestPausedEvent = this._networkEventManager.getRequestPaused(networkRequestId);
             if (requestPausedEvent) {
                 const { requestId: fetchRequestId } = requestPausedEvent;
+                this._patchRequestEventHeaders(event, requestPausedEvent);
                 this._onRequest(event, fetchRequestId);
                 this._networkEventManager.forgetRequestPaused(networkRequestId);
             }
@@ -234,11 +235,19 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             return requestWillBeSentEvent;
         })();
         if (requestWillBeSentEvent) {
+            this._patchRequestEventHeaders(requestWillBeSentEvent, event);
             this._onRequest(requestWillBeSentEvent, fetchRequestId);
         }
         else {
             this._networkEventManager.storeRequestPaused(networkRequestId, event);
         }
+    }
+    _patchRequestEventHeaders(requestWillBeSentEvent, requestPausedEvent) {
+        requestWillBeSentEvent.request.headers = {
+            ...requestWillBeSentEvent.request.headers,
+            // includes extra headers, like: Accept, Origin
+            ...requestPausedEvent.request.headers,
+        };
     }
     _onRequest(event, fetchRequestId) {
         let redirectChain = [];
@@ -339,6 +348,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         // this ExtraInfo event yet. If so, emit those events now.
         const queuedEvents = this._networkEventManager.getQueuedEventGroup(event.requestId);
         if (queuedEvents) {
+            this._networkEventManager.forgetQueuedEventGroup(event.requestId);
             this._emitResponseEvent(queuedEvents.responseReceivedEvent, event);
             if (queuedEvents.loadingFinishedEvent) {
                 this._emitLoadingFinished(queuedEvents.loadingFinishedEvent);

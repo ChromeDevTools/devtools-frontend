@@ -130,7 +130,7 @@ class ChromeLauncher {
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
-            '--disable-features=Translate',
+            '--disable-features=Translate,BackForwardCache',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',

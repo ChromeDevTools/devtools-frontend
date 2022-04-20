@@ -251,14 +251,11 @@ async function getReadableFromProtocolStream(client, handle) {
     const { Readable } = await import('stream');
     let eof = false;
     return new Readable({
-        async read() {
-            // TODO: use the advised size parameter to read function once
-            // crbug.com/1290727 is resolved.
-            // Also, see https://github.com/puppeteer/puppeteer/pull/7868.
+        async read(size) {
             if (eof) {
                 return null;
             }
-            const response = await client.send('IO.read', { handle });
+            const response = await client.send('IO.read', { handle, size });
             this.push(response.data, response.base64Encoded ? 'base64' : undefined);
             if (response.eof) {
                 eof = true;

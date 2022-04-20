@@ -389,7 +389,7 @@ export declare class Frame {
      *
      * @param selector - the selector to query for
      * @param pageFunction - the function to be evaluated in the frame's context
-     * @param args - additional arguments to pass to `pageFuncton`
+     * @param args - additional arguments to pass to `pageFunction`
      */
     $eval<ReturnType>(selector: string, pageFunction: (element: Element, ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
     /**
@@ -409,7 +409,7 @@ export declare class Frame {
      *
      * @param selector - the selector to query for
      * @param pageFunction - the function to be evaluated in the frame's context
-     * @param args - additional arguments to pass to `pageFuncton`
+     * @param args - additional arguments to pass to `pageFunction`
      */
     $$eval<ReturnType>(selector: string, pageFunction: (elements: Element[], ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
     /**

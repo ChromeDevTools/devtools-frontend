@@ -160,14 +160,6 @@ export async function getOpenSources() {
   return openSources;
 }
 
-export async function waitForHighlightedLineWhichIncludesText(expectedTextContent: string) {
-  await waitForFunction(async () => {
-    const selectedLine = await waitFor(ACTIVE_LINE);
-    const text = await selectedLine.evaluate(node => node.textContent);
-    return (text && text.includes(expectedTextContent)) ? text : undefined;
-  });
-}
-
 export async function waitForHighlightedLine(lineNumber: number) {
   await waitForFunction(async () => {
     const selectedLine = await waitFor('.cm-highlightedLine');

@@ -8,6 +8,8 @@ copy_to_gen("sources") {
   sources = [
     "click-breakpoint.html",
     "click-breakpoint.js",
+    "csp-blocked-eval.html",
+    "csp-blocked-inline-script.html",
     "different-workers.html",
     "dynamic-loading-css.html",
     "dynamic-loading-javascript.html",

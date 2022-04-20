@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline'" />
+  </head>
+  <body>
+    <h2>Webpage with an issue of eval violation type</h2>
+    <script>alert(eval("41+1"));</script>
+  </body>
+</html>

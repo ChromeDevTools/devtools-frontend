@@ -24,7 +24,13 @@ async function assertScriptLocation(expectedLocation: string) {
   assert.isTrue(isEqualOrAbbreviation(scriptLocation, expectedLocation));
 }
 
-describe('The Sources Tab', async () => {
+describe('The Sources Tab', async function() {
+  // Some of these tests that use instrumentation breakpoints
+  // can be slower on mac and windows. Increaese the timeout for them.
+  if (this.timeout() !== 0) {
+    this.timeout(10000);
+  }
+
   it('sets and hits breakpoints in JavaScript', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('click-breakpoint.js', 'click-breakpoint.html');

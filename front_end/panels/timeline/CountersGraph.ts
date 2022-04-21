@@ -196,7 +196,8 @@ export class CountersGraph extends UI.Widget.VBox {
       for (const name in counters) {
         const counter = this._countersByName.get(name);
         if (counter) {
-          counter.appendSample(event.startTime, counters[name]);}
+          counter.appendSample(event.startTime, counters[name]);
+        }
       }
 
       const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';

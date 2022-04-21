@@ -1241,7 +1241,7 @@ const UIStrings = {
   processFrontendCommandsOnly: 'Process Frontend Commands Only',
   drawSDFGlyphs: 'Draw SDF Glyphs',
   drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
-  backend_Execute: 'Backend_Execute',
+  backendExecute: 'Backend Execute',
   processSimpleSublayer: 'Process Simple Sublayer',
 
   processFrontendCommands: 'Process Frontend Commands',
@@ -1478,7 +1478,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
     eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
     eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
-    eventStyles[type.Coherent_Backend_Execute] = new TimelineRecordStyle(UIStrings.backend_Execute, painting);
+    eventStyles[type.Coherent_BackendExecute] = new TimelineRecordStyle(UIStrings.backendExecute, painting);
     eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
     eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
     eventStyles[type.Coherent_CaptureTextureData] = new TimelineRecordStyle(UIStrings.captureTextureData, painting);

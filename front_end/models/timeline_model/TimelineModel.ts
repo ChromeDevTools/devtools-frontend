@@ -1747,7 +1747,7 @@ export enum RecordType {
   Coherent_ProcessFrontendCommandsOnly = 'Coherent_ProcessFrontendCommandsOnly',
   Coherent_DrawSDFGlyphs = 'Coherent_DrawSDFGlyphs',
   Coherent_DrawSubLayerWithShaderFilter = 'Coherent_DrawSubLayerWithShaderFilter',
-  Coherent_Backend_Execute = 'Coherent_Backend_Execute',
+  Coherent_BackendExecute = 'Coherent_BackendExecute',
   Coherent_ProcessSimpleSublayer = 'Coherent_ProcessSimpleSublayer',
   Coherent_ExecuteBackendBuffers = 'Coherent_ExecuteBackendBuffers',
   Coherent_CaptureTextureData = 'Coherent_CaptureTextureData',

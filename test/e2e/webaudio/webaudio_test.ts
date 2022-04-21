@@ -3,12 +3,18 @@
 // found in the LICENSE file.
 
 import {describe, it} from '../../shared/mocha-extensions.js';
-
+import {openSourcesPanel} from '../helpers/sources-helpers.js';
 import {navigateToSiteWithAudioContexts, waitForTheWebAudioPanelToLoad, waitForWebAudioContent} from '../helpers/webaudio-helpers.js';
 
 describe('The WebAudio Panel', async () => {
-  // Crashes Puppeteer if the assertion fails
-  it.skip('[crbug.com/1086519]: Listens for audio contexts', async () => {
+  afterEach(async () => {
+    // @see console-autocomplete_test.ts
+    // Make sure we don't close DevTools while there is an outstanding
+    // Runtime.evaluate CDP request, which causes an error. crbug.com/1134579.
+    await openSourcesPanel();
+  });
+
+  it('Listens for audio contexts', async () => {
     await waitForTheWebAudioPanelToLoad();
     await navigateToSiteWithAudioContexts();
     await waitForWebAudioContent();

@@ -3452,6 +3452,8 @@
       ],
       typedom_types: ["Keyword"],
       default_value: "visible",
+      // This is to allow us to gather metrics when overflow is explicitly set.
+      style_builder_custom_functions: ["initial", "inherit", "value"],
       type_name: "EOverflow",
       logical_property_group: {
         name: "overflow",
@@ -3474,6 +3476,8 @@
       ],
       typedom_types: ["Keyword"],
       default_value: "visible",
+      // This is to allow us to gather metrics when overflow is explicitly set.
+      style_builder_custom_functions: ["initial", "inherit", "value"],
       type_name: "EOverflow",
       logical_property_group: {
         name: "overflow",
@@ -4584,6 +4588,54 @@
       valid_for_first_line: true,
       valid_for_canvas_formatted_text: true,
       valid_for_canvas_formatted_text_run: true,
+    },
+    {
+      name: "toggle-group",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSToggles",
+      field_group: "*",
+      field_template: "pointer",
+      include_paths: ["third_party/blink/renderer/core/style/toggle_group_list.h"],
+      type_name: "ToggleGroupList",
+      converter: "ConvertToggleGroup",
+      wrapper_pointer_name: "scoped_refptr",
+      default_value: "nullptr",
+      separator: ",",
+      supports_incremental_style: true,
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+    },
+    {
+      name: "toggle-root",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSToggles",
+      field_group: "*",
+      field_template: "pointer",
+      include_paths: ["third_party/blink/renderer/core/style/toggle_root_list.h"],
+      type_name: "ToggleRootList",
+      converter: "ConvertToggleRoot",
+      wrapper_pointer_name: "scoped_refptr",
+      default_value: "nullptr",
+      separator: ",",
+      supports_incremental_style: true,
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+    },
+    {
+      name: "toggle-trigger",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSToggles",
+      field_group: "*",
+      field_template: "pointer",
+      include_paths: ["third_party/blink/renderer/core/style/toggle_trigger_list.h"],
+      type_name: "ToggleTriggerList",
+      converter: "ConvertToggleTrigger",
+      wrapper_pointer_name: "scoped_refptr",
+      default_value: "nullptr",
+      separator: ",",
+      supports_incremental_style: true,
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
     },
     {
       name: "top",
@@ -6373,7 +6425,7 @@
     {
       name: "container",
       longhands: [
-        "container-type", "container-name"
+        "container-name", "container-type"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSContainerQueries",
@@ -6651,6 +6703,12 @@
       longhands: ["text-decoration-line", "text-decoration-thickness", "text-decoration-style", "text-decoration-color"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       computable: true,
+    },
+    {
+      name: "toggle",
+      longhands: ["toggle-root", "toggle-trigger"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSToggles",
     },
     {
       name: "transition",

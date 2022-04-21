@@ -964,16 +964,10 @@ export namespace Audits {
   export const enum AttributionReportingIssueType {
     PermissionPolicyDisabled = 'PermissionPolicyDisabled',
     InvalidAttributionSourceEventId = 'InvalidAttributionSourceEventId',
-    InvalidAttributionData = 'InvalidAttributionData',
     AttributionSourceUntrustworthyOrigin = 'AttributionSourceUntrustworthyOrigin',
     AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
-    AttributionTriggerDataTooLarge = 'AttributionTriggerDataTooLarge',
-    AttributionEventSourceTriggerDataTooLarge = 'AttributionEventSourceTriggerDataTooLarge',
     InvalidAttributionSourceExpiry = 'InvalidAttributionSourceExpiry',
     InvalidAttributionSourcePriority = 'InvalidAttributionSourcePriority',
-    InvalidEventSourceTriggerData = 'InvalidEventSourceTriggerData',
-    InvalidTriggerPriority = 'InvalidTriggerPriority',
-    InvalidTriggerDedupKey = 'InvalidTriggerDedupKey',
   }
 
   /**
@@ -1025,8 +1019,39 @@ export namespace Audits {
   }
 
   export const enum DeprecationIssueType {
+    AuthorizationCoveredByWildcard = 'AuthorizationCoveredByWildcard',
+    CookieWithTruncatingChar = 'CookieWithTruncatingChar',
+    CrossOriginAccessBasedOnDocumentDomain = 'CrossOriginAccessBasedOnDocumentDomain',
+    CrossOriginWindowAlert = 'CrossOriginWindowAlert',
+    CrossOriginWindowConfirm = 'CrossOriginWindowConfirm',
     DeprecationExample = 'DeprecationExample',
+    DocumentDomainSettingWithoutOriginAgentClusterHeader = 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
+    GeolocationInsecureOrigin = 'GeolocationInsecureOrigin',
+    GeolocationInsecureOriginDeprecatedNotRemoved = 'GeolocationInsecureOriginDeprecatedNotRemoved',
+    GetUserMediaInsecureOrigin = 'GetUserMediaInsecureOrigin',
+    LegacyConstraintGoogCpuOveruseDetection = 'LegacyConstraintGoogCpuOveruseDetection',
+    LegacyConstraintGoogIPv6 = 'LegacyConstraintGoogIPv6',
+    LegacyConstraintGoogScreencastMinBitrate = 'LegacyConstraintGoogScreencastMinBitrate',
+    LegacyConstraintGoogSuspendBelowMinBitrate = 'LegacyConstraintGoogSuspendBelowMinBitrate',
+    LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
+    NotificationInsecureOrigin = 'NotificationInsecureOrigin',
+    ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
+    PictureSourceSrc = 'PictureSourceSrc',
+    PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
+    PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
+    RTCConstraintEnableDtlsSrtpFalse = 'RTCConstraintEnableDtlsSrtpFalse',
+    RTCConstraintEnableDtlsSrtpTrue = 'RTCConstraintEnableDtlsSrtpTrue',
+    RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics =
+        'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
+    RTCPeerConnectionLegacyCreateWithMediaConstraints = 'RTCPeerConnectionLegacyCreateWithMediaConstraints',
+    RTPDataChannel = 'RTPDataChannel',
+    SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
     Untranslated = 'Untranslated',
+    V8SharedArrayBufferConstructedInExtensionWithoutIsolation =
+        'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
+    WebCodecsVideoFrameDefaultTimestamp = 'WebCodecsVideoFrameDefaultTimestamp',
+    XHRJSONEncodingDetection = 'XHRJSONEncodingDetection',
+    XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload = 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload',
   }
 
   /**
@@ -1072,6 +1097,11 @@ export namespace Audits {
   export const enum FederatedAuthRequestIssueReason {
     ApprovalDeclined = 'ApprovalDeclined',
     TooManyRequests = 'TooManyRequests',
+    ManifestListHttpNotFound = 'ManifestListHttpNotFound',
+    ManifestListNoResponse = 'ManifestListNoResponse',
+    ManifestListInvalidResponse = 'ManifestListInvalidResponse',
+    ManifestNotInManifestList = 'ManifestNotInManifestList',
+    ManifestListTooBig = 'ManifestListTooBig',
     ManifestHttpNotFound = 'ManifestHttpNotFound',
     ManifestNoResponse = 'ManifestNoResponse',
     ManifestInvalidResponse = 'ManifestInvalidResponse',
@@ -10131,8 +10161,10 @@ export namespace Page {
     ChDeviceMemory = 'ch-device-memory',
     ChDownlink = 'ch-downlink',
     ChEct = 'ch-ect',
+    ChPartitionedCookies = 'ch-partitioned-cookies',
     ChPrefersColorScheme = 'ch-prefers-color-scheme',
     ChRtt = 'ch-rtt',
+    ChSaveData = 'ch-save-data',
     ChUa = 'ch-ua',
     ChUaArch = 'ch-ua-arch',
     ChUaBitness = 'ch-ua-bitness',
@@ -10148,7 +10180,6 @@ export namespace Page {
     ChViewportHeight = 'ch-viewport-height',
     ChViewportWidth = 'ch-viewport-width',
     ChWidth = 'ch-width',
-    ChPartitionedCookies = 'ch-partitioned-cookies',
     ClipboardRead = 'clipboard-read',
     ClipboardWrite = 'clipboard-write',
     CrossOriginIsolated = 'cross-origin-isolated',
@@ -10770,7 +10801,6 @@ export namespace Page {
     JavaScriptExecution = 'JavaScriptExecution',
     RendererProcessKilled = 'RendererProcessKilled',
     RendererProcessCrashed = 'RendererProcessCrashed',
-    GrantedMediaStreamAccess = 'GrantedMediaStreamAccess',
     SchedulerTrackedFeatureUsed = 'SchedulerTrackedFeatureUsed',
     ConflictingBrowsingInstance = 'ConflictingBrowsingInstance',
     CacheFlushed = 'CacheFlushed',
@@ -11101,15 +11131,15 @@ export namespace Page {
 
   export interface GetLayoutMetricsResponse extends ProtocolResponseWithError {
     /**
-     * Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
+     * Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
      */
     layoutViewport: LayoutViewport;
     /**
-     * Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
+     * Deprecated metrics relating to the visual viewport. Is in device pixels. Use `cssVisualViewport` instead.
      */
     visualViewport: VisualViewport;
     /**
-     * Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
+     * Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
      */
     contentSize: DOM.Rect;
     /**
@@ -14664,6 +14694,13 @@ export namespace Debugger {
      * The value being returned, if the function is at return point.
      */
     returnValue?: Runtime.RemoteObject;
+    /**
+     * Valid only while the VM is paused and indicates whether this frame
+     * can be restarted or not. Note that a `true` value here does not
+     * guarantee that Debugger#restartFrame with this CallFrameId will be
+     * successful, but it is very likely.
+     */
+    canBeRestarted?: boolean;
   }
 
   export const enum ScopeType {
@@ -15914,6 +15951,42 @@ export namespace Runtime {
    */
   export type ScriptId = OpaqueIdentifier<string, 'Protocol.Runtime.ScriptId'>;
 
+  export const enum WebDriverValueType {
+    Undefined = 'undefined',
+    Null = 'null',
+    String = 'string',
+    Number = 'number',
+    Boolean = 'boolean',
+    Bigint = 'bigint',
+    Regexp = 'regexp',
+    Date = 'date',
+    Symbol = 'symbol',
+    Array = 'array',
+    Object = 'object',
+    Function = 'function',
+    Map = 'map',
+    Set = 'set',
+    Weakmap = 'weakmap',
+    Weakset = 'weakset',
+    Error = 'error',
+    Proxy = 'proxy',
+    Promise = 'promise',
+    Typedarray = 'typedarray',
+    Arraybuffer = 'arraybuffer',
+    Node = 'node',
+    Window = 'window',
+  }
+
+  /**
+   * Represents the value serialiazed by the WebDriver BiDi specification
+   * https://w3c.github.io/webdriver-bidi.
+   */
+  export interface WebDriverValue {
+    type: WebDriverValueType;
+    value?: any;
+    objectId?: string;
+  }
+
   /**
    * Unique object identifier.
    */
@@ -15989,6 +16062,10 @@ export namespace Runtime {
      * String representation of the object.
      */
     description?: string;
+    /**
+     * WebDriver BiDi representation of the value.
+     */
+    webDriverValue?: WebDriverValue;
     /**
      * Unique object identifier (for non-primitive values).
      */
@@ -16485,6 +16562,10 @@ export namespace Runtime {
      * Whether to throw an exception if side effect cannot be ruled out during evaluation.
      */
     throwOnSideEffect?: boolean;
+    /**
+     * Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+     */
+    generateWebDriverValue?: boolean;
   }
 
   export interface CallFunctionOnResponse extends ProtocolResponseWithError {
@@ -16607,6 +16688,10 @@ export namespace Runtime {
      * This is mutually exclusive with `contextId`.
      */
     uniqueContextId?: string;
+    /**
+     * Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+     */
+    generateWebDriverValue?: boolean;
   }
 
   export interface EvaluateResponse extends ProtocolResponseWithError {

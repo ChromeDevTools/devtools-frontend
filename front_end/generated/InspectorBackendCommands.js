@@ -264,27 +264,59 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Audits.AttributionReportingIssueType', {
     PermissionPolicyDisabled: 'PermissionPolicyDisabled',
     InvalidAttributionSourceEventId: 'InvalidAttributionSourceEventId',
-    InvalidAttributionData: 'InvalidAttributionData',
     AttributionSourceUntrustworthyOrigin: 'AttributionSourceUntrustworthyOrigin',
     AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin',
-    AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge',
-    AttributionEventSourceTriggerDataTooLarge: 'AttributionEventSourceTriggerDataTooLarge',
     InvalidAttributionSourceExpiry: 'InvalidAttributionSourceExpiry',
-    InvalidAttributionSourcePriority: 'InvalidAttributionSourcePriority',
-    InvalidEventSourceTriggerData: 'InvalidEventSourceTriggerData',
-    InvalidTriggerPriority: 'InvalidTriggerPriority',
-    InvalidTriggerDedupKey: 'InvalidTriggerDedupKey'
+    InvalidAttributionSourcePriority: 'InvalidAttributionSourcePriority'
   });
   inspectorBackend.registerEnum(
       'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
-  inspectorBackend.registerEnum(
-      'Audits.DeprecationIssueType', {DeprecationExample: 'DeprecationExample', Untranslated: 'Untranslated'});
+  inspectorBackend.registerEnum('Audits.DeprecationIssueType', {
+    AuthorizationCoveredByWildcard: 'AuthorizationCoveredByWildcard',
+    CookieWithTruncatingChar: 'CookieWithTruncatingChar',
+    CrossOriginAccessBasedOnDocumentDomain: 'CrossOriginAccessBasedOnDocumentDomain',
+    CrossOriginWindowAlert: 'CrossOriginWindowAlert',
+    CrossOriginWindowConfirm: 'CrossOriginWindowConfirm',
+    DeprecationExample: 'DeprecationExample',
+    DocumentDomainSettingWithoutOriginAgentClusterHeader: 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
+    GeolocationInsecureOrigin: 'GeolocationInsecureOrigin',
+    GeolocationInsecureOriginDeprecatedNotRemoved: 'GeolocationInsecureOriginDeprecatedNotRemoved',
+    GetUserMediaInsecureOrigin: 'GetUserMediaInsecureOrigin',
+    LegacyConstraintGoogCpuOveruseDetection: 'LegacyConstraintGoogCpuOveruseDetection',
+    LegacyConstraintGoogIPv6: 'LegacyConstraintGoogIPv6',
+    LegacyConstraintGoogScreencastMinBitrate: 'LegacyConstraintGoogScreencastMinBitrate',
+    LegacyConstraintGoogSuspendBelowMinBitrate: 'LegacyConstraintGoogSuspendBelowMinBitrate',
+    LocalCSSFileExtensionRejected: 'LocalCSSFileExtensionRejected',
+    NotificationInsecureOrigin: 'NotificationInsecureOrigin',
+    ObsoleteWebRtcCipherSuite: 'ObsoleteWebRtcCipherSuite',
+    PictureSourceSrc: 'PictureSourceSrc',
+    PrefixedCancelAnimationFrame: 'PrefixedCancelAnimationFrame',
+    PrefixedRequestAnimationFrame: 'PrefixedRequestAnimationFrame',
+    RTCConstraintEnableDtlsSrtpFalse: 'RTCConstraintEnableDtlsSrtpFalse',
+    RTCConstraintEnableDtlsSrtpTrue: 'RTCConstraintEnableDtlsSrtpTrue',
+    RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics:
+        'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
+    RTCPeerConnectionLegacyCreateWithMediaConstraints: 'RTCPeerConnectionLegacyCreateWithMediaConstraints',
+    RTPDataChannel: 'RTPDataChannel',
+    SharedArrayBufferConstructedWithoutIsolation: 'SharedArrayBufferConstructedWithoutIsolation',
+    Untranslated: 'Untranslated',
+    V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
+        'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
+    WebCodecsVideoFrameDefaultTimestamp: 'WebCodecsVideoFrameDefaultTimestamp',
+    XHRJSONEncodingDetection: 'XHRJSONEncodingDetection',
+    XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload: 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload'
+  });
   inspectorBackend.registerEnum(
       'Audits.ClientHintIssueReason',
       {MetaTagAllowListInvalidOrigin: 'MetaTagAllowListInvalidOrigin', MetaTagModifiedHTML: 'MetaTagModifiedHTML'});
   inspectorBackend.registerEnum('Audits.FederatedAuthRequestIssueReason', {
     ApprovalDeclined: 'ApprovalDeclined',
     TooManyRequests: 'TooManyRequests',
+    ManifestListHttpNotFound: 'ManifestListHttpNotFound',
+    ManifestListNoResponse: 'ManifestListNoResponse',
+    ManifestListInvalidResponse: 'ManifestListInvalidResponse',
+    ManifestNotInManifestList: 'ManifestNotInManifestList',
+    ManifestListTooBig: 'ManifestListTooBig',
     ManifestHttpNotFound: 'ManifestHttpNotFound',
     ManifestNoResponse: 'ManifestNoResponse',
     ManifestInvalidResponse: 'ManifestInvalidResponse',
@@ -2032,8 +2064,10 @@ export function registerCommands(inspectorBackend) {
     ChDeviceMemory: 'ch-device-memory',
     ChDownlink: 'ch-downlink',
     ChEct: 'ch-ect',
+    ChPartitionedCookies: 'ch-partitioned-cookies',
     ChPrefersColorScheme: 'ch-prefers-color-scheme',
     ChRtt: 'ch-rtt',
+    ChSaveData: 'ch-save-data',
     ChUa: 'ch-ua',
     ChUaArch: 'ch-ua-arch',
     ChUaBitness: 'ch-ua-bitness',
@@ -2049,7 +2083,6 @@ export function registerCommands(inspectorBackend) {
     ChViewportHeight: 'ch-viewport-height',
     ChViewportWidth: 'ch-viewport-width',
     ChWidth: 'ch-width',
-    ChPartitionedCookies: 'ch-partitioned-cookies',
     ClipboardRead: 'clipboard-read',
     ClipboardWrite: 'clipboard-write',
     CrossOriginIsolated: 'cross-origin-isolated',
@@ -2173,7 +2206,6 @@ export function registerCommands(inspectorBackend) {
     JavaScriptExecution: 'JavaScriptExecution',
     RendererProcessKilled: 'RendererProcessKilled',
     RendererProcessCrashed: 'RendererProcessCrashed',
-    GrantedMediaStreamAccess: 'GrantedMediaStreamAccess',
     SchedulerTrackedFeatureUsed: 'SchedulerTrackedFeatureUsed',
     ConflictingBrowsingInstance: 'ConflictingBrowsingInstance',
     CacheFlushed: 'CacheFlushed',
@@ -3297,6 +3329,31 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Profiler.takeTypeProfile', [], ['result']);
 
   // Runtime.
+  inspectorBackend.registerEnum('Runtime.WebDriverValueType', {
+    Undefined: 'undefined',
+    Null: 'null',
+    String: 'string',
+    Number: 'number',
+    Boolean: 'boolean',
+    Bigint: 'bigint',
+    Regexp: 'regexp',
+    Date: 'date',
+    Symbol: 'symbol',
+    Array: 'array',
+    Object: 'object',
+    Function: 'function',
+    Map: 'map',
+    Set: 'set',
+    Weakmap: 'weakmap',
+    Weakset: 'weakset',
+    Error: 'error',
+    Proxy: 'proxy',
+    Promise: 'promise',
+    Typedarray: 'typedarray',
+    Arraybuffer: 'arraybuffer',
+    Node: 'node',
+    Window: 'window'
+  });
   inspectorBackend.registerEnum('Runtime.RemoteObjectType', {
     Object: 'object',
     Function: 'function',
@@ -3441,7 +3498,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'awaitPromise', 'type': 'boolean', 'optional': true},
         {'name': 'executionContextId', 'type': 'number', 'optional': true},
         {'name': 'objectGroup', 'type': 'string', 'optional': true},
-        {'name': 'throwOnSideEffect', 'type': 'boolean', 'optional': true}
+        {'name': 'throwOnSideEffect', 'type': 'boolean', 'optional': true},
+        {'name': 'generateWebDriverValue', 'type': 'boolean', 'optional': true}
       ],
       ['result', 'exceptionDetails']);
   inspectorBackend.registerCommand(
@@ -3473,7 +3531,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'disableBreaks', 'type': 'boolean', 'optional': true},
         {'name': 'replMode', 'type': 'boolean', 'optional': true},
         {'name': 'allowUnsafeEvalBlockedByCSP', 'type': 'boolean', 'optional': true},
-        {'name': 'uniqueContextId', 'type': 'string', 'optional': true}
+        {'name': 'uniqueContextId', 'type': 'string', 'optional': true},
+        {'name': 'generateWebDriverValue', 'type': 'boolean', 'optional': true}
       ],
       ['result', 'exceptionDetails']);
   inspectorBackend.registerCommand('Runtime.getIsolateId', [], ['id']);

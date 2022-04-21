@@ -330,7 +330,7 @@ export const generatedProperties = [
   {'name': 'contain-intrinsic-inline-size'},
   {'longhands': ['contain-intrinsic-width', 'contain-intrinsic-height'], 'name': 'contain-intrinsic-size'},
   {'name': 'contain-intrinsic-width', 'keywords': ['auto', 'none']},
-  {'longhands': ['container-type', 'container-name'], 'name': 'container'},
+  {'longhands': ['container-name', 'container-type'], 'name': 'container'},
   {'name': 'container-name', 'keywords': ['none']},
   {'name': 'container-type', 'keywords': ['none', 'inline-size', 'size']},
   {'name': 'content'},
@@ -791,6 +791,10 @@ export const generatedProperties = [
   },
   {'name': 'text-underline-offset', 'inherited': true, 'keywords': ['auto']},
   {'name': 'text-underline-position', 'inherited': true, 'keywords': ['auto', 'from-font', 'under', 'left', 'right']},
+  {'longhands': ['toggle-root', 'toggle-trigger'], 'name': 'toggle'},
+  {'name': 'toggle-group', 'keywords': ['none']},
+  {'name': 'toggle-root', 'keywords': ['none']},
+  {'name': 'toggle-trigger', 'keywords': ['none']},
   {'name': 'top', 'keywords': ['auto']},
   {
     'name': 'touch-action',
@@ -1176,6 +1180,9 @@ export const generatedPropertyValues = {
   'text-transform': {'values': ['capitalize', 'uppercase', 'lowercase', 'none', 'math-auto']},
   'text-underline-offset': {'values': ['auto']},
   'text-underline-position': {'values': ['auto', 'from-font', 'under', 'left', 'right']},
+  'toggle-group': {'values': ['none']},
+  'toggle-root': {'values': ['none']},
+  'toggle-trigger': {'values': ['none']},
   'top': {'values': ['auto']},
   'touch-action': {
     'values':

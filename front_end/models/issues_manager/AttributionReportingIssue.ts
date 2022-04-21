@@ -11,19 +11,12 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 export const enum IssueCode {
   PermissionPolicyDisabled = 'AttributionReportingIssue::PermissionPolicyDisabled',
   InvalidAttributionSourceEventId = 'AttributionReportingIssue::InvalidAttributionSourceEventId',
-  InvalidAttributionData = 'AttributionReportingIssue::InvalidAttributionData',
-  MissingAttributionData = 'AttributionReportingIssue::MissingAttributionData',
   AttributionSourceUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyFrameOrigin',
   AttributionSourceUntrustworthyOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyOrigin',
   AttributionUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionUntrustworthyFrameOrigin',
   AttributionUntrustworthyOrigin = 'AttributionReportingIssue::AttributionUntrustworthyOrigin',
-  AttributionTriggerDataTooLarge = 'AttributionReportingIssue::AttributionTriggerDataTooLarge',
-  AttributionEventSourceTriggerDataTooLarge = 'AttributionReportingIssue::AttributionEventSourceTriggerDataTooLarge',
   InvalidAttributionSourceExpiry = 'AttributionReportingIssue::InvalidAttributionSourceExpiry',
   InvalidAttributionSourcePriority = 'AttributionReportingIssue::InvalidAttributionSourcePriority',
-  InvalidEventSourceTriggerData = 'AttributionReportingIssue::InvalidEventSourceTriggerData',
-  InvalidTriggerPriority = 'AttributionReportingIssue::InvalidTriggerPriority',
-  InvalidTriggerDedupKey = 'AttributionReportingIssue::InvalidTriggerDedupKey',
 }
 
 function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
@@ -32,29 +25,16 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.PermissionPolicyDisabled;
     case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourceEventId:
       return IssueCode.InvalidAttributionSourceEventId;
-    case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionData:
-      return details.invalidParameter !== undefined ? IssueCode.InvalidAttributionData :
-                                                      IssueCode.MissingAttributionData;
     case Protocol.Audits.AttributionReportingIssueType.AttributionSourceUntrustworthyOrigin:
       return details.frame !== undefined ? IssueCode.AttributionSourceUntrustworthyFrameOrigin :
                                            IssueCode.AttributionSourceUntrustworthyOrigin;
     case Protocol.Audits.AttributionReportingIssueType.AttributionUntrustworthyOrigin:
       return details.frame !== undefined ? IssueCode.AttributionUntrustworthyFrameOrigin :
                                            IssueCode.AttributionUntrustworthyOrigin;
-    case Protocol.Audits.AttributionReportingIssueType.AttributionTriggerDataTooLarge:
-      return IssueCode.AttributionTriggerDataTooLarge;
-    case Protocol.Audits.AttributionReportingIssueType.AttributionEventSourceTriggerDataTooLarge:
-      return IssueCode.AttributionEventSourceTriggerDataTooLarge;
     case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourceExpiry:
       return IssueCode.InvalidAttributionSourceExpiry;
     case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourcePriority:
       return IssueCode.InvalidAttributionSourcePriority;
-    case Protocol.Audits.AttributionReportingIssueType.InvalidEventSourceTriggerData:
-      return IssueCode.InvalidEventSourceTriggerData;
-    case Protocol.Audits.AttributionReportingIssueType.InvalidTriggerPriority:
-      return IssueCode.InvalidTriggerPriority;
-    case Protocol.Audits.AttributionReportingIssueType.InvalidTriggerDedupKey:
-      return IssueCode.InvalidTriggerDedupKey;
   }
 }
 
@@ -87,16 +67,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
             linkTitle: 'attributionsourceeventid attribute',
           }],
         };
-      case IssueCode.InvalidAttributionData:
-        return {
-          file: 'arInvalidAttributionData.md',
-          links: [],
-        };
-      case IssueCode.MissingAttributionData:
-        return {
-          file: 'arMissingAttributionData.md',
-          links: [],
-        };
       case IssueCode.AttributionSourceUntrustworthyFrameOrigin:
         return {
           file: 'arAttributionSourceUntrustworthyFrameOrigin.md',
@@ -128,16 +98,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arAttributionUntrustworthyOrigin.md',
           links: [],
         };
-      case IssueCode.AttributionTriggerDataTooLarge:
-        return {
-          file: 'arAttributionTriggerDataTooLarge.md',
-          links: [],
-        };
-      case IssueCode.AttributionEventSourceTriggerDataTooLarge:
-        return {
-          file: 'arAttributionEventSourceTriggerDataTooLarge.md',
-          links: [],
-        };
       case IssueCode.InvalidAttributionSourceExpiry:
         return {
           file: 'arInvalidAttributionSourceExpiry.md',
@@ -154,29 +114,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
             link:
                 'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionsourcepriority',
             linkTitle: 'attributionsourcepriority attribute',
-          }],
-        };
-      case IssueCode.InvalidEventSourceTriggerData:
-        return {
-          file: 'arInvalidEventSourceTriggerData.md',
-          links: [],
-        };
-      case IssueCode.InvalidTriggerPriority:
-        return {
-          file: 'arInvalidTriggerPriority.md',
-          links: [{
-            link:
-                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#prioritize-specific-conversions',
-            linkTitle: 'Prioritizing specific conversions',
-          }],
-        };
-      case IssueCode.InvalidTriggerDedupKey:
-        return {
-          file: 'arInvalidTriggerDedupKey.md',
-          links: [{
-            link:
-                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#deduplicate-reports',
-            linkTitle: 'Deduplicating reports',
           }],
         };
     }

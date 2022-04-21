@@ -698,16 +698,10 @@ experimental domain Audits
     enum
       PermissionPolicyDisabled
       InvalidAttributionSourceEventId
-      InvalidAttributionData
       AttributionSourceUntrustworthyOrigin
       AttributionUntrustworthyOrigin
-      AttributionTriggerDataTooLarge
-      AttributionEventSourceTriggerDataTooLarge
       InvalidAttributionSourceExpiry
       InvalidAttributionSourcePriority
-      InvalidEventSourceTriggerData
-      InvalidTriggerPriority
-      InvalidTriggerDedupKey
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/conversion-measurement-api
@@ -749,8 +743,37 @@ experimental domain Audits
 
   type DeprecationIssueType extends string
     enum
+      AuthorizationCoveredByWildcard
+      CookieWithTruncatingChar
+      CrossOriginAccessBasedOnDocumentDomain
+      CrossOriginWindowAlert
+      CrossOriginWindowConfirm
       DeprecationExample
+      DocumentDomainSettingWithoutOriginAgentClusterHeader
+      GeolocationInsecureOrigin
+      GeolocationInsecureOriginDeprecatedNotRemoved
+      GetUserMediaInsecureOrigin
+      LegacyConstraintGoogCpuOveruseDetection
+      LegacyConstraintGoogIPv6
+      LegacyConstraintGoogScreencastMinBitrate
+      LegacyConstraintGoogSuspendBelowMinBitrate
+      LocalCSSFileExtensionRejected
+      NotificationInsecureOrigin
+      ObsoleteWebRtcCipherSuite
+      PictureSourceSrc
+      PrefixedCancelAnimationFrame
+      PrefixedRequestAnimationFrame
+      RTCConstraintEnableDtlsSrtpFalse
+      RTCConstraintEnableDtlsSrtpTrue
+      RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics
+      RTCPeerConnectionLegacyCreateWithMediaConstraints
+      RTPDataChannel
+      SharedArrayBufferConstructedWithoutIsolation
       Untranslated
+      V8SharedArrayBufferConstructedInExtensionWithoutIsolation
+      WebCodecsVideoFrameDefaultTimestamp
+      XHRJSONEncodingDetection
+      XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload
 
   # This issue tracks information needed to print a deprecation message.
   # The formatting is inherited from the old console.log version, see more at:
@@ -792,6 +815,11 @@ experimental domain Audits
     enum
       ApprovalDeclined
       TooManyRequests
+      ManifestListHttpNotFound
+      ManifestListNoResponse
+      ManifestListInvalidResponse
+      ManifestNotInManifestList
+      ManifestListTooBig
       ManifestHttpNotFound
       ManifestNoResponse
       ManifestInvalidResponse
@@ -6952,8 +6980,10 @@ domain Page
       ch-device-memory
       ch-downlink
       ch-ect
+      ch-partitioned-cookies
       ch-prefers-color-scheme
       ch-rtt
+      ch-save-data
       ch-ua
       ch-ua-arch
       ch-ua-bitness
@@ -6969,7 +6999,6 @@ domain Page
       ch-viewport-height
       ch-viewport-width
       ch-width
-      ch-partitioned-cookies
       clipboard-read
       clipboard-write
       cross-origin-isolated
@@ -7512,11 +7541,11 @@ domain Page
   # Returns metrics relating to the layouting of the page, such as viewport bounds/scale.
   command getLayoutMetrics
     returns
-      # Deprecated metrics relating to the layout viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssLayoutViewport` instead.
+      # Deprecated metrics relating to the layout viewport. Is in device pixels. Use `cssLayoutViewport` instead.
       deprecated LayoutViewport layoutViewport
-      # Deprecated metrics relating to the visual viewport. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssVisualViewport` instead.
+      # Deprecated metrics relating to the visual viewport. Is in device pixels. Use `cssVisualViewport` instead.
       deprecated VisualViewport visualViewport
-      # Deprecated size of scrollable area. Can be in DP or in CSS pixels depending on the `enable-use-zoom-for-dsf` flag. Use `cssContentSize` instead.
+      # Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
       deprecated DOM.Rect contentSize
       # Metrics relating to the layout viewport in CSS pixels.
       LayoutViewport cssLayoutViewport
@@ -8102,7 +8131,6 @@ domain Page
       JavaScriptExecution
       RendererProcessKilled
       RendererProcessCrashed
-      GrantedMediaStreamAccess
       SchedulerTrackedFeatureUsed
       ConflictingBrowsingInstance
       CacheFlushed

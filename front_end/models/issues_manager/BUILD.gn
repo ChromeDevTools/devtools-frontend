@@ -53,20 +53,13 @@ devtools_module("issues_manager") {
 }
 
 devtools_issue_description_files = [
-  "arAttributionEventSourceTriggerDataTooLarge.md",
   "arAttributionSourceUntrustworthyFrameOrigin.md",
   "arAttributionSourceUntrustworthyOrigin.md",
-  "arAttributionTriggerDataTooLarge.md",
   "arAttributionUntrustworthyFrameOrigin.md",
   "arAttributionUntrustworthyOrigin.md",
-  "arInvalidAttributionData.md",
   "arInvalidAttributionSourceEventId.md",
   "arInvalidAttributionSourceExpiry.md",
   "arInvalidAttributionSourcePriority.md",
-  "arInvalidEventSourceTriggerData.md",
-  "arInvalidTriggerDedupKey.md",
-  "arInvalidTriggerPriority.md",
-  "arMissingAttributionData.md",
   "arPermissionPolicyDisabled.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",
   "clientHintMetaTagModifiedHTML.md",

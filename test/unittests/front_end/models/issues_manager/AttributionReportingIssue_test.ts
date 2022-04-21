@@ -21,21 +21,6 @@ describe('AttributionReportingIssue', () => {
     };
   }
 
-  it('creates different frontend issues for the same InvalidAttributionData protocol issue', () => {
-    const violationType = Protocol.Audits.AttributionReportingIssueType.InvalidAttributionData;
-    const invalidDataDetails = {violationType, invalidParameter: 'NotANumber'};
-    const missingDataDetails = {violationType};
-
-    const invalidDataFrontendIssue =
-        IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, createProtocolIssueWithDetails(invalidDataDetails));
-    const missingDataFrontendIssue =
-        IssuesManager.AttributionReportingIssue.AttributionReportingIssue.fromInspectorIssue(
-            mockModel, createProtocolIssueWithDetails(missingDataDetails));
-
-    assert.notStrictEqual(invalidDataFrontendIssue[0].code(), missingDataFrontendIssue[0].code());
-  });
-
   it('creates different frontend issues for the same AttributionSourceUntrustworthyOrigin protocol issue', () => {
     const violationType = Protocol.Audits.AttributionReportingIssueType.AttributionSourceUntrustworthyOrigin;
     const withFrameDetails = {violationType, frame: {frameId: 'frameId1' as Protocol.Page.FrameId}};

@@ -58,7 +58,7 @@ const UIStrings = {
   /**
   *@description Text in Counters Graph of the Performance panel
   */
-  gpuMemory: 'GPU Memory (Kilobytes)',
+  gpuMemory: 'GPU Memory',
   /**
   *@description Range text content in Counters Graph of the Performance panel
   *@example {2} PH1
@@ -136,10 +136,10 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_ScratchTextures', this._createCounter('Scratch Textures', 'hsl(120, 90%, 43%)', CounterType.SimpleCounter));
     this._countersByName.set('Coherent_SurfacesCounter', this._createCounter('Surface Textures', 'hsl(181, 90%, 43%)', CounterType.SimpleCounter));
     this._countersByName.set('Coherent_ImagesCounter', this._createCounter('Images Textures', 'hsl(304, 900%, 50%)', CounterType.SimpleCounter));
-    this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory (Bytes)', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
-    this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.kilobytesToString);
+    this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
+    this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString);
 
-    this._countersByName.set('gpuMemoryUsedKB', this._gpuMemoryCounter);
+    this._countersByName.set('gpuMemoryUsed', this._gpuMemoryCounter);
 
     this._showMemoryCounters = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this._showSimpleCounters = Common.Settings.Settings.instance().createSetting('timelineCounters', false);

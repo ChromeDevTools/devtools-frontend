@@ -150,8 +150,7 @@ export class CountersGraph extends UI.Widget.VBox {
 
   _onShowCountersChanged(): void {
 
-    for (const counterUI of this._counterUI)
-    {
+    for (const counterUI of this._counterUI) {
       const shouldDisplay =
         (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
         || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
@@ -249,8 +248,7 @@ export class CountersGraph extends UI.Widget.VBox {
         (counter.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
         || (counter.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
 
-      if (shouldDisplay)
-      {
+      if (shouldDisplay) {
         counter._calculateVisibleIndexes(this._calculator);
         counter._calculateXValues(this._canvas.width);
       }
@@ -261,8 +259,7 @@ export class CountersGraph extends UI.Widget.VBox {
         (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
         || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
 
-      if (shouldDisplay)
-      {
+      if (shouldDisplay) {
         counterUI._drawGraph(this._canvas);
       }
     }

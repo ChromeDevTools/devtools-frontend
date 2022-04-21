@@ -245,7 +245,7 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.drawSelection(),
     CM.EditorState.allowMultipleSelections.of(true),
     CM.indentOnInput(),
-    CodeHighlighter.CodeHighlighter.highlightStyle,
+    CM.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle),
     baseKeymap,
     CM.EditorView.clickAddsSelectionRange.of(mouseEvent => mouseEvent.altKey || mouseEvent.ctrlKey),
     tabMovesFocus.instance(),

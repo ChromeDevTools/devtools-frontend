@@ -136,7 +136,7 @@ export class CodeHighlighter {
         pos = to;
       }
     };
-    CodeMirror.highlightTree(this.tree, highlightStyle.match, (from, to, style) => {
+    CodeMirror.highlightTree(this.tree, highlightStyle, (from, to, style) => {
       flush(from, '');
       flush(to, style);
     }, from, to);

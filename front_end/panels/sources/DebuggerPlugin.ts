@@ -962,11 +962,11 @@ export class DebuggerPlugin extends Plugin {
     tree.iterate({
       from: fromPos,
       to: toPos,
-      enter(type, from, to): void {
-        const varName = type.name === 'VariableName' && editorState.sliceDoc(from, to);
+      enter(node): void {
+        const varName = node.name === 'VariableName' && editorState.sliceDoc(node.from, node.to);
         if (varName && variableMap.has(varName)) {
-          if (from > curLine.to) {
-            curLine = editorState.doc.lineAt(from);
+          if (node.from > curLine.to) {
+            curLine = editorState.doc.lineAt(node.from);
           }
           let names = namesPerLine.get(curLine.number - 1);
           if (!names) {

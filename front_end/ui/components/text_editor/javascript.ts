@@ -151,16 +151,16 @@ export function getQueryType(tree: CodeMirror.Tree, pos: number, doc: CodeMirror
   }
   if (node.name === '(') {
     // map.get(<auto-complete>
-    if (parent.name === 'ArgList' && parent.parent.name === 'CallExpression') {
+    if (parent?.name === 'ArgList' && parent?.parent?.name === 'CallExpression') {
       // map.get
-      const callReceiver = parent.parent.firstChild;
-      if (callReceiver.name === 'MemberExpression') {
+      const callReceiver = parent?.parent?.firstChild;
+      if (callReceiver?.name === 'MemberExpression') {
         // get
-        const propertyExpression = callReceiver.lastChild;
-        if (doc.sliceString(propertyExpression.from, propertyExpression.to) === 'get') {
+        const propertyExpression = callReceiver?.lastChild;
+        if (propertyExpression && doc.sliceString(propertyExpression.from, propertyExpression.to) === 'get') {
           // map
-          const potentiallyMapObject = callReceiver.firstChild;
-          return {type: QueryType.PotentiallyRetrievingFromMap, relatedNode: potentiallyMapObject};
+          const potentiallyMapObject = callReceiver?.firstChild;
+          return {type: QueryType.PotentiallyRetrievingFromMap, relatedNode: potentiallyMapObject || undefined};
         }
       }
     }
@@ -212,7 +212,7 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   return {
     from: query.from ?? cx.pos,
     options: result.completions,
-    span: !quote ? SPAN_IDENT : quote === '\'' ? SPAN_SINGLE_QUOTE : SPAN_DOUBLE_QUOTE,
+    validFor: !quote ? SPAN_IDENT : quote === '\'' ? SPAN_SINGLE_QUOTE : SPAN_DOUBLE_QUOTE,
   };
 }
 

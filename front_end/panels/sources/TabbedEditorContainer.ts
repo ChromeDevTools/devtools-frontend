@@ -238,7 +238,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       this.scrollTimer = window.setTimeout(() => this.history.save(this.previouslyViewedFilesSetting), 100);
       if (this.currentFileInternal) {
         const {editor} = this.currentView.textEditor;
-        const topBlock = editor.blockAtHeight(editor.scrollDOM.getBoundingClientRect().top);
+        const topBlock = editor.lineBlockAtHeight(editor.scrollDOM.getBoundingClientRect().top - editor.documentTop);
         const topLine = editor.state.doc.lineAt(topBlock.from).number - 1;
         this.history.updateScrollLineNumber(this.currentFileInternal.url(), topLine);
       }

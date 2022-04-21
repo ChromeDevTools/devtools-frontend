@@ -177,7 +177,7 @@ export class TextEditor extends HTMLElement {
     const editorRect = view.scrollDOM.getBoundingClientRect();
     const targetPos = view.coordsAtPos(selection.main.head);
     if (!targetPos || targetPos.top < editorRect.top || targetPos.bottom > editorRect.bottom) {
-      effects.push(CodeMirror.EditorView.centerOn.of(selection.main));
+      effects.push(CodeMirror.EditorView.scrollIntoView(selection.main, {y: 'center'}));
     }
 
     view.dispatch({

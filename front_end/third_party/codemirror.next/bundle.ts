@@ -4,50 +4,49 @@
 // Note that this file is also used as a TypeScript source to bundle
 // the .d.ts files.
 
-import {StreamLanguage} from '@codemirror/stream-parser';
+import {StreamLanguage} from "@codemirror/language";
 
 export {
-  acceptCompletion, autocompletion, closeCompletion, completeAnyWord,
+  acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap
+, closeCompletion, completeAnyWord,
   Completion, CompletionContext, CompletionResult, CompletionSource, currentCompletions,
-  ifNotIn, selectedCompletion, startCompletion,
-} from '@codemirror/autocomplete';
-export {closeBrackets, closeBracketsKeymap} from '@codemirror/closebrackets';
+  ifNotIn, selectedCompletion, startCompletion} from '@codemirror/autocomplete';
 export {
   cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward,
-  indentLess, indentMore, insertNewlineAndIndent, selectMatchingBracket,
+  history, historyKeymap,
+  indentLess, indentMore, insertNewlineAndIndent, redo, redoSelection, selectMatchingBracket,
   selectSubwordBackward, selectSubwordForward,
-  standardKeymap
+  standardKeymap, toggleComment, undo, undoSelection
 } from '@codemirror/commands';
-export {toggleComment} from '@codemirror/comment';
-export {codeFolding, foldGutter, foldKeymap} from '@codemirror/fold';
-export {gutter, GutterMarker, gutters, lineNumberMarkers,lineNumbers} from '@codemirror/gutter';
-export {HighlightStyle, highlightTree, Tag, tags, TagStyle} from '@codemirror/highlight';
-export {history, historyKeymap, redo, redoSelection, undo, undoSelection} from '@codemirror/history';
 export * as css from '@codemirror/lang-css';
 export * as html from '@codemirror/lang-html';
 export * as javascript from '@codemirror/lang-javascript';
-export {ensureSyntaxTree, indentOnInput, indentUnit,Language, LanguageSupport, syntaxTree} from '@codemirror/language';
-export {bracketMatching} from '@codemirror/matchbrackets';
-export {Panel, showPanel} from '@codemirror/panel';
-export {Range, RangeSet, RangeSetBuilder} from '@codemirror/rangeset';
+export { bracketMatching,
+  codeFolding,
+  ensureSyntaxTree, foldGutter, foldKeymap, HighlightStyle, indentOnInput, indentUnit,Language, LanguageSupport,
+  StreamLanguage, StreamParser, StringStream
+, syntaxHighlighting, syntaxTree, TagStyle} from '@codemirror/language';
+export {} from '@codemirror/rangeset';
 export { highlightSelectionMatches,selectNextOccurrence} from '@codemirror/search';
 export {
   Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,
-  EditorSelection, EditorState, EditorStateConfig, Extension, Facet, MapMode
-, Prec,
-  SelectionRange, StateEffect, StateEffectType, StateField, Transaction,
+  EditorSelection, EditorState, EditorStateConfig, Extension, Facet,
+  Line, MapMode, Prec, Range, RangeSet, RangeSetBuilder,
+  SelectionRange, StateEffect, StateEffectType, StateField, Text, TextIterator
+, Transaction,
   TransactionSpec} from '@codemirror/state';
-export {StreamLanguage, StreamParser, StringStream} from '@codemirror/stream-parser';
-export {Line, Text, TextIterator} from '@codemirror/text';
-export { repositionTooltips,showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
+export {} from '@codemirror/stream-parser';
 export {
   Command, Decoration, DecorationSet, drawSelection, EditorView,
-  highlightSpecialChars, KeyBinding, keymap, MatchDecorator, placeholder,
-  scrollPastEnd, ViewPlugin, ViewUpdate, WidgetType,
-} from '@codemirror/view';
+  gutter, GutterMarker, gutters,
+  highlightSpecialChars, KeyBinding, keymap, lineNumberMarkers,lineNumbers, MatchDecorator, Panel, placeholder,
+  repositionTooltips,
+  scrollPastEnd, showPanel,showTooltip, Tooltip, tooltips, TooltipView
+, ViewPlugin, ViewUpdate, WidgetType} from '@codemirror/view';
 export {
   NodeProp, NodeSet, NodeType, Parser, SyntaxNode, Tree, TreeCursor
 } from '@lezer/common';
+export {highlightTree, Tag, tags} from '@lezer/highlight';
 export {LRParser} from '@lezer/lr';
 export {StyleModule} from 'style-mod';
 

@@ -83,7 +83,7 @@ async function specificCssCompletion(
     return {
       from: node.name === 'ValueName' ? node.from : cx.pos,
       options: propertyValues.map(value => ({type: 'constant', label: value})),
-      span: /^[\w\P{ASCII}\-]+$/u,
+      validFor: /^[\w\P{ASCII}\-]+$/u,
     };
   }
   return null;
@@ -111,12 +111,12 @@ function findColorsAndCurves(
   tree.iterate({
     from,
     to,
-    enter: (type, from, to, node) => {
+    enter: node => {
       let content;
-      if (type.name === 'ValueName' || type.name === 'ColorLiteral') {
-        content = getToken(from, to);
-      } else if (type.name === 'Callee' && /^(?:(?:rgb|hsl)a?|cubic-bezier)$/.test(getToken(from, to))) {
-        content = state.sliceDoc(from, (node().parent as CodeMirror.SyntaxNode).to);
+      if (node.name === 'ValueName' || node.name === 'ColorLiteral') {
+        content = getToken(node.from, node.to);
+      } else if (node.name === 'Callee' && /^(?:(?:rgb|hsl)a?|cubic-bezier)$/.test(getToken(node.from, node.to))) {
+        content = state.sliceDoc(node.from, (node.node.parent as CodeMirror.SyntaxNode).to);
       }
       if (content) {
         const parsedColor = Common.Color.Color.parse(content);

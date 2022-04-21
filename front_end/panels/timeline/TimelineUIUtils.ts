@@ -2620,6 +2620,13 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_IBDestroyed: {
         contentHelper.appendTextRow(UIStrings.IBId, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.VBType, IBTypes[parseInt(event.args['int1'])]);
+      case recordTypes.Coherent_DrawSubLayerWithShaderFilter: {
+        contentHelper.appendTextRow('Node id: ', event.args['int0'])
+        relatedNodeLabel = 'Node: '
+        if (timelineData.backendNodeIds.length > 0)
+        {
+          contentHelper.appendTextRow('Node id: ', event.args['int0'])
+        }
         break;
       }
       // COHERENT END

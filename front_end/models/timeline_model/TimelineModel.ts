@@ -1128,6 +1128,11 @@ export class TimelineModelImpl {
         break;
       }
 
+      case RecordType.Coherent_DrawSubLayerWithShaderFilter: {
+        timelineData.backendNodeIds.push(event.args['int0']);
+        break;
+      }
+
       case RecordType.Task: {
         if (event.duration !== undefined && event.duration > TimelineModelImpl.Thresholds.LongTask) {
           timelineData.warning = TimelineModelImpl.WarningType.LongTask;

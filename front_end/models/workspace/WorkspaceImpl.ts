@@ -259,6 +259,24 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return project ? project.uiSourceCodeForURL(url) : null;
   }
 
+  // This method explicitly awaits the UISourceCode if not yet
+  // available.
+  uiSourceCodeForURLPromise(url: Platform.DevToolsPath.UrlString): Promise<UISourceCode> {
+    const uiSourceCode = this.uiSourceCodeForURL(url);
+    if (uiSourceCode) {
+      return Promise.resolve(uiSourceCode);
+    }
+    return new Promise(resolve => {
+      const descriptor = this.addEventListener(Events.UISourceCodeAdded, event => {
+        const uiSourceCode = event.data;
+        if (uiSourceCode.url() === url) {
+          this.removeEventListener(Events.UISourceCodeAdded, descriptor.listener);
+          resolve(uiSourceCode);
+        }
+      });
+    });
+  }
+
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null {
     for (const project of this.projectsInternal.values()) {
       const uiSourceCode = project.uiSourceCodeForURL(url);

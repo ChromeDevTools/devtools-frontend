@@ -51,6 +51,7 @@ const REGISTERED_EXPERIMENTS = [
   'timelineV8RuntimeCallStats',
   'timelineInvalidationTracking',
   'ignoreListJSFramesOnTimeline',
+  'instrumentationBreakpoints',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

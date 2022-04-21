@@ -6,6 +6,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("sources") {
   sources = [
+    "breakpoint-hit-on-first-load.html",
+    "breakpoint-hit-on-first-load.js",
     "click-breakpoint.html",
     "click-breakpoint.js",
     "csp-blocked-eval.html",
@@ -43,6 +45,7 @@ copy_to_gen("sources") {
     "popover.js",
     "script-with-sourcemap-without-mappings.html",
     "script-with-sourcemap-without-mappings.js",
+    "sourcemap-breakpoint.html",
     "sourcemap-codesplit.html",
     "sourcemap-codesplit1.js",
     "sourcemap-codesplit2.js",

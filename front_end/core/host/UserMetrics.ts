@@ -618,8 +618,9 @@ export enum DevtoolsExperiments {
   'evaluateExpressionsWithSourceMaps' = 58,
   'cssLayers' = 59,
   'eyedropperColorPicker' = 60,
+  'instrumentationBreakpoints' = 61,
   // Increment this when new experiments are added.
-  'MaxValue' = 61,
+  'MaxValue' = 62,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

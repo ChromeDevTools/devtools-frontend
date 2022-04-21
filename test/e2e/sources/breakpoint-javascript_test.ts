@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {$, click, getBrowserAndPages, getPendingEvents, step, waitFor, waitForFunction} from '../../shared/helper.js';
+
+import {$, click, enableExperiment, getBrowserAndPages, getPendingEvents, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, DEBUGGER_PAUSED_EVENT, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, DEBUGGER_PAUSED_EVENT, isEqualOrAbbreviation, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, refreshDevToolsAndRemoveBackendState, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
 
 async function waitForTopCallFrameChanged(previousCallFrame: string, updatedCallFrame: string) {
   await waitForFunction(async () => {
@@ -13,6 +14,14 @@ async function waitForTopCallFrameChanged(previousCallFrame: string, updatedCall
     assert.isTrue(actualTopCallFrame === previousCallFrame || actualTopCallFrame === updatedCallFrame);
     return actualTopCallFrame === updatedCallFrame;
   });
+}
+
+async function assertScriptLocation(expectedLocation: string) {
+  const scriptLocation = await retrieveTopCallFrameWithoutResuming();
+  if (!scriptLocation) {
+    assert.fail('Unable to retrieve script location for call frame');
+  }
+  assert.isTrue(isEqualOrAbbreviation(scriptLocation, expectedLocation));
 }
 
 describe('The Sources Tab', async () => {
@@ -73,4 +82,98 @@ describe('The Sources Tab', async () => {
       await scriptEvaluation;
     });
   });
+
+  it('can hit a breakpoint on the main thread on a fresh DevTools', async () => {
+    await enableExperiment('instrumentationBreakpoints');
+    const {frontend, target} = getBrowserAndPages();
+
+    await step('navigate to a page and open the Sources tab', async () => {
+      await openSourceCodeEditorForFile('breakpoint-hit-on-first-load.js', 'breakpoint-hit-on-first-load.html');
+    });
+
+    await step('add a breakpoint to the beginning of the script', async () => {
+      await addBreakpointForLine(frontend, 1);
+    });
+
+    await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+      await refreshDevToolsAndRemoveBackendState(target);
+    });
+
+    await step('Navigate back to test page', () => {
+      void goToResource('sources/breakpoint-hit-on-first-load.html');
+    });
+
+    await step('wait for pause and check if we stopped at line 1', async () => {
+      await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await assertScriptLocation('breakpoint-hit-on-first-load.js:1');
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+    });
+  });
+
+  it('can hit a breakpoint in an inline script on the main thread on a fresh DevTools', async () => {
+    await enableExperiment('instrumentationBreakpoints');
+    const {frontend, target} = getBrowserAndPages();
+
+    await step('navigate to a page and open the Sources tab', async () => {
+      await openSourceCodeEditorForFile('breakpoint-hit-on-first-load.html', 'breakpoint-hit-on-first-load.html');
+    });
+
+    await step('add a breakpoint to the beginning of the inline script', async () => {
+      await addBreakpointForLine(frontend, 9);
+    });
+
+    await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+      await refreshDevToolsAndRemoveBackendState(target);
+    });
+
+    await step('Navigate back to test page', () => {
+      void goToResource('sources/breakpoint-hit-on-first-load.html');
+    });
+
+    await step('wait for pause and check if we stopped at line 9', async () => {
+      await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await assertScriptLocation('breakpoint-hit-on-first-load.html:9');
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+    });
+  });
+
+  it('can hit a breakpoint in an inline script with sourceURL comment on the main thread on a fresh DevTools',
+     async () => {
+       await enableExperiment('instrumentationBreakpoints');
+       const {frontend, target} = getBrowserAndPages();
+
+       await step('navigate to a page and open the Sources tab', async () => {
+         await openSourceCodeEditorForFile('breakpoint-hit-on-first-load.html', 'breakpoint-hit-on-first-load.html');
+       });
+
+       await step('add a breakpoint to the beginning of the inline script with sourceURL', async () => {
+         await addBreakpointForLine(frontend, 15);
+       });
+
+       await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+         await refreshDevToolsAndRemoveBackendState(target);
+       });
+
+       await step('Navigate back to test page', () => {
+         void goToResource('sources/breakpoint-hit-on-first-load.html');
+       });
+
+       await step('wait for pause and check if we stopped at line 15', async () => {
+         await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+         await waitFor(PAUSE_INDICATOR_SELECTOR);
+         await assertScriptLocation('breakpoint-hit-on-first-load.html:15');
+       });
+
+       await step('Resume', async () => {
+         await click(RESUME_BUTTON);
+       });
+     });
 });

@@ -322,6 +322,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'evaluateExpressionsWithSourceMaps', 'Console: Resolve variable names in expressions using source maps',
         undefined);
+    Root.Runtime.experiments.register('instrumentationBreakpoints', 'Enable instrumentation breakpoints', true);
 
     // Dual-screen
     Root.Runtime.experiments.register(

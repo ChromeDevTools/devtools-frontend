@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {click, getBrowserAndPages, goToResource, pasteText, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
+import {click, enableExperiment, getBrowserAndPages, getPendingEvents, goToResource, pasteText, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, clickOnContextMenu, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_INTO_BUTTON, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, clickOnContextMenu, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_INDICATOR_SELECTOR, refreshDevToolsAndRemoveBackendState, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_INTO_BUTTON, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('sets multiple breakpoints in case of code-splitting', async () => {
@@ -234,6 +234,37 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(await getBreakpointDecorators(), [2]);
     await removeBreakpointForLine(frontend, 2);
     assert.deepEqual(await getBreakpointDecorators(), []);
+  });
+
+  it('reliably hits breakpoints on worker with source map', async () => {
+    await enableExperiment('instrumentationBreakpoints');
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
+
+    await step('Add a breakpoint at first line of function multiline', async () => {
+      await addBreakpointForLine(frontend, 4);
+    });
+
+    await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+      await refreshDevToolsAndRemoveBackendState(target);
+    });
+
+    await step('Navigate back to test page', () => {
+      void goToResource('sources/sourcemap-breakpoint.html');
+    });
+
+    await step('wait for pause and check if we stopped at line 4', async () => {
+      await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await waitForFunction(async () => {
+        const topCallFrame = await retrieveTopCallFrameWithoutResuming();
+        return topCallFrame === 'sourcemap-stepping-source.js:4';
+      });
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+    });
   });
 });
 

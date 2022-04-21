@@ -1277,7 +1277,8 @@ const textureTypes = ['Scratch Texture',
 	                    'Image Texture',
 	                    'Surface Texture',
 	                    'Compositor Texture',
-	                    'Glyph Atlas'];
+	                    'Glyph Atlas',
+                      'Gradient Cache Texture'];
 
 const VBTypes = ['Geometry Buffer',
 	               'Path Buffer',

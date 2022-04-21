@@ -338,15 +338,40 @@ export const getDisplayedStyleRules = async () => {
   const allRuleSelectors = await $$(CSS_STYLE_RULE_SELECTOR);
   const rules = [];
   for (const ruleSelector of allRuleSelectors) {
-    const propertyNames = await getDisplayedCSSPropertyNames(ruleSelector);
+    const propertyData = await getDisplayedCSSPropertyData(ruleSelector);
     const selectorText = await ruleSelector.evaluate(node => {
       const attribute = node.getAttribute('aria-label') || '';
       return attribute.substring(0, attribute.lastIndexOf(', css selector'));
     });
-    rules.push({selectorText, propertyNames});
+    rules.push({selectorText, propertyData});
   }
 
   return rules;
+};
+
+/**
+ * @param propertiesSection - The element containing this properties section.
+ * @returns an array with an entry for each property in the section. Each entry has:
+ * - propertyName: The name of this property.
+ * - isOverloaded: True if this is an inherited properties section, and this property is overloaded by a child node.
+ *                 The property will be shown as crossed out in the style pane.
+ * - isInherited: True if this is an inherited properties section, and this property is a non-inherited CSS property.
+ *                The property will be shown as grayed-out in the style pane.
+ */
+export const getDisplayedCSSPropertyData = async (propertiesSection: puppeteer.ElementHandle<Element>) => {
+  const cssPropertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, propertiesSection);
+  const propertyNamesData =
+      (await Promise.all(cssPropertyNames.map(
+           async node => {
+             return {
+               propertyName: await node.evaluate(n => n.textContent),
+               isOverLoaded: await node.evaluate(n => n.parentElement && n.parentElement.matches('.overloaded')),
+               isInherited: await node.evaluate(n => n.parentElement && n.parentElement.matches('.inherited')),
+             };
+           },
+           )))
+          .filter(c => Boolean(c.propertyName));
+  return propertyNamesData;
 };
 
 export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.ElementHandle<Element>) => {

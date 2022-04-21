@@ -61,7 +61,7 @@ import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 
 import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import {StylePropertiesSection, BlankStylePropertiesSection, KeyframePropertiesSection} from './StylePropertiesSection.js';
+import {StylePropertiesSection, BlankStylePropertiesSection, KeyframePropertiesSection, HighlightPseudoStylePropertiesSection} from './StylePropertiesSection.js';
 import * as LayersWidget from './LayersWidget.js';
 
 const UIStrings = {
@@ -889,7 +889,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         addLayerSeparator(style);
         const lastBlock = blocks[blocks.length - 1];
         this.idleCallbackManager.schedule(() => {
-          const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx);
+          const section = SDK.CSSMetadata.cssMetadata().isHighlightPseudoType(pseudoType) ?
+              new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx) :
+              new StylePropertiesSection(this, matchedStyles, style, sectionIdx);
           sectionIdx++;
           lastBlock.sections.push(section);
         });

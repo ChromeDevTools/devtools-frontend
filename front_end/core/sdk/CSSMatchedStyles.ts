@@ -225,12 +225,16 @@ export class CSSMatchedStyles {
       for (let j = rules.length - 1; j >= 0; --j) {
         const pseudoRule = new CSSStyleRule(this.#cssModelInternal, rules[j].rule);
         pseudoStyles.push(pseudoRule.style);
-        this.#nodeForStyleInternal.set(pseudoRule.style, pseudoElement);
-        if (pseudoElement) {
-          this.addMatchingSelectors(pseudoElement, pseudoRule, rules[j].matchingSelectors);
+        const nodeForStyle =
+            cssMetadata().isHighlightPseudoType(entryPayload.pseudoType) ? this.#nodeInternal : pseudoElement;
+        this.#nodeForStyleInternal.set(pseudoRule.style, nodeForStyle);
+        if (nodeForStyle) {
+          this.addMatchingSelectors(nodeForStyle, pseudoRule, rules[j].matchingSelectors);
         }
       }
-      const nodeCascade = new NodeCascade(this, pseudoStyles, false /* #isInherited */);
+      const isHighlightPseudoCascade = cssMetadata().isHighlightPseudoType(entryPayload.pseudoType);
+      const nodeCascade = new NodeCascade(
+          this, pseudoStyles, false /* #isInherited */, isHighlightPseudoCascade /* #isHighlightPseudoCascade*/);
       pseudoCascades.set(entryPayload.pseudoType, [nodeCascade]);
     }
 
@@ -247,9 +251,12 @@ export class CSSMatchedStyles {
             pseudoStyles.push(pseudoRule.style);
             this.#nodeForStyleInternal.set(pseudoRule.style, parentNode);
             this.#inheritedStyles.add(pseudoRule.style);
+            this.addMatchingSelectors(parentNode, pseudoRule, rules[k].matchingSelectors);
           }
 
-          const nodeCascade = new NodeCascade(this, pseudoStyles, true /* #isInherited */);
+          const isHighlightPseudoCascade = cssMetadata().isHighlightPseudoType(inheritedEntryPayload.pseudoType);
+          const nodeCascade = new NodeCascade(
+              this, pseudoStyles, true /* #isInherited */, isHighlightPseudoCascade /* #isHighlightPseudoCascade*/);
           const cascadeListForPseudoType = pseudoCascades.get(inheritedEntryPayload.pseudoType);
           if (cascadeListForPseudoType) {
             cascadeListForPseudoType.push(nodeCascade);
@@ -262,7 +269,7 @@ export class CSSMatchedStyles {
       }
     }
 
-    // Now that we've build the arrays of NodeCascades each pseudo type, convert them into
+    // Now that we've built the arrays of NodeCascades for each pseudo type, convert them into
     // DOMInheritanceCascades.
     for (const [pseudoType, nodeCascade] of pseudoCascades.entries()) {
       pseudoInheritanceCascades.set(pseudoType, new DOMInheritanceCascade(nodeCascade));
@@ -462,12 +469,16 @@ class NodeCascade {
   #matchedStyles: CSSMatchedStyles;
   readonly styles: CSSStyleDeclaration[];
   readonly #isInherited: boolean;
+  readonly #isHighlightPseudoCascade: boolean;
   readonly propertiesState: Map<CSSProperty, PropertyState>;
   readonly activeProperties: Map<string, CSSProperty>;
-  constructor(matchedStyles: CSSMatchedStyles, styles: CSSStyleDeclaration[], isInherited: boolean) {
+  constructor(
+      matchedStyles: CSSMatchedStyles, styles: CSSStyleDeclaration[], isInherited: boolean,
+      isHighlightPseudoCascade: boolean = false) {
     this.#matchedStyles = matchedStyles;
     this.styles = styles;
     this.#isInherited = isInherited;
+    this.#isHighlightPseudoCascade = isHighlightPseudoCascade;
     this.propertiesState = new Map();
     this.activeProperties = new Map();
   }
@@ -489,7 +500,9 @@ class NodeCascade {
       for (const property of style.allProperties()) {
         // Do not pick non-inherited properties from inherited styles.
         const metadata = cssMetadata();
-        if (this.#isInherited && !metadata.isPropertyInherited(property.name)) {
+
+        // All properties are inherited for highlight pseudos.
+        if (this.#isInherited && !this.#isHighlightPseudoCascade && !metadata.isPropertyInherited(property.name)) {
           continue;
         }
 

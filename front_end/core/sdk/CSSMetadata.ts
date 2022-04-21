@@ -34,6 +34,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Protocol from '../../generated/protocol.js';
 import * as SupportedCSSProperties from '../../generated/SupportedCSSProperties.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
@@ -309,6 +310,20 @@ export class CSSMetadata {
       text = text.replace(/\|/g, '');
     }
     return {text, startColumn, endColumn};
+  }
+
+  isHighlightPseudoType(pseudoType: Protocol.DOM.PseudoType): boolean {
+    // TODO(crbug.com/1164461) Currently devtools-frontend groups all custom highlight
+    // pseudos together in the same pseudo cascade, regardless of highlight name. This means that
+    // the result of displaying "overloaded" highlight styles as crossed-out can produce
+    // misleading results, because properties from highlights with one name can be shown as overloaded by
+    // properties from highlights with another name.
+    // So until that is fixed, don't include custom highlights among the highlight pseudos
+    // for which we apply overloaded property annotations.
+    return (
+        /* pseudoType === Protocol.DOM.PseudoType.Highlight || */ pseudoType === Protocol.DOM.PseudoType.Selection ||
+        pseudoType === Protocol.DOM.PseudoType.TargetText || pseudoType === Protocol.DOM.PseudoType.GrammarError ||
+        pseudoType === Protocol.DOM.PseudoType.SpellingError);
   }
 }
 

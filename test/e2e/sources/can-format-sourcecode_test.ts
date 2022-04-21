@@ -108,8 +108,7 @@ describe('The Sources Tab', async function() {
     ]);
   });
 
-  // Flaky on Windows
-  it.skipOnPlatforms(['win32'], '[crbug.com/1184104]: can add breakpoint for formatted file', async () => {
+  it('can add breakpoint for formatted file', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');

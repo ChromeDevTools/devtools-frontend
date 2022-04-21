@@ -41,7 +41,7 @@ export function platform(): string {
   return _platform;
 }
 
-let _isMac: boolean;
+let _isMac: boolean|undefined;
 
 export function isMac(): boolean {
   if (typeof _isMac === 'undefined') {
@@ -51,7 +51,7 @@ export function isMac(): boolean {
   return _isMac;
 }
 
-let _isWin: boolean;
+let _isWin: boolean|undefined;
 
 export function isWin(): boolean {
   if (typeof _isWin === 'undefined') {
@@ -59,6 +59,15 @@ export function isWin(): boolean {
   }
 
   return _isWin;
+}
+
+// In Chrome Layout tests the imported 'Platform' object is not writable/
+// configurable, which prevents us from monkey-patching 'Platform''s methods.
+// We circumvent this by adding 'setPlatformForTests'.
+export function setPlatformForTests(platform: string): void {
+  _platform = platform;
+  _isMac = undefined;
+  _isWin = undefined;
 }
 
 let _isCustomDevtoolsFrontend: boolean;

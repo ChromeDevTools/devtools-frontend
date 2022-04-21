@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
@@ -217,6 +218,98 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     await targetManager.removeTarget(target);
 
     assert.isFalse(networkPersistenceManager.active());
+  });
+
+  it('translates URLs into raw and encoded paths', async () => {
+    const {networkPersistenceManager} = await setUpHeaderOverrides();
+    let toTest = [
+      {url: 'https://www.example.com/?foo=bar', raw: 'www.example.com/?foo=bar', encoded: 'www.example.com/%3Ffoo=bar'},
+      {
+        url: 'http://www.web.dev/path/page.html#anchor',
+        raw: 'www.web.dev/path/page.html',
+        encoded: 'www.web.dev/path/page.html',
+      },
+      {url: 'http://www.example.com/', raw: 'www.example.com/index.html', encoded: 'www.example.com/index.html'},
+      {
+        url: 'http://www.example.com/?foo=bar/',
+        raw: 'www.example.com/?foo=bar%2F',
+        encoded: 'www.example.com/%3Ffoo=bar%252F',
+      },
+      {
+        url: 'http://www.example.com/?foo=bar?',
+        raw: 'www.example.com/?foo=bar?',
+        encoded: 'www.example.com/%3Ffoo=bar%3F',
+      },
+      {
+        url: 'http://www.example.com/file&$*?.html',
+        raw: 'www.example.com/file&$%2A?.html',
+        encoded: 'www.example.com/file&$%252A%3F.html',
+      },
+      {
+        url: 'localhost:8090/',
+        raw: 'localhost:8090/index.html',
+        encoded: 'localhost:8090/index.html',
+      },
+      {url: 'localhost:8090/lpt1', raw: 'localhost:8090/lpt1', encoded: 'localhost:8090/lpt1'},
+      {
+        url: 'localhost:8090/endswith.',
+        raw: 'localhost:8090/endswith.',
+        encoded: 'localhost:8090/endswith.',
+      },
+    ];
+    if (Host.Platform.isWin()) {
+      toTest = [
+        {
+          url: 'https://www.example.com/?foo=bar',
+          raw: 'www.example.com/%3Ffoo=bar',
+          encoded: 'www.example.com/%253Ffoo=bar',
+        },
+        {
+          url: 'http://www.web.dev/path/page.html#anchor',
+          raw: 'www.web.dev/path/page.html',
+          encoded: 'www.web.dev/path/page.html',
+        },
+        {url: 'http://www.example.com/', raw: 'www.example.com/index.html', encoded: 'www.example.com/index.html'},
+        {
+          url: 'http://www.example.com/?foo=bar/',
+          raw: 'www.example.com/%3Ffoo=bar%2F',
+          encoded: 'www.example.com/%253Ffoo=bar%252F',
+        },
+        {
+          url: 'http://www.example.com/?foo=bar?',
+          raw: 'www.example.com/%3Ffoo=bar%3F',
+          encoded: 'www.example.com/%253Ffoo=bar%253F',
+        },
+        {
+          url: 'http://www.example.com/file&$*?.html',
+          raw: 'www.example.com/file&$%2A%3F.html',
+          encoded: 'www.example.com/file&$%252A%253F.html',
+        },
+        {
+          url: 'localhost:8090/',
+          raw: 'localhost%3A8090/index.html',
+          encoded: 'localhost%253A8090/index.html',
+        },
+        {
+          url: 'localhost:8090/lpt1',
+          raw: 'localhost%3A8090/%6C%70%74%31',
+          encoded: 'localhost%253A8090/%256C%2570%2574%2531',
+        },
+        {
+          url: 'localhost:8090/endswith.',
+          raw: 'localhost%3A8090/endswith%2E',
+          encoded: 'localhost%253A8090/endswith%252E',
+        },
+      ];
+    }
+    toTest.forEach(testStrings => {
+      assert.deepEqual(
+          networkPersistenceManager.rawPathFromUrl(testStrings.url as Platform.DevToolsPath.UrlString),
+          testStrings.raw);
+      assert.deepEqual(
+          networkPersistenceManager.encodedPathFromUrl(testStrings.url as Platform.DevToolsPath.UrlString),
+          testStrings.encoded);
+    });
   });
 });
 

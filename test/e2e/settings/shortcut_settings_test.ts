@@ -187,28 +187,31 @@ describe('Shortcuts Settings tab', async () => {
     assert.deepStrictEqual(shortcutInputsText, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1149346]: should allow users to set a new shortcut after the chord timeout', async () => {
-    const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
+  describe('[slow test]', function() {
+    this.timeout(10000);
 
-    await openSettingsTab('Shortcuts');
-    await editShortcutListItem('Show Console');
+    it('should allow users to set a new shortcut after the chord timeout', async function() {
+      const {frontend} = getBrowserAndPages();
+      await enableExperiment('keyboardShortcutEditor');
 
-    await frontend.keyboard.down('Control');
-    await frontend.keyboard.press('1');
-    await frontend.keyboard.up('Control');
-    await timeout(SHORTCUT_CHORD_TIMEOUT);
-    await frontend.keyboard.down('Control');
-    await frontend.keyboard.press('2');
-    await frontend.keyboard.up('Control');
+      await openSettingsTab('Shortcuts');
+      await editShortcutListItem('Show Console');
 
-    const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_2_SHORTCUT_INPUT_TEXT);
-    await clickShortcutConfirmButton();
-    await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
+      await frontend.keyboard.down('Control');
+      await frontend.keyboard.press('1');
+      await frontend.keyboard.up('Control');
+      await timeout(SHORTCUT_CHORD_TIMEOUT * 1.2);
+      await frontend.keyboard.down('Control');
+      await frontend.keyboard.press('2');
+      await frontend.keyboard.up('Control');
 
-    const shortcuts = await shortcutsForAction('Show Console');
-    assert.deepStrictEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+      const shortcutInputsText = await shortcutInputValues();
+      assert.deepStrictEqual(shortcutInputsText, CONTROL_2_SHORTCUT_INPUT_TEXT);
+      await clickShortcutConfirmButton();
+      await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
+
+      const shortcuts = await shortcutsForAction('Show Console');
+      assert.deepStrictEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+    });
   });
 });

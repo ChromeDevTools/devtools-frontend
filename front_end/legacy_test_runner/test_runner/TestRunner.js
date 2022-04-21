@@ -23,6 +23,7 @@ self.Platform = self.Platform || {};
 self.Platform.StringUtilities = Platform.StringUtilities;
 self.Platform.MapUtilities = Platform.MapUtilities;
 self.Platform.ArrayUtilities = Platform.ArrayUtilities;
+self.Platform.DOMUtilities = Platform.DOMUtilities;
 self.createPlainTextSearchRegex = Platform.StringUtilities.createPlainTextSearchRegex;
 String.sprintf = Platform.StringUtilities.sprintf;
 String.regexSpecialCharacters = Platform.StringUtilities.regexSpecialCharacters;

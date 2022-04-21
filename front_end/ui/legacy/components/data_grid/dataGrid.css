@@ -25,8 +25,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  overflow-x: hidden;
-  overflow-y: overlay;
+  overflow: overlay;
   transform: translateZ(0);
   background-color: var(--color-background);
 }

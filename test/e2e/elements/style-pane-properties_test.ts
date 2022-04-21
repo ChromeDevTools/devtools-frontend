@@ -76,7 +76,8 @@ describe('The Styles pane', async () => {
         'The correct rule is displayed');
   });
 
-  it('can jump to a CSS variable definition', async () => {
+  // Flaky on linux.
+  it.skipOnPlatforms(['linux'], '[crbug.com/1318314]: can jump to a CSS variable definition', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-variables.html');
 
@@ -90,7 +91,8 @@ describe('The Styles pane', async () => {
     await waitForPropertyToHighlight('html', '--title-color');
   });
 
-  it('can jump to an unexpanded CSS variable definition', async () => {
+  // Flaky on linux.
+  it.skipOnPlatforms(['linux'], '[crbug.com/1318314]: can jump to an unexpanded CSS variable definition', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-variables-many.html');
 

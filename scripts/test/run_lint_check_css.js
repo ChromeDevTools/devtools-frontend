@@ -50,6 +50,12 @@ function run() {
     stylelintExecutablePath(), ...getCSSFilesOrGlobList(), '--fix', '--allow-empty-input', ...extraFlagsForStylelint
   ];
   const result = childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd, stdio: 'inherit'});
+  if (result.error) {
+    // If spawnSync returns an error, exit with an error no matter what result.status says.
+    console.error(result.error);
+    process.exit(1);
+    return;
+  }
   process.exit(result.status);
 }
 

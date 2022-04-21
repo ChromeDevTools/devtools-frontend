@@ -218,6 +218,11 @@ function executeTestSuite({
     }
   }
   const result = childProcess.spawnSync(nodePath(), argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd});
+
+  if (result.error) {
+    throw result.error;
+  }
+
   return result.status;
 }
 

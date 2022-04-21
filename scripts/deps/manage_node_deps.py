@@ -66,7 +66,7 @@ DEPS = {
     # This should be match with esbuild in DEPS.
     "esbuild": "0.14.13",
     "escodegen": "2.0.0",
-    "eslint": "8.11.0",
+    "eslint": "8.13.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-lit-a11y": "2.1.0",
     "eslint-plugin-mocha": "10.0.3",

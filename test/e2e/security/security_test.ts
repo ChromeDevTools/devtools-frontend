@@ -24,8 +24,7 @@ describe('The Security Panel', async () => {
     await securityTabExists();
   });
 
-  // Test flaky on Windows
-  it.skipOnPlatforms(['win32'], '[crbug.com/1183304]: can be opened from command menu after being closed', async () => {
+  it('can be opened from command menu after being closed', async () => {
     await closeSecurityTab();
     await openSecurityPanelFromCommandMenu();
   });

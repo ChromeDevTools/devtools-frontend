@@ -10,8 +10,7 @@ import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
 import {addSelectedTextToWatches, createNewSnippet, evaluateSelectedTextInConsole, getWatchExpressionsValues, openSnippetsSubPane, openSourcesPanel, runSnippet} from '../helpers/sources-helpers.js';
 
-// Flaky test
-describe.skip('[crbug.com/1198160]: Snippet creation', () => {
+describe('Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async () => {
     const {frontend} = getBrowserAndPages();
 
@@ -41,9 +40,8 @@ describe.skip('[crbug.com/1198160]: Snippet creation', () => {
   });
 });
 
-// Flaky test (likely further bit-rotted by CM6 transition)
-describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
-  const message = '"Hello"';
+describe('Expression evaluation', () => {
+  const message = '\'Hello\'';
 
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
@@ -52,8 +50,7 @@ describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
     await createNewSnippet('New snippet');
     await typeText(`(x => {debugger})(${message});`);
     await runSnippet();
-
-    const functionParameterElement = await waitFor('.cm-js-def');
+    const functionParameterElement = await waitFor('.token-variable');
     const parameterElementPosition = await functionParameterElement.evaluate(elem => {
       const {x, y, right} = elem.getBoundingClientRect();
       return {x, y, right};
@@ -71,7 +68,7 @@ describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
 
   it('evaluates a selected expression in the console', async () => {
     await evaluateSelectedTextInConsole();
-    // Prevent flakyness by awaiting some time for the text to be evaluated
+    // Prevent flakiness by awaiting some time for the text to be evaluated
     await timeout(200);
     const messages = await getCurrentConsoleMessages();
     assert.deepEqual(messages, [
@@ -82,7 +79,8 @@ describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
   it('adds an expression to watches', async () => {
     await addSelectedTextToWatches();
     const watchExpressions = await getWatchExpressionsValues();
-    assert.deepEqual(watchExpressions, [
+    const cleanWatchExpressions = watchExpressions.map(expression => expression.replace(/["]+/g, '\''));
+    assert.deepEqual(cleanWatchExpressions, [
       message,
     ]);
   });

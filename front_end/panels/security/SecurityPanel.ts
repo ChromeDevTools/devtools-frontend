@@ -111,7 +111,7 @@ const UIStrings = {
   *@description Second part of the body of message to display in devtools security tab when you are viewing a page that triggered a safety tip.
   */
   ifYouBelieveThisIsShownIn:
-      'If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
+      'If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings.',
   /**
   *@description Summary of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
   */
@@ -126,7 +126,7 @@ const UIStrings = {
   *@description second part of body of a warning when the user visits a page that triggered a Safety Tip because the domain looked like another domain.
   */
   ifYouBelieveThisIsShownInErrorSafety:
-      'If you believe this is shown in error please visit https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals.',
+      'If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings.',
   /**
   *@description Title of the devtools security tab when the page you are on triggered a safety tip.
   */

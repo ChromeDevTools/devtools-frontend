@@ -10,7 +10,6 @@ copy_to_gen("console") {
     "big-int.html",
     "built-ins.html",
     "console-filter.html",
-    "cookie-issue.html",
     "cors-issue.html",
     "data-url-exceptions.html",
     "document-write.html",
@@ -33,7 +32,6 @@ copy_to_gen("console") {
     "stack-overflow.html",
     "stack-trace.html",
     "structured-objects.html",
-    "two-cookie-issues.html",
     "uncaught-promise.html",
   ]
 }

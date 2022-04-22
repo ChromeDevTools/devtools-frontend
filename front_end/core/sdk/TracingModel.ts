@@ -311,15 +311,6 @@ export class TracingModel {
     return process && process.threadByName(threadName);
   }
 
-  extractEventsFromThreadByName(processName: string, threadName: string, eventName: string): Event[] {
-    const thread = this.getThreadByName(processName, threadName);
-    if (!thread) {
-      return [];
-    }
-
-    return thread.removeEventsByName(eventName);
-  }
-
   private processPendingAsyncEvents(): void {
     this.#asyncEvents.sort(Event.compareStartTime);
     for (let i = 0; i < this.#asyncEvents.length; ++i) {

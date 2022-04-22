@@ -140,8 +140,7 @@ describeWithLocale('DeprecationIssue', async () => {
   it('does not aggregate translated issues with different types', () => {
     const issues = [
       createDeprecationIssue('', '', Protocol.Audits.DeprecationIssueType.DeprecationExample),
-      // TODO(crbug.com/1264960): Use a real translated type here once one exists.
-      createDeprecationIssue('', '', Protocol.Audits.DeprecationIssueType.Untranslated),
+      createDeprecationIssue('', '', Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert),
     ];
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {

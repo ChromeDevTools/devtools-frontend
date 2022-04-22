@@ -1352,17 +1352,104 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
+  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
+    "message": "Âút̂h́ôŕîźât́îón̂ ẃîĺl̂ ńôt́ b̂é ĉóv̂ér̂éd̂ b́ŷ t́ĥé ŵíl̂d́ĉár̂d́ ŝým̂b́ôĺ (*) îń ĈÓR̂Ś Access-Control-Allow-Headers ĥán̂d́l̂ín̂ǵ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
+    "message": "Ĉóôḱîéŝ ćôńt̂áîńîńĝ á \\(0|r|n) ĉh́âŕâćt̂ér̂ ẃîĺl̂ b́ê ŕêj́êćt̂éd̂ ín̂śt̂éâd́ ôf́ t̂ŕûńĉát̂éd̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
+    "message": "R̂él̂áx̂ín̂ǵ t̂h́ê śâḿê-ór̂íĝín̂ ṕôĺîćŷ b́ŷ śêt́t̂ín̂ǵ document.domain îś d̂ép̂ŕêćât́êd́, âńd̂ ẃîĺl̂ b́ê d́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́. T̂h́îś d̂ép̂ŕêćât́îón̂ ẃâŕn̂ín̂ǵ îś f̂ór̂ á ĉŕôśŝ-ór̂íĝín̂ áĉćêśŝ t́ĥát̂ ẃâś êńâb́l̂éd̂ b́ŷ śêt́t̂ín̂ǵ document.domain."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowAlert": {
+    "message": "T̂ŕîǵĝér̂ín̂ǵ window.alert f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowConfirm": {
+    "message": "T̂ŕîǵĝér̂ín̂ǵ window.confirm f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
+  },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "T̂h́îś îś âń êx́âḿp̂ĺê óf̂ á t̂ŕâńŝĺât́êd́ d̂ép̂ŕêćât́îón̂ íŝśûé m̂éŝśâǵê."
+  },
+  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "R̂él̂áx̂ín̂ǵ t̂h́ê śâḿê-ór̂íĝín̂ ṕôĺîćŷ b́ŷ śêt́t̂ín̂ǵ document.domain îś d̂ép̂ŕêćât́êd́, âńd̂ ẃîĺl̂ b́ê d́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́. T̂ó ĉón̂t́îńûé ûśîńĝ t́ĥíŝ f́êát̂úr̂é, p̂ĺêáŝé ôṕt̂-óût́ ôf́ ôŕîǵîń-k̂éŷéd̂ áĝén̂t́ ĉĺûśt̂ér̂ś b̂ý ŝén̂d́îńĝ án̂ Origin-Agent-Cluster: ?0 h́êád̂ér̂ ál̂ón̂ǵ ŵít̂h́ t̂h́ê H́T̂T́P̂ ŕêśp̂ón̂śê f́ôŕ t̂h́ê d́ôćûḿêńt̂ án̂d́ f̂ŕâḿêś. Ŝéê h́t̂t́p̂ś://d̂év̂él̂óp̂ér̂.ćĥŕôḿê.ćôḿ/b̂ĺôǵ/îḿm̂út̂áb̂ĺê-d́ôćûḿêńt̂-d́ôḿâín̂/ f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Ĉh́êćk̂ t́ĥé f̂éât́ûŕê śt̂át̂úŝ ṕâǵê f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
   },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
+    "message": "getCurrentPosition() âńd̂ watchPosition() ńô ĺôńĝér̂ ẃôŕk̂ ón̂ ín̂śêćûŕê ór̂íĝín̂ś. T̂ó ûśê t́ĥíŝ f́êát̂úr̂é, ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺ/r̂Śt̂T́Ĝź f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() âńd̂ watchPosition() ár̂é d̂ép̂ŕêćât́êd́ ôń îńŝéĉúr̂é ôŕîǵîńŝ. T́ô úŝé t̂h́îś f̂éât́ûŕê, ýôú ŝh́ôúl̂d́ ĉón̂śîd́êŕ ŝẃît́ĉh́îńĝ ýôúr̂ áp̂ṕl̂íĉát̂íôń t̂ó â śêćûŕê ór̂íĝín̂, śûćĥ áŝ H́T̂T́P̂Ś. Ŝéê h́t̂t́p̂ś://ĝóô.ǵl̂/ŕŜt́T̂Ǵẑ f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
+    "message": "getUserMedia() n̂ó l̂ón̂ǵêŕ ŵór̂ḱŝ ón̂ ín̂śêćûŕê ór̂íĝín̂ś. T̂ó ûśê t́ĥíŝ f́êát̂úr̂é, ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺ/r̂Śt̂T́Ĝź f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogCpuOveruseDetection": {
+    "message": "ĈṔÛ óv̂ér̂úŝé d̂ét̂éĉt́îón̂ íŝ én̂áb̂ĺêd́-b̂ý-d̂éf̂áûĺt̂ án̂d́ t̂h́ê áb̂íl̂ít̂ý t̂ó d̂íŝáb̂ĺê ít̂ úŝín̂ǵ googCpuOveruseDetection ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
+    "message": "ÎṔv̂6 íŝ én̂áb̂ĺêd́-b̂ý-d̂éf̂áûĺt̂ án̂d́ t̂h́ê áb̂íl̂ít̂ý t̂ó d̂íŝáb̂ĺê ít̂ úŝín̂ǵ googIPv6 ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogScreencastMinBitrate": {
+    "message": "Ŝćr̂éêńĉáŝt́ m̂ín̂ b́ît́r̂át̂é îś n̂óŵ śêt́ t̂ó 100 k̂b́p̂ś b̂ý d̂éf̂áûĺt̂ án̂d́ googScreencastMinBitrate ŵíl̂ĺ ŝóôń b̂é îǵn̂ór̂éd̂ ín̂ f́âv́ôŕ ôf́ t̂h́îś n̂éŵ d́êf́âúl̂t́. P̂ĺêáŝé ŝt́ôṕ ûśîńĝ t́ĥíŝ ĺêǵâćŷ ćôńŝt́r̂áîńt̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogSuspendBelowMinBitrate": {
+    "message": "Ŝúp̂ṕôŕt̂ f́ôŕ t̂h́ê googSuspendBelowMinBitrate ćôńŝt́r̂áîńt̂ íŝ áb̂óût́ t̂ó b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
+    "message": "ĈŚŜ ćâńn̂ót̂ b́ê ĺôád̂éd̂ f́r̂óm̂ file: ÚR̂Ĺŝ ún̂ĺêśŝ t́ĥéŷ én̂d́ îń â .css f́îĺê éx̂t́êńŝíôń."
+  },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "T̂h́îś ĉh́âńĝé ŵíl̂ĺ ĝó îńt̂ó êf́f̂éĉt́ ŵít̂h́ m̂íl̂éŝt́ôńê {milestone}."
   },
+  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
+    "message": "T̂h́ê Ńôt́îf́îćât́îón̂ ÁP̂Í m̂áŷ ńô ĺôńĝér̂ b́ê úŝéd̂ f́r̂óm̂ ín̂śêćûŕê ór̂íĝín̂ś. Ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺ/r̂Śt̂T́Ĝź f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
+    "message": "Ŷóûŕ p̂ár̂t́n̂ér̂ íŝ ńêǵôt́îát̂ín̂ǵ âń ôb́ŝól̂ét̂é (D̂)T́L̂Ś v̂ér̂śîón̂. Ṕl̂éâśê ćĥéĉḱ ŵít̂h́ ŷóûŕ p̂ár̂t́n̂ér̂ t́ô h́âv́ê t́ĥíŝ f́îx́êd́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
+    "message": "<source src> ŵít̂h́ â <picture> ṕâŕêńt̂ íŝ ín̂v́âĺîd́ âńd̂ t́ĥér̂éf̂ór̂é îǵn̂ór̂éd̂. Ṕl̂éâśê úŝé <source srcset> îńŝt́êád̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | prefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ cancelAnimationFrame îńŝt́êád̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | prefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ requestAnimationFrame îńŝt́êád̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
+    "message": "T̂h́ê ćôńŝt́r̂áîńt̂ DtlsSrtpKeyAgreement íŝ ŕêḿôv́êd́. Ŷóû h́âv́ê śp̂éĉíf̂íêd́ â false v́âĺûé f̂ór̂ t́ĥíŝ ćôńŝt́r̂áîńt̂, ẃĥíĉh́ îś îńt̂ér̂ṕr̂ét̂éd̂ áŝ án̂ át̂t́êḿp̂t́ t̂ó ûśê t́ĥé r̂ém̂óv̂éd̂ SDES ḱêý n̂éĝót̂íât́îón̂ ḿêt́ĥód̂. T́ĥíŝ f́ûńĉt́îón̂ál̂ít̂ý îś r̂ém̂óv̂éd̂; úŝé â śêŕv̂íĉé t̂h́ât́ ŝúp̂ṕôŕt̂ś D̂T́L̂Ś k̂éŷ ńêǵôt́îát̂íôń îńŝt́êád̂."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
+    "message": "T̂h́ê ćôńŝt́r̂áîńt̂ DtlsSrtpKeyAgreement íŝ ŕêḿôv́êd́. Ŷóû h́âv́ê śp̂éĉíf̂íêd́ â true v́âĺûé f̂ór̂ t́ĥíŝ ćôńŝt́r̂áîńt̂, ẃĥíĉh́ ĥád̂ ńô éf̂f́êćt̂, b́ût́ ŷóû ćâń r̂ém̂óv̂é t̂h́îś ĉón̂śt̂ŕâín̂t́ f̂ór̂ t́îd́îńêśŝ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
+    "message": "Ĉóm̂ṕl̂éx̂ Ṕl̂án̂ B́ ŜD́P̂ d́êt́êćt̂éd̂! Ćĥŕôḿê ẃîĺl̂ śŵít̂ćĥ t́ĥé d̂éf̂áûĺt̂ sdpSemantics f́r̂óm̂ plan-b t́ô t́ĥé ŝt́âńd̂ár̂d́îźêd́ unified-plan f̂ór̂ḿât́ âńd̂ t́ĥíŝ ṕêér̂ ćôńn̂éĉt́îón̂ íŝ ŕêĺŷín̂ǵ ôń t̂h́ê d́êf́âúl̂t́ sdpSemantics. T̂h́îś ŜD́P̂ íŝ ńôt́ ĉóm̂ṕât́îb́l̂é ŵít̂h́ Ûńîf́îéd̂ Ṕl̂án̂ án̂d́ ŵíl̂ĺ b̂é r̂éĵéĉt́êd́ b̂ý ĉĺîén̂t́ŝ éx̂ṕêćt̂ín̂ǵ Ûńîf́îéd̂ Ṕl̂án̂. F́ôŕ m̂ór̂é îńf̂ór̂ḿât́îón̂ áb̂óût́ ĥóŵ t́ô ṕr̂ép̂ár̂é f̂ór̂ t́ĥé ŝẃît́ĉh́, ŝéê h́t̂t́p̂ś://ŵéb̂ŕt̂ć.ôŕĝ/ẃêb́-âṕîś/ĉh́r̂óm̂é/ûńîf́îéd̂-ṕl̂án̂/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionLegacyCreateWithMediaConstraints": {
+    "message": "T̂h́ê mediaConstraints v́êŕŝíôń ôf́ RTCOfferOptions/RTCAnswerOptions âŕê d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂, ṕl̂éâśê ḿîǵr̂át̂é t̂ó t̂h́ê ṕr̂óm̂íŝé-b̂áŝéd̂ createOffer/createAnswer ín̂śt̂éâd́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
+    "message": "R̂T́P̂ d́ât́â ćĥán̂ńêĺŝ ár̂é n̂ó l̂ón̂ǵêŕ ŝúp̂ṕôŕt̂éd̂. T́ĥé RtpDataChannels ĉón̂śt̂ŕâín̂t́ îś ĉúr̂ŕêńt̂ĺŷ íĝńôŕêd́, âńd̂ ḿâý ĉáûśê án̂ ér̂ŕôŕ ât́ â ĺât́êŕ d̂át̂é."
+  },
+  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂. Śêé ĥt́t̂ṕŝ://d́êv́êĺôṕêŕ.ĉh́r̂óm̂é.ĉóm̂/b́l̂óĝ/én̂áb̂ĺîńĝ-śĥár̂éd̂-ár̂ŕâý-b̂úf̂f́êŕ/ f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "D̂ép̂ŕêćât́êd́ F̂éât́ûŕê Úŝéd̂"
+  },
+  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Êx́t̂én̂śîón̂ś ŝh́ôúl̂d́ ôṕt̂ ín̂t́ô ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂ t́ô ćôńt̂ín̂úê úŝín̂ǵ SharedArrayBuffer. Ŝéê h́t̂t́p̂ś://d̂év̂él̂óp̂ér̂.ćĥŕôḿê.ćôḿ/d̂óĉś/êx́t̂én̂śîón̂ś/m̂v́3/ĉŕôśŝ-ór̂íĝín̂-íŝól̂át̂íôń/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | webCodecsVideoFrameDefaultTimestamp": {
+    "message": "Ĉón̂śt̂ŕûćt̂ín̂ǵ â VideoFrame ẃît́ĥóût́ â t́îḿêśt̂ám̂ṕ îś d̂ép̂ŕêćât́êd́ âńd̂ śûṕp̂ór̂t́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê ṕr̂óv̂íd̂é â t́îḿêśt̂ám̂ṕ v̂íâ VideoFrameInit."
+  },
+  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
+    "message": "ÛT́F̂-16 íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ b́ŷ ŕêśp̂ón̂śê j́ŝón̂ ín̂ XMLHttpRequest"
+  },
+  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Ŝýn̂ćĥŕôńôúŝ XMLHttpRequest ón̂ t́ĥé m̂áîń t̂h́r̂éâd́ îś d̂ép̂ŕêćât́êd́ b̂éĉáûśê óf̂ ít̂ś d̂ét̂ŕîḿêńt̂ál̂ éf̂f́êćt̂ś t̂ó t̂h́ê én̂d́ ûśêŕ'ŝ éx̂ṕêŕîén̂ćê. F́ôŕ m̂ór̂é ĥél̂ṕ, ĉh́êćk̂ h́t̂t́p̂ś://x̂h́r̂.śp̂éĉ.ẃĥát̂ẃĝ.ór̂ǵ/."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "F̂éd̂ér̂át̂éd̂ Ćr̂éd̂én̂t́îál̂ Ḿâńâǵêḿêńt̂ ÁP̂Í"

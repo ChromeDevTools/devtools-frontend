@@ -652,7 +652,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.evaluateOnCallFrameCallback = callback;
   }
 
-  setSynchronizeBreakpointsCallback(callback: (script: Script) => Promise<void>): void {
+  setSynchronizeBreakpointsCallback(callback: ((script: Script) => Promise<void>)|null): void {
     this.#synchronizeBreakpointsCallback = callback;
   }
 

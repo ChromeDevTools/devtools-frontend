@@ -206,6 +206,11 @@ export class ExperimentsSupport {
     this.#enabledTransiently.add(experimentName);
   }
 
+  disableForTest(experimentName: string): void {
+    this.checkExperiment(experimentName);
+    this.#enabledTransiently.delete(experimentName);
+  }
+
   clearForTest(): void {
     this.#experiments = [];
     this.#experimentNames.clear();

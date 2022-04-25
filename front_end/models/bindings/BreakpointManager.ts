@@ -100,11 +100,12 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
-      debuggerModel.setSynchronizeBreakpointsCallback(this.#restoreBreakpointsForScript.bind(this));
+      debuggerModel.setSynchronizeBreakpointsCallback(this.restoreBreakpointsForScript.bind(this));
     }
   }
 
-  modelRemoved(): void {
+  modelRemoved(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
+    debuggerModel.setSynchronizeBreakpointsCallback(null);
   }
 
   async copyBreakpoints(fromURL: Platform.DevToolsPath.UrlString, toSourceCode: Workspace.UISourceCode.UISourceCode):
@@ -117,7 +118,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   // This method explicitly awaits the source map (if necessary) and the uiSourceCodes
   // required to set all breakpoints that are related to this script.
-  async #restoreBreakpointsForScript(script: SDK.Script.Script): Promise<void> {
+  async restoreBreakpointsForScript(script: SDK.Script.Script): Promise<void> {
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       return;
     }
@@ -416,6 +417,10 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     modelBreakpoint.removeEventListeners();
   }
 
+  modelBreakpoint(debuggerModel: SDK.DebuggerModel.DebuggerModel): ModelBreakpoint|undefined {
+    return this.#modelBreakpoints.get(debuggerModel);
+  }
+
   addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     if (!this.uiSourceCodes.has(uiSourceCode)) {
       this.uiSourceCodes.add(uiSourceCode);
@@ -624,6 +629,10 @@ export class ModelBreakpoint {
     if (this.#debuggerModel.debuggerEnabled()) {
       void this.scheduleUpdateInDebugger();
     }
+  }
+
+  get currentState(): Breakpoint.State|null {
+    return this.#currentState;
   }
 
   resetLocations(): void {

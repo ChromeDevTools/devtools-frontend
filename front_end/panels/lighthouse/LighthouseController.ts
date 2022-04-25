@@ -113,17 +113,29 @@ const UIStrings = {
    */
   runLighthouseInMode: 'Run Lighthouse in navigation, timespan, or snapshot mode',
   /**
-   * @description Label of a radio option for a Lighthouse mode that audits a page navigation.
+   * @description Label of a radio option for a Lighthouse mode that audits a page navigation. This should be marked as the default radio option.
    */
-  navigation: 'Navigation',
+  navigation: 'Navigation (Default)',
+  /**
+   * @description Tooltip description of a radio option for a Lighthouse mode that audits a page navigation.
+   */
+  navigationTooltip: 'Navigation mode analyzes a page load, exactly like the original Lighthouse reports.',
   /**
    * @description Label of a radio option for a Lighthouse mode that audits user interactions over a period of time.
    */
   timespan: 'Timespan',
   /**
+   * @description Tooltip description of a radio option for a Lighthouse mode that audits user interactions over a period of time.
+   */
+  timespanTooltip: 'Timespan mode analyzes an arbitrary period of time, typically containing user interactions.',
+  /**
    * @description Label of a radio option for a Lighthouse mode that audits the current page state.
    */
   snapshot: 'Snapshot',
+  /**
+   * @description Tooltip description of a radio option for a Lighthouse mode that audits the current page state.
+   */
+  snapshotTooltip: 'Snapshot mode analyzes the page in a particular state, typically after user interactions.',
   /**
   *@description Text for the mobile platform, as opposed to desktop
   */
@@ -364,6 +376,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     this.dispatchEventToListeners(Events.PageAuditabilityChanged, {helpText});
 
     void this.hasImportantResourcesNotCleared().then(warning => {
+      if (this.getFlags().mode !== 'navigation') {
+        warning = '';
+      }
       this.dispatchEventToListeners(Events.PageWarningsChanged, {warning});
     });
   }
@@ -456,11 +471,23 @@ export const RuntimeSettings: RuntimeSetting[] = [
       flags.mode = value;
     },
     options: [
-      {label: i18nLazyString(UIStrings.navigation), value: 'navigation'},
-      {label: i18nLazyString(UIStrings.timespan), value: 'timespan'},
-      {label: i18nLazyString(UIStrings.snapshot), value: 'snapshot'},
+      {
+        label: i18nLazyString(UIStrings.navigation),
+        tooltip: i18nLazyString(UIStrings.navigationTooltip),
+        value: 'navigation',
+      },
+      {
+        label: i18nLazyString(UIStrings.timespan),
+        tooltip: i18nLazyString(UIStrings.timespanTooltip),
+        value: 'timespan',
+      },
+      {
+        label: i18nLazyString(UIStrings.snapshot),
+        tooltip: i18nLazyString(UIStrings.snapshotTooltip),
+        value: 'snapshot',
+      },
     ],
-    learnMore: undefined,
+    learnMore: 'https://web.dev/lighthouse-user-flows/',
   },
   {
     // This setting is disabled, but we keep it around to show in the UI.
@@ -545,7 +572,11 @@ export interface RuntimeSetting {
   setting: Common.Settings.Setting<string|boolean>;
   description: () => Common.UIString.LocalizedString;
   setFlags: (flags: Flags, value: string|boolean) => void;
-  options?: {label: () => Common.UIString.LocalizedString, value: string}[];
+  options?: {
+    label: () => Common.UIString.LocalizedString,
+    value: string,
+    tooltip?: () => Common.UIString.LocalizedString,
+  }[];
   title?: () => Common.UIString.LocalizedString;
   learnMore?: string;
 }

@@ -5934,7 +5934,10 @@
     "message": "M̂úl̂t́îṕl̂é t̂áb̂ś âŕê b́êín̂ǵ ĉón̂t́r̂ól̂ĺêd́ b̂ý t̂h́ê śâḿê service worker. Ćl̂óŝé ŷóûŕ ôt́ĥér̂ t́âb́ŝ ón̂ t́ĥé ŝám̂é ôŕîǵîń t̂ó âúd̂ít̂ t́ĥíŝ ṕâǵê."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "N̂áv̂íĝát̂íôń"
+    "message": "N̂áv̂íĝát̂íôń (D̂éf̂áûĺt̂)"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
+    "message": "N̂áv̂íĝát̂íôń m̂ód̂é âńâĺŷźêś â ṕâǵê ĺôád̂, éx̂áĉt́l̂ý l̂ík̂é t̂h́ê ór̂íĝín̂ál̂ Ĺîǵĥt́ĥóûśê ŕêṕôŕt̂ś."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "P̂ér̂f́ôŕm̂án̂ćê"
@@ -5963,6 +5966,9 @@
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Ŝńâṕŝh́ôt́"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
+    "message": "Ŝńâṕŝh́ôt́ m̂ód̂é âńâĺŷźêś t̂h́ê ṕâǵê ín̂ á p̂ár̂t́îćûĺâŕ ŝt́ât́ê, t́ŷṕîćâĺl̂ý âf́t̂ér̂ úŝér̂ ín̂t́êŕâćt̂íôńŝ."
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥéŝé l̂óĉát̂íôńŝ: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
   },
@@ -5971,6 +5977,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "T̂ím̂éŝṕâń"
+  },
+  "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
+    "message": "T̂ím̂éŝṕâń m̂ód̂é âńâĺŷźêś âń âŕb̂ít̂ŕâŕŷ ṕêŕîód̂ óf̂ t́îḿê, t́ŷṕîćâĺl̂ý ĉón̂t́âín̂ín̂ǵ ûśêŕ îńt̂ér̂áĉt́îón̂ś."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Âńâĺŷźê t́ĥé p̂áĝé ûśîńĝ ćl̂áŝśîć L̂íĝh́t̂h́ôúŝé ŵh́êń îń n̂áv̂íĝát̂íôń m̂ód̂é."
@@ -6033,13 +6042,22 @@
     "message": "L̂éâŕn̂ ḿôŕê"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Âńâĺŷźê ńâv́îǵât́îón̂"
+    "message": "Âńâĺŷźê ṕâǵê ĺôád̂"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Âńâĺŷźê śn̂áp̂śĥót̂"
+    "message": "Âńâĺŷźê ṕâǵê śt̂át̂é"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
+    "message": "Ĉát̂éĝór̂íêś"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
+    "message": "Ĝén̂ér̂át̂é â Ĺîǵĥt́ĥóûśê ŕêṕôŕt̂"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "M̂ód̂é"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+    "message": "P̂ĺûǵîńŝ"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Ŝt́âŕt̂ t́îḿêśp̂án̂"

@@ -5934,7 +5934,10 @@
     "message": "Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation"
+    "message": "Navigation (Default)"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
+    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performance"
@@ -5963,6 +5966,9 @@
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Snapshot"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
+    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
   },
@@ -5971,6 +5977,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Timespan"
+  },
+  "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
+    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Analyze the page using classic Lighthouse when in navigation mode."
@@ -6033,13 +6042,22 @@
     "message": "Learn more"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze navigation"
+    "message": "Analyze page load"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze snapshot"
+    "message": "Analyze page state"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
+    "message": "Categories"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
+    "message": "Generate a Lighthouse report"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+    "message": "Plugins"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Start timespan"

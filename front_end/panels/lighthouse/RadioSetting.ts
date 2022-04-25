@@ -5,16 +5,20 @@
 import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+interface RadioOption {
+  value: string;
+  label: () => Common.UIString.LocalizedString;
+  tooltip?: () => Common.UIString.LocalizedString;
+}
+
 export class RadioSetting {
   private readonly setting: Common.Settings.Setting<string>;
-  private options: {value: string, label: () => Common.UIString.LocalizedString}[];
+  private options: RadioOption[];
   element: HTMLDivElement;
   private radioElements: HTMLInputElement[];
   private ignoreChangeEvents: boolean;
   private selectedIndex: number;
-  constructor(
-      options: {value: string, label: () => Common.UIString.LocalizedString}[],
-      setting: Common.Settings.Setting<string>, description: string) {
+  constructor(options: RadioOption[], setting: Common.Settings.Setting<string>, description: string) {
     this.setting = setting;
     this.options = options;
 
@@ -32,9 +36,11 @@ export class RadioSetting {
   `;
 
       this.element.appendChild(fragment.element());
+
+      const tooltip = option.tooltip?.() || description;
       if (description) {
-        UI.Tooltip.Tooltip.install(fragment.$('input') as HTMLElement, description);
-        UI.Tooltip.Tooltip.install(fragment.$('span') as HTMLElement, description);
+        UI.Tooltip.Tooltip.install(fragment.$('input') as HTMLElement, tooltip);
+        UI.Tooltip.Tooltip.install(fragment.$('span') as HTMLElement, tooltip);
       }
       const radioElement = fragment.$('input') as HTMLInputElement;
       radioElement.addEventListener('change', this.valueChanged.bind(this));

@@ -572,6 +572,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
         valueStyle = 'number';
         break;
       case 'hidden':
+      case 'object shape':
         valueStyle = 'null';
         break;
       case 'array':

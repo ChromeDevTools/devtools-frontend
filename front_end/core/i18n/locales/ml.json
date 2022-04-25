@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site, Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "അവസാനിപ്പിക്കലുമായി ബന്ധപ്പെട്ട പ്രശ്നത്തിന്റെ വിവർത്തനം ചെയ്ത സന്ദേശത്തിനുള്ള ഉദാഹരണമാണിത്."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "അവസാനിപ്പിച്ച ഫീച്ചർ ഉപയോഗിച്ചു"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "പേജ് ബാക്ക്/ഫോർവേഡ് കാഷെയിലായിരുന്നപ്പോൾ സർവീസ് വർക്കർ സജീവമാക്കി."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ഡോക്യുമെന്റ് പിശക് കാരണം ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ഉപയോഗിക്കുന്ന പേജുകൾ bfcache-യിൽ സംഭരിക്കാനാകില്ല."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "മറ്റൊരു പേജ് കാഷെ ചെയ്യാൻ അനുവദിക്കുന്നതിന്, കാഷെ ചെയ്യുന്നതിൽ നിന്ന് ഈ പേജ് ഒഴിവാക്കി."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ഈ കാരണങ്ങൾ നടപടിയെടുക്കാനാവുന്നവയല്ല, അതായത് പേജിന് നേരിട്ടുള്ള നിയന്ത്രണത്തിന് പുറത്തുള്ള കാരണങ്ങളാലാണ് കാഷെ ചെയ്യൽ തടഞ്ഞിരിക്കുന്നത്."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ഫ്രെയിം}other{# ഫ്രെയിമുകൾ}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ഫ്രെയിമുകൾ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# ഫ്രെയിമിൽ}other{# ഫ്രെയിമുകളിൽ}} {x,plural, =1{# പ്രശ്നം}other{# പ്രശ്നങ്ങൾ}} കണ്ടെത്തി."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "കൂടുതലറിയുക: ബാക്ക്/ഫോർവേഡ് കാഷെ യോഗ്യത"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ബൈനറി ഡാറ്റ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "പകർത്തുക"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "നിലവിലെ ഫയലിലെ എല്ലാ മാറ്റങ്ങളും പകർത്തുക"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "മാറ്റങ്ങളൊന്നുമില്ല"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "എല്ലാ ലെവലുകളും"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ചരിത്രത്തിൽ നിന്ന് സ്വയമേവ പൂർത്തിയാക്കുക"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "കൺസോൾ മായ്‌ച്ചു"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ലോഗ് ലെവലുകൾ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests ലോഗ് ചെയ്യൽ"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "നിലവിലെ സന്ദർഭത്തിൽ നിന്നുള്ള സന്ദേശങ്ങൾ മാത്രം കാണിക്കുക (top, iframe, worker, വിപുലീകരണം)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "കൺസോളിൽ CORS പിശകുകൾ കാണിക്കുക"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "മൂല്യനിർണ്ണയത്തെ ഉപയോക്തൃ സജീവമാക്കലായി കണക്കാക്കുക"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "വെർബോസ്"
@@ -4005,7 +4041,7 @@
     "message": "ടൈംസ്റ്റാമ്പുകൾ മറയ്ക്കുക"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "ലോഗ് XMLHttpRequests"
+    "message": "XMLHttpRequests ലോഗ് ചെയ്യൽ"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "നിലവിലെ സന്ദർഭത്തിൽ നിന്നുള്ള സന്ദേശങ്ങൾ മാത്രം കാണിക്കുക (top, iframe, worker, വിപുലീകരണം)"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "അൺചെക്ക് ചെയ്തിരിക്കുമ്പോൾ, ശൂന്യം അല്ലാത്തതും നിർവചിച്ചിട്ടുള്ളതുമായ മൂല്യങ്ങളുള്ള പ്രോപ്പർട്ടികൾ മാത്രമേ കാണിക്കൂ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "കൺസ്ട്രക്ട് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "എല്ലാ പ്രസ്താവനകളും പകർത്തുക"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "നയം പകർത്തുക"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector പകർത്തുക"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS സെലക്‌ടർ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ഇഞ്ചക്റ്റ് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "ചുവടെ സ്റ്റൈൽ റൂൾ ചേർക്കുക"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ആട്രിബ്യൂട്ടുകളുടെ സ്റ്റൈൽ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "എല്ലാ പ്രോപ്പർട്ടികളും കാണിക്കുക ({PH1} എണ്ണം കൂടി കാണിക്കുക)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style ആട്രിബ്യൂട്ട്"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ഉപയോക്തൃ ഏജന്റ് സ്റ്റൈൽ ഷീറ്റ്"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ഇൻസ്‌പെക്‌ടർ വഴി"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "എല്ലാ പ്രസ്‌താവനകളും JS ആയി പകർത്തുക"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "കണക്കാക്കിയ മൂല്യം കാണുക"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "സ്വയമേവയുള്ള ഡാർക്ക് മോഡ്"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "ലെയർ ട്രീയിലെ ലെയർ കാണിക്കാൻ ക്ലിക്ക് ചെയ്യുക"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "കൺസ്ട്രക്ട് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "എല്ലാ പ്രസ്താവനകളും പകർത്തുക"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "നയം പകർത്തുക"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector പകർത്തുക"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS പ്രോപ്പർട്ടി നാമം: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS പ്രോപ്പർട്ടി മൂല്യം: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS സെലക്‌ടർ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ഫിൽട്ടർ ചെയ്യുക"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "മൗസ് വീൽ അല്ലെങ്കിൽ Up/Down കീകൾ ഉപയോഗിച്ച് വർദ്ധിപ്പിക്കുക അല്ലെങ്കിൽ കുറയ്ക്കുക. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Inherited from ::{PH1} pseudo of "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "ഇതിൽ നിന്ന് പാരമ്പര്യമായി നേടിയത് "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ഇഞ്ചക്റ്റ് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "ചുവടെ സ്റ്റൈൽ റൂൾ ചേർക്കുക"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "പ്രോപ്പർട്ടി മൂല്യം അസാധുവാണ്"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} എലമെന്റ്"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ആട്രിബ്യൂട്ടുകളുടെ സ്റ്റൈൽ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "എല്ലാ പ്രോപ്പർട്ടികളും കാണിക്കുക ({PH1} എണ്ണം കൂടി കാണിക്കുക)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style ആട്രിബ്യൂട്ട്"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "കോമൺ റെൻഡറിംഗ് എമുലേഷനുകൾ ടോഗിൾ ചെയ്യുക"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "പ്രോപ്പർട്ടി നാമം അജ്ഞാതമാണ്"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ഉപയോക്തൃ ഏജന്റ് സ്റ്റൈൽ ഷീറ്റ്"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ഇൻസ്‌പെക്‌ടർ വഴി"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "അവഗണിച്ചു"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ഫിൽട്ടർ ചെയ്യുക"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "മെനു"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials ഹെഡ്ഡർ മൂല്യം"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "ഇഷ്ടാനുസൃത ഉപയോക്തൃ-ഏജന്‍റ് നൽകുക"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "നെറ്റ്‌വർക്ക് അവസ്ഥകൾ കാണിക്കുന്നു"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "നെറ്റ്‌വർക്ക് ത്രോട്ടിലിംഗ്"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "പൊതുവായവ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ഹെഡ്ഡർ ഓവർറൈഡുകൾ"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"

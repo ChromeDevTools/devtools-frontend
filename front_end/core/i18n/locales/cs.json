@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site a Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Toto je příklad přeložené zprávy o problému s ukončením podpory."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Byla použita zastaralá funkce"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "V době, kdy stránka byla v mezipaměti pro přechod zpět nebo vpřed, byl aktivován skript service worker."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována kvůli chybě dokumentu."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Stránky se snímky FencedFrames nelze ukládat do mezipaměti bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Stránka byla z mezipaměti odstraněna, aby do ní bylo možné uložit jinou stránku."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Tyto důvody nelze vyřešit – tj. uložení do mezipaměti zabránilo něco, co stránka nemá přímo pod kontrolou."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# snímek}few{# snímky}many{# snímku}other{# snímků}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Snímky"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problém}few{# problémy}many{# problému}other{# problémů}} v {y,plural, =1{# snímku}few{# snímcích}many{# snímku}other{# snímcích}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Další informace: Použití mezipaměti pro přechod zpět nebo vpřed"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binární data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopírovat"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Zkopírovat všechny změny ze současného souboru"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Beze změn"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Všechny úrovně"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatické doplnění z historie"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzole byla vymazána"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Úrovně protokolu"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Protokolovat XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Zobrazit zprávy jen z aktuálního kontextu (top, iframe, worker, rozšíření)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Zobrazovat v konzoli chyby CORS"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Zacházet s vyhodnocením jako s aktivací uživatele"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Podrobné"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Po zrušení zaškrtnutí se budou zobrazovat pouze vlastnosti, které nemají hodnotu null a jsou definovány"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "sestavená šablona stylů"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Zkopírovat všechny změny CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopírovat všechny deklarace"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopírovat pravidlo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopírovat selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selektor CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "vložená šablona stylů"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Vložit pravidlo stylu níže"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[styl atributů]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Zobrazit všechny vlastnosti (ještě {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style atribut"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "šablona stylů user-agenta"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "prostřednictvím inspektoru"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Zkopírovat všechny změny CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Zkopírovat všechny deklarace jako JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Zobrazit vypočítanou hodnotu"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatický tmavý režim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kliknutím odhalíte vrstvu ve stromu vrstev"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "sestavená šablona stylů"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Zkopírováno do schránky"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Zkopírovat všechny změny stylů CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopírovat všechny deklarace"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopírovat pravidlo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopírovat selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Název vlastnosti CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Hodnota vlastnosti CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selektor CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrovat"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Zvýšení/snížení pomocí kolečka myši či kláves nahoru/dolů. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Zděděno z ::{PH1} pseudo "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Zděděno z "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "vložená šablona stylů"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Vložit pravidlo stylu níže"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Neplatná hodnota vlastnosti"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoprvek ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[styl atributů]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Zobrazit všechny vlastnosti (ještě {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style atribut"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Přepnout emulace běžného vykreslování"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Neznámý název vlastnosti"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "šablona stylů user-agenta"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "prostřednictvím inspektoru"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorováno"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrovat"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Nabídka"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Hodnota záhlaví Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Zadejte vlastní prvek user-agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Zobrazují se síťové podmínky"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Omezení sítě"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Obecné"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Přepsání záhlaví"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Další informace"

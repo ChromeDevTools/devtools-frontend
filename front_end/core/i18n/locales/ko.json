@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site 및 Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "지원 중단 문제 메시지의 예시 번역문입니다."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "지원 중단된 기능이 사용됨"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "페이지가 뒤로-앞으로 캐시에 저장된 상태에서 서비스 워커가 활성화되었습니다."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "문서 오류로 인해 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrame을 사용하는 페이지는 bfcache에 저장할 수 없습니다."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "다른 페이지를 캐시하기 위해 페이지가 캐시에서 삭제되었습니다."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "이러한 이유는 조치 가능하지 않습니다. 즉, 페이지의 직접 제어가 아닌 다른 요인으로 인하여 캐싱이 차단되었습니다."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{프레임 #개}other{프레임 #개}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "프레임"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{프레임 #개}other{프레임 #개}}에서 {x,plural, =1{문제 #개}other{문제 #개}}를 발견했습니다."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "자세히 알아보기: 뒤로-앞으로 캐시 사용 조건"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "바이너리 데이터"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "복사"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "현재 파일에서 모든 변경사항 복사"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "변경사항 없음"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "모든 수준"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "기록에서 자동 완성"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "콘솔 삭제됨"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "로그 수준"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequest 기록"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "현재 컨텍스트에서 가져온 메시지만 표시합니다(top, iframe, worker, 확장 프로그램)."
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "콘솔에 CORS 오류 표시"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "평가를 사용자 활성화로 취급"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "상세"
@@ -4005,7 +4041,7 @@
     "message": "타임스탬프 숨기기"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "XMLHttpRequests 로그"
+    "message": "XMLHttpRequest 기록"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "현재 컨텍스트에서 가져온 메시지만 표시합니다(top, iframe, worker, 확장 프로그램)."
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "선택 해제할 경우 값이 비어 있지 않고 정의된 속성만 표시됩니다."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "구성된 스타일시트"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "모든 CSS 변경사항 복사"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "모든 선언 복사"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "규칙 복사"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector 복사"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS 선택기"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "삽입된 스타일시트"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "아래에 스타일 규칙 삽입"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[속성 스타일]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "모든 속성 표시(추가 {PH1}개)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style 속성"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "사용자 에이전트 스타일시트"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "검사기를 통해"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "모든 CSS 변경사항 복사"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "모든 선언을 JS로 복사"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "계산된 값 보기"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "자동 어두운 모드"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "클릭하여 레이어 트리에서 레이어를 표시합니다."
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "구성된 스타일시트"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "클립보드에 복사됨"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "모든 CSS 변경사항 복사"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "모든 선언 복사"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "규칙 복사"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector 복사"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS 속성 이름: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS 속성값: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS 선택기"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "필터"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "마우스 휠 또는 위/아래 키로 늘리거나 줄입니다. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "의사 ::{PH1}에서 상속됨 "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "상속 위치: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "삽입된 스타일시트"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "아래에 스타일 규칙 삽입"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "잘못된 속성 값"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "의사 ::{PH1} 요소"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[속성 스타일]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "모든 속성 표시(추가 {PH1}개)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style 속성"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "일반 렌더링 에뮬레이션 전환"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "알 수 없는 속성 이름"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "사용자 에이전트 스타일시트"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "검사기를 통해"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "무시됨"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "필터"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "메뉴"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials 헤더 값"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "맞춤 사용자 에이전트 입력"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "네트워크 상태 표시됨"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "네트워크 제한"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "일반"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "헤더 재정의"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "자세히 알아보기"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ተመሳሳይ-ጣቢያ እና ተመሳሳይ-ምንጭ"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ይህ የተተረጎመ የመቋረጥ ችግር መልዕክት ምሳሌ ነው።"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "ስራ ላይ የዋለ የተቋረጠ ባህሪ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "የፌዴሬትድ የመግቢያ ማስረጃ አስተዳደር ኤፒአይ"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ገጹ በጀርባ/ፊት መሸጎጫ ላይ ሳለ የአገልግሎት ሰራተኛ ገቢር ተደርጓል።"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "በሰነድ ስህተት ምክንያት የጀርባ/ፊት መሸጎጫው ተሰናክሏል።"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames የሚጠቀሙ ገጾች በbfcache ውስጥ ሊከማቹ አይችሉም።"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "ሌላ ገጽ መሸጎጫ እንዲቀመጥለት ለማስቻል ገጹ ከመሸጎጫው ወጥቷል።"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "እነዚህ እርምጃዎች እርምጃ ሊወሰድባቸው የሚችሉ አይደሉም፣ ማለትም መሸጎጥ ከገጹ ቀጥተኛ ቁጥጥር ውጭ በሆነ ነገር ተከልክሏል።"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ክፈፍ}one{# ክፈፎች}other{# ክፈፎች}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ክፈፎች"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# ችግር}one{# ችግሮች}other{# ችግሮች}} በ{y,plural, =1{# ክፈፍ}one{# ክፈፎች}other{# ክፈፎች}} ውስጥ ተገኝተዋል።"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "የበለጠ ለመረዳት፦ የጀርባ/ፊት መሸጎጫ ብቁነት"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ሁለትዮሽ ውሂብ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "ቅዳ"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ሁሉንም ለውጦች ከአሁኑ ፋይል ቅዳ"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ምንም ለውጦች የሉም"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "ሁሉም ደረጃዎች"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ከታሪክ በራስ-ሰር ያጠናቅቁ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ኮንሶል ጸድቷል"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "የምዝግብ ማስታወሻ ደረጃዎች"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "የXMLHttpRequests በመላይ መግባት"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "ከአሁኑ አውድ (top፣ iframe፣ worker፣ ቅጥያ) የመጡ መልዕክቶችን ብቻ አሳይ"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "በconsole ውስጥ CORS ስህተቶችን አሳይ"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "ግምገማን እንደ የተጠቃሚ ማግበሪያ አስተናግድ"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ዝርክርክ ቃላት"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}one{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}other{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "ከታሪክ በራስ-ሰር አጠናቅቅ"
+    "message": "ከታሪክ በራስ-ሰር ያጠናቅቁ"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "ኮንሶል አጽዳ"
@@ -4005,7 +4041,7 @@
     "message": "የጊዜ ማህተሞችን ይደብቁ"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "በመለያ ይግቡ XMLHttpRequests"
+    "message": "የXMLHttpRequests በመላይ መግባት"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "ከአሁኑ አውድ (top፣ iframe፣ worker፣ ቅጥያ) የመጡ መልዕክቶችን ብቻ አሳይ"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "ምልክት በማይደረግበት ጊዜ መጠናቸው ባዶ ወይም ያልተገለጹ ንብረቶች ብቻ ይታያሉ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "የተገነባ የቅጥ ሉህ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "ሁሉንም የሲኤስኤስ ለውጦች ቅዳ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ሁሉንም መግለጫዎች ይቅዱ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "ደንብን ቅዳ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selectorን ቅዳ"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "የCSS መራጭ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "የተከተተ የቅጥ ሉህ"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "የቅጥ ደንብ ከታች ያስገቡ"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[መገለጫ ባህሪዎች ቅጥ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "ሁሉንም ባህሪዎች አሳይ ({PH1} ተጨማሪ)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "የstyle መገለጫ ባህሪ"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "የተጠቃሚ ወኪል የቅጥ ሉህ"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "በመርማሪ በኩል"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "ሁሉንም የሲኤስኤስ ለውጦች ቅዳ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ሁሉንም መግለጫዎች እንደ JS ይቅዱ"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "የተሰላውን እሴት ይመልከቱ"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ራስ-ሰር የጨለማ ሁነታ"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "ንብርብርን በንብርብር ዛፍ ላይ ለማሳየት ጠቅ ያድርጉ"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "የተገነባ የቅጥ ሉህ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ሁሉንም የሲኤስኤስ ለውጦች ይቅዱ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ሁሉንም መግለጫዎች ይቅዱ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "ደንብን ቅዳ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selectorን ቅዳ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS የንብረት ስም፦ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS የንብረት እሴት፦ {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "የCSS መራጭ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ማጣሪያ"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "በመዳፊት ጎማ ወይም ወደላይ/ወደታች ቁልፎች መጨመር/መቀነስ። {PH1}፦ R ±1፣ Shift፦ G ±1፣ Alt፦ B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "የተወረሰው ከ ::{PH1} አስመሳይ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "የተወረሰው ከ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "የተከተተ የቅጥ ሉህ"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "የቅጥ ደንብ ከታች ያስገቡ"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "ልክ ያልሆነ የንብረት እሴት"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "አስመሳይ ::{PH1} አባለ ነገር"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[መገለጫ ባህሪዎች ቅጥ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "ሁሉንም ባህሪዎች አሳይ ({PH1} ተጨማሪ)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "የstyle መገለጫ ባህሪ"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "የተለመዱ የምስል መስሪያ ማስመሰያዎችን ቀያይር"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "የማይታወቅ የንብረት ስም"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "የተጠቃሚ ወኪል የቅጥ ሉህ"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "በመርማሪ በኩል"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "የተተወ"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ማጣሪያ"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "ምናሌ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "የAccess-Control-Allow-Credentials የራስጌ እሴት"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "ብጁ የተጤቃሚ ወኪል ያስገቡ"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "የአውታረ መረብ ሁኔታዎች ታይተዋል"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "አውታረ መረብን ማፈን"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "አጠቃላይ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "የራስጌ መሻሮች"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"

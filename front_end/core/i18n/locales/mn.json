@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ижил сайт болон ижил эх"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Энэ нь орчуулсан цуцлалтын асуудлын мессежийн жишээ юм."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Зогсоосон онцлог ашигласан"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Нэгдсэн мандат үнэмлэхийн менежментийн API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Хуудас back/forward cache-д байх үед үйлчилгээний ажилтныг идэвхжүүлсэн."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Документын алдааны улмаас back/forward cache-г идэвхгүй болгосон."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames-г ашиглаж буй хуудаснуудыг bfcache-д хадгалах боломжгүй."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Өөр хуудсыг завсрын санах ойд хадгалахыг зөвшөөрөхийн тулд уг хуудсыг завсрын санах ойгоос хассан."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Эдгээр шалтгаан нь үйлдэл хийх боломжгүй буюу өөрөөр хэлбэл хуудасны шууд хяналтаас гадуурх ямар нэг зүйл завсрын санах ойд хадгалахаас сэргийлсэн."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# фрейм}other{# фрейм}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Фрейм"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# асуудал}other{# асуудал}} дараах {y,plural, =1{# фреймээс}other{# фреймээс}} олдсон."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах: back/forward cache-н шалгуур"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Хоёртын кодтой өгөгдөл"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Хуулах"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Одоогийн файлаас бүх өөрчлөлтийг хуулах"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Өөрчлөлт байхгүй"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Бүх түвшин"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Түүхээс автоматаар бөглөх"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Консолыг арилгасан"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Логийн түвшин"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests-г бүртгэх"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Зөвхөн одоогийн хам сэдвээс мессеж харуулах (top, iframe, worker, өргөтгөл)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "CORS-н алдааг консолд харуул"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Үнэлгээг хэрэглэгчийн идэвхжүүлэлт гэж үзэх"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Нуршсан"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Сануулга. # удаа давтсан}other{Сануулга. # удаа давтсан}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Түүхийн автомат гүйцээлт"
+    "message": "Түүхээс автоматаар бөглөх"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Консолыг арилгах"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Сонголтыг болиулсан үед зөвхөн утга нь тэг эсвэл тодорхойлоогүй өмчийг харуулна"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "бүтээсэн загварчлалын хуудас"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS-н бүх өөрчлөлтийг хуулах"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Бүх мэдэгдлийг хуулах"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Дүрмийг хуулах"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector-г хуулах"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS сонгогч"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "оруулсан загварчлалын хуудас"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Загварын дүрмийг доор оруулна уу"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Атрибутын загвар]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Бүх өмчийг харуулах (өөр {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style-н атрибут"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "хэрэглэгчийн агентын загварчлалын хуудас"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "шалгагчаар"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS-н бүх өөрчлөлтийг хуулах"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Бүх мэдэгдлийг JS-р хуулах"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Тооцоолсон утгыг үзэх"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Автомат бараан горим"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Давхаргын модонд давхаргыг харуулахын тулд товшино уу"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "бүтээсэн загварчлалын хуудас"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Түр санах ойд хуулсан"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Бүх CSS өөрчлөлтийг хуулна уу"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Бүх мэдэгдлийг хуулах"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Дүрмийг хуулах"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector-г хуулах"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS өмчийн нэр: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS өмчийн утга: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS сонгогч"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Шүүлтүүр"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Хулганын гүйлгэгч эсвэл дээш/доош товчоор өсгөх/бууруулах. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Дараахаас залгамжилсан ::{PH1} дуураймлын "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Дараахаас удамшсан "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "оруулсан загварчлалын хуудас"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Загварын дүрмийг доор оруулна уу"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Өмчийн утга буруу байна"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Дуураймал ::{PH1} элемент"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Атрибутын загвар]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Бүх өмчийг харуулах (өөр {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style-н атрибут"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Рэндэрлэх нийтлэг эмуляцыг асаах/унтраах"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Үл мэдэгдэх өмчийн нэр"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "хэрэглэгчийн агентын загварчлалын хуудас"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "шалгагчаар"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Үл хэрэгссэн"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Шүүлтүүр"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Цэс"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials толгой хэсгийн утга"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Хэрэглэгчийн захиалгат агент оруулах"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Сүлжээний нөхцөлийг харуулсан"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Сүлжээний удаашруулалт"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ерөнхий"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Толгой хэсгийн даралтууд"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах"

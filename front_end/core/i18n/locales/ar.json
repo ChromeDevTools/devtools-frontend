@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site وSame-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "هذا مثال على رسالة مُترجمة بشأن مشكلة إيقاف نهائي."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "تم استخدام ميزة متوقّفة نهائيًا"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "تم تفعيل مشغّل خدمات أثناء إدراج الصفحة في \"التخزين المؤقت للصفحات\"."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب خطأ في المستند."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "لا يمكن تخزين الصفحات التي تستخدم الإطار FencedFrames من خلال ميزة \"التخزين المؤقت للصفحات\"."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "تم إخراج الصفحة من ذاكرة التخزين المؤقت للسماح بالتخزين المؤقت لصفحة أخرى."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "لا يمكن اتخاذ إجراء بشأن هذه العناصر، بمعنى أنه تم منع التخزين المؤقت نتيجة أسباب خارجة عن التحكّم المباشر للصفحة."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{إطار واحد}zero{# إطار}two{إطاران}few{# إطارات}many{# إطارًا}other{# إطار}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "الإطارات"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "هناك {x,plural, # مشكلة واحدة (=1{)}zero{# مشكلة}two{)}few{# مشاكل}many{# مشكلة}other{# مشكلة}} في {y,plural, # إطار واحد (=1{)}zero{# إطار}two{)}few{# إطارات}many{# إطارًا}other{# إطار}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "مزيد من المعلومات: إمكانية استخدام ميزة \"التخزين المؤقت للصفحات\""
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "البيانات الثنائية"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "نسخ"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "نسخ جميع التغييرات من الملف الحالي"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ما من تغييرات."
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "جميع المستويات"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "الإكمال التلقائي من السجلّ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "تم محو وحدة التحكم."
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "مستويات السجلّ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "تسجيل طلبات XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "عرض رسائل من السياق الحالي فقط (top وiframe وworker وإضافة)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "عرض أخطاء CORS في وحدة التحكّم"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "التعامل مع التقييم على أنّه عملية تنشيط للمستخدمين"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "الإسهاب"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "عند إزالة العلامة من هذا المربّع، سيتم عرض كل الخصائص باستثناء الخصائص ذات القيم الفارغة أو غير المحدَّدة."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "أوراق الأنماط التي تم إنشاؤها"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "نسخ جميع التغييرات من صفحات CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "نسخ كل التعريفات"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "نسخ القاعدة"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "نسخ selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "أداة اختيار CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ورقة الأنماط التي تم إدخالها"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "أدخِل قاعدة الأنماط أدناه."
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[نمط السمات]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "عرض جميع الخصائص ({PH1} أخرى)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "السمة style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ورقة أنماط وكيل المستخدم"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "من خلال أداة الفحص"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "نسخ جميع التغييرات من صفحات CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "نسخ جميع التعريفات بتنسيق JavaScript"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "عرض القيمة المحتسَبة"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "الوضع الداكن التلقائي"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "انقر لعرض طبقة في شجرة الطبقات"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "أوراق الأنماط التي تم إنشاؤها"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "تم النسخ إلى الحافظة."
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "نسخ جميع التغييرات من صفحات CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "نسخ كل التعريفات"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "نسخ القاعدة"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "نسخ selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "اسم خاصية CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "قيمة خاصية CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "أداة اختيار CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "فلتر"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "زيادة القيم أو تقليلها باستخدام عجلة التمرير في الماوس أو مفتاحَي السهم المتّجه للأعلى أو السهم المتّجه للأسفل. {PH1}: R ±1، Shift: G ±1، Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "مُكتسب من :: العنصر المستعار {PH1} من "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "مكتسب من "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ورقة الأنماط التي تم إدخالها"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "أدخِل قاعدة الأنماط أدناه."
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "قيمة الخاصية غير صالحة"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "عنصر ::{PH1} المستعار"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[نمط السمات]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "عرض جميع الخصائص ({PH1} أخرى)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "السمة style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "التبديل إلى محاكاة العرض الرائجة"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "اسم الخاصية غير معروف."
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ورقة أنماط وكيل المستخدم"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "من خلال أداة الفحص"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "عنصر تم تجاهله"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "فلتر"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "القائمة"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "قيمة العنوان Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "أدخِل وكيل مستخدم مخصَّصًا"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "تم عرض حالات الشبكة."
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ضبط الحدّ الأقصى المسموح لعرض نطاق الشبكة"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "عام"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "إلغاء العنوان"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "مزيد من المعلومات"

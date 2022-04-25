@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "SameSite и SameOrigin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Это пример переведенного сообщения о проблеме, связанной с прекращением поддержки."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Используется устаревшая функция"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Скрипт Service Worker был активирован, когда страница находилась в возвратном кеше."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Возвратный кеш отключен из-за ошибки документа."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Страницы, на которых используется элемент FencedFrames, нельзя сохранить в возвратный кеш."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Страница удалена из кеша, чтобы освободить место для другой страницы."
   },
@@ -3237,13 +3249,22 @@
     "message": "Возвратный кеш"
   },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
-    "message": "Extension id: "
+    "message": "Идентификатор расширения: "
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantial": {
     "message": "Не нужно принимать меры"
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Причины, которые мешают кешированию, неустранимы, то есть они вне сферы прямого контроля страницы."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# фрейм}one{# фрейм}few{# фрейма}many{# фреймов}other{# фрейма}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Фреймы"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# проблема}one{# проблема}few{# проблемы}many{# проблем}other{# проблемы}} (обнаружено в {y,plural, =1{# фрейме)}one{# фрейме)}few{# фреймах)}many{# фреймах)}other{# фрейма)}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Подробнее о возможности использовать возвратный кеш…"
@@ -3438,7 +3459,7 @@
     "message": "Тип доступа"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
-    "message": "Name"
+    "message": "Название"
   },
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Владелец"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Двоичные данные"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Копировать"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Копировать все изменения из текущего файла"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Изменений нет"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Все уровни"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Автозаполнение из истории"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Консоль очищена"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Уровни"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Регистрировать запросы XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Показывать только сообщения из текущего контекста (top, iframe, worker, расширение)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Показывать ошибки CORS в консоли"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Рассматривать вычисление как активацию пользователя"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Детализация"
@@ -4005,7 +4041,7 @@
     "message": "Скрыть временные метки"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Журнал запросов XMLHttpRequests"
+    "message": "Регистрировать запросы XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Показывать только сообщения из текущего контекста (top, iframe, worker, расширение)"
@@ -4029,7 +4065,7 @@
     "message": "Показать временные метки"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Рассматривать вычисление как действия пользователя"
+    "message": "Рассматривать вычисление как активацию пользователя"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Открыть консоль, чтобы посмотреть {PH1}"
@@ -4626,10 +4662,10 @@
     "message": "Показать прослушиватели предков"
   },
   "panels/elements/LayersWidget.ts | cssLayersTitle": {
-    "message": "CSS layers"
+    "message": "Слои CSS"
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
-    "message": "Toggle CSS Layers view"
+    "message": "Показать/скрыть слои CSS"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "Точка останова DOM"
@@ -4666,6 +4702,48 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Если этот флажок снят, свойства с пустыми или неопределенными значениями показаны не будут"
+  },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "сконструированная таблица стилей"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Копировать все изменения кода CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Копировать все объявления"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Копировать правило"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Копировать selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Селектор CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "внедренная таблица стилей"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Вставить правило стиля ниже"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Стиль атрибутов]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Показать все свойства (ещё {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Атрибут style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "таблица стилей агента пользователя"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "через инспектор"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Копировать все изменения кода CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Копировать все объявления как JS"
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Показать вычисленное значение"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Автоматическая тёмная тема"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
-    "message": "Click to reveal layer in layer tree"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "сконструированная таблица стилей"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Скопировано в буфер обмена"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Копировать все изменения кода CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Копировать все объявления"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Копировать правило"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Копировать selector"
+    "message": "Показать слой в дереве слоев"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Название свойства CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Значение свойства CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Селектор CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Фильтр"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Увеличение и уменьшение с помощью колеса мыши или клавиш \"Вверх\" и \"Вниз\". {PH1} – R ± 1, Shift – G ± 1, Alt – B ± 1."
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Унаследовано от псевдоэлемента ::{PH1} "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Унаследовано от "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "внедренная таблица стилей"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Вставить правило стиля ниже"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Недопустимое значение свойства"
@@ -4770,7 +4827,7 @@
     "message": "{PH1} (имя свойства: {PH2}, значение свойства: {PH3})"
   },
   "panels/elements/StylesSidebarPane.ts | layer": {
-    "message": "Layer"
+    "message": "Слой"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "Новое правило стиля"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Псевдоэлемент ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Стиль атрибутов]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Показать все свойства (ещё {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Атрибут style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Включить или отключить распространенные эмуляции отрисовки"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Неизвестное имя свойства"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "таблица стилей агента пользователя"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "через инспектор"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Игнорируется"
@@ -5345,6 +5390,9 @@
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Фильтр"
   },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Меню"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Значение заголовка Access-Control-Allow-Credentials"
   },
@@ -5811,7 +5859,7 @@
     "message": "Очистить хранилище (cache, service workers и др.) перед аудитом. Это помогает при тестировании PWA и производительности."
   },
   "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
-    "message": "Запустить Lighthouse в режиме навигации, временного диапазона или сводки"
+    "message": "Запустить Lighthouse в режиме анализа навигации, состояния страницы или временного диапазона"
   },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "Поисковая оптимизация"
@@ -5832,10 +5880,10 @@
     "message": "На скорость загрузки могут влиять данные из этого хранилища: {PH1}. Попробуйте открыть страницу в режиме инкогнито."
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
-    "message": "Timespan"
+    "message": "Анализ временного диапазона"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Analyze the page using classic Lighthouse when in navigation mode."
+    "message": "Анализ страницы с помощью классической версии Lighthouse в режиме навигации."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -5895,16 +5943,16 @@
     "message": "Подробнее…"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze navigation"
+    "message": "Анализ навигации"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze snapshot"
+    "message": "Анализ состояния страницы"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Режим"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
-    "message": "Start timespan"
+    "message": "Запустить анализ временного диапазона"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "75 % всех обладателей мобильных устройств пользовались сетями 2G и 3G в 2016 году (источник: GSMA Mobile)."
@@ -5994,16 +6042,16 @@
     "message": "При повышении скорости загрузки страниц на каждые 100 мс доход Walmart увеличивался на 1 % [источник: WPO Stats]."
   },
   "panels/lighthouse/LighthouseTimespanView.ts | cancel": {
-    "message": "Cancel"
+    "message": "Отмена"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
-    "message": "End timespan"
+    "message": "Остановить анализ временного диапазона"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
-    "message": "Timespan started, interact with the page"
+    "message": "Анализ временного диапазона запущен, начните взаимодействовать со страницей"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
-    "message": "Timespan starting…"
+    "message": "Запуск анализа временного диапазона…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Показать Lighthouse"
@@ -6424,6 +6472,9 @@
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Укажите другого агента пользователя"
+  },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Показаны данные о состоянии сети"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ограничение пропускной способности сети"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Общие"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Переопределения заголовков"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Подробнее…"
@@ -9744,10 +9798,10 @@
     "message": "Добавить переопределение заголовка"
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
-    "message": "Error when parsing ''{PH1}''."
+    "message": "Ошибка синтаксического анализа элемента ''{PH1}''."
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
-    "message": "This is most likely due to a syntax error in ''{PH1}''. Try opening this file in an external editor to fix the error or delete the file and re-create the override."
+    "message": "Скорее всего, это связано с синтаксической ошибкой в элементе ''{PH1}''. Исправьте ошибку в этом файле, открыв его во внешнем редакторе, или удалите его и создайте переопределение заново."
   },
   "panels/sources/components/HeadersView.ts | removeBlock": {
     "message": "Удалить этот раздел: ApplyTo"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ошол эле сайт жана ошол эле булак"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Бул жоюлган функцияны колдонуу катасы жөнүндө которулган билдирүүнүн мисалы."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Жоюлган функция колдонулду"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -2538,7 +2544,7 @@
     "message": "Мурунку бетти көрсөтүү"
   },
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
-    "message": "Айрым киргизүүлөр өзгөртүлгөн болушу мүмкүн"
+    "message": "Айрым киргизүүлөр өзгөргөн болушу мүмкүн"
   },
   "panels/application/IndexedDBViews.ts | startFromKey": {
     "message": "Ачкычтан баштоо"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Барак кештелип жатканда, кызмат иштеткичи иштетилди."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Документтеги катадан улам баракты кештөө өчүрүлдү."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames колдонулган барактарды төмөнкүдө сактоого болбойт: bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Башка баракты кештөө үчүн бул барак кештен чыгарылды."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Бул себептерге карата чара көрүүгө болбойт, мисалы, барак түздөн-түз көзөмөлдөбөгөн нерсе кештөөгө тоскоол болууда."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# фрейм}other{# фрейм}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Фреймдер"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# маселе}other{# маселе}} төмөнкүдө табылды: {y,plural, =1{# фрейм}other{# фрейм}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Кеңири маалымат: баракты кештөөгө жарамдуулук"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Бинардык маалымат"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Көчүрүү"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Бардык өзгөртүүлөрдү учурдагы файлдан көчүрүү"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Өзгөрүүлөр жок"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Бардык деңгээлдер"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Таржымалдан автотолтуруу"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Консоль тазаланды"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Таржымал деңгээлдери"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests таржымалы"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Учурдагы контексттеги билдирүүлөрдү гана көрсөтүү (top, iframe, worker, кеңейтүү)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Консолдо CORS каталарын көрсөтүү"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Баалоо колдонуучуну жандандыруу катары каралсын"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Кепти дааналатуу"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Кутуча белгиленбесе, мааниси бош болбогон жана аныкталбагандардан башка мүнөздөмөлөр гана көрсөтүлөт"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "түзүлгөн стиль жадыбалы"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Бардык CSS өзгөрүүлөрүн көчүрүү"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Бардык декларацияларды көчүрүү"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Эрежени көчүрүү"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Көчүрүү: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS тандагычы"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "киргизилген стиль жадыбалы"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Төмөндө стиль эрежесин киргизиңиз"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Атрибуттардын стили]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Бардык мүнөздөмөлөрдү (дагы {PH1}) көрсөтүү"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style атрибуту"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "колдонуучу агентинин стиль жадыбалы"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "текшерүүчү аркылуу"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Бардык CSS өзгөрүүлөрүн көчүрүү"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Бардык декларацияларды JS катары көчүрүү"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Эсептелген маанини көрүү"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Караңгы теманын автоматтык графиги"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Катмарлар дарагындагы катмарды көрүү үчүн чыкылдатыңыз"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "түзүлгөн стиль жадыбалы"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Буферге көчүрүлдү"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Бардык CSS өзгөрүүлөрүн көчүрүү"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Бардык декларацияларды көчүрүү"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Эрежени көчүрүү"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Көчүрүү: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS мүнөздөмөсүнүн аталышы: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS мүнөздөмөсүнүн мааниси: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS тандагычы"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Чыпка"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Чычкан дөңгөлөгү же өйдө/ылдый баскычтары менен чоңойтуу/кичирейтүү. {PH1}: R ±1, Shift баскычы: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Кимден берилди:{PH1} төмөнкүнүн псевдо элементи "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Кимден берилди: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "киргизилген стиль жадыбалы"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Төмөндө стиль эрежесин киргизиңиз"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Мүнөздөмөнүн мааниси жараксыз"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} элементи"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Атрибуттардын стили]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Бардык мүнөздөмөлөрдү (дагы {PH1}) көрсөтүү"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style атрибуту"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Жалпы түзүлгөн эмуляцияларды өчүрүү/күйгүзүү"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Белгисиз мүнөздөмө атылышы"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "колдонуучу агентинин стиль жадыбалы"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "текшерүүчү аркылуу"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Этибарга алынган жок"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Чыпка"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Меню"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials аталышынын мааниси"
@@ -6192,7 +6240,7 @@
     "message": "Алдын-ала коюлган жөндөөлөр"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "Кабыл алынган Content-Encoding жөндөөсү DevTools аркылуу өзгөртүлгөн. Тармак абалдарынын панелин көрүңүз."
+    "message": "Кабыл алынган Content-Encoding жөндөөсү DevTools аркылуу өзгөргөн. Тармак абалдарынын панелин көрүңүз."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Тармакты жөнгө салуу иштетилди"
@@ -6424,6 +6472,9 @@
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Жеке колдонуучу агентти киргизүү"
+  },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Тармактын абалдары көрсөтүлдү"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Тармакты жөнгө салуу"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Жалпы"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Башкы саптагы өзгөрүүлөр"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Кеңири маалымат"

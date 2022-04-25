@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Eyni Sayt və Eyni Mənbə"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Bu, tərcümə edilmiş köhnəlmə problemi mesajı nümunəsidir."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Köhnəlmiş Funksiya İstifadə edilib"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Vahid Giriş Məlumatları İdarəetmə API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Səhifə geri/irəli keşdə olarkən xidmət işçisi aktivləşdirilib."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Sənəd xətasına görə geri/irəli keş deaktiv edilib."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames istifadə edən səhifələr bfcache-də saxlanıla bilməz."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Digər səhifənin keşlənməsinə icazə vermək üçün səhifə keşdən çıxarılıb."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Bu səbəblər əlaqəli deyil, yəni səhifənin birbaşa nəzarətindən kənar nəsə keşləməyə mane olub."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# çərçivə}other{# çərçivə}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Çərçivələr"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problem}other{# problem}} burada tapılıb: {y,plural, =1{# çərçivə}other{# çərçivə}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Ətraflı məlumat: geri/irəli keş uyğunluğu"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "İkili data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopyalayın"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Cari fayldan bütün dəyişiklikləri kopyalayın"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Dəyişiklik yoxdur"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Bütün səviyyələr"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Tarixçədən avtomatik tamamlama"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsol silindi"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Giriş səviyyələri"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests jurnalı"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Yalnız cari kontekstdən olan mesajları göstərin (top, iframe, worker, artırma)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Konsolda CORS xətalarını göstərin"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Qiymətləndirməyə istifadəçi aktivləşdirməsi kimi yanaşın"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Ətraflı mesaj"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "İşarə götürüldükdə, yalnız dəyərləri sıfır və ya qeyri-müəyyən olmayan xüsusiyyətlər göstəriləcək"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "hazırlanmış üslub vərəqi"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Bütün CSS dəyişikliklərini kopyalayın"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Bütün bəyannamələri kopyalayın"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Qaydanı kopyalayın"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopyalayın selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS seçicisi"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "daxil edilmiş üslub vərəqi"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Aşağıda Üslub Qaydası daxil edin"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Atributların Üslubu]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Bütün Atributları Göstərin (daha {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style atributu"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "istifadəçi agenti üslub vərəqi"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "yoxlayıcı vasitəsilə"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Bütün CSS dəyişikliklərini kopyalayın"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Bütün bəyannamələri JS olaraq kopyalayın"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hesablanan dəyərə baxın"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Avtomatik qaranlıq rejim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Qat sxemində qatı aşkarlamaq üçün tıklayın"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "hazırlanmış üslub vərəqi"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Mübadilə buferinə kopyalandı"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Bütün CSS dəyişikliklərini kopyalayın"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Bütün bəyannamələri kopyalayın"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Qaydanı kopyalayın"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopyalayın selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS obyekt adı: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS obyekt dəyəri: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS seçicisi"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtr"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "maus diyircəyi və ya yuxarı/aşağı düymələri ilə artırma/azaltma {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Mənbə ::{PH1} psevdo elementi "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Buradan əldə edilib "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "daxil edilmiş üslub vərəqi"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Aşağıda Üslub Qaydası daxil edin"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Yanlış atribut dəyəri"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} elementi"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Atributların Üslubu]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Bütün Atributları Göstərin (daha {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style atributu"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Ümumi render emulyasiyalarını keçirin"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Naməlum atribut adı"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "istifadəçi agenti üslub vərəqi"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "yoxlayıcı vasitəsilə"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Nəzərə alınmadı"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtr"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menyu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Başlıq Dəyəri"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Fərdi istifadəçi agenti daxil edin"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Şəbəkə vəziyyətləri göstərilir"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Şəbəkə məhdudiyyəti"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ümumi"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Başlıq əvəzləmələri"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Ətraflı məlumat"
@@ -11724,7 +11778,7 @@
     "message": "Sazlama bağlantısı qapalı idi. Səbəb: "
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
-    "message": "Yenidən qoşun DevTools"
+    "message": "Yenidən qoşul: DevTools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
     "message": "DevTools'u yenidən açaraq təkrar qoşulun."

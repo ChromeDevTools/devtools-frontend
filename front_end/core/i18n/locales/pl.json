@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site i Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Oto przykład przetłumaczonego komunikatu o wycofaniu funkcji."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Użyto wycofanej funkcji"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Skrypt service worker został aktywowany, gdy strona znajdowała się w pamięci podręcznej stanu strony internetowej."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona z powodu błędu w dokumencie."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Stron używających FencedFrames nie można przechowywać w pamięci podręcznej stanu strony internetowej."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Strona została usunięta z pamięci podręcznej, aby umożliwić przechowywanie w niej innej strony."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Te przyczyny nie dają podstaw do działania, to znaczy, że zapisywanie w pamięci podręcznej zostało uniemożliwione przez czynniki poza bezpośrednią kontrolą strony."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ramka}few{# ramki}many{# ramek}other{# ramki}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Ramki"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problem}few{# problemy}many{# problemów}other{# problemu}} w {y,plural, =1{# ramce}few{# ramkach}many{# ramkach}other{# ramki}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Więcej informacji: warunki korzystania z pamięci podręcznej stanu strony internetowej"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dane binarne"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiuj"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Skopiuj wszystkie zmiany z bieżącego pliku"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Bez zmian"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Wszystkie poziomy"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autouzupełniaj z historii"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Wyczyszczono konsolę"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Poziomy rejestrowania"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Rejestruj żądania XMLHttpRequest"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Pokazuj tylko komunikaty z bieżącego kontekstu (top, iframe, worker, rozszerzenie)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Pokaż błędy CORS w konsoli"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Traktuj wyliczenie jako aktywację przez użytkownika"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Szczegółowe"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Gdy to pole jest odznaczone, nie są pokazywane właściwości z wartością null ani właściwości niezdefiniowane."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "skonstruowany arkusz stylów"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Skopiuj wszystkie zmiany CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Skopiuj wszystkie deklaracje"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Skopiuj regułę"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiuj: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selektor CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "wstrzyknięty arkusz stylów"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Wstaw poniżej regułę stylu"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Styl atrybutów]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Pokaż wszystkie właściwości (jeszcze {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atrybut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "arkusz stylów klienta użytkownika"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "przez inspektora"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Skopiuj wszystkie zmiany CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiuj wszystkie deklaracje jako JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Wyświetl obliczoną wartość"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatyczny tryb ciemny"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kliknij, aby odsłonić warstwę w drzewie warstw"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "skonstruowany arkusz stylów"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Skopiowano do schowka"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiuj wszystkie zmiany z pliku CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Skopiuj wszystkie deklaracje"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Skopiuj regułę"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiuj: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nazwa właściwości CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Wartość właściwości CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selektor CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtr"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Zwiększanie i zmniejszanie wartości za pomocą kółka myszy lub klawiszy w górę / w dół. {PH1}: R ±1, Shift: G ±1, Alt: B ±1."
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Odziedziczono z ::{PH1} pseudo z "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Odziedziczone z: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "wstrzyknięty arkusz stylów"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Wstaw poniżej regułę stylu"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Nieprawidłowa wartość właściwości"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Element Pseudo ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Styl atrybutów]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Pokaż wszystkie właściwości (jeszcze {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atrybut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Przełącz typowe emulacje renderowania"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nieznana nazwa właściwości"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "arkusz stylów klienta użytkownika"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "przez inspektora"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorowany"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtr"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Wartość nagłówka Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Wpisz niestandardowego klienta użytkownika"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Wyświetlane warunki sieci"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ograniczanie wykorzystania sieci"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ogólne"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Zastąpienia nagłówka"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Więcej informacji"

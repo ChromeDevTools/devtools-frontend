@@ -165,7 +165,7 @@
     "message": "Сінхранізацыя"
   },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
-    "message": "DevTools – {PH1}"
+    "message": "Інструменты распрацоўшчыка – {PH1}"
   },
   "core/host/ResourceLoader.ts | cacheError": {
     "message": "Памылка кэша"
@@ -438,7 +438,7 @@
     "message": "Па-за сеткай"
   },
   "core/sdk/NetworkManager.ts | requestWasBlockedByDevtoolsS": {
-    "message": "DevTools заблакіраваў запыт: \"{PH1}\""
+    "message": "Запыт заблакіраваны інструментамі распрацоўшчыка: \"{PH1}\""
   },
   "core/sdk/NetworkManager.ts | sFailedLoadingSS": {
     "message": "Збой загрузкі {PH1}: {PH2} \"{PH3}\"."
@@ -621,7 +621,7 @@
     "message": "Не ўдалося правесці сінтаксічны аналіз для {PH1}: {PH2}"
   },
   "core/sdk/SourceMapManager.ts | devtoolsFailedToLoadSourcemapS": {
-    "message": "DevTools не ўдалося загрузіць карту зыходнага кода: {PH1}"
+    "message": "Інструментам распрацоўшчыка не ўдалося загрузіць карту зыходнага кода: {PH1}"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "Поўная колеравая слепата"
@@ -642,7 +642,7 @@
     "message": "Адключыць фармат AVIF"
   },
   "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "Адключыць кэш (пакуль DevTools адкрыты)"
+    "message": "Адключыць кэш (пакуль інструменты распрацоўшчыка адкрыты)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Адключыць JavaScript"
@@ -858,7 +858,7 @@
     "message": "Галоўная"
   },
   "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
-    "message": "Адкрыйце спецыяльныя інструменты DevTools для Node.js"
+    "message": "Адкрыйце спецыяльныя інструменты распрацоўшчыка для Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -957,7 +957,7 @@
     "message": "Паказвае межы слаёў (аранжавым/аліўкавым колерам) і плітак (блакітным)."
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
-    "message": "Аўтаматычна адкрываць DevTools для ўсплывальных вокнаў"
+    "message": "Аўтаматычна адкрываць інструменты распрацоўшчыка для ўсплывальных вокнаў"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | blockAds": {
     "message": "Блакіраваць рэкламу на гэтым сайце"
@@ -975,7 +975,7 @@
     "message": "Адключыць накладку прыпыненага стану"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
-    "message": "Не адкрываць аўтаматычна DevTools для ўсплывальных вокнаў"
+    "message": "Не адкрываць інструменты распрацоўшчыка аўтаматычна для ўсплывальных вокнаў"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "Прымусова блакіраваць рэкламу на гэтым сайце"
@@ -1011,7 +1011,7 @@
     "message": "Галоўная"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
-    "message": "Наладзіць DevTools і кіраваць імі."
+    "message": "Наладзіць інструменты распрацоўшчыка і кіраваць імі."
   },
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Замацаваць збоку"
@@ -1038,7 +1038,7 @@
     "message": "Іншыя інструменты"
   },
   "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
-    "message": "Размяшчэнне DevTools адносна старонкі. ({PH1}, каб аднавіць апошнюю пазіцыю)"
+    "message": "Размяшчэнне інструментаў распрацоўшчыка адносна старонкі. ({PH1}, каб аднавіць апошнюю пазіцыю)"
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Паказаць высоўнае меню кансолі"
@@ -1071,7 +1071,7 @@
     "message": "цёмная"
   },
   "entrypoints/main/main-meta.ts | devtoolsDefault": {
-    "message": "DevTools (стандартна)"
+    "message": "Інструменты распрацоўшчыка (стандартна)"
   },
   "entrypoints/main/main-meta.ts | dockToBottom": {
     "message": "Замацаваць унізе"
@@ -1125,7 +1125,7 @@
     "message": "Папярэдняя панэль"
   },
   "entrypoints/main/main-meta.ts | reloadDevtools": {
-    "message": "Перазагрузіць DevTools"
+    "message": "Перазагрузіць інструменты распрацоўшчыка"
   },
   "entrypoints/main/main-meta.ts | resetZoomLevel": {
     "message": "Скінуць каэфіцыент маштабавання"
@@ -1206,7 +1206,7 @@
     "message": "Дапаможнік па адладцы Node.js"
   },
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
-    "message": "Укажыце канчатковы пункт сеткі і праграма DevTools падключыцца да яго аўтаматычна. Каб даведацца больш, прачытайце \"{PH1}\"."
+    "message": "Укажыце канчатковы пункт сеткі, і інструменты распрацоўшчыка падключацца да яго аўтаматычна. Каб даведацца больш, прачытайце \"{PH1}\"."
   },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Галоўная"
@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site і Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Гэта прыклад перакладзенага паведамлення аб праблеме, звязанай са спыненнем падтрымкі."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Выкарыстоўваецца састарэлая функцыя"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1440,7 +1446,7 @@
     "message": "Няма"
   },
   "models/persistence/EditFileSystemView.ts | sViaDevtools": {
-    "message": "{PH1} (праз .devtools)"
+    "message": "{PH1} (праз інструменты распрацоўшчыка)"
   },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Не ўдалося загрузіць вялікі двайковы аб'ект."
@@ -2349,7 +2355,7 @@
     "message": "Каб пачаць запіс, націсніце кнопку запісу {PH1} або клавішы {PH2}."
   },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
-    "message": "Праграма DevTools будзе запісваць усе дзеянні {PH1} на працягу 3 дзён (нават калі будзе закрыта)."
+    "message": "Усе дзеянні {PH1} будуць запісвацца на працягу 3 дзён (нават калі інструменты распрацоўшчыка будуць закрыты)."
   },
   "panels/application/BackgroundServiceView.ts | empty": {
     "message": "пуста"
@@ -2757,7 +2763,7 @@
     "message": "Цэтлік сінхранізацыі"
   },
   "panels/application/ServiceWorkersView.ts | testPushMessageFromDevtools": {
-    "message": "Тэставае push-паведамленне ад DevTools."
+    "message": "Тэставае push-паведамленне ад інструментаў распрацоўшчыка."
   },
   "panels/application/ServiceWorkersView.ts | unregister": {
     "message": "Скасаваць рэгістрацыю"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Сцэнарый Service Worker быў запушчаны, калі старонка знаходзілася ў кэшы пераходу назад і наперад."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Кэш пераходу назад і наперад адключаны з-за памылкі ў дакуменце."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Старонкі, на якіх выкарыстоўваюцца элементы FencedFrame, нельга захаваць у кэш пераходу назад і наперад."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Старонка была выдалена з кэша, каб можна было ажыццявіць кэшаванне іншай старонкі."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Вы не можаце ажыццявіць патрэбныя дзеянні для вырашэння гэтых праблем, паколькі кэшаванне не было выканана з-за фактараў, на якія старонка не мае ўплыву."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# фрэйм}one{# фрэйм}few{# фрэймы}many{# фрэймаў}other{# фрэйма}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Фрэймы"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# праблема}one{# праблема}few{# праблемы}many{# праблем}other{# праблемы}} – у {y,plural, =1{# фрэйме}one{# фрэйме}few{# фрэймах}many{# фрэймах}other{# фрэйма}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Даведацца больш пра магчымасць выкарыстання кэша пераходу назад і наперад"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Двайковыя даныя"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Скапіраваць"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Скапіраваць усе змяненні ў бягучым файле"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Без змяненняў"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Усе ўзроўні"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Аўтазапаўненне з гісторыі"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Кансоль ачышчана"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Узроўні журнала"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Уносіць у журнал запыты XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Паказваць паведамленні толькі з бягучага кантэксту (top, iframe, worker, пашырэнне)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Паказваць памылкі CORS у кансолі"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Разглядаць ацэнку як актывацыю карыстальніка"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Дэталізацыя"
@@ -4005,7 +4041,7 @@
     "message": "Схаваць меткі часу"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Весці журнал XMLHttpRequests"
+    "message": "Уносіць у журнал запыты XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Паказваць паведамленні толькі з бягучага кантэксту (top, iframe, worker, пашырэнне)"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Калі птушка не стаіць, уласцівасці з пустымі або нявызначанымі значэннямі паказвацца не будуць"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "сканструяваная табліца стыляў"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Скапіраваць усе змяненні CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Скапіраваць усе абвяшчэнні"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Скапіраваць правіла"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Скапіраваць: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Інструмент выбару CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "уведзеная табліца стыляў"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Уставіць правіла стылю ніжэй"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[стыль атрыбутаў]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Паказаць усе ўласцівасці (яшчэ {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Атрыбут style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "табліца стыляў user agent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "праз інспектар"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Скапіраваць усе змяненні CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Скапіраваць усе абвяшчэнні як JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Праглядзець вылічанае значэнне"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Аўтаматычнае ўключэнне цёмнага рэжыму"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Націсніце, каб пабачыць слой у дрэве слаёў"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "сканструяваная табліца стыляў"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Скапіравана ў буфер абмену"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Скапіраваць усе змяненні CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Скапіраваць усе абвяшчэнні"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Скапіраваць правіла"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Скапіраваць: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Імя ўласцівасці CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Значэнне ўласцівасці CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Інструмент выбару CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Фільтр"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Павелічэнне/памяншэнне значэнняў з дапамогай кола мышы або клавіш \"уверх/уніз\". {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Унаследавана ад псеўдаэлемента ::{PH1} – "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Унаследавана ад: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "уведзеная табліца стыляў"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Уставіць правіла стылю ніжэй"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Недапушчальнае значэнне ўласцівасці"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Элемент pseudo ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[стыль атрыбутаў]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Паказаць усе ўласцівасці (яшчэ {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Атрыбут style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Уключыць або выключыць распаўсюджаныя эмуляцыі візуалізацыі"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Невядомае імя ўласцівасці"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "табліца стыляў user agent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "праз інспектар"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ігнаруецца"
@@ -4938,7 +4983,7 @@
     "message": "Аўтаматычна карэкціраваць маштаб"
   },
   "panels/emulation/DeviceModeToolbar.ts | closeDevtools": {
-    "message": "Закрыць DevTools"
+    "message": "Закрыць інструменты распрацоўшчыка"
   },
   "panels/emulation/DeviceModeToolbar.ts | defaultF": {
     "message": "Стандартна: {PH1}"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Фільтр"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Меню"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Значэнне загалоўка Access-Control-Allow-Credentials"
@@ -6192,7 +6240,7 @@
     "message": "Наборы налад"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | acceptedEncodingOverrideSet": {
-    "message": "Набор прынятых загалоўкаў Content-Encoding быў зменены праз DevTools. Азнаёмцеся з адпаведнай інфармацыяй на панэлі \"Стан сеткі\"."
+    "message": "Набор прынятых загалоўкаў Content-Encoding быў зменены праз інструменты распрацоўшчыка. Азнаёмцеся з адпаведнай інфармацыяй на панэлі \"Стан сеткі\"."
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | networkThrottlingIsEnabled": {
     "message": "Уключана рэгуляванне нагрузкі на сетку"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Увядзіце ўласны агент карыстальніка"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Паказаны ўмовы сеткі"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Рэгуляванне нагрузкі на сетку"
   },
@@ -6456,7 +6507,7 @@
     "message": "(даныя)"
   },
   "panels/network/NetworkDataGridNode.ts | devtools": {
-    "message": "сродкі распрацоўшчыка"
+    "message": "інструменты распрацоўшчыка"
   },
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(кэш на дыску)"
@@ -6903,7 +6954,7 @@
     "message": "Адключыць кэш"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Адключыць кэш (пакуль DevTools адкрыты)"
+    "message": "Адключыць кэш (пакуль інструменты распрацоўшчыка адкрыты)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Не ачышчаць журнал пры перазагрузцы або праглядзе старонкі"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Агульнае"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Перавызначэнні загалоўкаў"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Даведацца больш"
@@ -8925,7 +8979,7 @@
     "message": "Шаблон павінен быць правільным рэгулярным выразам"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
-    "message": "Поўны спіс спалучэнняў клавіш і жэстаў DevTools"
+    "message": "Поўны спіс спалучэнняў клавіш і жэстаў для інструментаў распрацоўшчыка"
   },
   "panels/settings/KeybindsSettingsTab.ts | ResetShortcutsForAction": {
     "message": "Скінуць спалучэнні клавіш для дзеяння"
@@ -9000,7 +9054,7 @@
     "message": "Гэтыя эксперыменты характарызуюцца высокай нестабільнасцю. Уся адказнасць за іх уключэнне ляжыць на вас."
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
-    "message": "Гэтыя эксперыменты могуць стаць прычынай нестабільнай або ненадзейнай работы. Магчыма, праграму DevTools спатрэбіцца перазапусціць."
+    "message": "Гэтыя эксперыменты могуць стаць прычынай нестабільнай або ненадзейнай работы. Можа спатрэбіцца перазапусціць інструменты распрацоўшчыка."
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "УВАГА!"
@@ -9612,7 +9666,7 @@
     "message": "Выбраць папку для перавызначэнняў"
   },
   "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Сінхранізаваць змяненні ў DevTools з лакальнай файлавай сістэмай"
+    "message": "Сінхранізаваць змяненні ў інструментах распрацоўшчыка з лакальнай файлавай сістэмай"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Працягнуць да гэтага месца"
@@ -11670,7 +11724,7 @@
     "message": "Закрыць высоўнае меню"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
-    "message": "Інструменты DevTools цяпер даступныя на яшчэ адной мове ({PH1})!"
+    "message": "Інструменты распрацоўшчыка цяпер даступныя на яшчэ адной мове ({PH1})!"
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Высоўнае меню інструментаў"
@@ -11697,13 +11751,13 @@
     "message": "Панэлі"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
-    "message": "Перазагрузіць DevTools"
+    "message": "Перазагрузіць інструменты распрацоўшчыка"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Заўсёды выкарыстоўваць тую ж мову, што і ў браўзеры Chrome"
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
-    "message": "Пераключыць DevTools на іншую мову ({PH1})"
+    "message": "Пераключыць інструменты распрацоўшчыка на іншую мову ({PH1})"
   },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Дадаць"
@@ -11727,7 +11781,7 @@
     "message": "Перападключыць DevTools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectWhenReadyByReopening": {
-    "message": "Перападключыцеся, калі будзеце гатовы, паўторна адкрыўшы DevTools."
+    "message": "Каб паўторна падключыцца, адкрыйце інструменты распрацоўшчыка яшчэ раз."
   },
   "ui/legacy/SearchableView.ts | cancel": {
     "message": "Скасаваць"
@@ -11811,10 +11865,10 @@
     "message": "Папярэдняя версія функцыі"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
-    "message": "DevTools былі адключаны ад старонкі."
+    "message": "Інструменты распрацоўшчыка былі адключаны ад старонкі."
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
-    "message": "Пасля перазагрузкі старонкі набор інструментаў DevTools аўтаматычна перападключыцца."
+    "message": "Пасля перазагрузкі старонкі набор інструментаў распрацоўшчыка аўтаматычна перападключыцца."
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "не націснута"

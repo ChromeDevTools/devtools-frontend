@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site i Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Ovo je primer prevedene poruke o problemu sa zastarivanjem."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Koristi se zastarela funkcija"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API za upravljanje grupisanim akreditivima"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Serviser je aktiviran dok je stranica bila u procesu keširanja cele stranice."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Keširanje cele stranice je onemogućeno zbog greške u dokumentu"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Stranice koje koriste FencedFrames ne mogu da se skladište u kešu cele stranice."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Stranica je uklonjena iz keša da bi se dozvolilo keširanje druge stranice."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Ti razlozi nisu namenjeni za obavljanje radnji, odnosno, keširanje je sprečilo nešto što nije u direktnoj kontroli stranice."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# okvir}one{# okvir}few{# okvira}other{# okvira}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Okviri"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{Pronađen je # problem}one{Pronađen je # problem}few{Pronađena su # problema}other{Pronađen je # problema}} u {y,plural, =1{# okviru}one{# okviru}few{# okvira}other{# okvira}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Saznajte više: ispunjavanje uslova za keširanje cele stranice"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binarni podaci"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiraj"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopirajte sve promene iz aktuelnog fajla"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Nema promena"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Svi nivoi"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatski dovršavajte na osnovu istorije"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzola je obrisana"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Nivoi evidencije"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Evidentirajte zahteve XMLHttpRequest"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Prikazujte samo poruke iz aktuelnog konteksta (top, iframe, worker, dodatak)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Prikazuj greške (CORS) na konzoli"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Smatrajte procenu korisničkom aktivacijom"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Opširno"
@@ -4005,7 +4041,7 @@
     "message": "Sakrij vremenske oznake"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Evidentirajte zahteve XMLHttpRequest"
+    "message": "Evidentiraj zahteve XMLHttpRequest"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Prikazujte samo poruke iz aktuelnog konteksta (top, iframe, worker, dodatak)"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Kada se ukloni oznaka, prikazivaće se samo svojstva čije vrednosti nisu ništa ni nedefinisano"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "napravljeni opis stila"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopiraj sve CSS promene"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopiraj sve deklaracije"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopiraj pravilo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiraj selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Birač za stranicu CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "umetnut opis stila"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Umetni pravilo o novom stilu ispod"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[stil atributa]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Prikaži sva svojstva (još {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "opis stila korisničkog agenta"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "preko revizora"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopiraj sve CSS promene"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiraj sve deklaracije kao JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Prikaži izračunatu vrednost"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatski tamni režim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kliknite da biste otkrili sloj u stablu slojeva"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "napravljeni opis stila"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopirano je u privremenu memoriju"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopirajte sve CSS promene"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopiraj sve deklaracije"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopiraj pravilo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiraj selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Naziv proizvoda CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Vrednost svojstva CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Birač za stranicu CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Povećavanje ili smanjivanje pomoću točkića miša ili strelica nagore/nadole. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Nasleđeno iz ::{PH1} pseudo-element za "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Nasleđeno je od "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "umetnut opis stila"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Umetni pravilo o novom stilu ispod"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Nevažeća vrednost svojstva"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo-element ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[stil atributa]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Prikaži sva svojstva (još {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Uključite/isključite uobičajene emulacije renderovanja"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nepoznat naziv svojstva"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "opis stila korisničkog agenta"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "preko revizora"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Zanemareno"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Meni"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Vrednost zaglavlja Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Unesite prilagođeni korisnički agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Prikazuju se uslovi mreže"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ograničavanje mreže"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Opšte"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Zamene zaglavlja"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Saznajte više"

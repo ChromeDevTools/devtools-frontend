@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Yr Un Wefan a'r Un Tarddiad"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Dyma enghraifft o neges problem anghymeradwyaeth sydd wedi'i chyfieithu."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Nodwedd Anghymeradwy wedi'i Defnyddio"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Rheolaeth Credyd Ffederal"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Cafodd gweithiwr gwasanaeth ei weithredu tra roedd y dudalen mewn storfa yn ôl/ymlaen."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Mae'r storfa yn ôl/ymlaen wedi'i hanalluogi oherwydd gwall dogfen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Ni ellir storio tudalennau sy'n defnyddio FencedFrames yn bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Cafodd y dudalen ei throi allan o'r storfa er mwyn caniatáu storio tudalen arall."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Nid oes modd gweithredu'r rhesymau hyn, h.y. atal storio dros dro gan rywbeth y tu hwnt i reolaeth uniongyrchol y dudalen."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ffrâm}zero{# ffrâm}two{# ffrâm}few{# ffrâm}many{# ffrâm}other{# ffrâm}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Fframiau"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "Canfuwyd {x,plural, =1{# broblem}zero{# problem}two{# broblem}few{# phroblem}many{# phroblem}other{# problem}} mewn {y,plural, =1{# ffrâm}zero{# ffrâm}two{# ffrâm}few{# ffrâm}many{# ffrâm}other{# ffrâm}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Dysgu rhagor: cymhwysedd storfa yn ôl/ymlaen"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Data deuaidd"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copïo"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copïo'r holl newidiadau o'r ffeil bresennol"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Dim newidiadau"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Pob lefel"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Awtogwblhau o'r hanes"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Mae'r consol wedi'i glirio"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Lefelau log"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Log XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Dim ond dangos negeseuon o'r cyd-destun presennol (top, iframe, worker, estyniad)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Dangos CORS o wallau yn y panel"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Trin gwerthuso fel gweithredu defnyddwyr"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Cwmpasog"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Pan na chaiff ei wirio, dim ond priodweddau nad yw eu gwerthoedd yn nwl na heb eu diffinio a ddangosir"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "taflen arddull adeiledig"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copïo'r holl newidiadau CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Copïo pob datganiad"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Copïo’r rheol"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Copïo selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Dewisydd CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "taflen arddulliau wedi'i chwistrellu"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Mewnosod Rheol Arddull Isod"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Arddull Priodweddau]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Dangos Pob Priodwedd ({PH1} arall)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "priodwedd style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "taflen arddull asiant defnyddiwr"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "drwy gyfrwng yr archwilydd"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copïo'r holl newidiadau CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copïo pob datganiad fel JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Gweld y gwerth sydd wedi'i gyfrifo"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Modd tywyll awtomatig"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Cliciwch i ddatgelu haen yng nghoeden haenau"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "taflen arddull adeiledig"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Wedi'i gopïo i'r clipfwrdd"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copïo pob newid CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Copïo pob datganiad"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Copïo’r rheol"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Copïo selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Enw'r briodwedd CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Gwerth y briodwedd CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Dewisydd CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Hidlo"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Cynyddu/lleihau gydag olwyn y llygoden neu'r bysellau i fyny/i lawr. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Etifeddwyd o ::{PH1} elfen ffug o "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Wedi'i etifeddu o "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "taflen arddulliau wedi'i chwistrellu"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Mewnosod Rheol Arddull Isod"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Gwerth eiddo annilys"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Gwerth ffug :: elfen {PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Arddull Priodweddau]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Dangos Pob Priodwedd ({PH1} arall)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "priodwedd style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Toglo efelychiadau rendrad cyffredin"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Enw eiddo anhysbys"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "taflen arddull asiant defnyddiwr"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "drwy gyfrwng yr archwilydd"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Wedi anwybyddu"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Hidlo"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Dewislen"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Gwerth Pennyn Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Rhowch asiant defnyddiwr personol"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Dangosir amodau'r rhwydwaith"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Throtlo rhwydwaith"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Cyffredinol"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Diystyriadau pennyn"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Dysgu rhagor"

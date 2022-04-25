@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ஒரே தளம் & ஒரே ஆரிஜின்"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "மொழிபெயர்க்கப்பட்ட நிறுத்தச் சிக்கல் மெசேஜிற்கான எடுத்துக்காட்டாகும்."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "நிறுத்தப்பட்ட அம்சம் பயன்படுத்தப்பட்டது"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் பக்கம் சேமிக்கப்பட்டிருந்தபோது service worker இயக்கப்பட்டுள்ளது."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ஆவணப் பிழையின் காரணமாக ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFramesஸைப் பயன்படுத்தும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் சேமிக்க முடியாது."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "மற்றொரு பக்கத்தைத் தற்காலிகமாகச் சேமிப்பதற்காக இந்தப் பக்கம் தற்காலிகச் சேமிப்பில் இருந்து அகற்றப்பட்டது."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "இவற்றுக்குத் தீர்வுகாண முடியாது. அதாவது, பக்கத்தின் நேரடிக் கட்டுப்பாட்டில் இல்லாத ஏதோ ஒன்றின் மூலம் தற்காலிகச் சேமிப்பு தடுக்கப்பட்டது."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ஃபிரேம்}other{# ஃபிரேம்கள்}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ஃபிரேம்கள்"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# ஃபிரேமில்}other{# ஃபிரேம்களில்}} {x,plural, =1{# சிக்கல்}other{# சிக்கல்கள்}} உள்ளன."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "மேலும் அறிக: 'முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்' அம்சத்தின் தகுதிநிலை"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "பைனரித் தரவு"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "நகலெடு"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "தற்போதைய ஃபைலில் செய்யப்பட்ட மாற்றங்கள் அனைத்தையும் நகலெடுக்கும்"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "மாற்றங்கள் இல்லை"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "அனைத்து நிலைகளும்"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "இதுவரையான கன்சோல் பதிவில் இருந்து தானாக நிரப்பலாம்"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "கன்சோல் அழிக்கப்பட்டது"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "பதிவு நிலைகள்"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequestsஸைப் பதிவுசெய்யலாம்"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "தற்போதைய உள்ளடக்கத்தில் இருந்து மட்டும் மெசேஜ்களைக் காட்டும் (top, iframe, worker, நீட்டிப்பு)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "CORS பிழைகளைக் கன்சோலில் காட்டு"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "பயனர் செயல்படுத்தலாக மதிப்பீட்டைப் பயன்படுத்தலாம்"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "அதிகச் சொற்கள்"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{எச்சரிக்கை # முறை காட்டப்பட்டது}other{எச்சரிக்கை # முறை காட்டப்பட்டது}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "இதுவரையான கன்சோல் தகவலிலிருந்து தானாக நிரப்பு"
+    "message": "இதுவரையான கன்சோல் பதிவில் இருந்து தானாக நிரப்பு"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "கன்சோலை அழி"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "தேர்வுநீக்கினால், மதிப்புகள் இல்லாமலோ வரையறுக்கப்படாமலோ இருக்கும் பண்புகள் மட்டுமே காட்டப்படும்"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "அமைக்கப்பட்ட ஸ்டைல்ஷீட்"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடு"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "அறிவிப்புகள் அனைத்தையும் நகலெடு"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "விதியை நகலெடு"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector ஐ நகலெடு"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS தேர்வி"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "உள்ளிடப்பட்ட ஸ்டைல்ஷீட்"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "கீழே ஸ்டைல் விதியைச் சேர்க்கும்"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[பண்புக்கூறுகள் ஸ்டைல்]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "உடைமைகள் அனைத்தையும் காட்டு (மேலும் {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style பண்புக்கூறு"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "பயனர் ஏஜெண்ட் ஸ்டைல்ஷீட்"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "கண்காணிப்புக் கருவி மூலம்"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடு"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "வரையறைகள் அனைத்தையும் JS ஆக நகலெடு"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "கணக்கிடப்பட்ட மதிப்பைக் காட்டு"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "தானியங்கு டார்க் பயன்முறை"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "லேயர் வரிசையில் லேயரைக் காட்ட கிளிக் செய்யவும்"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "அமைக்கப்பட்ட ஸ்டைல்ஷீட்"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடுக்கும்"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "அறிவிப்புகள் அனைத்தையும் நகலெடு"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "விதியை நகலெடு"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector ஐ நகலெடு"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS பண்பின் பெயர்: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS பண்பின் மதிப்பு: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS தேர்வி"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "வடிகட்டு"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "மவுஸ்வீல் அல்லது மேல்நோக்கிய/கீழ்நோக்கிய அம்புக்குறி விசைகள் மூலமான அதிகரிப்பு/குறைப்பு. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "இதன் ::{PH1} pseudo உறுப்பில் இருந்து பெறப்பட்டது: "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "இதிலிருந்து பெறப்பட்டது "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "உள்ளிடப்பட்ட ஸ்டைல்ஷீட்"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "கீழே ஸ்டைல் விதியைச் சேர்க்கும்"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "தவறான உடைமை மதிப்பு"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} உறுப்பு"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[பண்புக்கூறுகள் ஸ்டைல்]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "உடைமைகள் அனைத்தையும் காட்டு (மேலும் {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style பண்புக்கூறு"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "பொதுவான ரெண்டரிங் மாதிரி இயக்கங்களை நிலைமாற்றும்"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "அறியப்படாத உடைமைப் பெயர்"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "பயனர் ஏஜெண்ட் ஸ்டைல்ஷீட்"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "கண்காணிப்புக் கருவி மூலம்"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "தவிர்க்கப்பட்டது"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "வடிகட்டு"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "மெனு"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials தலைப்பின் மதிப்பு"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "பிரத்தியேகமான பயனர் ஏஜெண்ட்டை உள்ளிடுக"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "நெட்வொர்க் நிலைகள் காட்டப்படுகின்றன"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "நெட்வொர்க் த்ராட்லிங்"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "பொது"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "மீறிச்செயல்படும் தலைப்புகள்"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "மேலும் அறிக"

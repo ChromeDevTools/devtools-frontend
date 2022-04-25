@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site at Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Isa itong halimbawa ng isinalin na mensahe sa isyu sa paghinto sa paggamit."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Gumagamit ng Hindi na Ginagamit na Feature"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "May service worker na na-activate habang nasa back/forward cache ang page."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Naka-disable ang back/forward cache dahil sa isang error sa dokumento."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Hindi puwedeng i-store sa bfcache ang mga page na gumagamit ng FencedFrames."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Inalis sa cache ang page para mapayagang ma-cache ang isa pang page."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Hindi naaaksyunan ang mga dahilang ito, ibig sabihin, ang pag-cache ay pinigilan ng isang bagay sa labas ng direktang kontrol ng page."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# frame}one{# frame}other{# na frame}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Mga Frame"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# isyu}one{# isyu}other{# isyu}} matatagpuan sa {y,plural, =1{# frame}one{# frame}other{# frame}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Matuto pa: pagiging kwalipikado sa back/forward cache"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binary na data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopyahin"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopyahin ang lahat ng pagbabago mula sa kasalukuyang file"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Walang pagbabago"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Lahat ng antas"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "I-autocomplete mula sa history"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "na-clear ang Console"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Mga antas ng log"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "I-log ang XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ipakita lang ang mga mensahe mula sa kasalukuyang konteksto (top, iframe, worker, extension)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Ipakita ang mga error sa CORS sa console"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Ituring na pag-activate ng user ang pagsusuri"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Verbose"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Kapag naka-uncheck, ang mga property lang na may mga value na hindi null o hindi tinukoy ang ipapakita"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "binuong stylesheet"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopyahin ang lahat ng pagbabago sa CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopyahin ang lahat ng declaration"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopyahin ang panuntunan"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopyahin ang selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "na-inject na stylesheet"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Ilagay ang Panuntunan sa Istilo sa Ibaba"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Istilo ng Mga Attribute]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Ipakita ang Lahat ng Property ({PH1} pa)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Attribute na style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "stylesheet ng user agent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "sa pamamagitan ng inspector"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopyahin ang lahat ng pagbabago sa CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopyahin ang lahat ng declaration bilang JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Tingnan ang na-compute na value"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Awtomatikong dark mode"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "I-click para ilabas ang layer sa layer tree"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "binuong stylesheet"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Nakopya sa clipboard"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopyahin ang lahat ng pagbabago sa CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopyahin ang lahat ng declaration"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopyahin ang panuntunan"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopyahin ang selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Pangalan ng property na CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Value ng property na CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS selector"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "I-filter"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Dagdagan/bawasan gamit ang mousewheel o pataas/pababang key {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Na-inherit mula sa ::{PH1} pseudo ng "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Na-inherit mula sa "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "na-inject na stylesheet"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Ilagay ang Panuntunan sa Istilo sa Ibaba"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Invalid na value ng property"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo element na ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Istilo ng Mga Attribute]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Ipakita ang Lahat ng Property ({PH1} pa)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Attribute na style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "I-toggle ang mga karaniwang pag-emulate sa pag-render"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Hindi kilalang pangalan ng property"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "stylesheet ng user agent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "sa pamamagitan ng inspector"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Binalewala"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "I-filter"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Value ng Header na Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Maglagay ng custom na user agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Ipinapakita ang mga kundisyon ng network"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Pag-throttle ng network"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Pangkalahatan"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Mga pag-override sa header"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Matuto pa"

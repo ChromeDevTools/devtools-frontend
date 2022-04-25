@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site اور Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "یہ ترجمہ شدہ فرسودہ مسئلے کے پیغام کی ایک مثال ہے۔"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "فرسودہ خصوصیت کا استعمال کیا جاتا ہے"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "صفحے کے بیک/فارورڈ کیش میں ہونے کے دوران ایک سروس ورکر فعال کیا گیا تھا۔"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "دستاویز میں خرابی کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا ہے۔"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames استعمال کرنے والے صفحات کو bfcache میں اسٹور نہیں کیا جا سکتا۔"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "دوسرے صفحے کو کیش ہونے کی اجازت دینے کی غرض سے صفحہ بے دخل ہو گیا تھا۔"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "یہ وجوہات قابل کارروائی نہیں ہیں، یعنی کیشنگ کو کسی ایسی چیز کے ذریعے روکا گیا جو صفحے کے براہ راست کنٹرول سے باہر تھا۔"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# فریم}other{# فریمز}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "فریمز"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# مسئلہ}other{# مسائل}} پائے گئے {y,plural, =1{# فریم}other{# فریمز}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "مزید جانیں: بیک/فارورڈ کیش کی اہلیت"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "بائنری ڈیٹا"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "کاپی کریں"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "موجودہ فائل سے تمام تبدیلیاں کاپی کریں"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "کوئی تبدیلی نہیں"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "تمام لیولز"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "سرگزشت سے خود کار تکمیل کریں"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "کونسول کو صاف کر دیا گیا"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "لاگ کے لیولز"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "لاگ XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "صرف موجودہ سیاق و سباق سے پیغامات دکھائيں (top، iframe، worker، ایکسٹینشن)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "کونسول میں CORS خرابیاں دکھائیں"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "جانچ کو صارف فعالیت کے طور پر خیال کریں"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "وربوس"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "غیر نشان زد ہونے پر، صرف وہ پراپرٹیز دکھائی جائیں گی جن کی قدریں نہ خالی اور نہ ہی غیر واضح ہے۔"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "تخلیق کردہ اسٹائل شیٹ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS کی تمام تبدیلیاں کاپی کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "سبھی ڈیکلیریشنز کاپی کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "اصول کاپی کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector کاپی کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS منتخب کنندہ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "انجیکٹ کردہ اسٹائل شیٹ"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "ذیل میں اسٹائل کا اصول درج کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "‎{PH1}[انتساب کا اسٹائل]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "سبھی پراپرٹیز دکھائيں ({PH1} مزید)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style انتساب"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "صارف کے ایجنٹ کی اسٹائل شیٹ"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "انسپکٹر کے ذریعے"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS کی تمام تبدیلیاں کاپی کریں"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS کے بطور سبھی ڈیکلیریشنز کاپی کریں"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "حساب لگائی گئی قدر ملاحظہ کریں"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "خودکار تاریک وضع"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "پرت کے درخت میں پرت کو ظاہر کرنے کے لیے کلک کریں"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "تخلیق کردہ اسٹائل شیٹ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "کلپ بورڈ پر کاپی ہو گیا"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS کی تمام تبدیلیاں کاپی کریں"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "سبھی ڈیکلیریشنز کاپی کریں"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "اصول کاپی کریں"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector کاپی کریں"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS پراپرٹی کا نام: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS پراپرٹی کی قدر: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS منتخب کنندہ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "فلٹر"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "ماؤس وہیل یا اوپر/نیچے کی کلیدوں سے اضافہ/کمی۔ {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "سوڈو ::{PH1} سے حاصل کردہ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "اس سے حاصل کردہ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "انجیکٹ کردہ اسٹائل شیٹ"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "ذیل میں اسٹائل کا اصول درج کریں"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "پراپرٹی کی قدر غلط ہے"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "سیوڈو :: {PH1} عنصر"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "‎{PH1}[انتساب کا اسٹائل]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "سبھی پراپرٹیز دکھائيں ({PH1} مزید)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style انتساب"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "عمومی رینڈرنگ ایمولیشن کو ٹوگل کریں"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "پراپرٹی کا نامعلوم نام"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "صارف کے ایجنٹ کی اسٹائل شیٹ"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "انسپکٹر کے ذریعے"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "نظر انداز کردہ"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "فلٹر"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "مینو"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials کی ہیڈر قدر"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "حسب ضرورت صارف کا ایجنٹ درج کریں"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "نیٹ ورک کے حالات دکھائے گئے ہیں"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "نیٹ ورک تھروٹلنگ"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "عام"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ہیڈر اوور رائیڈز"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "مزید جانیں"

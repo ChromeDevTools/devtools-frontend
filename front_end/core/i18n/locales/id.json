@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Situs yang Sama dan Asal yang Sama"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Ini adalah contoh terjemahan pesan masalah penghentian penggunaan."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Menggunakan Fitur yang Tidak Digunakan Lagi"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Pekerja layanan diaktifkan saat halaman berada dalam back-forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Back-forward cache dinonaktifkan karena error dokumen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Halaman yang menggunakan FencedFrames tidak dapat disimpan dalam bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Halaman dikeluarkan dari cache untuk memungkinkan halaman lain di-cache."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Anda tidak dapat mengambil tindakan ini karena proses cache dicegah oleh sesuatu di luar kontrol langsung halaman."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# frame}other{# frame}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Frame"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# masalah}other{# masalah}} ditemukan di {y,plural, =1{# frame}other{# frame}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Pelajari lebih lanjut: kelayakan back-forward cache"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Data biner"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Salin"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Salin semua perubahan dari file saat ini"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Tidak ada perubahan"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Semua level"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Pelengkapan otomatis dari histori"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsol dihapus"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Level log"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Mencatat log XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Hanya menampilkan pesan dari konteks saat ini (top, iframe, worker, ekstensi)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Tampilkan error CORS di konsol"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Memperlakukan evaluasi sebagai aktivasi pengguna"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Panjang"
@@ -4005,7 +4041,7 @@
     "message": "Sembunyikan stempel waktu"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Log XMLHttpRequests"
+    "message": "Catat log XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Hanya menampilkan pesan dari konteks saat ini (top, iframe, worker, ekstensi)"
@@ -4029,7 +4065,7 @@
     "message": "Tampilkan stempel waktu"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Memperlakukan evaluasi sebagai aktivasi pengguna"
+    "message": "Perlakukan evaluasi sebagai aktivasi pengguna"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Buka Konsol untuk melihat {PH1}"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Jika centang dihapus, hanya properti yang nilainya null atau tidak ditentukan yang akan ditampilkan"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "stylesheet yang dikonstruksi"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Salin semua perubahan CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Salin semua deklarasi"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Salin aturan"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Salin selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Pemilih CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "stylesheet yang dimasukkan"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Sisipkan Aturan Gaya Di Bawah"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Gaya Atribut]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Tampilkan Semua Properti ({PH1} lainnya)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "stylesheet agen pengguna"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "melalui pemeriksa"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Salin semua perubahan CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Salin semua deklarasi sebagai JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Lihat nilai yang dihitung"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Mode gelap otomatis"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik untuk menampilkan lapisan di hierarki lapisan"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "stylesheet yang dikonstruksi"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Disalin ke papan klip"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Salin semua perubahan CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Salin semua deklarasi"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Salin aturan"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Salin selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nama properti CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Nilai properti CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Pemilih CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Penambahan/pengurangan dengan penggulir mouse atau tombol atas/bawah. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Diwarisi dari ::{PH1} pseudo dari "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Diwarisi dari "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "stylesheet yang dimasukkan"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Sisipkan Aturan Gaya Di Bawah"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Nilai properti tidak valid"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} elemen"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Gaya Atribut]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Tampilkan Semua Properti ({PH1} lainnya)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Tombol emulasi rendering umum"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nama properti tidak diketahui"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "stylesheet agen pengguna"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "melalui pemeriksa"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Diabaikan"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Nilai Header Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Masukkan agen pengguna khusus"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Kondisi jaringan ditampilkan"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Throttling jaringan"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Umum"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Penggantian header"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Pelajari lebih lanjut"

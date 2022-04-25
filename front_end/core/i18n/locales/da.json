@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site og Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Dette er et eksempel på en oversat meddelelse vedrørende et udfasningsproblem."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Brug af en udfaset funktion"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "En scripttjeneste blev aktiveret, mens siden var i back/forward-cachen."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Back/forward-cachen er blevet deaktiveret, fordi der er et problem med et dokument."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Sider, der bruger FencedFrames, kan ikke gemmes i back/forward-cachen."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Siden blev fjernet fra cachen, så en anden side kunne cachelagres."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Du kan ikke foretage handlinger i forhold til disse årsager. Det vil sige, at cachelagring blev forhindret af noget, som siden ikke havde direkte kontrol over."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ramme}one{# ramme}other{# rammer}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rammer"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problem}one{# problem}other{# problemer}} fundet i {y,plural, =1{# ramme}one{# ramme}other{# rammer}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Få flere oplysninger: Berettigelse til back/forward-cachen"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binære data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiér"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopiér alle ændringer fra den aktuelle fil"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ingen ændringer"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Alle niveauer"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autofuldfør ud fra historik"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er ryddet"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Logniveauer"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Log XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Vis kun meddelelser fra aktuel kontekst (top, iframe, worker, udvidelse)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Vis CORS-fejl i konsollen"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Håndter evaluering som brugeraktivering"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detaljering"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Når dette felt ikke er markeret, er det kun egenskaber, der hverken har værdien nul eller udefineret, som vises"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "konstrueret typografiark"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopiér alle CSS-ændringerne"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopiér alle erklæringer"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopiér regel"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiér selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-vælger"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "indsat typografiark"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Indsæt typografireglen nedenfor"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Format for attributter]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Vis alle egenskaber ({PH1} mere)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Attributten style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "brugeragents typografiark"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "via inspektør"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopiér alle CSS-ændringerne"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle erklæringer som JavaScript"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Se beregnede værdier"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatisk mørk tilstand"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik for at se laget i lagtræet"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "konstrueret typografiark"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopieret til udklipsholder"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiér alle CSS-ændringerne"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopiér alle erklæringer"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopiér regel"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiér selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-ejendomsnavn: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-ejendomsværdi: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-vælger"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrér"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Forøg/reducer med musehjulet eller op-/nedtasterne. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Nedarvet fra pseudoelementet ::{PH1} for "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Nedarvet fra "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "indsat typografiark"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Indsæt typografireglen nedenfor"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ugyldig egenskabværdi"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1}-elementet"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Format for attributter]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Vis alle egenskaber ({PH1} mere)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Attributten style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Slå almindelige emuleringer til gengivelse til eller fra"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ukendt egenskabsnavn"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "brugeragents typografiark"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "via inspektør"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoreret"
@@ -4980,7 +5025,7 @@
     "message": "Liggende format"
   },
   "panels/emulation/DeviceModeToolbar.ts | moreOptions": {
-    "message": "Flere muligheder"
+    "message": "Flere valgmuligheder"
   },
   "panels/emulation/DeviceModeToolbar.ts | none": {
     "message": "Ingen"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrér"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Headerværdien Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Angiv en tilpasset brugeragent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Visning af Netværksforhold"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netværksbegrænsning"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Generel"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Tilsidesættelse af overskrift"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -9651,7 +9705,7 @@
     "message": "Skjul navigatør"
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
-    "message": "Flere muligheder"
+    "message": "Flere valgmuligheder"
   },
   "panels/sources/SourcesPanel.ts | navigatorHidden": {
     "message": "Sidebjælken for navigationsværktøjet er skjult"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site 和 Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "这个示例是翻译后的弃用问题消息。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "使用了已弃用的功能"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "在该网页储存于往返缓存期间，有一个 Service Worker 被启用了。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "往返缓存已被停用，因为文档出错了。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "采用 FencedFrame 的网页无法存储在 bfcache 中。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "该网页被逐出了缓存，以使另一个网页能够缓存。"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "这些原因无法作为行动依据，即：缓存被阻止的原因超出了该网页的直接控制范围。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# 个框架}other{# 个框架}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "框架"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "在 {y,plural, =1{# 个框架}other{# 个框架}}中发现了 {x,plural, =1{# 个问题}other{# 个问题}}。"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "了解详情：往返缓存资格条件"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "二进制数据"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "复制"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "复制当前文件中的所有更改"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "无更改"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "所有级别"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "根据历史记录自动补全"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "已清除控制台"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "日志级别"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "记录 XMLHttpRequest"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "仅显示来自当前上下文（top、iframe、worker、扩展程序）的消息"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "在控制台中显示CORS错误"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "将评估视为用户激活行为"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "详细"
@@ -4626,7 +4662,7 @@
     "message": "显示祖先中的监听器"
   },
   "panels/elements/LayersWidget.ts | cssLayersTitle": {
-    "message": "CSS 图层"
+    "message": "CSS 级联层"
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
     "message": "显示/隐藏　CSS 图层视图"
@@ -4666,6 +4702,48 @@
   },
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "取消选中该设置后，系统会仅显示已定义了非 null 值的属性"
+  },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "构造的样式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "复制所有 CSS 更改"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "复制所有声明"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "复制规则"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "复制selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS 选择器"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "注入的样式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "在下方插入样式规则"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[属性样式]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "显示所有属性（另外 {PH1} 个）"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style属性"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "用户代理样式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "通过检查器"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "复制所有 CSS 更改"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式复制所有声明"
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "查看计算得出的值"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "自动深色模式"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
-    "message": "点击即可在图层树中显示图层"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "构造的样式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "已复制到剪贴板"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "复制所有 CSS 更改"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "复制所有声明"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "复制规则"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "复制selector"
+    "message": "点击即可在级联层树中显示级联层"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS 属性名称：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS 属性值：{PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS 选择器"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "过滤"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "使用鼠标滚轮或向上/向下键调大/调小。{PH1}：R ±1、Shift：G ±1、Alt：B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "继承自：{PH1}以下项的伪元素 "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "继承自 "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "注入的样式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "在下方插入样式规则"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "属性值无效"
@@ -4770,7 +4827,7 @@
     "message": "{PH1}，属性名称：{PH2}，属性值：{PH3}"
   },
   "panels/elements/StylesSidebarPane.ts | layer": {
-    "message": "图层"
+    "message": "级联层"
   },
   "panels/elements/StylesSidebarPane.ts | newStyleRule": {
     "message": "新建样式规则"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "伪 ::{PH1} 元素"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[属性样式]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "显示所有属性（另外 {PH1} 个）"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style属性"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "显示/隐藏常用渲染模拟"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "属性名称未知"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "用户代理样式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "通过检查器"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "已忽略"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "过滤"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "菜单"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials 标头值"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "输入自定义用户代理"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "已显示“网络状况”面板"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "网络节流"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "常规"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "标头覆盖"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "了解详情"
@@ -10152,7 +10206,7 @@
     "message": "在忽略列表中"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
-    "message": "呈现部分框架"
+    "message": "部分呈现帧"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
     "message": "光栅"

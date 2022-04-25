@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site và Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Đây là ví dụ về một thông báo vấn đề không dùng nữa đã được dịch."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Đang dùng một tính năng không dùng nữa"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -2256,7 +2262,7 @@
     "message": "Dung lượng lưu trữ của bộ nhớ đệm"
   },
   "panels/application/ApplicationPanelCacheSection.ts | delete": {
-    "message": "Xóa"
+    "message": "Xoá"
   },
   "panels/application/ApplicationPanelCacheSection.ts | refreshCaches": {
     "message": "Làm mới bộ nhớ đệm"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Một trình chạy dịch vụ đã được kích hoạt khi trang này đang ở bộ nhớ đệm cho thao tác tiến/lùi."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Đã tắt bộ nhớ đệm cho thao tác tiến/lùi do lỗi tài liệu"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Không lưu trữ được trang dùng FencedFrames vào bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Trang này đã bị loại khỏi bộ nhớ đệm để cho phép lưu một trang khác vào bộ nhớ đệm."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Những lý do này không thể xử lý được, tức là hoạt động lưu vào bộ nhớ đệm bị chặn do nguyên nhân nào đó ngoài tầm kiểm soát trực tiếp của trang này."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# khung}other{# khung}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Khung"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# vấn đề}other{# vấn đề}} tìm thấy trong {y,plural, =1{# khung}other{# khung}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Tìm hiểu thêm: điều kiện đối với bộ nhớ đệm cho thao tác tiến/lùi"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dữ liệu nhị phân"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Sao chép"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Sao chép mọi thay đổi từ tệp hiện tại"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Không có thay đổi"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Tất cả cấp độ"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Tự động hoàn thành nhờ nhật ký"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Bảng điều khiển đã bị xóa thông tin"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Các cấp độ nhật ký"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Ghi lại XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Chỉ hiển thị thông báo từ bối cảnh hiện tại (top, iframe, worker, tiện ích)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Hiện các lỗi CORS trong bảng điều khiển"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Coi việc đánh giá là hoạt động của người dùng"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Độ chi tiết"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Cảnh báo, đã lặp lại # lần}other{Cảnh báo, đã lặp lại # lần}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Tự động hoàn thành bằng nhật ký hoạt động"
+    "message": "Tự động hoàn thành nhờ nhật ký"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Xóa bảng điều khiển"
@@ -4029,7 +4065,7 @@
     "message": "Hiển thị dấu thời gian"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Coi quá trình đánh giá là thao tác kích hoạt của người dùng"
+    "message": "Coi việc đánh giá là hoạt động của người dùng"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Mở Bảng điều khiển để xem {PH1}"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Khi bỏ chọn, bạn sẽ chỉ thấy những thuộc tính có giá trị không rỗng (null) hoặc đã xác định"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "biểu định kiểu được tạo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Sao chép mọi thay đổi CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Sao chép mọi nội dung khai báo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Sao chép quy tắc"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Sao chép selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Bộ chọn CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "biểu định kiểu được chèn"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Chèn quy tắc kiểu ở bên dưới"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Kiểu thuộc tính]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Hiển thị mọi thuộc tính ({PH1} thuộc tính khác)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Thuộc tính style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "biểu định kiểu tác nhân người dùng"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "qua trình kiểm tra"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Sao chép mọi thay đổi CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Sao chép tất cả nội dung khai báo dưới dạng thuộc tính JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Xem giá trị đã tính"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Chế độ tối tự động"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Nhấn để xem các lớp trong cây phân lớp (layer tree)"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "biểu định kiểu được tạo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Đã sao chép vào bảng nhớ tạm"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Sao chép mọi thay đổi CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Sao chép mọi nội dung khai báo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Sao chép quy tắc"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Sao chép selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Loại thuộc tính CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Giá trị thuộc tính CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Bộ chọn CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Lọc"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Tăng/giảm bằng con lăn chuột hoặc phím lên/xuống. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Kế thừa từ phần tử giả ::{PH1} "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Đã kế thừa từ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "biểu định kiểu được chèn"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Chèn quy tắc kiểu ở bên dưới"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Giá trị thuộc tính không hợp lệ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Phần tử giả ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Kiểu thuộc tính]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Hiển thị mọi thuộc tính ({PH1} thuộc tính khác)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Thuộc tính style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Bật tắt tính năng mô phỏng hoạt động kết xuất thông thường"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tên thuộc tính không xác định"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "biểu định kiểu tác nhân người dùng"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "qua trình kiểm tra"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Bị bỏ qua"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Lọc"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Trình đơn"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Giá trị tiêu đề Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Nhập một tác nhân người dùng tùy chỉnh"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Đang hiện tình trạng mạng"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Hạn chế băng thông mạng"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Chung"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Ghi đè tiêu đề"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Tìm hiểu thêm"
@@ -8103,7 +8157,7 @@
     "message": "Chụp nhanh"
   },
   "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
-    "message": "Xóa"
+    "message": "Xoá"
   },
   "panels/profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "Tải…"
@@ -9066,7 +9120,7 @@
     "message": "Cấu trúc (ví dụ: x86)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Xóa {PH1}"
+    "message": "Xoá {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Thương hiệu"
@@ -9084,7 +9138,7 @@
     "message": "Thương hiệu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Xóa"
+    "message": "Xoá"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Đã xóa hàng tên thương hiệu"
@@ -9474,7 +9528,7 @@
     "message": "Bạn có chắc chắn muốn xóa thư mục này không?"
   },
   "panels/sources/NavigatorView.ts | delete": {
-    "message": "Xóa"
+    "message": "Xoá"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Xóa mọi cơ chế ghi đè"
@@ -11997,7 +12051,7 @@
     "message": "đã thu gọn"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
-    "message": "Xóa"
+    "message": "Xoá"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "Chỉnh sửa \"{PH1}\""
@@ -12072,7 +12126,7 @@
     "message": "Thuộc tính CSS"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Xóa {PH1}"
+    "message": "Xoá {PH1}"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
     "message": "Bản dự phòng {PH1}"

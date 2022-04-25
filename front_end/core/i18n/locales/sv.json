@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site och Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Detta är ett exempel på ett översatt felmeddelande om utfasning."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "En utfasad funktion användes"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "En tjänstefunktion aktiverades medan sidan lagrades i vilocacheminnet."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Vilocacheminnet har inaktiverats på grund av dokumentfel."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Det går inte att lagra sidor med FencedFrames i bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Sidan togs bort från cacheminnet så att en annan sida skulle kunna cachelagras."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "I dessa fall går orsaken inte att åtgärda, det vill säga, skälet till att sidan inte gick att cachelagra är något som inte styrs av sidan."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ram}other{# ramar}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Ramar"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problem}other{# problem}} hittades i {y,plural, =1{# ram}other{# ramar}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Läs mer: vilka sidor kan lagras i vilocacheminnet"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binär data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiera"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopiera alla ändringar i den aktuella filen"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Inga ändringar"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Alla nivåer"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autoslutför från historik"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsolen har rensats"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Loggnivåer"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Logga XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Visa endast meddelanden från den aktuella kontexten (top, iframe, worker, tillägg)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Visa CORS-fel i konsolen"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Behandla utvärdering som användaraktivering"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detaljerat"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Varning, upprepad # gång}other{Varning, upprepad # gånger}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Slutför automatiskt från historik"
+    "message": "Autoslutför från historik"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Ta bort konsol"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "När detta alternativ är avmarkerat visas bara egenskaper vars värde inte är null eller odefinierat"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "konstruerad formatmall"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopiera alla CSS-ändringar"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopiera alla deklarationer"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopiera regel"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiera selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-väljare"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "injicerad formatmall"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Infoga formatregel nedan"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Attributformat]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Visa alla egendomar ({PH1} till)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style-attribut"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "formatmall för användaragent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "via granskningsverktyget"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopiera alla CSS-ändringar"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiera alla deklarationer som JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Visa beräknat värde"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatiskt mörkt läge"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klicka här för att visa trädvyn med lager"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "konstruerad formatmall"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopierat till urklipp"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiera alla CSS-ändringar"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopiera alla deklarationer"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopiera regel"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiera selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-egenskapens namn: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-egenskapens värde: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-väljare"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrera"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Ökning/minskning med mushjulet eller uppåt-/nedåttangenterna. {PH1}: R ±1, Skift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Ärvt från ::{PH1} pseudoelement för "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Ärvdes från "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "injicerad formatmall"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Infoga formatregel nedan"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ogiltigt egendomsvärde"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo: {PH1}-element"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Attributformat]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Visa alla egendomar ({PH1} till)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style-attribut"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Aktivera och inaktivera vanliga renderingsemuleringar"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Okänt egendomsnamn"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "formatmall för användaragent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "via granskningsverktyget"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoreras"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrera"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Meny"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Värde för Access-Control-Allow-Credentials-huvudet"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Ange en anpassad användaragent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Nätverksförhållanden visas"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Nätverksbegränsning"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Allmänt"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Åsidosättanden av huvuden"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Läs mer"

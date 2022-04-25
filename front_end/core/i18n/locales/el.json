@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site και Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Αυτό είναι ένα παράδειγμα μεταφρασμένου μηνύματος για πρόβλημα κατάργησης."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Χρησιμοποιήθηκε λειτουργία που έχει καταργηθεί"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API διαχείρισης ομόσπονδων διαπιστευτηρίων"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Ένα service worker ενεργοποιήθηκε ενώ η σελίδα βρισκόταν στην κρυφή μνήμη πίσω-εμπρός."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω σφάλματος στο έγγραφο."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Δεν είναι δυνατή η αποθήκευση σελίδων που χρησιμοποιούν FencedFrames στο bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Η σελίδα καταργήθηκε από την κρυφή μνήμη προκειμένου να επιτραπεί η αποθήκευση μιας άλλης σελίδας στην κρυφή μνήμη."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Δεν υπάρχει δυνατότητα ενέργειας για αυτούς τους λόγους, δηλαδή η αποθήκευση στην κρυφή μνήμη αποτράπηκε για κάποιον λόγο εκτός του άμεσου ελέγχου της σελίδας."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# πλαίσιο}other{# πλαίσια}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Πλαίσια"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# πρόβλημα}other{# προβλήματα}} βρέθηκαν σε {y,plural, =1{# πλαίσιο}other{# πλαίσια}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Μάθετε περισσότερα : καταλληλότητα για την κρυφή μνήμη πίσω-εμπρός"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Δυαδικά δεδομένα"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Αντιγραφή"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Αντιγραφή όλων των αλλαγών από το τρέχον αρχείο"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Δεν υπάρχουν αλλαγές"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Όλα τα επίπεδα"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Αυτόματη συμπλήρωση από ιστορικό"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Η κονσόλα διαγράφηκε"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Επίπεδα καταγραφής"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Καταγραφή XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Να εμφανίζονται μηνύματα μόνο από το τρέχον περιβάλλον (top, iframe, worker, επέκταση)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Να εμφανίζονται σφάλματα CORS στην κονσόλα"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Να θεωρείται η αξιολόγηση ως ενεργοποίηση από τον χρήστη"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Λεπτομερές"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Όταν καταργηθεί η επιλογή, θα εμφανίζονται μόνο οι ιδιότητες των οποίων οι τιμές είναι null ή δεν έχουν οριστεί"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "κατασκευασμένο φύλλο στιλ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Αντιγραφή όλων των αλλαγών CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Αντιγραφή όλων των δηλώσεων"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Αντιγραφή κανόνα"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Αντιγραφή selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Επιλογέας CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "φύλλα στιλ μέσω εισαγωγής"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Εισαγάγετε τον κανόνα στιλ παρακάτω"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Στιλ χαρακτηριστικών]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Εμφάνιση όλων των ιδιοτήτων ({PH1} ακόμη)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Χαρακτηριστικό style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "φύλλο στιλ παράγοντα χρήστη"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "μέσω επιθεώρησης"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Αντιγραφή όλων των αλλαγών CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Αντιγραφή όλων των δηλώσεων ως JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Προβολή υπολογισμένης τιμής"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Αυτόματη λειτουργία χαμηλού φωτισμού"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Κάντε κλικ για να αποκαλύψετε το επίπεδο στο δέντρο επιπέδων"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "κατασκευασμένο φύλλο στιλ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Αντιγράφηκε στο πρόχειρο"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Αντιγραφή όλων των αλλαγών CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Αντιγραφή όλων των δηλώσεων"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Αντιγραφή κανόνα"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Αντιγραφή selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Όνομα ιδιότητας CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Τιμή ιδιότητας CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Επιλογέας CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Φίλτρο"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Αύξηση/μείωση με τον τροχό κύλισης ποντικιού ή τα πλήκτρα επάνω/κάτω. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Μεταβιβάστηκε από το ψευδο-στοιχείο ::{PH1} του "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Μεταβιβάστηκε από "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "φύλλα στιλ μέσω εισαγωγής"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Εισαγάγετε τον κανόνα στιλ παρακάτω"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Μη έγκυρη τιμή ιδιότητας"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Ψεύδο-στοιχείο ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Στιλ χαρακτηριστικών]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Εμφάνιση όλων των ιδιοτήτων ({PH1} ακόμη)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Χαρακτηριστικό style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Εναλλαγή συνήθων προσομοιώσεων απόδοσης"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Άγνωστο όνομα ιδιότητας"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "φύλλο στιλ παράγοντα χρήστη"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "μέσω επιθεώρησης"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Παραβλέφθηκε"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Φίλτρο"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Μενού"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Τιμή κεφαλίδας Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Εισαγωγή προσαρμοσμένου παράγοντα χρήστη"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Εμφανίζονται οι συνθήκες του δικτύου"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Περιορισμός δικτύου"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Γενικά"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Παράκαμψη κεφαλίδας"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Μάθετε περισσότερα"

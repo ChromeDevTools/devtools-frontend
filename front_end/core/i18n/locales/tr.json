@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ve Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Bu, kullanımdan kaldırma sorunu mesajı için çeviri örneğidir."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Kullanımdan Kaldırılmış Özellik Kullanıldı"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Sayfa geri-ileri önbellekteyken bir hizmet çalışanı etkinleştirilmiş."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Doküman hatası nedeniyle geri-ileri önbellek devre dışı bırakıldı."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames kullanan sayfalar bfcache'te saklanamaz."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Sayfa, başka bir sayfanın önbelleğe alınabilmesi için önbellekten çıkarılmış."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Bu nedenlerle ilgili işlem yapılamaz. Yani önbelleğe alma, doğrudan sayfanın kontrolünde olmayan bir nedenden ötürü engellenmiştir."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# çerçeve}other{# çerçeve}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Çerçeveler"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# çerçevede}other{# çerçevede}} {x,plural, =1{# sorun}other{# sorun}} bulundu."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Daha fazla bilgi: geri-ileri önbellek uygunluğu"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "İkili veri"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopyala"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Mevcut dosyadaki tüm değişiklikleri kopyala"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Değişiklik yok"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Tüm seviyeler"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Otomatik tamamlamada geçmiş kullanılsın"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsol temizlendi"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Günlük seviyeleri"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests bilgisi günlüğe kaydedilsin"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Yalnızca şu anki bağlamdan mesajları göster (top, iframe, worker, uzantı)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Konsolda CORS hatalarını göster"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Değerlendirme, kullanıcı etkinleştirmesi olarak kabul edilsin"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Ayrıntılı"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "İşaret kaldırıldığında yalnızca null ve tanımsız değere sahip olmayan mülkler gösterilir."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "oluşturulan stil sayfası"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Tüm CSS değişikliklerini kopyala"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Tüm tanımlamaları kopyala"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kuralı kopyala"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector öğesini kopyala"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS seçici"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "aktarılan stil sayfası"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Stil Kuralını Aşağıya Ekle"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Özellik Stili]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Tüm Özellikleri Göster ({PH1} tane daha)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style özelliği"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "kullanıcı aracısı stil sayfası"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "denetleyici aracılığıyla"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Tüm CSS değişikliklerini kopyala"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Tüm tanımlamaları JS olarak kopyala"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hesaplanan değeri göster"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Otomatik koyu mod"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Katman ağacındaki katmanı görüntülemek için tıklayın"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "oluşturulan stil sayfası"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Panoya kopyalandı"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Tüm CSS değişikliklerini kopyala"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Tüm tanımlamaları kopyala"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kuralı kopyala"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector öğesini kopyala"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS özellik adı: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS özellik değeri: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS seçici"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtre"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Fare tekerleği veya yukarı/aşağı tuşlarıyla artırma/azaltma. {PH1}: R ±1, Üst Karakter: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Devralındığı öğe ::{PH1} şunun taklidi: "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Devralındığı kaynak "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "aktarılan stil sayfası"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Stil Kuralını Aşağıya Ekle"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Geçersiz özellik değeri"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Sözde ::{PH1} öğesi"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Özellik Stili]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Tüm Özellikleri Göster ({PH1} tane daha)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style özelliği"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Genel oluşturma emülasyonlarını aç/kapat"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Özellik adı bilinmiyor"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "kullanıcı aracısı stil sayfası"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "denetleyici aracılığıyla"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Yoksayıldı"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtre"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menü"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Üstbilgi Değeri"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Özel kullanıcı aracısı girin"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Ağ koşulları gösteriliyor"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ağ sınırlama"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Genel"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Üst bilgi geçersiz kılmaları"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Daha fazla bilgi"

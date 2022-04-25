@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site va Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Bu tarjima qilingan tugatish muammosi xabariga misol."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Tugatilgan funksiyadan foydalanildi"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Sahifa ortga qaytadigan keshdaligida service worker aktivatsiya qilinadi."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Hujjat xatosi sababli ortga qaytadigan kesh faolsizlantirildi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ishlatadigan sahifalar bfcache ichida saqlanmaydi."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Sahifa boshqasini keshlash maqsadida keshdan oʻchirildi."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Keshlanishga sahifa tashqarisidagi narsalar xalaqit qilishi kabi sabablar tuzatilmaydi."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ta freym}other{# ta freym}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Freymlar"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# ta freym}other{# ta freym}} ichida {x,plural, =1{# ta muammo}other{# ta muammo}} topildi."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Batafsil: orqaga qaytadigan keshdan foydalanish imkoniylari haqida"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binar axborot"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Nusxa olish"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Joriy fayldan barcha oʻzgartirishlardan nusxa olish"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Oʻzgarishsiz"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Barcha darajalar"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Tarixdan avtomatik kiritilishi"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Terminal tozalandi"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Darajalar jurnali"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests soʻrovlarini jurnalga yozish"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Faqat joriy kontekst javoblarini chiqarish (top, iframe, worker, kengaytma)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Terminalda CORS xatolarini chiqarish"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Baholashni foydalanuvchi amali sifatida qabul qilish"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Batafsil"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Bu tanlov bekor qilinsa, boʻsh yoki 0 qiymatlari boʻlgan xususiyatlar koʻrsatilmaydi."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "tuzilgan stylesheet"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Barcha CSS oʻzgarishlaridan nusxa olish"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Barcha bayonotlarni nusxalash"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Qoidani nusxalash"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Nusxalash: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS tanlagichi"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "tahrirlangan stil jadvali"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Stil qoidasini quyida joylang"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Atributlar uslubi]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Barcha xususiyatlar (+{PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style atributi"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "foydalanuvchi agenti uslublar jadvali"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "inspektor orqali"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Barcha CSS oʻzgarishlaridan nusxa olish"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Barcha bayonotlarni JS shaklida nusxalash"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Hisoblangan qiymatni koʻrish"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Avtomatik tungi rejim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Qatlam daraxtidagi qatlamni ochish uchun bosing"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "tuzilgan stylesheet"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Vaqtinchalik xotiraga nusxalandi"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Barcha CSS oʻzgartirishlaridan nusxa olish"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Barcha bayonotlarni nusxalash"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Qoidani nusxalash"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Nusxalash: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS xususiyati nomi: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS xususiyati qiymati: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS tanlagichi"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtr"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Sichqoncha gʻildiragi yoki tepaga/pastga tugmalari bilan balandlatish/pasaytirish mumkin. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "::{PH1} psevdoelementdan voris elementi "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Voris elementi "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "tahrirlangan stil jadvali"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Stil qoidasini quyida joylang"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Yaroqsiz xususiyat qiymati"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} elementi"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Atributlar uslubi]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Barcha xususiyatlar (+{PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style atributi"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Umumiy renderlash emulyatsiyalarini almashtirish"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Notanish xususiyat nomi"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "foydalanuvchi agenti uslublar jadvali"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "inspektor orqali"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Rad etildi"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtr"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menyu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials sarlavhasi qiymati"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Boshqa foydalanuvchi agentini kiriting"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Tarmoq holati haqida axborot koʻrsatilgan"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Tarmoq qotishi"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Umumiy"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Oldindan aniqlangan sarlavhalar"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Batafsil"

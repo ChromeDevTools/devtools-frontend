@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site și Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Acesta este un exemplu de mesaj tradus privind o problemă legată de renunțarea la dezvoltare."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "S-a folosit o funcție învechită"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API-ul Federated Credential Management"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Un service worker s-a activat în timp ce pagina era în memoria cache înainte/înapoi."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Memoria cache înainte/înapoi este dezactivată din cauza unei erori de document."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Paginile care folosesc FencedFrames nu pot fi stocate în bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Pagina a fost eliminată din memoria cache pentru a permite memorarea altei pagini."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Aceste motive nu sunt utile; stocarea în memoria cache a fost împiedicată de ceva din afara controlului direct al paginii."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# cadru}few{# cadre}other{# de cadre}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Cadre"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problemă}few{# probleme}other{# de probleme}} găsite în {y,plural, =1{# cadru}few{# cadre}other{# de cadre}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Află mai multe: eligibilitate memorie cache înainte-înapoi"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Date binare"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copiază"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copiază toate modificările din fișierul actual"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Fără modificări"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Toate nivelurile"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Completează automat din istoric"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Consola a fost ștearsă"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Nivelurile înregistrării"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Înregistrează XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Afișează doar mesajele din contextul actual (top, iframe, worker, extensia)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Afișează CORS erori în consolă"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Tratează evaluarea ca pe activarea utilizatorilor"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detaliat"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Avertisment, repetat # dată}few{Avertisment, repetat de # ori}other{Avertisment, repetat de # de ori}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Completarea automată din istoric"
+    "message": "Completează automat din istoric"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Golește consola"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Dacă este debifat, se vor afișa numai proprietățile a căror valoare nu este nici nulă, nici nedefinită"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "foaie de stil structurată"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copiază toate modificările CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Copiază toate declarațiile"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Copiază regula"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Copiază selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selector CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "foaie de stil injectată"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Introdu regula de stil mai jos"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Stilul atributelor]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Afișează toate proprietățile (încă {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atributul style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "foaie de stil pentru user agent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "cu ajutorul inspectorului"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copiază toate modificările CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copiază toate declarațiile ca JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Vezi valoarea calculată"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Modul întunecat automat"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Dă clic pentru a afișa stratul într-o structură arbore din straturi"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "foaie de stil structurată"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "S-au copiat în clipboard"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copiază toate modificările CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Copiază toate declarațiile"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Copiază regula"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Copiază selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Numele proprietății CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Valoarea proprietății CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selector CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrează"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Mărește / micșorează folosind rotița mouse-ului sau tastele săgeată în sus / săgeată în jos. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Moștenit de la ::{PH1} pseudo pentru "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Moștenit de la "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "foaie de stil injectată"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Introdu regula de stil mai jos"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Valoare nevalidă a proprietății"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudonim: elementul {PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Stilul atributelor]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Afișează toate proprietățile (încă {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atributul style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Comută între simulările de redare comune"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nume de proprietate necunoscut"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "foaie de stil pentru user agent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "cu ajutorul inspectorului"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorat"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrează"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Meniu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Valoare de antet Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Introdu un user agent personalizat"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Se afișează condițiile de rețea"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitarea rețelei"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "General"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Modificări de antet"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Află mai multe"

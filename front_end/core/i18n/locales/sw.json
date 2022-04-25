@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Maelezo kuhusu Tovuti Sawa na Chanzo Sawa"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Huu ni mfano wa ujumbe uliotafsiriwa wa hitilafu ya kuacha kuendesha huduma."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Kipengele kilichoacha kuendesha huduma kimetumika"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Iliyoshirikishwa ya Usimamizi wa Vitambulisho"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Kitoa huduma (SW) kiliwashwa ukurasa ulipokuwa kwenye kipengele cha kuakibisha ukurasa kamili."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Kipengele cha kuakibisha ukurasa kamili kimezimwa kwa sababu ya hitilafu ya hati."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Kurasa zinazotumia FencedFrames haziwezi kuhifadhiwa kwenye bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Ukurasa umeondolewa kwenye akiba ili kuruhusu ukurasa mwingine uakibishwe."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Sababu hizi haziwezi kuchukuliwa hatua, yaani uakibishaji ulizuiwa na jambo lingine nje ya udhibiti wa moja kwa moja wa ukurasa."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{fremu #}other{fremu #}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Fremu"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{hitilafu #}other{hitilafu #}} imepatikana kwenye {y,plural, =1{fremu #}other{fremu #}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Pata maelezo zaidi: masharti ya kutumia kipengele cha kuakibisha ukurasa kamili"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Data ya mfumo wa jozi"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Nakili"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Nakili mabadiliko yote kutoka kwenye faili ya sasa"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Hakuna mabadiliko"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Viwango vyote"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Kamilisha kiotomatiki kutoka kwenye historia"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Dashibodi imefutwa"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Viwango vya kumbukumbu"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Kumbukumbu za XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Onyesha ujumbe kutoka kwenye muktadha wa sasa tu (top, iframe, worker, kiendelezi)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Onyesha hitilafu za CORS katika dashibodi"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Chukulia tathimini kama sababu ya mtumiaji kuanza kutumia"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Maneno mengi"
@@ -4005,7 +4041,7 @@
     "message": "Ficha mihuri ya muda"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Rekodi XMLHttpRequests"
+    "message": "Kumbukumbu za XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Onyesha ujumbe kutoka kwenye muktadha wa sasa tu (top, iframe, worker, kiendelezi)"
@@ -4029,7 +4065,7 @@
     "message": "Onyesha mihuri ya wakati"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Chukulia tathmini kama mtumiaji kuanza kutumia"
+    "message": "Chukulia tathimini kama sababu ya mtumiaji kuanza kutumia"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Fungua Dashibodi ili uangalie {PH1}"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Ukiwa hujachagua kisanduku hiki, vipengele ambavyo vina thamani ambazo hazijawekwa au hazijabainishwa ndivyo tu vitakavyoonyeshwa"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "laha ya muundo iliyowekwa muundo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Nakili mabadiliko yote ya CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Nakili taarifa zote"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Nakili kanuni"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Nakili selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Kiteuzi cha CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "laha ya muundo iliyowekwa"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Weka Kanuni ya Muundo Hapa Chini"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Muundo wa Sifa]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Onyesha Vipengele Vyote (vingine {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Sifa ya style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "laha ya muundo ya ala ya mtumiaji"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "kupitia kwenye kikaguzi"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Nakili mabadiliko yote ya CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Nakili taarifa zote katika muundo wa JavaScript"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Angalia thamani iliyokokotolewa"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Hali nyeusi inayowekwa kiotomatiki"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Bofya ili uonyeshe safu kwenye mfumo wa ngazi wa safu"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "laha ya muundo iliyowekwa muundo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Imewekwa kwenye ubao wa kunakili"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Nakili mabadiliko yote ya CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Nakili taarifa zote"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Nakili kanuni"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Nakili selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Jina la kipengele cha CSS ni: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Thamani ya kipengele cha CSS ni: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Kiteuzi cha CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Kichujio"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Kuongeza au kupunguza kwa kutumia kigurudumu cha kipanya au vitufe vya juu na chini. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Imerithi kutoka ::{PH1} bandia ya "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Imenakiliwa kutoka "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "laha ya muundo iliyowekwa"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Weka Kanuni ya Muundo Hapa Chini"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Thamani ya kipengele si sahihi"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Bandia ::kipengee cha {PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Muundo wa Sifa]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Onyesha Vipengele Vyote (vingine {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Sifa ya style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Geuza vipengele vya kawaida vya kutekeleza uigaji"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Jina la kipengele halijulikani"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "laha ya muundo ya ala ya mtumiaji"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "kupitia kwenye kikaguzi"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Imepuuzwa"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Kichujio"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menyu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Thamani ya Kichwa ya Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Weka ala maalum ya mtumiaji"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Hali za mtandao zimeonyeshwa"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Kubana mtandao"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Jumla"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Ubatilishaji wa kijajuu"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Pata maelezo zaidi"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ja Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Tämä on esimerkki käännetystä viestistä, joka kertoo käytöstä poistamiseen liittyvästä ongelmasta."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Käytöstä poistettua ominaisuutta käytetty"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service worker aktivoitiin, kun sivu oli siirtymisvälimuistissa."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Dokumenttivirhe estää siirtymisvälimuistin käytön."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "bfcache ei voi tallentaa FencedFramesia käyttäviä sivuja."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Sivu poistettiin välimuistista, jotta toinen sivu voitiin tallentaa välimuistiin."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Näihin syihin ei voi vaikuttaa, eli välimuistin käytön esti jokin sivun ulkopuolinen asia."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# kehys}other{# kehystä}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Kehykset"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# ongelma}other{# ongelmaa}} havaittu {y,plural, =1{# kehyksessä}other{# kehyksessä}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Lue lisää: siirtymisvälimuistin kelpoisuusehdot"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binaaridata"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopioi"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopioi kaikki muutokset nykyisestä tiedostosta"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ei muutoksia"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Kaikki tasot"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Täydennä automaattisesti historian perusteella"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsoli tyhjennetty"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Lokitasot"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Kirjaa XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Näytä vain viestit nykyisestä kontekstista (top, iframe, worker, laajennus)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Näytä nämä virheet konsolissa: CORS"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Pidä arviointia käyttäjän aktivoimistoimena"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Monisanainen"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Jos tätä ei ole valittu, näytetään vain omaisuudet, joiden arvo on nolla tai sitä ei ole määritetty"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "muodostettu tyyliarkki"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopioi kaikki CSS-muutokset"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopioi kaikki määrittelyt"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopioi sääntö"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopioi selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Valitsin: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "injektoitu tyyliarkki"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Lisää tyylisääntö alla"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Määritetyyli]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Näytä kaikki ominaisuudet ({PH1} lisää)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Määrite: style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "käyttäjäagenttityyliarkki"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "tarkastajan kautta"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopioi kaikki CSS-muutokset"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopioi kaikki määrittelyt JS-muodossa"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Katso laskettu arvo"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automaattinen tumma tila"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klikkaa nähdäksesi taso tasopuussa"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "muodostettu tyyliarkki"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopioitu leikepöydälle"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopioi kaikki CSS-muutokset"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopioi kaikki määrittelyt"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopioi sääntö"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopioi selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-omaisuuden nimi {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-omaisuuden arvo: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Valitsin: CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Suodata"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Lisäys/pienennys hiiren rullalla tai ylös-/alas-näppäimillä. {PH1}: R ±1, Vaihto: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Peritty: ::{PH1} (pseudoelementti) "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Perittiin kohteelta "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "injektoitu tyyliarkki"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Lisää tyylisääntö alla"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Virheellinen ominaisuuden arvo"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelementti ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Määritetyyli]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Näytä kaikki ominaisuudet ({PH1} lisää)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Määrite: style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Yleiset renderöintiemuloinnit päälle/pois"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tuntematon ominaisuuden nimi"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "käyttäjäagenttityyliarkki"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "tarkastajan kautta"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ohitettu"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Suodata"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Valikko"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Otsikon arvo: Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Lisää oma käyttäjäagentti"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Näytetyt verkko-olosuhteet"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Verkon hidastaminen"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Yleiset"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Otsikon ohitukset"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Lue lisää"

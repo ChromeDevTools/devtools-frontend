@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site と Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "サポート終了に関する問題の翻訳されたメッセージのサンプルです。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "サポートの終了した機能が使用されています"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ページがバックフォワード キャッシュにある間に、Service Worker が起動されました。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "バックフォワード キャッシュはドキュメントのエラーが原因で無効になっています。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Fenced Frame を使用しているページは、バックフォワード キャッシュに保存できません。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "別のページをキャッシュに保存できるようにするため、ページがキャッシュから削除されました。"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "これらの原因は対処不可能です。つまり、ページから直接制御できない外部要因によってキャッシュ保存が妨げられました。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# 個のフレーム}other{# 個のフレーム}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "フレーム"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# 件の問題}other{# 件の問題}}が {y,plural, =1{# 個のフレーム}other{# 個のフレーム}}で見つかりました。"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "バックフォワード キャッシュの使用に関する詳細"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "バイナリデータ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "コピー"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "現在のファイルから変更をすべてコピー"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "変更はありません"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "すべてのレベル"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "履歴からオートコンプリート"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "コンソールが消去されました"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ログレベル"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests をログ"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "現在のコンテキストのメッセージのみを表示（top、iframe、worker、extension）"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "コンソールに CORS エラーを表示する"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "評価をユーザー アクティベーションとして扱う"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "詳細"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "チェックボックスをオフにすると、値が null および未定義でないプロパティのみが表示されます"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "作成されたスタイルシート"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS の変更をすべてコピー"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "宣言をすべてコピー"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "ルールをコピー"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector をコピー"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS セレクタ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "注入されたスタイルシート"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "以下にスタイルルールを挿入します"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1} [属性スタイル]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "プロパティをすべて表示（他 {PH1} 件）"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style 属性"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ユーザー エージェント スタイルシート"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "インスペクタ経由"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS の変更をすべてコピー"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "すべての宣言を JS としてコピー"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "計算値を見る"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ダークモードを自動的に設定する"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "クリックするとレイヤツリーでレイヤを表示します"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "作成されたスタイルシート"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "クリップボードにコピーしました"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS の変更箇所をすべてコピー"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "宣言をすべてコピー"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "ルールをコピー"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector をコピー"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS プロパティ名: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS プロパティ値: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS セレクタ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "フィルタ"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "マウスホイールまたは上 / 下矢印キーを使って増減を調整します。{PH1}: R ±1、Shift: G ±1、Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "次の疑似要素 ::{PH1} から継承 "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "継承元 "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "注入されたスタイルシート"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "以下にスタイルルールを挿入します"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "プロパティ値が無効"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "疑似 ::{PH1} 要素"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1} [属性スタイル]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "プロパティをすべて表示（他 {PH1} 件）"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style 属性"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "一般的なレンダリング エミュレーションを切り替え"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "不明なプロパティ名"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ユーザー エージェント スタイルシート"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "インスペクタ経由"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "除外"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "フィルタ"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "メニュー"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials のヘッダー値"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "カスタム ユーザー エージェントを入力"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "ネットワーク状況が表示されています"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ネットワーク スロットリング"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "全般"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ヘッダーのオーバーライド"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "詳細"

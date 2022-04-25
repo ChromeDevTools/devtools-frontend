@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Samme nettsted og samme opprinnelse"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Dette er et eksempel på en oversatt melding om et avviklingsproblem."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "En avviklet funksjon er brukt"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "En Service Worker ble aktivert mens siden var i frem-og-tilbake-bufferen."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en dokumentfeil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Sider som bruker FencedFrames, kan ikke lagres i bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Du kan ikke utføre handlinger for å løse disse problemene, ettersom bufringen ble forhindret av noe som siden ikke har direkte kontroll over."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ramme}other{# rammer}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rammer"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problem}other{# problemer}} funnet i {y,plural, =1{# ramme}other{# rammer}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Finn ut mer: kvalifisering for frem-og-tilbake-bufferen"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binære data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiér"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopier alle endringer fra den gjeldende filen"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ingen endringer"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Alle nivåer"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autofullfør fra loggen"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er tømt"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Loggnivåer"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Loggfør XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Vis kun meldinger fra den nåværende konteksten (top, iframe, worker, utvidelse)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Vis CORS-feil i konsollen"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Behandle evaluering som brukeraktivering"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detaljert"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Når denne ikke er merket av, vises kun egenskaper som verken har «null» eller «undefined» som verdi"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "konstruert stilark"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopier alle CSS-endringer"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopier alle erklæringer"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopier regel"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiér selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-velger"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "injisert stilark"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Sett inn stilregel nedenfor"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Attributtstil]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Vis alle egenskaper ({PH1} flere)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Attributtet style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "stilark for brukeragent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "via inspektør"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopier alle CSS-endringer"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle deklarasjoner som JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Vis beregnet verdi"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatisk mørk modus"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klikk for å vise laget i lagtreet"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "konstruert stilark"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopiert til utklippstavlen"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopier alle CSS-endringene"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopier alle erklæringer"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopier regel"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiér selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-egenskapsnavn: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-egenskapsverdi: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-velger"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrér"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Øk/reduser med mushjul eller opp-/-ned-taster {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Arvet fra ::{PH1}-pseudoelement av "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Arvet fra "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "injisert stilark"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Sett inn stilregel nedenfor"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ugyldig egenskapsverdi"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1}-element"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Attributtstil]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Vis alle egenskaper ({PH1} flere)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Attributtet style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Slå av/på vanlige gjengivelses-emuleringer"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ukjent egenskapsnavn"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "stilark for brukeragent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "via inspektør"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorert"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrér"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Meny"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Verdi for hodet Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Oppgi en egendefinert brukeragent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Nettverksbetingelsene vises"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Struping av nettverkshastighet"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Generelt"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Hodeoverstyringer"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Finn ut mer"

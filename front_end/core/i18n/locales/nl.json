@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site en Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Dit is een voorbeeld van een vertaalde foutmelding over een beëindigde functie."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Beëindigde functie gebruikt"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Er is een service worker geactiveerd terwijl de pagina zich in Back-Forward Cache bevond."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Back-Forward Cache is uitgezet vanwege een documentfout."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Pagina's die FencedFrames gebruiken, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Er kan geen actie worden ondernomen voor deze redenen, wat betekent dat opslaan in het cachegeheugen is voorkomen door iets buiten de directe controle van de pagina."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# frame}other{# frames}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Frames"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# probleem}other{# problemen}} gevonden in {y,plural, =1{# frame}other{# frames}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Meer informatie: geschiktheid voor Back-Forward Cache"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binaire gegevens"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiëren"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Alle wijzigingen kopiëren uit huidig bestand"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Onveranderd"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Alle niveaus"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatisch aanvullen uit geschiedenis"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console gewist"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Logboekniveaus"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests registreren"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Alleen berichten uit de huidige context tonen (top, iframe, worker, extensie)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Fouten voor CORS laten zien in de console"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Evaluatie behandelen als gebruikersactivering"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Uitgebreid"
@@ -4590,7 +4626,7 @@
     "message": "Pagina-DOM"
   },
   "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "weergeven"
+    "message": "bekijken"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Alle nodes bekijken (nog {PH1})"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Als het selectievakje is uitgevinkt, worden alleen properties getoond waarvan de waarden niet null of ongedefinieerd zijn"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "samengestelde stylesheet"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Alle css-wijzigingen kopiëren"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Alle declaraties kopiëren"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Regel kopiëren"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiëren: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Kiezer voor CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "geïnjecteerde stylesheet"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Geef hieronder een stijlregel op"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Kenmerkstijl]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Alle property's bekijken (nog {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Kenmerk style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "stylesheet voor user-agents"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "via Inspector"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Alle css-wijzigingen kopiëren"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Alle declaraties kopiëren als JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Berekende waarde bekijken"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatische donkere modus"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik om de laag zichtbaar te maken in de laagstructuur"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "samengestelde stylesheet"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Gekopieerd naar klembord"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Alle css-wijzigingen kopiëren"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Alle declaraties kopiëren"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Regel kopiëren"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiëren: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Naam van CSS-property: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Waarde van CSS-property: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Kiezer voor CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Laten toenemen/afnemen met muiswiel, pijl-omhoog of pijl-omlaag. {PH1}: R ± 1, Shift: G ± 1, Alt: B ± 1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Overgenomen van ::{PH1}-pseudo van "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Overgenomen van "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "geïnjecteerde stylesheet"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Geef hieronder een stijlregel op"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ongeldige propertywaarde"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo-element ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Kenmerkstijl]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Alle property's bekijken (nog {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Kenmerk style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Veelvoorkomende rendering-emulaties schakelen"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Onbekende propertynaam"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "stylesheet voor user-agents"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "via Inspector"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Genegeerd"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Waarde voor header Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Geef een aangepaste user-agent op"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Netwerkomstandigheden getoond"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netwerkbeperking"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Algemeen"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Koptekstoverschrijvingen"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Meer informatie"
@@ -8739,7 +8793,7 @@
     "message": "Apparaatstand instellen op alfa {PH1}, bèta: {PH2}, gamma: {PH3}"
   },
   "panels/sensors/SensorsView.ts | displayDown": {
-    "message": "Omlaag weergeven"
+    "message": "Omlaag bekijken"
   },
   "panels/sensors/SensorsView.ts | displayUp": {
     "message": "Scherm omhoog"
@@ -9774,7 +9828,7 @@
     "message": "Automatische aanvulling"
   },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
-    "message": "Bestanden automatisch weergeven in zijbalk"
+    "message": "Bestanden automatisch bekijken in zijbalk"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "Accolades checken"
@@ -9831,7 +9885,7 @@
     "message": "Waarden van variabelen inline bekijken tijdens foutopsporing"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "Bestanden niet automatisch weergeven in zijbalk"
+    "message": "Bestanden niet automatisch bekijken in zijbalk"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
     "message": "Geen inspringing waarnemen"

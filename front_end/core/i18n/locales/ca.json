@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site i Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Això és un exemple d'un missatge traduït d'un problema de discontinuació."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "S'ha utilitzat una funció obsoleta"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Federated Credential Management"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "S'ha activat un Service Worker mentre la pàgina era a la memòria cau back-forward."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "La memòria cau back-forward està desactivada a causa d'un error del document."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Les pàgines que fan servir FencedFrames no es poden emmagatzemar a bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "La pàgina s'ha tret de la memòria cau perquè s'hi pugui desar una altra pàgina."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Aquests motius no són accionables, és a dir, alguna cosa fora del control directe de la pàgina ha evitat que es desi a la memòria cau."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# marc}other{# marcs}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Marcs"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{S'ha trobat # problema}other{S'han trobat # problemes}} a {y,plural, =1{# marc}other{# marcs}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Obtén més informació: idoneïtat de la memòria cau back-forward"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dades binàries"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copia"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copia tots els canvis del fitxer actual"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Sense canvis"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Tots els nivells"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Compleció automàtica a partir de l'historial"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "La consola s'ha esborrat"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Nivells de registre"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Registra XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Només mostra missatges del context actual (top, iframe, worker i extensió)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Mostra els errors CORS a la consola"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Tracta l'avaluació com a activació de l'usuari"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Verbós"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Quan es desmarca aquesta casella, només es mostraran les propietats que no tinguin valors nuls o no definits"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "full d'estil construït"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copia tots els canvis de CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Copia totes les declaracions"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Copia la regla"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Copia selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selector de: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "full d'estil injectat"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Insereix una regla d'estil a continuació"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[estil dels atributs]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Mostra totes les propietats ({PH1} més)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "full d'estil de l'agent d'usuari"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "a través de l'inspector"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copia tots els canvis de CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copia totes les declaracions com a JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Mostra el valor calculat"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Mode fosc automàtic"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Fes clic per mostrar la capa a l'arbre de capes"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "full d'estil construït"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "S'ha copiat al porta-retalls"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copia tots els canvis de CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Copia totes les declaracions"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Copia la regla"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Copia selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nom de la propietat CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Valor de la propietat CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selector de: CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtra"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Augmenta o redueix la imatge amb la rodeta del ratolí o les tecles amunt i avall. {PH1}: R±1, Maj: G±1 i Alt: B±1."
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Heretat del pseudoelement ::{PH1} de "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Heretat de "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "full d'estil injectat"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Insereix una regla d'estil a continuació"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Valor de propietat no vàlid"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelement ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[estil dels atributs]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Mostra totes les propietats ({PH1} més)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Commuta les emulacions de renderització habituals"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nom de propietat desconegut"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "full d'estil de l'agent d'usuari"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "a través de l'inspector"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorat"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtra"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menú"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Valor de la capçalera Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Introdueix un agent d'usuari personalitzat"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Es mostren totes les condicions de la xarxa"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitació de xarxa"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "General"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Substitucions de la capçalera"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Més informació"
@@ -12084,7 +12138,7 @@
     "message": "S'ha suprimit el selector de tipus de lletra a l'índex: {PH1}"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fontSize": {
-    "message": "Mida de la lletra"
+    "message": "Mida de la font"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fontWeight": {
     "message": "Gruix del tipus de lletra"

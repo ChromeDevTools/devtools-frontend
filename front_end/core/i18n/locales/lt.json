@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "„Same-Site“ ir „Same-Origin“"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Tai yra išversto teikimo nutraukimo problemos pranešimo pavyzdys."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Naudojama funkcija, kurios teikimas nutrauktas"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Sietinio prisijungimo duomenų valdymo API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Paslaugos scenarijus buvo suaktyvintas, kol puslapiui buvo taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Ilgalaikis viso puslapio saugojimas talpykloje išjungtas dėl dokumento klaidos."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Puslapiams, kuriuose naudojama „FencedFrames“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Puslapis buvo pašalintas iš talpyklos, kad būtų leidžiama talpykloje saugoti kitą puslapį."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Negalima imtis su šiomis priežastimis susijusių veiksmų, pvz., saugoti talpykloje neleidžiama dėl kažkokių veiksnių, kurių puslapis negali tiesiogiai valdyti."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# rėmelis}one{# rėmelis}few{# rėmeliai}many{# rėmelio}other{# rėmelių}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rėmeliai"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problema}one{# problema}few{# problemos}many{# problemos}other{# problemų}} rasta {y,plural, =1{# rėmelyje}one{# rėmelyje}few{# rėmeliuose}many{# rėmelio}other{# rėmelių}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Sužinokite daugiau: ilgalaikio viso puslapio saugojimo talpykloje tinkamumas"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dvejetainiai duomenys"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopijuoti"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopijuoti visus pakeitimus iš dabartinio failo"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Pakeitimų nėra"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Visi lygiai"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatinis užbaigimas pagal istoriją"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Pultas išvalytas"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Žurnalo lygiai"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Žurnalas „XMLHttpRequest“"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Rodyti tik dabartinio konteksto pranešimus (top, iframe, worker, plėtinys)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Rodyti CORS klaidas pulte"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Vertinimą laikyti naudotojo suaktyvinimu"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Daugiažodis"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Kai nepažymėta, bus rodomos tik nuosavybės, kurių vertės nėra nulinės ar nenurodytos"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "sukonstruotas stiliaus aprašas"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopijuoti visus CSS kalbos pakeitimus"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopijuoti visas deklaracijas"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopijuoti taisyklę"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopijuoti selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS parinkiklis"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "įterptas stiliaus aprašas"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Toliau įterpkite stiliaus taisyklę"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1} [atributų stilius]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Rodyti visas nuosavybes (dar {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atributas „style“"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "naudotojo priemonės stiliaus aprašas"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "per tikrintuvą"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopijuoti visus CSS kalbos pakeitimus"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopijuoti visas deklaracijas kaip JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Žr. apskaičiuotą vertę"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatinis tamsus režimas"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Spustelėkite, kad būtų parodytas sudėtinių sluoksnių medis"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "sukonstruotas stiliaus aprašas"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Nukopijuota į iškarpinę"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopijuokite visus CSS kalbos pakeitimus"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopijuoti visas deklaracijas"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopijuoti taisyklę"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopijuoti selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS nuosavybės pavadinimas: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS nuosavybės vertė: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS parinkiklis"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtruoti"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Padidinimas arba sumažinimas pelės ratuku arba klavišais aukštyn ir žemyn. {PH1}: R ±1, „Shift“: G ±1, „Alt“: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Paveldėta iš fiktyvaus elemento ::{PH1} "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Paveldėta iš "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "įterptas stiliaus aprašas"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Toliau įterpkite stiliaus taisyklę"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Netinkama nuosavybės vertė"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Fiktyvus ::{PH1} elementas"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1} [atributų stilius]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Rodyti visas nuosavybes (dar {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atributas „style“"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Perjungti įprastas pateikimo emuliacijas"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nežinomas nuosavybės pavadinimas"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "naudotojo priemonės stiliaus aprašas"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "per tikrintuvą"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Nepaisoma"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtruoti"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Meniu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "„Access-Control-Allow-Credentials“ antraštės vertė"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Įveskite tinkintą naudotojo priemonę"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Rodomos tinklo sąlygos"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Tinklo pralaidumo ribojimas"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Bendrieji"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Antraščių nepaisymas"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Sužinokite daugiau"

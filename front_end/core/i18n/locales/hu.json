@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ugyanaz a webhely és ugyanaz az eredet"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Ez példa egy megszüntetett funkcióval kapcsolatos problémáról szóló, lefordított üzenetre."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Megszüntetett funkció használata"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Egy service worker fájl aktiválódott, amíg az oldal az előre-vissza gyorsítótárban volt."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva dokumentumhiba miatt."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "A FencedFrame elemeket használó oldalak nem tárolhatók előre-vissza gyorsítótárazásban."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Az oldalt a rendszer kizárta a gyorsítótárból, hogy lehetővé tegye egy másik oldal gyorsítótárazását."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Nincs mód intézkedésre e problémákkal kapcsolatban, azaz a gyorsítótárazást olyasmi okozta, amelyre nincs közvetlen befolyása az oldalnak."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# keret}other{# keret}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Keretek"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problémát}other{# problémát}} talált a rendszer {y,plural, =1{# keretben}other{# keretben}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "További információ: az előre-vissza gyorsítótárazásra vonatkozó jogosultság"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Bináris adatok"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Másolás"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Az összes módosítás másolása a jelenlegi fájlból"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Nincs változás"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Minden szint"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatikus kiegészítés az előzményekből"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzol kiürítve"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Naplószintek"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequest-kérelmek naplózása"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Csak az aktuális kontextusból mutasson üzeneteket (top, iframe, worker, bővítmény)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Jelenjenek meg a(z) CORS-hibák a konzolon"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Értékelés felhasználói aktivitásként való kezelése"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Részletes"
@@ -4029,7 +4065,7 @@
     "message": "Időbélyegek megjelenítése"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Értékelés kezelése felhasználói tevékenységként"
+    "message": "Értékelés felhasználói aktivitásként való kezelése"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "A konzol megnyitása a következő megtekintéséhez: {PH1}"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Ha nincs bejelölve, csak azok a tulajdonságok lesznek láthatók, amelyek értéke nem nulla és nem meghatározatlan"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "szerkesztett stíluslap"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Összes CSS-módosítás másolása"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Az összes deklaráció másolása"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Szabály másolása"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Másolás: selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS választója"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "beszúrt stíluslap"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "A stílusszabály beillesztése alább"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[attribútumstílus]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Összes tulajdon megjelenítése ({PH1} további)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style attribútum"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "felhasználói ügynök stíluslapja"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "a vizsgálón keresztül"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Összes CSS-módosítás másolása"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Az összes deklaráció másolása JavaScriptként"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kiszámított érték megtekintése"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatikus sötét mód"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kattintson a réteg rétegfán való megjelenítéséhez"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "szerkesztett stíluslap"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Vágólapra másolva"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Az összes CSS-módosítás másolása"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Az összes deklaráció másolása"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Szabály másolása"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Másolás: selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-tulajdonság neve: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-tulajdon értéke: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS választója"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Szűrő"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "A növelés/csökkentés az egérgörgővel vagy a fel/le gombbal lehetséges. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "A következő ::{PH1} pszeudo elemétől örökölve "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Örökölve innen: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "beszúrt stíluslap"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "A stílusszabály beillesztése alább"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Érvénytelen tulajdonságérték"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pszeudo ::{PH1} elem"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[attribútumstílus]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Összes tulajdon megjelenítése ({PH1} további)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style attribútum"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Általános renderelési emulációk be- vagy kikapcsolása"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ismeretlen tulajdonnév"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "felhasználói ügynök stíluslapja"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "a vizsgálón keresztül"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Figyelmen kívül hagyva"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Szűrő"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menü"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials fejléc értéke"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Adjon meg egy egyéni felhasználói ügynököt"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "A hálózati állapotok láthatók"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Sávszélesség-korlátozás"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Általános"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Fejléc-felülbírálások"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "További információ"

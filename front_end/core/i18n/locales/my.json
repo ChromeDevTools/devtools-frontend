@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်းနှင့် ဇာစ်မြစ်တစ်ခုတည်း"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ဤအရာသည် ဘာသာပြန်ထားသော ရပ်ဆိုင်းထားသည့် ပြဿနာမက်ဆေ့ဂျ် နမူနာဖြစ်သည်။"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "ရပ်ဆိုင်းထားသည့် ဝန်ဆောင်မှုကို သုံးထားသည်"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker ကို စတင်ထားသည်။"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "မှတ်တမ်းအမှားတစ်ခုကြောင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ကို သုံးသည့် စာမျက်နှာများကို bfcache တွင် သိမ်း၍မရပါ။"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "စာမျက်နှာ၏ တိုက်ရိုက်ထိန်းချုပ်မှုမရှိသည့် အရာတစ်ခုက ကက်ရှ်သိမ်းခြင်းကို တားမြစ်ထားလျှင် ၎င်းကိုလုပ်ဆောင်၍ မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{ဖရိမ် # ခု}other{ဖရိမ် # ခု}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ဖရိမ်များ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{ပြဿနာ # ခု}other{ပြဿနာ # ခု}} ကို တွေ့ရှိထားသည် {y,plural, =1{ဖရိန် # ခု}other{ဖရိန် # ခု}}။"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ရှေ့-နောက် ကက်ရှ် အရည်အချင်းပြည့်မီမှုအကြောင်း ပိုမိုလေ့လာရန်"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binary ဒေတာ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "မိတ္တူကူးရန်"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "လက်ရှိဖိုင်မှ အပြောင်းအလဲအားလုံးကို ကော်ပီကူးပါ"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "အပြောင်းအလဲ မရှိပါ"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "အဆင့်အားလုံး"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "မှတ်တမ်းမှ အလိုအလျောက်ဖြည့်ပါ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ကွန်ဆိုးလ် ရှင်းထုတ်လိုက်သည်"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "မှတ်တမ်း အဆင့်များ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests မှတ်တမ်းတင်ခြင်း"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "လက်ရှိနောက်ခံ အကြောင်းအရာ (top၊ iframe၊ worker၊ နောက်ဆက်တွဲ) မှ မက်ဆေ့ဂျ်များကိုသာ ပြသည်"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "ကွန်ဆိုးလ်ရှိ CORS အမှားများကို ပြရန်"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "အသုံးပြုသူ စဖွင့်ခြင်းအဖြစ် အကဲဖြတ်ခြင်းကို သတ်မှတ်ပါ"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "အကျယ်ချဲ့ရှင်းပြချက်"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "အမှန်ခြစ်မထားသောအခါ တန်ဖိုးမပါရှိသော (သို့) သတ်မှတ်မထားသော သတ်မှတ်ချက်များကိုသာ ပြပါမည်"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "ပြုလုပ်ထားသော ပုံစံစာမျက်နှာ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS အပြောင်းအလဲအားလုံးကို မိတ္တူကူးရန်"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ကြေညာချက်အားလုံးကို မိတ္တူကူးရန်"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "စည်းမျဉ်းကို မိတ္တူကူးရန်"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector မိတ္တူကူးရန်"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS ရွေးချယ်စနစ်"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ထည့်သွင်းထားသော ပုံစံစာမျက်နှာ"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "အောက်တွင် ပုံစံစည်းမျဉ်း ထည့်သွင်းရန်"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ရည်ညွှန်းချက်များ ပုံစံ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "သတ်မှတ်ချက်အားလုံး ပြရန် (နောက်ထပ် {PH1} ခု)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style ရည်ညွှန်းချက်"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ပုံစံစာမျက်နှာ"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "စစ်ဆေးစနစ်မှတစ်ဆင့်"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS အပြောင်းအလဲအားလုံးကို မိတ္တူကူးရန်"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS အဖြစ် ကြေညာချက်အားလုံးကို မိတ္တူကူးရန်"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "တွက်ချက်ထားသော တန်ဖိုး ကြည့်ရန်"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "အလိုအလျောက် အမှောင်မုဒ်"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "အလွှာဖွဲ့စည်းပုံတွင် အလွှာထုတ်ဖော်ရန် နှိပ်နိုင်သည်"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "ပြုလုပ်ထားသော ပုံစံစာမျက်နှာ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးပြီးပြီ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS အပြောင်းအလဲအားလုံး မိတ္တူကူးရန်"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ကြေညာချက်အားလုံးကို မိတ္တူကူးရန်"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "စည်းမျဉ်းကို မိတ္တူကူးရန်"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector မိတ္တူကူးရန်"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS property အမည်- {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS property တန်ဖိုး- {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS ရွေးချယ်စနစ်"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "စစ်ထုတ်ရန်"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "မောက်စ်လှိမ့်ခြင်း (သို့) အထက်/အောက်ခလုတ်များ သုံးခြင်းဖြင့် တိုးခြင်း/လျှော့ခြင်း {PH1}- R ±၁၊ Shift- G ±၁၊ Alt- B ±၁"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "အမွေဆက်ခံရရှိမှု ::{PH1} နမူနာပုံစံ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "အောက်ပါမှ ရယူထားသည် "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ထည့်သွင်းထားသော ပုံစံစာမျက်နှာ"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "အောက်တွင် ပုံစံစည်းမျဉ်း ထည့်သွင်းရန်"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "သတ်မှတ်ချက်တန်ဖိုး မမှန်ပါ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "အတု ::{PH1} အစိတ်အပိုင်း"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ရည်ညွှန်းချက်များ ပုံစံ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "သတ်မှတ်ချက်အားလုံး ပြရန် (နောက်ထပ် {PH1} ခု)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style ရည်ညွှန်းချက်"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "သာမန်ပုံတူထုတ်လုပ် ပုံဖော်ခြင်းကို ပြောင်းရန်"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "သတ်မှတ်ချက်အမည် မသိပါ"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ပုံစံစာမျက်နှာ"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "စစ်ဆေးစနစ်မှတစ်ဆင့်"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "လျစ်လျူရှုထားသည်"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "စစ်ထုတ်ရန်"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "မီနူး"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials ခေါင်းစီး တန်ဖိုး"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "စိတ်ကြိုက် ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ထည့်ရန်"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "ကွန်ရက်အခြေအနေအားလုံး ပြထားသည်"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ကွန်ရက် မြန်နှုန်းထိန်းချုပ်ခြင်း"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "အထွေထွေ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ခေါင်းစီး အစားထိုးခြင်းများ"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"

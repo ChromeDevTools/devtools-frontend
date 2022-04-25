@@ -486,7 +486,7 @@
     "message": "Esta cookie bloqueouse porque a súa ruta non era un superdirectorio da ruta do URL da solicitude ou non coincidía exactamente con un."
   },
   "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "Esta cookie bloqueouse porque tiña o atributo \"SameParty\" pero a solicitude era entre partes. Considérase que a solicitude era entre partes porque o dominio do URL do recurso e os dominios dos marcos/documentos delimitadores do recurso non son propietarios nin membros no conxunto First-Party."
+    "message": "Esta cookie bloqueouse porque tiña o atributo \"SameParty\" pero a solicitude era externa. Considerouse que a solicitude era externa porque o dominio do URL do recurso e os dominios dos marcos/documentos delimitadores do recurso non son propietarios nin membros do mesmo conxunto orixinario."
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "Esta cookie bloqueouse porque tiña o atributo \"SameSite=Lax\" e porque a solicitude se realizou desde un sitio distinto e non a iniciou unha navegación de nivel superior."
@@ -525,7 +525,7 @@
     "message": "Esta cabeceira Set-Cookie non tiña unha sintaxe válida."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "Este intento de establecer unha cookie a través dunha cabeceira Set-Cookie bloqueouse porque tiña o atributo \"SameParty\" pero a solicitude era entre partes. Considérase que a solicitude era entre partes porque o dominio do URL do recurso e os dominios dos marcos/documentos delimitadores do recurso non son propietarios nin membros no conxunto propio."
+    "message": "Este intento de establecer unha cookie a través dunha cabeceira Set-Cookie bloqueouse porque tiña o atributo \"SameParty\" pero a solicitude era externa. Considérase que a solicitude era externa porque o dominio do URL do recurso e os dominios dos marcos/documentos delimitadores do recurso non son propietarios nin membros do mesmo conxunto orixinario."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "Este intento de establecer unha cookie a través dunha cabeceira Set-Cookie bloqueouse porque tiña o atributo \"SameParty\" pero tamén outros atributos en conflito. Chrome require que as cookies que usen o atributo \"SameParty\" utilicen tamén \"Secure\" e que non estean restrinxidas a \"SameSite=Strict\"."
@@ -1351,6 +1351,12 @@
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site e Same-Origin"
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Este é un exemplo dunha mensaxe traducida sobre un problema relacionado cunha función non dispoñible."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Está a usarse unha función obsoleta"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Activouse un service worker mentres a páxina estaba almacenada na memoria caché de páxinas anteriores e seguintes."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Desactivouse a memoria caché das páxinas anteriores e seguintes por un erro do documento."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "As páxinas que usan FencedFrames non se poden almacenar en bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Expulsouse esta páxina da memoria caché para que puidese almacenarse nela outra páxina."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Non se pode actuar sobre estes motivos; é dicir, algo que escapa ao control directo da páxina impediu que esta se almacenase na memoria caché."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# marco}other{# marcos}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Marcos"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problema atopado}other{# problemas atopados}} en {y,plural, =1{# marco}other{# marcos}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Máis información: requisitos da memoria caché de páxinas anteriores e seguintes"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Datos binarios"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copiar"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copiar todos os cambios do ficheiro actual"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Non hai cambios"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Todos os niveis"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autocompleta o texto a partir do historial"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Borrouse a consola"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Niveis de rexistro"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Rexistra XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Mostrar só mensaxes do contexto actual (top, iframe, worker, extensión)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Mostrar erros de CORS na consola"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Trata a avaliación como unha activación do usuario"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detallada"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Advertencia (repítese # vez)}other{Advertencia (repítese # veces)}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Autocompletar desde o historial"
+    "message": "Autocompletar a partir do historial"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Borrar consola"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Cando a opción non está marcada, só se mostran as propiedades cuxos valores non sexan nulos nin estean sen definir"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "folla de estilo creada"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copiar todos os cambios de CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Copiar todas as declaracións"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Copiar norma"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Copiar selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selector de CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "Folla de estilo inserida"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Inserir regra de estilo abaixo"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Estilo de atributos]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Mostrar todas as propiedades ({PH1} máis)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atributo (style)"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "folla de estilo de axente de usuario"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "a través do inspector"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copiar todos os cambios de CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copiar todas as declaracións como JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ver valor calculado"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Modo escuro automático"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Facer clic para mostrar a capa na árbore de capas"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "folla de estilo creada"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Copiouse no portapapeis"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copiar todos os cambios do CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Copiar todas as declaracións"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Copiar norma"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Copiar selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nome da propiedade do CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Valor da propiedade do CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selector de CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrar"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Aumentar/reducir coa roda do rato ou coas teclas das frechas arriba/abaixo. {PH1}: R ±1, Maiús: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Herdado de ::{PH1} pseudo de "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Herdanza de "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "Folla de estilo inserida"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Inserir regra de estilo abaixo"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "O valor da propiedade non é válido"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Elemento pseudo ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Estilo de atributos]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Mostrar todas as propiedades ({PH1} máis)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atributo (style)"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Activar/desactivar emulacións comúns de renderización"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nome de propiedade descoñecido"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "folla de estilo de axente de usuario"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "a través do inspector"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorado"
@@ -5345,6 +5390,9 @@
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrar"
   },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menú"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Valor da cabeceira Access-Control-Allow-Credentials"
   },
@@ -5811,7 +5859,7 @@
     "message": "Restablecer o almacenamento (cache, service workers etc.) antes da auditoría. (Axuste adecuado para rendemento e probas de PWA)"
   },
   "panels/lighthouse/LighthouseController.ts | runLighthouseInMode": {
-    "message": "Executar Lighthouse no modo de navegación, duración ou instantánea"
+    "message": "Executar Lighthouse no modo de navegación, lapso de tempo ou instantánea"
   },
   "panels/lighthouse/LighthouseController.ts | seo": {
     "message": "SEO"
@@ -5832,7 +5880,7 @@
     "message": "Pode que haxa datos almacenados que lle afectan ao desempeño da carga nesta localización: {PH1}. Audita esta páxina cunha ventá do modo de incógnito para evitar que eses recursos lles afecten ás túas puntuacións."
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
-    "message": "Período"
+    "message": "Lapso de tempo"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Analizar a páxina coa versión clásica de Lighthouse no modo de navegación."
@@ -5904,7 +5952,7 @@
     "message": "Modo"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
-    "message": "Iniciar período"
+    "message": "Iniciar lapso de tempo"
   },
   "panels/lighthouse/LighthouseStatusView.ts | OfGlobalMobileUsersInWereOnGOrG": {
     "message": "En 2016, o 75 % dos usuarios de móbiles de todo o mundo usaban redes 2G ou 3G [fonte: GSMA Mobile]"
@@ -5997,13 +6045,13 @@
     "message": "Cancelar"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
-    "message": "Finalizar período"
+    "message": "Finalizar lapso de tempo"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
-    "message": "Iniciouse un período. Interactúa coa páxina"
+    "message": "Iniciouse un lapso de tempo. Interactúa coa páxina"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
-    "message": "Iniciando período…"
+    "message": "Iniciando lapso de tempo…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Mostrar Lighthouse"
@@ -6424,6 +6472,9 @@
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Indica un axente de usuario personalizado"
+  },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Móstranse condicións de rede"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitación da rede"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Xeral"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Omisións de cabeceiras"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Máis información"

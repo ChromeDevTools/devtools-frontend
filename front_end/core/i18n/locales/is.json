@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "„Same-Site“ og „Same-Origin“"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Þetta er dæmi um þýdd skilaboð um vandamál tengt úreldingu."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Úreltur eiginleiki notaður"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Forritaskil stjórnunar Federated Credential"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Þjónustuskrifta (service worker) var virkjuð á meðan síðan var í skyndiminni til baka/áfram."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Slökkt er á skyndiminni til baka / áfram vegna villu í skjali."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Síður sem nota FencedFrames er ekki hægt að geyma í skyndiminni til baka / áfram."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Síðan var flutt úr skyndiminninu til að koma annarri síðu fyrir."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Ekki er hægt að bregðast við þessum ástæðum, þ.e. eitthvað sem síðan hefur ekki beina stjórn yfir kom í veg fyrir geymslu í skyndiminni."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# rammi}one{# rammi}other{# rammar}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rammar"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{}one{# vandamál}other{# vandamál}} fundust í {y,plural, =1{# ramma}one{# ramma}other{# römmum}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Frekari upplýsingar um gjaldgengi skyndiminnis fyrir til baka/áfram"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Tvíundagögn"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Afrita"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Afrita allar breytingar úr núverandi skrá"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Engar breytingar"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Öll stig"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Sjálfvirk útfylling úr ferli"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Stjórnborð hreinsað"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Annálsstig"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Skrá XMLHttpRequest-beiðnir"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Sýna aðeins skilaboð úr núverandi keyrsluumhverfi (top, iframe, worker, viðbót)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Sýna CORS villur á stjórnborði"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Meðhöndla keyrslu sem virkjun frá notanda"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Ítarlegt"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Aðeins birtast eiginleikar sem hafa gildi önnur en núll eða óskilgreind þegar ekkert er merkt"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "tilbúin stílsnið"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Afrita allar CSS-breytingar"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Afrita allar yfirlýsingar"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Afrita reglu"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Afrita selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Val fyrir: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "setti inn stílsnið"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Setja reglustiku stíla fyrir neðan"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Stíll eiginda]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Sýna alla eiginleika ({PH1} til viðbótar)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style eigind"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "aðgangsbúnaður stílsniðs"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "í gegnum skoðara"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Afrita allar CSS-breytingar"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Afrita allar yfirlýsingar sem JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skoða reiknað gildi"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Sjálfvirk dökk stilling"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Smelltu til að sýna lag í lagatré"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "tilbúin stílsnið"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Afritað á klippiborð"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Afrita allar CSS-breytingar"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Afrita allar yfirlýsingar"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Afrita reglu"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Afrita selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Heiti CSS-eiginleika: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Gildi CSS-eiginleika: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Val fyrir: CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Sía"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Stækkun/minnkun með músarhjóli eða upp-/niðurlyklum. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Erft frá hermun ::{PH1} af "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Erft úr "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "setti inn stílsnið"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Setja reglustiku stíla fyrir neðan"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ógilt gildi eigindar"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Hermun ::{PH1} eining"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Stíll eiginda]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Sýna alla eiginleika ({PH1} til viðbótar)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style eigind"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Velja / afvelja algengar teiknunarhermanir"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Óþekkt heiti eiginleika"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "aðgangsbúnaður stílsniðs"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "í gegnum skoðara"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Hunsað"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Sía"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Valmynd"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Hausgildið Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Sláðu inn sérsniðnar vafraupplýsingar"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Birtir netskilyrði"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Bandvíddartakmörkun"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Almennt"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Hnekkingar hauss"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Frekari upplýsingar"

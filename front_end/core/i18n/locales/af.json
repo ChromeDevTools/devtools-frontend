@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site en Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Dit is ’n voorbeeld van ’n vertaalde opskortingkwessieboodskap."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Opgeskorte kenmerk gebruik"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "'n Dienswerker is geaktiveer terwyl die bladsy in terug-vorentoe-kasgeheue was."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Terug-vorentoe-kasgeheue is weens ’n dokumentfout gedeaktiveer."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Bladsye wat FencedFrames gebruik, kan nie in bfcache geberg word nie."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Die bladsy is uit die kasgeheue gehaal om dit moontlik te maak om 'n ander bladsy te kas."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Hierdie redes is nie uitvoerbaar nie; dit wil sê, iets buite die bladsy se regstreekse beheer het verhoed dat daar gekas word."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# raam}other{# rame}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rame"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# kwessie}other{# kwessies}} gevind in {y,plural, =1{# raam}other{# rame}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Kom meer te wete oor terug-vorentoe-kasgeheue-geskiktheid"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binêre data"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopieer"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopieer alle veranderinge van huidige lêer af"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Geen veranderinge nie"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Alle vlakke"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Voltooi outomaties uit geskiedenis"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsole is uitgevee"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Loglêervlakke"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Teken XMLHttpRequests aan"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Wys net boodskappe vanuit die huidige konteks (top, iframe, worker, uitbreiding)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Wys CORS-foute in konsole"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Behandel evaluering as gebruikeraktivering"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Woordryk"
@@ -4005,7 +4041,7 @@
     "message": "Versteek tydstempels"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Tekeng XMLHttpRequests aan"
+    "message": "Teken XMLHttpRequests aan"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Wys net boodskappe vanuit die huidige konteks (top, iframe, worker, uitbreiding)"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "As eienskappe nie gemerk is nie, sal net dié waarvan die waardes nie nul óf ongedefinieer is nie, gewys word"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "saamgestelde stylblad"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopieer alle CSS-veranderinge"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopieer alle verklarings"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopieer reël"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopieer selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-kieser"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ingevoegde stylblad"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Voeg stylreël hieronder in"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[kenmerkestyl]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Wys alle eienskappe (nog {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style-kenmerk"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "gebruikeragentstylblad"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "deur kontroleerder"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopieer alle CSS-veranderinge"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopieer alle verklarings as JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Bekyk benaderde waarde"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Outomatiese donkermodus"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik om laag in laagvertakking te wys"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "saamgestelde stylblad"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Gekopieer na knipbord"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopieer al die CSS-veranderinge"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopieer alle verklarings"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopieer reël"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopieer selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-eiendomnaam: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-eiendomwaarde: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-kieser"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtreer"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Vermeerder of verminder met muiswiel of op- of afsleutel. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Geërf van ::{PH1} pseudo-element van "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Oorgeërg by "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ingevoegde stylblad"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Voeg stylreël hieronder in"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Ongeldige eienskapwaarde"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "::{PH1}-pseudo-element"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[kenmerkestyl]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Wys alle eienskappe (nog {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style-kenmerk"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Wissel tussen algemene leweringemulerings"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Onbekende eienskapnaam"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "gebruikeragentstylblad"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "deur kontroleerder"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Geïgnoreer"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtreer"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Kieslys"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials-opskrifwaarde"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Voer 'n gepasmaakte gebruikeragent in"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Netwerktoestande word gewys"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netwerkregulering"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Algemeen"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Opskriftersydestellings"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Kom meer te wete"

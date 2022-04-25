@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "มาจากเว็บไซต์และต้นทางเดียวกัน"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "นี่คือตัวอย่างข้อความแจ้งปัญหาการเลิกใช้งานที่แปลแล้ว"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "ใช้ฟีเจอร์ที่เลิกใช้งานแล้ว"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "มีการเปิดใช้งาน Service Worker ขณะที่หน้าอยู่ในแคชย้อนหลัง"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ปิดใช้ Back-Forward Cache เนื่องจากเอกสารมีข้อผิดพลาด"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "หน้าที่ใช้ FencedFrames จัดเก็บใน bfcache ไม่ได้"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "หน้านี้ถูกนำออกจากแคชเพื่อให้แคชหน้าอื่นได้"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "เหตุผลเหล่านี้ไม่สามารถดำเนินการได้ กล่าวคือ มีบางอย่างที่อยู่นอกเหนือการควบคุมของหน้าป้องกันการแคชไว้"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# เฟรม}other{# เฟรม}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "เฟรม"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# ปัญหา}other{# ปัญหา}}พบใน {y,plural, =1{# เฟรม}other{# เฟรม}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม: การมีสิทธิ์ใช้แคชย้อนหลัง"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ข้อมูลไบนารี"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "คัดลอก"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "คัดลอกการเปลี่ยนแปลงทั้งหมดจากไฟล์ปัจจุบัน"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ไม่มีการเปลี่ยนแปลง"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "ทุกระดับ"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "การเติมข้อความอัตโนมัติจากประวัติการเข้าชม"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ล้างคอนโซลแล้ว"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ระดับบันทึก"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "บันทึก XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "แสดงเฉพาะข้อความจากบริบทปัจจุบัน (top, iframe, worker, ส่วนขยาย)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "แสดงข้อผิดพลาด CORS ในคอนโซล"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "ถือว่าการประเมินเป็นการเปิดใช้งานของผู้ใช้"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "การพูดรายละเอียด"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "เมื่อยกเลิกการเลือก ระบบจะแสดงเฉพาะพร็อพเพอร์ตี้ที่ค่าไม่เป็น Null หรือไม่ระบุ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "สไตล์ชีตที่สร้างขึ้น"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "คัดลอกประกาศทั้งหมด"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "คัดลอกกฎ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "คัดลอก selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "ตัวเลือก CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "สไตล์ชีตที่แทรก"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "แทรกกฎของรูปแบบด้านล่าง"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[รูปแบบแอตทริบิวต์]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "แสดงพร็อพเพอร์ตี้ทั้งหมด (มีอีก {PH1} รายการ)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "แอตทริบิวต์ style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "สไตล์ชีต User Agent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ผ่านเครื่องมือตรวจสอบ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "คัดลอกประกาศทั้งหมดเป็น JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ดูค่าที่คำนวณแล้ว"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "โหมดมืดอัตโนมัติ"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "คลิกเพื่อแสดงเลเยอร์ในแผนผังเลเยอร์"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "สไตล์ชีตที่สร้างขึ้น"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "คัดลอกประกาศทั้งหมด"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "คัดลอกกฎ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "คัดลอก selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "ชื่อพร็อพเพอร์ตี้ CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "ค่าพร็อพเพอร์ตี้ CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "ตัวเลือก CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "กรอง"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "การเพิ่ม/การลดด้วยลูกกลิ้งเมาส์หรือแป้นขึ้น/ลง {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "รับค่าจากองค์ประกอบจำลอง ::{PH1} ของ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "รับค่ามาจาก "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "สไตล์ชีตที่แทรก"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "แทรกกฎของรูปแบบด้านล่าง"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "ค่าพร็อพเพอร์ตี้ไม่ถูกต้อง"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "องค์ประกอบจำลอง ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[รูปแบบแอตทริบิวต์]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "แสดงพร็อพเพอร์ตี้ทั้งหมด (มีอีก {PH1} รายการ)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "แอตทริบิวต์ style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "สลับการจำลองการแสดงภาพโดยทั่วไป"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ชื่อพร็อพเพอร์ตี้ที่ไม่รู้จัก"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "สไตล์ชีต User Agent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ผ่านเครื่องมือตรวจสอบ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ละเว้น"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "กรอง"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "เมนู"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "ค่าของส่วนหัว Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "ป้อน User Agent ที่กำหนดเอง"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "แสดงเงื่อนไขของเครือข่ายอยู่"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "การควบคุมเครือข่าย"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "ทั่วไป"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "การลบล้างส่วนหัว"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"

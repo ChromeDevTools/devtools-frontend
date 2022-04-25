@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ja Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "See on näide toe katkestamise probleemi tõlgitud sõnumist."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Kasutati katkestatud toega funktsiooni"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Teenuse töötleja aktiveeriti ajal, mil leht oli tagasi-edasiliikumise vahemälus."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Tagasi-edasiliikumise vahemälu on dokumendivea tõttu keelatud."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Funktsiooni FencedFrames kasutavaid lehti ei saa talletada tagasi-edasiliikumise vahemälus."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Leht eemaldati vahemälust, et võimaldada teist lehte vahemällu talletada."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Need põhjused ei võimalda tegutseda, st vahemällu talletamist takistab miski, mis ei ole lehe vahetu kontrolli all."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# raam}other{# raami}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Raamid"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# probleem}other{# probleemi}}, mis leiti {y,plural, =1{# kaadris}other{# kaadris}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Lisateave: tagasi-edasiliikumise vahemälu sobilikkus"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Kahendandmed"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopeeri"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopeeri kõik praeguses failis tehtud muudatused"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Muudatusi ei ole"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Kõik tasemed"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automaatne täitmine ajaloost"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsool on tühjendatud"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Logi tasemed"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Logi XMLHttpRequestid"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Kuva ainult praeguse konteksti sõnumid (top, iframe, worker, laiendus)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Kuva konsoolis atribuudi CORS vead"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Kohtle hindamist kasutaja aktiveerimisena"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Paljusõnaline"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Kui see on märkimata, kuvatakse ainult atribuudid, mille väärtused pole ei null ega määramata"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "koostatud stiilileht"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopeeri kõik CSS-i muudatused"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopeeri kõik deklaratsioonid"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopeeri reegel"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopeeri selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-i valija"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "sisestatud stiilileht"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Sisesta stiilireegel alla"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Atribuutide stiil]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Kuva kõik varad (veel {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribuut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "kasutaja-agendi stiilileht"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "inspektori kaudu"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopeeri kõik CSS-i muudatused"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopeeri kõik deklaratsioonid JS-ina"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Kuva arvutatud väärtus"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automaatne tume režiim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klõpsake kihi kuvamiseks kihipuus"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "koostatud stiilileht"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Lõikelauale kopeeritud"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kõikide CSS-i muudatuste kopeerimine"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopeeri kõik deklaratsioonid"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopeeri reegel"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopeeri selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-atribuudi nimi: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS-atribuudi väärtus: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-i valija"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtreeri"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Suurendamiseks/vähendamiseks kasutage hiireratast või üles-/allanoolt. {PH1}: R ±1, tõstuklahv: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Päritud pseudoelemendist ::{PH1}, pseudoelemendi alus: "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Päritud allikast "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "sisestatud stiilileht"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Sisesta stiilireegel alla"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Sobimatu vara väärtus"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelement ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Atribuutide stiil]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Kuva kõik varad (veel {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribuut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Lülita üldised renderdamise emulatsioonid sisse/välja"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tundmatu vara nimi"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "kasutaja-agendi stiilileht"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "inspektori kaudu"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Eiratud"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtreeri"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menüü"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Üksuse Access-Control-Allow-Credentials päise väärtus"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Sisestage kohandatud kasutaja-agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Kuvatakse võrgu tingimusi"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Võrgu piiramine"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Üldine"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Päiste alistamised"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Lisateave"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ເວັບໄຊດຽວກັນ ແລະ ທີ່ມາດຽວກັນ"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ນີ້ແມ່ນຕົວຢ່າງຂອງຂໍ້ຄວາມແຈ້ງບັນຫາສິ້ນສຸດການສະໜັບສະໜຸນທີ່ແປພາສາແລ້ວ"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "ໃຊ້ຄຸນສົມບັດທີ່ສິ້ນສຸດການສະໜັບສະໜຸນແລ້ວ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ຕົວເຮັດວຽກບໍລິການຖືກເປີດໃຊ້ໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໄວ້ເນື່ອງຈາກຂໍ້ຜິດພາດເອກະສານ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "ບໍ່ສາມາດບັນທຶກໜ້າທີ່ໃຊ້ FencedFrames ໄວ້ໃນ bfcache ໄດ້."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ເຫດຜົນເຫຼົ່ານີ້ບໍ່ສາມາດດຳເນີນການໄດ້ ເຊັ່ນ: ການແຄສຖືກປ້ອງກັນໄວ້ໂດຍບາງຢ່າງນອກການຄວບຄຸມໂດຍກົງຂອງໜ້າ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ເຟຣມ}other{# ເຟຣມ}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ເຟຣມ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# ບັນຫາ}other{# ບັນຫາ}} ພົບໃນ {y,plural, =1{# ເຟຣມ}other{# ເຟຣມ}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ສຶກສາເພີ່ມເຕີມ: ການມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ຂໍ້ມູນໄບນາຣີ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "ສຳເນົາ"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ສຳເນົາການປ່ຽນແປງທັງໝົດຈາກໄຟລ໌ປັດຈຸບັນ"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ບໍ່ມີການປ່ຽນແປງ"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "ລະດັບທັງໝົດ"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ຕື່ມຂໍ້ມູນອັດຕະໂນມັດຈາກປະຫວັດ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ລຶບລ້າງຄອນໂຊນແລ້ວ"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ລະດັບບັນທຶກ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "ບັນທຶກ XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "ພຽງແຕ່ສະແດງຂໍ້ຄວາມຈາກເນື້ອຫາປັດຈຸບັນ (top, iframe, worker, ສ່ວນຂະຫຍາຍ)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "ສະແດງຂໍ້ຜິດພາດ CORS ໃນຄອນໂຊ"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "ຖືວ່າການປະເມີນເປັນການເປີດນຳໃຊ້ຂອງຜູ້ໃຊ້"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ບັນທຶກລະອຽດ"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{ຄຳເຕືອນ, ເຮັດຊ້ຳແລ້ວ # ເທື່ອ}other{ຄຳເຕືອນ, ເຮັດຊ້ຳແລ້ວ # ເທື່ອ}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "ເຮັດສຳເລັດອັດຕະໂນມັດຈາກປະຫວັດ"
+    "message": "ຕື່ມຂໍ້ມູນອັດຕະໂນມັດຈາກປະຫວັດ"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "ລຶບລ້າງຄອນໂຊນ"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "ເມື່ອຍົກເລີກການເລືອກແລ້ວ, ຈະສະແດງພຽງຄຸນສົມບັດທີ່ເປັນ null ຫຼື ບໍ່ໄດ້ລະບຸເທົ່ານັ້ນ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "ຊີດຮູບແບບທີ່ສ້າງຂຶ້ນ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "ສຳເນົາການປ່ຽນແປງ CSS ທັງໝົດ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ສຳເນົາການປະກາດທັງໝົດ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "ສຳເນົາກົດລະບຽບ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "ສຳເນົາ selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "ຕົວເລືອກ CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ຊີດຮູບແບບທີ່ແຊກໃສ່"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "ແຊກກົດລະບຽບຮູບແບບທາງລຸ່ມ"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ຮູບແບບຄຸນສົມບັດ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "ສະແດງຄຸນສົມບັດທັງໝົດ (ອີກ {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "ຄຸນສົມບັດ style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ຊີດຮູບແບບໂປຣແກຣມຜູ້ໃຊ້"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ຜ່ານຕົວກວດສອບ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "ສຳເນົາການປ່ຽນແປງ CSS ທັງໝົດ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ສຳເນົາການປະກາດທັງໝົດເປັນ JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ເບິ່ງຄ່າທີ່ຄຳນວນແລ້ວ"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ໂໝດມືດອັດຕະໂນມັດ"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "ຄລິກເພື່ອເປີດເຜີຍຊັ້ນຂໍ້ມູນໃນຜັງຊັ້ນຂໍ້ມູນ"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "ຊີດຮູບແບບທີ່ສ້າງຂຶ້ນ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ສຳເນົາໃສ່ຄລິບບອດແລ້ວ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ສຳເນົາການປ່ຽນແປງ CSS ທັງໝົດ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ສຳເນົາການປະກາດທັງໝົດ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "ສຳເນົາກົດລະບຽບ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "ສຳເນົາ selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "ຊື່ຄຸນສົມບັດ CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "ຄ່າຄຸນສົມບັດ CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "ຕົວເລືອກ CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ກັ່ນຕອງ"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "ເພີ່ມ/ຫຼຸດ ດ້ວຍລູກກິ້ງເມົ້າ ຫຼື ປຸ່ມຂຶ້ນ/ລົງ. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "ຮັບຄ່າຈາກອົງປະກອບຈຳລອງ ::{PH1} ຂອງ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "ສືບທອດມາຈາກ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ຊີດຮູບແບບທີ່ແຊກໃສ່"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "ແຊກກົດລະບຽບຮູບແບບທາງລຸ່ມ"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "ຄ່າຄຸນສົມບັດບໍ່ຖືກຕ້ອງ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ອົງປະກອບຈຳລອງ ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ຮູບແບບຄຸນສົມບັດ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "ສະແດງຄຸນສົມບັດທັງໝົດ (ອີກ {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "ຄຸນສົມບັດ style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "ສະ​ຫຼັບການຈຳລອງການສະແດງພາບທົ່ວໄປ"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ບໍ່ຮູ້ຈັກຊື່ຄຸນສົມບັດ"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ຊີດຮູບແບບໂປຣແກຣມຜູ້ໃຊ້"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ຜ່ານຕົວກວດສອບ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ລະເວັ້ນແລ້ວ"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ກັ່ນຕອງ"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "ເມນູ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "ຄ່າສ່ວນຫົວ Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "ປ້ອນໂປຣແກຣມຜູ້ໃຊ້ແບບກຳນົດເອງ"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "ສະແດງເງື່ອນໄຂເຄືອຂ່າຍແລ້ວແລ້ວ"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ການຄວບຄຸມເຄືອຂ່າຍ"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "ທົ່ວໄປ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ການຍົກເລີກສ່ວນຫົວ"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ສຶກສາເພີ່ມເຕີມ"

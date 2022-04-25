@@ -486,7 +486,7 @@
     "message": "Cookie hau blokeatu egin da haren bide-izena ez datorrelako guztiz bat eskaerako URLaren bide-izenarekin edo haren superdirektorioarekin."
   },
   "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "Cookie hau blokeatu egin da \"SameParty\" atributua izan arren eskaera domeinuen artekoa zelako. Domeinuen arteko gisa hartzen da eskaera, baliabidearen URLa eta baliabidea inguratzen duten markoak edo dokumentuak ez direlako First-Party sortaren jabeak, ezta kideak ere."
+    "message": "Cookie hau blokeatu egin da \"SameParty\" atributua izan arren eskaera domeinuen artekoa zelako. Domeinuen arteko gisa hartzen da eskaera, baliabidearen URLa eta baliabidea inguratzen duten markoak edo dokumentuak ez direlako domeinu multzo propioaren jabeak, ezta kideak ere."
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "Cookie hau blokeatu egin da \"SameSite=Lax\" atributua zuelako, eskaera beste webgune batetik egin zelako eta ez zelako goi-mailako nabigazioaren bidez abiarazi."
@@ -525,7 +525,7 @@
     "message": "Set-Cookie goiburu honen sintaxiak ez du balio."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "Cookie bat Set-Cookie goiburu baten bidez ezartzeko saiakera blokeatu egin da \"SameParty\" atributua izan arren eskaera domeinuen artekoa zelako. Domeinuen arteko gisa hartzen da eskaera, baliabidearen URLa eta baliabidea inguratzen duten markoak edo dokumentuak ez direlako First-Party sortaren jabeak, ezta kideak ere."
+    "message": "Cookie bat Set-Cookie goiburu baten bidez ezartzeko saiakera blokeatu egin da \"SameParty\" atributua izan arren eskaera domeinuen artekoa zelako. Domeinuen arteko gisa hartzen da eskaera, baliabidearen URLa eta baliabidea inguratzen duten markoak edo dokumentuak ez direlako domeinu multzo propioaren jabeak, ezta kideak ere."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "Cookie bat Set-Cookie goiburu baten bidez ezartzeko saiakera blokeatu egin da \"SameParty\" atributua izan arren bestelako atributu gatazkatsuak zituelako. \"SameParty\" atributua erabiltzen duten cookieek \"Secure\" atributua ere izatea eta \"SameSite=Strict\" egoerara mugatuta ez egotea behar du Chrome-k."
@@ -1351,6 +1351,12 @@
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Webgune berekoa eta jatorri berekoa"
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Zaharkitze-arazo bati dagokion itzulitako mezu baten adibide bat da hau."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Zaharkituta dagoen eginbide bat erabili da"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service worker bat aktibatu da orria aurreko orriaren cachean gordeta zegoen bitartean."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago errore bat gertatu delako dokumentuan."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames darabilten orriak ezin dira gorde aurreko orria cachean gordetzeko eginbidearen bidez."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Orria cachetik kendu da, cachean beste orri bat gorde ahal izateko."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Arrazoi hauek gauzatu ezin diren ekintzak dira; hau da, orriaren zuzeneko kontroletik kanpo gertatutako zerbaitek eragotzi du orria cachean gordetzea."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# marko}other{# marko}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Markoak"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# arazo}other{# arazo}} aurkitu dira {y,plural, =1{# markotan}other{# markotan}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Lortu informazio gehiago: aurreko orria cachean gordetzeko eginbidea erabiltzeko egokitasuna"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Datu bitarrak"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopiatu"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopiatu oraingo fitxategian egindako aldaketa guztiak"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ez dago aldaketarik"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Maila guztiak"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Osatu automatikoki historia erabilita"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Garbitu da kontsola"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Erregistro-mailak"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Erregistratu XMLHttpRequest objektuak"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Erakutsi oraingo testuinguruko mezuak soilik (top, iframe, worker, luzapena)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Erakutsi CORS kategoriako erroreak kontsolan"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Tratatu ebaluazioa erabiltzailearen aktibazio gisa"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Adierazgarritasuna"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{Abisua, # aldiz errepikatuta}other{Abisua, # aldiz errepikatuta}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "Bete automatikoki historia erabilita"
+    "message": "Osatu automatikoki historia erabilita"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Garbitu kontsola"
@@ -4005,7 +4041,7 @@
     "message": "Ezkutatu denbora-zigiluak"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Erregistratu XMLHttpRequests eskaerak"
+    "message": "Erregistratu XMLHttpRequest objektuak"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Erakutsi oraingo testuinguruko mezuak soilik (top, iframe, worker, luzapena)"
@@ -4029,7 +4065,7 @@
     "message": "Erakutsi denbora-zigiluak"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Tratatu ebaluazioa erabiltzaile-aktibazio gisa"
+    "message": "Tratatu ebaluazioa erabiltzailearen aktibazio gisa"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Ireki kontsola {PH1} ikusteko"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Desmarkatuta uzten bada, balio nulua edo zehaztugabea daukaten propietateak bakarrik erakutsiko dira"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "eraikitako estilo-orria"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopiatu CSSan egindako aldaketa guztiak"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopiatu adierazpen guztiak"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopiatu araua"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopiatu selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS estiloaren hautatzailea"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "estilo-orria aplikatu da"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Txertatu estilo-araua behean"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[atributuen estiloa]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Erakutsi propietate guztiak (beste {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style atributua"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "erabiltzaile-agentearen estilo-orria"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ikuskatzailearen bidez"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopiatu CSSan egindako aldaketa guztiak"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiatu adierazpen guztiak JS gisa"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ikusi kalkulatutako balioa"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Gai ilun automatikoa"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Sakatu hau geruza zuhaitzean ager dadin"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "eraikitako estilo-orria"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopiatu da arbelean"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiatu CSSan egindako aldaketa guztiak"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopiatu adierazpen guztiak"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopiatu araua"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopiatu selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS propietatearen izena: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS propietatearen balioa: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS estiloaren hautatzailea"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Iragazi"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Handitu edo txikitu saguko gurpilarekin, edo gora eta behera egiteko teklekin. {PH1}: R ±1, Maius: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Honen ::{PH1} sasi-elementutik oinordekotzan hartuta: "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Talde honetatik heredatua: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "estilo-orria aplikatu da"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Txertatu estilo-araua behean"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Propietatearen balioak ez du balio"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} elementua"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[atributuen estiloa]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Erakutsi propietate guztiak (beste {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style atributua"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Aktibatu/Desaktibatu ohiko errendatze-emulazioak"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Propietate-izen ezezaguna"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "erabiltzaile-agentearen estilo-orria"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ikuskatzailearen bidez"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ez ikusi egin zaio"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Iragazi"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menua"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials goiburuaren balioa"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Idatzi erabiltzaile-agente pertsonalizatua"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Sarearen baldintzak ikusgai daude"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Sarea bizkortzeko aukera"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Orokorra"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Goiburuaren ordezkapenak"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Lortu informazio gehiago"

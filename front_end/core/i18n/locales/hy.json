@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site և Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Սա աջակցումը դադարեցնելու խնդրի մասին թարգմանված հաղորդագրության օրինակ է։"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Հնացած գործառույթ է օգտագործվում"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service Worker սկրիպտն ակտիվացվել է, երբ էջը ամբողջությամբ քեշավորված էր։"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Ամբողջ էջի քեշավորումն անջատված է փաստաթղթի սխալի պատճառով։"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames օգտագործող էջերը հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Էջը հեռացվել է քեշից, որպեսզի հնարավոր լինի քեշավորել մեկ այլ էջ։"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Քեշավորումը կանխող պատճառները հնարավոր չէ վերացնել, ինչը նշանակում է, որ դրանք դուրս են էջի ուղղակի վերահսկողությունից։"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# շրջանակ}one{# շրջանակ}other{# շրջանակ}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Շրջանակներ"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# խնդիր}one{# խնդիր}other{# խնդիր}} է գտնվել {y,plural, =1{# շրջանակում}one{# շրջանակում}other{# շրջանակում}}։"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Իմանալ ավելին ամբողջ էջի քեշից օգտվելու հնարավորության մասին"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Բինարային տվյալներ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Պատճենել"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Պատճենել բոլոր փոփոխություններն ընթացիկ ֆայլից"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Փոփոխություններ չկան"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Բոլոր մակարդակները"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Ինքնալրացում պատմությունից"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Վահանակը մաքրվեց"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Մակարդակներ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Գրանցել XMLHttpRequests հարցումները"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Ցույց տալ միայն հաղորդագրություններ ընթացիկ համատեքստից (top, iframe, worker, ընդլայնում)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Ցույց տալ CORS սխալները վահանակում"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Դիտարկել գնահատականը որպես օգտատիրոջ գործողություններ"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Մանրամասնում"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Երբ այս նշավանդակը նշված չէ, դատարկ և անորոշ արժեքներով հատկությունները չեն ցուցադրվի։"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "ոճերի ստեղված աղյուսակ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Պատճենել բոլոր հայտարարագրերը"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Պատճենել կանոնը"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Պատճենել՝ selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-ի ընտրիչ"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "տեղադրվել է ոճերի աղյուսակ"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Տեղադրել ոճի կանոնը ներքևում"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ոճի հատկանիշներ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Ցույց տալ բոլոր հատկությունները (ևս {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style հատկանիշ"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "գործակալ ծրագրի ոճերի աղյուսակ"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "քննիչի միջոցով"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Պատճենել բոլոր հայտարարագրերը որպես JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Ցույց տալ հաշվարկված արժեքը"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Ավոտմատ մուգ ռեժիմ"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Սեղմեք՝ «շերտը շերտի մեջ» ծառը բացելու համար"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "ոճերի ստեղված աղյուսակ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Պատճենվեց սեղմատախտակին"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Պատճենել բոլոր հայտարարագրերը"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Պատճենել կանոնը"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Պատճենել՝ selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS հատկանիշի անվանումը՝ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS հատկության արժեքը՝ {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-ի ընտրիչ"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Զտիչ"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "ՄԵծացում/փոքրացում մկնիկի անիվի կամ «վերև»/«ներքև» ստեղների միջոցով։ {PH1}՝ R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Ժառանգված ::{PH1} Pseudo տարր՝ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Ժառանգվել է հետևյալից՝ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "տեղադրվել է ոճերի աղյուսակ"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Տեղադրել ոճի կանոնը ներքևում"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Հատկության անվավեր արժեք"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo տարր ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ոճի հատկանիշներ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Ցույց տալ բոլոր հատկությունները (ևս {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style հատկանիշ"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Միացնել/անջատել արտապատկերման ընդհանուր էմուլյացիաները"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Հատկանիշի անհայտ անվանում"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "գործակալ ծրագրի ոճերի աղյուսակ"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "քննիչի միջոցով"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Անտեսված"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Զտիչ"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Ընտրացանկ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials վերնագրի արժեք"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Նշեք այլ user agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Ցուցադրված են ցանցի աշխատանքի պայմանները"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ցանցի թողունակության սահմանափակում"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Ընդհանուր"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Գլխագրի փոխարինում"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Իմանալ ավելին"

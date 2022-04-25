@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site আৰু Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "এইটো সুবিধা এটা বন্ধ হৈ যোৱা বিষয়ক অনুদিত বাৰ্তা এটাৰ উদাহৰণ।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "অপ্ৰচলিত সুবিধা ব্যৱহাৰ কৰা হৈছে"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "পৃষ্ঠাখন বেক/ফৰৱাৰ্ড কেশ্বত থাকোঁতে এগৰাকী সেৱা কৰ্মী সক্ৰিয় কৰা হৈছে।"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "নথি সম্পৰ্কীয় আসোঁৱাহৰ বাবে বেক/ফৰৱাৰ্ড কেশ্ব অক্ষম কৰা হৈছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ব্যৱহাৰ কৰা পৃষ্ঠাবোৰ bfcacheত ষ্ট’ৰ কৰিব নোৱাৰি।"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "অন্য এখন পৃষ্ঠাক কেশ্ব কৰিবলৈ দিবলৈ পৃষ্ঠাখন কেশ্বৰ পৰা উঠাই দিয়া হৈছে।"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "এই কাৰণসমূহৰ বাবে ব্যৱস্থা গ্ৰহণ কৰিব নোৱাৰি, অৰ্থাৎ পৃষ্ঠাখনৰ পোনপটীয়া নিয়ন্ত্ৰণৰ বাহিৰৰ কিবাই কেশ্বিঙত বাধা দিছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# টা ফ্ৰে’ম}one{# টা ফ্ৰে’ম}other{# টা ফ্ৰে’ম}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ফ্ৰে’ম"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# টা ফ্ৰে’মত}one{# টা ফ্ৰে’মত}other{# টা ফ্ৰে’মত}} {x,plural, =1{# টা সমস্যা}one{# টা সমস্যা}other{# টা সমস্যা}} পোৱা গৈছে।"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "অধিক জানক: বেক/ফৰৱাৰ্ড কেশ্বৰ যোগ্যতা"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "বাইনেৰী ডেটা"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "প্ৰতিলিপি কৰক"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "বৰ্তমানৰ ফাইলটোৰ পৰা আটাইবোৰ সালসলনি প্ৰতিলিপি কৰক"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "কোনো সালসলনি নাই"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "আটাইবোৰ স্তৰ"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ইতিহাসৰ পৰা স্বয়ংক্ৰিয়ভাৱে সম্পূৰ্ণ কৰক"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "কনছ'ল মচা হ'ল"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "লগৰ স্তৰ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests লগ কৰক"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "কেৱল বৰ্তমানৰ প্ৰসংগৰ পৰা বাৰ্তা দেখুৱাওক (top, iframe, worker, এক্সটেনশ্বন)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "কনছ'লত CORS আসোঁৱাহসমূহ দেখুৱাওক"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "মূল্যাংকনক ব্যৱহাৰকাৰীৰ সক্ৰিয়কৰণ হিচাপে গণ্য কৰক"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ভাৰ্ব’ছ"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "টিক চিহ্ন আঁতৰালে কেৱল সেইসমূহ বৈশিষ্ট্যহে দেখুওৱা হ’ব যিবোৰৰ মানবোৰ খালীও নহয় অনিৰ্দিষ্টও নহয়"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "সৃষ্ট ষ্টাইলশ্বীট"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "আটাইবোৰ CSS সালসলনি প্ৰতিলিপি কৰক"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "আটাইবোৰ ঘোষণা প্ৰতিলিপি কৰক"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "নিয়ম প্ৰতিলিপি কৰক"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector প্ৰতিলিপি কৰক"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS নিৰ্বাচক"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ইনজেক্ট কৰা ষ্টাইলশ্বীট"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "তলত ষ্টাইলৰ নিয়ম ভৰাওক"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[এট্ৰিবিউটৰ শৈলী]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "আটাইবোৰ বৈশিষ্ট্য (আৰু {PH1} টা) দেখুৱাওক"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style এট্ৰিবিউট"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ব্যৱহাৰকাৰীৰ এজেণ্ট ষ্টাইলশ্বীট"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "নিৰীক্ষকৰ জৰিয়তে"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "আটাইবোৰ CSS সালসলনি প্ৰতিলিপি কৰক"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "আটাইবোৰ ঘোষণাক JS হিচাপে প্ৰতিলিপি কৰক"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "গণনা কৰা মান চাওক"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "স্তৰৰ টীত ফাদিল কৰিবলৈ ক্লিক কৰক"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "সৃষ্ট ষ্টাইলশ্বীট"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "প্ৰতিলিপি কৰি ক্লিপব’ৰ্ডত ৰখা হ’ল"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSSৰ আটাইবোৰ সালসলনি প্ৰতিলিপি কৰক"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "আটাইবোৰ ঘোষণা প্ৰতিলিপি কৰক"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "নিয়ম প্ৰতিলিপি কৰক"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector প্ৰতিলিপি কৰক"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS বৈশিষ্ট্যৰ নাম: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS বৈশিষ্ট্যৰ মান: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS নিৰ্বাচক"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ফিল্টাৰ"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "মাউছহুইল অথবা আপ/ডাউন কীৰে বৃদ্ধি/হ্ৰাস। {PH1}: R ±1, শ্বিফ্ট: G ±1, অল্‌ট: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "ইয়াৰ পৰা পোৱা গৈছে ::{PH1} ইয়াৰ ভুৱা উপাদান "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "ইয়াৰ পৰা পোৱা গৈছে "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ইনজেক্ট কৰা ষ্টাইলশ্বীট"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "তলত ষ্টাইলৰ নিয়ম ভৰাওক"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "সম্পদৰ মান অমান্য"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ভুৱা ::{PH1} উপাদান"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[এট্ৰিবিউটৰ শৈলী]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "আটাইবোৰ বৈশিষ্ট্য (আৰু {PH1} টা) দেখুৱাওক"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style এট্ৰিবিউট"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "সাধাৰণ ৰেণ্ডাৰিং এমুলে’শ্বনবোৰ ট’গল কৰক"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "অজ্ঞাত সম্পদৰ নাম"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ব্যৱহাৰকাৰীৰ এজেণ্ট ষ্টাইলশ্বীট"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "নিৰীক্ষকৰ জৰিয়তে"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "উপেক্ষিত"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ফিল্টাৰ"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "মেনু"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials হে’ডাৰৰ মান"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "এটা কাষ্টম ব্যৱহাৰকাৰীৰ এজেণ্টৰ নাম দিয়ক"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "নেটৱৰ্কৰ স্থিতি দেখুওৱা হৈছে"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "নেটৱৰ্ক থ্ৰ’টলিং"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "সাধাৰণ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "হে’ডাৰৰ অ’ভাৰৰাইড"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "অধিক জানক"

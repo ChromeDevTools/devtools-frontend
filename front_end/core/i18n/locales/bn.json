@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site এবং Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "এটি একটি অনুবাদ শীঘ্রই বন্ধ করার সমস্যা সংক্রান্ত মেসেজের উদাহরণ।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "শীঘ্রই বন্ধ করা হয়েছে এমন ফিচার ব্যবহার করা হয়েছে"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার চালু করা হয়েছে।"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ডকুমেন্টে সমস্যার জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ব্যবহার করা পৃষ্ঠাগুলি bfcache-এ সেভ করা যাবে না।"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পৃষ্ঠার নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে।"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{#টি ফ্রেম}one{#টি ফ্রেম}other{#টি ফ্রেম}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ফ্রেম"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{#টি সমস্যা}one{#টি সমস্যা}other{#টি সমস্যা}} এতে পাওয়া গেছে {y,plural, =1{#টি ফ্রেম}one{#টি ফ্রেম}other{#টি ফ্রেম}}।"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "আরও জানুন: ব্যাক-ফরোয়ার্ড ক্যাশে যোগ্যতা"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "বাইনারি ডেটা"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "কপি করুন"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "বর্তমান ফাইল থেকে সমস্ত পরিবর্তন কপি করুন"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "কোনও পরিবর্তন নেই"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "সব লেভেল"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ইতিহাস থেকে অটোমেটিক পূরণ করা"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "কনসোল মুছে ফেলা হয়েছে"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "লগ লেভেল"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequests লগ করুন"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "শুধু বর্তমান কন্টেক্সট থেকে মেসেজ দেখুন (top, iframe, worker, এক্সটেনশন)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "কনসোলে CORS সংক্রান্ত সমস্যা দেখুন"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "মূল্যায়নকে ইউজার অ্যাক্টিভেশন হিসেবে বিবেচনা করুন"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ভার্বোস"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "টিক চিহ্ন সরানোর সময়, শুধুমাত্র সেই প্রপার্টিগুলি দেখানো হবে যার মান শূন্য বা অনির্দিষ্ট নয়"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "তৈরি করা স্টাইলশিট"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "সব CSS পরিবর্তন কপি করুন"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "সব ঘোষণা কপি করুন"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "নিয়ম কপি করুন"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector কপি করুন"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS সিলেক্টর"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ইনজেক্ট করা স্টাইলশিট"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "নিচে স্টাইলের নিয়ম লিখুন"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[অ্যাট্রিবিউট স্টাইল]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "সব প্রপার্টি দেখুন (আরও {PH1}টি)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style অ্যাট্রিবিউট"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ইউজার এজেন্ট স্টাইলশিট"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ইন্সপেক্টরের মাধ্যমে"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "সব CSS পরিবর্তন কপি করুন"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS হিসেবে সব ঘোষণা কপি করুন"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "গণনা করা মান দেখুন"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "অটোমেটিক 'ডার্ক মোড'"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "লেয়ার ট্রিতে থাকা লেয়ার দেখার জন্য ক্লিক করুন"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "তৈরি করা স্টাইলশিট"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ক্লিপবোর্ডে কপি করা হয়েছে"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS সংক্রান্ত সবকটি পরিবর্তন কপি করুন"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "সব ঘোষণা কপি করুন"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "নিয়ম কপি করুন"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector কপি করুন"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS প্রপার্টির নাম: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS প্রপার্টির ভ্যালু: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS সিলেক্টর"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ফিল্টার করুন"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "মাউসহুইল বা উর্ধমুখী/নিম্নমুখী তীরচিহ্নের সাহায্যে কমান/বাড়ান। {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "এর থেকে নেওয়া হয়েছে:: এর {PH1} সিউডো এলিমেন্ট "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "এর থেকে নেওয়া "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ইনজেক্ট করা স্টাইলশিট"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "নিচে স্টাইলের নিয়ম লিখুন"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "প্রপার্টির মান সঠিক নয়"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "সিউডো ::{PH1} এলিমেন্ট"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[অ্যাট্রিবিউট স্টাইল]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "সব প্রপার্টি দেখুন (আরও {PH1}টি)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style অ্যাট্রিবিউট"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "সাধারণ রেন্ডারিং ইমুলেশন টগল করুন"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "প্রপার্টি নাম অজানা"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ইউজার এজেন্ট স্টাইলশিট"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ইন্সপেক্টরের মাধ্যমে"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "এড়ানো হয়েছে"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ফিল্টার করুন"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "মেনু"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials হেডারের মান"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "কোনও কাস্টম ইউজার এজেন্টের তথ্য লিখুন"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "নেটওয়ার্কের অবস্থা দেখানো হয়েছে"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "নেটওয়ার্ক থ্রটলিং"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "সাধারণ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "হেডার ওভাররাইড করে"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "আরও জানুন"

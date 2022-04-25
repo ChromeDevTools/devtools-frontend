@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site et Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Voici un exemple de message traduit lié à un problème d'abandon"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Fonctionnalité obsolète utilisée"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Federated Credential Management"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Un service worker a été activé alors que la page se trouvait dans le cache amélioré."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Le cache amélioré est désactivé à cause d'une erreur liée au document"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Les pages qui utilisent FencedFrames ne peuvent pas être stockées dans le cache amélioré."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "La page a été exclue du cache afin de laisser la place à une autre."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Vous ne pouvez pas agir sur ces raisons, car un élément échappant au contrôle de la page a empêché la mise en cache."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# frame}one{# frame}other{# frames}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Frames"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problème}one{# problème}other{# problèmes}} trouvés dans {y,plural, =1{# frame}one{# frame}other{# frames}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "En savoir plus : éligibilité au cache amélioré"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Données binaires"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Copier"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Copier toutes les modifications du fichier actuel"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Aucune modification"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Tous les niveaux"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Saisie semi-automatique à partir de l'historique"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console effacée"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Niveaux de journalisation"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Consigner les XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Afficher uniquement les messages du contexte actuel (top, iframe, worker, extension)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Afficher les erreurs CORS dans la console"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Traiter l'évaluation comme une activation par l'utilisateur"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Message détaillé"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Si cette case n'est pas cochée, seules les propriétés dont les valeurs ne sont pas nulles ni indéfinies seront affichées"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "feuille de style construite"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Copier toutes les modifications CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Copier toutes les déclarations"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Copier la règle"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Copier le selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Sélecteur de CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "feuille de sytle injectée"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Insérer une règle de style ci-dessous"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Style d'attributs]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Afficher toutes les propriétés ({PH1} autre[s])"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Attribut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "feuille de style user-agent"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "via l'inspecteur"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Copier toutes les modifications CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copier toutes les déclarations en tant que JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Voir la valeur calculée"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Mode sombre automatique"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Cliquez dessus pour afficher la couche dans l'arborescence des couches"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "feuille de style construite"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Copié dans le presse-papiers"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copier toutes les modifications CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Copier toutes les déclarations"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Copier la règle"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Copier le selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nom de la propriété CSS : {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Valeur de la propriété CSS : {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Sélecteur de CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrer"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Augmenter/Diminuer avec la molette de la souris ou les touches vers le haut/bas. {PH1} : R ±1, Maj : G ±1, Alt : B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Hérité du : pseudo {PH1} de "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Hérité de "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "feuille de sytle injectée"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Insérer une règle de style ci-dessous"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Valeur de propriété incorrecte"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo-élément ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Style d'attributs]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Afficher toutes les propriétés ({PH1} autre[s])"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Attribut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Activer/Désactiver les émulations de l'affichage standard"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nom de la propriété inconnu"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "feuille de style user-agent"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "via l'inspecteur"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoré"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrer"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Valeur de l'en-tête Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Indiquez un user-agent personnalisé"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Conditions du réseau affichées"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitation de bande passante réseau"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Général"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Forçage d'en-tête"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "En savoir plus"

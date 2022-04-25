@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ಮತ್ತು Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ಇದು ಅನುವಾದಿತ ತಡೆಹಿಡಿಯುವಿಕೆ ಸಮಸ್ಯೆಯ ಸಂದೇಶದ ಉದಾಹರಣೆಯಾಗಿದೆ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "ತಡೆಹಿಡಿಯುವಿಕೆ ಫೀಚರ್ ಬಳಸಲಾಗಿದೆ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ಈ ಪುಟವು ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಲ್ಲಿದ್ದಾಗ, ಸರ್ವಿಸ್ ವರ್ಕರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ಡಾಕ್ಯುಮೆಂಟ್ ದೋಷದಿಂದಾಗಿ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames ಬಳಸುವ ಪುಟಗಳನ್ನು bfcache ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾಗುವುದಿಲ್ಲ."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "ಮತ್ತೊಂದು ಪುಟವನ್ನು ಕ್ಯಾಷ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕ್ಯಾಷ್‌ನಿಂದ ಪುಟವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ಈ ಕಾರಣಗಳು ಕ್ರಮ ತೆಗೆದುಕೊಳ್ಳಲು ಯೋಗ್ಯವಾಗಿಲ್ಲ, ಅಂದರೆ ಪುಟದ ನಿಯಂತ್ರಣದಲ್ಲಿಲ್ಲದ ಕಾರಣದಿಂದ ಕ್ಯಾಷಿಂಗ್ ಅನ್ನು ಮೆಮೊರಿಗೆ ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ಫ್ರೇಮ್}one{# ಫ್ರೇಮ್‌ಗಳು}other{# ಫ್ರೇಮ್‌ಗಳು}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ಫ್ರೇಮ್‌ಗಳು"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# ಸಮಸ್ಯೆ}one{# ಸಮಸ್ಯೆಗಳು}other{# ಸಮಸ್ಯೆಗಳು}} {y,plural, =1{# ಫ್ರೇಮ್}one{# ಫ್ರೇಮ್‌ಗಳು}other{# ಫ್ರೇಮ್‌ಗಳು}} ನಲ್ಲಿ ಕಂಡುಬಂದಿವೆ."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅರ್ಹತೆ"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ಬೈನರಿ ಡೇಟಾ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "ನಕಲಿಸಿ"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ಪ್ರಸ್ತುತ ಫೈಲ್‌ನಿಂದ ಎಲ್ಲಾ ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಲ್ಲ"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "ಎಲ್ಲಾ ಹಂತಗಳು"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ಇತಿಹಾಸದಿಂದ ಆಟೋಕಂಪ್ಲೀಟ್"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ಕನ್ಸೋಲ್ ಅನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ಲಾಗ್ ಹಂತಗಳು"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "ಲಾಗ್‌ XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "ಪ್ರಸ್ತುತ ಸಂದರ್ಭದಿಂದ ಸಂದೇಶಗಳನ್ನು ಮಾತ್ರ ತೋರಿಸಿ (top, iframe, worker, ವಿಸ್ತರಣೆ)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "ಕನ್ಸೋಲ್‌ನಲ್ಲಿ CORS ದೋಷಗಳನ್ನು ತೋರಿಸಿ"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "ಮೌಲ್ಯಮಾಪನವನ್ನು ಬಳಕೆದಾರರ ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆ ಎಂದು ಪರಿಗಣಿಸಿ"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ವರ್ಬೋಸ್"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{ಎಚ್ಚರಿಕೆ, # ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}one{ಎಚ್ಚರಿಕೆ, # ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}other{ಎಚ್ಚರಿಕೆ, # ಬಾರಿ ಪುನರಾವರ್ತನೆಯಾಗಿದೆ}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "ಇತಿಹಾಸದಿಂದ ಸ್ವಯಂಪೂರ್ಣಗೊಳಿಸಿ"
+    "message": "ಇತಿಹಾಸದಿಂದ ಆಟೋಕಂಪ್ಲೀಟ್"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "ಕನ್ಸೋಲ್ ಅನ್ನು ತೆರವುಗೊಳಿಸಿ"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "ಗುರುತಿಸಿರುವುದನ್ನು ತೆಗೆದುಹಾಕಿದಾಗ, ಮೌಲ್ಯಗಳು ಶೂನ್ಯ ಅಥವಾ ವ್ಯಾಖ್ಯಾನಿಸಿರದ ಪ್ರಾಪರ್ಟಿಗಳನ್ನು ಮಾತ್ರ ತೋರಿಸಲಾಗುತ್ತದೆ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "ರಚಿಸಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "ರೂಲ್ ನಕಲಿಸಿ"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector ನಕಲಿಸಿ"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS ಸೆಲೆಕ್ಟರ್"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "ಕೆಳಗೆ ಶೈಲಿಯ ರೂಲ್ ಅನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ಗುಣಲಕ್ಷಣಗಳ ಶೈಲಿ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "ಎಲ್ಲಾ ಪ್ರಾಪರ್ಟಿಗಳನ್ನು ತೋರಿಸಿ (ಇನ್ನೂ {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style ಗುಣಲಕ್ಷಣ"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಸ್ಟೈಲ್‌ಶೀಟ್"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಮೂಲಕ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "JS ನಂತೆ ಎಲ್ಲಾ ಘೋಷಣೆಗಳನ್ನು ನಕಲಿಸಿ"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ಕಂಪ್ಯೂಟೆಡ್ ಮೌಲ್ಯದ ವೀಕ್ಷಣೆ"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ಸ್ವಯಂಚಾಲಿತ ಕತ್ತಲೆ ಮೋಡ್"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "ಲೇಯರ್ ಟ್ರೀನಲ್ಲಿನ ಲೇಯರ್ ಅನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "ರಚಿಸಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "ರೂಲ್ ನಕಲಿಸಿ"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector ನಕಲಿಸಿ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS ಆಸ್ತಿಯ ಹೆಸರು: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS ಆಸ್ತಿಯ ಮೌಲ್ಯ: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS ಸೆಲೆಕ್ಟರ್"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ಫಿಲ್ಟರ್"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "ಮೌಸ್‌ವ್ಹೀಲ್ ಅಥವಾ ಮೇಲೆ/ಕೆಳಗೆ ಕೀಗಳನ್ನು ಬಳಸಿ ಹೆಚ್ಚಿಸಿ/ಕಡಿಮೆ ಮಾಡಿ. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "::{PH1} ಸ್ಯೂಡೋ ಅಂಶದಿಂದ ಪಾರಂಪರಿಕವಾಗಿ ಪಡೆಯಲಾಗಿದೆ "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "ಇದರಿಂದ ಪಾರಂಪರಿಕವಾಗಿ ಪಡೆದುಕೊಳ್ಳಲಾಗಿದೆ "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "ಕೆಳಗೆ ಶೈಲಿಯ ರೂಲ್ ಅನ್ನು ಸೇರಿಸಿ"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "ಅಮಾನ್ಯ ಪ್ರಾಪರ್ಟಿ ಮೌಲ್ಯ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ಸ್ಯೂಡೋ ::{PH1} ಘಟಕ"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ಗುಣಲಕ್ಷಣಗಳ ಶೈಲಿ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "ಎಲ್ಲಾ ಪ್ರಾಪರ್ಟಿಗಳನ್ನು ತೋರಿಸಿ (ಇನ್ನೂ {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style ಗುಣಲಕ್ಷಣ"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "ಸಾಮಾನ್ಯ ರೆಂಡರಿಂಗ್ ಅನುಕರಣೆಗಳನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ಅಪರಿಚಿತ ಪ್ರಾಪರ್ಟಿ ಹೆಸರು"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಸ್ಟೈಲ್‌ಶೀಟ್"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಮೂಲಕ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ಫಿಲ್ಟರ್"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "ಮೆನು"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials ಶಿರೋಲೇಖದ ಮೌಲ್ಯ"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "ಕಸ್ಟಮ್ ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಪರಿಸ್ಥಿತಿಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಥ್ರಾಟಲಿಂಗ್"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "ಸಾಮಾನ್ಯ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ಶಿರೋಲೇಖವನ್ನು ಅತಿಕ್ರಮಿಸುತ್ತದೆ"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"

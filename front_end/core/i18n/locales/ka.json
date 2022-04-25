@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site და Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ეს არის მოძველებასთან დაკავშირებული პრობლემის შესახებ შეტყობინების თარგმანის მაგალითი."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "გამოყენებულია მოძველებული ფუნქცია"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "სერვისის დამმუშავებელი გააქტიურდა გვერდის უკან-წინ გადასვლის ქეშშში ყოფნისას."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია დოკუმენტის შეცდომის გამო."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "გვერდები, რომლებიც იყენებს FencedFrames-ს, ვერ შეინახება bfcache-ში."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "გვერდი წაიშალა ქეშიდან, სხვა გვერდის ქეშირების მიზნით."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ეს მიზეზები არაგანხორციელებადია, ანუ ქეშირებას ხელი შეუშალა მიზეზმა, რომელიც უშუალოდ არ უკავშირდება გვერდის კონტროლს."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ფრეიმი}other{# ფრეიმი}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ფრეიმები"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# პრობლემა}other{# პრობლემა}} მოიძებნა {y,plural, =1{# ფრეიმში}other{# ფრეიმში}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "შეიტყვეთ მეტი უკან-წინ გადასვლის ქეშის კრიტერიუმებთან შესაბამისობის შესახებ"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ორობითი მონაცემები"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "კოპირება"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ყველა შეცდომის კოპირება ამჟამინდელი ფაილიდან"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ცვლილებები არ არის"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "ყველა დონე"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "ავტომატური დასრულება ისტორიიდან"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "კონსოლი გასუფთავდა"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "ჟურნალის დონეები"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "XMLHttpRequest-ების ჟურნალირება"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "შეტყობინებების ჩვენება მხოლოდ ამჟამინდელი კონტექსტიდან (top, iframe, worker, გაფართოება)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "CORS შეცდომების კონსოლში გამოჩენა"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "შეფასებისადმი მოპყრობა, როგორც მომხმარებლის აქტივაციისადმი"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "დეტალური"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "როცა მოუნიშნავია, ნაჩვენები იქნება მხოლოდ ის თვისებები, რომელთა მნიშვნელობებიც არ არის ნული ან განუსაზღვრელი"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "სტილთა შედგენილი ცხრილი"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "ყველა CSS ცვლილების კოპირება"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ყველა დეკლარაციის კოპირება"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "წესის კოპირება"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "დაკოპირდეს selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS-ის ამომრჩევი"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "სტილთა ინტეგრირებული ცხრილი"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "ჩასვით სტილთან დაკავშირებული წესი ქვემოთ"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[ატრიბუტების სტილი]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "ყველა თვისების ჩვენება ({PH1} სხვა)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style ატრიბუტი"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "user agent სტილთა ცხრილი"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ინსპექტორის მეშვეობით"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "ყველა CSS ცვლილების კოპირება"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ყველა დეკლარაციის კოპირება JS-ის სახით"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "გამოთვლილი მნიშვნელობის ნახვა"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ავტომატური მუქი რეჟიმი"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "დააწკაპუნეთ შრის შრეთა ხეში გამოსაჩენად"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "სტილთა შედგენილი ცხრილი"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "დაკოპირდა გაცვლის ბუფერში"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ყველა CSS ცვლილების კოპირება"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ყველა დეკლარაციის კოპირება"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "წესის კოპირება"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "დაკოპირდეს selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS რესურსის სახელი: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS რესურსის მნიშვნელობა: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS-ის ამომრჩევი"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "გაფილტვრა"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "მატება/კლება მაუსის ბორბლის ან კლავიშების ზემოთ/ქვემოთ მეშვეობით. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "მემკვიდრეობით მიღებულია შემდეგისგან: ::{PH1}, რომელიც არის შემდეგის ფსევდო: "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "მემკვიდრეობით მიღებულია შემდეგისგან: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "სტილთა ინტეგრირებული ცხრილი"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "ჩასვით სტილთან დაკავშირებული წესი ქვემოთ"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "თვისების მნიშვნელობა არასწორია"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ფსევდო ::{PH1} ელემენტი"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[ატრიბუტების სტილი]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "ყველა თვისების ჩვენება ({PH1} სხვა)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style ატრიბუტი"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "ვიზუალიზაციის გავრცელებული ემულაციების გადართვა"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "თვისების სახელი უცნობია"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "user agent სტილთა ცხრილი"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ინსპექტორის მეშვეობით"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "იგნორირებული"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "გაფილტვრა"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "მენიუ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials სათაურის მნიშვნელობა"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "შეიყვანეთ მორგებული user agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "ნაჩვენებია ქსელის მდგომარეობები"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ქსელის რეგულირება"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "ზოგადი"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ჰედერის უგულებელყოფები"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "შეიტყვეთ მეტი"

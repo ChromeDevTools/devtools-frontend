@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site a Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Toto je príklad preloženej správy o probléme s ukončením podpory."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Používa sa funkcia s ukončenou podporou"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Bola aktivovaná obsluha, keď sa stránka nachádzala v spätnej vyrovnávacej pamäti."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Spätná vyrovnávacia pamäť je deaktivovaná pre chybu v dokumente."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Stránky, ktoré používajú FencedFrames, nie je možné uložiť v spätnej vyrovnávacej pamäti."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Stránka bola vylúčená z vyrovnávacej pamäte, aby bolo do nej možné uložiť inú."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Tieto dôvody nie sú použiteľné, teda uloženiu do vyrovnávacej pamäte zabránilo niečo, nad čím stránka nemala priamu kontrolu."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# rám}few{# rámy}many{# frames}other{# rámov}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Rámy"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# problém}few{# problémy}many{# issues}other{# problémov}} v {y,plural, =1{# ráme}few{# rámoch}many{# frames}other{# rámoch}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Ďalšie informácie: vhodnosť spätnej vyrovnávacej pamäte"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binárne dáta"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopírovať"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Skopírovať všetky zmeny z aktuálneho súboru"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Žiadne zmeny"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Všetky úrovne"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automatické dopĺňanie z histórie"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzola bola vymazaná"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Úrovne denníka"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Zaznamenávať žiadosti XMLHttpRequest"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Zobrazovať iba správy z aktuálneho kontextu (top, iframe, worker, rozšírenie)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Zobrazovať chyby CORS v konzole"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Považovať hodnotenie za aktivitu používateľa"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Podrobnosť"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Keď toto políčko nezačiarknete, budú sa zobrazovať iba vlastnosti, ktorých hodnota je nula alebo nie je definovaná"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "zostavená šablóna so štýlmi"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Skopírovať všetky zmeny šablón CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopírovať všetky deklarácie"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopírovať pravidlo"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopírovať selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Selektor: CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "vložená šablóna so štýlmi"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Vložiť pravidlo pre štýl nižšie"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[štýl atribútov]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Zobraziť všetky vlastnosti (ďalšie: {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribút style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "šablóna so štýlmi používateľského agenta"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "prostredníctvom kontroly"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Skopírovať všetky zmeny šablón CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopírovať všetky deklarácie ako JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Zobraziť vypočítanú hodnotu"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automatický tmavý režim"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kliknutím zobrazíte vrstvu v strome vrstiev"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "zostavená šablóna so štýlmi"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Skopírované do schránky"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Skopírovať všetky zmeny šablón CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopírovať všetky deklarácie"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopírovať pravidlo"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopírovať selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Názov vlastnosti CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Hodnota vlastnosti CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Selektor: CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrovať"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Zvyšujte a znižujte prírastky kolieskom myši alebo klávesmi so šípkou nahor či nadol. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Zdedené zo pseudoprvku ::{PH1} zo zdroja "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Zdedené zo zdroja "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "vložená šablóna so štýlmi"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Vložiť pravidlo pre štýl nižšie"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Neplatná hodnota vlastnosti"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Prvok Pseudo ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[štýl atribútov]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Zobraziť všetky vlastnosti (ďalšie: {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribút style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Prepnúť bežné emulácie vykresľovania"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Neznámy názov vlastnosti"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "šablóna so štýlmi používateľského agenta"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "prostredníctvom kontroly"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorované"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrovať"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Ponuka"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials: hodnota hlavičky"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Zadajte vlastný používateľský agent"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Zobrazujú sa podmienky siete"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Obmedzovanie rýchlosti"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Všeobecné"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Prepísania hlavičiek"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Ďalšie informácie"

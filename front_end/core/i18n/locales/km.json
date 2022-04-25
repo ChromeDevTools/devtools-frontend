@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "គេហទំព័រ​ដូចគ្នា និង​ប្រភពដើម​ដូចគ្នា"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "នេះគឺជាឧទាហរណ៍នៃសារបញ្ហាអំពីការបញ្ឈប់ដែលបានបកប្រែ។"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "បានប្រើ​មុខងារបញ្ឈប់"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ស្គ្រីបជំនួយផ្ទៃខាងក្រោយត្រូវបានបើកដំណើរការ ខណៈពេលដែលទំព័រនេះស្ថិតនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង​ត្រូវបានបិទ ដោយសារ​បញ្ហាឯកសារ។"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "ទំព័រដែលប្រើ FencedFrames មិនអាចត្រូវបានរក្សាទុក​នៅក្នុង bfcache ទេ។"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុង ដើម្បីអនុញ្ញាតឱ្យទុកទំព័រផ្សេងទៀតក្នុងឃ្លាំងបម្រុង។"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ទាំងនេះជាមូលហេតុដែលមិនអាចធ្វើសកម្មភាពបានទេ ឧ. ការទុកក្នុងឃ្លាំងបម្រុងត្រូវបានទប់ស្កាត់ដោយអ្វីមួយដែលមិនពាក់ព័ន្ធនឹងការគ្រប់គ្រងទំព័រដោយផ្ទាល់។"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{ស៊ុម #}other{ស៊ុម #}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ស៊ុម"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{បានរកឃើញបញ្ហា #}other{បញ្ហា #}} នៅក្នុង{y,plural, =1{ស៊ុម #}other{ស៊ុម #}}។"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម៖ សិទ្ធិនៃការប្រើប្រាស់ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ទិន្នន័យ​គោលពីរ"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "ចម្លង"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ចម្លង​ការផ្លាស់ប្ដូរទាំងអស់​ពីឯកសារបច្ចុប្បន្ន"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "គ្មានការផ្លាស់ប្ដូរទេ"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "កម្រិតទាំងអស់"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "បំពេញស្វ័យប្រវត្តិ​ពីប្រវត្តិ"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "បានសម្អាតកុងសូល"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "កម្រិតកំណត់​ហេតុ"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "កត់ត្រា XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "បង្ហាញសារពី​បរិបទបច្ចុប្បន្ន​តែប៉ុណ្ណោះ (top, iframe, worker, កម្មវិធីបន្ថែម)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "បង្ហាញបញ្ហា CORS នៅក្នុងកុងសូល"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "ចាត់ទុកការវាយតម្លៃជាការបើកដំណើរការរបស់អ្នកប្រើប្រាស់"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "សាររៀបរាប់"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "នៅពេលដោះធីក មានតែទ្រព្យដែលមានតម្លៃត្រូវបានកំណត់ ឬមិនស្មើសូន្យប៉ុណ្ណោះដែលនឹងបង្ហាញ"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "បញ្ជី​រចនាប័ទ្ម​ដែលបាន​បង្កើត"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "ចម្លងការផ្លាស់ប្ដូរ CSS ទាំងអស់"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "ចម្លង​សេចក្ដី​ប្រកាស​ទាំងអស់"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "ចម្លង​វិធាន"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "ចម្លង selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "ផ្ទាំងជ្រើសរើស CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "បញ្ជីរចនាប័ទ្ម​ដែលបានបញ្ចូល"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "បញ្ចូល​វិធាន​រចនាប័ទ្ម​ខាងក្រោម"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[រចនាប័ទ្មនៃលក្ខណៈ]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "បង្ហាញ​លក្ខណសម្បត្តិ​ទាំងអស់ ({PH1} ទៀត)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "លក្ខណៈ style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "បញ្ជីរចនាប័ទ្ម​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "តាមរយៈ​កម្មវិធី​ត្រួតពិនិត្យ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "ចម្លងការផ្លាស់ប្ដូរ CSS ទាំងអស់"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ចម្លង​សេចក្ដីប្រកាស​ទាំងអស់ជា JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "មើលតម្លៃដែលបានគណនា"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "មុខងារងងឹត​ស្វ័យប្រវត្តិ"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "ចុច ដើម្បីបង្ហាញ​ស្រទាប់នៅក្នុង​មែកធាង​នៃស្រទាប់"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "បញ្ជី​រចនាប័ទ្ម​ដែលបាន​បង្កើត"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "បានចម្លង​ទៅ​ឃ្លីបបត"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ចម្លង​ការប្ដូរ CSS ទាំងអស់"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "ចម្លង​សេចក្ដី​ប្រកាស​ទាំងអស់"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "ចម្លង​វិធាន"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "ចម្លង selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "ឈ្មោះលក្ខណសម្បត្តិ CSS៖ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "តម្លៃ​លក្ខណសម្បត្តិ CSS៖ {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "ផ្ទាំងជ្រើសរើស CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "តម្រង"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "បន្ថែម/បន្ថយ​ដោយប្រើ​គ្រាប់ចុច​ឡើងលើ/ចុះក្រោម ឬ​គ្រាប់រំកិល​កណ្ដុរ​។ {PH1}៖ R ±1, ប្ដូរ (Shift)៖ G ±1, Alt៖ B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "បានទទួលបន្តពីធាតុមិនពិតនៃ ::{PH1} "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "បានទទួល​បន្តពី "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "បញ្ជីរចនាប័ទ្ម​ដែលបានបញ្ចូល"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "បញ្ចូល​វិធាន​រចនាប័ទ្ម​ខាងក្រោម"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "តម្លៃ​លក្ខណសម្បត្តិ​មិនត្រឹមត្រូវ​ទេ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ធាតុ​មិនពិត ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[រចនាប័ទ្មនៃលក្ខណៈ]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "បង្ហាញ​លក្ខណសម្បត្តិ​ទាំងអស់ ({PH1} ទៀត)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "លក្ខណៈ style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "ប៊ូតុងបិទ/បើក​ការត្រាប់តាម​ការបំប្លែងទូទៅ"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ឈ្មោះ​លក្ខណសម្បត្តិ​ដែលមិនស្គាល់"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "បញ្ជីរចនាប័ទ្ម​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "តាមរយៈ​កម្មវិធី​ត្រួតពិនិត្យ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "មិនបាន​អើពើ"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "តម្រង"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "ម៉ឺនុយ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "តម្លៃផ្នែកក្បាល Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "បញ្ចូលភ្នាក់ងារ​អ្នកប្រើប្រាស់​ផ្ទាល់ខ្លួន"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "លក្ខខណ្ឌបណ្ដាញដែលបង្ហាញ"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ការពន្យឺត​បណ្ដាញ"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "ទូទៅ"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ការលុបពីលើផ្នែកក្បាល"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"

@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "同網站與同來源"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "這個示例是經過翻譯的淘汰問題訊息。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "使用已淘汰的功能"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Service Worker 已在網頁儲存於往返快取時啟用。"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "由於文件發生錯誤，往返快取功能已停用。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "使用 FencedFrames 的網頁無法儲存在往返快取中。"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "為了讓系統能夠快取其他網頁，這個網頁已從快取中移除。"
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "你無法根據這些原因採取行動，也就是說，與直接控管網頁無關的原因會導致無法快取。"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# 個頁框}other{# 個頁框}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "頁框"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "找到 {x,plural, =1{# 個問題}other{# 個問題}} (在 {y,plural, =1{# 個頁框}other{# 個頁框}} 中)。"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "瞭解詳情：往返快取適用資格"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "二進位資料"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "複製"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "複製目前檔案中的所有變更內容"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "沒有變更"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "所有層級"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "透過歷史記錄自動完成"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "主控台已清除"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "記錄層級"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "記錄 XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "僅顯示目前內容的訊息 (top，iframe，worker，擴充功能)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "在主控台中顯示 CORS 錯誤"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "將評估視為使用者啟動作業"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "詳細"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{警告訊息，已重複顯示 # 次}other{警告訊息，已重複顯示 # 次}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "以歷史記錄自動完成"
+    "message": "透過歷史記錄自動完成"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "清除主控台"
@@ -4005,7 +4041,7 @@
     "message": "隱藏時間戳記"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "記錄多個 XMLHttpRequests 要求"
+    "message": "記錄 XMLHttpRequests"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "僅顯示目前內容的訊息 (top，iframe，worker，擴充功能)"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "如果取消勾選，只會顯示非空值和已定義值的屬性"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "結構化樣式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "複製所有 CSS 變更內容"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "複製所有宣告"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "複製規則"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "複製selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS 選取器程式碼"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "插入的樣式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "在下方插入樣式規則"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[屬性樣式]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "顯示所有屬性 (還有 {PH1} 個)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style屬性"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "使用者代理程式樣式表"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "透過檢查工具"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "複製所有 CSS 變更內容"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式複製全部宣告內容"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "查看已運算的值"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "自動深色模式"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "按一下以在圖層樹狀結構中顯示圖層"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "結構化樣式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "已複製到剪貼簿"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "複製所有 CSS 變更內容"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "複製所有宣告"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "複製規則"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "複製selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS 屬性名稱：{PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS 屬性值：{PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS 選取器程式碼"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "篩選"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "利用滑鼠滾輪或向上/下鍵來增加或減少數值，同時按住下列按鍵可控制增減幅度。{PH1} 鍵：R ±1，Shift 鍵：G ±1，Alt 鍵：B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "沿用來源：{PH1}以下項目的虛擬元素 "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "沿用來源 "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "插入的樣式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "在下方插入樣式規則"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "屬性值無效"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "虛擬：{PH1} 元素"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[屬性樣式]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "顯示所有屬性 (還有 {PH1} 個)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style屬性"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "切換一般算繪模擬功能"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "屬性名稱不明"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "使用者代理程式樣式表"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "透過檢查工具"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "已忽略"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "篩選"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "選單"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials 標頭值"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "輸入自訂使用者代理程式"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "顯示網路狀況"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "網路節流"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "一般"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "覆寫標頭"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "瞭解詳情"

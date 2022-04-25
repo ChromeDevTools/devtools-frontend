@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site र Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "यो चल्तीबाट हटाइएको सुविधासम्बन्धी समस्याको अनुवाद गरिएको म्यासेजको उदाहरण हो।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "चल्तीबाट हटाइएको सुविधा प्रयोग गरिएको छ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -2694,7 +2700,7 @@
     "message": "नेटवर्कसम्बन्धी अनुरोधहरू"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "पेज रिलोड हुँदा service worker लाई बलपूर्वक अपडेट गर्नुहोस् र यसलाई सक्रिय गर्नुहोस्"
+    "message": "पेज रिलोड हुँदा service worker लाई बलपूर्वक अपडेट गर्नुहोस् र यसलाई अन गर्नुहोस्"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "आवधिक रूपमा सिंक गर्नुहोस्"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "यो पेज ब्याक/फर्वार्ड क्यासमा भएका बेला कुनै सर्भिस वर्कर एक्टिभेट गरिएको थियो।"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "डकुमेन्टमा त्रुटि भएका कारण ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFrames प्रयोग गरिएका पेजहरू bfcache मा भण्डारण गर्न सकिँदैन।"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "कुनै अर्को पेज क्यास गर्नका निम्ति यो पेज क्यासबाट हटाइएको थियो।"
   },
@@ -3245,6 +3257,15 @@
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "यी कुराहरूमाथि कारबाही गर्न सकिँदैन, अर्थात् यो पेजको प्रत्यक्ष नियन्त्रणबाहिर रहेको कुनै कुराले गर्दा यो पेज क्यास गर्न सकिएन।"
   },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# फ्रेम}other{# वटा फ्रेम}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "फ्रेमहरू"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{y,plural, =1{# फ्रेम}other{# वटा फ्रेम}} मा भेट्टिएका {x,plural, =1{# समस्या}other{# वटा समस्या}}"
+  },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "थप जान्नुहोस्: ब्याक/फर्वार्ड क्याससम्बन्धी मापदण्ड"
   },
@@ -3258,7 +3279,7 @@
     "message": "कारबाही गर्न सकिने"
   },
   "panels/application/components/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "यी कुराहरूमाथि कारबाही गर्न सकिन्छ, अर्थात् यो पेजका हकमा ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिलोस् भन्नाका खातिर यी कुराहरू मेटाउन सकिन्छ।"
+    "message": "यी कुराहरूमाथि कारबाही गर्न सकिन्छ, अर्थात् यो पेजका हकमा ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिलोस् भन्नाका लागि यी कुराहरू मेटाउन सकिन्छ।"
   },
   "panels/application/components/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ब्याक/फर्वार्ड क्यास प्रयोग गरी पेज रिस्टोर गरियो।"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "बाइनरी डेटा"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "कपी गर्नुहोस्"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "हालको फाइलमा गरिएका सबै परिवर्तनहरू कपी गर्नुहोस्"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "कुनै पनि कुरा परिवर्तन गरिएको छैन"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "सबै स्तरहरू"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "इतिहासबाट स्वतः भरियोस्"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "कन्सोलमा भएका सबै डेटा हटाइयो"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "लगका स्तरहरू"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "लग XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "हालको सन्दर्भका म्यासेज मात्र देखाइयोस् (top, iframe, worker, एक्स्टेन्सन)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "कन्सोलमा CORS सम्बन्धी त्रुटि देखाइयोस्"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "इभ्यालुएसनलाई युजर एक्टिभेसनका रूपमा लिइयोस्"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "बोलेर दिनु पर्ने जानकारीको मात्रा"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "तपाईंले चिन्ह हटाउनुभयो भने मान शून्य नभएका र पहिले नै तय गरिएका प्रोपर्टीहरू मात्र देखाइने छन्"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "स्टायलसिट बनाइयो"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS मा गरिएका सबै परिवर्तनहरू कपी गर्नुहोस्"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "सबै घोषणाहरू कपी गर्नुहोस्"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "नियम कपी गर्नुहोस्"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selector कपी गर्नुहोस्"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS सेलेक्टर"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "इन्जेक्ट गरिएको स्टायलसिट"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "शैलीसम्बन्धी नियम तल हाल्नुहोस्"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[विशेषताको शैली]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "सबै प्रोपर्टीहरू देखाइऊन् (थप {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style विशेषता"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "युजर एजेन्ट स्टायलसिट"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "इन्स्पेक्टरमार्फत"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS मा गरिएका सबै परिवर्तनहरू कपी गर्नुहोस्"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "सबै घोषणाहरू JS का रूपमा कपी गर्नुहोस्"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "हिसाब गरेर निकालेको मान"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "स्वचालित अँध्यारो मोड"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "लेयर ट्रिमा लेयर देखाउन क्लिक गर्नुहोस्"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "स्टायलसिट बनाइयो"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "क्लिपबोर्डमा कपी गरियो"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS सम्बन्धी जानकारीमा गरिएका सबै परिवर्तनहरू कपी गर्नुहोस्"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "सबै घोषणाहरू कपी गर्नुहोस्"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "नियम कपी गर्नुहोस्"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selector कपी गर्नुहोस्"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS प्रोपर्टीको नाम: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS प्रोपर्टीको मान: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS सेलेक्टर"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "फिल्टर गर्नुहोस्"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "माउसह्विल वा अप/डाउन की प्रयोग गरी बढाउनुहोस्/घटाउनुहोस्। {PH1}: R ±१, Shift: G ±१, Alt: B ±१"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "स्रोत ::{PH1} गरिएको छद्म एलिमेन्ट "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "यसबाट लिइएको "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "इन्जेक्ट गरिएको स्टायलसिट"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "शैलीसम्बन्धी नियम तल हाल्नुहोस्"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "प्रोपर्टीको मान वैध छैन"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "छद्म ::{PH1} एलिमेन्ट"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[विशेषताको शैली]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "सबै प्रोपर्टीहरू देखाइऊन् (थप {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style विशेषता"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "सामान्य रेन्डरिङ एम्युलेसनहरू टगल गर्नुहोस्"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "प्रोपर्टीको नाम अज्ञात छ"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "युजर एजेन्ट स्टायलसिट"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "इन्स्पेक्टरमार्फत"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "बेवास्ता गरिएको"
@@ -5345,6 +5390,9 @@
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "फिल्टर गर्नुहोस्"
   },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "मेनु"
+  },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials हेडरको मान"
   },
@@ -5826,10 +5874,10 @@
     "message": "स्न्यापसट"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "भण्डारण गरिएको डेटाले निम्न स्थानहरूको लोड हुने क्षमतामा प्रभाव पारिरहेको हुन सक्छ: {PH1}। ती डेटाको कारणले तपाईंको स्कोरमा असर नपरोस् भन्नाका खातिर यो पेज इन्कोग्निटो विन्डोमा खोलेर जाँच गर्नुहोस्।"
+    "message": "भण्डारण गरिएको डेटाले निम्न स्थानहरूको लोड हुने क्षमतामा प्रभाव पारिरहेको हुन सक्छ: {PH1}। ती डेटाको कारणले तपाईंको स्कोरमा असर नपरोस् भन्नाका लागि यो पेज इन्कोग्निटो विन्डोमा खोलेर जाँच गर्नुहोस्।"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "भण्डारण गरिएको डेटाले निम्न स्थानको लोड हुने क्षमतामा प्रभाव पारिरहेको हुन सक्छ: {PH1}। ती डेटाको कारणले तपाईंको स्कोरमा असर नपरोस् भन्नाका खातिर यो पेज इन्कोग्निटो विन्डोमा खोलेर जाँच गर्नुहोस्।"
+    "message": "भण्डारण गरिएको डेटाले निम्न स्थानको लोड हुने क्षमतामा प्रभाव पारिरहेको हुन सक्छ: {PH1}। ती डेटाको कारणले तपाईंको स्कोरमा असर नपरोस् भन्नाका लागि यो पेज इन्कोग्निटो विन्डोमा खोलेर जाँच गर्नुहोस्।"
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "टाइमस्प्यान"
@@ -6424,6 +6472,9 @@
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "आफ्नो रोजाइअनुसारको युजर एजेन्ट हाल्नुहोस्"
+  },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "नेटवर्कको स्थितिका बारेमा जानकारी दिने प्यानल देखाइएको छ"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "नेटवर्क थ्रोटलिङ"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "सामान्य"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "हेडरका ओभरराइडहरू"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "थप जान्नुहोस्"
@@ -8847,7 +8901,7 @@
     "message": "स्थानिक भाषाहरू"
   },
   "panels/sensors/sensors-meta.ts | locations": {
-    "message": "स्थानसम्बन्धी सेटिङ"
+    "message": "लोकेसन सेटिङ"
   },
   "panels/sensors/sensors-meta.ts | noIdleEmulation": {
     "message": "प्रयोगमा नरहेको कुनै पनि इम्युलेसन छैन"

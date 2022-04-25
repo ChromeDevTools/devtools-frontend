@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ист сајт и исто потекло"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Ова е пример на преведена порака за проблем во врска со неподдржување."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Се користи неподдржана функција"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API за Federated Credential Management"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Активиран е услужен работник додека страницата беше во кешот за движење наназад и нанапред."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Кешот за движење наназад и нанапред е оневозможен поради грешка на документот."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Страниците што користат FencedFrames не може да се складираат во bfcache."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Страницата беше исфрлена од кешот за да се дозволи кеширање на друга страница."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Може да се дејствува на овие причини, т.е. кеширањето беше спречено од нешто што не е под директна контрола на страницата."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# рамка}one{# рамка}other{# рамки}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Рамки"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# проблем}one{# проблем}other{# проблеми}} се најдени во {y,plural, =1{# рамка}one{# рамка}other{# рамки}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Дознајте повеќе: подобност за кешот за движење наназад и нанапред"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Бинарни податоци"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Копирај"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Копирајте ги сите промени од тековната датотека"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Нема промени"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Сите нивоа"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Автоматско довршување од историјата"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Конзолата е избришана"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Нивоа на евиденција"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Евидентирајте објекти XMLHttpRequest"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Прикажувај пораки само од тековниот контекст (top, iframe, worker, екстензија)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Прикажувај CORS-грешки во конзолата"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Третирајте ја процената како активација од корисникот"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Речитост"
@@ -4005,7 +4041,7 @@
     "message": "Сокриј ги временските печати"
   },
   "panels/console/console-meta.ts | logXmlhttprequests": {
-    "message": "Евидентирај XMLHttpRequests"
+    "message": "Евидентирај објекти XMLHttpRequest"
   },
   "panels/console/console-meta.ts | onlyShowMessagesFromTheCurrent": {
     "message": "Прикажувај пораки само од тековниот контекст (top, iframe, worker, екстензија)"
@@ -4029,7 +4065,7 @@
     "message": "Прикажи ги временските печати"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "Третирај ја процената како активација од корисникот"
+    "message": "Третирајте ја процената како активација од корисникот"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Отворете ја „Конзолата“ за да се прикаже {PH1}"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Кога е отштиклирано, ќе се прикажуваат само својствата чиишто вредности се ниту нула ниту недефинирани"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "конструиран стилизатор"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Копирај ги сите промени на CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Копирај ги сите декларации"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Копирај го правилото"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Копирај selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Избирач за CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "инјектиран стилизатор"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Вметнете правило за стил подолу"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[стил на атрибутите]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Прикажи ги сите својства (уште {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "атрибут за style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "стилизатор за корисник-агент"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "преку инспектор"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Копирај ги сите промени на CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Копирај ги сите декларации како JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Прикажи ја пресметаната вредност"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Автоматски темен режим"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Кликнете за да се прикаже слојот во дрво на слоеви"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "конструиран стилизатор"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Копирано во привремената меморија"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Копирајте ги сите промени како CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Копирај ги сите декларации"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Копирај го правилото"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Копирај selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Име на својство на CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Вредност на својство на CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Избирач за CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Филтер"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Зголемување/намалување со тркалото на глувчето или копчињата за нагоре/надолу. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Наследено од ::{PH1} псевдо од "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Наследено од "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "инјектиран стилизатор"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Вметнете правило за стил подолу"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Погрешна вредност за својство"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Псевдо ::{PH1} елемент"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[стил на атрибутите]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Прикажи ги сите својства (уште {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "атрибут за style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Вклучете/исклучете чести емулации за обработка"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Непознато име на својство"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "стилизатор за корисник-агент"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "преку инспектор"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Игнориран"
@@ -5217,7 +5262,7 @@
     "message": "Минимален сооднос AAA"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | textSize": {
-    "message": "Големина на текст"
+    "message": "Големина на текстот"
   },
   "panels/issues/AffectedElementsWithLowContrastView.ts | textWeight": {
     "message": "Тежина на текстот"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Филтер"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Мени"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Вредност на заглавието Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Внесете име на корисник-агент"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Прикажани се мрежните услови"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Мрежно регулирање"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Општо"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Отфрлања на заглавија"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Дознајте повеќе"

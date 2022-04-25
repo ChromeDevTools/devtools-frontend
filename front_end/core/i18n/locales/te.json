@@ -450,7 +450,7 @@
     "message": "నెమ్మదైన 3G"
   },
   "core/sdk/NetworkRequest.ts | anUnknownErrorWasEncounteredWhenTrying": {
-    "message": "ఈ కుక్కీని స్టోర్ చేయడానికి ట్రై చేస్తున్నప్పుడు తెలియని ఎర్రర్ సంభవించింది."
+    "message": "ఈ కుక్కీని స్టోర్ చేయడానికి ట్రై చేస్తున్నప్పుడు తెలియని ఎర్రర్ ఏర్పడింది."
   },
   "core/sdk/NetworkRequest.ts | binary": {
     "message": "(బైనరీ)"
@@ -540,7 +540,7 @@
     "message": "యూజర్ ప్రాధాన్యతల కారణంగా Set-Cookie హెడర్ ద్వారా కుక్కీని సెట్ చేయడానికి చేసిన ఈ ప్రయత్నం బ్లాక్ చేయబడింది."
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
-    "message": "ఈ కుక్కీని పంపడానికి ట్రై చేస్తున్నప్పుడు తెలియని ఎర్రర్ సంభవించింది."
+    "message": "ఈ కుక్కీని పంపడానికి ట్రై చేస్తున్నప్పుడు తెలియని ఎర్రర్ ఏర్పడింది."
   },
   "core/sdk/NetworkRequest.ts | userPreferences": {
     "message": "యూజర్ ప్రాధాన్యతల కారణంగా ఈ కుక్కీ బ్లాక్ చేయబడింది."
@@ -666,7 +666,7 @@
     "message": "ఫోకస్ చేయబడిన పేజీని అనుకరించకండి"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateAnyVisionDeficiency": {
-    "message": "ఎలాంటి దృష్టి లోపాన్ని అనుకరించకండి"
+    "message": "ఎలాంటి దృష్టి ఎర్రర్‌ను అనుకరించకండి"
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCss": {
     "message": "CSS {PH1}ను అనుకరించకండి"
@@ -963,7 +963,7 @@
     "message": "ఈ సైట్‌లో యాడ్‌లను బ్లాక్ చేయండి"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | colorVisionDeficiency": {
-    "message": "రంగు దృష్టి లోపం"
+    "message": "రంగు దృష్టి ఎర్రర్"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaFeature": {
     "message": "CSS మీడియా ఫీచర్"
@@ -1005,7 +1005,7 @@
     "message": "రెండరింగ్‌ను చూపండి"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
-    "message": "దృష్టి లోపం"
+    "message": "దృష్టి ఎర్రర్"
   },
   "entrypoints/js_app/js_app.ts | main": {
     "message": "ప్రధానమైనది"
@@ -1351,6 +1351,12 @@
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site, Same-Origin"
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "ఇది అనువాద విస్మరణ సమస్య మెసేజ్‌కు ఉదాహరణ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "విస్మరణ ఫీచర్ ఉపయోగించబడింది"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "ఫెడరేటెడ్ క్రెడెన్షియల్ మేనేజ్‌మెంట్ API"
@@ -1788,7 +1794,7 @@
     "message": "అంతర్లీన విలువ."
   },
   "panels/accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
-    "message": "విడ్జెట్ కోసం యూజర్ ఇంటర్‌ఫేస్ పాత్ర లేదా డాక్యుమెంట్‌లో ఆకృతీకరణ పాత్ర వంటివి ఈ ఎలిమెంట్ ఉద్దేశ్యాన్ని సూచిస్తాయి."
+    "message": "విడ్జెట్ కోసం యూజర్ ఇంటర్‌ఫేస్ పాత్ర లేదా డాక్యుమెంట్‌లో ఫార్మాటింగ్ పాత్ర వంటివి ఈ ఎలిమెంట్ ఉద్దేశ్యాన్ని సూచిస్తాయి."
   },
   "panels/accessibility/AccessibilityStrings.ts | invalidUserEntry": {
     "message": "చెల్లని యూజర్ ఎంట్రీ"
@@ -1962,7 +1968,7 @@
     "message": "అనేక చైల్డ్ ఎలిమెంట్‌లతో ఉన్న ఎలిమెంట్‌ల కోసం సోర్స్ ఆర్డర్‌ను ప్రదర్శించడంలో ఆలస్యం కావచ్చు"
   },
   "panels/accessibility/accessibility-meta.ts | accessibility": {
-    "message": "యాక్సెస్ సామర్థ్యం"
+    "message": "యాక్సెసిబిలిటీ"
   },
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "యాక్సెసిబిలిటీని చూపించు"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "పేజీ వెనుకకు/ముందుకు కాష్‌లో ఉన్నప్పుడు ఒక సర్వీస్ వర్కర్ యాక్టివేట్ చేయబడింది."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "డాక్యుమెంట్‌లో ఉన్న ఎర్రర్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "FencedFramesను ఉపయోగిస్తున్న పేజీలను వెనుకకు/ముందుకు కాష్‌లో స్టోర్ చేయలేము."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "మరొక పేజీని కాష్ చేయడానికి ఈ పేజీ కాష్ నుండి తీసివేయబడింది."
   },
@@ -3081,7 +3093,7 @@
     "message": "ఇన్‌ఫ్లయిట్ ఫెచ్() లేదా XHR ఉన్న పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "యాక్టీవ్ నెట్‌వర్క్ రిక్వెస్ట్‌పై మళ్లింపు సంభవించింది, దీని వలన పేజీ వెనుకకు/ముందుకు కాష్ నుండి తీసివేయబడింది."
+    "message": "యాక్టీవ్ నెట్‌వర్క్ రిక్వెస్ట్‌పై మళ్లింపు ఏర్పడింది, దీని వలన పేజీ వెనుకకు/ముందుకు కాష్ నుండి తీసివేయబడింది."
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
     "message": "కాష్ నుండి ఈ పేజీ తీసివేయబడింది, ఎందుకంటే నెట్‌వర్క్ కనెక్షన్ చాలా సేపు తెరిచి ఉంది. పేజీ కాష్ అయినప్పుడు డేటాను తిరిగి పొందేందుకు పట్టే సమయాన్ని Chrome పరిమితం చేస్తుంది."
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "ఈ కారణాలు చర్య తీసుకోలేనివి, మరో మాటలో చెప్పాలంటే, పేజీ కంట్రోల్‌లో లేని కారణంగా కాషింగ్ ప్రక్రియకు అంతరాయం ఏర్పడింది."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ఫ్రేమ్}other{# ఫ్రేమ్‌లు}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "ఫ్రేమ్‌లు"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# సమస్య}other{# సమస్యలు}} {y,plural, =1{# ఫ్రేమ్}other{# ఫ్రేమ్‌లలో}} కనుగొనబడ్డాయి."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి: వెనుకకు/ముందుకు కాష్ అర్హత"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "బైనరీ డేటా"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "కాపీ చేయండి"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "ప్రస్తుత ఫైల్‌లోని మార్పులన్నింటిని కాపీ చేయండి"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "మార్పులు లేవు"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "అన్ని స్థాయిలు"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "హిస్టరీ నుండి ఆటో-కంప్లీట్"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "కన్సోల్ క్లియర్ చేయబడింది"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "లాగ్ స్థాయిలు"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "లాగ్ XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "ప్రస్తుత కాంటెక్స్ట్ నుండి మాత్రమే మెసేజ్‌లను చూపుతుంది (top, iframe, worker, ఎక్స్‌టెన్షన్)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "కన్సోల్‌లో CORS ఎర్రర్‌లను చూపండి"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "మూల్యాంకణాన్ని యూజర్ యాక్టివేషన్‌గా పరిగణించండి"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "క్లుప్తంగా ఉంది"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "ఎంపికను తీసివేసినప్పుడు, శూన్యం లేదా నిర్వచించని విలువల ప్రాపర్టీలు మాత్రమే చూపబడతాయి"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "నిర్మాణం చేయబడిన స్టయిల్‌షీట్"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "CSS మార్పులన్నింటిని కాపీ చేయండి"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "అన్ని డిక్లరేషన్‌లను కాపీ చేయండి"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "నియమాన్ని కాపీ చేయండి"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "selectorను కాపీ చేయండి"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS ఎంపిక సాధనం"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "స్టయిల్‌షీట్ ఇంజెక్ట్ చేయబడింది"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "దిగువున స్టయిల్ నియమాన్ని ఇన్‌సర్ట్ చేయండి"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[లక్షణాల స్టయిల్]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "అన్ని ప్రాపర్టీలను చూపు (మరో {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "style లక్షణం"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన స్టయిల్‌షీట్"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ఇన్స్పెక్టర్ ద్వారా"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "CSS మార్పులన్నింటిని కాపీ చేయండి"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "అన్ని డిక్లరేషన్‌లను JSగా కాపీ చేయండి"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "కంప్యూట్ చేయబడిన విలువను చూడండి"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "ఆటోమేటిక్ డార్క్ మోడ్"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "లేయర్‌లో లేయర్ గల ట్రీ వీక్షణను చూడటానికి క్లిక్ చేయండి"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "నిర్మాణం చేయబడిన స్టయిల్‌షీట్"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "అన్ని CSS మార్పులను కాపీ చేయండి"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "అన్ని డిక్లరేషన్‌లను కాపీ చేయండి"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "నియమాన్ని కాపీ చేయండి"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "selectorను కాపీ చేయండి"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS ప్రాపర్టీ పేరు: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS ప్రాపర్టీ విలువ: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS ఎంపిక సాధనం"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ఫిల్టర్ చేయి"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "మౌస్‌వీల్‌తో పెంచడం/తగ్గించడం లేదా పైకి/కిందకు కీలు. {PH1}: R ±1, షిఫ్ట్: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "::{PH1} సూడో నుండి సంక్రమించబడింది "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "దీని నుండి సంక్రమించబడింది "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "స్టయిల్‌షీట్ ఇంజెక్ట్ చేయబడింది"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "దిగువున స్టయిల్ నియమాన్ని ఇన్‌సర్ట్ చేయండి"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "చెల్లని ప్రాపర్టీ విలువ"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "సూడో ::{PH1} ఎలిమెంట్"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[లక్షణాల స్టయిల్]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "అన్ని ప్రాపర్టీలను చూపు (మరో {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "style లక్షణం"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "సాధారణమైన రెండరింగ్ అనుకరణలను టోగుల్ చేయండి"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "తెలియని ప్రాపర్టీ పేరు"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన స్టయిల్‌షీట్"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ఇన్స్పెక్టర్ ద్వారా"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "విస్మరించబడింది"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "ఫిల్టర్ చేయి"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "మెనూ"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials హెడర్ విలువ"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "అనుకూల వెబ్‌సైట్ యాక్సెస్ సాధనాన్ని ఎంటర్ చేయండి"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "నెట్‌వర్క్ పరిస్థితులు చూపబడ్డాయి"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "నెట్‌వర్క్ త్రోట్లింగ్"
   },
@@ -6531,7 +6582,7 @@
     "message": "ServiceWorker, రిసోర్స్ సైజ్ నుండి అందించబడింది: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromSignedHttpExchange": {
-    "message": "సంతక ధృవీకృత HTTP Exchange నుండి అందించబడింది, రిసోర్స్ సైజ్: {PH1}"
+    "message": "సైన్ చేసిన HTTP ఎక్స్‌ఛేంజ్ నుండి అందించబడింది, రిసోర్స్ సైజ్: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromWebBundle": {
     "message": "వెబ్ బండిల్ నుండి అందించబడింది, రిసోర్స్ సైజ్: {PH1}"
@@ -7040,6 +7091,9 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "సాధారణం"
   },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "హెడర్ ఓవర్‌రైడ్‌లు"
+  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
   },
@@ -7188,7 +7242,7 @@
     "message": "కంటెంట్ డౌన్‌లోడ్"
   },
   "panels/network/RequestTimingView.ts | dnsLookup": {
-    "message": "DNS శోధన"
+    "message": "DNS సెర్చ్"
   },
   "panels/network/RequestTimingView.ts | duration": {
     "message": "వ్యవధి"
@@ -7224,10 +7278,10 @@
     "message": "ప్రాక్సీ నెగోషియేషన్"
   },
   "panels/network/RequestTimingView.ts | queuedAtS": {
-    "message": "{PH1} వద్ద క్రమ వరుసలో ఉంది"
+    "message": "{PH1} వద్ద క్యూలో ఉంది"
   },
   "panels/network/RequestTimingView.ts | queueing": {
-    "message": "క్రమ వరుసలో చేర్చుతోంది"
+    "message": "క్యూలో చేర్చుతోంది"
   },
   "panels/network/RequestTimingView.ts | readingPush": {
     "message": "Pushను చదువుతుంది"
@@ -7413,7 +7467,7 @@
     "message": "సంతకం"
   },
   "panels/network/SignedExchangeInfoView.ts | signedHttpExchange": {
-    "message": "సంతక ధృవీకృత HTTP Exchange"
+    "message": "సైన్ చేసిన HTTP ఎక్స్‌ఛేంజ్"
   },
   "panels/network/SignedExchangeInfoView.ts | subject": {
     "message": "విషయం"

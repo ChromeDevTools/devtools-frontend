@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site un Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Šis ir tulkotā darbības pārtraukšanas problēmas ziņojuma piemērs."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Tiek izmantota novecojusi funkcija"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Kamēr noritēja lapas pilnīga saglabāšana kešatmiņā, tika aktivizēts pakalpojuma skripts."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota dokumenta kļūdas dēļ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Lapas, kurās tiek izmantots elements FencedFrames, nevar pilnīgi saglabāt kešatmiņā."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Šīs lapas dati tika izlikti no kešatmiņas, lai kešatmiņā varētu saglabāt citu lapu."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Šīs problēmas nevar novērst — saglabāšanu kešatmiņā liedza ārējs faktors, ko lapā nevar kontrolēt."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# ietvars}zero{# ietvaru}one{# ietvars}other{# ietvari}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Ietvari"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{Tika konstatēta # problēma}zero{Tika konstatētas # problēmas}one{Tika konstatēta # problēma}other{Tika konstatētas # problēmas}} {y,plural, =1{# ietvarā}zero{# ietvaros}one{# ietvarā}other{# ietvaros}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Uzzināt vairāk: pilnīgas saglabāšanas kešatmiņā piemērotība"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binārie dati"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Kopēt"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Kopēt visas izmaiņas no pašreizējā faila"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Nav izmaiņu"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Visi līmeņi"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Automātiski pabeigt, balstoties uz vēsturi"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsole ir notīrīta"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Žurnāla līmeņi"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Reģistrēt XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Rādīt tikai ziņojumus no pašreizējā konteksta (top, iframe, worker, paplašinājums)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Rādīt CORS kļūdas konsolē"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Uzskatīt izvērtēšanu par lietotāja aktivizēšanu"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Detalizēti"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Ja šī izvēles rūtiņa nav atzīmēta, tiks rādīti tikai rekvizīti, kuru vērtība nav tukša vai nedefinēta."
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "strukturēta stila lapa"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Kopēt visas CSS izmaiņas"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Kopēt visas deklarācijas"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Kopēt kārtulu"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Kopēt vienumu selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "CSS atlasītājs"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "iepludināta stilu lapa"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Ievietojiet stila kārtulu (tālāk)"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[atribūtu stils]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Rādīt visus īpašumus (vēl {PH1})"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribūts style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "lietotāja aģenta stilu lapa"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ar pārbaudītāju"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Kopēt visas CSS izmaiņas"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopēt visas deklarācijas kā JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Skatīt aprēķināto vērtību"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Automātisks tumšais režīms"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Lai atklātu šo slāni slāņu kokā, noklikšķiniet uz šīs saites"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "strukturēta stila lapa"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Izmaiņas kopētas starpliktuvē"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopējiet visas CSS izmaiņas."
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Kopēt visas deklarācijas"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Kopēt kārtulu"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Kopēt vienumu selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS īpašuma nosaukums: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "CSS īpašuma vērtība: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS atlasītājs"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrēt"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Samazinājums vai palielinājums, izmantojot peles ritenīti vai augšupvērsto/lejupvērsto bulttaustiņu. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Mantots no pseidoelementa ::{PH1} "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Mantots no: "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "iepludināta stilu lapa"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Ievietojiet stila kārtulu (tālāk)"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Nederīga īpašuma vērtība"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseidovienums: {PH1} elements"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[atribūtu stils]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Rādīt visus īpašumus (vēl {PH1})"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribūts style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Pārslēgt vispārējās atveidošanas emulācijas funkciju"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nezināms īpašuma nosaukums"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "lietotāja aģenta stilu lapa"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ar pārbaudītāju"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorēts"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filtrēt"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Izvēlne"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Galvenes Access-Control-Allow-Credentials vērtība"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Ievadiet pielāgotu lietotāja aģentu"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Tiek rādīti tīkla nosacījumi"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Tīkla ierobežošana"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Vispārīgi"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Galveņu ignorēšana"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Uzzināt vairāk"

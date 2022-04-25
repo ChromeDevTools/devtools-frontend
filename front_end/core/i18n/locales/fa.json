@@ -486,7 +486,7 @@
     "message": "این کوکی مسدود شده است زیرا مسیر آن دقیقاً منطبق با نشانی وب درخواست یا مسیر مافوق آن نیست."
   },
   "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "این کوکی مسدود شده است زیرا مشخصه «SameParty» داشت، اما درخواست بین‌نهادی بود. این درخواست بین‌نهادی محسوب شده است زیرا دامنه نشانی وب منبع و دامنه‌های منبع دربرگیرنده اسناد/ قاب‌ها، نه مالک و نه عضو مجموعه First-Party یکسانی هستند."
+    "message": "این کوکی مسدود شده است زیرا مشخصه «SameParty» داشت، اما درخواست بین‌نهادی بود. این درخواست بین‌نهادی محسوب شده است زیرا دامنه نشانی وب منبع و دامنه‌های منبع دربرگیرنده اسناد/ قاب‌ها، نه مالک و نه عضو «مجموعه شخص اول» یکسانی هستند."
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "این کوکی مسدود شده است زیرا مشخصه «SameSite=Lax» داشت و درخواست از سایت دیگری ایجاد شده بود و از پیمایش سطح بالا آغاز نشده بود."
@@ -525,7 +525,7 @@
     "message": "این سرصفحه Set-Cookie نحو نامعتبری داشت."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا مشخصه «SameParty» داشت اما درخواست بین‌نهادی بود. این درخواست بین‌نهادی محسوب شده است زیرا دامنه نشانی وب منبع و دامنه‌های منبع دربرگیرنده اسناد/ قاب‌ها، نه مالک و نه عضو مجموعه First-Party یکسانی هستند."
+    "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا مشخصه «SameParty» داشت اما درخواست بین‌نهادی بود. این درخواست بین‌نهادی محسوب شده است زیرا دامنه نشانی وب منبع و دامنه‌های منبع دربرگیرنده اسناد/ قاب‌ها، نه مالک و نه عضو «مجموعه شخص اول» یکسانی هستند."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا مشخصه «SameParty» داشت اما مشخصه‌های ناسازگار دیگری هم داشت. Chrome به کوکی‌هایی نیاز دارد که از مشخصه «SameParty» استفاده کنند و مشخصه «Secure» را نیز داشته باشند، و به «SameSite=Strict» محدود نشده باشند."
@@ -1152,19 +1152,19 @@
     "message": "تنظیم قالب رنگ روی RGB"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
-    "message": "جابه‌جایی به طرح‌زمینه تیره"
+    "message": "جابه‌جایی به زمینه تیره"
   },
   "entrypoints/main/main-meta.ts | switchToLightTheme": {
     "message": "جابه‌جایی به زمینه روشن"
   },
   "entrypoints/main/main-meta.ts | switchToSystemPreferredColor": {
-    "message": "رفتن به طرح‌زمینه رنگ ترجیحی سیستم"
+    "message": "رفتن به زمینه رنگ ترجیحی سیستم"
   },
   "entrypoints/main/main-meta.ts | systemPreference": {
     "message": "اولویت‌های سیستم"
   },
   "entrypoints/main/main-meta.ts | theme": {
-    "message": "طرح‌زمینه:"
+    "message": "زمینه:"
   },
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "فعال/غیرفعال کردن کشو"
@@ -1351,6 +1351,12 @@
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site و Same-Origin"
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "این نمونه‌ای از ترجمه پیام مشکل منسوخ شدن است."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "از ویژگی منسوخ‌شده استفاده شده است"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2067,7 +2073,7 @@
     "message": "رنگ پس‌زمینه تیره"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "رنگ طرح‌زمینه تیره"
+    "message": "رنگ زمینه تیره"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "شرح"
@@ -2247,7 +2253,7 @@
     "message": "پلاتفرم برنامه مشخص‌شده در Android پشتیبانی نمی‌شود"
   },
   "panels/application/AppManifestView.ts | themeColor": {
-    "message": "رنگ طرح‌زمینه"
+    "message": "رنگ زمینه"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "حافظه پنهان عقب-جلو"
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "درحالی‌که صفحه در حافظه پنهان عقب-جلو قرار داشت، عامل خدماتی فعال شد."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "حافظه پنهان عقب/جلو به‌دلیل خطای سند غیرفعال است."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "نمی‌توان صفحه‌هایی را که از FencedFrames استفاده می‌کنند در bfcache ذخیره کرد."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "صفحه از حافظه پنهان خارج شد تا صفحه دیگری بتواند در حافظه پنهان ذخیره شود."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "این دلایل قابل‌اقدام نیستند، یعنی ذخیره شدن در حافظه پنهان به‌دلیلی خارج از کنترل مستقیم صفحه انجام نشد."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# قاب}one{# قاب}other{# قاب}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "قاب‌ها"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# مشکل}one{# مشکل}other{# مشکل}} در {y,plural, =1{# قاب}one{# قاب}other{# قاب}} پیدا شد."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "بیشتر بدانید: واجدشرایط بودن برای حافظه پنهان عقب-جلو"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "داده دودویی"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "کپی"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "کپی کردن همه تغییرات از فایل کنونی"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "هیچ تغییری اعمال نشده است"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "همه سطوح"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "تکمیل خودکار از سابقه"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "کنسول پاک شد"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "سطوح گزارش"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "گزارش XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "فقط پیام‌های بافت فعلی (top، iframe، worker، افزونه) را نمایش می‌دهد"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "نمایش خطاهای CORS در کنسول"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "درنظر گرفتن ارزیابی به‌عنوان فعال‌سازی کاربر"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "سطح جزئیات"
@@ -3957,7 +3993,7 @@
     "message": "{n,plural, =1{هشدار، # بار تکرار شده است}one{هشدار، # بار تکرار شده است}other{هشدار، # بار تکرار شده است}}"
   },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
-    "message": "تکمیل خودکار از حافظه"
+    "message": "تکمیل خودکار از سابقه"
   },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "پاک کردن کنسول"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "وقتی لغو انتخاب شود، فقط دارایی‌هایی که مقدار آن‌ها تعریف‌نشده یا تهی نباشد نمایش داده خواهد شد"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "برگه سبک نگارش ساخته‌شده"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "کپی کردن همه تغییرات CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "کپی کردن همه تعریف‌ها"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "کپی کردن قانون"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "کپی کردن selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "انتخاب‌گر CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "برگه سبک نگارش تزریق‌شده"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "درج قانون سبک در زیر"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[سبک مشخصه‌ها]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "نمایش همه دارایی‌ها ({PH1} مورد دیگر)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "مشخصه style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "برگه سبک نگارش نماینده کاربر"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "ازطریق بازرس"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "کپی کردن همه تغییرات CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "کپی کردن همه اعلامیه‌ها به‌عنوان JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "مشاهده مقدار محاسبه‌شده"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "حالت تاریک خودکار"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "برای نمایش لایه در درخت لایه‌ای، کلیک کنید"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "برگه سبک نگارش ساخته‌شده"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "در بریده‌دان کپی شد"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "کپی کردن همه تغییرات CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "کپی کردن همه تعریف‌ها"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "کپی کردن قانون"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "کپی کردن selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "نام خصوصیت CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "مقدار خصوصیت CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "انتخاب‌گر CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "فیلتر"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "افزایش/ کاهش با چرخ موشواره یا کلیدهای بالا/ پایین. {PH1}: R ±۱،‏ Shift:‏ G ±۱،‏ Alt:‏ B ±۱"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "منشأگرفته از ::{PH1} شبه عنصر "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "منشأگرفته از "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "برگه سبک نگارش تزریق‌شده"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "درج قانون سبک در زیر"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "مقدار دارایی نامعتبر است"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "عنصر شبه ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[سبک مشخصه‌ها]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "نمایش همه دارایی‌ها ({PH1} مورد دیگر)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "مشخصه style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "روشن/ خاموش کردن شبیه‌سازی‌های رایج پرداز زدن"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "نام دارایی نامشخص است"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "برگه سبک نگارش نماینده کاربر"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "ازطریق بازرس"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "نادیده‌گرفته‌شده"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "فیلتر"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "منو"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "مقدار سرصفحه Access-Control-Allow-Credentials"
@@ -6003,7 +6051,7 @@
     "message": "بازه زمانی شروع شد، با صفحه تعامل داشته باشید"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
-    "message": "درحال شروع بازه زمانی…"
+    "message": "بازه زمانی دارد شروع می‌شود…"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "نمایش Lighthouse"
@@ -6424,6 +6472,9 @@
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "وارد کردن نماینده کاربر سفارشی"
+  },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "وضعیت شبکه نشان داده می‌شود"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "محدودکردن شبکه"
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "کلی"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "ملغی کردن سرصفحه"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "بیشتر بدانید"

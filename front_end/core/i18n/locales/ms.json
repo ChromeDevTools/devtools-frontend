@@ -1352,6 +1352,12 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Laman Sama dan Asalan Sama"
   },
+  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
+    "message": "Ini ialah contoh mesej isu penamatan yang diterjemahkan."
+  },
+  "models/issues_manager/DeprecationIssue.ts | title": {
+    "message": "Ciri Ditamatkan Digunakan"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -3032,6 +3038,12 @@
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Pekerja perkhidmatan telah diaktifkan semasa halaman dalam cache kembali/maju."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | errorDocument": {
+    "message": "Cache kembali-maju dilumpuhkan kerana ralat dokumen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | fencedFramesEmbedder": {
+    "message": "Halaman yang menggunakan FencedFrames tidak boleh disimpan dalam cache kembali-maju."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
     "message": "Halaman telah dikeluarkan daripada cache untuk membenarkan halaman lain dicache."
   },
@@ -3244,6 +3256,15 @@
   },
   "panels/application/components/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Sebab ini tidak boleh diambil tindakan, iaitu tindakan membuat cache dihalang oleh sesuatu di luar kawalan langsung halaman."
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesPerIssue": {
+    "message": "{n,plural, =1{# bingkai}other{# bingkai}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | framesTitle": {
+    "message": "Bingkai"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
+    "message": "{x,plural, =1{# isu}other{# isu}} ditemukan dalam {y,plural, =1{# bingkai}other{# bingkai}}."
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "Ketahui lebih lanjut: kelayakan cache kembali/maju"
@@ -3677,6 +3698,12 @@
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Data perduaan"
   },
+  "panels/changes/ChangesView.ts | copy": {
+    "message": "Salin"
+  },
+  "panels/changes/ChangesView.ts | copyAllChangesFromCurrentFile": {
+    "message": "Salin semua perubahan daripada fail semasa"
+  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Tiada perubahan"
   },
@@ -3754,6 +3781,9 @@
   },
   "panels/console/ConsoleView.ts | allLevels": {
     "message": "Semua tahap"
+  },
+  "panels/console/ConsoleView.ts | autocompleteFromHistory": {
+    "message": "Autolengkap daripada sejarah"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsol dikosongkan"
@@ -3836,6 +3866,9 @@
   "panels/console/ConsoleView.ts | logLevels": {
     "message": "Tahap log"
   },
+  "panels/console/ConsoleView.ts | logXMLHttpRequests": {
+    "message": "Logkan XMLHttpRequests"
+  },
   "panels/console/ConsoleView.ts | onlyShowMessagesFromTheCurrentContext": {
     "message": "Hanya paparkan mesej daripada konteks semasa (top, iframe, worker, sambungan)"
   },
@@ -3868,6 +3901,9 @@
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Paparkan ralat CORS dalam konsol"
+  },
+  "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
+    "message": "Kendalikan penilaian sebagai pengaktifan pengguna"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Berjela"
@@ -4667,6 +4703,48 @@
   "panels/elements/PropertiesWidget.ts | showAllTooltip": {
     "message": "Apabila dinyahtandai, hanya sifat yang nilainya bukan nilai yang tidak sah atau tidak ditakrifkan akan dipaparkan"
   },
+  "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
+    "message": "helaian gaya yang dibina"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
+    "message": "Salin semua perubahan CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
+    "message": "Salin semua pengisytiharan"
+  },
+  "panels/elements/StylePropertiesSection.ts | copyRule": {
+    "message": "Salin peraturan"
+  },
+  "panels/elements/StylePropertiesSection.ts | copySelector": {
+    "message": "Salin selector"
+  },
+  "panels/elements/StylePropertiesSection.ts | cssSelector": {
+    "message": "Pemilih CSS"
+  },
+  "panels/elements/StylePropertiesSection.ts | injectedStylesheet": {
+    "message": "helaian gaya yang disuntik"
+  },
+  "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
+    "message": "Masukkan Peraturan Gaya di Bawah"
+  },
+  "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
+    "message": "{PH1}[Gaya Atribut]"
+  },
+  "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
+    "message": "Paparkan Semua Sifat ({PH1} lagi)"
+  },
+  "panels/elements/StylePropertiesSection.ts | styleAttribute": {
+    "message": "Atribut style"
+  },
+  "panels/elements/StylePropertiesSection.ts | userAgentStylesheet": {
+    "message": "helaian gaya ejen pengguna"
+  },
+  "panels/elements/StylePropertiesSection.ts | viaInspector": {
+    "message": "melalui pemeriksa"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
+    "message": "Salin semua perubahan CSS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Salin semua pengisytiharan sebagai JS"
   },
@@ -4712,35 +4790,17 @@
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Lihat nilai yang dihitung"
   },
+  "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
+    "message": "Mod gelap automatik"
+  },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik untuk mendedahkan lapisan dalam pepohon lapisan"
-  },
-  "panels/elements/StylesSidebarPane.ts | constructedStylesheet": {
-    "message": "helaian gaya yang dibina"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Disalin ke papan keratan"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Salin semua perubahan CSS"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllDeclarations": {
-    "message": "Salin semua pengisytiharan"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyRule": {
-    "message": "Salin peraturan"
-  },
-  "panels/elements/StylesSidebarPane.ts | copySelector": {
-    "message": "Salin selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nama sifat CSS: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
     "message": "Nilai sifat CSS: {PH1}"
-  },
-  "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "Pemilih CSS"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Tapis"
@@ -4754,14 +4814,11 @@
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelOne": {
     "message": "Tokokan/susutan dengan roda tetikus atau kekunci ke atas/ke bawah. {PH1}: R ±1, Shift: G ±1, Alt: B ±1"
   },
+  "panels/elements/StylesSidebarPane.ts | inheritedFromSPseudoOf": {
+    "message": "Diwarisi daripada ::{PH1} pseudo bagi "
+  },
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Diwarisi daripada "
-  },
-  "panels/elements/StylesSidebarPane.ts | injectedStylesheet": {
-    "message": "helaian gaya yang disuntik"
-  },
-  "panels/elements/StylesSidebarPane.ts | insertStyleRuleBelow": {
-    "message": "Masukkan Peraturan Gaya di Bawah"
   },
   "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
     "message": "Nilai sifat tidak sah"
@@ -4781,23 +4838,11 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo unsur ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | sattributesStyle": {
-    "message": "{PH1}[Gaya Atribut]"
-  },
-  "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Paparkan Semua Sifat ({PH1} lagi)"
-  },
-  "panels/elements/StylesSidebarPane.ts | styleAttribute": {
-    "message": "Atribut style"
+  "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
+    "message": "Togol emulasi pemaparan biasa"
   },
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nama sifat tidak diketahui"
-  },
-  "panels/elements/StylesSidebarPane.ts | userAgentStylesheet": {
-    "message": "helaian gaya ejen pengguna"
-  },
-  "panels/elements/StylesSidebarPane.ts | viaInspector": {
-    "message": "melalui pemeriksa"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Diabaikan"
@@ -5344,6 +5389,9 @@
   },
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Tapis"
+  },
+  "panels/issues/ComboBoxOfCheckBoxes.ts | genericMenuLabel": {
+    "message": "Menu"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Nilai Pengepala Access-Control-Allow-Credentials"
@@ -6425,6 +6473,9 @@
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "Masukkan ejen pengguna tersuai"
   },
+  "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
+    "message": "Keadaan rangkaian ditunjukkan"
+  },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Pendikitan rangkaian"
   },
@@ -7039,6 +7090,9 @@
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Umum"
+  },
+  "panels/network/RequestHeadersView.ts | headerOverrides": {
+    "message": "Penggantian pengepala"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Ketahui lebih lanjut"

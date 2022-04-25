@@ -1,0 +1,14 @@
+200
+Content-Type: text/html; charset=utf-8
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Workers with different scripts and memory</title>
+<script>
+  const buffer = new SharedArrayBuffer(16);
+  new Worker('./memory-worker1.rawresponse').postMessage(buffer);
+  new Worker('./memory-worker2.rawresponse').postMessage(buffer);
+</script>
+</html>

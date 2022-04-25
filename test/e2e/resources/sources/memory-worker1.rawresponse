@@ -1,0 +1,15 @@
+200
+Content-Type: text/javascript; charset=utf-8
+Cross-Origin-Embedder-Policy: require-corp
+
+self.onmessage = (/** @type{MessageEvent<SharedArrayBuffer>} */ event) => {
+    const memory1 = new ArrayBuffer(16);
+    const sharedMemory = event.data;
+    const sharedArr = new Int32Array(sharedMemory);
+    /* Wake other worker */
+    Atomics.store(sharedArr, 1, 1);
+    Atomics.notify(sharedArr, 1, 1);
+    /* Wait for the worker to modify the shared memory */
+    Atomics.wait(sharedArr, 0, 0);
+    debugger;
+  };

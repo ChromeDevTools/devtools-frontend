@@ -9,6 +9,24 @@ import path from 'path';
 import {ESLint} from 'eslint';
 import { fileURLToPath } from 'url';
 
+import yargs from 'yargs';
+
+// False positive from the ESLint rule: crbug.com/1319352
+// eslint-disable-next-line rulesdir/es_modules_import
+import {hideBin} from 'yargs/helpers';
+
+const flags = yargs(hideBin(process.argv)).option('fix', {
+  type: 'boolean',
+  default: true,
+  describe: 'If to run ESLint in fix mode',
+}).parse();
+
+const shouldFix = flags.fix === true;
+
+if(!shouldFix) {
+  console.log('[ESLint]: fix is disabled; no errors will be autofixed.');
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ROOT_DIRECTORY = path.join(__dirname, '..', '..');
@@ -22,7 +40,9 @@ const DEFAULT_DIRECTORIES_TO_LINT =
 
 const eslintignorePath = path.join(ROOT_DIRECTORY, '.eslintignore');
 
-let directoriesOrFilesToLint = process.argv.slice(2);
+// Yargs gathers up any non-flag arguments into the `_` property.
+// npm run check-lint-js foo => flags._ === ['foo']
+let directoriesOrFilesToLint = flags._;
 
 if (directoriesOrFilesToLint.length === 0) {
   directoriesOrFilesToLint = DEFAULT_DIRECTORIES_TO_LINT;
@@ -31,7 +51,7 @@ if (directoriesOrFilesToLint.length === 0) {
 const cli = new ESLint({
   extensions: ['.js', '.ts'],
   ignorePath: eslintignorePath,
-  fix: true,
+  fix: shouldFix,
 });
 
 // We filter out certain files in the `.eslintignore`. However, ESLint produces warnings
@@ -50,7 +70,10 @@ for (const path of directoriesOrFilesToLint) {
 const results = await cli.lintFiles(filteredFilesToLint);
 
 // Write fixes to the filesystem
-await ESLint.outputFixes(results);
+if (shouldFix) {
+  await ESLint.outputFixes(results);
+}
+
 const formatter = await cli.loadFormatter('stylish');
 console.log(formatter.format(results));
 

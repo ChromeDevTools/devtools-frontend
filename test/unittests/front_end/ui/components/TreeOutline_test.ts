@@ -1400,5 +1400,69 @@ describe('TreeOutlineFiltering', () => {
                          {renderedKey: 'Camperdown'},
                        ],
                      }]);
+
+    it('should not flatten an already expanded node', async () => {
+      const {component, shadowRoot} = await renderTreeOutline({
+        tree: [nodeAustralia],
+      });
+
+      await component.expandNodeIds(['australia', 'sa', 'adelaide']);
+      await coordinator.done();
+      await waitForRenderedTreeNodeCount(shadowRoot, 7);
+      const visibleTree = visibleNodesToTree(shadowRoot);
+
+      assert.deepEqual(visibleTree, [{
+                         renderedKey: 'Australia',
+                         children: [
+                           {
+                             renderedKey: 'SA',
+                             children: [
+                               {
+                                 renderedKey: 'Adelaide',
+                                 children: [
+                                   {renderedKey: 'Toorak Gardens'},
+                                   {renderedKey: 'Woodville South'},
+                                   {renderedKey: 'Gawler'},
+                                 ],
+                               },
+                             ],
+                           },
+                           {
+                             renderedKey: 'NSW',
+                           },
+                         ],
+                       }]);
+
+      component.data = {
+        tree: [nodeAustralia],
+        filter: node => node === 'SA' || node === 'NSW' ? TreeOutline.TreeOutline.FilterOption.FLATTEN :
+                                                          TreeOutline.TreeOutline.FilterOption.SHOW,
+        defaultRenderer: (node => LitHtml.html`${node.treeNodeData}`),
+      };
+      await waitForRenderedTreeNodeCount(shadowRoot, 9);
+      const visibleTreeAfterFilter = visibleNodesToTree(shadowRoot);
+
+      assert.deepEqual(visibleTreeAfterFilter, [{
+                         renderedKey: 'Australia',
+                         children: [
+                           {
+                             renderedKey: 'SA',
+                             children: [
+                               {
+                                 renderedKey: 'Adelaide',
+                                 children: [
+                                   {renderedKey: 'Toorak Gardens'},
+                                   {renderedKey: 'Woodville South'},
+                                   {renderedKey: 'Gawler'},
+                                 ],
+                               },
+                             ],
+                           },
+                           {renderedKey: 'Glebe'},
+                           {renderedKey: 'Newtown'},
+                           {renderedKey: 'Camperdown'},
+                         ],
+                       }]);
+    });
   });
 });

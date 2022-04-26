@@ -878,18 +878,19 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     return node;
   }
 
-  async revealAndSelectNode(node: SDK.DOMModel.DOMNode, focus: boolean, omitHighlight?: boolean): Promise<void> {
+  async revealAndSelectNode(nodeToReveal: SDK.DOMModel.DOMNode, focus: boolean, omitHighlight?: boolean):
+      Promise<void> {
     this.omitDefaultSelection = true;
 
-    node = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get() ?
-        node :
-        this.leaveUserAgentShadowDOM(node);
+    const node = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get() ?
+        nodeToReveal :
+        this.leaveUserAgentShadowDOM(nodeToReveal);
     if (!omitHighlight) {
       node.highlightForTwoSeconds();
     }
 
     if (this.accessibilityTreeView) {
-      void this.accessibilityTreeView.revealAndSelectNode(node);
+      void this.accessibilityTreeView.revealAndSelectNode(nodeToReveal);
     }
 
     await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);

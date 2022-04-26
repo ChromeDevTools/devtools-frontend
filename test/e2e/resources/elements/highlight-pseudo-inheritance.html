@@ -11,6 +11,14 @@
     background-color: white;
   }
 
+  h1::before {
+    content:'before';
+  }
+
+  h1::after {
+    content:'after';
+  }
+
   h1::highlight(foo), h1::highlight(bar) {
     color: purple;
   }

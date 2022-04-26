@@ -871,22 +871,32 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       };
     });
 
-    let pseudoTypes: Protocol.DOM.PseudoType[] = [];
-    const keys = matchedStyles.pseudoTypes();
-    if (keys.delete(Protocol.DOM.PseudoType.Before)) {
-      pseudoTypes.push(Protocol.DOM.PseudoType.Before);
-    }
-    pseudoTypes = pseudoTypes.concat([...keys].sort());
-
     const otherPseudoRulesets: {
       highlightName: string|null,
       pseudoType: Protocol.DOM.PseudoType,
       pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
-    }[] = pseudoTypes.map(pseudoType => {
+    }[] = [...matchedStyles.pseudoTypes()].map(pseudoType => {
       return {'highlightName': null, 'pseudoType': pseudoType, 'pseudoStyles': matchedStyles.pseudoStyles(pseudoType)};
     });
 
-    const pseudoRulesets = customHighlightPseudoRulesets.concat(otherPseudoRulesets);
+    const pseudoRulesets = customHighlightPseudoRulesets.concat(otherPseudoRulesets).sort((a, b) => {
+      // We want to show the ::before pseudos first, followed by the remaining pseudos
+      // in alphabetical order.
+      if (a.pseudoType === Protocol.DOM.PseudoType.Before && b.pseudoType !== Protocol.DOM.PseudoType.Before) {
+        return -1;
+      }
+      if (a.pseudoType !== Protocol.DOM.PseudoType.Before && b.pseudoType === Protocol.DOM.PseudoType.Before) {
+        return 1;
+      }
+      if (a.pseudoType < b.pseudoType) {
+        return -1;
+      }
+      if (a.pseudoType > b.pseudoType) {
+        return 1;
+      }
+      return 0;
+    });
+
     for (const pseudo of pseudoRulesets) {
       lastParentNode = null;
       for (let i = 0; i < pseudo.pseudoStyles.length; ++i) {

@@ -440,18 +440,20 @@ describe('The Styles pane', async () => {
     await onH1RuleAppeared;
 
     const h1Rules = await getDisplayedStyleRules();
-    // The 7 rule blocks for the h1 are:
+    // The 12 rule blocks for the h1 are:
     // 1. Inline styles from the style attribute
     // 2. The h1's user agent styles
     // 3. Styles that the h1 inherits from the body
-    // 4. The h1's own highlight(bar) pseudo
-    // 5. The h1's inherited highlight(bar) pseudo
-    // 6. The h1's own highlight(foo) pseudo
-    // 7. The h1's own selection pseudo
-    // 8. The h1's inherited selection pseudo
-    // And there is no 9th block for the ::first-letter style, since only
+    // 4. The h1's own ::before pseudo
+    // 5. The h1's own ::after pseudo
+    // 6-7. The h1's own highlight(bar) pseudo
+    // 8. The h1's inherited highlight(bar) pseudo
+    // 9-10. The h1's own highlight(foo) pseudo
+    // 11. The h1's own selection pseudo
+    // 12. The h1's inherited selection pseudo
+    // And there is no 13th block for the ::first-letter style, since only
     // highlight pseudos are inherited.
-    assert.strictEqual(h1Rules.length, 10, 'The h1 should have 10 style rule blocks');
+    assert.strictEqual(h1Rules.length, 12, 'The h1 should have 12 style rule blocks');
     assert.deepEqual(
         h1Rules[2], {
           selectorText: 'body',
@@ -463,18 +465,30 @@ describe('The Styles pane', async () => {
         'The inherited styles from the body are displayed');
     assert.deepEqual(
         h1Rules[3], {
+          selectorText: 'h1::before',
+          propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+        },
+        'The h1\'s own ::before pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[4], {
+          selectorText: 'h1::after',
+          propertyData: [{propertyName: 'content', isOverLoaded: false, isInherited: false}],
+        },
+        'The h1\'s own ::after pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[5], {
           selectorText: 'h1::highlight(bar)',
           propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own highlight(bar) pseudo is displayed (1)');
     assert.deepEqual(
-        h1Rules[4], {
+        h1Rules[6], {
           selectorText: 'h1::highlight(foo), h1::highlight(bar)',
           propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own highlight(bar) pseudo is displayed (2)');
     assert.deepEqual(
-        h1Rules[5], {
+        h1Rules[7], {
           selectorText: 'body::highlight(bar)',
           propertyData: [
             {propertyName: 'color', isOverLoaded: true, isInherited: false},
@@ -483,25 +497,25 @@ describe('The Styles pane', async () => {
         },
         'The h1\'s inherited highlight(bar) pseudo is displayed');
     assert.deepEqual(
-        h1Rules[6], {
+        h1Rules[8], {
           selectorText: 'h1::highlight(foo)',
           propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own highlight(foo) pseudo is displayed (1)');
     assert.deepEqual(
-        h1Rules[7], {
+        h1Rules[9], {
           selectorText: 'h1::highlight(foo), h1::highlight(bar)',
           propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own highlight(foo) pseudo is displayed (2)');
     assert.deepEqual(
-        h1Rules[8], {
+        h1Rules[10], {
           selectorText: 'h1::selection',
           propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own selection pseudo is displayed');
     assert.deepEqual(
-        h1Rules[9], {
+        h1Rules[11], {
           selectorText: 'body::selection',
           propertyData: [
             {propertyName: 'text-shadow', isOverLoaded: false, isInherited: false},
@@ -512,13 +526,15 @@ describe('The Styles pane', async () => {
 
     const sidebarSeparators = await waitForFunction(async () => {
       const separators = await $$(SIDEBAR_SEPARATOR_SELECTOR);
-      return separators.length === 6 ? separators : null;
+      return separators.length === 8 ? separators : null;
     });
     assertNotNullOrUndefined(sidebarSeparators);
 
     const layerText = await Promise.all(sidebarSeparators.map(element => element.evaluate(node => node.textContent)));
     assert.deepEqual(layerText, [
       'Inherited from ',
+      'Pseudo ::before element',
+      'Pseudo ::after element',
       'Pseudo ::highlight(bar) element',
       'Inherited from ::highlight(bar) pseudo of ',
       'Pseudo ::highlight(foo) element',

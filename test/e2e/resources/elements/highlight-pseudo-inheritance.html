@@ -11,8 +11,16 @@
     background-color: white;
   }
 
+  h1::highlight(foo), h1::highlight(bar) {
+    color: purple;
+  }
+
   h1::highlight(foo) {
-    background-color: limegreen;
+    background-color: pink;
+  }
+
+  h1::highlight(bar) {
+    background-color: aqua;
   }
 
   h1::selection {
@@ -21,6 +29,7 @@
 
   body::highlight(bar) {
     color: lightblue;
+    background-color: gray;
   }
 
   body::selection {

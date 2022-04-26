@@ -444,13 +444,14 @@ describe('The Styles pane', async () => {
     // 1. Inline styles from the style attribute
     // 2. The h1's user agent styles
     // 3. Styles that the h1 inherits from the body
-    // 4. The h1's own highlight pseudo
-    // 5. The h1's inherited highlight pseudo
-    // 6. The h1's own selection pseudo
-    // 7. The h1's inherited selection pseudo
-    // And there is no 6th block for the ::first-letter style, since only
+    // 4. The h1's own highlight(bar) pseudo
+    // 5. The h1's inherited highlight(bar) pseudo
+    // 6. The h1's own highlight(foo) pseudo
+    // 7. The h1's own selection pseudo
+    // 8. The h1's inherited selection pseudo
+    // And there is no 9th block for the ::first-letter style, since only
     // highlight pseudos are inherited.
-    assert.strictEqual(h1Rules.length, 7, 'The h1 should have 7 style rule blocks');
+    assert.strictEqual(h1Rules.length, 10, 'The h1 should have 10 style rule blocks');
     assert.deepEqual(
         h1Rules[2], {
           selectorText: 'body',
@@ -462,24 +463,45 @@ describe('The Styles pane', async () => {
         'The inherited styles from the body are displayed');
     assert.deepEqual(
         h1Rules[3], {
+          selectorText: 'h1::highlight(bar)',
+          propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
+        },
+        'The h1\'s own highlight(bar) pseudo is displayed (1)');
+    assert.deepEqual(
+        h1Rules[4], {
+          selectorText: 'h1::highlight(foo), h1::highlight(bar)',
+          propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
+        },
+        'The h1\'s own highlight(bar) pseudo is displayed (2)');
+    assert.deepEqual(
+        h1Rules[5], {
+          selectorText: 'body::highlight(bar)',
+          propertyData: [
+            {propertyName: 'color', isOverLoaded: true, isInherited: false},
+            {propertyName: 'background-color', isOverLoaded: true, isInherited: false},
+          ],
+        },
+        'The h1\'s inherited highlight(bar) pseudo is displayed');
+    assert.deepEqual(
+        h1Rules[6], {
           selectorText: 'h1::highlight(foo)',
           propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
         },
-        'The h1\'s own highlight pseudo is displayed');
+        'The h1\'s own highlight(foo) pseudo is displayed (1)');
     assert.deepEqual(
-        h1Rules[4], {
-          selectorText: 'body::highlight(bar)',
+        h1Rules[7], {
+          selectorText: 'h1::highlight(foo), h1::highlight(bar)',
           propertyData: [{propertyName: 'color', isOverLoaded: false, isInherited: false}],
         },
-        'The h1\'s inherited highlight pseudo is displayed');
+        'The h1\'s own highlight(foo) pseudo is displayed (2)');
     assert.deepEqual(
-        h1Rules[5], {
+        h1Rules[8], {
           selectorText: 'h1::selection',
           propertyData: [{propertyName: 'background-color', isOverLoaded: false, isInherited: false}],
         },
         'The h1\'s own selection pseudo is displayed');
     assert.deepEqual(
-        h1Rules[6], {
+        h1Rules[9], {
           selectorText: 'body::selection',
           propertyData: [
             {propertyName: 'text-shadow', isOverLoaded: false, isInherited: false},
@@ -490,15 +512,16 @@ describe('The Styles pane', async () => {
 
     const sidebarSeparators = await waitForFunction(async () => {
       const separators = await $$(SIDEBAR_SEPARATOR_SELECTOR);
-      return separators.length === 5 ? separators : null;
+      return separators.length === 6 ? separators : null;
     });
     assertNotNullOrUndefined(sidebarSeparators);
 
     const layerText = await Promise.all(sidebarSeparators.map(element => element.evaluate(node => node.textContent)));
     assert.deepEqual(layerText, [
       'Inherited from ',
-      'Pseudo ::highlight element',
-      'Inherited from ::highlight pseudo of ',
+      'Pseudo ::highlight(bar) element',
+      'Inherited from ::highlight(bar) pseudo of ',
+      'Pseudo ::highlight(foo) element',
       'Pseudo ::selection element',
       'Inherited from ::selection pseudo of ',
     ]);

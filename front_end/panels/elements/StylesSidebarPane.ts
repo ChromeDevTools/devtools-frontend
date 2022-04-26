@@ -859,17 +859,38 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
     }
 
+    const customHighlightPseudoRulesets: {
+      highlightName: string|null,
+      pseudoType: Protocol.DOM.PseudoType,
+      pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
+    }[] = Array.from(matchedStyles.customHighlightPseudoNames()).map(highlightName => {
+      return {
+        'highlightName': highlightName,
+        'pseudoType': Protocol.DOM.PseudoType.Highlight,
+        'pseudoStyles': matchedStyles.customHighlightPseudoStyles(highlightName),
+      };
+    });
+
     let pseudoTypes: Protocol.DOM.PseudoType[] = [];
     const keys = matchedStyles.pseudoTypes();
     if (keys.delete(Protocol.DOM.PseudoType.Before)) {
       pseudoTypes.push(Protocol.DOM.PseudoType.Before);
     }
     pseudoTypes = pseudoTypes.concat([...keys].sort());
-    for (const pseudoType of pseudoTypes) {
+
+    const otherPseudoRulesets: {
+      highlightName: string|null,
+      pseudoType: Protocol.DOM.PseudoType,
+      pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
+    }[] = pseudoTypes.map(pseudoType => {
+      return {'highlightName': null, 'pseudoType': pseudoType, 'pseudoStyles': matchedStyles.pseudoStyles(pseudoType)};
+    });
+
+    const pseudoRulesets = customHighlightPseudoRulesets.concat(otherPseudoRulesets);
+    for (const pseudo of pseudoRulesets) {
       lastParentNode = null;
-      const pseudoStyles = matchedStyles.pseudoStyles(pseudoType);
-      for (let i = 0; i < pseudoStyles.length; ++i) {
-        const style = pseudoStyles[i];
+      for (let i = 0; i < pseudo.pseudoStyles.length; ++i) {
+        const style = pseudo.pseudoStyles[i];
         const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
 
         // Start a new SectionBlock if this is the first rule for this pseudo type, or if this
@@ -877,10 +898,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         if (i === 0 || parentNode !== lastParentNode) {
           lastLayers = null;
           if (parentNode) {
-            const block = await SectionBlock.createInheritedPseudoTypeBlock(pseudoType, parentNode);
+            const block =
+                await SectionBlock.createInheritedPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName, parentNode);
             blocks.push(block);
           } else {
-            const block = SectionBlock.createPseudoTypeBlock(pseudoType);
+            const block = SectionBlock.createPseudoTypeBlock(pseudo.pseudoType, pseudo.highlightName);
             blocks.push(block);
           }
         }
@@ -889,9 +911,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         addLayerSeparator(style);
         const lastBlock = blocks[blocks.length - 1];
         this.idleCallbackManager.schedule(() => {
-          const section = SDK.CSSMetadata.cssMetadata().isHighlightPseudoType(pseudoType) ?
-              new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx) :
-              new StylePropertiesSection(this, matchedStyles, style, sectionIdx);
+          const section = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx);
           sectionIdx++;
           lastBlock.sections.push(section);
         });
@@ -1287,19 +1307,23 @@ export class SectionBlock {
     this.sections = [];
   }
 
-  static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType): SectionBlock {
+  static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-    separatorElement.textContent = i18nString(UIStrings.pseudoSElement, {PH1: pseudoType});
+    const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
+    const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
+    separatorElement.textContent = i18nString(UIStrings.pseudoSElement, {PH1: pseudoTypeString});
     return new SectionBlock(separatorElement);
   }
 
-  static async createInheritedPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, node: SDK.DOMModel.DOMNode):
-      Promise<SectionBlock> {
+  static async createInheritedPseudoTypeBlock(
+      pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null,
+      node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
-
-    UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoType}));
+    const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
+    const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
+    UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
     const link = await Common.Linkifier.Linkifier.linkify(node, {
       preventKeyboardFocus: true,
       tooltip: undefined,

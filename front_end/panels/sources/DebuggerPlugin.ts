@@ -536,6 +536,10 @@ export class DebuggerPlugin extends Plugin {
     return true;
   }
 
+  private isVariableIdentifier(tokenType: string): boolean {
+    return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
+  }
+
   private isIdentifier(tokenType: string): boolean {
     return tokenType === 'VariableName' || tokenType === 'VariableDefinition' || tokenType === 'PropertyName' ||
         tokenType === 'PropertyDefinition';
@@ -962,8 +966,8 @@ export class DebuggerPlugin extends Plugin {
     tree.iterate({
       from: fromPos,
       to: toPos,
-      enter(node): void {
-        const varName = node.name === 'VariableName' && editorState.sliceDoc(node.from, node.to);
+      enter: node => {
+        const varName = this.isVariableIdentifier(node.name) && editorState.sliceDoc(node.from, node.to);
         if (varName && variableMap.has(varName)) {
           if (node.from > curLine.to) {
             curLine = editorState.doc.lineAt(node.from);

@@ -531,6 +531,12 @@
       default: false,
       valid_type: "bool",
     },
+    // - is_visited_highlight_colors
+    // Like the previous one but for visited internal properties.
+    is_visited_highlight_colors: {
+      default: false,
+      valid_type: "bool",
+    },
 
     // - is_animation_property
     // The property is a longhand of the 'animation' or 'transition' shorthands.
@@ -6822,6 +6828,7 @@
       valid_for_cue: true,
       valid_for_marker: true,
       valid_for_highlight: true,
+      is_visited_highlight_colors: true,
     },
     {
       name: "-internal-visited-caret-color",
@@ -6873,6 +6880,7 @@
       valid_for_first_line: true,
       valid_for_cue: true,
       valid_for_highlight: true,
+      is_visited_highlight_colors: true,
     },
     {
       name: "-internal-visited-border-left-color",
@@ -7209,10 +7217,6 @@
     //    If 'center' is specified and the container's block size is not auto,
     //    it works like "align-self: center" for grid/flex items.
     //    The block child should create new block formatting context.
-    // Note:
-    //    The container of a child with -internal-align-self:block:center needs
-    //    to opt out from simplified layout.  See
-    //    CalculateSizeBasedLayoutCacheStatusWithGeometry().
     {
       name: "-internal-align-self-block",
       property_methods: ["ParseSingleValue"],

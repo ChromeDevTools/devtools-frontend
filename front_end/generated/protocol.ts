@@ -5162,6 +5162,8 @@ export namespace Emulation {
     architecture: string;
     model: string;
     mobile: boolean;
+    bitness?: string;
+    wow64?: boolean;
   }
 
   /**
@@ -10200,6 +10202,7 @@ export namespace Page {
     InterestCohort = 'interest-cohort',
     JoinAdInterestGroup = 'join-ad-interest-group',
     KeyboardMap = 'keyboard-map',
+    LocalFonts = 'local-fonts',
     Magnetometer = 'magnetometer',
     Microphone = 'microphone',
     Midi = 'midi',
@@ -11300,15 +11303,16 @@ export namespace Page {
      */
     marginRight?: number;
     /**
-     * Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means
-     * print all pages.
+     * Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are
+     * printed in the document order, not in the order specified, and no
+     * more than once.
+     * Defaults to empty string, which implies the entire document is printed.
+     * The page numbers are quietly capped to actual page count of the
+     * document, and ranges beyond the end of the document are ignored.
+     * If this results in no pages to print, an error is reported.
+     * It is an error to specify a range with start greater than end.
      */
     pageRanges?: string;
-    /**
-     * Whether to silently ignore invalid but successfully parsed page ranges, such as '3-2'.
-     * Defaults to false.
-     */
-    ignoreInvalidPageRanges?: boolean;
     /**
      * HTML template for the print header. Should be valid HTML markup with following
      * classes used to inject printing values into them:

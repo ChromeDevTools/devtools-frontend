@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, timeout, typeText, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {getAvailableSnippets, openCommandMenu, showSnippetsAutocompletion} from '../helpers/quick_open-helpers.js';
@@ -68,8 +68,6 @@ describe('Expression evaluation', () => {
 
   it('evaluates a selected expression in the console', async () => {
     await evaluateSelectedTextInConsole();
-    // Prevent flakiness by awaiting some time for the text to be evaluated
-    await timeout(200);
     const messages = await getCurrentConsoleMessages();
     assert.deepEqual(messages, [
       message,

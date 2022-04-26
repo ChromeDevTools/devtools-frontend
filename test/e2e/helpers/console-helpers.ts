@@ -72,7 +72,7 @@ export async function waitForLastConsoleMessageToHaveContent(expectedTextContent
 
 export async function getConsoleMessages(testName: string, withAnchor = false, callback?: () => Promise<void>) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
-  await getCurrentConsoleMessages();
+  await navigateToConsoleTab();
 
   // Have the target load the page.
   await goToResource(`console/${testName}.html`);
@@ -95,9 +95,12 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
 
   // Ensure all messages are populated.
   await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
-    return Array.from(document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR))
-        .every(message => message.childNodes.length > 0);
-  }, {timeout: 0}, CONSOLE_FIRST_MESSAGES_SELECTOR));
+    const messages = document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR);
+    if (messages.length === 0) {
+      return false;
+    }
+    return Array.from(messages).every(message => message.childNodes.length > 0);
+  }, {timeout: 0, polling: 'mutation'}, CONSOLE_FIRST_MESSAGES_SELECTOR));
 
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
 

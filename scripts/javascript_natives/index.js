@@ -4,7 +4,6 @@
 
 import * as fs from 'fs';
 import glob from 'glob';
-import * as path from 'path';
 import ts from 'typescript';
 import * as WebIDL2 from 'webidl2';
 
@@ -45,7 +44,7 @@ for (const file of files) {
   if (file.includes('testing')) {
     continue;
   }
-  const data = fs.readFileSync(path.join(process.env.PWD, file), 'utf8');
+  const data = fs.readFileSync(file, 'utf8');
   const lines = data.split('\n');
   const newLines = [];
   for (const line of lines) {

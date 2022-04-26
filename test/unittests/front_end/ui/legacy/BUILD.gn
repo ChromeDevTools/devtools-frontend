@@ -9,6 +9,7 @@ ts_library("legacy") {
   sources = [
     "DockController_test.ts",
     "SuggestBox_test.ts",
+    "Toolbar_test.ts",
     "UIUtils_test.ts",
     "XLink_test.ts",
   ]

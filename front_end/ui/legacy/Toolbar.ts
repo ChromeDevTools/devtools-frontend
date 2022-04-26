@@ -57,6 +57,10 @@ const UIStrings = {
   *@description Announced screen reader message for ToolbarSettingToggle when the setting is toggled off.
   */
   notPressed: 'not pressed',
+  /**
+  *@description Tooltip shown when the user hovers over the clear icon to empty the text input.
+  */
+  clearInput: 'Clear input',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -701,6 +705,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     }
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
+    clearButton.title = UIStrings.clearInput;
     clearButton.appendChild(Icon.create('mediumicon-gray-cross-active', 'search-cancel-button'));
     clearButton.addEventListener('click', () => {
       this.setValue('', true);

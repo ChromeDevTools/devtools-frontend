@@ -189,7 +189,7 @@ Sources.SourcesPanel.DebuggerPausedDetailsRevealer = SourcesModule.SourcesPanel.
 Sources.SourcesPanel.RevealingActionDelegate = SourcesModule.SourcesPanel.RevealingActionDelegate;
 
 /** @constructor */
-Sources.SourcesPanel.DebuggingActionDelegate = SourcesModule.SourcesPanel.DebuggingActionDelegate;
+Sources.SourcesPanel.ActionDelegate = SourcesModule.SourcesPanel.ActionDelegate;
 
 /** @constructor */
 Sources.SourcesPanel.WrapperView = SourcesModule.SourcesPanel.WrapperView;

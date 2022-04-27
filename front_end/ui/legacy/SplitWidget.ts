@@ -61,6 +61,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private animationCallback: (() => void)|null;
   private showSidebarButtonTitle: Common.UIString.LocalizedString;
   private hideSidebarButtonTitle: Common.UIString.LocalizedString;
+  private shownSidebarString: Common.UIString.LocalizedString;
+  private hiddenSidebarString: Common.UIString.LocalizedString;
   private showHideSidebarButton: ToolbarButton|null;
   private isVerticalInternal: boolean;
   private sidebarMinimized: boolean;
@@ -111,6 +113,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.animationCallback = null;
     this.showSidebarButtonTitle = Common.UIString.LocalizedEmptyString;
     this.hideSidebarButtonTitle = Common.UIString.LocalizedEmptyString;
+    this.shownSidebarString = Common.UIString.LocalizedEmptyString;
+    this.hiddenSidebarString = Common.UIString.LocalizedEmptyString;
     this.showHideSidebarButton = null;
     this.isVerticalInternal = false;
     this.sidebarMinimized = false;
@@ -821,21 +825,27 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       shownString: Common.UIString.LocalizedString, hiddenString: Common.UIString.LocalizedString): ToolbarButton {
     this.showSidebarButtonTitle = showTitle;
     this.hideSidebarButtonTitle = hideTitle;
+    this.shownSidebarString = shownString;
+    this.hiddenSidebarString = hiddenString;
     this.showHideSidebarButton = new ToolbarButton('', '');
     this.showHideSidebarButton.addEventListener(ToolbarButton.Events.Click, buttonClicked, this);
     this.updateShowHideSidebarButton();
 
     function buttonClicked(this: SplitWidget): void {
-      if (this.showModeInternal !== ShowMode.Both) {
-        this.showBoth(true);
-        ARIAUtils.alert(shownString);
-      } else {
-        this.hideSidebar(true);
-        ARIAUtils.alert(hiddenString);
-      }
+      this.toggleSidebar();
     }
 
     return this.showHideSidebarButton;
+  }
+
+  toggleSidebar(): void {
+    if (this.showModeInternal !== ShowMode.Both) {
+      this.showBoth(true);
+      ARIAUtils.alert(this.shownSidebarString);
+    } else {
+      this.hideSidebar(true);
+      ARIAUtils.alert(this.hiddenSidebarString);
+    }
   }
 
   private updateShowHideSidebarButton(): void {

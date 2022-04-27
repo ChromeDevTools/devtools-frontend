@@ -10004,6 +10004,12 @@
   "panels/sources/sources-meta.ts | toggleBreakpointInputWindow": {
     "message": "T̂óĝǵl̂é b̂ŕêák̂ṕôín̂t́ îńp̂út̂ ẃîńd̂óŵ"
   },
+  "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
+    "message": "T̂óĝǵl̂é d̂éb̂úĝǵêŕ ŝíd̂éb̂ár̂"
+  },
+  "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
+    "message": "T̂óĝǵl̂é n̂áv̂íĝát̂ór̂ śîd́êb́âŕ"
+  },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "T̂ŕâíl̂ín̂ǵ"
   },

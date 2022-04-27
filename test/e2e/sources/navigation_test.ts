@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {waitFor} from '../../shared/helper.js';
+import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickOnContextMenu, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
+import {clickOnContextMenu, openSourceCodeEditorForFile, openSourcesPanel, toggleDebuggerSidebar, toggleNavigatorSidebar} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   describe('Navigation', () => {
@@ -18,6 +18,34 @@ describe('The Sources Tab', async () => {
       const value = await element.evaluate(input => (input as HTMLInputElement).value);
 
       assert.strictEqual(value, 'file:test/e2e/resources/sources/navigation');
+    });
+  });
+
+  describe('Sidebar shortcuts', () => {
+    it('should Ctrl + Shift + Y shortcut toggle navigator sidebar', async () => {
+      const {frontend} = getBrowserAndPages();
+      await openSourcesPanel();
+      // Make sure that the navigator sidebar is not collapsed in initial state
+      await waitFor('.navigator-tabbed-pane');
+      // Collapse navigator sidebar
+      await toggleNavigatorSidebar(frontend);
+      await waitForNone('.navigator-tabbed-pane');
+      // Expand navigator sidebar
+      await toggleNavigatorSidebar(frontend);
+      await waitFor('.navigator-tabbed-pane');
+    });
+
+    it('should Ctrl + Shift + H shortcut toggle debug sidebar', async () => {
+      const {frontend} = getBrowserAndPages();
+      await openSourcesPanel();
+      // Make sure that the debug sidebar is not collapsed in initial state
+      await waitFor('.scripts-debug-toolbar');
+      //  Collapse debug sidebar
+      await toggleDebuggerSidebar(frontend);
+      await waitForNone('.scripts-debug-toolbar');
+      // Expand debug sidebar
+      await toggleDebuggerSidebar(frontend);
+      await waitFor('.scripts-debug-toolbar');
     });
   });
 });

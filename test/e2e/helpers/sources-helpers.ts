@@ -40,6 +40,24 @@ export async function navigateToLine(frontend: puppeteer.Page, lineNumber: numbe
   await waitForSourceLoadedEvent(frontend, source);
 }
 
+export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.down('Shift');
+  await frontend.keyboard.press('y');
+  await frontend.keyboard.up('Shift');
+  await frontend.keyboard.up(modifierKey);
+}
+
+export async function toggleDebuggerSidebar(frontend: puppeteer.Page) {
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
+  await frontend.keyboard.down('Shift');
+  await frontend.keyboard.press('h');
+  await frontend.keyboard.up('Shift');
+  await frontend.keyboard.up(modifierKey);
+}
+
 export async function getLineNumberElement(lineNumber: number|string) {
   const visibleLines = await $$(CODE_LINE_SELECTOR);
   for (let i = 0; i < visibleLines.length; i++) {

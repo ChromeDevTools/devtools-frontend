@@ -11,16 +11,16 @@ vars = {
   'checkout_reclient': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '1323d3664650d3066850626507ba522b0ae58937',
+  'build_revision': '50e14eb904c8380d71c7ae2de33ec879f4a2936b',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'f0d740e4e2f803e39dfd5d8d11f7d87bdf489514',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '7feb245cf57e743cb5d0acccc887bad15c73ff2d',
+  'depot_tools_revision': '87172073a6c87178dca378501fd56c52f6f76a4a',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '6f1de63c77f173b7f81f35ae04f3a6803209446e',
+  'inspector_protocol_revision': '0187bc7f0ccb1e78330843c50e3d7c7d6b9ef9f2',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': 'e435ad79c17b1888b34df88d6a30a094936e3836',
@@ -28,7 +28,7 @@ vars = {
   'emscripten_tag': '6ab7fc5622a67e6111d07c4ba61c8d3c8fc33ed2',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:d0f8bc99e0584cd33ea8030441d58ee875af7842',
+  'gn_version': 'git_revision:ced9fbfe6943854e65ada4ac1849d1fa4cb19348',
 
   # reclient CIPD package version
   'reclient_version': 're_client_version:0.19.2.319f839',

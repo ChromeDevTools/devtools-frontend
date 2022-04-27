@@ -126,6 +126,10 @@ ol.expanded {
   opacity: 50%;
 }
 
+.changed {
+  background-color: var(--color-accent-green-background);
+}
+
 .changed::after {
   content: "";
   position: absolute;
@@ -138,10 +142,6 @@ ol.expanded {
 
 .copy {
   display: none;
-}
-
-.changed:hover {
-  background-color: var(--color-accent-green-background);
 }
 
 .changed:hover .copy {

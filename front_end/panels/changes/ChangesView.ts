@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import type * as Formatter from '../../models/formatter/formatter.js';
 import {formatCSSChangesFromDiff} from '../../panels/utils/utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
@@ -72,6 +73,7 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   readonly changesSidebar: ChangesSidebar;
   private selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
+  #selectedSourceCodeFormattedMapping?: Formatter.ScriptFormatter.FormatterSourceMapping;
   private readonly diffContainer: HTMLElement;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats: UI.Toolbar.ToolbarText;
@@ -167,16 +169,27 @@ export class ChangesView extends UI.Widget.VBox {
     if (!this.selectedUISourceCode) {
       return;
     }
-    for (let target: HTMLElement|null = event.target as HTMLElement; target; target = target.parentElement) {
-      if (target.classList.contains('diff-line-content')) {
-        const number = target.getAttribute('data-line-number');
-        if (number) {
-          // Unfortunately, caretRangeFromPoint is broken in shadow
-          // roots, which makes determining the character offset more
-          // work than justified here.
-          void Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(Number(number) - 1, 0), false);
-          event.consume(true);
+
+    for (const target of event.composedPath()) {
+      if (!(target instanceof HTMLElement)) {
+        continue;
+      }
+      const selection = target.ownerDocument.getSelection();
+      if (selection?.toString()) {
+        // We abort source revelation when user has text selection.
+        break;
+      }
+      if (target.classList.contains('diff-line-content') && target.hasAttribute('data-line-number')) {
+        let lineNumber = Number(target.dataset.lineNumber) - 1;
+        // Unfortunately, caretRangeFromPoint is broken in shadow
+        // roots, which makes determining the character offset more
+        // work than justified here.
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES) &&
+            this.#selectedSourceCodeFormattedMapping) {
+          lineNumber = this.#selectedSourceCodeFormattedMapping.formattedToOriginal(lineNumber, 0)[0];
         }
+        void Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(lineNumber, 0), false);
+        event.consume(true);
         break;
       } else if (target.classList.contains('diff-listing')) {
         break;
@@ -220,10 +233,12 @@ export class ChangesView extends UI.Widget.VBox {
       return;
     }
     const diffResponse = await this.workspaceDiff.requestDiff(
-        uiSourceCode, {shouldFormatDiff: Root.Runtime.experiments.isEnabled('preciseChanges')});
+        uiSourceCode,
+        {shouldFormatDiff: Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRECISE_CHANGES)});
     if (this.selectedUISourceCode !== uiSourceCode) {
       return;
     }
+    this.#selectedSourceCodeFormattedMapping = diffResponse?.formattedCurrentMapping;
     this.renderDiffRows(diffResponse?.diff);
   }
 

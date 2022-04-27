@@ -130,6 +130,7 @@ ol.expanded {
   content: "";
   position: absolute;
   left: -4px;
+  top: 0;
   width: 2px;
   height: 100%;
   background-color: var(--color-accent-green);

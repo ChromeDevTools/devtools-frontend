@@ -7,3 +7,7 @@
 .css-overview-panel {
   overflow: hidden;
 }
+
+devtools-css-overview-start-view {
+  overflow: auto;
+}

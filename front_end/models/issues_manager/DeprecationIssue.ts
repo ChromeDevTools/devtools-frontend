@@ -33,7 +33,7 @@ const UIStrings = {
   authorizationCoveredByWildcard:
       'Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling.',
   /**
-   *@description TODO(crbug.com/1320333): Description needed for translation
+   *@description Warning displayed to developers when the Battery Status API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is deprecated and will soon be unsupported.
    */
   batteryStatusInsecureOrigin:
       'Using the Battery Status API (e.g. `navigator.getBattery()`) in insecure origins like HTTP is deprecated and will be removed.',

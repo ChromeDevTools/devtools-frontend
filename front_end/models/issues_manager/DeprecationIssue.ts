@@ -169,12 +169,12 @@ const UIStrings = {
   noSysexWebMIDIWithoutPermission:
       'Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`.',
   /**
-   *@description TODO(crbug.com/1318866): Description needed for translation
+   *@description Warning displayed to developers when the Notification API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
   notificationInsecureOrigin:
       'The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gl/rStTGz for more details.',
   /**
-   *@description TODO(crbug.com/1320348): Description needed for translation
+   *@description Warning displayed to developers when permission to use notifications has been requested by a cross-origin iframe, to notify them that this use is no longer supported.
    */
   notificationPermissionRequestedIframe:
       'Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead.',

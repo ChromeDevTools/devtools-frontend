@@ -459,8 +459,12 @@ input[is="history-input"]:not(:placeholder-shown) {
   z-index: -1;
 }
 
-.toolbar-item.highlight {
+.toolbar-item.highlight > .title {
   color: var(--color-button-primary-text);
+}
+
+.toolbar-item.highlight:hover:not(:active) > .title {
+  color: var(--color-button-primary-text-hover);
 }
 
 .toolbar-item.highlight:focus-visible {

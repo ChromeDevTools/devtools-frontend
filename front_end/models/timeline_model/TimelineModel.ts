@@ -1128,8 +1128,16 @@ export class TimelineModelImpl {
         break;
       }
 
+      case RecordType.Coherent_ProcessLayer:
+      case RecordType.Coherent_DrawSubLayer:
+      case RecordType.Coherent_ProcessSimpleSublayer:
+      case RecordType.Coherent_DrawSubLayerWithCustomEffect:
+      case RecordType.Coherent_DrawFillRectShaderAndMask:
+      case RecordType.Coherent_DrawSubLayerWithShaderBlendMode:
       case RecordType.Coherent_DrawSubLayerWithShaderFilter: {
-        timelineData.backendNodeIds.push(event.args['int0']);
+        if (parseInt(event.args['int0']) > 0) {
+          timelineData.backendNodeIds.push(event.args['int0']);
+        }
         break;
       }
 
@@ -1752,8 +1760,12 @@ export enum RecordType {
   Coherent_ProcessFrontendCommandsOnly = 'Coherent_ProcessFrontendCommandsOnly',
   Coherent_DrawSDFGlyphs = 'Coherent_DrawSDFGlyphs',
   Coherent_DrawSubLayerWithShaderFilter = 'Coherent_DrawSubLayerWithShaderFilter',
-  Coherent_BackendExecute = 'Coherent_BackendExecute',
+  Coherent_DrawSubLayer = 'Coherent_DrawSubLayer',
   Coherent_ProcessSimpleSublayer = 'Coherent_ProcessSimpleSublayer',
+  Coherent_DrawSubLayerWithShaderBlendMode = 'Coherent_DrawSubLayerWithShaderBlendMode',
+  Coherent_DrawSubLayerWithCustomEffect = 'Coherent_DrawSubLayerWithCustomEffect',
+  Coherent_DrawFillRectShaderAndMask = 'Coherent_DrawFillRectShaderAndMask',
+  Coherent_BackendExecute = 'Coherent_BackendExecute',
   Coherent_ExecuteBackendBuffers = 'Coherent_ExecuteBackendBuffers',
   Coherent_CaptureTextureData = 'Coherent_CaptureTextureData',
 

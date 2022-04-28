@@ -1243,6 +1243,10 @@ const UIStrings = {
   processFrontendCommandsOnly: 'Process Frontend Commands Only',
   drawSDFGlyphs: 'Draw SDF Glyphs',
   drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
+  drawSubLayerWithShaderBlendMode: 'Draw SubLayer With BlendMode',
+  drawSubLayer: 'Draw SubLayer',
+  drawSubLayerWithCustomEffect: 'Draw SubLayer With Custom Effect',
+  drawFillRectShaderAndMask: 'Draw Fill Rect Shader And Mask',
   backendExecute: 'Backend Execute',
   processSimpleSublayer: 'Process Simple Sublayer',
 
@@ -1484,6 +1488,10 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
     eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
     eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
+    eventStyles[type.Coherent_DrawSubLayerWithShaderBlendMode] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderBlendMode, painting);
+    eventStyles[type.Coherent_DrawSubLayerWithCustomEffect] = new TimelineRecordStyle(UIStrings.drawSubLayerWithCustomEffect, painting);
+    eventStyles[type.Coherent_DrawSubLayer] = new TimelineRecordStyle(UIStrings.drawSubLayer, painting);
+    eventStyles[type.Coherent_DrawFillRectShaderAndMask] = new TimelineRecordStyle(UIStrings.drawFillRectShaderAndMask, painting);
     eventStyles[type.Coherent_BackendExecute] = new TimelineRecordStyle(UIStrings.backendExecute, painting);
     eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
     eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
@@ -2616,16 +2624,22 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(UIStrings.VBType, VBTypes[parseInt(event.args['int1'])]);
         break;
       }
+
       case recordTypes.Coherent_IBCreated:
       case recordTypes.Coherent_IBDestroyed: {
         contentHelper.appendTextRow(UIStrings.IBId, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.VBType, IBTypes[parseInt(event.args['int1'])]);
+        break;
+      case recordTypes.Coherent_DrawSubLayer:
+      case recordTypes.Coherent_ProcessLayer:
+      case recordTypes.Coherent_ProcessSimpleSublayer:
+      case recordTypes.Coherent_DrawSubLayerWithShaderBlendMode:
+      case recordTypes.Coherent_DrawSubLayerWithCustomEffect:
+      case recordTypes.Coherent_DrawFillRectShaderAndMask:
       case recordTypes.Coherent_DrawSubLayerWithShaderFilter: {
-        contentHelper.appendTextRow('Node id: ', event.args['int0'])
-        relatedNodeLabel = 'Node: '
-        if (timelineData.backendNodeIds.length > 0)
-        {
+        if (parseInt(event.args['int0']) > 0) {
           contentHelper.appendTextRow('Node id: ', event.args['int0'])
+          relatedNodeLabel = 'Node: '
         }
         break;
       }

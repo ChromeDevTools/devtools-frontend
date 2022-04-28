@@ -329,7 +329,6 @@ export function registerCommands(inspectorBackend) {
     SelectionAddRangeIntersect: 'SelectionAddRangeIntersect',
     SharedArrayBufferConstructedWithoutIsolation: 'SharedArrayBufferConstructedWithoutIsolation',
     TextToSpeech_DisallowedByAutoplay: 'TextToSpeech_DisallowedByAutoplay',
-    Untranslated: 'Untranslated',
     V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
         'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
     WebCodecsVideoFrameDefaultTimestamp: 'WebCodecsVideoFrameDefaultTimestamp',

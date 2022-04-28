@@ -331,14 +331,9 @@ export class DeprecationIssue extends Issue {
   #issueDetails: Protocol.Audits.DeprecationIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.DeprecationIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
-    let typeCode = String(issueDetails.type);
-    // TODO(crbug.com/1264960): Remove legacy type when issues are translated.
-    if (issueDetails.type === Protocol.Audits.DeprecationIssueType.Untranslated) {
-      typeCode = String(issueDetails.deprecationType);
-    }
     const issueCode = [
       Protocol.Audits.InspectorIssueCode.DeprecationIssue,
-      typeCode,
+      issueDetails.type,
     ].join('::');
     super({code: issueCode, umaCode: 'DeprecationIssue'}, issuesModel);
     this.#issueDetails = issueDetails;
@@ -576,10 +571,6 @@ export class DeprecationIssue extends Issue {
         feature = 5687444770914304;
         milestone = 71;
         break;
-      // TODO(crbug.com/1264960): Remove legacy type when issues are translated.
-      case Protocol.Audits.DeprecationIssueType.Untranslated:
-        messageFunction = (): string => this.#issueDetails.message ?? '';
-        break;
       case Protocol.Audits.DeprecationIssueType.V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.v8SharedArrayBufferConstructedInExtensionWithoutIsolation);
         milestone = 96;
@@ -644,16 +635,6 @@ export class DeprecationIssue extends Issue {
     const details = inspectorIssue.details.deprecationIssueDetails;
     if (!details) {
       console.warn('Deprecation issue without details received.');
-      return [];
-    }
-    if (details.type !== Protocol.Audits.DeprecationIssueType.Untranslated &&
-        (details.deprecationType || details.message)) {
-      console.warn('Translated deprecation issue with malformed details received.');
-      return [];
-    }
-    if (details.type === Protocol.Audits.DeprecationIssueType.Untranslated &&
-        (!details.deprecationType || !details.message)) {
-      console.warn('Untranslated deprecation issue with malformed details received.');
       return [];
     }
     return [new DeprecationIssue(details, issuesModel)];

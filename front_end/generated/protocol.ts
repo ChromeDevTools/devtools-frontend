@@ -1076,7 +1076,6 @@ export namespace Audits {
     SelectionAddRangeIntersect = 'SelectionAddRangeIntersect',
     SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
     TextToSpeech_DisallowedByAutoplay = 'TextToSpeech_DisallowedByAutoplay',
-    Untranslated = 'Untranslated',
     V8SharedArrayBufferConstructedInExtensionWithoutIsolation =
         'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
     WebCodecsVideoFrameDefaultTimestamp = 'WebCodecsVideoFrameDefaultTimestamp',
@@ -1087,26 +1086,11 @@ export namespace Audits {
 
   /**
    * This issue tracks information needed to print a deprecation message.
-   * The formatting is inherited from the old console.log version, see more at:
-   * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
-   * TODO(crbug.com/1264960): Re-work format to add i18n support per:
-   * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+   * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
    */
   export interface DeprecationIssueDetails {
     affectedFrame?: AffectedFrame;
     sourceCodeLocation: SourceCodeLocation;
-    /**
-     * The content of an untranslated deprecation issue,
-     * e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
-     * around January 2022. Please use Web Storage or Indexed Database
-     * instead. This standard was abandoned in January, 1970. See
-     * https://www.chromestatus.com/feature/5684870116278272 for more details."
-     */
-    message?: string;
-    /**
-     * The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
-     */
-    deprecationType?: string;
     type: DeprecationIssueType;
   }
 
@@ -10705,6 +10689,10 @@ export namespace Page {
      * The fantasy font-family.
      */
     fantasy?: string;
+    /**
+     * The math font-family.
+     */
+    math?: string;
   }
 
   /**

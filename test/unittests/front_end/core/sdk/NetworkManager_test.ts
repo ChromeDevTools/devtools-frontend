@@ -9,6 +9,7 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import type * as ProtocolProxyApi from '../../../../../front_end/generated/protocol-proxy-api.js';
 
 describe('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
@@ -209,5 +210,26 @@ describe('NetworkDispatcher', () => {
 
       assert.deepEqual(networkDispatcher.requestForId('mockId')?.webBundleInnerRequestInfo()?.errorMessage, 'Kaboom!');
     });
+  });
+});
+
+describe('InterceptedRequest', () => {
+  it('always responds with status code 200 when fulfilling a request', async () => {
+    const fetchAgent = {
+      invoke_fulfillRequest: () => {},
+    } as unknown as ProtocolProxyApi.FetchApi;
+    const spy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
+    const request = {
+      url: 'https://www.example.com/',
+    } as Protocol.Network.Request;
+    const requestId = 'requestId' as Protocol.Fetch.RequestId;
+    const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
+        fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, /* responseStatusCode */ 300);
+    const textContent = 'some content';
+    const responseHeaders = [{name: 'headerName', value: 'headerValue'}] as Protocol.Fetch.HeaderEntry[];
+
+    await interceptedRequest.continueRequestWithContent(
+        new Blob([textContent], {type: 'text/html'}), false, responseHeaders);
+    assert.isTrue(spy.calledWith({requestId, responseCode: 200, body: btoa(textContent), responseHeaders}));
   });
 });

@@ -1535,8 +1535,7 @@ export class InterceptedRequest {
       Promise<void> {
     this.#hasRespondedInternal = true;
     const body = encoded ? await contentBlob.text() : await blobToBase64(contentBlob);
-    void this.#fetchAgent.invoke_fulfillRequest(
-        {requestId: this.requestId, responseCode: this.responseStatusCode || 200, body, responseHeaders});
+    void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode: 200, body, responseHeaders});
 
     async function blobToBase64(blob: Blob): Promise<string> {
       const reader = new FileReader();

@@ -212,6 +212,7 @@ export const ActionCategory = {
   SETTINGS: 'Settings',
   DEBUGGER: 'Debugger',
   SOURCES: 'Sources',
+  RENDERING: 'Rendering',
 };
 
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];

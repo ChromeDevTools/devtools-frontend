@@ -549,7 +549,8 @@ export enum KeyboardShortcutAction {
   'layers.left' = 104,
   'layers.right' = 105,
   'help.report-translation-issue' = 106,
-  MaxValue = 107,
+  'rendering.toggle-prefers-color-scheme' = 107,
+  MaxValue = 108,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

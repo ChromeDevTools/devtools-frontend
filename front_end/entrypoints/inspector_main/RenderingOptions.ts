@@ -346,3 +346,34 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.registerCSSFiles([renderingOptionsStyles]);
   }
 }
+
+let reloadActionDelegateInstance: ReloadActionDelegate;
+
+export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): ReloadActionDelegate {
+    const {forceNew} = opts;
+    if (!reloadActionDelegateInstance || forceNew) {
+      reloadActionDelegateInstance = new ReloadActionDelegate();
+    }
+
+    return reloadActionDelegateInstance;
+  }
+
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    const emulatedCSSMediaFeaturePrefersColorSchemeSetting =
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
+
+    switch (actionId) {
+      case 'rendering.toggle-prefers-color-scheme':
+        if (emulatedCSSMediaFeaturePrefersColorSchemeSetting.get() === 'light') {
+          emulatedCSSMediaFeaturePrefersColorSchemeSetting.set('dark');
+        } else {
+          emulatedCSSMediaFeaturePrefersColorSchemeSetting.set('light');
+        }
+        return true;
+    }
+    return false;
+  }
+}

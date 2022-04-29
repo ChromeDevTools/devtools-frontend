@@ -99,6 +99,11 @@ const UIStrings = {
   * setting turns off this overlay.
   */
   disablePaused: 'Disable paused state overlay',
+  /**
+  * @description Title of an action that toggle
+  * "forces CSS prefers-color-scheme" color
+  */
+  toggleCssPrefersColorSchemeMedia: 'Toggle forces CSS prefers-color-scheme color',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/inspector_main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -189,6 +194,16 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Shift+Meta+R',
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'rendering.toggle-prefers-color-scheme',
+  category: UI.ActionRegistration.ActionCategory.RENDERING,
+  title: i18nLazyString(UIStrings.toggleCssPrefersColorSchemeMedia),
+  async loadActionDelegate() {
+    const InspectorMain = await loadInspectorMainModule();
+    return InspectorMain.RenderingOptions.ReloadActionDelegate.instance();
+  },
 });
 
 Common.Settings.registerSettingExtension({

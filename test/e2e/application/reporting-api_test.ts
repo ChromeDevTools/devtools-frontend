@@ -15,8 +15,8 @@ describe('The Reporting API Page', async () => {
   beforeEach(async () => {
     await enableExperiment('reportingApiDebugging');
   });
-
-  it('shows reports', async () => {
+  // Flacky test block roll CL: https://crrev.com/c/3615685.
+  it.skip('[crbug.com/1321131]: shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
     await click(REPORTING_API_SELECTOR);

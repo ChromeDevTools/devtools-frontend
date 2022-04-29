@@ -1225,6 +1225,28 @@ const UIStrings = {
   frontEnd: 'Frontend',
   backEnd: 'Backend',
   buildDOM: 'Build DOM',
+  batchCommands: 'Batch Commands',
+  processLayer: 'ProcessLayer',
+  distributeLayers: 'Distribute Layers',
+  executeBackendBuffers: 'Execute Backend Buffes',
+  captureTextureData: 'Capture Texture data',
+
+  textureCreated: 'Texture Create',
+  textureDestroyed: 'Texture Destroy',
+  VBCreated: 'VB Create',
+  VBDestroyed: 'VB Destroy',
+  IBCreated: 'IB Create',
+  IBDestroyed: 'IB Destroy',
+
+  submitGlyphs: 'Submit Glyphs',
+  submitManagerChanges: 'Submit Manager Changes',
+  processFrontendCommandsOnly: 'Process Frontend Commands Only',
+  drawSDFGlyphs: 'Draw SDF Glyphs',
+  drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
+  backendExecute: 'Backend Execute',
+  processSimpleSublayer: 'Process Simple Sublayer',
+
+  processFrontendCommands: 'Process Frontend Commands',
   customAttributeInit: 'Custom data-bind Attribute Initialization',
   customAttributeUpdate: 'Custom data-bind Attribute Update',
   customAttributeDeinit: 'Custom data-bind Attribute Deinitialization',
@@ -1242,10 +1264,31 @@ const UIStrings = {
   elementsChangedLayout: 'Elements Changed Layout',
   styleMatchCacheMisses: 'Style Match Cache Misses',
 
+  textureId : 'Texture Id',
+  textureType : 'Type',
+
+  VBId : 'Vertex Buffer Id',
+  IBId : 'Index Buffer Id',
+  VBType : 'Type',
   // COHERENT END
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const textureTypes = ['Scratch Texture',
+	                    'Layer Texture',
+	                    'Image Texture',
+	                    'Surface Texture',
+	                    'Compositor Texture',
+	                    'Glyph Atlas',
+                      'Gradient Cache Texture'];
+
+const VBTypes = ['Geometry Buffer',
+	               'Path Buffer',
+	               'Glyph Buffer'];
+const IBTypes = ['Geometry Buffer',
+	               'Path Buffer',
+	               'Glyph Buffer'];
 
 let eventStylesMap: EventStylesMap;
 
@@ -1284,6 +1327,7 @@ export class TimelineUIUtils {
     const loading = categories['loading'];
     const experience = categories['experience'];
     const painting = categories['painting'];
+    const gpu_objects = categories['gpu_objects'];
     const other = categories['other'];
     const idle = categories['idle'];
 
@@ -1431,6 +1475,27 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_CustomAttributeInit] = new TimelineRecordStyle(UIStrings.customAttributeInit, scripting);
     eventStyles[type.Coherent_CustomAttributeUpdate] = new TimelineRecordStyle(UIStrings.customAttributeUpdate, scripting);
     eventStyles[type.Coherent_CustomAttributeDeinit] = new TimelineRecordStyle(UIStrings.customAttributeDeinit, scripting);
+    eventStyles[type.Coherent_ProcessFrontendCommands] = new TimelineRecordStyle(UIStrings.processFrontendCommands, painting);
+    eventStyles[type.Coherent_ProcessLayer] = new TimelineRecordStyle(UIStrings.processLayer, painting);
+    eventStyles[type.Coherent_BatchCommands] = new TimelineRecordStyle(UIStrings.batchCommands, painting);
+    eventStyles[type.Coherent_DistributeLayers] = new TimelineRecordStyle(UIStrings.distributeLayers, painting);
+    eventStyles[type.Coherent_SubmitGlyphs] = new TimelineRecordStyle(UIStrings.submitGlyphs, painting);
+    eventStyles[type.Coherent_SubmitManagerChanges] = new TimelineRecordStyle(UIStrings.submitManagerChanges, painting);
+    eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
+    eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
+    eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
+    eventStyles[type.Coherent_BackendExecute] = new TimelineRecordStyle(UIStrings.backendExecute, painting);
+    eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
+    eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
+    eventStyles[type.Coherent_CaptureTextureData] = new TimelineRecordStyle(UIStrings.captureTextureData, painting);
+
+    eventStyles[type.Coherent_TextureCreated] = new TimelineRecordStyle(UIStrings.textureCreated, gpu_objects);
+    eventStyles[type.Coherent_TextureDestroyed] = new TimelineRecordStyle(UIStrings.textureDestroyed, gpu_objects);
+    eventStyles[type.Coherent_VBCreated] = new TimelineRecordStyle(UIStrings.VBCreated, gpu_objects);
+    eventStyles[type.Coherent_VBDestroyed] = new TimelineRecordStyle(UIStrings.VBDestroyed, gpu_objects);
+    eventStyles[type.Coherent_IBCreated] = new TimelineRecordStyle(UIStrings.IBCreated, gpu_objects);
+    eventStyles[type.Coherent_IBDestroyed] = new TimelineRecordStyle(UIStrings.IBDestroyed, gpu_objects);
+
     // COHERENT END
     eventStylesMap = eventStyles;
     return eventStyles;
@@ -2488,7 +2553,7 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_RecalcVisualStyle:
       case recordTypes.Coherent_UpdateNodeTransforms:
       case recordTypes.Coherent_Paint:
-      case recordTypes.Coherent_WaitPendingFrame: 
+      case recordTypes.Coherent_WaitPendingFrame:
       case recordTypes.Coherent_MatchElements: {
         contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
         break;
@@ -2537,6 +2602,24 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(UIStrings.elementsAffected, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.elementsChangedLayout, event.args['int1']);
         contentHelper.appendTextRow(UIStrings.styleMatchCacheMisses, event.args['int2']);
+        break;
+      }
+      case recordTypes.Coherent_TextureCreated:
+      case recordTypes.Coherent_TextureDestroyed: {
+        contentHelper.appendTextRow(UIStrings.textureId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.textureType, textureTypes[parseInt(event.args['int1'])]);
+        break;
+      }
+      case recordTypes.Coherent_VBCreated:
+      case recordTypes.Coherent_VBDestroyed: {
+        contentHelper.appendTextRow(UIStrings.VBId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.VBType, VBTypes[parseInt(event.args['int1'])]);
+        break;
+      }
+      case recordTypes.Coherent_IBCreated:
+      case recordTypes.Coherent_IBDestroyed: {
+        contentHelper.appendTextRow(UIStrings.IBId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.VBType, IBTypes[parseInt(event.args['int1'])]);
         break;
       }
       // COHERENT END
@@ -3156,6 +3239,7 @@ export class TimelineUIUtils {
       painting: new TimelineCategory(
           'painting', i18nString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
       gpu: new TimelineCategory('gpu', i18nString(UIStrings.gpu), false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
+      gpu_objects: new TimelineCategory('gpu_objects', 'GPU Object Creation', true, 'hsl(195, 100%, 50%)', 'hsl(195, 100%, 50%)'),
       async:
           new TimelineCategory('async', i18nString(UIStrings.async), false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
       other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),

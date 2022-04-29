@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../front_end/core/common/common.js';
 import * as Host from '../../../../front_end/core/host/host.js';
 import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
@@ -55,6 +56,7 @@ function describeBody(title: string, fn: (this: Mocha.Suite) => void) {
 
   beforeEach(() => {
     resetHostBindingStubState();
+    Common.Settings.Settings.instance().clearAll();
   });
 
   describe(title, fn);

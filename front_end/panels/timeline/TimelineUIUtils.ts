@@ -1235,6 +1235,8 @@ const UIStrings = {
   textureDestroyed: 'Texture Destroy',
   VBCreated: 'VB Create',
   VBDestroyed: 'VB Destroy',
+  IBCreated: 'IB Create',
+  IBDestroyed: 'IB Destroy',
 
   submitGlyphs: 'Submit Glyphs',
   submitManagerChanges: 'Submit Manager Changes',
@@ -1266,6 +1268,7 @@ const UIStrings = {
   textureType : 'Type',
 
   VBId : 'Vertex Buffer Id',
+  IBId : 'Index Buffer Id',
   VBType : 'Type',
   // COHERENT END
 };
@@ -1281,6 +1284,9 @@ const textureTypes = ['Scratch Texture',
                       'Gradient Cache Texture'];
 
 const VBTypes = ['Geometry Buffer',
+	               'Path Buffer',
+	               'Glyph Buffer'];
+const IBTypes = ['Geometry Buffer',
 	               'Path Buffer',
 	               'Glyph Buffer'];
 
@@ -1487,6 +1493,8 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_TextureDestroyed] = new TimelineRecordStyle(UIStrings.textureDestroyed, gpu_objects);
     eventStyles[type.Coherent_VBCreated] = new TimelineRecordStyle(UIStrings.VBCreated, gpu_objects);
     eventStyles[type.Coherent_VBDestroyed] = new TimelineRecordStyle(UIStrings.VBDestroyed, gpu_objects);
+    eventStyles[type.Coherent_IBCreated] = new TimelineRecordStyle(UIStrings.IBCreated, gpu_objects);
+    eventStyles[type.Coherent_IBDestroyed] = new TimelineRecordStyle(UIStrings.IBDestroyed, gpu_objects);
 
     // COHERENT END
     eventStylesMap = eventStyles;
@@ -2606,6 +2614,12 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_VBDestroyed: {
         contentHelper.appendTextRow(UIStrings.VBId, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.VBType, VBTypes[parseInt(event.args['int1'])]);
+        break;
+      }
+      case recordTypes.Coherent_IBCreated:
+      case recordTypes.Coherent_IBDestroyed: {
+        contentHelper.appendTextRow(UIStrings.IBId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.VBType, IBTypes[parseInt(event.args['int1'])]);
         break;
       }
       // COHERENT END

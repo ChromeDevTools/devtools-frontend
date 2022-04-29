@@ -1756,6 +1756,8 @@ export enum RecordType {
   Coherent_TextureDestroyed = 'Coherent_TextureDestroyed',
   Coherent_VBCreated = 'Coherent_VBCreated',
   Coherent_VBDestroyed = 'Coherent_VBDestroyed',
+  Coherent_IBCreated = 'Coherent_IBCreated',
+  Coherent_IBDestroyed = 'Coherent_IBDestroyed',
 
   // COHERENT END
 }

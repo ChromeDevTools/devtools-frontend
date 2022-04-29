@@ -81,7 +81,7 @@ Some pointers when people should be added to the list of LGTM providers:
 
 ### Where can I find a template for design documents?
 
-[Here](https://bit.ly/devtools-design-doc-template).
+[Here](https://goo.gle/devtools-design-doc-template).
 
 ### What if I made big changes to the design document?
 

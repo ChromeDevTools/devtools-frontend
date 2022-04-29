@@ -29,8 +29,8 @@ Instructions to set up, use, and maintain a DevTools frontend checkout can be fo
 - DevTools documentation: [devtools.chrome.com](https://devtools.chrome.com/)
 - [Debugging protocol docs](https://developer.chrome.com/devtools/docs/debugger-protocol) and [Chrome Debugging Protocol Viewer](https://chromedevtools.github.io/debugger-protocol-viewer/)
 - [awesome-chrome-devtools](https://github.com/paulirish/awesome-chrome-devtools): recommended tools and resources
-- Contributing to DevTools: [bit.ly/devtools-contribution-guide](https://bit.ly/devtools-contribution-guide)
-- Contributing To Chrome DevTools Protocol: [docs.google.com](https://docs.google.com/document/d/1c-COD2kaK__5iMM5SEx-PzNA7HFmgttcYfOHHX0HaOM/edit?usp=sharing)
+- Contributing to DevTools: [bit.ly/devtools-contribution-guide](https://goo.gle/devtools-contribution-guide)
+- Contributing To Chrome DevTools Protocol: [docs.google.com](https://goo.gle/devtools-contribution-guide-cdp)
 - DevTools Design Review Guidelines: [design_guidelines.md](docs/design_guidelines.md)
 
 ### Source mirrors

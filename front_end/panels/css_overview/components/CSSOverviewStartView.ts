@@ -43,7 +43,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {render, html} = LitHtml;
 
-const FEEDBACK_LINK = 'https://goo.gle/css-overview-feedback';
+const FEEDBACK_LINK = 'https://g.co/devtools/css-overview-feedback';
 const DOC_LINK = 'https://developer.chrome.com/docs/devtools/css-overview';
 export class OverviewStartRequestedEvent extends Event {
   static readonly eventName = 'overviewstartrequested';

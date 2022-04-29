@@ -372,7 +372,7 @@ export class MainImpl {
     // CSS <length> authoring tool.
     Root.Runtime.experiments.register(
         'cssTypeComponentLength',
-        'Enable CSS <length> authoring tool in the Styles pane (https://goo.gle/length-feedback)', undefined,
+        'Enable CSS <length> authoring tool in the Styles pane (https://g.co/devtools/length-feedback)', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-96/#length');
 
     // Display precise changes in the Changes tab.

@@ -29,7 +29,7 @@ export const markdownLinks = new Map<string, string>([
   ['sameSiteAndSameOrigin', 'https://web.dev/same-site-same-origin/'],
   // Link URLs for deprecation issues (see blink::Deprecation)
   ['https://xhr.spec.whatwg.org/', 'https://xhr.spec.whatwg.org/'],
-  ['https://goo.gl/rStTGz', 'https://goo.gl/rStTGz'],
+  ['https://goo.gle/chrome-insecure-origins', 'https://goo.gle/chrome-insecure-origins'],
   ['https://webrtc.org/web-apis/chrome/unified-plan/', 'https://webrtc.org/web-apis/chrome/unified-plan/'],
   [
     'https://developer.chrome.com/blog/enabling-shared-array-buffer/',

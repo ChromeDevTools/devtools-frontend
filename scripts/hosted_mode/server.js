@@ -55,7 +55,7 @@ server.once('listening', () => {
   }
   console.log(`Started hosted mode server at http://localhost:${actualPort}\n`);
   console.log('For info on using the hosted mode server, see our contributing docs:');
-  console.log('https://bit.ly/devtools-contribution-guide');
+  console.log('https://goo.gle/devtools-contribution-guide');
   console.log('Tip: Look for the \'Development server options\' section\n');
 });
 const wss = new WebSocketServer({server});

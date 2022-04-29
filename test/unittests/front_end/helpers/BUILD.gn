@@ -10,6 +10,7 @@ ts_library("helpers") {
     "DOMHelpers.ts",
     "EnvironmentHelpers.ts",
     "InspectorOverlayHelpers.ts",
+    "LanguagePluginHelpers.ts",
     "MockConnection.ts",
     "MutationHelpers.ts",
     "MutationHelpers_test.ts",

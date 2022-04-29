@@ -144,6 +144,21 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
         }
       }
     }
+
+    // Handle language plugins
+    const {pluginManager} = this.debuggerWorkspaceBinding;
+    if (pluginManager) {
+      const sourceUrls = await pluginManager.getSourcesForScript(script);
+      if (sourceUrls) {
+        for (const sourceURL of sourceUrls) {
+          if (this.#hasBreakpointsForUrl(sourceURL)) {
+            const uiSourceCode =
+                await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL);
+            await this.#restoreBreakpointsForUrl(uiSourceCode);
+          }
+        }
+      }
+    }
   }
 
   async #restoreBreakpointsForUrl(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {

@@ -1127,6 +1127,15 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
+  getSourcesForScript(script: SDK.Script.Script): Promise<Array<Platform.DevToolsPath.UrlString>|undefined> {
+    const rawModuleId = rawModuleIdForScript(script);
+    const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
+    if (rawModuleHandle) {
+      return rawModuleHandle.addRawModulePromise;
+    }
+    return Promise.resolve(undefined);
+  }
+
   async resolveScopeChain(callFrame: SDK.DebuggerModel.CallFrame): Promise<SourceScope[]|null> {
     const script = callFrame.script;
     const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);

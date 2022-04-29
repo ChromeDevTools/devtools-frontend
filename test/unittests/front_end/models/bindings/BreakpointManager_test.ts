@@ -13,6 +13,8 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
+import type {Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 
 describeWithRealConnection('BreakpointManager', () => {
   const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
@@ -108,6 +110,78 @@ describeWithRealConnection('BreakpointManager', () => {
     breakpointManager.modelRemoved(debuggerModel);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+  });
+
+  it('allows awaiting the restoration of breakpoints with language plugins', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
+
+    const pluginManager =
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
+    assertNotNullOrUndefined(pluginManager);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    const {uiSourceCode} =
+        createUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
+    assertNotNullOrUndefined(uiSourceCode);
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
+
+    // Make sure that we await all updates that are triggered by adding the model.
+    await breakpoint.updateBreakpoint();
+
+    // Retrieve the ModelBreakpoint that is linked to our DebuggerModel.
+    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
+    assertNotNullOrUndefined(modelBreakpoint);
+
+    // Make sure that we do not have a linked script yet.
+    assertNotNullOrUndefined(modelBreakpoint.currentState);
+    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
+    assert.isEmpty(modelBreakpoint.currentState.positions[0].scriptId);
+
+    class Plugin extends TestPlugin {
+      constructor() {
+        super('InstrumentationBreakpoints');
+      }
+
+      handleScript(script: SDK.Script.Script) {
+        return script.scriptId === SCRIPT_ID;
+      }
+
+      async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
+          Promise<Chrome.DevTools.RawLocationRange[]> {
+        const {rawModuleId, columnNumber, lineNumber, sourceFileURL} = sourceLocation;
+        if (lineNumber === 0 && columnNumber === 0 && sourceFileURL === 'test.cc') {
+          return [{rawModuleId, startOffset: 0, endOffset: 0}];
+        }
+        return [];
+      }
+
+      async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
+          Promise<string[]> {
+        return ['test.cc'];  // need to return something to get the script associated with the plugin.
+      }
+    }
+    // Create a plugin that is able to produce a mapping for our script.
+    pluginManager.addPlugin(new Plugin());
+
+    const script = debuggerModel.parsedScriptSource(
+        SCRIPT_ID, URL, 0, 0, 0, 0, 0, '', undefined, false, undefined, false, false, 0, null, null, null, null, null,
+        null);
+    await pluginManager.getSourcesForScript(script);  // wait for plugin source setup to finish.
+
+    await breakpointManager.restoreBreakpointsForScript(script);
+    assertNotNullOrUndefined(modelBreakpoint.currentState);
+    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
+    assert.strictEqual(modelBreakpoint.currentState.positions[0].scriptId, SCRIPT_ID);
+
+    // Clean up.
+    breakpointManager.removeBreakpoint(breakpoint, true);
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
+    debuggerModel.globalObjectCleared();
   });
 
   it('allows awaiting on scheduled update in debugger', async () => {

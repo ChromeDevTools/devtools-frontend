@@ -179,7 +179,7 @@ class ChromeLauncher {
         if (devtools)
             chromeArguments.push('--auto-open-devtools-for-tabs');
         if (headless) {
-            chromeArguments.push('--headless', '--hide-scrollbars', '--mute-audio');
+            chromeArguments.push(headless === 'chrome' ? '--headless=chrome' : '--headless', '--hide-scrollbars', '--mute-audio');
         }
         if (args.every((arg) => arg.startsWith('-')))
             chromeArguments.push('about:blank');

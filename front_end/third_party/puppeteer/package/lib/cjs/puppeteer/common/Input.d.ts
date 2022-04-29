@@ -171,7 +171,7 @@ export declare class Keyboard {
 /**
  * @public
  */
-export declare type MouseButton = 'left' | 'right' | 'middle';
+export declare type MouseButton = 'left' | 'right' | 'middle' | 'back' | 'forward';
 /**
  * @public
  */

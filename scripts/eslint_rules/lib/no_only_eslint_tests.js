@@ -17,6 +17,10 @@ module.exports = {
   create: function(context) {
     function checkForOnlyInTestCases(testCaseObjects) {
       for (const testCase of testCaseObjects) {
+        if (!testCase || !testCase.properties) {
+          continue;
+        }
+
         const onlyKeyProp = testCase.properties.find(prop => {
           return prop.key.name === 'only';
         });
@@ -37,7 +41,7 @@ module.exports = {
         // second argument = rule itself
         // third argument = the object containing the test cases - what we want!
         const tests = node.arguments[2];
-        if (!tests) {
+        if (!tests || !tests.properties) {
           return;
         }
 

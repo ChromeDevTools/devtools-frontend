@@ -8,6 +8,7 @@ import * as Platform from '../platform/platform.js';
 
 import type {FrameAssociated} from './FrameAssociated.js';
 import type {Target} from './Target.js';
+import {Type} from './Target.js';
 import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 import type {SourceMap} from './SourceMap.js';
 import {TextSourceMap} from './SourceMap.js';
@@ -64,6 +65,14 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       this.detachSourceMap(client);
       this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
     }
+  }
+
+  private getBaseUrl(): Platform.DevToolsPath.UrlString {
+    let target: Target|null = this.#target;
+    while (target && target.type() !== Type.Frame) {
+      target = target.parentTarget();
+    }
+    return target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
   }
 
   private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<Target>): void {
@@ -156,7 +165,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }|null {
     // |#sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this.#target.inspectedURL(), sourceURL);
+    const resolvedSourceURL = Common.ParsedURL.ParsedURL.completeURL(this.getBaseUrl(), sourceURL);
     if (!resolvedSourceURL) {
       return null;
     }

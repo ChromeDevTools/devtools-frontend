@@ -399,6 +399,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.performance),
     description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
     plugin: false,
+    supportedModes: ['navigation', 'timespan', 'snapshot'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -407,6 +408,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.progressiveWebApp),
     description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
     plugin: false,
+    supportedModes: ['navigation'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -415,6 +417,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.bestPractices),
     description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
     plugin: false,
+    supportedModes: ['navigation', 'timespan', 'snapshot'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -423,6 +426,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.accessibility),
     description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
     plugin: false,
+    supportedModes: ['navigation', 'snapshot'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -431,6 +435,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.seo),
     description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
     plugin: false,
+    supportedModes: ['navigation', 'snapshot'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -439,6 +444,7 @@ export const Presets: Preset[] = [
     configID: 'lighthouse-plugin-publisher-ads',
     title: i18nLazyString(UIStrings.publisherAds),
     description: i18nLazyString(UIStrings.isThisPageOptimizedForAdSpeedAnd),
+    supportedModes: ['navigation'],
   },
 ];
 
@@ -567,6 +573,7 @@ export interface Preset {
   title: () => Common.UIString.LocalizedString;
   description: () => Common.UIString.LocalizedString;
   plugin: boolean;
+  supportedModes: string[];
 }
 export interface RuntimeSetting {
   setting: Common.Settings.Setting<string|boolean>;

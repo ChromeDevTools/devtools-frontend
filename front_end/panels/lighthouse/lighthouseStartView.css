@@ -170,16 +170,16 @@ input[type="radio"]:focus {
 
 .lighthouse-options {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
 }
 
 .lighthouse-options.narrow {
-  grid-template-columns: auto;
+  grid-template-columns: 1fr;
   grid-template-rows: auto auto auto;
 }
 
 .lighthouse-options.wide {
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
 }

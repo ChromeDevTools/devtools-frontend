@@ -174,7 +174,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       return;
     }
 
-    this.startView.updateMode();
+    this.startView.refresh();
 
     this.unauditableExplanation = evt.data.helpText;
     this.startView.setUnauditableExplanation(evt.data.helpText);

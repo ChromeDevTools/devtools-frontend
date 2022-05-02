@@ -46,6 +46,52 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class StartViewFR extends StartView {
   protected render(): void {
     super.render();
+    this.refresh();
+  }
+
+  private createStartButton(mode: string): HTMLButtonElement {
+    let buttonLabel: Platform.UIString.LocalizedString;
+    let callback: () => void;
+
+    if (mode === 'timespan') {
+      buttonLabel = i18nString(UIStrings.startTimespan);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseTimespanStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    } else if (mode === 'snapshot') {
+      buttonLabel = i18nString(UIStrings.analyzeSnapshot);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    } else {
+      buttonLabel = i18nString(UIStrings.analyzeNavigation);
+      callback = (): void => {
+        this.controller.dispatchEventToListeners(
+            Events.RequestLighthouseStart,
+            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
+        );
+      };
+    }
+
+    return UI.UIUtils.createTextButton(
+        buttonLabel,
+        callback,
+        /* className */ '',
+        /* primary */ true,
+    );
+  }
+
+  refresh(): void {
+    const {mode} = this.controller.getFlags();
+
+    this.startButton = this.createStartButton(mode);
+
     const fragment = UI.Fragment.Fragment.build`
 <form class="lighthouse-start-view-fr">
   <header class="hbox">
@@ -82,7 +128,7 @@ export class StartViewFR extends StartView {
     this.warningText = fragment.$('warning-text');
 
     // The previous radios are removed later and don't exist on the new fragment yet.
-    this.populateFormControls(fragment);
+    this.populateFormControls(fragment, mode);
 
     // Populate the Lighthouse mode
     const modeFormElements = fragment.$('mode-form-elements');
@@ -90,7 +136,9 @@ export class StartViewFR extends StartView {
 
     this.contentElement.textContent = '';
     this.contentElement.append(fragment.element());
-    this.updateMode();
+
+    // Ensure the correct layout is used after refresh.
+    this.onResize();
   }
 
   onResize(): void {
@@ -105,52 +153,6 @@ export class StartViewFR extends StartView {
     if (optionsEl) {
       optionsEl.classList.toggle('wide', useWideLayout);
       optionsEl.classList.toggle('narrow', useNarrowLayout);
-    }
-  }
-
-  updateMode(): void {
-    const {mode} = this.controller.getFlags();
-
-    let buttonLabel: Platform.UIString.LocalizedString;
-    let callback: () => void;
-
-    if (mode === 'timespan') {
-      buttonLabel = i18nString(UIStrings.startTimespan);
-      callback = (): void => {
-        this.controller.dispatchEventToListeners(
-            Events.RequestLighthouseTimespanStart,
-            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
-        );
-      };
-    } else if (mode === 'snapshot') {
-      buttonLabel = i18nString(UIStrings.analyzeSnapshot);
-      callback = (): void => {
-        this.controller.dispatchEventToListeners(
-            Events.RequestLighthouseStart,
-            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
-        );
-      };
-    } else {
-      buttonLabel = i18nString(UIStrings.analyzeNavigation);
-      callback = (): void => {
-        this.controller.dispatchEventToListeners(
-            Events.RequestLighthouseStart,
-            /* keyboardInitiated */ this.startButton.matches(':focus-visible'),
-        );
-      };
-    }
-
-    this.startButton = UI.UIUtils.createTextButton(
-        buttonLabel,
-        callback,
-        /* className */ '',
-        /* primary */ true,
-    );
-
-    const startButtonContainerEl = this.contentElement.querySelector('.lighthouse-start-button-container');
-    if (startButtonContainerEl) {
-      startButtonContainerEl.textContent = '';
-      startButtonContainerEl.appendChild(this.startButton);
     }
   }
 }

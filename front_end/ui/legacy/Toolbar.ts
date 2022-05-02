@@ -1084,6 +1084,10 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
     super.applyEnabledState(enabled);
     this.inputElement.disabled = !enabled;
   }
+
+  setIndeterminate(indeterminate: boolean): void {
+    this.inputElement.indeterminate = indeterminate;
+  }
 }
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {

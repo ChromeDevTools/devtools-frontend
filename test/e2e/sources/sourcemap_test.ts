@@ -236,36 +236,38 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(await getBreakpointDecorators(), []);
   });
 
-  it('reliably hits breakpoints on worker with source map', async () => {
-    await enableExperiment('instrumentationBreakpoints');
-    const {target, frontend} = getBrowserAndPages();
-    await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
+  // Flaky test
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/1297070]: reliably hits breakpoints on worker with source map', async () => {
+        await enableExperiment('instrumentationBreakpoints');
+        const {target, frontend} = getBrowserAndPages();
+        await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');
 
-    await step('Add a breakpoint at first line of function multiline', async () => {
-      await addBreakpointForLine(frontend, 4);
-    });
+        await step('Add a breakpoint at first line of function multiline', async () => {
+          await addBreakpointForLine(frontend, 4);
+        });
 
-    await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
-      await refreshDevToolsAndRemoveBackendState(target);
-    });
+        await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
+          await refreshDevToolsAndRemoveBackendState(target);
+        });
 
-    await step('Navigate back to test page', () => {
-      void goToResource('sources/sourcemap-breakpoint.html');
-    });
+        await step('Navigate back to test page', () => {
+          void goToResource('sources/sourcemap-breakpoint.html');
+        });
 
-    await step('wait for pause and check if we stopped at line 4', async () => {
-      await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
-      await waitFor(PAUSE_INDICATOR_SELECTOR);
-      await waitForFunction(async () => {
-        const topCallFrame = await retrieveTopCallFrameWithoutResuming();
-        return topCallFrame === 'sourcemap-stepping-source.js:4';
+        await step('wait for pause and check if we stopped at line 4', async () => {
+          await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+          await waitFor(PAUSE_INDICATOR_SELECTOR);
+          await waitForFunction(async () => {
+            const topCallFrame = await retrieveTopCallFrameWithoutResuming();
+            return topCallFrame === 'sourcemap-stepping-source.js:4';
+          });
+        });
+
+        await step('Resume', async () => {
+          await click(RESUME_BUTTON);
+        });
       });
-    });
-
-    await step('Resume', async () => {
-      await click(RESUME_BUTTON);
-    });
-  });
 });
 
 describe('The Elements Tab', async () => {

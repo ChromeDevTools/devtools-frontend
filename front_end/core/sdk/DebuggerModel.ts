@@ -245,9 +245,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
       this.breakpointsActiveChanged();
     }
-    if (_scheduledPauseOnAsyncCall) {
-      void this.pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
-    }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
     const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
     this.registerDebugger(enableResult);
@@ -420,10 +417,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#isPausingInternal = true;
     this.skipAllPauses(false);
     void this.agent.invoke_pause();
-  }
-
-  private pauseOnAsyncCall(parentStackTraceId: Protocol.Runtime.StackTraceId): Promise<Object> {
-    return this.agent.invoke_pauseOnAsyncCall({parentStackTraceId: parentStackTraceId});
   }
 
   async setBreakpointByURL(
@@ -659,25 +652,12 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   async pausedScript(
       callFrames: Protocol.Debugger.CallFrame[], reason: Protocol.Debugger.PausedEventReason, auxData: Object|undefined,
       breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace,
-      asyncStackTraceId?: Protocol.Runtime.StackTraceId,
-      asyncCallStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void> {
+      asyncStackTraceId?: Protocol.Runtime.StackTraceId): Promise<void> {
     if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {
       const script = this.scriptForId(callFrames[0].location.scriptId);
       if (this.#synchronizeBreakpointsCallback && script) {
         await this.#synchronizeBreakpointsCallback(script);
       }
-      this.resume();
-      return;
-    }
-
-    if (asyncCallStackTraceId) {
-      // Note: this is only to support old backends. Newer ones do not send asyncCallStackTraceId.
-      _scheduledPauseOnAsyncCall = asyncCallStackTraceId;
-      const promises = [];
-      for (const model of _debuggerIdToModel.values()) {
-        promises.push(model.pauseOnAsyncCall(asyncCallStackTraceId));
-      }
-      await Promise.all(promises);
       this.resume();
       return;
     }
@@ -706,8 +686,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     } else {
       Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
     }
-
-    _scheduledPauseOnAsyncCall = null;
   }
 
   resumedScript(): void {
@@ -989,10 +967,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _debuggerIdToModel = new Map<string, DebuggerModel>();
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export let _scheduledPauseOnAsyncCall: Protocol.Runtime.StackTraceId|null = null;
-
 /**
  * Keep these in sync with WebCore::V8Debugger
  */
@@ -1037,13 +1011,13 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     this.#debuggerModel = debuggerModel;
   }
 
-  paused({callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId, asyncCallStackTraceId}:
-             Protocol.Debugger.PausedEvent): void {
+  paused({callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId}: Protocol.Debugger.PausedEvent):
+      void {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
     void this.#debuggerModel.pausedScript(
-        callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId, asyncCallStackTraceId);
+        callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId);
   }
 
   resumed(): void {

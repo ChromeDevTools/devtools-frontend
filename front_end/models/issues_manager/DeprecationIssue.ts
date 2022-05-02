@@ -59,8 +59,14 @@ const
    */
           cookieWithTruncatingChar: 'Cookies containing a `\\(0|r|n)` character will be rejected instead of truncated.',
           /**
-   *@description TODO(crbug.com/1318849): Description needed for translation
-   */
+           *@description This warning occurs when a frame accesses another frame's
+           *    data after having set `document.domain` without having set the
+           *    `Origin-Agent-Cluster` http header. This is a companion warning to
+           *    `documentDomainSettingWithoutOriginAgentClusterHeader`, where that
+           *    warning occurs when `document.domain` is set, and this warning
+           *    occurs when an access has been made, based on that previous
+           *    `document.domain` setting.
+           */
           crossOriginAccessBasedOnDocumentDomain:
               'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`.',
           /**
@@ -88,8 +94,11 @@ const
    */
           deprecationExample: 'This is an example of a translated deprecation issue message.',
           /**
-   *@description TODO(crbug.com/1318852): Description needed for translation
-   */
+           *@description This warning occurs when a script modifies `document.domain`
+           *    without having set on `Origin-Agent-Cluster` http header. In other
+           *    words, when a script relies on the default behaviour of
+           *    `Origin-Agent-Cluster` when setting document.domain.
+           */
           documentDomainSettingWithoutOriginAgentClusterHeader:
               'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details.',
           /**

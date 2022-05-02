@@ -40,7 +40,8 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
   await timeout(50);
 };
 
-describe('The Styles pane', async () => {
+// Flaky test group
+describe.skipOnPlatforms(['linux', 'mac'], '[crbug.com/1318314]: The Styles pane', async () => {
   it('can display the CSS properties of the selected element', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html');
@@ -76,8 +77,7 @@ describe('The Styles pane', async () => {
         'The correct rule is displayed');
   });
 
-  // Flaky on linux.
-  it.skipOnPlatforms(['linux'], '[crbug.com/1318314]: can jump to a CSS variable definition', async () => {
+  it('can jump to a CSS variable definition', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-variables.html');
 
@@ -91,8 +91,7 @@ describe('The Styles pane', async () => {
     await waitForPropertyToHighlight('html', '--title-color');
   });
 
-  // Flaky on linux.
-  it.skipOnPlatforms(['linux'], '[crbug.com/1318314]: can jump to an unexpanded CSS variable definition', async () => {
+  it('can jump to an unexpanded CSS variable definition', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-variables-many.html');
 
@@ -247,8 +246,8 @@ describe('The Styles pane', async () => {
         'The correct rule is displayed');
   });
 
-  // Flaky on mac after introducing pooled frontend instances.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1297458] can edit multiple constructed stylesheets', async () => {
+  // Flaky after introducing pooled frontend instances.
+  it.skip('[crbug.com/1297458] can edit multiple constructed stylesheets', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/multiple-constructed-stylesheets.html');
 

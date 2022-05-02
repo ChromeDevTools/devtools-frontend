@@ -17,6 +17,7 @@ ts_library("helpers") {
     "RealConnection.ts",
     "SourceMapEncoder.ts",
     "SourceMapEncoder_test.ts",
+    "TimelineHelpers.ts",
     "UISourceCodeHelpers.ts",
     "UserMetricsHelpers.ts",
   ]

@@ -11,5 +11,8 @@ ts_library("timeline_model") {
     "TimelineJSProfile_test.ts",
   ]
 
-  deps = [ "../../../../../front_end/models/timeline_model:bundle" ]
+  deps = [
+    "../../../../../front_end/models/timeline_model:bundle",
+    "../../helpers",
+  ]
 }

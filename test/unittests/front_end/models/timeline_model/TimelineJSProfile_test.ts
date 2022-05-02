@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 describe('TimelineJSProfile', () => {
   let tracingModel: SDK.TracingModel.TracingModel;
@@ -95,21 +96,3 @@ describe('TimelineJSProfile', () => {
     assert.strictEqual(returnedEvents[1].endTime, 15);
   });
 });
-
-class FakeStorage extends SDK.TracingModel.BackingStorage {
-  appendString() {
-    throw new Error('Not implemented yet');
-  }
-
-  appendAccessibleString(): () => Promise<string|null> {
-    throw new Error('Not implemented yet');
-  }
-
-  finishWriting() {
-    throw new Error('Not implemented yet');
-  }
-
-  reset() {
-    throw new Error('Not implemented yet');
-  }
-}

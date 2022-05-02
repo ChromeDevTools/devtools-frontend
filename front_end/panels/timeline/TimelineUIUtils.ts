@@ -1682,8 +1682,7 @@ export class TimelineUIUtils {
     }
   }
 
-  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event, target: SDK.Target.Target|null):
-      Promise<string|null> {
+  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event): Promise<string|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
     const eventData = event.args['data'];
@@ -1696,9 +1695,9 @@ export class TimelineUIUtils {
         break;
       }
       case recordType.FunctionCall:
-        if (eventData) {
-          detailsText =
-              await linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], eventData['columnNumber']);
+        if (eventData && eventData['url'] && eventData['lineNumber'] !== undefined &&
+            eventData['columnNumber'] !== undefined) {
+          detailsText = eventData.url + ':' + (eventData.lineNumber + 1) + ':' + (eventData.columnNumber + 1);
         }
         break;
       case recordType.JSFrame:
@@ -1804,33 +1803,13 @@ export class TimelineUIUtils {
 
     return detailsText;
 
-    async function linkifyLocationAsText(
-        scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber: number): Promise<string|null> {
-      const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
-      if (!target || target.isDisposed() || !scriptId || !debuggerModel) {
-        return null;
-      }
-      const rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
-      if (!rawLocation) {
-        return null;
-      }
-      const uiLocation =
-          await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
-              rawLocation);
-      return uiLocation ? uiLocation.linkText(false /* skipTrim*/, true /* showColumnNumber*/) : null;
-    }
-
     async function linkifyTopCallFrameAsText(): Promise<string|null> {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       if (!frame) {
         return null;
       }
-      let text: string|(string | null) =
-          await linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
-      if (!text) {
-        text = frame.url + ':' + (frame.lineNumber + 1) + ':' + (frame.columnNumber + 1);
-      }
-      return text;
+
+      return frame.url + ':' + (frame.lineNumber + 1) + ':' + (frame.columnNumber + 1);
     }
   }
 
@@ -1859,7 +1838,7 @@ export class TimelineUIUtils {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy: {
-        detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
+        detailsText = await TimelineUIUtils.buildDetailsTextForTraceEvent(event);
         break;
       }
 

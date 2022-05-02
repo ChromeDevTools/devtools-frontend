@@ -11,5 +11,6 @@ ts_library("timeline") {
   deps = [
     "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/panels/timeline:bundle",
+    "../../helpers",
   ]
 }

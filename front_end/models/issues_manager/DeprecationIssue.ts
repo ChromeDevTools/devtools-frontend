@@ -205,12 +205,12 @@ const
           pictureSourceSrc:
               '`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead.',
           /**
-   *@description TODO(crbug.com/1318869): Description needed for translation
+   *@description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
    */
           prefixedCancelAnimationFrame:
               '`webkitCancelAnimationFrame` is vendor-specific. Please use the standard `cancelAnimationFrame` instead.',
           /**
-   *@description TODO(crbug.com/1318871): Description needed for translation
+   *@description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
    */
           prefixedRequestAnimationFrame:
               '`webkitRequestAnimationFrame` is vendor-specific. Please use the standard `requestAnimationFrame` instead.',

@@ -273,7 +273,6 @@ export function registerCommands(inspectorBackend) {
       'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
   inspectorBackend.registerEnum('Audits.DeprecationIssueType', {
     AuthorizationCoveredByWildcard: 'AuthorizationCoveredByWildcard',
-    BatteryStatusInsecureOrigin: 'BatteryStatusInsecureOrigin',
     CanRequestURLHTTPContainingNewline: 'CanRequestURLHTTPContainingNewline',
     ChromeLoadTimesConnectionInfo: 'ChromeLoadTimesConnectionInfo',
     ChromeLoadTimesFirstPaintAfterLoadTime: 'ChromeLoadTimesFirstPaintAfterLoadTime',

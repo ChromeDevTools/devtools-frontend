@@ -1020,7 +1020,6 @@ export namespace Audits {
 
   export const enum DeprecationIssueType {
     AuthorizationCoveredByWildcard = 'AuthorizationCoveredByWildcard',
-    BatteryStatusInsecureOrigin = 'BatteryStatusInsecureOrigin',
     CanRequestURLHTTPContainingNewline = 'CanRequestURLHTTPContainingNewline',
     ChromeLoadTimesConnectionInfo = 'ChromeLoadTimesConnectionInfo',
     ChromeLoadTimesFirstPaintAfterLoadTime = 'ChromeLoadTimesFirstPaintAfterLoadTime',

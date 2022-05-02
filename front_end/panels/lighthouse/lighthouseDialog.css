@@ -117,3 +117,8 @@
   display: block;
   margin-top: 5px;
 }
+
+.lighthouse-action-buttons {
+  align-self: end;
+  column-gap: 8px;
+}

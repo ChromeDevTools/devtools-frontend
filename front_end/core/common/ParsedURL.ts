@@ -153,10 +153,10 @@ export class ParsedURL {
     return null;
   }
 
-  private static preEncodeSpecialCharactersInPath(path: string): string {
+  static preEncodeSpecialCharactersInPath(path: string): string {
     // Based on net::FilePathToFileURL. Ideally we would handle
     // '\\' as well on non-Windows file systems.
-    for (const specialChar of ['%', ';', '#', '?']) {
+    for (const specialChar of ['%', ';', '#', '?', ' ']) {
       (path as string) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
     }
     return path;
@@ -185,7 +185,7 @@ export class ParsedURL {
    */
   static urlFromParentUrlAndName(parentUrl: Platform.DevToolsPath.UrlString, name: string):
       Platform.DevToolsPath.UrlString {
-    return ParsedURL.concatenate(parentUrl, '/', encodeURIComponent(name));
+    return ParsedURL.concatenate(parentUrl, '/', ParsedURL.preEncodeSpecialCharactersInPath(name));
   }
 
   static encodedPathToRawPathString(encPath: Platform.DevToolsPath.EncodedPathString):

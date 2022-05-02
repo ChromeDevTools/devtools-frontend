@@ -183,7 +183,7 @@ export abstract class ProjectStore implements Project {
     const oldPath = uiSourceCode.url();
     const newPath = uiSourceCode.parentURL() ?
         Common.ParsedURL.ParsedURL.urlFromParentUrlAndName(uiSourceCode.parentURL(), newName) :
-        encodeURIComponent(newName) as Platform.DevToolsPath.UrlString;
+        Common.ParsedURL.ParsedURL.preEncodeSpecialCharactersInPath(newName) as Platform.DevToolsPath.UrlString;
     const value = this.uiSourceCodesMap.get(oldPath) as {
       uiSourceCode: UISourceCode,
       index: number,

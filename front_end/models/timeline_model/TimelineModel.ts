@@ -1211,7 +1211,7 @@ export class TimelineModelImpl {
 
   private processBrowserEvent(event: SDK.TracingModel.Event): void {
     if (event.name === RecordType.LatencyInfoFlow) {
-      if (event.args.chrome_latency_info.trace_id) {
+      if (event.args.chrome_latency_info?.trace_id) {
         this.knownInputEvents.add(event.args.chrome_latency_info.trace_id);
       }
       return;

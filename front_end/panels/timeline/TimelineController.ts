@@ -90,7 +90,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     // 'disabled-by-default-v8.cpu_profiler'
     //   └ default: on, option: enableJSSampling
     const categoriesArray = [
-      '-*',
+      Root.Runtime.experiments.isEnabled('timelineShowAllEvents') ? '*' : '-*',
       TimelineModel.TimelineModel.TimelineModelImpl.Category.Console,
       TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming,
       'devtools.timeline',

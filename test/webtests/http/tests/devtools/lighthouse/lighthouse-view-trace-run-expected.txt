@@ -3,10 +3,10 @@ Tests that audits panel renders View Trace button.
 
 ========== Lighthouse Start Audit State ==========
 [x] Performance
-[ ] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[ ] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage

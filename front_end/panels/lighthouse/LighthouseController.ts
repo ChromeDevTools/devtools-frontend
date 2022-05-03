@@ -403,12 +403,12 @@ export const Presets: Preset[] = [
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.cat_pwa', true, Common.Settings.SettingStorageType.Synced),
-    configID: 'pwa',
-    title: i18nLazyString(UIStrings.progressiveWebApp),
-    description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
+        'lighthouse.cat_a11y', true, Common.Settings.SettingStorageType.Synced),
+    configID: 'accessibility',
+    title: i18nLazyString(UIStrings.accessibility),
+    description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
     plugin: false,
-    supportedModes: ['navigation'],
+    supportedModes: ['navigation', 'snapshot'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -421,21 +421,21 @@ export const Presets: Preset[] = [
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.cat_a11y', true, Common.Settings.SettingStorageType.Synced),
-    configID: 'accessibility',
-    title: i18nLazyString(UIStrings.accessibility),
-    description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
-    plugin: false,
-    supportedModes: ['navigation', 'snapshot'],
-  },
-  {
-    setting: Common.Settings.Settings.instance().createSetting(
         'lighthouse.cat_seo', true, Common.Settings.SettingStorageType.Synced),
     configID: 'seo',
     title: i18nLazyString(UIStrings.seo),
     description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
     plugin: false,
     supportedModes: ['navigation', 'snapshot'],
+  },
+  {
+    setting: Common.Settings.Settings.instance().createSetting(
+        'lighthouse.cat_pwa', true, Common.Settings.SettingStorageType.Synced),
+    configID: 'pwa',
+    title: i18nLazyString(UIStrings.progressiveWebApp),
+    description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
+    plugin: false,
+    supportedModes: ['navigation'],
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(

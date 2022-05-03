@@ -3,10 +3,10 @@ Tests that mobile emulation works.
 
 ========== Lighthouse Start Audit State ==========
 [x] Performance
-[x] Progressive Web App
-[x] Best practices
 [x] Accessibility
+[x] Best practices
 [x] SEO
+[x] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage

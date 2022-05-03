@@ -3,10 +3,10 @@ Tests that audits panel works when only the pwa category is selected.
 
 ========== Lighthouse Start Audit State ==========
 [ ] Performance
-[x] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[x] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage

@@ -6,10 +6,10 @@ Tests that audits panel prevents run of unauditable pages.
 
 ========== Lighthouse Start Audit State ==========
 [ ] Performance
-[ ] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[ ] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
@@ -22,10 +22,10 @@ Generate report: disabled visible
 
 ========== Lighthouse Start Audit State ==========
 [x] Performance
-[ ] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[ ] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
@@ -37,10 +37,10 @@ Generate report: enabled visible
 
 ========== Lighthouse Start Audit State ==========
 [x] Performance
-[ ] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[ ] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
@@ -53,10 +53,10 @@ URL: about:blank
 
 ========== Lighthouse Start Audit State ==========
 [x] Performance
-[ ] Progressive Web App
-[ ] Best practices
 [ ] Accessibility
+[ ] Best practices
 [ ] SEO
+[ ] Progressive Web App
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage

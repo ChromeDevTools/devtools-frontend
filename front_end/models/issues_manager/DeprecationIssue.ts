@@ -102,7 +102,7 @@ const
           documentDomainSettingWithoutOriginAgentClusterHeader:
               'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details.',
           /**
-   *@description TODO(crbug.com/1320338): Description needed for translation
+   *@description Warning displayed to developers when the non-standard `Event.path` API is used to notify them that this API is deprecated.
    */
           eventPath: '`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead.',
           /**

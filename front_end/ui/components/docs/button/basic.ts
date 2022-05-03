@@ -33,6 +33,16 @@ primaryButton.title = 'Custom title';
 primaryButton.onclick = () => alert('clicked');
 appendButton(primaryButton);
 
+const primaryButtonWithoutRightBorderRadius = new Buttons.Button.Button();
+primaryButtonWithoutRightBorderRadius.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+};
+primaryButtonWithoutRightBorderRadius.style.setProperty('--override-button-no-right-border-radius', '1');
+primaryButtonWithoutRightBorderRadius.innerText = 'No right border radius';
+primaryButtonWithoutRightBorderRadius.title = 'Custom title';
+primaryButtonWithoutRightBorderRadius.onclick = () => alert('clicked');
+appendButton(primaryButtonWithoutRightBorderRadius);
+
 // Primary (forced active)
 const forcedActive = new Buttons.Button.Button();
 forcedActive.data = {

@@ -7482,7 +7482,7 @@
     "message": "Unknown"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting (TTFB)"
+    "message": "Waiting for server response"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"

@@ -102,7 +102,7 @@ const UIStrings = {
   /**
   *@description Text in Request Timing View of the Network panel
   */
-  waitingTtfb: 'Waiting (TTFB)',
+  waitingTtfb: 'Waiting for server response',
   /**
   *@description Text in Signed Exchange Info View of the Network panel
   */

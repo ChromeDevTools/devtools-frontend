@@ -171,6 +171,11 @@ const UIStrings = {
   */
   resetStorageLocalstorage:
       'Reset storage (`cache`, `service workers`, etc) before auditing. (Good for performance & `PWA` testing)',
+  /**
+  *@description Explanation for user that Ligthhouse can only audit when JavaScript is enabled
+  */
+  javaScriptDisabled:
+      'JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -195,6 +200,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     for (const runtimeSetting of RuntimeSettings) {
       runtimeSetting.setting.addChangeListener(this.recomputePageAuditability.bind(this));
     }
+
+    const javaScriptDisabledSetting = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled');
+    javaScriptDisabledSetting.addChangeListener(this.recomputePageAuditability.bind(this));
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
     SDK.TargetManager.TargetManager.instance().addEventListener(
@@ -271,6 +279,10 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
 
     return null;
+  }
+
+  private javaScriptDisabled(): boolean {
+    return Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
   }
 
   private async hasImportantResourcesNotCleared(): Promise<string> {
@@ -363,6 +375,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     const hasActiveServiceWorker = this.hasActiveServiceWorker();
     const hasAtLeastOneCategory = this.hasAtLeastOneCategory();
     const unauditablePageMessage = this.unauditablePageMessage();
+    const javaScriptDisabled = this.javaScriptDisabled();
 
     let helpText = '';
     if (hasActiveServiceWorker) {
@@ -371,6 +384,8 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       helpText = i18nString(UIStrings.atLeastOneCategoryMustBeSelected);
     } else if (unauditablePageMessage) {
       helpText = unauditablePageMessage;
+    } else if (javaScriptDisabled) {
+      helpText = i18nString(UIStrings.javaScriptDisabled);
     }
 
     this.dispatchEventToListeners(Events.PageAuditabilityChanged, {helpText});

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
   createNewSnippet,
@@ -19,7 +19,8 @@ import {
 } from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
-  it('can stop on breakpoints', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1321713]: can stop on breakpoints', async () => {
     const snippetName = 'Script snippet #7';
     const {frontend} = getBrowserAndPages();
 

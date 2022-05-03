@@ -3,7 +3,17 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer';
-import {$$, $$textContent, click, platform, selectOption, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  $$textContent,
+  click,
+  platform,
+  selectOption,
+  waitFor,
+  waitForElementsWithTextContent,
+  waitForElementWithTextContent,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 const CANCEL_BUTTON_SELECTOR = '[aria-label="Discard changes"]';
 const CONFIRM_BUTTON_SELECTOR = '[aria-label="Confirm changes"]';
@@ -85,7 +95,8 @@ export const shortcutsForAction = async (shortcutText: string) => {
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
   const shortcutElementsTextContent =
       await Promise.all(shortcutElements.map(element => element.getProperty('textContent')));
-  return Promise.all(shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue<string>() : []));
+  return Promise.all(
+      shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue<string>() : []));
 };
 
 export const shortcutInputValues = async () => {

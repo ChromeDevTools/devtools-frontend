@@ -6,7 +6,12 @@ import {assert} from 'chai';
 
 import {click} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getDisplayedEventListenerNames, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
+import {
+  getDisplayedEventListenerNames,
+  getFirstNodeForEventListener,
+  loadEventListenersAndSelectButtonNode,
+  openEventListenersPaneAndWaitForListeners,
+} from '../helpers/event-listeners-helpers.js';
 
 describe('Removing event listeners in the elements sidebar', async () => {
   beforeEach(async () => {

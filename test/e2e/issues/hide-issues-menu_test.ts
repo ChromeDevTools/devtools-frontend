@@ -4,9 +4,28 @@
 
 import {assert} from 'chai';
 
-import {$$, assertNotNullOrUndefined, enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
+import {
+  $$,
+  assertNotNullOrUndefined,
+  enableExperiment,
+  getBrowserAndPages,
+  goToResource,
+  waitFor,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getGroupByKindChecked, getHiddenIssuesRow, getHiddenIssuesRowBody, getHideIssuesMenu, getHideIssuesMenuItem, getIssueHeaderByTitle, getUnhideAllIssuesBtn, getUnhideIssuesMenuItem, ISSUE, navigateToIssuesTab, toggleGroupByKind} from '../helpers/issues-helpers.js';
+import {
+  getGroupByKindChecked,
+  getHiddenIssuesRow,
+  getHiddenIssuesRowBody,
+  getHideIssuesMenu,
+  getHideIssuesMenuItem,
+  getIssueHeaderByTitle,
+  getUnhideAllIssuesBtn,
+  getUnhideIssuesMenuItem,
+  ISSUE,
+  navigateToIssuesTab,
+  toggleGroupByKind,
+} from '../helpers/issues-helpers.js';
 
 describe('Hide issues menu', async () => {
   it('should be appended to the issue header', async () => {

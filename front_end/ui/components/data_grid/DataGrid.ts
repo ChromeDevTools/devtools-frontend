@@ -16,7 +16,15 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import type {CellPosition, Column, Row, SortState} from './DataGridUtils.js';
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, getCellTitleFromCellContent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, SortDirection} from './DataGridUtils.js';
+import {
+  calculateColumnWidthPercentageFromWeighting,
+  calculateFirstFocusableCell,
+  getCellTitleFromCellContent,
+  getRowEntryForColumnId,
+  handleArrowKeyNavigation,
+  renderCellValue,
+  SortDirection,
+} from './DataGridUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {

@@ -7,8 +7,7 @@ import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('CSSProperty', () => {
   describe('formatStyle', () => {
-    const formatStyle = (styleText: string) =>
-        SDK.CSSProperty.CSSProperty.formatStyle(styleText, ' ', '');
+    const formatStyle = (styleText: string) => SDK.CSSProperty.CSSProperty.formatStyle(styleText, ' ', '');
     it('formats a style declaration with a single trailing semicolon correctly', async () => {
       assert.strictEqual(await formatStyle('color: red;'), '\n color: red;\n');
     });
@@ -19,11 +18,12 @@ describeWithEnvironment('CSSProperty', () => {
       assert.strictEqual(await formatStyle('color: red;;;color: blue'), '\n color: red;\n color: blue\n');
     });
     it('formats multiple style declarations correctly', async () => {
-      assert.strictEqual(await formatStyle('color: var(-);margin: 0;padding:0'), '\n color: var(-);margin: 0;padding:0\n');
+      assert.strictEqual(
+          await formatStyle('color: var(-);margin: 0;padding:0'), '\n color: var(-);margin: 0;padding:0\n');
     });
     it('formats style declarations with comments correctly', async () => {
       assert.strictEqual(
-        await formatStyle('color: red;/* a comment */;color: blue'), '\n color: red;/* a comment */\n color: blue\n');
+          await formatStyle('color: red;/* a comment */;color: blue'), '\n color: red;/* a comment */\n color: blue\n');
     });
     it('formats an empty decalaration correctly', async () => {
       assert.strictEqual(await formatStyle(':; color: red; color: blue'), ':;\n color: red;\n color: blue\n');

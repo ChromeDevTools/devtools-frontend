@@ -4,7 +4,11 @@
 
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
-import {navigateToSiteWithAudioContexts, waitForTheWebAudioPanelToLoad, waitForWebAudioContent} from '../helpers/webaudio-helpers.js';
+import {
+  navigateToSiteWithAudioContexts,
+  waitForTheWebAudioPanelToLoad,
+  waitForWebAudioContent,
+} from '../helpers/webaudio-helpers.js';
 
 describe('The WebAudio Panel', async () => {
   afterEach(async () => {

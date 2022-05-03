@@ -7,7 +7,14 @@ import {expect} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import {getBrowserAndPages, waitFor, waitForAria, waitForAriaNone, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {
+  getBrowserAndPages,
+  waitFor,
+  waitForAria,
+  waitForAriaNone,
+  waitForElementWithTextContent,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 async function navigateToNetworkRequestBlockingTab() {
   await openPanelViaMoreTools('Network request blocking');

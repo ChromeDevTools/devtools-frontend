@@ -4,8 +4,22 @@
 
 const {assert} = chai;
 
-import {drawGridAreaNamesAndAssertLabels, drawGridLineNumbersAndAssertLabels, drawMultipleGridLineNumbersAndAssertLabels, getGridLineNumberLabelContainer, getGridTrackSizesLabelContainer, initFrameForGridLabels, initFrameForMultipleGridLabels, drawGridLineNamesAndAssertLabels} from '../front_end/helpers/InspectorOverlayHelpers.js';
-import {drawGridLineNumbers, drawGridTrackSizes, generateLegibleTextColor, normalizePositionData} from '../../../inspector_overlay/css_grid_label_helpers.js';
+import {
+  drawGridAreaNamesAndAssertLabels,
+  drawGridLineNumbersAndAssertLabels,
+  drawMultipleGridLineNumbersAndAssertLabels,
+  getGridLineNumberLabelContainer,
+  getGridTrackSizesLabelContainer,
+  initFrameForGridLabels,
+  initFrameForMultipleGridLabels,
+  drawGridLineNamesAndAssertLabels,
+} from '../front_end/helpers/InspectorOverlayHelpers.js';
+import {
+  drawGridLineNumbers,
+  drawGridTrackSizes,
+  generateLegibleTextColor,
+  normalizePositionData,
+} from '../../../inspector_overlay/css_grid_label_helpers.js';
 
 describe('drawGridLineNumbers label creation', () => {
   beforeEach(initFrameForGridLabels);

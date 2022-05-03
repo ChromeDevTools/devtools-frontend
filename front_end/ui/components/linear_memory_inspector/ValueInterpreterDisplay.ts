@@ -9,7 +9,18 @@ import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import valueInterpreterDisplayStyles from './valueInterpreterDisplay.css.js';
-import {Endianness, format, getDefaultValueTypeMapping, getPointerAddress, isNumber, isPointer, isValidMode, VALUE_TYPE_MODE_LIST, ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {
+  Endianness,
+  format,
+  getDefaultValueTypeMapping,
+  getPointerAddress,
+  isNumber,
+  isPointer,
+  isValidMode,
+  VALUE_TYPE_MODE_LIST,
+  ValueType,
+  ValueTypeMode,
+} from './ValueInterpreterDisplayUtils.js';
 
 const UIStrings = {
   /**

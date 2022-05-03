@@ -45,7 +45,13 @@ import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import sourcesPanelStyles from './sourcesPanel.css.js';
 
 import type {NavigatorView} from './NavigatorView.js';
-import {ContentScriptsNavigatorView, FilesNavigatorView, NetworkNavigatorView, OverridesNavigatorView, SnippetsNavigatorView} from './SourcesNavigator.js';
+import {
+  ContentScriptsNavigatorView,
+  FilesNavigatorView,
+  NetworkNavigatorView,
+  OverridesNavigatorView,
+  SnippetsNavigatorView,
+} from './SourcesNavigator.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';

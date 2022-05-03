@@ -4,7 +4,12 @@
 
 import {assert} from 'chai';
 
-import {assertSubMenuItemsText, assertTopLevelContextMenuItemsText, findSubMenuEntryItem, platformSpecificTextForSubMenuEntryItem} from '../../e2e/helpers/context-menu-helpers.js';
+import {
+  assertSubMenuItemsText,
+  assertTopLevelContextMenuItemsText,
+  findSubMenuEntryItem,
+  platformSpecificTextForSubMenuEntryItem,
+} from '../../e2e/helpers/context-menu-helpers.js';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, $textContent, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';

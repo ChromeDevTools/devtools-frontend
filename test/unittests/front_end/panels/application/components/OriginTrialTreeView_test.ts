@@ -6,7 +6,13 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
-import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  getElementWithinComponent,
+  renderElementIntoDOM,
+  stripLitHtmlCommentNodes,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

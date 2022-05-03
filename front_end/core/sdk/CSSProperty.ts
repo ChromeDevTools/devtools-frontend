@@ -163,8 +163,8 @@ export class CSSProperty {
 
     const range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
     const indentation = this.ownerStyle.cssText ?
-    this.detectIndentation(this.ownerStyle.cssText) :
-    Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+        this.detectIndentation(this.ownerStyle.cssText) :
+        Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
     const endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
     const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));
@@ -172,8 +172,7 @@ export class CSSProperty {
     return this.ownerStyle.setText(styleText, majorChange);
   }
 
-  static async formatStyle(
-    styleText: string, indentation: string, endIndentation: string): Promise<string> {
+  static async formatStyle(styleText: string, indentation: string, endIndentation: string): Promise<string> {
     const doubleIndent = indentation.substring(endIndentation.length) + indentation;
     if (indentation) {
       indentation = '\n' + indentation;
@@ -197,7 +196,7 @@ export class CSSProperty {
         const disabledProperty = tokenType?.includes('comment') && isDisabledProperty(token);
         const isPropertyStart =
             (tokenType?.includes('string') || tokenType?.includes('meta') || tokenType?.includes('property') ||
-            tokenType?.includes('variableName'));
+             tokenType?.includes('variableName'));
         if (disabledProperty) {
           result = result.trimEnd() + indentation + token;
         } else if (isPropertyStart) {
@@ -222,8 +221,8 @@ export class CSSProperty {
         // implementation takes special care to restore a single
         // whitespace token in this edge case. https://crbug.com/1071296
         const trimmedPropertyText = propertyText.trim();
-        result =
-            result.trimEnd() + indentation + trimmedPropertyText + (trimmedPropertyText.endsWith(':') ? ' ' : '') + token;
+        result = result.trimEnd() + indentation + trimmedPropertyText + (trimmedPropertyText.endsWith(':') ? ' ' : '') +
+            token;
         needsSemi = false;
         insideProperty = false;
         propertyName = '';

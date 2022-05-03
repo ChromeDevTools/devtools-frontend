@@ -4,7 +4,13 @@
 
 import {click, getBrowserAndPages, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandSelectedNodeRecursively, getContentOfSelectedNode, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSelectedNodeChange} from '../helpers/elements-helpers.js';
+import {
+  expandSelectedNodeRecursively,
+  getContentOfSelectedNode,
+  waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+  waitForSelectedNodeChange,
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', async () => {
   it('can delete elements in the tree', async () => {

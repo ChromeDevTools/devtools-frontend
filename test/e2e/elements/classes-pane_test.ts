@@ -6,7 +6,12 @@ import {beforeEach} from 'mocha';
 
 import {goToResource, timeout} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertSelectedNodeClasses, toggleClassesPane, toggleClassesPaneCheckbox, typeInClassesPaneInput} from '../helpers/elements-helpers.js';
+import {
+  assertSelectedNodeClasses,
+  toggleClassesPane,
+  toggleClassesPaneCheckbox,
+  typeInClassesPaneInput,
+} from '../helpers/elements-helpers.js';
 
 describe('The Classes pane', async () => {
   beforeEach(async function() {

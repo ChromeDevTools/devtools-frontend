@@ -6,10 +6,32 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchFocusOutEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchClickEvent,
+  dispatchFocusOutEvent,
+  dispatchKeyDownEvent,
+  getEventPromise,
+  renderElementIntoDOM,
+  stripLitHtmlCommentNodes,
+} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
-import {assertCurrentFocusedCellIs, assertSelectedRowIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusCurrentlyFocusableCell, getAllRows, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
+import {
+  assertCurrentFocusedCellIs,
+  assertSelectedRowIs,
+  emulateUserFocusingCellAt,
+  emulateUserKeyboardNavigation,
+  focusCurrentlyFocusableCell,
+  getAllRows,
+  getCellByIndexes,
+  getFocusableCell,
+  getHeaderCellForColumnId,
+  getHeaderCells,
+  getValuesOfAllBodyRows,
+  getValuesOfBodyRowByAriaIndex,
+} from './DataGridHelpers.js';
 
 const {assert} = chai;
 

@@ -8,7 +8,13 @@ import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-import {assertElement, assertShadowRoot, dispatchClickEvent, getEventPromise, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchClickEvent,
+  getEventPromise,
+  renderElementIntoDOM,
+} from '../../helpers/DOMHelpers.js';
 const {assert} = chai;
 
 describeWithLocale('Linkifier', () => {

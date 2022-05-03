@@ -5,7 +5,12 @@
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import * as SourcesComponents from '../../../../../../front_end/panels/sources/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertShadowRoot, dispatchKeyDownEvent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchKeyDownEvent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
 import {createUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
 

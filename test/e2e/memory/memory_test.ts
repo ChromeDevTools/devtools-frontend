@@ -4,9 +4,35 @@
 
 import {assert} from 'chai';
 import type {puppeteer} from '../../shared/helper.js';
-import {$$, assertNotNullOrUndefined, click, getBrowserAndPages, goToResource, step, waitFor, waitForElementsWithTextContent, waitForElementWithTextContent, waitForFunction, waitForNoElementsWithTextContent} from '../../shared/helper.js';
+import {
+  $$,
+  assertNotNullOrUndefined,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  step,
+  waitFor,
+  waitForElementsWithTextContent,
+  waitForElementWithTextContent,
+  waitForFunction,
+  waitForNoElementsWithTextContent,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {changeAllocationSampleViewViaDropdown, changeViewViaDropdown, findSearchResult, getDataGridRows, navigateToMemoryTab, setSearchFilter, takeAllocationProfile, takeAllocationTimelineProfile, takeHeapSnapshot, waitForNonEmptyHeapSnapshotData, waitForRetainerChain, waitForSearchResultNumber, waitUntilRetainerChainSatisfies} from '../helpers/memory-helpers.js';
+import {
+  changeAllocationSampleViewViaDropdown,
+  changeViewViaDropdown,
+  findSearchResult,
+  getDataGridRows,
+  navigateToMemoryTab,
+  setSearchFilter,
+  takeAllocationProfile,
+  takeAllocationTimelineProfile,
+  takeHeapSnapshot,
+  waitForNonEmptyHeapSnapshotData,
+  waitForRetainerChain,
+  waitForSearchResultNumber,
+  waitUntilRetainerChainSatisfies,
+} from '../helpers/memory-helpers.js';
 
 describe('The Memory Panel', async function() {
   // These tests render large chunks of data into DevTools and filter/search

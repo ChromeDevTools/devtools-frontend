@@ -5,9 +5,30 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$$, assertNotNullOrUndefined, click, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  assertNotNullOrUndefined,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  timeout,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {editQueryRuleText, getComputedStylesForDomNode, getDisplayedCSSPropertyNames, getDisplayedStyleRules, getStyleRule, getStyleSectionSubtitles, waitForPartialContentOfSelectedElementsNode, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForPropertyToHighlight, waitForStyleRule} from '../helpers/elements-helpers.js';
+import {
+  editQueryRuleText,
+  getComputedStylesForDomNode,
+  getDisplayedCSSPropertyNames,
+  getDisplayedStyleRules,
+  getStyleRule,
+  getStyleSectionSubtitles,
+  waitForPartialContentOfSelectedElementsNode,
+  waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+  waitForPropertyToHighlight,
+  waitForStyleRule,
+} from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';

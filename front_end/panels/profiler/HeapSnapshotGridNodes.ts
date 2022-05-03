@@ -38,7 +38,9 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
-import type {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
+import type {
+  AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotSortableDataGrid} from
+  './HeapSnapshotDataGrids.js';
 import {HeapSnapshotSortableDataGridEvents} from './HeapSnapshotDataGrids.js';
 import type {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';

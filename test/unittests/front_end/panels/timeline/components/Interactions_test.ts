@@ -6,7 +6,11 @@ import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../../../helpers/MockConnection.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+  setMockConnectionResponseHandler,
+} from '../../../helpers/MockConnection.js';
 
 const {assert} = chai;
 let tracingModel: SDK.TracingModel.TracingModel;

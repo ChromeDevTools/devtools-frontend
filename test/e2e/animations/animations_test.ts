@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 
 import {describe, it} from '../../shared/mocha-extensions.js';
-
-import {navigateToSiteWithAnimation, waitForAnimationContent, waitForAnimationsPanelToLoad} from '../helpers/animations-helpers.js';
+import {
+  navigateToSiteWithAnimation,
+  waitForAnimationContent,
+  waitForAnimationsPanelToLoad,
+} from '../helpers/animations-helpers.js';
 
 describe('The Animations Panel', async () => {
   // Inconsistent behavior on Animations panel causes tets to be flaky

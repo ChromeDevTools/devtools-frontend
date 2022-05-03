@@ -4,9 +4,23 @@
 
 import {assert} from 'chai';
 
-import {$$, click, getBrowserAndPages, getTestServerPort, goToResource, pressKey, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  getBrowserAndPages,
+  getTestServerPort,
+  goToResource,
+  pressKey,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getFrameTreeTitles, getTrimmedTextContent, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {
+  doubleClickSourceTreeItem,
+  getFrameTreeTitles,
+  getTrimmedTextContent,
+  navigateToApplicationTab,
+} from '../helpers/application-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';

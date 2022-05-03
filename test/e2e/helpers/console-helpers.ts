@@ -4,7 +4,19 @@
 
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, assertNotNullOrUndefined, click, getBrowserAndPages, goToResource, pasteText, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  $$,
+  assertNotNullOrUndefined,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  pasteText,
+  timeout,
+  waitFor,
+  waitForAria,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {AsyncScope} from '../../shared/async-scope.js';
 
 export const CONSOLE_TAB_SELECTOR = '#tab-console';

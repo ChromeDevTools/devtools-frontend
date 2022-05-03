@@ -3,9 +3,21 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+
 import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, isBreakpointSet, openFileInEditor, openSourceCodeEditorForFile, reloadPageAndWaitForSourceFile, removeBreakpointForLine, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, TURNED_OFF_PAUSE_BUTTON_SELECTOR} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  checkBreakpointDidNotActivate,
+  isBreakpointSet,
+  openFileInEditor,
+  openSourceCodeEditorForFile,
+  reloadPageAndWaitForSourceFile,
+  removeBreakpointForLine,
+  retrieveTopCallFrameScriptLocation,
+  retrieveTopCallFrameWithoutResuming,
+  TURNED_OFF_PAUSE_BUTTON_SELECTOR,
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('can add breakpoint for a sourcemapped wasm module', async () => {

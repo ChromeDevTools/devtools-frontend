@@ -5,7 +5,19 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, pressKey, step, timeout, typeText, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  $$,
+  click,
+  getBrowserAndPages,
+  pressKey,
+  step,
+  timeout,
+  typeText,
+  waitFor,
+  waitForAria,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';

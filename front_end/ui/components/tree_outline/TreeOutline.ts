@@ -11,7 +11,13 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import treeOutlineStyles from './treeOutline.css.js';
 
 import type {TreeNodeId, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
-import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode} from './TreeOutlineUtils.js';
+import {
+  findNextNodeForTreeOutlineKeyboardNavigation,
+  getNodeChildren,
+  getPathToTreeNode,
+  isExpandableNode,
+  trackDOMNodeToTreeNode,
+} from './TreeOutlineUtils.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -95,16 +101,15 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    */
   #nodeIdPendingFocus: TreeNodeId|null = null;
   #selectedTreeNode: TreeNode<TreeNodeDataType>|null = null;
-  #defaultRenderer =
-      (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
-        if (typeof node.treeNodeData !== 'string') {
-          console.warn(`The default TreeOutline renderer simply stringifies its given value. You passed in ${
-              JSON.stringify(
-                  node.treeNodeData, null,
-                  2)}. Consider providing a different defaultRenderer that can handle nodes of this type.`);
-        }
-        return LitHtml.html`${String(node.treeNodeData)}`;
-      };
+  #defaultRenderer = (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
+    if (typeof node.treeNodeData !== 'string') {
+      console.warn(`The default TreeOutline renderer simply stringifies its given value. You passed in ${
+          JSON.stringify(
+              node.treeNodeData, null,
+              2)}. Consider providing a different defaultRenderer that can handle nodes of this type.`);
+    }
+    return LitHtml.html`${String(node.treeNodeData)}`;
+  };
   #nodeFilter?: ((node: TreeNodeDataType) => FilterOption);
 
   /**

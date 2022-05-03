@@ -6,10 +6,25 @@ import {assert} from 'chai';
 
 import type {ElementHandle} from 'puppeteer';
 import {expectError} from '../../conductor/events.js';
-import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, getBrowserAndPages, getResourcesPath} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  step,
+  typeText,
+  waitFor,
+  waitForElementWithTextContent,
+  waitForFunction,
+  getBrowserAndPages,
+  getResourcesPath,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
-import {getAllRequestNames, navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {
+  getAllRequestNames,
+  navigateToNetworkTab,
+  selectRequestByName,
+  waitForSomeRequestsToAppear,
+} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 2;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;

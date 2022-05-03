@@ -2,10 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
-import {clickToggleButton, getWidthOfDevice, selectDualScreen, selectNonDualScreenDevice, startEmulationWithDualScreenFlag} from '../helpers/emulation-helpers.js';
-import {selectToggleButton} from '../helpers/emulation-helpers.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
+import {
+  clickToggleButton,
+  getWidthOfDevice,
+  selectDualScreen,
+  selectNonDualScreenDevice,
+  selectToggleButton,
+  startEmulationWithDualScreenFlag,
+} from '../helpers/emulation-helpers.js';
 
 const DUO_VERTICAL_SPANNED_WIDTH = '1114';
 const DUO_VERTICAL_WIDTH = '540';

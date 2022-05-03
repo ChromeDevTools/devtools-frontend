@@ -6,7 +6,15 @@ import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getHiddenIssuesRow, getHiddenIssuesRowBody, getHideIssuesMenu, getHideIssuesMenuItem, getIssueHeaderByTitle, ISSUE, navigateToIssuesTab} from '../helpers/issues-helpers.js';
+import {
+  getHiddenIssuesRow,
+  getHiddenIssuesRowBody,
+  getHideIssuesMenu,
+  getHideIssuesMenuItem,
+  getIssueHeaderByTitle,
+  ISSUE,
+  navigateToIssuesTab,
+} from '../helpers/issues-helpers.js';
 
 describe('Hide issues row', async () => {
   it('should be visible after hiding an issue', async () => {

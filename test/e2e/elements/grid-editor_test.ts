@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickNthChildOfSelectedElementNode, focusElementsTree, getCSSPropertyInRule, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {
+  clickNthChildOfSelectedElementNode,
+  focusElementsTree,
+  getCSSPropertyInRule,
+  waitForContentOfSelectedElementsNode,
+  waitForCSSPropertyValue,
+} from '../helpers/elements-helpers.js';
 import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
 
 describe('Grid Editor', async function() {

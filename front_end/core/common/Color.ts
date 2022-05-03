@@ -33,7 +33,15 @@
 
 import * as Platform from '../platform/platform.js';
 
-import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla, rgbaToHwba} from './ColorUtils.js';
+import {
+  blendColors,
+  contrastRatioAPCA,
+  desiredLuminanceAPCA,
+  luminance,
+  luminanceAPCA,
+  rgbaToHsla,
+  rgbaToHwba,
+} from './ColorUtils.js';
 
 export class Color {
   #hslaInternal: number[]|undefined;

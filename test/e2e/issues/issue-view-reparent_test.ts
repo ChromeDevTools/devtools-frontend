@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {$$, assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CATEGORY, getGroupByCategoryChecked, ISSUE, navigateToIssuesTab, toggleGroupByCategory} from '../helpers/issues-helpers.js';
+import {
+  CATEGORY,
+  getGroupByCategoryChecked,
+  ISSUE,
+  navigateToIssuesTab,
+  toggleGroupByCategory,
+} from '../helpers/issues-helpers.js';
 
 describe('IssueView', async () => {
   it('should be parented in issueTree when not groupedByCategory', async () => {

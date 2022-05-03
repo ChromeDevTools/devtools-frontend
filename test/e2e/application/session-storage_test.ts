@@ -5,7 +5,11 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
-import {doubleClickSourceTreeItem, getStorageItemsData, navigateToApplicationTab} from '../helpers/application-helpers.js';
+import {
+  doubleClickSourceTreeItem,
+  getStorageItemsData,
+  navigateToApplicationTab,
+} from '../helpers/application-helpers.js';
 
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"].parent';
 let DOMAIN_SELECTOR: string;

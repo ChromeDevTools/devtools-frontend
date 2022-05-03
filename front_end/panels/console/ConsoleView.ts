@@ -56,7 +56,15 @@ import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
-import {ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTableMessageView, ConsoleViewMessage, getMessageForElement, MaxLengthForLinks} from './ConsoleViewMessage.js';
+import {
+  ConsoleCommand,
+  ConsoleCommandResult,
+  ConsoleGroupViewMessage,
+  ConsoleTableMessageView,
+  ConsoleViewMessage,
+  getMessageForElement,
+  MaxLengthForLinks,
+} from './ConsoleViewMessage.js';
 
 import type {ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';
 import {ConsoleViewport} from './ConsoleViewport.js';

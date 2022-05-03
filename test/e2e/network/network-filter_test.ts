@@ -5,7 +5,16 @@
 import {expect} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 
-import {click, reloadDevTools, typeText, waitFor, waitForAria, waitForMany, waitForNone, getTestServerPort} from '../../shared/helper.js';
+import {
+  click,
+  reloadDevTools,
+  typeText,
+  waitFor,
+  waitForAria,
+  waitForMany,
+  waitForNone,
+  getTestServerPort,
+} from '../../shared/helper.js';
 
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab, setPersistLog} from '../helpers/network-helpers.js';

@@ -57,7 +57,11 @@ import {Events, NetworkGroupNode, NetworkRequestNode} from './NetworkDataGridNod
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import {NetworkTimeBoundary, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
+import {
+  NetworkTimeBoundary,
+  NetworkTransferDurationCalculator,
+  NetworkTransferTimeCalculator,
+} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**

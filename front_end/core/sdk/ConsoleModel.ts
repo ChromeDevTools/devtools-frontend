@@ -44,7 +44,8 @@ import {Events as DebuggerModelEvents} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext, QueryObjectRequestedEvent} from './RuntimeModel.js';
+import type {
+  ConsoleAPICall, ExceptionWithTimestamp, ExecutionContext, QueryObjectRequestedEvent} from './RuntimeModel.js';
 import {Events as RuntimeModelEvents, RuntimeModel} from './RuntimeModel.js';
 import type {Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';

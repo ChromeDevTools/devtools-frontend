@@ -5,7 +5,19 @@
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import type {NodeCreationData, NodeLayout, Port} from './GraphStyle.js';
-import {BottomPaddingWithoutParam, BottomPaddingWithParam, LeftMarginOfText, LeftSideTopPadding, NodeLabelFontStyle, ParamLabelFontStyle, PortTypes, RightMarginOfText, TotalInputPortHeight, TotalOutputPortHeight, TotalParamPortHeight} from './GraphStyle.js';
+import {
+  BottomPaddingWithoutParam,
+  BottomPaddingWithParam,
+  LeftMarginOfText,
+  LeftSideTopPadding,
+  NodeLabelFontStyle,
+  ParamLabelFontStyle,
+  PortTypes,
+  RightMarginOfText,
+  TotalInputPortHeight,
+  TotalOutputPortHeight,
+  TotalParamPortHeight,
+} from './GraphStyle.js';
 import {calculateInputPortXY, calculateOutputPortXY, calculateParamPortXY} from './NodeRendererUtility.js';
 
 // A class that represents a node of a graph, consisting of the information needed to layout the

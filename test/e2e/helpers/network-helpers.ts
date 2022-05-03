@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, getBrowserAndPages, goToResource, setCheckBox, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  setCheckBox,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 import type {puppeteer} from '../../shared/helper.js';
 const REQUEST_LIST_SELECTOR = '.network-log-grid tbody';

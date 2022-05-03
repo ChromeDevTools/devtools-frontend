@@ -5,9 +5,43 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$, click, getBrowserAndPages, goToResource, installEventListener, step, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  installEventListener,
+  step,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, checkBreakpointDidNotActivate, clearSourceFilesAdded, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openSourceCodeEditorForFile, openSourcesPanel, reloadPageAndWaitForSourceFile, removeBreakpointForLine, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, SELECTED_THREAD_SELECTOR, stepThroughTheCode, switchToCallFrame, TURNED_OFF_PAUSE_BUTTON_SELECTOR, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  checkBreakpointDidNotActivate,
+  clearSourceFilesAdded,
+  DEBUGGER_PAUSED_EVENT,
+  getBreakpointDecorators,
+  getCallFrameLocations,
+  getCallFrameNames,
+  getNonBreakableLines,
+  getValuesForScope,
+  isBreakpointSet,
+  listenForSourceFilesAdded,
+  openSourceCodeEditorForFile,
+  openSourcesPanel,
+  reloadPageAndWaitForSourceFile,
+  removeBreakpointForLine,
+  RESUME_BUTTON,
+  retrieveSourceFilesAdded,
+  retrieveTopCallFrameScriptLocation,
+  retrieveTopCallFrameWithoutResuming,
+  SELECTED_THREAD_SELECTOR,
+  stepThroughTheCode,
+  switchToCallFrame,
+  TURNED_OFF_PAUSE_BUTTON_SELECTOR,
+  waitForAdditionalSourceFiles,
+} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions

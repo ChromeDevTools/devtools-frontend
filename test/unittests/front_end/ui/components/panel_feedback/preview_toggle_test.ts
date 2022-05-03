@@ -5,7 +5,12 @@
 import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as PanelFeedback from '../../../../../../front_end/ui/components/panel_feedback/panel_feedback.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchClickEvent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import type * as LinearMemoryInspectorModule from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
+import type * as LinearMemoryInspectorModule from
+    '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import {assertElement} from '../../../helpers/DOMHelpers.js';
 

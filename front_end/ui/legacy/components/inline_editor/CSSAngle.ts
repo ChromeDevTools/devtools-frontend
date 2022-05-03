@@ -7,7 +7,14 @@ import * as LitHtml from '../../../lit-html/lit-html.js';
 import cssAngleStyles from './cssAngle.css.js';
 
 import type {Angle} from './CSSAngleUtils.js';
-import {AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import {
+  AngleUnit,
+  convertAngleUnit,
+  getNewAngleFromEvent,
+  getNextUnit,
+  parseText,
+  roundAngleByUnit,
+} from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';

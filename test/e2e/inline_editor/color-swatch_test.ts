@@ -7,7 +7,20 @@ import type * as puppeteer from 'puppeteer';
 
 import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickNthChildOfSelectedElementNode, editCSSProperty, getColorSwatch, getColorSwatchColor, getCSSPropertyInRule, getPropertyFromComputedPane, navigateToSidePane, shiftClickColorSwatch, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsComputedSection, waitForPropertyValueInComputedPane} from '../helpers/elements-helpers.js';
+import {
+  clickNthChildOfSelectedElementNode,
+  editCSSProperty,
+  getColorSwatch,
+  getColorSwatchColor,
+  getCSSPropertyInRule,
+  getPropertyFromComputedPane,
+  navigateToSidePane,
+  shiftClickColorSwatch,
+  waitForContentOfSelectedElementsNode,
+  waitForCSSPropertyValue,
+  waitForElementsComputedSection,
+  waitForPropertyValueInComputedPane,
+} from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
   await goToResource(path);

@@ -5,9 +5,26 @@
 import {assert, expect} from 'chai';
 import type {BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
-import {click, getBrowserAndPages, pressKey, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {
+  click,
+  getBrowserAndPages,
+  pressKey,
+  step,
+  waitFor,
+  waitForAria,
+  waitForElementWithTextContent,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getAllRequestNames, navigateToNetworkTab, selectRequestByName, setCacheDisabled, setPersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {
+  getAllRequestNames,
+  navigateToNetworkTab,
+  selectRequestByName,
+  setCacheDisabled,
+  setPersistLog,
+  waitForSelectedRequestChange,
+  waitForSomeRequestsToAppear,
+} from '../helpers/network-helpers.js';
 
 async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: string) {
   const statusColumn = await frontend.evaluate(() => {

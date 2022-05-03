@@ -17,7 +17,10 @@ import type {PerformanceModel, WindowChangedEvent} from './PerformanceModel.js';
 import {Events as PerformanceModelEvents} from './PerformanceModel.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
-import {Events as TimelineFlameChartDataProviderEvents, TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
+import {
+  Events as TimelineFlameChartDataProviderEvents,
+  TimelineFlameChartDataProvider,
+} from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelinePanel.js';

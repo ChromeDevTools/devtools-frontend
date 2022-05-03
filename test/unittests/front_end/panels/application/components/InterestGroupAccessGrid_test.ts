@@ -6,7 +6,12 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  getElementWithinComponent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 import {getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
 

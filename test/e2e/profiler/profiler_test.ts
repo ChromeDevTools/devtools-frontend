@@ -4,7 +4,13 @@
 
 import {waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {createAProfile, navigateToProfilerTab, START_PROFILING_BUTTON, STOP_PROFILING_BUTTON, toggleRecordingWithKeyboad} from '../helpers/profiler-helpers.js';
+import {
+  createAProfile,
+  navigateToProfilerTab,
+  START_PROFILING_BUTTON,
+  STOP_PROFILING_BUTTON,
+  toggleRecordingWithKeyboad,
+} from '../helpers/profiler-helpers.js';
 
 describe('The JavaScript Profiler Panel', async () => {
   it('Loads content', async () => {

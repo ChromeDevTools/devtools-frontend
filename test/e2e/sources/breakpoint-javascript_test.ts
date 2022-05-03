@@ -4,9 +4,28 @@
 
 import {assert} from 'chai';
 
-import {$, click, enableExperiment, getBrowserAndPages, getPendingEvents, goToResource, step, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  getPendingEvents,
+  goToResource,
+  step,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, DEBUGGER_PAUSED_EVENT, isEqualOrAbbreviation, openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, refreshDevToolsAndRemoveBackendState, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  DEBUGGER_PAUSED_EVENT,
+  isEqualOrAbbreviation,
+  openSourceCodeEditorForFile,
+  PAUSE_INDICATOR_SELECTOR,
+  refreshDevToolsAndRemoveBackendState,
+  RESUME_BUTTON,
+  retrieveTopCallFrameWithoutResuming,
+} from '../helpers/sources-helpers.js';
 
 async function waitForTopCallFrameChanged(previousCallFrame: string, updatedCallFrame: string) {
   await waitForFunction(async () => {

@@ -4,7 +4,15 @@
 
 import {assert} from 'chai';
 
-import {clearPermissionsOverride, getBrowserAndPages, goToResource, overridePermissions, selectOption, step, waitFor} from '../../shared/helper.js';
+import {
+  clearPermissionsOverride,
+  getBrowserAndPages,
+  goToResource,
+  overridePermissions,
+  selectOption,
+  step,
+  waitFor,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 

@@ -6,7 +6,10 @@ import {assert} from 'chai';
 
 import {$$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {waitForChildrenOfSelectedElementNode, waitForContentOfSelectedElementsNode} from '../helpers/elements-helpers.js';
+import {
+  waitForChildrenOfSelectedElementNode,
+  waitForContentOfSelectedElementsNode,
+} from '../helpers/elements-helpers.js';
 
 describe('The Elements Tab', async () => {
   it('can show styles in shadow roots', async () => {

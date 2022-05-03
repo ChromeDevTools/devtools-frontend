@@ -3,7 +3,12 @@
 // found in the LICENSE file.
 import * as EmulationComponents from '../../../../../../../front_end/panels/settings/emulation/components/components.js';
 import * as Buttons from '../../../../../../../front_end/ui/components/buttons/buttons.js';
-import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
+import {
+  getElementsWithinComponent,
+  getElementWithinComponent,
+  getEventPromise,
+  renderElementIntoDOM,
+} from '../../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

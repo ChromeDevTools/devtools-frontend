@@ -6,7 +6,11 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {deinitializeGlobalVars, describeWithEnvironment, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {
+  deinitializeGlobalVars,
+  describeWithEnvironment,
+  initializeGlobalVars,
+} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 let actionExecuted = false;

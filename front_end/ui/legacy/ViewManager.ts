@@ -15,7 +15,18 @@ import type {ToolbarItem} from './Toolbar.js';
 import {Toolbar, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
-import {getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, type ViewRegistration, resetViewRegistration} from './ViewRegistration.js';
+import {
+  getRegisteredLocationResolvers,
+  getRegisteredViewExtensions,
+  maybeRemoveViewExtension,
+  registerLocationResolver,
+  registerViewExtension,
+  ViewLocationCategoryValues,
+  ViewLocationValues,
+  ViewPersistence,
+  type ViewRegistration,
+  resetViewRegistration,
+} from './ViewRegistration.js';
 import type {Widget, WidgetElement} from './Widget.js';
 import {VBox} from './Widget.js';
 import viewContainersStyles from './viewContainers.css.legacy.js';

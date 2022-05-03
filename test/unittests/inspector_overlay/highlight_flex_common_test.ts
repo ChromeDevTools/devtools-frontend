@@ -4,7 +4,17 @@
 
 const {assert} = chai;
 
-import {distance, getColinearPointAtDistance, getGapQuadBetweenQuads, getLinesAndItemsQuads, getGapQuads, growQuadToEdgesOf, intersectSegments, segmentContains, uniteQuads} from '../../../inspector_overlay/highlight_flex_common.js';
+import {
+  distance,
+  getColinearPointAtDistance,
+  getGapQuadBetweenQuads,
+  getLinesAndItemsQuads,
+  getGapQuads,
+  growQuadToEdgesOf,
+  intersectSegments,
+  segmentContains,
+  uniteQuads,
+} from '../../../inspector_overlay/highlight_flex_common.js';
 import type {PathCommands, Position, Quad} from '../../../inspector_overlay/common.js';
 
 function createPathCommands(...points: number[]): PathCommands {

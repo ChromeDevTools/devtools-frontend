@@ -5,7 +5,15 @@
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
 import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertElements, assertShadowRoot, dispatchClickEvent, doubleRaf, renderElementIntoDOM, waitForScrollLeft} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertElements,
+  assertShadowRoot,
+  dispatchClickEvent,
+  doubleRaf,
+  renderElementIntoDOM,
+  waitForScrollLeft,
+} from '../../../helpers/DOMHelpers.js';
 import {withNoMutations} from '../../../helpers/MutationHelpers.js';
 import {initializeGlobalVars, deinitializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
 

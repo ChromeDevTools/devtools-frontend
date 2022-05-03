@@ -6,7 +6,17 @@ import {assert} from 'chai';
 import {describe, it} from 'mocha';
 
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, createNewSnippet, executionLineHighlighted, getBreakpointDecorators, getOpenSources, openSnippetsSubPane, openSourcesPanel, PAUSE_BUTTON, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  createNewSnippet,
+  executionLineHighlighted,
+  getBreakpointDecorators,
+  getOpenSources,
+  openSnippetsSubPane,
+  openSourcesPanel,
+  PAUSE_BUTTON,
+  RESUME_BUTTON,
+} from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
   it('can stop on breakpoints', async () => {

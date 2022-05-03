@@ -4,7 +4,14 @@
 
 import {assertNotNullOrUndefined, enableExperiment, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertIssueTitle, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  assertIssueTitle,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('Low contrast issues', async () => {
   it('should report low contrast issues', async () => {

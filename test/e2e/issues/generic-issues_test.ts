@@ -4,7 +4,15 @@
 
 import {assertNotNullOrUndefined, getTestServerPort, goToResource, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, ISSUE, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  ISSUE,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('Cross-origin portal post message issue', async () => {
   it('should display correct information', async () => {

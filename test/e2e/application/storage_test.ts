@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, getTestServerPort, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {doubleClickSourceTreeItem, getPieChartLegendRows, getStorageItemsData, navigateToApplicationTab, waitForQuotaUsage} from '../helpers/application-helpers.js';
+import {
+  doubleClickSourceTreeItem,
+  getPieChartLegendRows,
+  getStorageItemsData,
+  navigateToApplicationTab,
+  waitForQuotaUsage,
+} from '../helpers/application-helpers.js';
 
 // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
 const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';

@@ -4,7 +4,14 @@
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('Navigator User Agent Issues', async () => {
   beforeEach(async () => {

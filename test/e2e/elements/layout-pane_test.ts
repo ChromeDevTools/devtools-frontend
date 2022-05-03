@@ -6,7 +6,16 @@ import {assert} from 'chai';
 
 import {goToResource, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandSelectedNodeRecursively, getGridsInLayoutPane, openLayoutPane, toggleElementCheckboxInLayoutPane, waitForAdorners, waitForContentOfSelectedElementsNode, waitForElementsStyleSection, waitForSomeGridsInLayoutPane} from '../helpers/elements-helpers.js';
+import {
+  expandSelectedNodeRecursively,
+  getGridsInLayoutPane,
+  openLayoutPane,
+  toggleElementCheckboxInLayoutPane,
+  waitForAdorners,
+  waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+  waitForSomeGridsInLayoutPane,
+} from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 
 describe('Layout Pane in the Elements Tab', async function() {

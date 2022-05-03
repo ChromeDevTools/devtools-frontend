@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, click, enableExperiment, getBrowserAndPages, goToResource, waitForAria, waitForNone} from '../../shared/helper.js';
+import {
+  assertNotNullOrUndefined,
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  goToResource,
+  waitForAria,
+  waitForNone,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 

@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type {
+  Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import type * as puppeteer from 'puppeteer';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 

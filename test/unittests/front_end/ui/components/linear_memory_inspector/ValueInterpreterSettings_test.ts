@@ -3,7 +3,12 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
-import {assertElement, getElementsWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  getElementsWithinComponent,
+  getEventPromise,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

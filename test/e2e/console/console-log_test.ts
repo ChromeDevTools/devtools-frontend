@@ -5,9 +5,26 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {activeElement, activeElementAccessibleName, activeElementTextContent, getBrowserAndPages, tabBackward, tabForward, waitForFunction} from '../../shared/helper.js';
+import {
+  activeElement,
+  activeElementAccessibleName,
+  activeElementTextContent,
+  getBrowserAndPages,
+  tabBackward,
+  tabForward,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_FIRST_MESSAGES_SELECTOR, focusConsolePrompt, getConsoleMessages, getCurrentConsoleMessages, getStructuredConsoleMessages, navigateToConsoleTab, showVerboseMessages, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
+import {
+  CONSOLE_FIRST_MESSAGES_SELECTOR,
+  focusConsolePrompt,
+  getConsoleMessages,
+  getCurrentConsoleMessages,
+  getStructuredConsoleMessages,
+  navigateToConsoleTab,
+  showVerboseMessages,
+  waitForLastConsoleMessageToHaveContent,
+} from '../helpers/console-helpers.js';
 
 /* eslint-disable no-console */
 

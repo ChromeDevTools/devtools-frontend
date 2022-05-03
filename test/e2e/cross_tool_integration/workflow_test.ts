@@ -4,12 +4,29 @@
 
 import {click, reloadDevTools, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToConsoleTab, navigateToIssuesPanelViaInfoBar, waitForConsoleMessageAndClickOnLink} from '../helpers/console-helpers.js';
-import {clickOnContextMenuItemFromTab, MOVE_TO_DRAWER_SELECTOR, MOVE_TO_MAIN_PANEL_SELECTOR, prepareForCrossToolScenario, tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-helper.js';
+import {
+  navigateToConsoleTab,
+  navigateToIssuesPanelViaInfoBar,
+  waitForConsoleMessageAndClickOnLink,
+} from '../helpers/console-helpers.js';
+import {
+  clickOnContextMenuItemFromTab,
+  MOVE_TO_DRAWER_SELECTOR,
+  MOVE_TO_MAIN_PANEL_SELECTOR,
+  prepareForCrossToolScenario,
+  tabExistsInDrawer,
+  tabExistsInMainPanel,
+} from '../helpers/cross-tool-helper.js';
 import {clickOnFirstLinkInStylesPanel, navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {LAYERS_TAB_SELECTOR} from '../helpers/layers-helpers.js';
 import {MEMORY_TAB_ID, navigateToMemoryTab} from '../helpers/memory-helpers.js';
-import {navigateToPerformanceSidebarTab, navigateToPerformanceTab, startRecording, stopRecording, waitForSourceLinkAndFollowIt} from '../helpers/performance-helpers.js';
+import {
+  navigateToPerformanceSidebarTab,
+  navigateToPerformanceTab,
+  startRecording,
+  stopRecording,
+  waitForSourceLinkAndFollowIt,
+} from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('A user can navigate across', async function() {

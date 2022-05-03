@@ -4,7 +4,15 @@
 
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {editCSSProperty, expandSelectedNodeRecursively, INACTIVE_GRID_ADORNER_SELECTOR, waitForAdornerOnSelectedNode, waitForAdorners, waitForContentOfSelectedElementsNode, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
+import {
+  editCSSProperty,
+  expandSelectedNodeRecursively,
+  INACTIVE_GRID_ADORNER_SELECTOR,
+  waitForAdornerOnSelectedNode,
+  waitForAdorners,
+  waitForContentOfSelectedElementsNode,
+  waitForElementsStyleSection,
+} from '../helpers/elements-helpers.js';
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();

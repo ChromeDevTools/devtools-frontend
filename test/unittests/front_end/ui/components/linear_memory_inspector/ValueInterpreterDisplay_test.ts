@@ -3,7 +3,13 @@
 // found in the LICENSE file.
 
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
-import {dispatchClickEvent, getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  dispatchClickEvent,
+  getElementsWithinComponent,
+  getElementWithinComponent,
+  getEventPromise,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 export const DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR = '[data-jump]';

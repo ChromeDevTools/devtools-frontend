@@ -4,7 +4,14 @@
 
 import {assertNotNullOrUndefined, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('Client Hint issues test', async () => {
   it('should display issue when Client Hints are used with invalid origin', async () => {

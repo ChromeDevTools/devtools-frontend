@@ -5,9 +5,28 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$, getBrowserAndPages, step, waitFor, waitForElementWithTextContent, waitForFunction} from '../../../shared/helper.js';
+import {
+  $,
+  getBrowserAndPages,
+  step,
+  waitFor,
+  waitForElementWithTextContent,
+  waitForFunction,
+} from '../../../shared/helper.js';
 import {describe, it} from '../../../shared/mocha-extensions.js';
-import {BOTTOM_UP_SELECTOR, CALL_TREE_SELECTOR, clickOnFunctionLink, getTotalTimeFromSummary, navigateToBottomUpTab, navigateToCallTreeTab, navigateToPerformanceTab, searchForComponent, startRecording, stopRecording, SUMMARY_TAB_SELECTOR} from '../../helpers/performance-helpers.js';
+import {
+  BOTTOM_UP_SELECTOR,
+  CALL_TREE_SELECTOR,
+  clickOnFunctionLink,
+  getTotalTimeFromSummary,
+  navigateToBottomUpTab,
+  navigateToCallTreeTab,
+  navigateToPerformanceTab,
+  searchForComponent,
+  startRecording,
+  stopRecording,
+  SUMMARY_TAB_SELECTOR,
+} from '../../helpers/performance-helpers.js';
 
 async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActivities: string[]) {
   let index = 0;

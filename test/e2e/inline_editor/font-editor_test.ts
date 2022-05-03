@@ -6,7 +6,14 @@ import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {clickNthChildOfSelectedElementNode, getElementStyleFontEditorButton, getFontEditorButtons, getHiddenFontEditorButtons, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue} from '../helpers/elements-helpers.js';
+import {
+  clickNthChildOfSelectedElementNode,
+  getElementStyleFontEditorButton,
+  getFontEditorButtons,
+  getHiddenFontEditorButtons,
+  waitForContentOfSelectedElementsNode,
+  waitForCSSPropertyValue,
+} from '../helpers/elements-helpers.js';
 
 async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fontEditor.html') {
   await goToResource(path);

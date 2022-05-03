@@ -7,7 +7,11 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+  setMockConnectionResponseHandler,
+} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
 

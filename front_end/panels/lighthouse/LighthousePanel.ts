@@ -12,7 +12,8 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import type {AuditProgressChangedEvent, PageAuditabilityChangedEvent, PageWarningsChangedEvent} from './LighthouseController.js';
+import type {
+  AuditProgressChangedEvent, PageAuditabilityChangedEvent, PageWarningsChangedEvent} from './LighthouseController.js';
 import {Events, LighthouseController} from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import type {LighthouseRun} from './LighthouseProtocolService.js';

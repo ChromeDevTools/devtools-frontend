@@ -3,7 +3,15 @@
 // found in the LICENSE file.
 import type * as puppeteer from 'puppeteer';
 
-import {$, click, enableExperiment, getBrowserAndPages, goToResource, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {
+  $,
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  goToResource,
+  reloadDevTools,
+  waitFor,
+} from '../../shared/helper.js';
 
 const DEVICE_TOOLBAR_TOGGLER_SELECTOR = '[aria-label="Toggle device toolbar"]';
 const DEVICE_TOOLBAR_SELECTOR = '.device-mode-toolbar';

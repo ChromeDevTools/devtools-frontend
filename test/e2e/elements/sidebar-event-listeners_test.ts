@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {doubleClick} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getDisplayedEventListenerNames, getEventListenerProperties, getFirstNodeForEventListener, loadEventListenersAndSelectButtonNode, openEventListenersPaneAndWaitForListeners} from '../helpers/event-listeners-helpers.js';
+import {
+  getDisplayedEventListenerNames,
+  getEventListenerProperties,
+  getFirstNodeForEventListener,
+  loadEventListenersAndSelectButtonNode,
+  openEventListenersPaneAndWaitForListeners,
+} from '../helpers/event-listeners-helpers.js';
 
 describe('Event listeners in the elements sidebar', async () => {
   beforeEach(async () => {

@@ -30,7 +30,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js'; // eslint-disable-line rulesdir/es_modules_import
+
+// eslint-disable-next-line rulesdir/es_modules_import
+import type * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';
 
 import {formatterWorkerPool} from './FormatterWorkerPool.js';
 

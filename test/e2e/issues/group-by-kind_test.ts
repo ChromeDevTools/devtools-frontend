@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, enableExperiment, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {expandKind, getGroupByKindChecked, ISSUE, navigateToIssuesTab, toggleGroupByKind} from '../helpers/issues-helpers.js';
+import {
+  expandKind,
+  getGroupByKindChecked,
+  ISSUE,
+  navigateToIssuesTab,
+  toggleGroupByKind,
+} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab group by kind checkbox', async () => {
   it('should group issues by associated kinds when checked', async () => {

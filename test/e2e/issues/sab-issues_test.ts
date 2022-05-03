@@ -6,7 +6,13 @@ import {assert} from 'chai';
 
 import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, getAndExpandSpecificIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  getAndExpandSpecificIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('SAB issues test', async () => {
   beforeEach(async () => {

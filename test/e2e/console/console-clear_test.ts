@@ -6,7 +6,12 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, typeIntoConsole, typeIntoConsoleAndWaitForResult} from '../helpers/console-helpers.js';
+import {
+  CONSOLE_TAB_SELECTOR,
+  focusConsolePrompt,
+  typeIntoConsole,
+  typeIntoConsoleAndWaitForResult,
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async function() {
   it('is cleared via the console.clear() method', async () => {

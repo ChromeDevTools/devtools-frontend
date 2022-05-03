@@ -4,9 +4,22 @@
 
 import {assert} from 'chai';
 
-import {$textContent, assertNotNullOrUndefined, click, getBrowserAndPages, pressKey, step, waitFor} from '../../shared/helper.js';
+import {
+  $textContent,
+  assertNotNullOrUndefined,
+  click,
+  getBrowserAndPages,
+  pressKey,
+  step,
+  waitFor,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, isBreakpointSet, openSourceCodeEditorForFile, reloadPageAndWaitForSourceFile} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  isBreakpointSet,
+  openSourceCodeEditorForFile,
+  reloadPageAndWaitForSourceFile,
+} from '../helpers/sources-helpers.js';
 
 describe('Live edit', async () => {
   it('moves the breakpoint after reload when changes are not persisted', async () => {

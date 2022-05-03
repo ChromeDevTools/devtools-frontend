@@ -4,10 +4,23 @@
 
 import {assert} from 'chai';
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource, setCheckBox, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  assertNotNullOrUndefined,
+  getBrowserAndPages,
+  goToResource,
+  setCheckBox,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getResourcesElement} from '../helpers/issues-helpers.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('IssueView cache', async () => {
   it('should correctly update the issue', async () => {

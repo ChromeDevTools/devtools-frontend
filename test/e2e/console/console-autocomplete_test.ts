@@ -2,9 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, tabForward, timeout, typeText, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
+import {
+  click,
+  getBrowserAndPages,
+  tabForward,
+  timeout,
+  typeText,
+  waitFor,
+  waitForFunction,
+  waitForNone,
+} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_COMPLETION_HINT_SELECTOR, CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
+import {
+  CONSOLE_COMPLETION_HINT_SELECTOR,
+  CONSOLE_TAB_SELECTOR,
+  CONSOLE_TOOLTIP_SELECTOR,
+  focusConsolePrompt,
+  waitForLastConsoleMessageToHaveContent,
+} from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Console Tab', async () => {

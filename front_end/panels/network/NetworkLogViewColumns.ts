@@ -14,7 +14,9 @@ import type {NetworkNode} from './NetworkDataGridNode.js';
 import {NetworkRequestNode} from './NetworkDataGridNode.js';
 import type {NetworkLogView} from './NetworkLogView.js';
 import {NetworkManageCustomHeadersView} from './NetworkManageCustomHeadersView.js';
-import type {NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
+import type {
+  NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from
+  './NetworkTimeCalculator.js';
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 

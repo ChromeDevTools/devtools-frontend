@@ -9,13 +9,21 @@ import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 
 const {render, html} = LitHtml;
 
-import type {AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, PageNavigationEvent} from './LinearMemoryNavigator.js';
+import type {
+  AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, PageNavigationEvent} from
+  './LinearMemoryNavigator.js';
 import {Mode, Navigation, LinearMemoryNavigator} from './LinearMemoryNavigator.js';
-import type {EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
+import type {
+  EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from
+  './LinearMemoryValueInterpreter.js';
 import {LinearMemoryValueInterpreter} from './LinearMemoryValueInterpreter.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import {VALUE_INTEPRETER_MAX_NUM_BYTES, Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
+import {
+  VALUE_INTEPRETER_MAX_NUM_BYTES,
+  Endianness,
+  getDefaultValueTypeMapping,
+} from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {LinearMemoryViewer} from './LinearMemoryViewer.js';

@@ -5,7 +5,15 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 
-import {click, enableExperiment, goToResource, matchStringArray, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  click,
+  enableExperiment,
+  goToResource,
+  matchStringArray,
+  typeText,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';

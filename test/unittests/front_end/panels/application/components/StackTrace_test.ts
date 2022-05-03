@@ -7,7 +7,15 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../../../../front_end/ui/legacy/components/utils/utils.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, getCleanTextContentFromElements, getElementWithinComponent, getElementsWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchClickEvent,
+  getCleanTextContentFromElements,
+  getElementWithinComponent,
+  getElementsWithinComponent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

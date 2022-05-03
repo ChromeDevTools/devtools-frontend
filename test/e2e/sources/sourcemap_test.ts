@@ -3,11 +3,48 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {click, enableExperiment, getBrowserAndPages, getPendingEvents, goToResource, pasteText, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, waitForFunctionWithTries} from '../../shared/helper.js';
+
+import {
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  getPendingEvents,
+  goToResource,
+  pasteText,
+  step,
+  typeText,
+  waitFor,
+  waitForElementWithTextContent,
+  waitForFunction,
+  waitForFunctionWithTries,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
-import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, clickOnContextMenu, DEBUGGER_PAUSED_EVENT, getBreakpointDecorators, getValuesForScope, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_INDICATOR_SELECTOR, refreshDevToolsAndRemoveBackendState, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_INTO_BUTTON, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {
+  clickNthChildOfSelectedElementNode,
+  focusElementsTree,
+  waitForContentOfSelectedElementsNode,
+  waitForCSSPropertyValue,
+  waitForElementsStyleSection,
+} from '../helpers/elements-helpers.js';
+import {
+  addBreakpointForLine,
+  clickOnContextMenu,
+  DEBUGGER_PAUSED_EVENT,
+  getBreakpointDecorators,
+  getValuesForScope,
+  openSourceCodeEditorForFile,
+  openSourcesPanel,
+  PAUSE_INDICATOR_SELECTOR,
+  refreshDevToolsAndRemoveBackendState,
+  removeBreakpointForLine,
+  RESUME_BUTTON,
+  retrieveTopCallFrameScriptLocation,
+  retrieveTopCallFrameWithoutResuming,
+  STEP_INTO_BUTTON,
+  STEP_OUT_BUTTON,
+  STEP_OVER_BUTTON,
+} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   it('sets multiple breakpoints in case of code-splitting', async () => {

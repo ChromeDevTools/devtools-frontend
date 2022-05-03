@@ -2,7 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPages, getPendingEvents, installEventListener, step, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  getBrowserAndPages,
+  getPendingEvents,
+  installEventListener,
+  step,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {addBreakpointForLine, DEBUGGER_PAUSED_EVENT, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';

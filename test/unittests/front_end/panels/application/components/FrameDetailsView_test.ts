@@ -8,7 +8,13 @@ import * as ExpandableList from '../../../../../../front_end/ui/components/expan
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {assertShadowRoot, getCleanTextContentFromElements, getElementWithinComponent, getElementsWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  assertShadowRoot,
+  getCleanTextContentFromElements,
+  getElementWithinComponent,
+  getElementsWithinComponent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();

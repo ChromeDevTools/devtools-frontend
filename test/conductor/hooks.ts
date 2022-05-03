@@ -10,9 +10,19 @@ import puppeteer = require('puppeteer');
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
-import {clearPuppeteerState, getBrowserAndPages, registerHandlers, setBrowserAndPages, setTestServerPort} from './puppeteer-state.js';
+import {
+  clearPuppeteerState,
+  getBrowserAndPages,
+  registerHandlers,
+  setBrowserAndPages,
+  setTestServerPort,
+} from './puppeteer-state.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';
-import {loadEmptyPageAndWaitForContent, DevToolsFrontendTab, type DevToolsFrontendReloadOptions} from './frontend_tab.js';
+import {
+  loadEmptyPageAndWaitForContent,
+  DevToolsFrontendTab,
+  type DevToolsFrontendReloadOptions,
+} from './frontend_tab.js';
 import {dumpCollectedErrors, installPageErrorHandlers, setupBrowserProcessIO} from './events.js';
 import {TargetTab} from './target_tab.js';
 

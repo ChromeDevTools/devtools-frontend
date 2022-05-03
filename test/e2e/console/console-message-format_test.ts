@@ -6,7 +6,11 @@ import {assert} from 'chai';
 
 import {getTestServerPort} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getConsoleMessages, showVerboseMessages, waitForConsoleMessagesToBeNonEmpty} from '../helpers/console-helpers.js';
+import {
+  getConsoleMessages,
+  showVerboseMessages,
+  waitForConsoleMessagesToBeNonEmpty,
+} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
   it('shows BigInts formatted', async () => {

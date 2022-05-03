@@ -122,8 +122,8 @@ interface DOMError {
 }
 
 interface ShadowRoot {
-  elementFromPoint(x: number, y: number): Element | null;
-  getSelection(): Selection | null;
+  elementFromPoint(x: number, y: number): Element|null;
+  getSelection(): Selection|null;
 }
 
 interface HTMLDialogElement {

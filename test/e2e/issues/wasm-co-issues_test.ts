@@ -6,7 +6,14 @@ import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, goToResourceWithCustomHost} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  ensureResourceSectionIsExpanded,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 describe('Wasm cross-origin sharing issue', async () => {
   beforeEach(async () => {

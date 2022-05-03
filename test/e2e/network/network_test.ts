@@ -6,7 +6,16 @@ import {assert} from 'chai';
 
 import {$textContent, goTo, reloadDevTools, typeText, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getAllRequestNames, getSelectedRequestName, navigateToNetworkTab, selectRequestByName, setCacheDisabled, setPersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {
+  getAllRequestNames,
+  getSelectedRequestName,
+  navigateToNetworkTab,
+  selectRequestByName,
+  setCacheDisabled,
+  setPersistLog,
+  waitForSelectedRequestChange,
+  waitForSomeRequestsToAppear,
+} from '../helpers/network-helpers.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;

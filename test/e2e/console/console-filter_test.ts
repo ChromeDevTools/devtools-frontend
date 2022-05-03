@@ -7,7 +7,16 @@ import type * as puppeteer from 'puppeteer';
 
 import {$, getBrowserAndPages, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_MESSAGE_WRAPPER_SELECTOR, deleteConsoleMessagesFilter, filterConsoleMessages, getConsoleMessages, getCurrentConsoleMessages, showVerboseMessages, toggleShowCorsErrors, waitForConsoleMessagesToBeNonEmpty} from '../helpers/console-helpers.js';
+import {
+  CONSOLE_MESSAGE_WRAPPER_SELECTOR,
+  deleteConsoleMessagesFilter,
+  filterConsoleMessages,
+  getConsoleMessages,
+  getCurrentConsoleMessages,
+  showVerboseMessages,
+  toggleShowCorsErrors,
+  waitForConsoleMessagesToBeNonEmpty,
+} from '../helpers/console-helpers.js';
 
 type MessageCheck = (msg: string) => boolean;
 
@@ -347,5 +356,4 @@ describe('The Console Tab', async () => {
       assert.match(message, JS_ERROR_PATTERN);
     }
   });
-
 });

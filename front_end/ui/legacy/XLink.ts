@@ -13,7 +13,12 @@ import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu, Provider} from './ContextMenu.js';
 import {html} from './Fragment.js';
 import {Tooltip} from './Tooltip.js';
-import {addReferrerToURLIfNecessary, copyLinkAddressLabel, MaxLengthForDisplayedURLs, openLinkExternallyLabel} from './UIUtils.js';
+import {
+  addReferrerToURLIfNecessary,
+  copyLinkAddressLabel,
+  MaxLengthForDisplayedURLs,
+  openLinkExternallyLabel,
+} from './UIUtils.js';
 import {XElement} from './XElement.js';
 
 export class XLink extends XElement {

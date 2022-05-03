@@ -11,7 +11,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 
-import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from './ThrottlingPresets.js';
+import type {
+  Conditions, ConditionsList, MobileThrottlingConditionsGroup, NetworkThrottlingConditionsGroup} from
+  './ThrottlingPresets.js';
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 
 const UIStrings = {

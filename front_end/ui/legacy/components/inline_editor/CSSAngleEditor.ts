@@ -8,7 +8,13 @@ import * as LitHtml from '../../../lit-html/lit-html.js';
 import cssAngleEditorStyles from './cssAngleEditor.css.js';
 
 import type {Angle} from './CSSAngleUtils.js';
-import {AngleUnit, get2DTranslationsForAngle, getAngleFromRadians, getNewAngleFromEvent, getRadiansFromAngle} from './CSSAngleUtils.js';
+import {
+  AngleUnit,
+  get2DTranslationsForAngle,
+  getAngleFromRadians,
+  getNewAngleFromEvent,
+  getRadiansFromAngle,
+} from './CSSAngleUtils.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;

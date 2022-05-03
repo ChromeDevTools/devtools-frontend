@@ -5,7 +5,24 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, getPendingEvents, getTestServerPort, goToResource, pasteText, platform, pressKey, reloadDevTools, step, timeout, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $,
+  $$,
+  click,
+  getBrowserAndPages,
+  getPendingEvents,
+  getTestServerPort,
+  goToResource,
+  pasteText,
+  platform,
+  pressKey,
+  reloadDevTools,
+  step,
+  timeout,
+  typeText,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
 export const PAUSE_ON_EXCEPTION_BUTTON = '[aria-label="Pause on exceptions"]';

@@ -3,9 +3,27 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {$$, click, getBrowserAndPages, goToResource, step, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
+
+import {
+  $$,
+  click,
+  getBrowserAndPages,
+  goToResource,
+  step,
+  timeout,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {addBreakpointForLine, createSelectorsForWorkerFile, getBreakpointDecorators, getOpenSources, openNestedWorkerFile, RESUME_BUTTON, retrieveTopCallFrameWithoutResuming} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  createSelectorsForWorkerFile,
+  getBreakpointDecorators,
+  getOpenSources,
+  openNestedWorkerFile,
+  RESUME_BUTTON,
+  retrieveTopCallFrameWithoutResuming,
+} from '../helpers/sources-helpers.js';
 
 async function validateSourceTabs() {
   await step('Validate exactly one source file is open', async () => {

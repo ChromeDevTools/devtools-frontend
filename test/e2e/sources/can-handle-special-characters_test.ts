@@ -7,7 +7,16 @@ import {describe, it} from 'mocha';
 import {resolve} from 'path';
 
 import {click, getBrowserAndPages, goTo, waitFor} from '../../shared/helper.js';
-import {addBreakpointForLine, executionLineHighlighted, getBreakpointDecorators, getOpenSources, openFileInEditor, openFileInSourcesPanel, openSourcesPanel, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  executionLineHighlighted,
+  getBreakpointDecorators,
+  getOpenSources,
+  openFileInEditor,
+  openFileInSourcesPanel,
+  openSourcesPanel,
+  RESUME_BUTTON,
+} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', async () => {
   async function runTest(filename: string, functionName: string) {

@@ -3,8 +3,13 @@
 // found in the LICENSE file.
 
 import {describe, it} from '../../shared/mocha-extensions.js';
-
-import {clearCoverageContent, navigateToCoverageTestSite, startInstrumentingCoverage, stopInstrumentingCoverage, waitForTheCoveragePanelToLoad} from '../helpers/coverage-helpers.js';
+import {
+  clearCoverageContent,
+  navigateToCoverageTestSite,
+  startInstrumentingCoverage,
+  stopInstrumentingCoverage,
+  waitForTheCoveragePanelToLoad,
+} from '../helpers/coverage-helpers.js';
 
 describe('The Coverage Panel', async () => {
   it('Loads correctly', async () => {

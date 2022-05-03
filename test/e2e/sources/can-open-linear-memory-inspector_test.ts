@@ -7,7 +7,14 @@ import {assert} from 'chai';
 import {$, $$, click, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
-import {addBreakpointForLine, inspectMemory, openSourceCodeEditorForFile, PAUSE_BUTTON, reloadPageAndWaitForSourceFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+import {
+  addBreakpointForLine,
+  inspectMemory,
+  openSourceCodeEditorForFile,
+  PAUSE_BUTTON,
+  reloadPageAndWaitForSourceFile,
+  RESUME_BUTTON,
+} from '../helpers/sources-helpers.js';
 
 const LINEAR_MEMORY_INSPECTOR_TAB_SELECTOR = '#tab-linear-memory-inspector';
 const LINEAR_MEMORY_INSPECTOR_TABBED_PANE_SELECTOR = DRAWER_PANEL_SELECTOR + ' .tabbed-pane';

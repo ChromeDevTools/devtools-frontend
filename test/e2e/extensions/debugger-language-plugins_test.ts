@@ -5,11 +5,45 @@
 import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {$, click, enableExperiment, getBrowserAndPages, goToResource, pasteText, waitFor, waitForFunction, waitForMany, waitForNone} from '../../shared/helper.js';
+import {
+  $,
+  click,
+  enableExperiment,
+  getBrowserAndPages,
+  goToResource,
+  pasteText,
+  waitFor,
+  waitForFunction,
+  waitForMany,
+  waitForNone,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getResourcesPathWithDevToolsHostname, loadExtension} from '../helpers/extension-helpers.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages, getStructuredConsoleMessages} from '../helpers/console-helpers.js';
-import {addBreakpointForLine, getCallFrameLocations, getCallFrameNames, getNonBreakableLines, getValuesForScope, isBreakpointSet, listenForSourceFilesAdded, openFileInEditor, openFileInSourcesPanel, openSourceCodeEditorForFile, openSourcesPanel, PAUSE_ON_EXCEPTION_BUTTON, RESUME_BUTTON, retrieveSourceFilesAdded, retrieveTopCallFrameScriptLocation, switchToCallFrame, waitForAdditionalSourceFiles} from '../helpers/sources-helpers.js';
+import {
+  CONSOLE_TAB_SELECTOR,
+  focusConsolePrompt,
+  getCurrentConsoleMessages,
+  getStructuredConsoleMessages,
+} from '../helpers/console-helpers.js';
+import {
+  addBreakpointForLine,
+  getCallFrameLocations,
+  getCallFrameNames,
+  getNonBreakableLines,
+  getValuesForScope,
+  isBreakpointSet,
+  listenForSourceFilesAdded,
+  openFileInEditor,
+  openFileInSourcesPanel,
+  openSourceCodeEditorForFile,
+  openSourcesPanel,
+  PAUSE_ON_EXCEPTION_BUTTON,
+  RESUME_BUTTON,
+  retrieveSourceFilesAdded,
+  retrieveTopCallFrameScriptLocation,
+  switchToCallFrame,
+  waitForAdditionalSourceFiles,
+} from '../helpers/sources-helpers.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function RegisterExtension(

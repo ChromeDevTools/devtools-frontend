@@ -4,7 +4,15 @@
 
 import {assertNotNullOrUndefined, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {assertIssueTitle, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSection, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {
+  assertIssueTitle,
+  expandIssue,
+  getIssueByTitle,
+  getResourcesElement,
+  navigateToIssuesTab,
+  waitForTableFromResourceSection,
+  waitForTableFromResourceSectionContents,
+} from '../helpers/issues-helpers.js';
 
 const triggerQuirksModeIssueInIssuesTab = async (path: string) => {
   await goToResource(path);

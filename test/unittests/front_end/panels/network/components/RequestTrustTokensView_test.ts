@@ -5,7 +5,11 @@
 import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
-import {getElementsWithinComponent, getElementWithinComponent, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+import {
+  getElementsWithinComponent,
+  getElementWithinComponent,
+  renderElementIntoDOM,
+} from '../../../helpers/DOMHelpers.js';
 import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;

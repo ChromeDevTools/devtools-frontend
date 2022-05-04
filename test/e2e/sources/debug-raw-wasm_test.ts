@@ -370,8 +370,8 @@ describe('Sources Tab', async function() {
   });
 
   // Flaky test
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1321898]: is able to step with state in multi-threaded code in worker thread', async () => {
+  it.skip(
+      '[crbug.com/1321898]: is able to step with state in multi-threaded code in worker thread', async () => {
         const {target, frontend} = getBrowserAndPages();
         const fileName = 'stepping-with-state.wasm';
 

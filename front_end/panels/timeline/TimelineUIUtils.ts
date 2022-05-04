@@ -1069,10 +1069,6 @@ const UIStrings = {
   */
   frame: 'Frame',
   /**
-  *@description Text in Timeline Event Overview of the Performance panel
-  */
-  fps: 'FPS',
-  /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
   cpuTime: 'CPU time',
@@ -3089,8 +3085,6 @@ export class TimelineUIUtils {
 
     const duration = TimelineUIUtils.frameDuration(frame);
     contentHelper.appendElementRow(i18nString(UIStrings.duration), duration, frame.hasWarnings());
-    const durationInMillis = frame.endTime - frame.startTime;
-    contentHelper.appendTextRow(i18nString(UIStrings.fps), Math.floor(1000 / durationInMillis));
     contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), i18n.TimeUtilities.millisToString(frame.cpuTime, true));
     if (filmStripFrame) {
       const filmStripPreview = document.createElement('div');

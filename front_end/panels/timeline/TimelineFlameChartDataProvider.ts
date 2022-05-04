@@ -131,12 +131,6 @@ const UIStrings = {
   occurrencesS: 'Occurrences: {PH1}',
   /**
   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  *@example {10ms} PH1
-  *@example {100.0} PH2
-  */
-  sFfps: '{PH1} ~ {PH2} fps',
-  /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
   */
   idleFrame: 'Idle Frame',
   /**
@@ -1005,9 +999,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     } else if (type === EntryType.Frame) {
       const frame = (this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
-      time = i18nString(
-          UIStrings.sFfps,
-          {PH1: i18n.TimeUtilities.preciseMillisToString(frame.duration, 1), PH2: (1000 / frame.duration).toFixed(0)});
+      time = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);
 
       if (frame.idle) {
         title = i18nString(UIStrings.idleFrame);

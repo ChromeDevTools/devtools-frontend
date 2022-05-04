@@ -12,7 +12,6 @@ import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {PerformanceModel} from './PerformanceModel.js';
 import {
   TimelineEventOverviewCPUActivity,
-  TimelineEventOverviewFrames,
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
@@ -86,7 +85,6 @@ export class TimelineHistoryManager {
 
     this.allOverviews = [
       {constructor: TimelineEventOverviewResponsiveness, height: 3},
-      {constructor: TimelineEventOverviewFrames, height: 16},
       {constructor: TimelineEventOverviewCPUActivity, height: 20},
       {constructor: TimelineEventOverviewNetwork, height: 8},
     ];

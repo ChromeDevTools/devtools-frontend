@@ -60,7 +60,6 @@ import type {TimelineEventOverview} from './TimelineEventOverview.js';
 import {
   TimelineEventOverviewCoverage,
   TimelineEventOverviewCPUActivity,
-  TimelineEventOverviewFrames,
   TimelineEventOverviewInput,
   TimelineEventOverviewMemory,
   TimelineEventOverviewNetwork,
@@ -710,7 +709,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (Root.Runtime.experiments.isEnabled('inputEventsOnTimelineOverview')) {
       this.overviewControls.push(new TimelineEventOverviewInput());
     }
-    this.overviewControls.push(new TimelineEventOverviewFrames());
     this.overviewControls.push(new TimelineEventOverviewCPUActivity());
     this.overviewControls.push(new TimelineEventOverviewNetwork());
     if (this.showScreenshotsSetting.get() && this.performanceModel &&

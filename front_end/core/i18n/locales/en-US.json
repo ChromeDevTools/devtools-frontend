@@ -10238,9 +10238,6 @@
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
-  "panels/timeline/TimelineEventOverview.ts | fps": {
-    "message": "FPS"
-  },
   "panels/timeline/TimelineEventOverview.ts | heap": {
     "message": "HEAP"
   },
@@ -10306,9 +10303,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
     "message": "Rasterizer Thread {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sFfps": {
-    "message": "{PH1} ~ {PH2} fps"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (self {PH2})"
@@ -10822,9 +10816,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Forced reflow"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fps": {
-    "message": "FPS"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Frame"

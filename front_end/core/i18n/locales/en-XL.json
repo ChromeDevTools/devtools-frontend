@@ -10238,9 +10238,6 @@
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "ĈṔÛ"
   },
-  "panels/timeline/TimelineEventOverview.ts | fps": {
-    "message": "F̂ṔŜ"
-  },
   "panels/timeline/TimelineEventOverview.ts | heap": {
     "message": "ĤÉÂṔ"
   },
@@ -10306,9 +10303,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
     "message": "R̂áŝt́êŕîźêŕ T̂h́r̂éâd́ {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sFfps": {
-    "message": "{PH1} ~ {PH2} f̂ṕŝ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (ŝél̂f́ {PH2})"
@@ -10822,9 +10816,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "F̂ór̂ćêd́ r̂éf̂ĺôẃ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fps": {
-    "message": "F̂ṔŜ"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "F̂ŕâḿê"

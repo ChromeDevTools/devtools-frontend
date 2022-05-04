@@ -111,11 +111,6 @@
   flex-basis: 8px;
 }
 
-#timeline-overview-framerate {
-  flex-basis: 16px;
-  margin-top: 0 !important; /* stylelint-disable-line declaration-no-important */
-}
-
 #timeline-overview-filmstrip {
   flex-basis: 30px;
 }
@@ -124,7 +119,6 @@
   flex-basis: 20px;
 }
 
-#timeline-overview-framerate::before,
 #timeline-overview-network::before,
 #timeline-overview-cpu-activity::before {
   content: "";

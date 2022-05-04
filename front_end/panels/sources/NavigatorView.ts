@@ -290,7 +290,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     // Update folder titles.
     const pathTokens =
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(binding.fileSystem);
-    let folderPath = '' as Platform.DevToolsPath.EncodedPathString;
+    let folderPath = Platform.DevToolsPath.EmptyEncodedPathString;
     for (let i = 0; i < pathTokens.length - 1; ++i) {
       folderPath = Common.ParsedURL.ParsedURL.concatenate(folderPath, pathTokens[i]);
       const folderId =
@@ -744,7 +744,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       const folderId = this.folderNodeId(
           project, target, frame, uiSourceCode.origin(),
           currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath ||
-              '' as Platform.DevToolsPath.EncodedPathString);
+              Platform.DevToolsPath.EmptyEncodedPathString);
       this.subfolderNodes.delete(folderId);
       parentNode.removeChild(currentNode);
       currentNode = (parentNode as NavigatorUISourceCodeTreeNode | null);
@@ -822,8 +822,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       contextMenu.editSection().appendItem(i18nString(UIStrings.rename), this.handleContextMenuRename.bind(this, node));
       contextMenu.editSection().appendItem(
           i18nString(UIStrings.makeACopy),
-          this.handleContextMenuCreate.bind(
-              this, project, '' as Platform.DevToolsPath.EncodedPathString, uiSourceCode));
+          this.handleContextMenuCreate.bind(this, project, Platform.DevToolsPath.EmptyEncodedPathString, uiSourceCode));
       contextMenu.editSection().appendItem(
           i18nString(UIStrings.delete), this.handleContextMenuDelete.bind(this, uiSourceCode));
     }
@@ -1472,7 +1471,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
       folderPath: Platform.DevToolsPath.EncodedPathString, title: string) {
     super(navigatorView, id, type);
     this.project = project;
-    this.folderPath = folderPath as Platform.DevToolsPath.EncodedPathString;
+    this.folderPath = folderPath;
     this.title = title;
   }
 

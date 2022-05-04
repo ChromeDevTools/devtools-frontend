@@ -472,11 +472,11 @@ export class DebuggerPlugin extends Plugin {
     }
 
     function addSourceMapURLDialogCallback(
-        scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile, url: string): void {
+        scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile, url: Platform.DevToolsPath.UrlString): void {
       if (!url) {
         return;
       }
-      scriptFile.addSourceMapURL(url as Platform.DevToolsPath.UrlString);
+      scriptFile.addSourceMapURL(url);
     }
 
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&

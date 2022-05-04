@@ -436,10 +436,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   private updateHistory(): void {
     const tabIds = this.tabbedPane.lastOpenedTabIds(maximalPreviouslyViewedFilesCount);
 
-    function tabIdToURI(this: TabbedEditorContainer, tabId: string): string {
+    function tabIdToURI(this: TabbedEditorContainer, tabId: string): Platform.DevToolsPath.UrlString {
       const tab = this.files.get(tabId);
       if (!tab) {
-        return '';
+        return Platform.DevToolsPath.EmptyUrlString;
       }
       return tab.url();
     }
@@ -639,18 +639,19 @@ export let tabId = 0;
 export const maximalPreviouslyViewedFilesCount = 30;
 
 interface SerializedHistoryItem {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   selectionRange?: TextUtils.TextRange.SerializedTextRange;
   scrollLineNumber?: number;
 }
 
 export class HistoryItem {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   private isSerializable: boolean;
   selectionRange: TextUtils.TextRange.TextRange|undefined;
   scrollLineNumber: number|undefined;
 
-  constructor(url: string, selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
+  constructor(
+      url: Platform.DevToolsPath.UrlString, selectionRange?: TextUtils.TextRange.TextRange, scrollLineNumber?: number) {
     this.url = url;
     this.isSerializable = url.length < HistoryItem.serializableUrlLengthLimit;
     this.selectionRange = selectionRange;
@@ -700,7 +701,7 @@ export class History {
     return new History(items);
   }
 
-  index(url: string): number {
+  index(url: Platform.DevToolsPath.UrlString): number {
     const index = this.itemsIndex.get(url);
     if (index !== undefined) {
       return index;
@@ -716,12 +717,12 @@ export class History {
     }
   }
 
-  selectionRange(url: string): TextUtils.TextRange.TextRange|undefined {
+  selectionRange(url: Platform.DevToolsPath.UrlString): TextUtils.TextRange.TextRange|undefined {
     const index = this.index(url);
     return index !== -1 ? this.items[index].selectionRange : undefined;
   }
 
-  updateSelectionRange(url: string, selectionRange?: TextUtils.TextRange.TextRange): void {
+  updateSelectionRange(url: Platform.DevToolsPath.UrlString, selectionRange?: TextUtils.TextRange.TextRange): void {
     if (!selectionRange) {
       return;
     }
@@ -732,12 +733,12 @@ export class History {
     this.items[index].selectionRange = selectionRange;
   }
 
-  scrollLineNumber(url: string): number|undefined {
+  scrollLineNumber(url: Platform.DevToolsPath.UrlString): number|undefined {
     const index = this.index(url);
     return index !== -1 ? this.items[index].scrollLineNumber : undefined;
   }
 
-  updateScrollLineNumber(url: string, scrollLineNumber: number): void {
+  updateScrollLineNumber(url: Platform.DevToolsPath.UrlString, scrollLineNumber: number): void {
     const index = this.index(url);
     if (index === -1) {
       return;
@@ -745,7 +746,7 @@ export class History {
     this.items[index].scrollLineNumber = scrollLineNumber;
   }
 
-  update(urls: string[]): void {
+  update(urls: Platform.DevToolsPath.UrlString[]): void {
     for (let i = urls.length - 1; i >= 0; --i) {
       const index = this.index(urls[i]);
       let item;
@@ -760,7 +761,7 @@ export class History {
     }
   }
 
-  remove(url: string): void {
+  remove(url: Platform.DevToolsPath.UrlString): void {
     const index = this.index(url);
     if (index !== -1) {
       this.items.splice(index, 1);
@@ -786,7 +787,7 @@ export class History {
     return serializedHistory;
   }
 
-  urls(): string[] {
+  urls(): Platform.DevToolsPath.UrlString[] {
     const result = [];
     for (let i = 0; i < this.items.length; ++i) {
       result.push(this.items[i].url);

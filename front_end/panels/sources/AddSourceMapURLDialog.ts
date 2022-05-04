@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import dialogStyles from './dialog.css.js';
@@ -22,8 +23,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AddSourceMapURLDialog extends UI.Widget.HBox {
   private readonly input: HTMLInputElement;
   private readonly dialog: UI.Dialog.Dialog;
-  private readonly callback: (arg0: string) => void;
-  constructor(callback: (arg0: string) => void) {
+  private readonly callback: (arg0: Platform.DevToolsPath.UrlString) => void;
+  constructor(callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
     super(/* isWebComponent */ true);
 
     this.contentElement.createChild('label').textContent = i18nString(UIStrings.sourceMapUrl);
@@ -51,13 +52,13 @@ export class AddSourceMapURLDialog extends UI.Widget.HBox {
     this.dialog.show();
   }
 
-  private done(value: string): void {
+  private done(value: Platform.DevToolsPath.UrlString): void {
     this.dialog.hide();
     this.callback(value);
   }
 
   private apply(): void {
-    this.done(this.input.value);
+    this.done(this.input.value as Platform.DevToolsPath.UrlString);
   }
 
   private onKeyDown(event: KeyboardEvent): void {

@@ -14,7 +14,8 @@ import {
   openEventListenersPaneAndWaitForListeners,
 } from '../helpers/event-listeners-helpers.js';
 
-describe('Event listeners in the elements sidebar', async () => {
+// Flaky test
+describe.skipOnPlatforms(['linux'], '[crbug.com/1322533]: Event listeners in the elements sidebar', async () => {
   beforeEach(async () => {
     await loadEventListenersAndSelectButtonNode();
   });

@@ -105,6 +105,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
     await callback();
   }
 
+  console.log('a');  // eslint-disable-line no-console
   // Ensure all messages are populated.
   await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
     const messages = document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR);
@@ -113,6 +114,31 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
     }
     return Array.from(messages).every(message => message.childNodes.length > 0);
   }, {timeout: 0, polling: 'mutation'}, CONSOLE_FIRST_MESSAGES_SELECTOR));
+  console.log('b');  // eslint-disable-line no-console
+
+  const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
+
+  // FIXME(crbug/1112692): Refactor test to remove the timeout.
+  await timeout(100);
+
+  // Get the messages from the console.
+  return frontend.evaluate(selector => {
+    return Array.from(document.querySelectorAll(selector)).map(message => message.textContent);
+  }, selector);
+}
+
+export async function maybeGetCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
+  const {frontend} = getBrowserAndPages();
+  const asyncScope = new AsyncScope();
+
+  await navigateToConsoleTab();
+
+  // Get console messages that were logged.
+  await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
+
+  if (callback) {
+    await callback();
+  }
 
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
 

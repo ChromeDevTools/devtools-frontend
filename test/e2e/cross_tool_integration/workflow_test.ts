@@ -43,7 +43,8 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  it('Console -> Issues', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1322534]: Console -> Issues', async () => {
     await navigateToConsoleTab();
     await navigateToIssuesPanelViaInfoBar();
 

@@ -21,7 +21,8 @@ const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
-describe('The Elements tab', async () => {
+// Flaky test group.
+describe.skip('[crbug.com/1280763]: The Elements tab', async () => {
   it('can force :hover state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 

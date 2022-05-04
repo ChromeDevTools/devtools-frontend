@@ -532,16 +532,6 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text: string|Node, pla
   return false;
 };
 
-Document.prototype.deepActiveElement = function(): Element|null {
-  let activeElement: Element|(Element | null) = this.activeElement;
-  while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement) {
-    activeElement = activeElement.shadowRoot.activeElement;
-  }
-  return activeElement;
-};
-
-DocumentFragment.prototype.deepActiveElement = Document.prototype.deepActiveElement;
-
 Element.prototype.hasFocus = function(): boolean {
   const root = this.getComponentRoot();
   return Boolean(root) && this.isSelfOrAncestor(root.activeElement);

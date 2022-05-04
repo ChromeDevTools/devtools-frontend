@@ -62,7 +62,7 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
 };
 
 // Flaky test group
-describe.skipOnPlatforms(['linux', 'mac'], '[crbug.com/1318314]: The Styles pane', async () => {
+describe.skip('[crbug.com/1318314]: The Styles pane', async () => {
   it('can display the CSS properties of the selected element', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/simple-styled-page.html');

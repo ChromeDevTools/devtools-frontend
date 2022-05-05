@@ -11531,6 +11531,9 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Signature Count"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
+    "message": "Supports large blob"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Supports resident keys"
   },

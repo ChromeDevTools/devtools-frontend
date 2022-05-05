@@ -45,6 +45,7 @@ group("front_end") {
     "panels/timeline",
     "panels/timeline/components",
     "panels/utils",
+    "panels/webauthn",
     "test_setup",
     "third_party/i18n",
     "ui",

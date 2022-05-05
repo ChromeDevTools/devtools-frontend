@@ -11531,6 +11531,9 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Ŝíĝńât́ûŕê Ćôún̂t́"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
+    "message": "Ŝúp̂ṕôŕt̂ś l̂ár̂ǵê b́l̂ób̂"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Ŝúp̂ṕôŕt̂ś r̂éŝíd̂én̂t́ k̂éŷś"
   },

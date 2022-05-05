@@ -46,7 +46,13 @@ import {
   STEP_OVER_BUTTON,
 } from '../helpers/sources-helpers.js';
 
-describe('The Sources Tab', async () => {
+describe('The Sources Tab', async function() {
+  // Some of these tests that use instrumentation breakpoints
+  // can be slower on mac and windows. Increase the timeout for them.
+  if (this.timeout() !== 0) {
+    this.timeout(10000);
+  }
+
   it('sets multiple breakpoints in case of code-splitting', async () => {
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-codesplit.ts', 'sourcemap-codesplit.html');
@@ -273,9 +279,8 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(await getBreakpointDecorators(), []);
   });
 
-  // Flaky test
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/1297070]: reliably hits breakpoints on worker with source map', async () => {
+  it(
+      'reliably hits breakpoints on worker with source map', async () => {
         await enableExperiment('instrumentationBreakpoints');
         const {target, frontend} = getBrowserAndPages();
         await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-breakpoint.html');

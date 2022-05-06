@@ -695,7 +695,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.createFileSelector();
   }
 
-  loadFromURL(url: string): void {
+  loadFromURL(url: Platform.DevToolsPath.UrlString): void {
     if (this.state !== State.Idle) {
       return;
     }
@@ -1249,7 +1249,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const item = items[0];
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceImported);
     if (item.kind === 'string') {
-      const url = dataTransfer.getData('text/uri-list');
+      const url = dataTransfer.getData('text/uri-list') as Platform.DevToolsPath.UrlString;
       if (new Common.ParsedURL.ParsedURL(url).isValid) {
         this.loadFromURL(url);
       }
@@ -1492,7 +1492,7 @@ export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamH
 
   handleQueryParam(value: string): void {
     void UI.ViewManager.ViewManager.instance().showView('timeline').then(() => {
-      TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value));
+      TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value) as Platform.DevToolsPath.UrlString);
     });
   }
 }

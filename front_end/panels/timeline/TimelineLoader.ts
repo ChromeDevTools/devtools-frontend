@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -95,7 +96,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromURL(url: string, client: Client): TimelineLoader {
+  static loadFromURL(url: Platform.DevToolsPath.UrlString, client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     Host.ResourceLoader.loadAsStream(url, null, loader);
     return loader;

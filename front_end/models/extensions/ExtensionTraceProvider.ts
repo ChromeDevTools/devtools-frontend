@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {ExtensionServer} from './ExtensionServer.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 export class ExtensionTraceProvider {
   private readonly extensionOrigin: string;
@@ -43,5 +44,5 @@ export class ExtensionTraceProvider {
 let _lastSessionId = 0;
 
 export interface TracingSession {
-  complete(url: string, timeOffsetMicroseconds: number): void;
+  complete(url: Platform.DevToolsPath.UrlString, timeOffsetMicroseconds: number): void;
 }

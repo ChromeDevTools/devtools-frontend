@@ -161,7 +161,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly groupBySetting: Common.Settings.Setting<any>;
   private searchableView!: UI.SearchableView.SearchableView;
-  private urlToColorCache?: Map<string, string>;
+  private urlToColorCache?: Map<Platform.DevToolsPath.UrlString, string>;
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;

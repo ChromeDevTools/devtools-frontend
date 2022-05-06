@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint-disable-line rulesdir/es_modules_import
 import type * as HAR from '../har/har.js';
 
@@ -141,7 +141,7 @@ export namespace PrivateAPI {
   type UpdateButtonRequest =
       {command: Commands.UpdateButton, id: string, icon?: string, tooltip?: string, disabled?: boolean};
   type CompleteTraceSessionRequest =
-      {command: Commands.CompleteTraceSession, id: string, url: string, timeOffset: number};
+      {command: Commands.CompleteTraceSession, id: string, url: Platform.DevToolsPath.UrlString, timeOffset: number};
   type CreateSidebarPaneRequest = {command: Commands.CreateSidebarPane, id: string, panel: string, title: string};
   type SetSidebarHeightRequest = {command: Commands.SetSidebarHeight, id: string, height: string};
   type SetSidebarContentRequest = {
@@ -930,11 +930,11 @@ self.injectedExtensionAPI = function(
   }
 
   (TraceSessionImpl.prototype as Pick<APIImpl.TraceSession, 'complete'>) = {
-    complete: function(this: APIImpl.TraceSession, url?: string, timeOffset?: number): void {
+    complete: function(this: APIImpl.TraceSession, url?: Platform.DevToolsPath.UrlString, timeOffset?: number): void {
       extensionServer.sendRequest({
         command: PrivateAPI.Commands.CompleteTraceSession,
         id: this._id,
-        url: url || '',
+        url: url || Platform.DevToolsPath.EmptyUrlString,
         timeOffset: timeOffset || 0,
       });
     },

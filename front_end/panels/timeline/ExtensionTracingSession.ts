@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 
@@ -42,7 +43,7 @@ export class ExtensionTracingSession implements Extensions.ExtensionTraceProvide
     this.completionCallback();
   }
 
-  complete(url: string, timeOffsetMicroseconds: number): void {
+  complete(url: Platform.DevToolsPath.UrlString, timeOffsetMicroseconds: number): void {
     if (!url) {
       this.completionCallback();
       return;

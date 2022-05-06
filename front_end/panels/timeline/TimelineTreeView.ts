@@ -756,9 +756,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   }
 
   private beautifyDomainName(this: AggregatedTimelineTreeView, name: string): string {
-    if (AggregatedTimelineTreeView.isExtensionInternalURL(name)) {
+    if (AggregatedTimelineTreeView.isExtensionInternalURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.chromeExtensionsOverhead);
-    } else if (AggregatedTimelineTreeView.isV8NativeURL(name)) {
+    } else if (AggregatedTimelineTreeView.isV8NativeURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.vRuntime);
     } else if (name.startsWith('chrome-extension')) {
       name = this.executionContextNamesByOrigin.get(name) || name;
@@ -949,11 +949,11 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     contextMenu.appendApplicableItems(frame.ownerNode);
   }
 
-  private static isExtensionInternalURL(url: string): boolean {
+  private static isExtensionInternalURL(url: Platform.DevToolsPath.UrlString): boolean {
     return url.startsWith(AggregatedTimelineTreeView.extensionInternalPrefix);
   }
 
-  private static isV8NativeURL(url: string): boolean {
+  private static isV8NativeURL(url: Platform.DevToolsPath.UrlString): boolean {
     return url.startsWith(AggregatedTimelineTreeView.v8NativePrefix);
   }
 

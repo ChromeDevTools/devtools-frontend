@@ -327,8 +327,13 @@ const
           xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload:
               'Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user\u2019s experience. For more help, check https://xhr.spec.whatwg.org/.',
           /**
-   *@description TODO(crbug.com/1320365): Description needed for translation
-   */
+           *@description Warning displayed to developers that instead of using
+           *    `supportsSession()`, which returns a promise that resolves if
+           *    the XR session can be supported and rejects if not, they should
+           *    use `isSessionSupported()` which will return a promise which
+           *    resolves to a boolean indicating if the XR session can be
+           *    supported or not, but may reject to throw an exception.
+           */
           xrSupportsSession:
               '`supportsSession()` is deprecated. Please use `isSessionSupported()` and check the resolved boolean value instead.',
         };

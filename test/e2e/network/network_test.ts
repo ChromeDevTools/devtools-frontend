@@ -64,12 +64,11 @@ describe('The Network Tab', async function() {
     assert.deepStrictEqual(names, expectedNames, 'The right request names should appear in the list');
   });
 
-  // Flakey test
-  it.skip('[crbug.com/1093287] can select requests', async () => {
+  it('can select requests', async () => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL);
 
     let selected = await getSelectedRequestName();
-    assert.isUndefined(selected, 'No request should be selected by default');
+    assert.isNull(selected, 'No request should be selected by default');
 
     await selectRequestByName(SIMPLE_PAGE_URL);
     await waitForSelectedRequestChange(selected);

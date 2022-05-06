@@ -143,7 +143,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.element.classList.add('network-item-view');
 
     this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting(
-        'resourceViewTab', NetworkForward.UIRequestLocation.UIRequestTabs.Preview);
+        'resourceViewTab', NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
 
     this.headersView = new RequestHeadersView(request);
     this.appendTab(

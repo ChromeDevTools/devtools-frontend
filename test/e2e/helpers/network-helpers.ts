@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  $,
   $$,
   click,
   getBrowserAndPages,
@@ -43,7 +44,10 @@ export async function getAllRequestNames() {
 }
 
 export async function getSelectedRequestName() {
-  const request = await waitFor(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
+  const request = await $(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
+  if (!request) {
+    return null;
+  }
   return await request.evaluate(node => {
     return node && node.childNodes[1].textContent;
   });

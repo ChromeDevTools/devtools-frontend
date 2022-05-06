@@ -105,7 +105,6 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
     await callback();
   }
 
-  console.log('a');  // eslint-disable-line no-console
   // Ensure all messages are populated.
   await asyncScope.exec(() => frontend.waitForFunction((CONSOLE_FIRST_MESSAGES_SELECTOR: string) => {
     const messages = document.querySelectorAll(CONSOLE_FIRST_MESSAGES_SELECTOR);
@@ -114,7 +113,6 @@ export async function getCurrentConsoleMessages(withAnchor = false, callback?: (
     }
     return Array.from(messages).every(message => message.childNodes.length > 0);
   }, {timeout: 0, polling: 'mutation'}, CONSOLE_FIRST_MESSAGES_SELECTOR));
-  console.log('b');  // eslint-disable-line no-console
 
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_FIRST_MESSAGES_SELECTOR;
 

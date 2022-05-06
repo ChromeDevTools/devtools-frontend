@@ -336,6 +336,10 @@
   height: 20px;
 }
 
+.nodeId-column .monospace {
+  overflow: hidden;
+}
+
 .show-element {
   margin: 0 0 0 8px;
   padding: 0;

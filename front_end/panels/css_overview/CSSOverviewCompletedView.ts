@@ -1074,7 +1074,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         button.classList.add('show-element');
         UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.showElement));
         button.tabIndex = 0;
-        button.onclick = (): void => this.data.node.scrollIntoView();
+        button.onclick = (): Promise<void> => frontendNode.scrollIntoView();
         cell.appendChild(button);
       });
       return cell;

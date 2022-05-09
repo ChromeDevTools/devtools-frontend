@@ -24,8 +24,8 @@ import { Protocol } from 'devtools-protocol';
  * @public
  */
 export interface RemoteAddress {
-    ip: string;
-    port: number;
+    ip?: string;
+    port?: number;
 }
 interface CDPSession extends EventEmitter {
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;

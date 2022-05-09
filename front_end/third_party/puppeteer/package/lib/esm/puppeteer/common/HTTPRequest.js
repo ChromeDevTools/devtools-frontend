@@ -57,6 +57,11 @@ export class HTTPRequest {
         this._fromMemoryCache = false;
         this._interceptionHandled = false;
         this._headers = {};
+        this._responseForRequest = null;
+        this._abortErrorReason = null;
+        this._interceptResolutionState = {
+            action: InterceptResolutionAction.None,
+        };
         this._client = client;
         this._requestId = event.requestId;
         this._isNavigationRequest =
@@ -64,13 +69,12 @@ export class HTTPRequest {
         this._interceptionId = interceptionId;
         this._allowInterception = allowInterception;
         this._url = event.request.url;
-        this._resourceType = event.type.toLowerCase();
+        this._resourceType = (event.type || 'other').toLowerCase();
         this._method = event.request.method;
         this._postData = event.request.postData;
         this._frame = frame;
         this._redirectChain = redirectChain;
         this._continueRequestOverrides = {};
-        this._interceptResolutionState = { action: InterceptResolutionAction.None };
         this._interceptHandlers = [];
         this._initiator = event.initiator;
         for (const key of Object.keys(event.request.headers))
@@ -151,6 +155,9 @@ export class HTTPRequest {
             case 'abort':
                 return this._abort(this._abortErrorReason);
             case 'respond':
+                if (this._responseForRequest === null) {
+                    throw new Error('Response is missing for the interception');
+                }
                 return this._respond(this._responseForRequest);
             case 'continue':
                 return this._continue(this._continueRequestOverrides);
@@ -303,8 +310,8 @@ export class HTTPRequest {
             return this._continue(overrides);
         }
         this._continueRequestOverrides = overrides;
-        if (priority > this._interceptResolutionState.priority ||
-            this._interceptResolutionState.priority === undefined) {
+        if (this._interceptResolutionState.priority === undefined ||
+            priority > this._interceptResolutionState.priority) {
             this._interceptResolutionState = {
                 action: InterceptResolutionAction.Continue,
                 priority,
@@ -381,8 +388,8 @@ export class HTTPRequest {
             return this._respond(response);
         }
         this._responseForRequest = response;
-        if (priority > this._interceptResolutionState.priority ||
-            this._interceptResolutionState.priority === undefined) {
+        if (this._interceptResolutionState.priority === undefined ||
+            priority > this._interceptResolutionState.priority) {
             this._interceptResolutionState = {
                 action: InterceptResolutionAction.Respond,
                 priority,
@@ -414,11 +421,12 @@ export class HTTPRequest {
             responseHeaders['content-type'] = response.contentType;
         if (responseBody && !('content-length' in responseHeaders))
             responseHeaders['content-length'] = String(Buffer.byteLength(responseBody));
+        const status = response.status || 200;
         await this._client
             .send('Fetch.fulfillRequest', {
             requestId: this._interceptionId,
-            responseCode: response.status || 200,
-            responsePhrase: STATUS_TEXTS[response.status || 200],
+            responseCode: status,
+            responsePhrase: STATUS_TEXTS[status],
             responseHeaders: headersArray(responseHeaders),
             body: responseBody ? responseBody.toString('base64') : undefined,
         })
@@ -452,8 +460,8 @@ export class HTTPRequest {
             return this._abort(errorReason);
         }
         this._abortErrorReason = errorReason;
-        if (priority >= this._interceptResolutionState.priority ||
-            this._interceptResolutionState.priority === undefined) {
+        if (this._interceptResolutionState.priority === undefined ||
+            priority >= this._interceptResolutionState.priority) {
             this._interceptResolutionState = {
                 action: InterceptResolutionAction.Abort,
                 priority,
@@ -466,7 +474,7 @@ export class HTTPRequest {
         await this._client
             .send('Fetch.failRequest', {
             requestId: this._interceptionId,
-            errorReason,
+            errorReason: errorReason || 'Failed',
         })
             .catch(handleError);
     }

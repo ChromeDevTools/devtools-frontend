@@ -12,6 +12,7 @@ export class HTTPResponse {
      */
     constructor(client, request, responsePayload, extraInfo) {
         this._contentPromise = null;
+        this._bodyLoadedPromiseFulfill = () => { };
         this._headers = {};
         this._client = client;
         this._request = request;
@@ -35,7 +36,7 @@ export class HTTPResponse {
         this._securityDetails = responsePayload.securityDetails
             ? new SecurityDetails(responsePayload.securityDetails)
             : null;
-        this._timing = responsePayload.timing;
+        this._timing = responsePayload.timing || null;
     }
     /**
      * @internal
@@ -58,7 +59,10 @@ export class HTTPResponse {
      * @internal
      */
     _resolveBody(err) {
-        return this._bodyLoadedPromiseFulfill(err);
+        if (err) {
+            return this._bodyLoadedPromiseFulfill(err);
+        }
+        return this._bodyLoadedPromiseFulfill();
     }
     /**
      * @returns The IP address and port number used to connect to the remote

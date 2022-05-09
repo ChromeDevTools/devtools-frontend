@@ -19,7 +19,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logPolitely = exports.downloadBrowser = void 0;
-const os_1 = __importDefault(require("os"));
 const https_1 = __importDefault(require("https"));
 const progress_1 = __importDefault(require("progress"));
 const url_1 = __importDefault(require("url"));
@@ -91,11 +90,7 @@ async function downloadBrowser() {
         if (NPM_NO_PROXY)
             process.env.NO_PROXY = NPM_NO_PROXY;
         function onSuccess(localRevisions) {
-            // Use Intel x86 builds on Apple M1 until native macOS arm64
-            // Chromium builds are available.
-            if (os_1.default.platform() !== 'darwin' && os_1.default.arch() !== 'arm64') {
-                logPolitely(`${supportedProducts[product]} (${revisionInfo.revision}) downloaded to ${revisionInfo.folderPath}`);
-            }
+            logPolitely(`${supportedProducts[product]} (${revisionInfo.revision}) downloaded to ${revisionInfo.folderPath}`);
             localRevisions = localRevisions.filter((revision) => revision !== revisionInfo.revision);
             const cleanupOldVersions = localRevisions.map((revision) => browserFetcher.remove(revision));
             Promise.all([...cleanupOldVersions]);

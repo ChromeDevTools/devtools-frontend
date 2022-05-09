@@ -1,4 +1,20 @@
+/**
+ * Copyright 2018 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import NodeWebSocket from 'ws';
+import { packageVersion } from '../generated/version.js';
 export class NodeWebSocketTransport {
     constructor(ws) {
         this._ws = ws;
@@ -16,15 +32,13 @@ export class NodeWebSocketTransport {
         this.onclose = null;
     }
     static create(url) {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const pkg = require('../../../../package.json');
         return new Promise((resolve, reject) => {
             const ws = new NodeWebSocket(url, [], {
                 followRedirects: true,
                 perMessageDeflate: false,
                 maxPayload: 256 * 1024 * 1024,
                 headers: {
-                    'User-Agent': `Puppeteer ${pkg.version}`,
+                    'User-Agent': `Puppeteer ${packageVersion}`,
                 },
             });
             ws.addEventListener('open', () => resolve(new NodeWebSocketTransport(ws)));

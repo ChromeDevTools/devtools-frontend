@@ -254,6 +254,18 @@ devtools_pre_built("puppeteer") {
     "package/lib/esm/vendor/mitt/src/index.d.ts.map",
     "package/lib/esm/vendor/mitt/src/index.js",
     "package/lib/esm/vendor/mitt/src/index.js.map",
+    "package/lib/esm/puppeteer/compat.js",
+    "package/lib/esm/puppeteer/compat.js.map",
+    "package/lib/esm/puppeteer/compat.d.ts",
+    "package/lib/esm/puppeteer/compat.d.ts.map",
+    "package/lib/esm/puppeteer/generated/version.js",
+    "package/lib/esm/puppeteer/generated/version.js.map",
+    "package/lib/esm/puppeteer/generated/version.d.ts",
+    "package/lib/esm/puppeteer/generated/version.d.ts.map",
+    "package/lib/esm/puppeteer/constants.js",
+    "package/lib/esm/puppeteer/constants.js.map",
+    "package/lib/esm/puppeteer/constants.d.ts",
+    "package/lib/esm/puppeteer/constants.d.ts.map",
     "puppeteer-tsconfig.json",
   ]
 }

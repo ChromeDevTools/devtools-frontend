@@ -158,11 +158,11 @@ export declare class HTTPRequest {
      * @returns The `ResponseForRequest` that gets used if the
      * interception is allowed to respond (ie, `abort()` is not called).
      */
-    responseForRequest(): Partial<ResponseForRequest>;
+    responseForRequest(): Partial<ResponseForRequest> | null;
     /**
      * @returns the most recent reason for aborting the request
      */
-    abortErrorReason(): Protocol.Network.ErrorReason;
+    abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * @returns An InterceptResolutionState object describing the current resolution
      *  action and priority.

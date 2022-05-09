@@ -19,22 +19,9 @@ exports.initializePuppeteerNode = void 0;
 const Puppeteer_js_1 = require("./node/Puppeteer.js");
 const revisions_js_1 = require("./revisions.js");
 const pkg_dir_1 = require("pkg-dir");
-const path_1 = require("path");
-function resolvePuppeteerRootDirectory() {
-    try {
-        // In some environments, like esbuild, this will throw an error.
-        // We suppress the error since the bundled binary is not expected
-        // to be used or installed in this case and, therefore, the
-        // root directory does not have to be known.
-        return (0, pkg_dir_1.sync)((0, path_1.dirname)(require.resolve('./initialize-node')));
-    }
-    catch (error) {
-        // Fallback to __dirname.
-        return (0, pkg_dir_1.sync)(__dirname);
-    }
-}
+const constants_js_1 = require("./constants.js");
 const initializePuppeteerNode = (packageName) => {
-    const puppeteerRootDirectory = resolvePuppeteerRootDirectory();
+    const puppeteerRootDirectory = (0, pkg_dir_1.sync)(constants_js_1.rootDirname);
     let preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
     const isPuppeteerCore = packageName === 'puppeteer-core';
     // puppeteer-core ignores environment variables

@@ -2931,11 +2931,11 @@ export declare class HTTPRequest {
      * @returns The `ResponseForRequest` that gets used if the
      * interception is allowed to respond (ie, `abort()` is not called).
      */
-    responseForRequest(): Partial<ResponseForRequest>;
+    responseForRequest(): Partial<ResponseForRequest> | null;
     /**
      * @returns the most recent reason for aborting the request
      */
-    abortErrorReason(): Protocol.Network.ErrorReason;
+    abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * @returns An InterceptResolutionState object describing the current resolution
      *  action and priority.
@@ -5451,7 +5451,7 @@ export declare class HTTPResponse {
         screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
         private _screenshotTask;
         /**
-         * Generatees a PDF of the page with the `print` CSS media type.
+         * Generates a PDF of the page with the `print` CSS media type.
          * @remarks
          *
          * NOTE: PDF generation is only supported in Chrome headless mode.
@@ -6196,7 +6196,7 @@ export declare class HTTPResponse {
      * Supported platforms.
      * @public
      */
-    export declare type Platform = 'linux' | 'mac' | 'win32' | 'win64';
+    export declare type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
 
     /**
      * @public
@@ -6581,8 +6581,8 @@ export declare class HTTPResponse {
      * @public
      */
     export declare interface RemoteAddress {
-        ip: string;
-        port: number;
+        ip?: string;
+        port?: number;
     }
 
     /**

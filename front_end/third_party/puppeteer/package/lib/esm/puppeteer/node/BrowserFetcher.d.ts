@@ -18,7 +18,7 @@ import { Product } from '../common/Product.js';
  * Supported platforms.
  * @public
  */
-export declare type Platform = 'linux' | 'mac' | 'win32' | 'win64';
+export declare type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
 /**
  * @public
  */

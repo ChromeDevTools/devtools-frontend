@@ -145,6 +145,7 @@ class ChromeLauncher {
     }
     defaultArgs(options = {}) {
         const chromeArguments = [
+            '--allow-pre-commit-input',
             '--disable-background-networking',
             '--enable-features=NetworkService,NetworkServiceInProcess',
             '--disable-background-timer-throttling',

@@ -53,6 +53,9 @@
     "package/lib/esm/puppeteer/node/Launcher.js",
     "package/lib/esm/puppeteer/node/LaunchOptions.js",
     "package/lib/esm/puppeteer/environment.js",
-    "package/lib/esm/vendor/mitt/src/index.js"
+    "package/lib/esm/vendor/mitt/src/index.js",
+    "package/lib/esm/puppeteer/compat.js",
+    "package/lib/esm/puppeteer/generated/version.js",
+    "package/lib/esm/puppeteer/constants.js"
   ]
 }

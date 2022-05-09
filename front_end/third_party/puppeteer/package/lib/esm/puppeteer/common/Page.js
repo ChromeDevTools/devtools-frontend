@@ -2040,7 +2040,7 @@ export class Page extends EventEmitter {
         }
     }
     /**
-     * Generatees a PDF of the page with the `print` CSS media type.
+     * Generates a PDF of the page with the `print` CSS media type.
      * @remarks
      *
      * NOTE: PDF generation is only supported in Chrome headless mode.

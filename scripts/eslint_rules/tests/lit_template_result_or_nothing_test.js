@@ -31,6 +31,19 @@ ruleTester.run('lit_template_result_or_nothing', rule, {
       code: 'function foo(): LitHtml.TemplateResult|string {}',
       filename: 'front_end/components/datagrid.ts',
     },
+    {
+      // No return type in class method should be valid
+      code: `class Foo {
+        constructor() {
+        }
+      }`,
+      filename: 'front_end/components/datagrid.ts',
+    },
+    {
+      // No return type in class method should be valid
+      code: 'function foo() {}',
+      filename: 'front_end/components/datagrid.ts',
+    },
   ],
   invalid: [
     {

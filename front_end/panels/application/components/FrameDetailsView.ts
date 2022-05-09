@@ -318,7 +318,7 @@ export class FrameDetailsReportView extends HTMLElement {
     });
   }
 
-  #renderOriginTrial(): LitHtml.TemplateResult|{} {
+  #renderOriginTrial(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }
@@ -354,7 +354,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #renderDocumentSection(): LitHtml.TemplateResult|{} {
+  #renderDocumentSection(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }
@@ -381,7 +381,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #maybeRenderSourcesLinkForURL(): LitHtml.TemplateResult|{} {
+  #maybeRenderSourcesLinkForURL(): LitHtml.LitTemplate {
     if (!this.#frame || this.#frame.unreachableUrl()) {
       return LitHtml.nothing;
     }
@@ -393,7 +393,7 @@ export class FrameDetailsReportView extends HTMLElement {
     );
   }
 
-  #maybeRenderNetworkLinkForURL(): LitHtml.TemplateResult|{} {
+  #maybeRenderNetworkLinkForURL(): LitHtml.LitTemplate {
     if (this.#frame) {
       const resource = this.#frame.resourceForURL(this.#frame.url);
       if (resource && resource.request) {
@@ -422,7 +422,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return null;
   }
 
-  #maybeRenderUnreachableURL(): LitHtml.TemplateResult|{} {
+  #maybeRenderUnreachableURL(): LitHtml.LitTemplate {
     if (!this.#frame || !this.#frame.unreachableUrl()) {
       return LitHtml.nothing;
     }
@@ -438,7 +438,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #renderNetworkLinkForUnreachableURL(): LitHtml.TemplateResult|{} {
+  #renderNetworkLinkForUnreachableURL(): LitHtml.LitTemplate {
     if (this.#frame) {
       const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(this.#frame.unreachableUrl());
       if (unreachableUrl) {
@@ -464,7 +464,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #maybeRenderOrigin(): LitHtml.TemplateResult|{} {
+  #maybeRenderOrigin(): LitHtml.LitTemplate {
     if (this.#frame && this.#frame.securityOrigin && this.#frame.securityOrigin !== '://') {
       return LitHtml.html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
@@ -477,7 +477,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  async #renderOwnerElement(): Promise<LitHtml.TemplateResult|{}> {
+  async #renderOwnerElement(): Promise<LitHtml.LitTemplate> {
     if (this.#frame) {
       const linkTargetDOMNode = await this.#frame.getOwnerDOMNodeOrDocument();
       if (linkTargetDOMNode) {
@@ -507,7 +507,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #maybeRenderCreationStacktrace(): LitHtml.TemplateResult|{} {
+  #maybeRenderCreationStacktrace(): LitHtml.LitTemplate {
     const creationStackTraceData = this.#frame?.getCreationStackTraceData();
     if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -549,7 +549,7 @@ export class FrameDetailsReportView extends HTMLElement {
     }
   }
 
-  #maybeRenderAdStatus(): LitHtml.TemplateResult|{} {
+  #maybeRenderAdStatus(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }
@@ -572,7 +572,7 @@ export class FrameDetailsReportView extends HTMLElement {
       `;
   }
 
-  #renderIsolationSection(): LitHtml.TemplateResult|{} {
+  #renderIsolationSection(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }
@@ -596,7 +596,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #maybeRenderSecureContextExplanation(): LitHtml.TemplateResult|{} {
+  #maybeRenderSecureContextExplanation(): LitHtml.LitTemplate {
     const explanation = this.#getSecureContextExplanation();
     if (explanation) {
       return LitHtml.html`<span class="inline-comment">${explanation}</span>`;
@@ -618,7 +618,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return null;
   }
 
-  async #maybeRenderCoopCoepStatus(): Promise<LitHtml.TemplateResult|{}> {
+  async #maybeRenderCoopCoepStatus(): Promise<LitHtml.LitTemplate> {
     if (this.#frame) {
       const model = this.#frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
       const info = model && await model.getSecurityIsolationStatus(this.#frame.id);
@@ -642,7 +642,7 @@ export class FrameDetailsReportView extends HTMLElement {
       info: Protocol.Network.CrossOriginEmbedderPolicyStatus|Protocol.Network.CrossOriginOpenerPolicyStatus|undefined,
       policyName: string,
       noneValue: Protocol.Network.CrossOriginEmbedderPolicyValue|
-      Protocol.Network.CrossOriginOpenerPolicyValue): LitHtml.TemplateResult|{} {
+      Protocol.Network.CrossOriginOpenerPolicyValue): LitHtml.LitTemplate {
     if (!info) {
       return LitHtml.nothing;
     }
@@ -661,7 +661,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #renderApiAvailabilitySection(): LitHtml.TemplateResult|{} {
+  #renderApiAvailabilitySection(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }
@@ -680,7 +680,7 @@ export class FrameDetailsReportView extends HTMLElement {
     `;
   }
 
-  #renderSharedArrayBufferAvailability(): LitHtml.TemplateResult|{} {
+  #renderSharedArrayBufferAvailability(): LitHtml.LitTemplate {
     if (this.#frame) {
       const features = this.#frame.getGatedAPIFeatures();
       if (features) {
@@ -694,7 +694,7 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.sharedarraybufferConstructorIs) :
             (sabAvailable ? i18nString(UIStrings.sharedarraybufferConstructorIsAvailable) : '');
 
-        function renderHint(frame: SDK.ResourceTreeModel.ResourceTreeFrame): LitHtml.TemplateResult|{} {
+        function renderHint(frame: SDK.ResourceTreeModel.ResourceTreeFrame): LitHtml.LitTemplate {
           switch (frame.getCrossOriginIsolatedContextType()) {
             case Protocol.Page.CrossOriginIsolatedContextType.Isolated:
               return LitHtml.nothing;
@@ -730,7 +730,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #renderMeasureMemoryAvailability(): LitHtml.TemplateResult|{} {
+  #renderMeasureMemoryAvailability(): LitHtml.LitTemplate {
     if (this.#frame) {
       const measureMemoryAvailable = this.#frame.isCrossOriginIsolated();
       const availabilityText =
@@ -750,7 +750,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #renderAdditionalInfoSection(): LitHtml.TemplateResult|{} {
+  #renderAdditionalInfoSection(): LitHtml.LitTemplate {
     if (!this.#frame) {
       return LitHtml.nothing;
     }

@@ -170,7 +170,7 @@ export class RequestLinkIcon extends HTMLElement {
     return this.#request.url();
   }
 
-  #maybeRenderURL(): LitHtml.TemplateResult|{} {
+  #maybeRenderURL(): LitHtml.LitTemplate {
     if (!this.#displayURL) {
       return LitHtml.nothing;
     }

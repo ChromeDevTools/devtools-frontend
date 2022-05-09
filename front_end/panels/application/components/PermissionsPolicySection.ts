@@ -105,7 +105,7 @@ export class PermissionsPolicySection extends HTMLElement {
     void this.#render();
   }
 
-  #renderAllowed(): LitHtml.TemplateResult|{} {
+  #renderAllowed(): LitHtml.LitTemplate {
     const allowed = this.#permissionsPolicySectionData.policies.filter(p => p.allowed).map(p => p.feature).sort();
     if (!allowed.length) {
       return LitHtml.nothing;
@@ -119,7 +119,7 @@ export class PermissionsPolicySection extends HTMLElement {
     `;
   }
 
-  async #renderDisallowed(): Promise<LitHtml.TemplateResult|{}> {
+  async #renderDisallowed(): Promise<LitHtml.LitTemplate> {
     const disallowed = this.#permissionsPolicySectionData.policies.filter(p => !p.allowed)
                            .sort((a, b) => a.feature.localeCompare(b.feature));
     if (!disallowed.length) {

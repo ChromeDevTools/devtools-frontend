@@ -90,7 +90,7 @@ export function getRowEntryForColumnId(row: Row, id: string): Cell {
   return rowEntry;
 }
 
-export function renderCellValue(cell: Cell): LitHtml.TemplateResult|typeof LitHtml.nothing {
+export function renderCellValue(cell: Cell): LitHtml.LitTemplate {
   if (cell.renderer) {
     return cell.renderer(cell.value);
   }

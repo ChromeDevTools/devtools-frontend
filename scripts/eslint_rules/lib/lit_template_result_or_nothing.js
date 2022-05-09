@@ -116,6 +116,10 @@ module.exports = {
     }
 
     function checkFunctionDeclarationOrExpressionForUnionType(node) {
+      if (!node.returnType) {
+        return;
+      }
+
       if (node.returnType.type !== 'TSTypeAnnotation') {
         return;
       }

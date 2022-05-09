@@ -478,7 +478,7 @@ export class DataGrid extends HTMLElement {
     this.#cleanUpAfterResizeColumnComplete();
   }
 
-  #renderResizeForCell(column: Column, position: CellPosition): LitHtml.TemplateResult|typeof LitHtml.nothing {
+  #renderResizeForCell(column: Column, position: CellPosition): LitHtml.LitTemplate {
     /**
      * A resizer for a column is placed at the far right of the _previous column
      * cell_. So when we get called with [1, 0] that means this dragger is

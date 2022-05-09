@@ -9,6 +9,8 @@ export {Directive, type TemplateResult} from '../../third_party/lit-html/lit-htm
 const {render, svg, Directives, nothing, noChange} = LitHtml;
 const {html, literal, flattenTemplate} = Static;
 
+type LitTemplate = LitHtml.TemplateResult|typeof nothing;
+
 export {
   render,
   Directives,
@@ -18,4 +20,5 @@ export {
   html,
   literal,
   flattenTemplate,  // Exposed for unit testing.
+  type LitTemplate,
 };

@@ -150,7 +150,7 @@ export class RequestTrustTokensReport extends HTMLElement {
     // clang-format on
   }
 
-  #renderParameterSection(): LitHtml.TemplateResult|{} {
+  #renderParameterSection(): LitHtml.LitTemplate {
     if (!this.#trustTokenData || !this.#trustTokenData.params) {
       return LitHtml.nothing;
     }
@@ -167,14 +167,14 @@ export class RequestTrustTokensReport extends HTMLElement {
     `;
   }
 
-  #renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
+  #renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.LitTemplate {
     if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
       return LitHtml.nothing;
     }
     return renderRowWithCodeValue(i18nString(UIStrings.refreshPolicy), params.refreshPolicy.toString());
   }
 
-  #renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
+  #renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.LitTemplate {
     if (!params.issuers || params.issuers.length === 0) {
       return LitHtml.nothing;
     }
@@ -193,7 +193,7 @@ export class RequestTrustTokensReport extends HTMLElement {
   // The issuer and top level origin are technically parameters but reported in the
   // result structure due to the timing when they are calculated in the backend.
   // Nonetheless, we show them as part of the parameter section.
-  #renderIssuerAndTopLevelOriginFromResult(): LitHtml.TemplateResult|{} {
+  #renderIssuerAndTopLevelOriginFromResult(): LitHtml.LitTemplate {
     if (!this.#trustTokenData || !this.#trustTokenData.result) {
       return LitHtml.nothing;
     }
@@ -203,7 +203,7 @@ export class RequestTrustTokensReport extends HTMLElement {
       ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), this.#trustTokenData.result.issuerOrigin)}`;
   }
 
-  #renderResultSection(): LitHtml.TemplateResult|{} {
+  #renderResultSection(): LitHtml.LitTemplate {
     if (!this.#trustTokenData || !this.#trustTokenData.result) {
       return LitHtml.nothing;
     }
@@ -227,7 +227,7 @@ export class RequestTrustTokensReport extends HTMLElement {
       `;
   }
 
-  #renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.TemplateResult|{} {
+  #renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.LitTemplate {
     if (result.type !== Protocol.Network.TrustTokenOperationType.Issuance) {
       return LitHtml.nothing;
     }
@@ -284,7 +284,7 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
   }
 }
 
-function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitHtml.TemplateResult|{} {
+function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitHtml.LitTemplate {
   if (value === undefined) {
     return LitHtml.nothing;
   }

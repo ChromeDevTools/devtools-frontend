@@ -104,7 +104,7 @@ export class QueryContainer extends HTMLElement {
     // clang-format on
   }
 
-  #renderQueriedSizeDetails(): LitHtml.TemplateResult|{} {
+  #renderQueriedSizeDetails(): LitHtml.LitTemplate {
     if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.None) {
       return LitHtml.nothing;
     }

@@ -311,7 +311,7 @@ export class BackForwardCacheView extends HTMLElement {
   }
 
   #maybeRenderFrameTree(explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|
-                        undefined): LitHtml.TemplateResult|{} {
+                        undefined): LitHtml.LitTemplate {
     if (!explanationTree || (explanationTree.explanations.length === 0 && explanationTree.children.length === 0) ||
         !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
       return LitHtml.nothing;
@@ -456,7 +456,7 @@ export class BackForwardCacheView extends HTMLElement {
 
   #maybeRenderExplanations(
       explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
-      explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined): LitHtml.TemplateResult|{} {
+      explanationTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined): LitHtml.LitTemplate {
     if (explanations.length === 0) {
       return LitHtml.nothing;
     }
@@ -508,8 +508,7 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
-  #maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult|
-      {} {
+  #maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.LitTemplate {
     if (explanation.reason ===
             Protocol.Page.BackForwardCacheNotRestoredReason.EmbedderExtensionSentMessageToCachedFrame &&
         explanation.context) {
@@ -522,7 +521,7 @@ export class BackForwardCacheView extends HTMLElement {
     return LitHtml.nothing;
   }
 
-  #renderFramesPerReason(frames: string[]|undefined): LitHtml.TemplateResult|{} {
+  #renderFramesPerReason(frames: string[]|undefined): LitHtml.LitTemplate {
     if (frames === undefined || frames.length === 0 || !Root.Runtime.experiments.isEnabled('bfcacheDisplayTree')) {
       return LitHtml.nothing;
     }

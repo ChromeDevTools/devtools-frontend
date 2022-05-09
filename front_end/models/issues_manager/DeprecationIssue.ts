@@ -131,23 +131,34 @@ const
           insecurePrivateNetworkSubresourceRequest:
               'The website requested a subresource from a network that it could only access because of its users\' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.',
           /**
-   *@description TODO(crbug.com/1318860): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to turn off
+           * CPU overuse detection with a non-standard API. CPU overuse
+           * detection is used to adjust video quality based on available CPU
+           * resources.
+          */
           legacyConstraintGoogCpuOveruseDetection:
               'CPU overuse detection is enabled-by-default and the ability to disable it using `googCpuOveruseDetection` will soon be removed. Please stop using this legacy constraint.',
           /**
-   *@description TODO(crbug.com/1318861): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to disable
+           * use of IPv6 addresses with a non-standard API.
+          */
           legacyConstraintGoogIPv6:
               'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` will soon be removed. Please stop using this legacy constraint.',
           /**
-   *@description TODO(crbug.com/1318863): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to adjust
+           * bitrate settings for screeen sharing with a non-standard API.
+          */
           legacyConstraintGoogScreencastMinBitrate:
               'Screencast min bitrate is now set to 100 kbps by default and `googScreencastMinBitrate` will soon be ignored in favor of this new default. Please stop using this legacy constraint.',
           /**
-   *@description TODO(crbug.com/1318864): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to change the
+           * default settings for how the browser should act when bitrate is
+           * low.
+          */
           legacyConstraintGoogSuspendBelowMinBitrate:
               'Support for the `googSuspendBelowMinBitrate` constraint is about to be removed. Please stop using this legacy constraint.',
           /**
@@ -259,39 +270,71 @@ const
           requestedSubresourceWithEmbeddedCredentials:
               'Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked.',
           /**
-   *@description TODO(crbug.com/1318872): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to use a
+           * non-standard crypto method when performing a handshake to set up a
+           * connection with another endpoint.
+          */
           rtcConstraintEnableDtlsSrtpFalse:
-              'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES` key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead.',
+              'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES key negotiation` method. This functionality is removed; use a service that supports `DTLS key negotiation` instead.',
           /**
-   *@description TODO(crbug.com/1318873): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website uses a non-standard
+           * API for controlling the crypto method used, but is not having an
+           * effect because the desired behavior is already enabled-by-default.
+          */
           rtcConstraintEnableDtlsSrtpTrue:
               'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness.',
           /**
-   *@description TODO(crbug.com/1318874): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * The `Session Description Protocol`, or `SDP` for short, is a
+           * protocol used by video conferencing websites to establish the
+           * number of audio and/or video streams to send and/or receive. This
+           * warning is emitted when a web site attempts to use a deprecated
+           * version of the protocol, called `Plan B`, that is no longer
+           * supported. The spec compliant version of the protocol is called
+           * `Unified Plan`.
+          */
           rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics:
-              'Complex Plan B SDP detected! Chrome will switch the default `sdpSemantics` from `plan-b` to the standardized `unified-plan` format and this peer connection is relying on the default `sdpSemantics`. This SDP is not compatible with Unified Plan and will be rejected by clients expecting Unified Plan. For more information about how to prepare for the switch, see https://webrtc.org/web-apis/chrome/unified-plan/.',
+              '`Complex Plan B SDP` detected. This dialect of the `Session Description Protocol` is no longer supported. Please use `Unified Plan SDP` instead.',
           /**
-   *@description TODO(crbug.com/1318875): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website uses a non-standard
+           * version of an API to exchange an `offer` or an `answer`. `Offers`
+           * and `answers` are exchanged between endpoints in order to configure
+           * what media should be sent and/or received. The app should make use
+           * of the standard API instead, which will have the desired effect.
+          */
           rtcPeerConnectionLegacyCreateWithMediaConstraints:
               'The `mediaConstraints` version of `RTCOfferOptions/RTCAnswerOptions` are deprecated and will soon be removed, please migrate to the promise-based `createOffer`/`createAnswer` instead.',
           /**
-   *@description TODO(crbug.com/1320358): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * The `Session Description Protocol`, or `SDP` for short, is a
+           * protocol used by video conferencing websites to establish the
+           * number of audio and/or video streams to send and/or receive. This
+           * warning is emitted when a web site attempts to use a deprecated
+           * version of the protocol, called `Plan B`, that is no longer
+           * supported. The spec compliant version of the protocol is called
+           * `Unified Plan`.
+          */
           rtcPeerConnectionSdpSemanticsPlanB:
-              'Plan B SDP semantics, which is used when constructing an `RTCPeerConnection` with `{sdpSemantics:\'plan-b\'}`, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status.',
+              '`Plan B SDP semantics`, which is used when constructing an `RTCPeerConnection` with `{sdpSemantics:\'plan-b\'}`, is a legacy non-standard version of the `Session Description Protocol` that has been permanently deleted from the Web Platform. It is still available when building with `IS_FUCHSIA`, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status.',
           /**
-   *@description TODO(crbug.com/1320360): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown then a video conferencing website attempts to use the
+           * `RTCP MUX` policy.
+          */
           rtcpMuxPolicyNegotiate: 'The `rtcpMuxPolicy` option is deprecated and will be removed.',
           /**
-   *@description TODO(crbug.com/1318876): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when a video conferencing website attempts to turn on or
+           * off a feature that has been removed, `RTP data channels`.
+           * `RTP data channels` are used to send and receive arbitrary data,
+           * but have been removed in favor of standardized versions of
+           * `data channels`: `SCTP data channels`.
+          */
           rtpDataChannel:
-              'RTP data channels are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date.',
+              '`RTP data channels` are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date.',
           /**
    *@description TODO(crbug.com/1320361): Description needed for translation
    */

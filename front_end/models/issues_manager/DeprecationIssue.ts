@@ -346,8 +346,10 @@ const
           sharedArrayBufferConstructedWithoutIsolation:
               '`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.',
           /**
-   *@description TODO(crbug.com/1320363): Description needed for translation
-   */
+           *@description A deprecation warning shown in the DevTools Issues tab.
+           * It's shown when the speech synthesis API is called before the page
+           * receives a user activation.
+           */
           textToSpeech_DisallowedByAutoplay:
               '`speechSynthesis.speak()` without user activation is deprecated and will be removed.',
           /**

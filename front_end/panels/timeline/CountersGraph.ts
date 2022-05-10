@@ -89,6 +89,8 @@ export class CountersGraph extends UI.Widget.VBox {
   _counterUI: CounterUI[];
   _countersByName: Map<string, Counter>;
   _gpuMemoryCounter: Counter;
+  _STMMemoryLimitCounter: Counter;
+  _STMMemoryCurrentCounter: Counter;
   _track?: TimelineModel.TimelineModel.Track|null;
   _currentValuesBar?: HTMLElement;
   _markerXPosition?: number;
@@ -141,9 +143,15 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
     this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString);
 
-    this._countersByName.set('Coherent_STMCurrentMemory', this._createCounter('STM Memory', 'hsl(238, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString));
-    this._countersByName.set('Coherent_STMLimitMemory', this._createCounter('STM Limit', 'hsla(360, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString));
+    this._STMMemoryCurrentCounter = this._createCounter('STM Memory', 'hsl(238, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString);
+    this._STMMemoryLimitCounter = this._createCounter('STM Limit', 'hsla(360, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString)
     this._counterUI[this._counterUI.length - 1].setShouldDrawDashed(true);
+
+    this._STMMemoryLimitCounter.setFixedBounds({min:0, max:12*1024*1024});
+    this._STMMemoryCurrentCounter.setFixedBounds({min:0, max:12*1024*1024});
+
+    this._countersByName.set('Coherent_STMCurrentMemory', this._STMMemoryCurrentCounter);
+    this._countersByName.set('Coherent_STMLimitMemory', this._STMMemoryLimitCounter);
 
     this._countersByName.set('gpuMemoryUsed', this._gpuMemoryCounter);
 
@@ -211,6 +219,12 @@ export class CountersGraph extends UI.Widget.VBox {
       const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB';
       if (gpuMemoryLimitCounterName in counters) {
         this._gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
+      }
+
+      const stmLimitCounterNamer = 'Coherent_STMLimitMemory';
+      if (stmLimitCounterNamer in counters) {
+        this._STMMemoryLimitCounter.setFixedBounds({min:0, max:counters[stmLimitCounterNamer]});
+        this._STMMemoryCurrentCounter.setFixedBounds({min:0, max:counters[stmLimitCounterNamer]});
       }
     }
   }
@@ -348,6 +362,9 @@ export class Counter {
   _minTime: number;
   _limitValue?: number;
   _type: CounterType;
+  _hasFixedBounds: boolean;
+  _fixedMin: number;
+  _fixedMax: number;
 
   constructor(counterType: CounterType) {
     this.times = [];
@@ -358,6 +375,9 @@ export class Counter {
     this._maxTime = 0;
     this._minTime = 0;
     this._type = counterType;
+    this._hasFixedBounds = false;
+    this._fixedMin = 0;
+    this._fixedMax = 1;
   }
 
   appendSample(time: number, value: number): void {
@@ -381,6 +401,9 @@ export class Counter {
     min: number,
     max: number,
   } {
+    if (this._hasFixedBounds) {
+      return {min: this._fixedMin, max: this._fixedMax};
+    }
     let maxValue;
     let minValue;
     for (let i = this._minimumIndex; i <= this._maximumIndex; i++) {
@@ -437,6 +460,12 @@ export class Counter {
 
   getType(): CounterType {
     return this._type;
+  }
+
+  setFixedBounds(bounds: { min:number, max:number}) : void {
+    this._fixedMin = bounds.min;
+    this._fixedMax = bounds.max;
+    this._hasFixedBounds = true;
   }
 }
 

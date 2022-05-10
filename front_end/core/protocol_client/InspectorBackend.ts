@@ -409,6 +409,10 @@ export class SessionRouter {
       const callback = session.callbacks.get(messageObject.id);
       session.callbacks.delete(messageObject.id);
       if (!callback) {
+        if (messageObject.error?.code === ConnectionClosedErrorCode) {
+          // Ignore the errors that are sent as responses after the session closes.
+          return;
+        }
         if (!suppressUnknownMessageErrors) {
           InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         }

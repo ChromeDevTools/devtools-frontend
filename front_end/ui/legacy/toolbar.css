@@ -180,7 +180,7 @@ it. */
 .toolbar-button.copied-to-clipboard::after {
   content: attr(data-content);
   position: fixed;
-  top: var(--toolbar-height);
+  margin-top: calc(2 * var(--toolbar-height));
   padding: 3px 5px;
   color: var(--color-text-secondary);
   background: var(--color-background-elevation-1);

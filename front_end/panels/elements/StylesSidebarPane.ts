@@ -147,6 +147,14 @@ const UIStrings = {
   */
   automaticDarkMode: 'Automatic dark mode',
   /**
+  *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
+  */
+  copyAllCSSChanges: 'Copy all the CSS changes',
+  /**
+  *@description Tooltip text that appears after clicking on the copy CSS changes button
+  */
+  copiedToClipboard: 'Copied to clipboard',
+  /**
   *@description Text displayed on layer separators in the styles sidebar pane.
   */
   layer: 'Layer',
@@ -207,6 +215,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly imagePreviewPopover: ImagePreviewPopover;
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
+  #copyChangesButton?: UI.Toolbar.ToolbarButton;
 
   static instance(): StylesSidebarPane {
     if (!stylesSidebarPaneInstance) {
@@ -579,6 +588,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
+        this.#copyChangesButton = this.createCopyAllChangesButton();
+        this.appendToolbarItem(this.#copyChangesButton);
+        this.#copyChangesButton.element.classList.add('hidden');
+      }
       this.dispatchEventToListeners(Events.InitialUpdateCompleted);
     }
 
@@ -1109,6 +1123,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return changedLines.has(formattedLineNumber + 1);
   }
 
+  updateChangeStatus(): void {
+    if (!this.#copyChangesButton) {
+      return;
+    }
+
+    let hasChangedStyles = false;
+    for (const changeTracker of this.#urlToChangeTracker.values()) {
+      if (changeTracker.changedLines.size > 0) {
+        hasChangedStyles = true;
+        break;
+      }
+    }
+
+    this.#copyChangesButton.element.classList.toggle('hidden', !hasChangedStyles);
+  }
+
   private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const changeTracker = this.#urlToChangeTracker.get(uiSourceCode.url());
     if (!changeTracker) {
@@ -1289,6 +1319,29 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }, {capture: true});
 
     return button;
+  }
+
+  private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {
+    const copyAllChangesButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), 'largeicon-copy');
+    // TODO(1296947): implement a dedicated component to share between all copy buttons
+    copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
+    let timeout: number|undefined;
+    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, async () => {
+      const allChanges = await this.getFormattedChanges();
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
+      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.AllChangesViaStylesPane);
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+      copyAllChangesButton.element.classList.add('copied-to-clipboard');
+      timeout = window.setTimeout(() => {
+        copyAllChangesButton.element.classList.remove('copied-to-clipboard');
+        timeout = undefined;
+      }, 2000);
+    });
+    return copyAllChangesButton;
   }
 }
 

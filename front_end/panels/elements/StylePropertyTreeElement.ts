@@ -1513,6 +1513,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     if (updatedProperty) {
       this.listItemElement.classList.toggle('changed', this.isPropertyChanged(updatedProperty));
+      this.parentPane().updateChangeStatus();
     }
 
     this.matchedStylesInternal.resetActiveProperties();

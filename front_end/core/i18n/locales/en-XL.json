@@ -5114,6 +5114,12 @@
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ĺâýêŕ îń l̂áŷér̂ t́r̂éê"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "Ĉóp̂íêd́ t̂ó ĉĺîṕb̂óâŕd̂"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "Ĉóp̂ý âĺl̂ t́ĥé ĈŚŜ ćĥán̂ǵêś"
+  },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS p̂ŕôṕêŕt̂ý n̂ám̂é: {PH1}"
   },

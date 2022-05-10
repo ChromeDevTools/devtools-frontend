@@ -511,9 +511,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
       // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
       case 'settings.documentation':
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            UI.UIUtils.addReferrerToURL('https://developer.chrome.com/docs/devtools/') as
-            Platform.DevToolsPath.UrlString);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(UI.UIUtils.addReferrerToURL(
+            'https://developer.chrome.com/docs/devtools/' as Platform.DevToolsPath.UrlString));
         return true;
       case 'settings.shortcuts':
         void SettingsScreen.showSettingsScreen({name: 'keybinds', focusTabHeader: true});

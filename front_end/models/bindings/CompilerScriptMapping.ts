@@ -124,7 +124,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     await this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 
-  static uiSourceCodeOrigin(uiSourceCode: Workspace.UISourceCode.UISourceCode): string[] {
+  static uiSourceCodeOrigin(uiSourceCode: Workspace.UISourceCode.UISourceCode): Platform.DevToolsPath.UrlString[] {
     const binding = uiSourceCodeToBinding.get(uiSourceCode);
     if (binding) {
       return binding.getReferringSourceMaps().map((sourceMap: SDK.SourceMap.SourceMap) => sourceMap.compiledURL());

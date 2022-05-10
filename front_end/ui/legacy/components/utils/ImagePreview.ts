@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -116,8 +114,7 @@ export class ImagePreview {
 
         // Open image in new tab.
         link.addEventListener('click', () => {
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-              imageURL as Platform.DevToolsPath.UrlString);
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
         });
 
         const intrinsicWidth = imageElement.naturalWidth;
@@ -162,8 +159,7 @@ export class ImagePreview {
              HTMLLinkElement);
         sourceLink.textContent = sourceText;
         sourceLink.addEventListener('click', () => {
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-              imageURL as Platform.DevToolsPath.UrlString);
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
         });
         resolve(shadowBoundary);
       }
@@ -196,7 +192,7 @@ export class ImagePreview {
     }
   }
 
-  static defaultAltTextForImageURL(url: string): string {
+  static defaultAltTextForImageURL(url: Platform.DevToolsPath.UrlString): string {
     const parsedImageURL = new Common.ParsedURL.ParsedURL(url);
     const imageSourceText = parsedImageURL.isValid ? parsedImageURL.displayName : i18nString(UIStrings.unknownSource);
     return i18nString(UIStrings.imageFromS, {PH1: imageSourceText});

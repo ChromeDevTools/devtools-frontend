@@ -392,7 +392,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       const rawLocation = value.debuggerModel().createRawLocationByScriptId(
           value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
       if (rawLocation && linkifier) {
-        return new ObjectPropertyValue(linkifier.linkifyRawLocation(rawLocation, ''));
+        return new ObjectPropertyValue(linkifier.linkifyRawLocation(rawLocation, Platform.DevToolsPath.EmptyUrlString));
       }
       propertyValue = new ObjectPropertyValue(createUnknownInternalLocationElement());
     } else if (type === 'string' && typeof description === 'string') {

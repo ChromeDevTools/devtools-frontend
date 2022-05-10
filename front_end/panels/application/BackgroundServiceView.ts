@@ -2,17 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// eslint-disable-next-line rulesdir/es_modules_import
-import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
-import backgroundServiceViewStyles from './backgroundServiceView.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Protocol from '../../generated/protocol.js';
+
+import backgroundServiceViewStyles from './backgroundServiceView.css.js';
 
 import type {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {Events} from './BackgroundServiceModel.js';

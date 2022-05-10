@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
 export class LighthouseReportGenerator {
@@ -80,7 +81,7 @@ export interface NodeDetailsJSON {
   snippet?: string;
 }
 export interface SourceLocationDetailsJSON {
-  sourceUrl?: string;
+  sourceUrl?: Platform.DevToolsPath.UrlString;
   sourceLine?: string;
   sourceColumn?: string;
 }

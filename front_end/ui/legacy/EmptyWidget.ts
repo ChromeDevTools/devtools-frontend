@@ -29,6 +29,7 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 import emptyWidgetStyles from './emptyWidget.css.legacy.js';
 import {VBox} from './Widget.js';
@@ -59,7 +60,7 @@ export class EmptyWidget extends VBox {
     return this.contentElement.createChild('p');
   }
 
-  appendLink(link: string): HTMLElement {
+  appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
     return this.contentElement.appendChild(XLink.create(link, i18nString(UIStrings.learnMore))) as HTMLElement;
   }
 

@@ -153,7 +153,9 @@ export class ExperimentsSupport {
     Platform.DCHECK(
         () => !this.#experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
     this.#experimentNames.add(experimentName);
-    this.#experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? ''));
+    this.#experiments.push(new Experiment(
+        this, experimentName, experimentTitle, Boolean(unstable),
+        docLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString));
   }
 
   isEnabled(experimentName: string): boolean {
@@ -244,9 +246,11 @@ export class Experiment {
   name: string;
   title: string;
   unstable: boolean;
-  docLink?: string;
+  docLink?: Platform.DevToolsPath.UrlString;
   readonly #experiments: ExperimentsSupport;
-  constructor(experiments: ExperimentsSupport, name: string, title: string, unstable: boolean, docLink: string) {
+  constructor(
+      experiments: ExperimentsSupport, name: string, title: string, unstable: boolean,
+      docLink: Platform.DevToolsPath.UrlString) {
     this.name = name;
     this.title = title;
     this.unstable = unstable;

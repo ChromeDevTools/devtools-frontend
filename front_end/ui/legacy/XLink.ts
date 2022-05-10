@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as ComponentHelpers from '../components/helpers/helpers.js';
@@ -22,7 +20,7 @@ import {
 import {XElement} from './XElement.js';
 
 export class XLink extends XElement {
-  hrefInternal: string|null;
+  hrefInternal: Platform.DevToolsPath.UrlString|null;
   private clickable: boolean;
   private readonly onClick: (arg0: Event) => void;
   private readonly onKeyDown: (arg0: Event) => void;
@@ -54,15 +52,17 @@ export class XLink extends XElement {
 
     this.onClick = (event: Event): void => {
       event.consume(true);
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-          (this.hrefInternal as Platform.DevToolsPath.UrlString));
+      if (this.hrefInternal) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);
+      }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
     this.onKeyDown = (event: Event): void => {
       if (isEnterOrSpaceKey(event)) {
         event.consume(true);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            (this.hrefInternal as Platform.DevToolsPath.UrlString));
+        if (this.hrefInternal) {
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);
+        }
       }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
@@ -73,7 +73,7 @@ export class XLink extends XElement {
     return XElement.observedAttributes.concat(['href', 'no-click']);
   }
 
-  get href(): string|null {
+  get href(): Platform.DevToolsPath.UrlString|null {
     return this.hrefInternal;
   }
 
@@ -89,11 +89,11 @@ export class XLink extends XElement {
       if (!newValue) {
         newValue = '';
       }
-      let href: string|null = null;
+      let href: Platform.DevToolsPath.UrlString|null = null;
       let url: URL|null = null;
       try {
-        url = new URL(addReferrerToURLIfNecessary(newValue));
-        href = url.toString();
+        url = new URL(addReferrerToURLIfNecessary(newValue as Platform.DevToolsPath.UrlString));
+        href = url.toString() as Platform.DevToolsPath.UrlString;
       } catch {
       }
       if (url && url.protocol === 'javascript:') {
@@ -147,8 +147,7 @@ export class ContextMenuProvider implements Provider {
     const node: XLink = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            node.href as Platform.DevToolsPath.UrlString);
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(node.href);
       }
     });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

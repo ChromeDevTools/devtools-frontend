@@ -1439,7 +1439,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     // SyntaxErrors might not populate the URL field. Try to resolve it via scriptId.
-    const url = exceptionDetails.url || debuggerModel.scriptForId(scriptId)?.sourceURL;
+    const url =
+        exceptionDetails.url as Platform.DevToolsPath.UrlString || debuggerModel.scriptForId(scriptId)?.sourceURL;
     if (!url) {
       return;
     }
@@ -1531,7 +1532,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private linkifyWithCustomLinkifier(
-      string: string, linkifier: (arg0: string, arg1: string, arg2?: number, arg3?: number) => Node): DocumentFragment {
+      string: string,
+      linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number, arg3?: number) => Node):
+      DocumentFragment {
     if (string.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue(
           document.createElement('span'), string, getLongStringVisibleLength());
@@ -1563,7 +1566,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           if (splitResult) {
             linkNode = linkifier(token.text, sourceURL, splitResult.lineNumber, splitResult.columnNumber);
           } else {
-            linkNode = linkifier(token.text, '');
+            linkNode = linkifier(token.text, Platform.DevToolsPath.EmptyUrlString);
           }
           container.appendChild(linkNode);
           break;

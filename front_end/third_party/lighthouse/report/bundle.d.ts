@@ -293,6 +293,7 @@ export class ReportUIFeatures {
      */
     _saveFile(blob: Blob | File): void;
 }
+export function format(_: any): void;
 /**
  * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -304,6 +305,7 @@ export class ReportUIFeatures {
  * @return {HTMLElement}
  */
 export function renderReport(lhr: LH.Result, opts?: LH.Renderer.Options): HTMLElement;
+export function swapLocale(_: any): void;
 type LineContentType = number;
 declare namespace LineContentType {
     const CONTENT_NORMAL: number;

@@ -94,7 +94,7 @@ Gathering in-page: SourceMaps
 Gathering in-page: FullPageScreenshot
 Gathering trace
 Gathering devtoolsLog & network records
-Computing artifact: NetworkRecords$M
+Computing artifact: NetworkRecords$N
 Running afterPass methods
 Gathering: CSSUsage
 Gathering: JsUsage
@@ -121,13 +121,14 @@ Getting browser version
 Gathering: TapTargets
 Gathering: Accessibility
 Gathering: TraceElements
-Computing artifact: ProcessedTrace$f
+Computing artifact: ProcessedTrace$h
 Computing artifact: ProcessedNavigation$7
 Gathering: InspectorIssues
 Gathering: SourceMaps
 Gathering: FullPageScreenshot
 Populate base artifacts
 Get webapp manifest
+Get webapp installability errors
 Collect stacks
 Running offlinePass pass
 Resetting state with about:blank
@@ -142,7 +143,7 @@ Navigating to http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-bas
 Running pass methods
 Gathering in-page: ServiceWorker
 Gathering devtoolsLog & network records
-Computing artifact: NetworkRecords$M
+Computing artifact: NetworkRecords$N
 Running afterPass methods
 Gathering: ServiceWorker
 Disconnecting from browser...
@@ -204,7 +205,7 @@ Auditing: Serves images with appropriate resolution
 Auditing: Fonts with `font-display: optional` are preloaded
 Auditing: Avoids deprecated APIs
 Auditing: Minimizes main-thread work
-Computing artifact: MainThreadTasks$7
+Computing artifact: MainThreadTasks$8
 Auditing: JavaScript execution time
 Auditing: Preload key requests
 Auditing: Preconnect to required origins
@@ -371,7 +372,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 9.5.0
+Version: 9.6.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,

@@ -746,11 +746,44 @@
   "lighthouse-core/audits/csp-xss.js | title": {
     "message": "Ensure CSP is effective against XSS attacks"
   },
+  "lighthouse-core/audits/deprecations.js | authorizationCoveredByWildcard": {
+    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling."
+  },
+  "lighthouse-core/audits/deprecations.js | canRequestURLHTTPContainingNewline": {
+    "message": "Resource requests whose URLs contained both removed whitespace `(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
+  },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "Deprecation / Warning"
   },
   "lighthouse-core/audits/deprecations.js | columnLine": {
     "message": "Line"
+  },
+  "lighthouse-core/audits/deprecations.js | cookieWithTruncatingChar": {
+    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginAccessBasedOnDocumentDomain": {
+    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginWindowAlert": {
+    "message": "Triggering `window.alert` from cross origin iframes has been deprecated and will be removed in the future."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginWindowConfirm": {
+    "message": "Triggering `window.confirm` from cross origin iframes has been deprecated and will be removed in the future."
+  },
+  "lighthouse-core/audits/deprecations.js | cssSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector."
+  },
+  "lighthouse-core/audits/deprecations.js | customCursorIntersectsViewport": {
+    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
   },
   "lighthouse-core/audits/deprecations.js | description": {
     "message": "Deprecated APIs will eventually be removed from the browser. [Learn more](https://web.dev/deprecations/)."
@@ -758,11 +791,164 @@
   "lighthouse-core/audits/deprecations.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 warning found}\n    other {# warnings found}\n    }"
   },
+  "lighthouse-core/audits/deprecations.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | eventPath": {
+    "message": "`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead."
+  },
   "lighthouse-core/audits/deprecations.js | failureTitle": {
     "message": "Uses deprecated APIs"
   },
+  "lighthouse-core/audits/deprecations.js | feature": {
+    "message": "Check the feature status page for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | geolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | geolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` and `watchPosition()` are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | getUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | hostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | insecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogCpuOveruseDetection": {
+    "message": "CPU overuse detection is enabled-by-default and the ability to disable it using `googCpuOveruseDetection` will soon be removed. Please stop using this legacy constraint."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogIPv6": {
+    "message": "IPv6 is enabled-by-default and the ability to disable it using `googIPv6` will soon be removed. Please stop using this legacy constraint."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogScreencastMinBitrate": {
+    "message": "Screencast min bitrate is now set to 100 kbps by default and `googScreencastMinBitrate` will soon be ignored in favor of this new default. Please stop using this legacy constraint."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogSuspendBelowMinBitrate": {
+    "message": "Support for the `googSuspendBelowMinBitrate` constraint is about to be removed. Please stop using this legacy constraint."
+  },
+  "lighthouse-core/audits/deprecations.js | localCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaElementAudioSourceNode": {
+    "message": "Creating a `MediaElementAudioSourceNode` on an `OfflineAudioContext` is deprecated and will be removed."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaSourceAbortRemove": {
+    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await `updateend`. `abort()` is intended to only abort an asynchronous media append or reset parser state."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaSourceDurationTruncatingBuffered": {
+    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
+  },
+  "lighthouse-core/audits/deprecations.js | milestone": {
+    "message": "This change will go into effect with milestone {milestone}."
+  },
+  "lighthouse-core/audits/deprecations.js | noSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
+  },
+  "lighthouse-core/audits/deprecations.js | notificationInsecureOrigin": {
+    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | notificationPermissionRequestedIframe": {
+    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+  },
+  "lighthouse-core/audits/deprecations.js | obsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "lighthouse-core/audits/deprecations.js | paymentRequestBasicCard": {
+    "message": "The `basic-card` payment method is deprecated and will be removed."
+  },
+  "lighthouse-core/audits/deprecations.js | paymentRequestShowWithoutGesture": {
+    "message": "Calling `PaymentRequest.show()` without user activation is deprecated and will be removed."
+  },
+  "lighthouse-core/audits/deprecations.js | pictureSourceSrc": {
+    "message": "`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedCancelAnimationFrame": {
+    "message": "`webkitCancelAnimationFrame` is vendor-specific. Please use the standard `cancelAnimationFrame` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedRequestAnimationFrame": {
+    "message": "`webkitRequestAnimationFrame` is vendor-specific. Please use the standard `requestAnimationFrame` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedStorageInfo": {
+    "message": "`window.webkitStorageInfo` is deprecated. Please use `navigator.webkitTemporaryStorage` or `navigator.webkitPersistentStorage` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoDisplayingFullscreen": {
+    "message": "`HTMLVideoElement.webkitDisplayingFullscreen` is deprecated. Please use `Document.fullscreenElement` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoEnterFullscreen": {
+    "message": "`HTMLVideoElement.webkitEnterFullscreen()` is deprecated. Please use `Element.requestFullscreen()` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoEnterFullScreen": {
+    "message": "`HTMLVideoElement.webkitEnterFullScreen()` is deprecated. Please use `Element.requestFullscreen()` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoExitFullscreen": {
+    "message": "`HTMLVideoElement.webkitExitFullscreen()` is deprecated. Please use `Document.exitFullscreen()` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoExitFullScreen": {
+    "message": "`HTMLVideoElement.webkitExitFullsSreen()` is deprecated. Please use `Document.exitFullscreen()` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoSupportsFullscreen": {
+    "message": "`HTMLVideoElement.webkitSupportsFullscreen` is deprecated. Please use `Document.fullscreenEnabled` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | rangeExpand": {
+    "message": "`Range.expand()` is deprecated. Please use `Selection.modify()` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | requestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcConstraintEnableDtlsSrtpFalse": {
+    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES` key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcConstraintEnableDtlsSrtpTrue": {
+    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
+    "message": "Complex Plan B SDP detected! Chrome will switch the default `sdpSemantics` from `plan-b` to the standardized `unified-plan` format and this peer connection is relying on the default `sdpSemantics`. This SDP is not compatible with Unified Plan and will be rejected by clients expecting Unified Plan. For more information about how to prepare for the switch, see https://webrtc.org/web-apis/chrome/unified-plan/."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionLegacyCreateWithMediaConstraints": {
+    "message": "The `mediaConstraints` version of `RTCOfferOptions/RTCAnswerOptions` are deprecated and will soon be removed, please migrate to the promise-based `createOffer`/`createAnswer` instead."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionSdpSemanticsPlanB": {
+    "message": "Plan B SDP semantics, which is used when constructing an `RTCPeerConnection` with `{sdpSemantics:plan-b}`, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcpMuxPolicyNegotiate": {
+    "message": "The `rtcpMuxPolicy` option is deprecated and will be removed."
+  },
+  "lighthouse-core/audits/deprecations.js | rtpDataChannel": {
+    "message": "RTP data channels are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date."
+  },
+  "lighthouse-core/audits/deprecations.js | selectionAddRangeIntersect": {
+    "message": "The behavior that `Selection.addRange()` merges existing Range and the specified Range was removed."
+  },
+  "lighthouse-core/audits/deprecations.js | sharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+  },
+  "lighthouse-core/audits/deprecations.js | textToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` without user activation is deprecated and will be removed."
+  },
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Avoids deprecated APIs"
+  },
+  "lighthouse-core/audits/deprecations.js | unknownDeprecation": {
+    "message": "..."
+  },
+  "lighthouse-core/audits/deprecations.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "lighthouse-core/audits/deprecations.js | webCodecsVideoFrameDefaultTimestamp": {
+    "message": "Constructing a `VideoFrame` without a timestamp is deprecated and support will be removed. Please provide a timestamp via `VideoFrameInit`."
+  },
+  "lighthouse-core/audits/deprecations.js | xhrJSONEncodingDetection": {
+    "message": "UTF-16 is not supported by response json in `XMLHttpRequest`"
+  },
+  "lighthouse-core/audits/deprecations.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+  },
+  "lighthouse-core/audits/deprecations.js | xrSupportsSession": {
+    "message": "`supportsSession()` is deprecated. Please use `isSessionSupported()` and check the resolved boolean value instead."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "A character encoding declaration is required. It can be done with a `<meta>` tag in the first 1024 bytes of the HTML or in the Content-Type HTTP response header. [Learn more](https://web.dev/charset/)."
@@ -1067,6 +1253,9 @@
   "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
     "message": "Lighthouse could not determine if there was a service worker. Please try with a newer version of Chrome."
   },
+  "lighthouse-core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
+    "message": "The manifest URL scheme ({scheme}) is not supported on Android."
+  },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifest start URL is not valid"
   },
@@ -1183,6 +1372,9 @@
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift measures the movement of visible elements within the viewport. [Learn more](https://web.dev/cls/)."
+  },
+  "lighthouse-core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
+    "message": "Interaction to Next Paint measures page responsiveness, how long it takes the page to visibly respond to user input. [Learn more](https://web.dev/inp/)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint marks the time at which the first text or image is painted. [Learn more](https://web.dev/first-contentful-paint/)."
@@ -1649,6 +1841,27 @@
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Has a `<meta name=\"viewport\">` tag with `width` or `initial-scale`"
   },
+  "lighthouse-core/audits/work-during-interaction.js | description": {
+    "message": "This is the thread-blocking work occurring during the Interaction to Next Paint measurement. [Learn more](https://web.dev/inp/)."
+  },
+  "lighthouse-core/audits/work-during-interaction.js | displayValue": {
+    "message": "{timeInMs, number, milliseconds} ms spent on event '{interactionType}'"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | failureTitle": {
+    "message": "Minimize work during key interaction"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | inputDelay": {
+    "message": "Input delay"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | presentationDelay": {
+    "message": "Presentation delay"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | processingDelay": {
+    "message": "Processing delay"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | title": {
+    "message": "Minimizes work during key interaction"
+  },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "These are opportunities to improve the usage of ARIA in your application which may enhance the experience for users of assistive technology, like a screen reader."
   },
@@ -1955,6 +2168,9 @@
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Image"
   },
+  "lighthouse-core/lib/i18n/i18n.js | interactionToNextPaint": {
+    "message": "Interaction to Next Paint"
+  },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
   },
@@ -2109,7 +2325,7 @@
     "message": "Specify `@font-display` when defining custom fonts in your theme."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
-    "message": "Consider installing and configuring [a module to leverage WebP image formats](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) in your site. Such modules automatically generate a WebP version of your uploaded images to optimize loading times."
+    "message": "Consider configuring [WebP image formats with a Convert image style](https://www.drupal.org/docs/core-modules-and-themes/core-modules/image-module/working-with-images#styles) on your site."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Install [a Drupal module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) that can lazy load images. Such modules provide the ability to defer any offscreen images to improve performance."
@@ -2265,16 +2481,19 @@
     "message": "`<link rel=preload>` tags can be added by [modifying a themes's layout](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `Next.js` Image Optimization API to serve modern formats like `WebP` and `AVIF`. [Learn more](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component, which defaults to `loading=\"lazy\"`. [Learn more](https://nextjs.org/docs/api-reference/next/image#loading)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | preload-lcp-image": {
     "message": "Use the `next/image` component and set \"priority\" to true to preload LCP image. [Learn more](https://nextjs.org/docs/api-reference/next/image#priority)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
     "message": "Use the `next/script` component to defer loading of non-critical third-party scripts. [Learn more](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unsized-images": {
+    "message": "Use the `next/image` component to make sure images are always sized appropriately. [Learn more](https://nextjs.org/docs/api-reference/next/image#width)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
     "message": "Consider setting up `PurgeCSS` in `Next.js` configuration to remove unused rules from stylesheets. [Learn more](https://purgecss.com/guides/next.html)."
@@ -2289,13 +2508,31 @@
     "message": "Configure caching for immutable assets and `Server-side Rendered` (SSR) pages. [Learn more](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to optimize images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Use the `next/image` component to set the appropriate `sizes`. [Learn more](https://nextjs.org/docs/api-reference/next/image#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Enable compression on your Next.js server. [Learn more](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
+    "message": "Use the `nuxt/image` component and set `format=\"webp\"`. [Learn more](https://image.nuxtjs.org/components/nuxt-img#format)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
+    "message": "Use the `nuxt/image` component and set `loading=\"lazy\"` for offscreen images. [Learn more](https://image.nuxtjs.org/components/nuxt-img#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | preload-lcp-image": {
+    "message": "Use the `nuxt/image` component and specify `preload` for LCP image. [Learn more](https://image.nuxtjs.org/components/nuxt-img#preload)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
+    "message": "Use the `nuxt/image` component and specify explicit `width` and `height`. [Learn more](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
+    "message": "Use the `nuxt/image` component and set the appropriate `quality`. [Learn more](https://image.nuxtjs.org/components/nuxt-img#quality)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
+    "message": "Use the `nuxt/image` component and set the appropriate `sizes`. [Learn more](https://image.nuxtjs.org/components/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[Replace animated GIFs with video](https://web.dev/replace-gifs-with-videos/) for faster web page loads and consider using modern file formats such as [WebM](https://web.dev/replace-gifs-with-videos/#create-webm-videos) or [AV1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) to improve compression efficiency by greater than 30% over the current state-of-the-art video codec, VP9."

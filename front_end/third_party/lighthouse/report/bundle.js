@@ -4000,6 +4000,8 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       valueEl.textContent = 'Error!';
       const tooltip = this.dom.createChildOf(descriptionEl, 'span');
       tooltip.textContent = audit.result.errorMessage || 'Report error: no metric information';
+    } else if (audit.result.scoreDisplayMode === 'notApplicable') {
+      valueEl.textContent = '--';
     }
 
     return element;
@@ -4159,17 +4161,19 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         metricsBoxesEl.appendChild(this._renderMetric(item));
       });
 
-      const descriptionEl = this.dom.find('.lh-category-header__description', element);
-      const estValuesEl = this.dom.createChildOf(descriptionEl, 'div', 'lh-metrics__disclaimer');
-      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
-      estValuesEl.appendChild(disclaimerEl);
+      // Only add the disclaimer with the score calculator link if the category was rendered with a score gauge.
+      if (element.querySelector('.lh-gauge__wrapper')) {
+        const descriptionEl = this.dom.find('.lh-category-header__description', element);
+        const estValuesEl = this.dom.createChildOf(descriptionEl, 'div', 'lh-metrics__disclaimer');
+        const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
+        estValuesEl.appendChild(disclaimerEl);
 
-      // Add link to score calculator.
-      const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
-      calculatorLink.target = '_blank';
-      calculatorLink.textContent = strings.calculatorLink;
-      this.dom.safelySetHref(calculatorLink, this._getScoringCalculatorHref(category.auditRefs));
-
+        // Add link to score calculator.
+        const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
+        calculatorLink.target = '_blank';
+        calculatorLink.textContent = strings.calculatorLink;
+        this.dom.safelySetHref(calculatorLink, this._getScoringCalculatorHref(category.auditRefs));
+      }
 
       metricsGroupEl.classList.add('lh-audit-group--metrics');
       element.appendChild(metricsGroupEl);
@@ -6047,4 +6051,6 @@ function renderReport(lhr, opts = {}) {
   return rootEl;
 }
 
-export { DOM, ReportRenderer, ReportUIFeatures, renderReport };
+const swapLocale = _ => {}; const format = _ => {};
+
+export { DOM, ReportRenderer, ReportUIFeatures, format, renderReport, swapLocale };

@@ -746,11 +746,44 @@
   "lighthouse-core/audits/csp-xss.js | title": {
     "message": "Êńŝúr̂é ĈŚP̂ íŝ éf̂f́êćt̂ív̂é âǵâín̂śt̂ X́ŜŚ ât́t̂áĉḱŝ"
   },
+  "lighthouse-core/audits/deprecations.js | authorizationCoveredByWildcard": {
+    "message": "Âút̂h́ôŕîźât́îón̂ ẃîĺl̂ ńôt́ b̂é ĉóv̂ér̂éd̂ b́ŷ t́ĥé ŵíl̂d́ĉár̂d́ ŝým̂b́ôĺ (*) îń ĈÓR̂Ś `Access-Control-Allow-Headers` ĥán̂d́l̂ín̂ǵ."
+  },
+  "lighthouse-core/audits/deprecations.js | canRequestURLHTTPContainingNewline": {
+    "message": "R̂éŝóûŕĉé r̂éq̂úêśt̂ś ŵh́ôśê ÚR̂Ĺŝ ćôńt̂áîńêd́ b̂ót̂h́ r̂ém̂óv̂éd̂ ẃĥít̂éŝṕâćê `(n|r|t)` ćĥár̂áĉt́êŕŝ án̂d́ l̂éŝś-t̂h́âń ĉh́âŕâćt̂ér̂ś (`<`) âŕê b́l̂óĉḱêd́. P̂ĺêáŝé r̂ém̂óv̂é n̂éŵĺîńêś âńd̂ én̂ćôd́ê ĺêśŝ-t́ĥán̂ ćĥár̂áĉt́êŕŝ f́r̂óm̂ ṕl̂áĉéŝ ĺîḱê él̂ém̂én̂t́ ât́t̂ŕîb́ût́ê v́âĺûéŝ ín̂ ór̂d́êŕ t̂ó l̂óâd́ t̂h́êśê ŕêśôúr̂ćêś."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` îś d̂ép̂ŕêćât́êd́, îńŝt́êád̂ úŝé ŝt́âńd̂ár̂d́îźêd́ ÂṔÎ: Ńâv́îǵât́îón̂ T́îḿîńĝ 2."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` îś d̂ép̂ŕêćât́êd́, îńŝt́êád̂ úŝé ŝt́âńd̂ár̂d́îźêd́ ÂṔÎ: Ṕâín̂t́ T̂ím̂ín̂ǵ."
+  },
+  "lighthouse-core/audits/deprecations.js | chromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` îś d̂ép̂ŕêćât́êd́, îńŝt́êád̂ úŝé ŝt́âńd̂ár̂d́îźêd́ ÂṔÎ: `nextHopProtocol` ín̂ Ńâv́îǵât́îón̂ T́îḿîńĝ 2."
+  },
   "lighthouse-core/audits/deprecations.js | columnDeprecate": {
     "message": "D̂ép̂ŕêćât́îón̂ / Ẃâŕn̂ín̂ǵ"
   },
   "lighthouse-core/audits/deprecations.js | columnLine": {
     "message": "L̂ín̂é"
+  },
+  "lighthouse-core/audits/deprecations.js | cookieWithTruncatingChar": {
+    "message": "Ĉóôḱîéŝ ćôńt̂áîńîńĝ á `(0|r|n)` ĉh́âŕâćt̂ér̂ ẃîĺl̂ b́ê ŕêj́êćt̂éd̂ ín̂śt̂éâd́ ôf́ t̂ŕûńĉát̂éd̂."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginAccessBasedOnDocumentDomain": {
+    "message": "R̂él̂áx̂ín̂ǵ t̂h́ê śâḿê-ór̂íĝín̂ ṕôĺîćŷ b́ŷ śêt́t̂ín̂ǵ `document.domain` îś d̂ép̂ŕêćât́êd́, âńd̂ ẃîĺl̂ b́ê d́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́. T̂h́îś d̂ép̂ŕêćât́îón̂ ẃâŕn̂ín̂ǵ îś f̂ór̂ á ĉŕôśŝ-ór̂íĝín̂ áĉćêśŝ t́ĥát̂ ẃâś êńâb́l̂éd̂ b́ŷ śêt́t̂ín̂ǵ `document.domain`."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginWindowAlert": {
+    "message": "T̂ŕîǵĝér̂ín̂ǵ `window.alert` f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
+  },
+  "lighthouse-core/audits/deprecations.js | crossOriginWindowConfirm": {
+    "message": "T̂ŕîǵĝér̂ín̂ǵ `window.confirm` f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
+  },
+  "lighthouse-core/audits/deprecations.js | cssSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "T̂h́ê `disableRemotePlayback` át̂t́r̂íb̂út̂é ŝh́ôúl̂d́ b̂é ûśêd́ îń ôŕd̂ér̂ t́ô d́îśâb́l̂é t̂h́ê d́êf́âúl̂t́ Ĉáŝt́ îńt̂éĝŕât́îón̂ ín̂śt̂éâd́ ôf́ ûśîńĝ `-internal-media-controls-overlay-cast-button` śêĺêćt̂ór̂."
+  },
+  "lighthouse-core/audits/deprecations.js | customCursorIntersectsViewport": {
+    "message": "Ĉúŝt́ôḿ ĉúr̂śôŕŝ ẃît́ĥ śîźê ǵr̂éât́êŕ t̂h́âń 32x̂32 D́ÎṔ îńt̂ér̂śêćt̂ín̂ǵ n̂át̂ív̂é ÛÍ îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
   },
   "lighthouse-core/audits/deprecations.js | description": {
     "message": "D̂ép̂ŕêćât́êd́ ÂṔÎś ŵíl̂ĺ êv́êńt̂úâĺl̂ý b̂é r̂ém̂óv̂éd̂ f́r̂óm̂ t́ĥé b̂ŕôẃŝér̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/deprecations/)."
@@ -758,11 +791,164 @@
   "lighthouse-core/audits/deprecations.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 ŵár̂ńîńĝ f́ôún̂d́}\n    other {# ŵár̂ńîńĝś f̂óûńd̂}\n    }"
   },
+  "lighthouse-core/audits/deprecations.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "R̂él̂áx̂ín̂ǵ t̂h́ê śâḿê-ór̂íĝín̂ ṕôĺîćŷ b́ŷ śêt́t̂ín̂ǵ `document.domain` îś d̂ép̂ŕêćât́êd́, âńd̂ ẃîĺl̂ b́ê d́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́. T̂ó ĉón̂t́îńûé ûśîńĝ t́ĥíŝ f́êát̂úr̂é, p̂ĺêáŝé ôṕt̂-óût́ ôf́ ôŕîǵîń-k̂éŷéd̂ áĝén̂t́ ĉĺûśt̂ér̂ś b̂ý ŝén̂d́îńĝ án̂ `Origin-Agent-Cluster: ?0` h́êád̂ér̂ ál̂ón̂ǵ ŵít̂h́ t̂h́ê H́T̂T́P̂ ŕêśp̂ón̂śê f́ôŕ t̂h́ê d́ôćûḿêńt̂ án̂d́ f̂ŕâḿêś. Ŝéê h́t̂t́p̂ś://d̂év̂él̂óp̂ér̂.ćĥŕôḿê.ćôḿ/b̂ĺôǵ/îḿm̂út̂áb̂ĺê-d́ôćûḿêńt̂-d́ôḿâín̂/ f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
+  },
+  "lighthouse-core/audits/deprecations.js | eventPath": {
+    "message": "`Event.path` îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́. P̂ĺêáŝé ûśê `Event.composedPath()` ín̂śt̂éâd́."
+  },
   "lighthouse-core/audits/deprecations.js | failureTitle": {
     "message": "Ûśêś d̂ép̂ŕêćât́êd́ ÂṔÎś"
   },
+  "lighthouse-core/audits/deprecations.js | feature": {
+    "message": "Ĉh́êćk̂ t́ĥé f̂éât́ûŕê śt̂át̂úŝ ṕâǵê f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
+  },
+  "lighthouse-core/audits/deprecations.js | geolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` âńd̂ `watchPosition()` ńô ĺôńĝér̂ ẃôŕk̂ ón̂ ín̂śêćûŕê ór̂íĝín̂ś. T̂ó ûśê t́ĥíŝ f́êát̂úr̂é, ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺê/ćĥŕôḿê-ín̂śêćûŕê-ór̂íĝín̂ś f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "lighthouse-core/audits/deprecations.js | geolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` âńd̂ `watchPosition()` ár̂é d̂ép̂ŕêćât́êd́ ôń îńŝéĉúr̂é ôŕîǵîńŝ. T́ô úŝé t̂h́îś f̂éât́ûŕê, ýôú ŝh́ôúl̂d́ ĉón̂śîd́êŕ ŝẃît́ĉh́îńĝ ýôúr̂ áp̂ṕl̂íĉát̂íôń t̂ó â śêćûŕê ór̂íĝín̂, śûćĥ áŝ H́T̂T́P̂Ś. Ŝéê h́t̂t́p̂ś://ĝóô.ǵl̂é/ĉh́r̂óm̂é-îńŝéĉúr̂é-ôŕîǵîńŝ f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
+  },
+  "lighthouse-core/audits/deprecations.js | getUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` n̂ó l̂ón̂ǵêŕ ŵór̂ḱŝ ón̂ ín̂śêćûŕê ór̂íĝín̂ś. T̂ó ûśê t́ĥíŝ f́êát̂úr̂é, ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺê/ćĥŕôḿê-ín̂śêćûŕê-ór̂íĝín̂ś f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "lighthouse-core/audits/deprecations.js | hostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `RTCPeerConnectionIceErrorEvent.address` ór̂ `RTCPeerConnectionIceErrorEvent.port` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | insecurePrivateNetworkSubresourceRequest": {
+    "message": "T̂h́ê ẃêb́ŝít̂é r̂éq̂úêśt̂éd̂ á ŝúb̂ŕêśôúr̂ćê f́r̂óm̂ á n̂ét̂ẃôŕk̂ t́ĥát̂ ít̂ ćôúl̂d́ ôńl̂ý âćĉéŝś b̂éĉáûśê óf̂ ít̂ś ûśêŕŝ' ṕr̂ív̂íl̂éĝéd̂ ńêt́ŵór̂ḱ p̂óŝít̂íôń. T̂h́êśê ŕêq́ûéŝt́ŝ éx̂ṕôśê ńôń-p̂úb̂ĺîć d̂év̂íĉéŝ án̂d́ ŝér̂v́êŕŝ t́ô t́ĥé îńt̂ér̂ńêt́, îńĉŕêáŝín̂ǵ t̂h́ê ŕîśk̂ óf̂ á ĉŕôśŝ-śît́ê ŕêq́ûéŝt́ f̂ór̂ǵêŕŷ (ĆŜŔF̂) át̂t́âćk̂, án̂d́/ôŕ îńf̂ór̂ḿât́îón̂ ĺêák̂áĝé. T̂ó m̂ít̂íĝát̂é t̂h́êśê ŕîśk̂ś, Ĉh́r̂óm̂é d̂ép̂ŕêćât́êś r̂éq̂úêśt̂ś t̂ó n̂ón̂-ṕûb́l̂íĉ śûb́r̂éŝóûŕĉéŝ ẃĥén̂ ín̂ít̂íât́êd́ f̂ŕôḿ n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ, án̂d́ ŵíl̂ĺ ŝt́âŕt̂ b́l̂óĉḱîńĝ t́ĥém̂."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogCpuOveruseDetection": {
+    "message": "ĈṔÛ óv̂ér̂úŝé d̂ét̂éĉt́îón̂ íŝ én̂áb̂ĺêd́-b̂ý-d̂éf̂áûĺt̂ án̂d́ t̂h́ê áb̂íl̂ít̂ý t̂ó d̂íŝáb̂ĺê ít̂ úŝín̂ǵ `googCpuOveruseDetection` ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogIPv6": {
+    "message": "ÎṔv̂6 íŝ én̂áb̂ĺêd́-b̂ý-d̂éf̂áûĺt̂ án̂d́ t̂h́ê áb̂íl̂ít̂ý t̂ó d̂íŝáb̂ĺê ít̂ úŝín̂ǵ `googIPv6` ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogScreencastMinBitrate": {
+    "message": "Ŝćr̂éêńĉáŝt́ m̂ín̂ b́ît́r̂át̂é îś n̂óŵ śêt́ t̂ó 100 k̂b́p̂ś b̂ý d̂éf̂áûĺt̂ án̂d́ `googScreencastMinBitrate` ŵíl̂ĺ ŝóôń b̂é îǵn̂ór̂éd̂ ín̂ f́âv́ôŕ ôf́ t̂h́îś n̂éŵ d́êf́âúl̂t́. P̂ĺêáŝé ŝt́ôṕ ûśîńĝ t́ĥíŝ ĺêǵâćŷ ćôńŝt́r̂áîńt̂."
+  },
+  "lighthouse-core/audits/deprecations.js | legacyConstraintGoogSuspendBelowMinBitrate": {
+    "message": "Ŝúp̂ṕôŕt̂ f́ôŕ t̂h́ê `googSuspendBelowMinBitrate` ćôńŝt́r̂áîńt̂ íŝ áb̂óût́ t̂ó b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê śt̂óp̂ úŝín̂ǵ t̂h́îś l̂éĝáĉý ĉón̂śt̂ŕâín̂t́."
+  },
+  "lighthouse-core/audits/deprecations.js | localCSSFileExtensionRejected": {
+    "message": "ĈŚŜ ćâńn̂ót̂ b́ê ĺôád̂éd̂ f́r̂óm̂ `file:` ÚR̂Ĺŝ ún̂ĺêśŝ t́ĥéŷ én̂d́ îń â `.css` f́îĺê éx̂t́êńŝíôń."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaElementAudioSourceNode": {
+    "message": "Ĉŕêát̂ín̂ǵ â `MediaElementAudioSourceNode` ón̂ án̂ `OfflineAudioContext` íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaSourceAbortRemove": {
+    "message": "Ûśîńĝ `SourceBuffer.abort()` t́ô áb̂ór̂t́ `remove()`'ŝ áŝýn̂ćĥŕôńôúŝ ŕâńĝé r̂ém̂óv̂ál̂ íŝ d́êṕr̂éĉát̂éd̂ d́ûé t̂ó ŝṕêćîf́îćât́îón̂ ćĥán̂ǵê. Śûṕp̂ór̂t́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é. Ŷóû śĥóûĺd̂ ín̂śt̂éâd́ âẃâít̂ `updateend`. `abort()` íŝ ín̂t́êńd̂éd̂ t́ô ón̂ĺŷ áb̂ór̂t́ âń âśŷńĉh́r̂ón̂óûś m̂éd̂íâ áp̂ṕêńd̂ ór̂ ŕêśêt́ p̂ár̂śêŕ ŝt́ât́ê."
+  },
+  "lighthouse-core/audits/deprecations.js | mediaSourceDurationTruncatingBuffered": {
+    "message": "Ŝét̂t́îńĝ `MediaSource.duration` b́êĺôẃ t̂h́ê h́îǵĥéŝt́ p̂ŕêśêńt̂át̂íôń t̂ím̂éŝt́âḿp̂ óf̂ án̂ý b̂úf̂f́êŕêd́ ĉód̂éd̂ f́r̂ám̂éŝ íŝ d́êṕr̂éĉát̂éd̂ d́ûé t̂ó ŝṕêćîf́îćât́îón̂ ćĥán̂ǵê. Śûṕp̂ór̂t́ f̂ór̂ ím̂ṕl̂íĉít̂ ŕêḿôv́âĺ ôf́ t̂ŕûńĉát̂éd̂ b́ûf́f̂ér̂éd̂ ḿêd́îá ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é. Ŷóû śĥóûĺd̂ ín̂śt̂éâd́ p̂ér̂f́ôŕm̂ éx̂ṕl̂íĉít̂ `remove(newDuration, oldDuration)` ón̂ ál̂ĺ `sourceBuffers`, ŵh́êŕê `newDuration < oldDuration`."
+  },
+  "lighthouse-core/audits/deprecations.js | milestone": {
+    "message": "T̂h́îś ĉh́âńĝé ŵíl̂ĺ ĝó îńt̂ó êf́f̂éĉt́ ŵít̂h́ m̂íl̂éŝt́ôńê {milestone}."
+  },
+  "lighthouse-core/audits/deprecations.js | noSysexWebMIDIWithoutPermission": {
+    "message": "Ŵéb̂ ḾÎD́Î ẃîĺl̂ áŝḱ â ṕêŕm̂íŝśîón̂ t́ô úŝé êv́êń îf́ t̂h́ê śŷśêx́ îś n̂ót̂ śp̂éĉíf̂íêd́ îń t̂h́ê `MIDIOptions`."
+  },
+  "lighthouse-core/audits/deprecations.js | notificationInsecureOrigin": {
+    "message": "T̂h́ê Ńôt́îf́îćât́îón̂ ÁP̂Í m̂áŷ ńô ĺôńĝér̂ b́ê úŝéd̂ f́r̂óm̂ ín̂śêćûŕê ór̂íĝín̂ś. Ŷóû śĥóûĺd̂ ćôńŝíd̂ér̂ śŵít̂ćĥín̂ǵ ŷóûŕ âṕp̂ĺîćât́îón̂ t́ô á ŝéĉúr̂é ôŕîǵîń, ŝúĉh́ âś ĤT́T̂ṔŜ. Śêé ĥt́t̂ṕŝ://ǵôó.ĝĺê/ćĥŕôḿê-ín̂śêćûŕê-ór̂íĝín̂ś f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "lighthouse-core/audits/deprecations.js | notificationPermissionRequestedIframe": {
+    "message": "P̂ér̂ḿîśŝíôń f̂ór̂ t́ĥé N̂ót̂íf̂íĉát̂íôń ÂṔÎ ḿâý n̂ó l̂ón̂ǵêŕ b̂é r̂éq̂úêśt̂éd̂ f́r̂óm̂ á ĉŕôśŝ-ór̂íĝín̂ íf̂ŕâḿê. Ýôú ŝh́ôúl̂d́ ĉón̂śîd́êŕ r̂éq̂úêśt̂ín̂ǵ p̂ér̂ḿîśŝíôń f̂ŕôḿ â t́ôṕ-l̂év̂él̂ f́r̂ám̂é ôŕ ôṕêńîńĝ á n̂éŵ ẃîńd̂óŵ ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | obsoleteWebRtcCipherSuite": {
+    "message": "Ŷóûŕ p̂ár̂t́n̂ér̂ íŝ ńêǵôt́îát̂ín̂ǵ âń ôb́ŝól̂ét̂é (D̂)T́L̂Ś v̂ér̂śîón̂. Ṕl̂éâśê ćĥéĉḱ ŵít̂h́ ŷóûŕ p̂ár̂t́n̂ér̂ t́ô h́âv́ê t́ĥíŝ f́îx́êd́."
+  },
+  "lighthouse-core/audits/deprecations.js | paymentRequestBasicCard": {
+    "message": "T̂h́ê `basic-card` ṕâým̂én̂t́ m̂ét̂h́ôd́ îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
+  },
+  "lighthouse-core/audits/deprecations.js | paymentRequestShowWithoutGesture": {
+    "message": "Ĉál̂ĺîńĝ `PaymentRequest.show()` ẃît́ĥóût́ ûśêŕ âćt̂ív̂át̂íôń îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
+  },
+  "lighthouse-core/audits/deprecations.js | pictureSourceSrc": {
+    "message": "`<source src>` ŵít̂h́ â `<picture>` ṕâŕêńt̂ íŝ ín̂v́âĺîd́ âńd̂ t́ĥér̂éf̂ór̂é îǵn̂ór̂éd̂. Ṕl̂éâśê úŝé `<source srcset>` îńŝt́êád̂."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedCancelAnimationFrame": {
+    "message": "`webkitCancelAnimationFrame` îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ `cancelAnimationFrame` îńŝt́êád̂."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedRequestAnimationFrame": {
+    "message": "`webkitRequestAnimationFrame` îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ `requestAnimationFrame` îńŝt́êád̂."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedStorageInfo": {
+    "message": "`window.webkitStorageInfo` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `navigator.webkitTemporaryStorage` ór̂ `navigator.webkitPersistentStorage` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoDisplayingFullscreen": {
+    "message": "`HTMLVideoElement.webkitDisplayingFullscreen` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Document.fullscreenElement` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoEnterFullscreen": {
+    "message": "`HTMLVideoElement.webkitEnterFullscreen()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Element.requestFullscreen()` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoEnterFullScreen": {
+    "message": "`HTMLVideoElement.webkitEnterFullScreen()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Element.requestFullscreen()` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoExitFullscreen": {
+    "message": "`HTMLVideoElement.webkitExitFullscreen()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Document.exitFullscreen()` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoExitFullScreen": {
+    "message": "`HTMLVideoElement.webkitExitFullsSreen()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Document.exitFullscreen()` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | prefixedVideoSupportsFullscreen": {
+    "message": "`HTMLVideoElement.webkitSupportsFullscreen` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Document.fullscreenEnabled` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | rangeExpand": {
+    "message": "`Range.expand()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `Selection.modify()` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | requestedSubresourceWithEmbeddedCredentials": {
+    "message": "Ŝúb̂ŕêśôúr̂ćê ŕêq́ûéŝt́ŝ ẃĥóŝé ÛŔL̂ś ĉón̂t́âín̂ ém̂b́êd́d̂éd̂ ćr̂éd̂én̂t́îál̂ś (ê.ǵ. `https://user:pass@host/`) âŕê b́l̂óĉḱêd́."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcConstraintEnableDtlsSrtpFalse": {
+    "message": "T̂h́ê ćôńŝt́r̂áîńt̂ `DtlsSrtpKeyAgreement` íŝ ŕêḿôv́êd́. Ŷóû h́âv́ê śp̂éĉíf̂íêd́ â `false` v́âĺûé f̂ór̂ t́ĥíŝ ćôńŝt́r̂áîńt̂, ẃĥíĉh́ îś îńt̂ér̂ṕr̂ét̂éd̂ áŝ án̂ át̂t́êḿp̂t́ t̂ó ûśê t́ĥé r̂ém̂óv̂éd̂ `SDES` ḱêý n̂éĝót̂íât́îón̂ ḿêt́ĥód̂. T́ĥíŝ f́ûńĉt́îón̂ál̂ít̂ý îś r̂ém̂óv̂éd̂; úŝé â śêŕv̂íĉé t̂h́ât́ ŝúp̂ṕôŕt̂ś D̂T́L̂Ś k̂éŷ ńêǵôt́îát̂íôń îńŝt́êád̂."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcConstraintEnableDtlsSrtpTrue": {
+    "message": "T̂h́ê ćôńŝt́r̂áîńt̂ `DtlsSrtpKeyAgreement` íŝ ŕêḿôv́êd́. Ŷóû h́âv́ê śp̂éĉíf̂íêd́ â `true` v́âĺûé f̂ór̂ t́ĥíŝ ćôńŝt́r̂áîńt̂, ẃĥíĉh́ ĥád̂ ńô éf̂f́êćt̂, b́ût́ ŷóû ćâń r̂ém̂óv̂é t̂h́îś ĉón̂śt̂ŕâín̂t́ f̂ór̂ t́îd́îńêśŝ."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
+    "message": "Ĉóm̂ṕl̂éx̂ Ṕl̂án̂ B́ ŜD́P̂ d́êt́êćt̂éd̂! Ćĥŕôḿê ẃîĺl̂ śŵít̂ćĥ t́ĥé d̂éf̂áûĺt̂ `sdpSemantics` f́r̂óm̂ `plan-b` t́ô t́ĥé ŝt́âńd̂ár̂d́îźêd́ `unified-plan` f̂ór̂ḿât́ âńd̂ t́ĥíŝ ṕêér̂ ćôńn̂éĉt́îón̂ íŝ ŕêĺŷín̂ǵ ôń t̂h́ê d́êf́âúl̂t́ `sdpSemantics`. T̂h́îś ŜD́P̂ íŝ ńôt́ ĉóm̂ṕât́îb́l̂é ŵít̂h́ Ûńîf́îéd̂ Ṕl̂án̂ án̂d́ ŵíl̂ĺ b̂é r̂éĵéĉt́êd́ b̂ý ĉĺîén̂t́ŝ éx̂ṕêćt̂ín̂ǵ Ûńîf́îéd̂ Ṕl̂án̂. F́ôŕ m̂ór̂é îńf̂ór̂ḿât́îón̂ áb̂óût́ ĥóŵ t́ô ṕr̂ép̂ár̂é f̂ór̂ t́ĥé ŝẃît́ĉh́, ŝéê h́t̂t́p̂ś://ŵéb̂ŕt̂ć.ôŕĝ/ẃêb́-âṕîś/ĉh́r̂óm̂é/ûńîf́îéd̂-ṕl̂án̂/."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionLegacyCreateWithMediaConstraints": {
+    "message": "T̂h́ê `mediaConstraints` v́êŕŝíôń ôf́ `RTCOfferOptions/RTCAnswerOptions` âŕê d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ ŝóôń b̂é r̂ém̂óv̂éd̂, ṕl̂éâśê ḿîǵr̂át̂é t̂ó t̂h́ê ṕr̂óm̂íŝé-b̂áŝéd̂ `createOffer`/`createAnswer` ín̂śt̂éâd́."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcPeerConnectionSdpSemanticsPlanB": {
+    "message": "P̂ĺâń B̂ ŚD̂Ṕ ŝém̂án̂t́îćŝ, ẃĥíĉh́ îś ûśêd́ ŵh́êń ĉón̂śt̂ŕûćt̂ín̂ǵ âń `RTCPeerConnection` ŵít̂h́ `{sdpSemantics:plan-b}`, îś â ĺêǵâćŷ ńôń-ŝt́âńd̂ár̂d́ v̂ér̂śîón̂ óf̂ t́ĥé Ŝéŝśîón̂ D́êśĉŕîṕt̂íôń P̂ŕôt́ôćôĺ t̂h́ât́ ĥáŝ b́êén̂ ṕêŕm̂án̂én̂t́l̂ý d̂él̂ét̂éd̂ f́r̂óm̂ t́ĥé Ŵéb̂ Ṕl̂át̂f́ôŕm̂. Ít̂ íŝ śt̂íl̂ĺ âv́âíl̂áb̂ĺê ẃĥén̂ b́ûíl̂d́îńĝ ẃît́ĥ ÍŜ_F́ÛĆĤŚÎÁ, b̂út̂ ẃê ín̂t́êńd̂ t́ô d́êĺêt́ê ít̂ áŝ śôón̂ áŝ ṕôśŝíb̂ĺê. Śt̂óp̂ d́êṕêńd̂ín̂ǵ ôń ît́. Ŝéê h́t̂t́p̂ś://ĉŕb̂úĝ.ćôḿ/1302249 f̂ór̂ śt̂át̂úŝ."
+  },
+  "lighthouse-core/audits/deprecations.js | rtcpMuxPolicyNegotiate": {
+    "message": "T̂h́ê `rtcpMuxPolicy` óp̂t́îón̂ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂."
+  },
+  "lighthouse-core/audits/deprecations.js | rtpDataChannel": {
+    "message": "R̂T́P̂ d́ât́â ćĥán̂ńêĺŝ ár̂é n̂ó l̂ón̂ǵêŕ ŝúp̂ṕôŕt̂éd̂. T́ĥé `RtpDataChannels` ĉón̂śt̂ŕâín̂t́ îś ĉúr̂ŕêńt̂ĺŷ íĝńôŕêd́, âńd̂ ḿâý ĉáûśê án̂ ér̂ŕôŕ ât́ â ĺât́êŕ d̂át̂é."
+  },
+  "lighthouse-core/audits/deprecations.js | selectionAddRangeIntersect": {
+    "message": "T̂h́ê b́êh́âv́îór̂ t́ĥát̂ `Selection.addRange()` ḿêŕĝéŝ éx̂íŝt́îńĝ Ŕâńĝé âńd̂ t́ĥé ŝṕêćîf́îéd̂ Ŕâńĝé ŵáŝ ŕêḿôv́êd́."
+  },
+  "lighthouse-core/audits/deprecations.js | sharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂. Śêé ĥt́t̂ṕŝ://d́êv́êĺôṕêŕ.ĉh́r̂óm̂é.ĉóm̂/b́l̂óĝ/én̂áb̂ĺîńĝ-śĥár̂éd̂-ár̂ŕâý-b̂úf̂f́êŕ/ f̂ór̂ ḿôŕê d́êt́âíl̂ś."
+  },
+  "lighthouse-core/audits/deprecations.js | textToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` ŵít̂h́ôút̂ úŝér̂ áĉt́îv́ât́îón̂ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂."
+  },
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Âv́ôíd̂ś d̂ép̂ŕêćât́êd́ ÂṔÎś"
+  },
+  "lighthouse-core/audits/deprecations.js | unknownDeprecation": {
+    "message": "..."
+  },
+  "lighthouse-core/audits/deprecations.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Êx́t̂én̂śîón̂ś ŝh́ôúl̂d́ ôṕt̂ ín̂t́ô ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂ t́ô ćôńt̂ín̂úê úŝín̂ǵ `SharedArrayBuffer`. Ŝéê h́t̂t́p̂ś://d̂év̂él̂óp̂ér̂.ćĥŕôḿê.ćôḿ/d̂óĉś/êx́t̂én̂śîón̂ś/m̂v́3/ĉŕôśŝ-ór̂íĝín̂-íŝól̂át̂íôń/."
+  },
+  "lighthouse-core/audits/deprecations.js | webCodecsVideoFrameDefaultTimestamp": {
+    "message": "Ĉón̂śt̂ŕûćt̂ín̂ǵ â `VideoFrame` ẃît́ĥóût́ â t́îḿêśt̂ám̂ṕ îś d̂ép̂ŕêćât́êd́ âńd̂ śûṕp̂ór̂t́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂. Ṕl̂éâśê ṕr̂óv̂íd̂é â t́îḿêśt̂ám̂ṕ v̂íâ `VideoFrameInit`."
+  },
+  "lighthouse-core/audits/deprecations.js | xhrJSONEncodingDetection": {
+    "message": "ÛT́F̂-16 íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ b́ŷ ŕêśp̂ón̂śê j́ŝón̂ ín̂ `XMLHttpRequest`"
+  },
+  "lighthouse-core/audits/deprecations.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Ŝýn̂ćĥŕôńôúŝ `XMLHttpRequest` ón̂ t́ĥé m̂áîń t̂h́r̂éâd́ îś d̂ép̂ŕêćât́êd́ b̂éĉáûśê óf̂ ít̂ś d̂ét̂ŕîḿêńt̂ál̂ éf̂f́êćt̂ś t̂ó t̂h́ê én̂d́ ûśêŕ’ŝ éx̂ṕêŕîén̂ćê. F́ôŕ m̂ór̂é ĥél̂ṕ, ĉh́êćk̂ h́t̂t́p̂ś://x̂h́r̂.śp̂éĉ.ẃĥát̂ẃĝ.ór̂ǵ/."
+  },
+  "lighthouse-core/audits/deprecations.js | xrSupportsSession": {
+    "message": "`supportsSession()` îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê `isSessionSupported()` án̂d́ ĉh́êćk̂ t́ĥé r̂éŝól̂v́êd́ b̂óôĺêán̂ v́âĺûé îńŝt́êád̂."
   },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Â ćĥár̂áĉt́êŕ êńĉód̂ín̂ǵ d̂éĉĺâŕât́îón̂ íŝ ŕêq́ûír̂éd̂. Ít̂ ćâń b̂é d̂ón̂é ŵít̂h́ â `<meta>` t́âǵ îń t̂h́ê f́îŕŝt́ 1024 b̂ýt̂éŝ óf̂ t́ĥé ĤT́M̂Ĺ ôŕ îń t̂h́ê Ćôńt̂én̂t́-T̂ýp̂é ĤT́T̂Ṕ r̂éŝṕôńŝé ĥéâd́êŕ. [L̂éâŕn̂ ḿôŕê](https://web.dev/charset/)."
@@ -1067,6 +1253,9 @@
   "lighthouse-core/audits/installable-manifest.js | protocol-timeout": {
     "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥér̂é ŵáŝ á ŝér̂v́îćê ẃôŕk̂ér̂. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
   },
+  "lighthouse-core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
+    "message": "T̂h́ê ḿâńîf́êśt̂ ÚR̂Ĺ ŝćĥém̂é ({scheme}) îś n̂ót̂ śûṕp̂ór̂t́êd́ ôń Âńd̂ŕôíd̂."
+  },
   "lighthouse-core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "M̂án̂íf̂éŝt́ ŝt́âŕt̂ ÚR̂Ĺ îś n̂ót̂ v́âĺîd́"
   },
@@ -1183,6 +1372,9 @@
   },
   "lighthouse-core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ ḿêáŝúr̂éŝ t́ĥé m̂óv̂ém̂én̂t́ ôf́ v̂íŝíb̂ĺê él̂ém̂én̂t́ŝ ẃît́ĥín̂ t́ĥé v̂íêẃp̂ór̂t́. [L̂éâŕn̂ ḿôŕê](https://web.dev/cls/)."
+  },
+  "lighthouse-core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
+    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́ m̂éâśûŕêś p̂áĝé r̂éŝṕôńŝív̂én̂éŝś, ĥóŵ ĺôńĝ ít̂ t́âḱêś t̂h́ê ṕâǵê t́ô v́îśîb́l̂ý r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́. [L̂éâŕn̂ ḿôŕê](https://web.dev/inp/)."
   },
   "lighthouse-core/audits/metrics/first-contentful-paint.js | description": {
     "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ár̂ḱŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ t́ĥé f̂ír̂śt̂ t́êx́t̂ ór̂ ím̂áĝé îś p̂áîńt̂éd̂. [Ĺêár̂ń m̂ór̂é](https://web.dev/first-contentful-paint/)."
@@ -1649,6 +1841,27 @@
   "lighthouse-core/audits/viewport.js | title": {
     "message": "Ĥáŝ á `<meta name=\"viewport\">` t̂áĝ ẃît́ĥ `width` ór̂ `initial-scale`"
   },
+  "lighthouse-core/audits/work-during-interaction.js | description": {
+    "message": "T̂h́îś îś t̂h́ê t́ĥŕêád̂-b́l̂óĉḱîńĝ ẃôŕk̂ óĉćûŕr̂ín̂ǵ d̂úr̂ín̂ǵ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêáŝúr̂ém̂én̂t́. [L̂éâŕn̂ ḿôŕê](https://web.dev/inp/)."
+  },
+  "lighthouse-core/audits/work-during-interaction.js | displayValue": {
+    "message": "{timeInMs, number, milliseconds} m̂ś ŝṕêńt̂ ón̂ év̂én̂t́ '{interactionType}'"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | failureTitle": {
+    "message": "M̂ín̂ím̂íẑé ŵór̂ḱ d̂úr̂ín̂ǵ k̂éŷ ín̂t́êŕâćt̂íôń"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | inputDelay": {
+    "message": "Îńp̂út̂ d́êĺâý"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | presentationDelay": {
+    "message": "P̂ŕêśêńt̂át̂íôń d̂él̂áŷ"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | processingDelay": {
+    "message": "P̂ŕôćêśŝín̂ǵ d̂él̂áŷ"
+  },
+  "lighthouse-core/audits/work-during-interaction.js | title": {
+    "message": "M̂ín̂ím̂íẑéŝ ẃôŕk̂ d́ûŕîńĝ ḱêý îńt̂ér̂áĉt́îón̂"
+  },
   "lighthouse-core/config/default-config.js | a11yAriaGroupDescription": {
     "message": "T̂h́êśê ár̂é ôṕp̂ór̂t́ûńît́îéŝ t́ô ím̂ṕr̂óv̂é t̂h́ê úŝáĝé ôf́ ÂŔÎÁ îń ŷóûŕ âṕp̂ĺîćât́îón̂ ẃĥíĉh́ m̂áŷ én̂h́âńĉé t̂h́ê éx̂ṕêŕîén̂ćê f́ôŕ ûśêŕŝ óf̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝý, l̂ík̂é â śĉŕêén̂ ŕêád̂ér̂."
   },
@@ -1955,6 +2168,9 @@
   "lighthouse-core/lib/i18n/i18n.js | imageResourceType": {
     "message": "Îḿâǵê"
   },
+  "lighthouse-core/lib/i18n/i18n.js | interactionToNextPaint": {
+    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́"
+  },
   "lighthouse-core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê"
   },
@@ -2109,7 +2325,7 @@
     "message": "Ŝṕêćîf́ŷ `@font-display` ẃĥén̂ d́êf́îńîńĝ ćûśt̂óm̂ f́ôńt̂ś îń ŷóûŕ t̂h́êḿê."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
-    "message": "Ĉón̂śîd́êŕ îńŝt́âĺl̂ín̂ǵ âńd̂ ćôńf̂íĝúr̂ín̂ǵ [â ḿôd́ûĺê t́ô ĺêv́êŕâǵê Ẃêb́P̂ ím̂áĝé f̂ór̂ḿât́ŝ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=webp&solrsort=iss_project_release_usage+desc&op=Search) ín̂ ýôúr̂ śît́ê. Śûćĥ ḿôd́ûĺêś âút̂óm̂át̂íĉál̂ĺŷ ǵêńêŕât́ê á Ŵéb̂Ṕ v̂ér̂śîón̂ óf̂ ýôúr̂ úp̂ĺôád̂éd̂ ím̂áĝéŝ t́ô óp̂t́îḿîźê ĺôád̂ín̂ǵ t̂ím̂éŝ."
+    "message": "Ĉón̂śîd́êŕ ĉón̂f́îǵûŕîńĝ [Ẃêb́P̂ ím̂áĝé f̂ór̂ḿât́ŝ ẃît́ĥ á Ĉón̂v́êŕt̂ ím̂áĝé ŝt́ŷĺê](https://www.drupal.org/docs/core-modules-and-themes/core-modules/image-module/working-with-images#styles) ón̂ ýôúr̂ śît́ê."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
     "message": "Îńŝt́âĺl̂ [á D̂ŕûṕâĺ m̂ód̂úl̂é](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) t̂h́ât́ ĉán̂ ĺâźŷ ĺôád̂ ím̂áĝéŝ. Śûćĥ ḿôd́ûĺêś p̂ŕôv́îd́ê t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś t̂ó îḿp̂ŕôv́ê ṕêŕf̂ór̂ḿâńĉé."
@@ -2265,16 +2481,19 @@
     "message": "`<link rel=preload>` t̂áĝś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Ûśê t́ĥé `Next.js` Îḿâǵê Óp̂t́îḿîźât́îón̂ ÁP̂Í t̂ó ŝér̂v́ê ḿôd́êŕn̂ f́ôŕm̂át̂ś l̂ík̂é `WebP` âńd̂ `AVIF`. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ ín̂śt̂éâd́ ôf́ `<img>` t̂ó âút̂óm̂át̂íĉál̂ĺŷ óp̂t́îḿîźê ím̂áĝé f̂ór̂ḿât́. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂, ẃĥíĉh́ d̂éf̂áûĺt̂ś t̂ó `loading=\"lazy\"`. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#loading)."
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ ín̂śt̂éâd́ ôf́ `<img>` t̂ó âút̂óm̂át̂íĉál̂ĺŷ ĺâźŷ-ĺôád̂ ím̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | preload-lcp-image": {
     "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ \"ṕr̂íôŕît́ŷ\" t́ô t́r̂úê t́ô ṕr̂él̂óâd́ L̂ĆP̂ ím̂áĝé. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#priority)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
     "message": "Ûśê t́ĥé `next/script` ĉóm̂ṕôńêńt̂ t́ô d́êf́êŕ l̂óâd́îńĝ óf̂ ńôń-ĉŕît́îćâĺ t̂h́îŕd̂-ṕâŕt̂ý ŝćr̂íp̂t́ŝ. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unsized-images": {
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ t́ô ḿâḱê śûŕê ím̂áĝéŝ ár̂é âĺŵáŷś ŝíẑéd̂ áp̂ṕr̂óp̂ŕîát̂él̂ý. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#width)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
     "message": "Ĉón̂śîd́êŕ ŝét̂t́îńĝ úp̂ `PurgeCSS` ín̂ `Next.js` ćôńf̂íĝúr̂át̂íôń t̂ó r̂ém̂óv̂é ûńûśêd́ r̂úl̂éŝ f́r̂óm̂ śt̂ýl̂éŝh́êét̂ś. [L̂éâŕn̂ ḿôŕê](https://purgecss.com/guides/next.html)."
@@ -2289,13 +2508,31 @@
     "message": "Ĉón̂f́îǵûŕê ćâćĥín̂ǵ f̂ór̂ ím̂ḿût́âb́l̂é âśŝét̂ś âńd̂ `Server-side Rendered` (ŚŜŔ) p̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ ín̂śt̂éâd́ ôf́ `<img>` t̂ó ôṕt̂ím̂íẑé îḿâǵêś. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ ín̂śt̂éâd́ ôf́ `<img>` t̂ó âd́ĵúŝt́ îḿâǵê q́ûál̂ít̂ý. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ t́ô śêt́ t̂h́ê áp̂ṕr̂óp̂ŕîát̂é `sizes`. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Êńâb́l̂é ĉóm̂ṕr̂éŝśîón̂ ón̂ ýôúr̂ Ńêx́t̂.j́ŝ śêŕv̂ér̂. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `format=\"webp\"`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#format)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | offscreen-images": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `loading=\"lazy\"` f́ôŕ ôf́f̂śĉŕêén̂ ím̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | preload-lcp-image": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ `preload` f́ôŕ L̂ĆP̂ ím̂áĝé. [L̂éâŕn̂ ḿôŕê](https://image.nuxtjs.org/components/nuxt-img#preload)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | unsized-images": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝṕêćîf́ŷ éx̂ṕl̂íĉít̂ `width` án̂d́ `height`. [L̂éâŕn̂ ḿôŕê](https://image.nuxtjs.org/components/nuxt-img#width--height)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-optimized-images": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `quality`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#quality)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nuxt.js | uses-responsive-images": {
+    "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ t́ĥé âṕp̂ŕôṕr̂íât́ê `sizes`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#sizes)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[R̂ép̂ĺâćê án̂ím̂át̂éd̂ ǴÎF́ŝ ẃît́ĥ v́îd́êó](https://web.dev/replace-gifs-with-videos/) f̂ór̂ f́âśt̂ér̂ ẃêb́ p̂áĝé l̂óâd́ŝ án̂d́ ĉón̂śîd́êŕ ûśîńĝ ḿôd́êŕn̂ f́îĺê f́ôŕm̂át̂ś ŝúĉh́ âś [Ŵéb̂Ḿ](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ôŕ [ÂV́1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) t̂ó îḿp̂ŕôv́ê ćôḿp̂ŕêśŝíôń êf́f̂íĉíêńĉý b̂ý ĝŕêát̂ér̂ t́ĥán̂ 30% óv̂ér̂ t́ĥé ĉúr̂ŕêńt̂ śt̂át̂é-ôf́-t̂h́ê-ár̂t́ v̂íd̂éô ćôd́êć, V̂Ṕ9."

@@ -11,6 +11,7 @@ copy_to_gen("network") {
     "embedded_requests.html",
     "fetch.html",
     "headers-and-payload.html",
+    "hello.html",
     "image.svg",
     "last-modified.html",
     "last-modified.rawresponse",

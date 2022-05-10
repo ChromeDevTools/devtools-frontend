@@ -54,10 +54,12 @@ const str_ = i18n.i18n.registerUIStrings('core/host/InspectorFrontendHost.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const MAX_RECORDED_HISTOGRAMS_SIZE = 100;
+const OVERRIDES_FILE_SYSTEM_PATH = '/overrides' as Platform.DevToolsPath.RawPathString;
 
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   readonly #urlsBeingSaved: Map<Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, string[]>;
   events!: Common.EventTarget.EventTarget<EventTypes>;
+  #fileSystem: FileSystem|null = null;
 
   recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
   recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
@@ -213,13 +215,45 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   addFileSystem(type?: string): void {
+    const onFileSystem = (fs: FileSystem): void => {
+      this.#fileSystem = fs;
+      const fileSystem = {
+        fileSystemName: 'sandboxedRequestedFileSystem',
+        fileSystemPath: OVERRIDES_FILE_SYSTEM_PATH,
+        rootURL: 'filesystem:devtools://devtools/isolated/',
+        type: 'overrides',
+      };
+      this.events.dispatchEventToListeners(Events.FileSystemAdded, {fileSystem});
+    };
+    window.webkitRequestFileSystem(window.TEMPORARY, 1024 * 1024, onFileSystem);
   }
 
   removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
+    this.clearFileSystem();
+    this.#fileSystem = null;
+    this.events.dispatchEventToListeners(Events.FileSystemRemoved, OVERRIDES_FILE_SYSTEM_PATH);
+  }
+
+  private clearFileSystem(): void {
+    if (!this.#fileSystem) {
+      return;
+    }
+
+    const innerCallback = (results: Entry[]): void => {
+      results.forEach(result => {
+        if (result.isDirectory) {
+          (result as DirectoryEntry).removeRecursively(() => {});
+        } else if (result.isFile) {
+          result.remove(() => {});
+        }
+      });
+    };
+
+    this.#fileSystem.root.createReader().readEntries(innerCallback);
   }
 
   isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem|null {
-    return null;
+    return this.#fileSystem;
   }
 
   loadNetworkResource(

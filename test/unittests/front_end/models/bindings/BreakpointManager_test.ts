@@ -36,6 +36,10 @@ describeWithRealConnection('BreakpointManager', () => {
           {breakpointId: BREAKPOINT_ID, locations: [new SDK.DebuggerModel.Location(this, SCRIPT_ID, 42)]});
     }
 
+    async removeBreakpoint(): Promise<void> {
+      return;
+    }
+
     scriptForId(scriptId: string): SDK.Script.Script|null {
       if (scriptId === SCRIPT_ID) {
         return new SDK.Script.Script(
@@ -71,7 +75,7 @@ describeWithRealConnection('BreakpointManager', () => {
   it('allows awaiting the restoration of breakpoints', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
 
-    const {uiSourceCode} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
 
     // Create a new DebuggerModel and notify the breakpoint engine about it.
@@ -109,6 +113,7 @@ describeWithRealConnection('BreakpointManager', () => {
     breakpointManager.removeBreakpoint(breakpoint, true);
     breakpointManager.modelRemoved(debuggerModel);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
   });
 
@@ -123,7 +128,7 @@ describeWithRealConnection('BreakpointManager', () => {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
 
-    const {uiSourceCode} =
+    const {uiSourceCode, project} =
         createUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
     assertNotNullOrUndefined(uiSourceCode);
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
@@ -180,6 +185,7 @@ describeWithRealConnection('BreakpointManager', () => {
     breakpointManager.removeBreakpoint(breakpoint, true);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().initPluginManagerForTest();
     debuggerModel.globalObjectCleared();
   });
@@ -203,4 +209,44 @@ describeWithRealConnection('BreakpointManager', () => {
     breakpointManager.removeBreakpoint(breakpoint, true);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
+
+  it('allows awaiting on removal of breakpoint in debugger', async () => {
+    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+    // Set up breakpoint with UISourceCode, and fake DebuggerModel.
+    const debuggerModel = new TestDebuggerModel(target);
+    const removeSpy = sinon.spy(debuggerModel, 'removeBreakpoint');
+    const setSpy = sinon.spy(debuggerModel, 'setBreakpointByURL');
+
+    // We need to stub the debuggerModel of the real connection to make sure that we
+    // can await the removal of the breakpoint (since it will await updating all
+    // DebuggerModels, including the one with the real connection).
+    const realDebugger = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(realDebugger);
+    sinon.stub(realDebugger, 'setBreakpointByURL')
+        .callsFake(() => Promise.resolve({breakpointId: BREAKPOINT_ID, locations: []}));
+    sinon.stub(realDebugger, 'removeBreakpoint').callsFake(() => Promise.resolve());
+
+    const mapping = createFakeScriptMapping(debuggerModel, SCRIPT_ID);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
+
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+    breakpoint.modelAdded(debuggerModel);
+
+    // Make sure that the location could be resolved, and that we could set a breakpoint.
+    const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
+    assertNotNullOrUndefined(modelBreakpoint);
+    await modelBreakpoint.scheduleUpdateInDebugger();
+    assertNotNullOrUndefined(modelBreakpoint.currentState);
+    assert.isTrue(setSpy.calledOnce);
+
+    // Test if awaiting breakpoint.remove is actually removing the state.
+    await breakpoint.remove(false);
+    assert.isNull(modelBreakpoint.currentState);
+    assert.isTrue(removeSpy.calledOnce);
+
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+    breakpointManager.removeBreakpoint(breakpoint, true);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+  });
+
 });

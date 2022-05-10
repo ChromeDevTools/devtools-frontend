@@ -560,13 +560,17 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
         Array.from(this.#modelBreakpoints.values()).map(modelBreakpoint => modelBreakpoint.scheduleUpdateInDebugger()));
   }
 
-  remove(keepInStorage: boolean): void {
+  async remove(keepInStorage: boolean): Promise<void> {
     this.isRemoved = true;
     const removeFromStorage = !keepInStorage;
+
+    // Await removing for all targets.
+    const updatePromises: Promise<void>[] = [];
     for (const modelBreakpoint of this.#modelBreakpoints.values()) {
-      void modelBreakpoint.scheduleUpdateInDebugger();
       modelBreakpoint.removeEventListeners();
+      updatePromises.push(modelBreakpoint.scheduleUpdateInDebugger());
     }
+    await Promise.all(updatePromises);
 
     this.breakpointManager.removeBreakpoint(this, removeFromStorage);
     this.breakpointManager.targetManager.unobserveModels(SDK.DebuggerModel.DebuggerModel, this);
@@ -576,13 +580,6 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   breakpointStorageId(): string {
     return BreakpointManager.breakpointStorageId(
         this.urlInternal, this.#lineNumberInternal, this.#columnNumberInternal);
-  }
-
-  private resetLocations(): void {
-    this.clearUISourceCodes();
-    for (const modelBreakpoint of this.#modelBreakpoints.values()) {
-      modelBreakpoint.resetLocations();
-    }
   }
 
   private defaultUILocation(uiSourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UILocation {
@@ -782,7 +779,11 @@ export class ModelBreakpoint {
     }
 
     if (!breakpointIds.length) {
-      this.#breakpoint.remove(true);
+      // Do not await the remove, as we otherwise will create a circular
+      // dependency. Removing breakpoints will call `scheduleUpdateInDebugger` again.
+      // Calling it again would cause it to await this current run of `scheduleInDebugger`, which
+      // will then deadlock.
+      void this.#breakpoint.remove(true);
       return;
     }
 
@@ -844,7 +845,7 @@ export class ModelBreakpoint {
     const breakpointLocation = this.#breakpoint.breakpointManager.findBreakpoint(uiLocation);
     if (breakpointLocation && breakpointLocation.breakpoint !== this.#breakpoint) {
       // location clash
-      this.#breakpoint.remove(false /* keepInStorage */);
+      await this.#breakpoint.remove(false /* keepInStorage */);
       return;
     }
     await this.#debuggerWorkspaceBinding.createLiveLocation(

@@ -50,3 +50,7 @@ button.view-trace {
 .lighthouse-toolbar-container > :first-child {
   flex: 1 1 auto;
 }
+
+.lh-devtools .lh-element-screenshot__overlay {
+  position: absolute;
+}

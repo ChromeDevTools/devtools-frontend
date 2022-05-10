@@ -134,6 +134,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _showMemoryGraphSetting: Common.Settings.Setting<any>;
   _showCountersSetting: Common.Settings.Setting<any>;
+  _showScratchTextureManagerCounters: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _showWebVitalsSetting: Common.Settings.Setting<any>;
@@ -176,6 +177,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this._showMemoryGraphSetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this._showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
     this._showCountersSetting = Common.Settings.Settings.instance().createSetting('timelineCounters', false);
+    this._showScratchTextureManagerCounters = Common.Settings.Settings.instance().createSetting('scratchTextureManagerCounters', false);
 
     // Create main and network flamecharts.
     this._networkSplitWidget = new UI.SplitWidget.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
@@ -403,6 +405,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this._networkFlameChartGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.removeChangeListener(this._updateCountersGraphToggle, this);
     this._showCountersSetting.removeChangeListener(this._updateCountersGraphToggle, this);
+    this._showScratchTextureManagerCounters.removeChangeListener(this._updateCountersGraphToggle, this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this._boundRefresh);
   }
 
@@ -410,6 +413,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this._networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     this._showMemoryGraphSetting.addChangeListener(this._updateCountersGraphToggle, this);
     this._showCountersSetting.addChangeListener(this._updateCountersGraphToggle, this);
+    this._showScratchTextureManagerCounters.addChangeListener(this._updateCountersGraphToggle, this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this._boundRefresh);
     if (this._needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
@@ -419,7 +423,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   _updateCountersGraphToggle(): void {
-    if (this._showMemoryGraphSetting.get() || this._showCountersSetting.get()) {
+    if (this._showMemoryGraphSetting.get() || this._showCountersSetting.get() || this._showScratchTextureManagerCounters.get()) {
       this._chartSplitWidget.showBoth();
     } else {
       this._chartSplitWidget.hideSidebar();

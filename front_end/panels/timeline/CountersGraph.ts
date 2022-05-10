@@ -71,7 +71,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 enum CounterType {
   SimpleCounter,
-  MemoryCounter
+  MemoryCounter,
+  ScratchTextureManagerCounter
 }
 
 export class CountersGraph extends UI.Widget.VBox {
@@ -93,6 +94,7 @@ export class CountersGraph extends UI.Widget.VBox {
   _markerXPosition?: number;
   _showSimpleCounters: Common.Settings.Setting<any>;
   _showMemoryCounters: Common.Settings.Setting<any>;
+  _showScratchTextureManagerCounters: Common.Settings.Setting<any>;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -139,13 +141,19 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
     this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString);
 
+    this._countersByName.set('Coherent_STMCurrentMemory', this._createCounter('STM Memory', 'hsl(238, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString));
+    this._countersByName.set('Coherent_STMLimitMemory', this._createCounter('STM Limit', 'hsla(360, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString));
+    this._counterUI[this._counterUI.length - 1].setShouldDrawDashed(true);
+
     this._countersByName.set('gpuMemoryUsed', this._gpuMemoryCounter);
 
     this._showMemoryCounters = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this._showSimpleCounters = Common.Settings.Settings.instance().createSetting('timelineCounters', false);
+    this._showScratchTextureManagerCounters = Common.Settings.Settings.instance().createSetting('scratchTextureManagerCounters', false);
 
     this._showMemoryCounters.addChangeListener(this._onShowCountersChanged, this);
     this._showSimpleCounters.addChangeListener(this._onShowCountersChanged, this);
+    this._showScratchTextureManagerCounters.addChangeListener(this._onShowCountersChanged, this);
   }
 
   _onShowCountersChanged(): void {
@@ -153,7 +161,8 @@ export class CountersGraph extends UI.Widget.VBox {
     for (const counterUI of this._counterUI) {
       const shouldDisplay =
         (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
-        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get())
+        || (counterUI.getType() == CounterType.ScratchTextureManagerCounter && this._showScratchTextureManagerCounters.get());
 
       counterUI._filter.inputElement.classList.toggle('hidden', !shouldDisplay);
       counterUI._filter.element.classList.toggle('hidden', !shouldDisplay);
@@ -246,7 +255,8 @@ export class CountersGraph extends UI.Widget.VBox {
     for (const counter of this._counters) {
       const shouldDisplay =
         (counter.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
-        || (counter.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+        || (counter.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get())
+        || (counter.getType() == CounterType.ScratchTextureManagerCounter && this._showScratchTextureManagerCounters.get());
 
       if (shouldDisplay) {
         counter._calculateVisibleIndexes(this._calculator);
@@ -257,7 +267,8 @@ export class CountersGraph extends UI.Widget.VBox {
     for (const counterUI of this._counterUI) {
       const shouldDisplay =
         (counterUI.getType() == CounterType.SimpleCounter && this._showSimpleCounters.get())
-        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get());
+        || (counterUI.getType() == CounterType.MemoryCounter && this._showMemoryCounters.get())
+        || (counterUI.getType() == CounterType.ScratchTextureManagerCounter && this._showScratchTextureManagerCounters.get());
 
       if (shouldDisplay) {
         counterUI._drawGraph(this._canvas);
@@ -337,7 +348,6 @@ export class Counter {
   _minTime: number;
   _limitValue?: number;
   _type: CounterType;
-
 
   constructor(counterType: CounterType) {
     this.times = [];
@@ -447,6 +457,7 @@ export class CounterUI {
   _currentValueLabel: string;
   _marker: HTMLElement;
   _type: CounterType;
+  _shouldDrawDashed: boolean;
 
   constructor(
       countersPane: CountersGraph, title: string, graphColor: string, counter: Counter, counterType: CounterType,
@@ -487,6 +498,7 @@ export class CounterUI {
     this._clearCurrentValueAndMarker();
 
     this._type = counterType;
+    this._shouldDrawDashed = false;
   }
 
   reset(): void {
@@ -563,6 +575,13 @@ export class CounterUI {
 
     ctx.save();
     ctx.lineWidth = window.devicePixelRatio;
+
+    if (this._shouldDrawDashed)
+    {
+      ctx.setLineDash([10, 10]);
+      ctx.lineWidth *= 2;
+    }
+
     if (ctx.lineWidth % 2) {
       ctx.translate(0.5, 0.5);
     }
@@ -605,6 +624,10 @@ export class CounterUI {
 
   getType(): CounterType {
     return this._type;
+  }
+
+  setShouldDrawDashed(value: boolean): void {
+    this._shouldDrawDashed = value;
   }
 }
 

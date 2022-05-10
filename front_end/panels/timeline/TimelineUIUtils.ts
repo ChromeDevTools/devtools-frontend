@@ -2630,6 +2630,7 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(UIStrings.IBId, event.args['int0']);
         contentHelper.appendTextRow(UIStrings.VBType, IBTypes[parseInt(event.args['int1'])]);
         break;
+      }
       case recordTypes.Coherent_DrawSubLayer:
       case recordTypes.Coherent_ProcessLayer:
       case recordTypes.Coherent_ProcessSimpleSublayer:

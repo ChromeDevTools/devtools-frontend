@@ -8,6 +8,7 @@ ts_library("elements") {
   testonly = true
   sources = [
     "ElementsPanel_test.ts",
+    "StylePropertyTreeElement_test.ts",
     "StylePropertyUtils_test.ts",
     "StylesSidebarPane_test.ts",
   ]

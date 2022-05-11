@@ -1436,11 +1436,9 @@
                     "type": "string",
                     "enum": [
                         "PermissionPolicyDisabled",
-                        "InvalidAttributionSourceEventId",
                         "AttributionSourceUntrustworthyOrigin",
                         "AttributionUntrustworthyOrigin",
-                        "InvalidAttributionSourceExpiry",
-                        "InvalidAttributionSourcePriority"
+                        "InvalidHeader"
                     ]
                 },
                 {
@@ -1564,10 +1562,7 @@
                         "GetUserMediaInsecureOrigin",
                         "HostCandidateAttributeGetter",
                         "InsecurePrivateNetworkSubresourceRequest",
-                        "LegacyConstraintGoogCpuOveruseDetection",
                         "LegacyConstraintGoogIPv6",
-                        "LegacyConstraintGoogScreencastMinBitrate",
-                        "LegacyConstraintGoogSuspendBelowMinBitrate",
                         "LocalCSSFileExtensionRejected",
                         "MediaElementAudioSourceNode",
                         "MediaSourceAbortRemove",
@@ -1593,15 +1588,12 @@
                         "RTCConstraintEnableDtlsSrtpFalse",
                         "RTCConstraintEnableDtlsSrtpTrue",
                         "RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics",
-                        "RTCPeerConnectionLegacyCreateWithMediaConstraints",
                         "RTCPeerConnectionSdpSemanticsPlanB",
                         "RtcpMuxPolicyNegotiate",
                         "RTPDataChannel",
-                        "SelectionAddRangeIntersect",
                         "SharedArrayBufferConstructedWithoutIsolation",
                         "TextToSpeech_DisallowedByAutoplay",
                         "V8SharedArrayBufferConstructedInExtensionWithoutIsolation",
-                        "WebCodecsVideoFrameDefaultTimestamp",
                         "XHRJSONEncodingDetection",
                         "XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload",
                         "XRSupportsSession"
@@ -7372,6 +7364,10 @@
             "experimental": true,
             "types": [
                 {
+                    "id": "SerializedStorageKey",
+                    "type": "string"
+                },
+                {
                     "id": "StorageId",
                     "description": "DOM Storage identifier.",
                     "type": "object",
@@ -7379,7 +7375,14 @@
                         {
                             "name": "securityOrigin",
                             "description": "Security origin for the storage.",
+                            "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Represents a key by which DOM Storage keys its CachedStorageAreas",
+                            "optional": true,
+                            "$ref": "SerializedStorageKey"
                         },
                         {
                             "name": "isLocalStorage",
@@ -7460,6 +7463,21 @@
                         {
                             "name": "value",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "getStorageKeyForFrame",
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "$ref": "Page.FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "storageKey",
+                            "$ref": "SerializedStorageKey"
                         }
                     ]
                 }
@@ -8383,7 +8401,7 @@
             "commands": [
                 {
                     "name": "beginFrame",
-                    "description": "Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a\nscreenshot from the resulting frame. Requires that the target was created with enabled\nBeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also\nhttps://goo.gl/3zHXhB for more background.",
+                    "description": "Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a\nscreenshot from the resulting frame. Requires that the target was created with enabled\nBeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also\nhttps://goo.gle/chrome-headless-rendering for more background.",
                     "parameters": [
                         {
                             "name": "frameTimeTicks",
@@ -16058,7 +16076,39 @@
                     "description": "List of FinalStatus reasons for Prerender2.",
                     "type": "string",
                     "enum": [
-                        "Activated"
+                        "Activated",
+                        "Destroyed",
+                        "LowEndDevice",
+                        "CrossOriginRedirect",
+                        "CrossOriginNavigation",
+                        "InvalidSchemeRedirect",
+                        "InvalidSchemeNavigation",
+                        "InProgressNavigation",
+                        "NavigationRequestBlockedByCsp",
+                        "MainFrameNavigation",
+                        "MojoBinderPolicy",
+                        "RendererProcessCrashed",
+                        "RendererProcessKilled",
+                        "Download",
+                        "TriggerDestroyed",
+                        "NavigationNotCommitted",
+                        "NavigationBadHttpStatus",
+                        "ClientCertRequested",
+                        "NavigationRequestNetworkError",
+                        "MaxNumOfRunningPrerendersExceeded",
+                        "CancelAllHostsForTesting",
+                        "DidFailLoad",
+                        "Stop",
+                        "SslCertificateError",
+                        "LoginAuthRequested",
+                        "UaChangeRequiresReload",
+                        "BlockedByClient",
+                        "AudioOutputDeviceRequested",
+                        "MixedContent",
+                        "TriggerBackgrounded",
+                        "EmbedderTriggeredAndSameOriginRedirected",
+                        "EmbedderTriggeredAndCrossOriginRedirected",
+                        "EmbedderTriggeredAndDestroyed"
                     ]
                 }
             ],
@@ -18721,6 +18771,10 @@
                 "Network"
             ],
             "types": [
+                {
+                    "id": "SerializedStorageKey",
+                    "type": "string"
+                },
                 {
                     "id": "StorageType",
                     "description": "Enum of possible storage types.",

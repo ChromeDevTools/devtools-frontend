@@ -28,21 +28,6 @@ const UIStrings = {
    */
   request: 'Request',
   /**
-   * @description Label for the column showing the invalid value used as the 'attributionsourceeventid' attribute
-   * on an anchor HTML element ("a link").
-   */
-  invalidSourceEventId: 'Invalid `attributionsourceeventid`',
-  /**
-   * @description Label for the column showing the invalid value used as the 'attributionexpiry' attribute
-   * on an anchor HTML element ("a link").
-   */
-  invalidSourceExpiry: 'Invalid `attributionexpiry`',
-  /**
-   * @description Label for the column showing the invalid value used as the 'attributionpriority' attribute
-   * on an anchor HTML element ("a link").
-   */
-  invalidSourcePriority: 'Invalid `attributionsourcepriority`',
-  /**
    * @description Label for the column showing the invalid URL used in an HTML anchor element ("a link").
    * A origin is (roughly said) the front part of a URL.
    */
@@ -89,21 +74,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
         break;
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
-        this.appendColumnTitle(header, i18nString(UIStrings.frame));
-        this.appendColumnTitle(header, i18nString(UIStrings.element));
-        this.appendColumnTitle(header, i18nString(UIStrings.invalidSourceEventId));
-        break;
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceExpiry:
-        this.appendColumnTitle(header, i18nString(UIStrings.frame));
-        this.appendColumnTitle(header, i18nString(UIStrings.element));
-        this.appendColumnTitle(header, i18nString(UIStrings.invalidSourceExpiry));
-        break;
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourcePriority:
-        this.appendColumnTitle(header, i18nString(UIStrings.frame));
-        this.appendColumnTitle(header, i18nString(UIStrings.element));
-        this.appendColumnTitle(header, i18nString(UIStrings.invalidSourcePriority));
-        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -129,25 +99,12 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const details = issue.issueDetails;
 
     switch (issueCode) {
-      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin:
-        this.#appendFrameOrEmptyCell(element, issue);
-        this.#appendRequestOrEmptyCell(element, details.request);
-        this.appendIssueDetailCell(element, details.invalidParameter || '');
-        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
         await this.#appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
         this.#appendRequestOrEmptyCell(element, details.request);
-        this.appendIssueDetailCell(element, details.invalidParameter || '');
-        break;
-      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceExpiry:
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourcePriority:
-        this.#appendFrameOrEmptyCell(element, issue);
-        await this.#appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:

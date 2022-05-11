@@ -1415,17 +1415,8 @@
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
   },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogCpuOveruseDetection": {
-    "message": "CPU overuse detection is enabled-by-default and the ability to disable it using googCpuOveruseDetection will soon be removed. Please stop using this legacy constraint."
-  },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
     "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
-  },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogScreencastMinBitrate": {
-    "message": "Screencast min bitrate is now set to 100 kbps by default and googScreencastMinBitrate will soon be ignored in favor of this new default. Please stop using this legacy constraint."
-  },
-  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogSuspendBelowMinBitrate": {
-    "message": "Support for the googSuspendBelowMinBitrate constraint is about to be removed. Please stop using this legacy constraint."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
@@ -1505,9 +1496,6 @@
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
     "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
   },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionLegacyCreateWithMediaConstraints": {
-    "message": "The mediaConstraints version of RTCOfferOptions/RTCAnswerOptions are deprecated and will soon be removed, please migrate to the promise-based createOffer/createAnswer instead."
-  },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
     "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
   },
@@ -1528,9 +1516,6 @@
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | webCodecsVideoFrameDefaultTimestamp": {
-    "message": "Constructing a VideoFrame without a timestamp is deprecated and support will be removed. Please provide a timestamp via VideoFrameInit."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
@@ -5551,15 +5536,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "Frame"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
-    "message": "Invalid attributionsourceeventid"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
-    "message": "Invalid attributionexpiry"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
-    "message": "Invalid attributionsourcepriority"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n, plural, =1 {# violation} other {# violations}}"

@@ -963,11 +963,9 @@ export namespace Audits {
 
   export const enum AttributionReportingIssueType {
     PermissionPolicyDisabled = 'PermissionPolicyDisabled',
-    InvalidAttributionSourceEventId = 'InvalidAttributionSourceEventId',
     AttributionSourceUntrustworthyOrigin = 'AttributionSourceUntrustworthyOrigin',
     AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
-    InvalidAttributionSourceExpiry = 'InvalidAttributionSourceExpiry',
-    InvalidAttributionSourcePriority = 'InvalidAttributionSourcePriority',
+    InvalidHeader = 'InvalidHeader',
   }
 
   /**
@@ -1038,10 +1036,7 @@ export namespace Audits {
     GetUserMediaInsecureOrigin = 'GetUserMediaInsecureOrigin',
     HostCandidateAttributeGetter = 'HostCandidateAttributeGetter',
     InsecurePrivateNetworkSubresourceRequest = 'InsecurePrivateNetworkSubresourceRequest',
-    LegacyConstraintGoogCpuOveruseDetection = 'LegacyConstraintGoogCpuOveruseDetection',
     LegacyConstraintGoogIPv6 = 'LegacyConstraintGoogIPv6',
-    LegacyConstraintGoogScreencastMinBitrate = 'LegacyConstraintGoogScreencastMinBitrate',
-    LegacyConstraintGoogSuspendBelowMinBitrate = 'LegacyConstraintGoogSuspendBelowMinBitrate',
     LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
     MediaElementAudioSourceNode = 'MediaElementAudioSourceNode',
     MediaSourceAbortRemove = 'MediaSourceAbortRemove',
@@ -1068,16 +1063,13 @@ export namespace Audits {
     RTCConstraintEnableDtlsSrtpTrue = 'RTCConstraintEnableDtlsSrtpTrue',
     RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics =
         'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
-    RTCPeerConnectionLegacyCreateWithMediaConstraints = 'RTCPeerConnectionLegacyCreateWithMediaConstraints',
     RTCPeerConnectionSdpSemanticsPlanB = 'RTCPeerConnectionSdpSemanticsPlanB',
     RtcpMuxPolicyNegotiate = 'RtcpMuxPolicyNegotiate',
     RTPDataChannel = 'RTPDataChannel',
-    SelectionAddRangeIntersect = 'SelectionAddRangeIntersect',
     SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
     TextToSpeech_DisallowedByAutoplay = 'TextToSpeech_DisallowedByAutoplay',
     V8SharedArrayBufferConstructedInExtensionWithoutIsolation =
         'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
-    WebCodecsVideoFrameDefaultTimestamp = 'WebCodecsVideoFrameDefaultTimestamp',
     XHRJSONEncodingDetection = 'XHRJSONEncodingDetection',
     XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload = 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload',
     XRSupportsSession = 'XRSupportsSession',
@@ -4939,6 +4931,8 @@ export namespace DOMSnapshot {
  */
 export namespace DOMStorage {
 
+  export type SerializedStorageKey = string;
+
   /**
    * DOM Storage identifier.
    */
@@ -4946,7 +4940,11 @@ export namespace DOMStorage {
     /**
      * Security origin for the storage.
      */
-    securityOrigin: string;
+    securityOrigin?: string;
+    /**
+     * Represents a key by which DOM Storage keys its CachedStorageAreas
+     */
+    storageKey?: SerializedStorageKey;
     /**
      * Whether the storage is local storage (not session storage).
      */
@@ -4979,6 +4977,14 @@ export namespace DOMStorage {
     storageId: StorageId;
     key: string;
     value: string;
+  }
+
+  export interface GetStorageKeyForFrameRequest {
+    frameId: Page.FrameId;
+  }
+
+  export interface GetStorageKeyForFrameResponse extends ProtocolResponseWithError {
+    storageKey: SerializedStorageKey;
   }
 
   export interface DomStorageItemAddedEvent {
@@ -10978,6 +10984,38 @@ export namespace Page {
    */
   export const enum PrerenderFinalStatus {
     Activated = 'Activated',
+    Destroyed = 'Destroyed',
+    LowEndDevice = 'LowEndDevice',
+    CrossOriginRedirect = 'CrossOriginRedirect',
+    CrossOriginNavigation = 'CrossOriginNavigation',
+    InvalidSchemeRedirect = 'InvalidSchemeRedirect',
+    InvalidSchemeNavigation = 'InvalidSchemeNavigation',
+    InProgressNavigation = 'InProgressNavigation',
+    NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
+    MainFrameNavigation = 'MainFrameNavigation',
+    MojoBinderPolicy = 'MojoBinderPolicy',
+    RendererProcessCrashed = 'RendererProcessCrashed',
+    RendererProcessKilled = 'RendererProcessKilled',
+    Download = 'Download',
+    TriggerDestroyed = 'TriggerDestroyed',
+    NavigationNotCommitted = 'NavigationNotCommitted',
+    NavigationBadHttpStatus = 'NavigationBadHttpStatus',
+    ClientCertRequested = 'ClientCertRequested',
+    NavigationRequestNetworkError = 'NavigationRequestNetworkError',
+    MaxNumOfRunningPrerendersExceeded = 'MaxNumOfRunningPrerendersExceeded',
+    CancelAllHostsForTesting = 'CancelAllHostsForTesting',
+    DidFailLoad = 'DidFailLoad',
+    Stop = 'Stop',
+    SslCertificateError = 'SslCertificateError',
+    LoginAuthRequested = 'LoginAuthRequested',
+    UaChangeRequiresReload = 'UaChangeRequiresReload',
+    BlockedByClient = 'BlockedByClient',
+    AudioOutputDeviceRequested = 'AudioOutputDeviceRequested',
+    MixedContent = 'MixedContent',
+    TriggerBackgrounded = 'TriggerBackgrounded',
+    EmbedderTriggeredAndSameOriginRedirected = 'EmbedderTriggeredAndSameOriginRedirected',
+    EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
+    EmbedderTriggeredAndDestroyed = 'EmbedderTriggeredAndDestroyed',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {
@@ -12660,6 +12698,8 @@ export namespace ServiceWorker {
 }
 
 export namespace Storage {
+
+  export type SerializedStorageKey = string;
 
   /**
    * Enum of possible storage types.

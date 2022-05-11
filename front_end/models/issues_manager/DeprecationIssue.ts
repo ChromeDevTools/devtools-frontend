@@ -131,35 +131,11 @@ const UIStrings = {
       'The website requested a subresource from a network that it could only access because of its users\' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.',
   /**
    *@description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website attempts to turn off
-   * CPU overuse detection with a non-standard API. CPU overuse
-   * detection is used to adjust video quality based on available CPU
-   * resources.
-   */
-  legacyConstraintGoogCpuOveruseDetection:
-      'CPU overuse detection is enabled-by-default and the ability to disable it using `googCpuOveruseDetection` will soon be removed. Please stop using this legacy constraint.',
-  /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when a video conferencing website attempts to disable
    * use of IPv6 addresses with a non-standard API.
    */
   legacyConstraintGoogIPv6:
       'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` will soon be removed. Please stop using this legacy constraint.',
-  /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website attempts to adjust
-   * bitrate settings for screeen sharing with a non-standard API.
-   */
-  legacyConstraintGoogScreencastMinBitrate:
-      'Screencast min bitrate is now set to 100 kbps by default and `googScreencastMinBitrate` will soon be ignored in favor of this new default. Please stop using this legacy constraint.',
-  /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website attempts to change the
-   * default settings for how the browser should act when bitrate is
-   * low.
-   */
-  legacyConstraintGoogSuspendBelowMinBitrate:
-      'Support for the `googSuspendBelowMinBitrate` constraint is about to be removed. Please stop using this legacy constraint.',
   /**
    *@description TODO(crbug.com/1318865): Description needed for translation
    */
@@ -298,16 +274,6 @@ const UIStrings = {
       '`Complex Plan B SDP` detected. This dialect of the `Session Description Protocol` is no longer supported. Please use `Unified Plan SDP` instead.',
   /**
    *@description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website uses a non-standard
-   * version of an API to exchange an `offer` or an `answer`. `Offers`
-   * and `answers` are exchanged between endpoints in order to configure
-   * what media should be sent and/or received. The app should make use
-   * of the standard API instead, which will have the desired effect.
-   */
-  rtcPeerConnectionLegacyCreateWithMediaConstraints:
-      'The `mediaConstraints` version of `RTCOfferOptions/RTCAnswerOptions` are deprecated and will soon be removed, please migrate to the promise-based `createOffer`/`createAnswer` instead.',
-  /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
    * The `Session Description Protocol`, or `SDP` for short, is a
    * protocol used by video conferencing websites to establish the
    * number of audio and/or video streams to send and/or receive. This
@@ -351,11 +317,6 @@ const UIStrings = {
    */
   v8SharedArrayBufferConstructedInExtensionWithoutIsolation:
       'Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.',
-  /**
-   *@description TODO(crbug.com/1318880): Description needed for translation
-   */
-  webCodecsVideoFrameDefaultTimestamp:
-      'Constructing a `VideoFrame` without a timestamp is deprecated and support will be removed. Please provide a timestamp via `VideoFrameInit`.',
   /**
    *@description TODO(crbug.com/1318881): Description needed for translation
    */
@@ -480,20 +441,8 @@ export class DeprecationIssue extends Issue {
         feature = 5436853517811712;
         milestone = 92;
         break;
-      case Protocol.Audits.DeprecationIssueType.LegacyConstraintGoogCpuOveruseDetection:
-        messageFunction = i18nLazyString(UIStrings.legacyConstraintGoogCpuOveruseDetection);
-        milestone = 103;
-        break;
       case Protocol.Audits.DeprecationIssueType.LegacyConstraintGoogIPv6:
         messageFunction = i18nLazyString(UIStrings.legacyConstraintGoogIPv6);
-        milestone = 103;
-        break;
-      case Protocol.Audits.DeprecationIssueType.LegacyConstraintGoogScreencastMinBitrate:
-        messageFunction = i18nLazyString(UIStrings.legacyConstraintGoogScreencastMinBitrate);
-        milestone = 103;
-        break;
-      case Protocol.Audits.DeprecationIssueType.LegacyConstraintGoogSuspendBelowMinBitrate:
-        messageFunction = i18nLazyString(UIStrings.legacyConstraintGoogSuspendBelowMinBitrate);
         milestone = 103;
         break;
       case Protocol.Audits.DeprecationIssueType.LocalCSSFileExtensionRejected:
@@ -588,10 +537,6 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics);
         milestone = 72;
         break;
-      case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionLegacyCreateWithMediaConstraints:
-        messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionLegacyCreateWithMediaConstraints);
-        milestone = 103;
-        break;
       case Protocol.Audits.DeprecationIssueType.RTCPeerConnectionSdpSemanticsPlanB:
         messageFunction = i18nLazyString(UIStrings.rtcPeerConnectionSdpSemanticsPlanB);
         feature = 5823036655665152;
@@ -618,11 +563,6 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.V8SharedArrayBufferConstructedInExtensionWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.v8SharedArrayBufferConstructedInExtensionWithoutIsolation);
         milestone = 96;
-        break;
-      case Protocol.Audits.DeprecationIssueType.WebCodecsVideoFrameDefaultTimestamp:
-        messageFunction = i18nLazyString(UIStrings.webCodecsVideoFrameDefaultTimestamp);
-        feature = 5667793157488640;
-        milestone = 99;
         break;
       case Protocol.Audits.DeprecationIssueType.XHRJSONEncodingDetection:
         messageFunction = i18nLazyString(UIStrings.xhrJSONEncodingDetection);

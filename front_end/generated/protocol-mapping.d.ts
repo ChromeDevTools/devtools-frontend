@@ -1464,6 +1464,10 @@ export namespace ProtocolMapping {
     'DOMStorage.removeDOMStorageItem':
         {paramsType: [Protocol.DOMStorage.RemoveDOMStorageItemRequest]; returnType: void;};
     'DOMStorage.setDOMStorageItem': {paramsType: [Protocol.DOMStorage.SetDOMStorageItemRequest]; returnType: void;};
+    'DOMStorage.getStorageKeyForFrame': {
+      paramsType: [Protocol.DOMStorage.GetStorageKeyForFrameRequest];
+      returnType: Protocol.DOMStorage.GetStorageKeyForFrameResponse;
+    };
     /**
      * Disables database tracking, prevents database events from being sent to the client.
      */
@@ -1614,7 +1618,7 @@ export namespace ProtocolMapping {
      * Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
      * screenshot from the resulting frame. Requires that the target was created with enabled
      * BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
-     * https://goo.gl/3zHXhB for more background.
+     * https://goo.gle/chrome-headless-rendering for more background.
      */
     'HeadlessExperimental.beginFrame': {
       paramsType: [Protocol.HeadlessExperimental.BeginFrameRequest?];

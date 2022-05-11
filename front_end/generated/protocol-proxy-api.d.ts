@@ -1280,6 +1280,9 @@ declare namespace ProtocolProxyApi {
 
     invoke_setDOMStorageItem(params: Protocol.DOMStorage.SetDOMStorageItemRequest):
         Promise<Protocol.ProtocolResponseWithError>;
+
+    invoke_getStorageKeyForFrame(params: Protocol.DOMStorage.GetStorageKeyForFrameRequest):
+        Promise<Protocol.DOMStorage.GetStorageKeyForFrameResponse>;
   }
   export interface DOMStorageDispatcher {
     domStorageItemAdded(params: Protocol.DOMStorage.DomStorageItemAddedEvent): void;
@@ -1496,7 +1499,7 @@ declare namespace ProtocolProxyApi {
      * Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
      * screenshot from the resulting frame. Requires that the target was created with enabled
      * BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
-     * https://goo.gl/3zHXhB for more background.
+     * https://goo.gle/chrome-headless-rendering for more background.
      */
     invoke_beginFrame(params: Protocol.HeadlessExperimental.BeginFrameRequest):
         Promise<Protocol.HeadlessExperimental.BeginFrameResponse>;

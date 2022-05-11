@@ -368,7 +368,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this._timelineCounters.addChangeListener(this._onModeChanged, this);
 
     this._showScratchTextureManagerCounters = Common.Settings.Settings.instance().createSetting('scratchTextureManagerCounters', false);
-    this._showScratchTextureManagerCounters.setTitle('STM');
+    this._showScratchTextureManagerCounters.setTitle('Scratch Texture Manager');
     this._showScratchTextureManagerCounters.addChangeListener(this._onModeChanged, this);
 
     this._showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);

@@ -89,8 +89,10 @@ export class CountersGraph extends UI.Widget.VBox {
   _counterUI: CounterUI[];
   _countersByName: Map<string, Counter>;
   _gpuMemoryCounter: Counter;
-  _STMMemoryLimitCounter: Counter;
-  _STMMemoryCurrentCounter: Counter;
+  _STMScratchTexturesMemoryLimitCounter: Counter;
+  _STMScratchTexturesMemoryCurrentCounter: Counter;
+  _STMLayerTexturesMemoryLimitCounter: Counter;
+  _STMLayerTexturesMemoryCurrentCounter: Counter;
   _track?: TimelineModel.TimelineModel.Track|null;
   _currentValuesBar?: HTMLElement;
   _markerXPosition?: number;
@@ -143,15 +145,25 @@ export class CountersGraph extends UI.Widget.VBox {
     this._countersByName.set('Coherent_RenoirFrameMemory', this._createCounter('Renoir Frame Memory', 'hsl(304, 900%, 50%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString));
     this._gpuMemoryCounter = this._createCounter(UIStrings.gpuMemory, 'hsl(300, 90%, 43%)', CounterType.MemoryCounter, Platform.NumberUtilities.bytesToString);
 
-    this._STMMemoryCurrentCounter = this._createCounter('STM Memory', 'hsl(238, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString);
-    this._STMMemoryLimitCounter = this._createCounter('STM Limit', 'hsla(360, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString)
+    this._STMScratchTexturesMemoryCurrentCounter = this._createCounter('STM (Scratch Textures) Memory', 'hsl(238, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString);
+    this._STMScratchTexturesMemoryLimitCounter = this._createCounter('STM (Scratch Textures) Limit', 'hsla(360, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString)
     this._counterUI[this._counterUI.length - 1].setShouldDrawDashed(true);
 
-    this._STMMemoryLimitCounter.setFixedBounds({min:0, max:12*1024*1024});
-    this._STMMemoryCurrentCounter.setFixedBounds({min:0, max:12*1024*1024});
+    this._STMScratchTexturesMemoryLimitCounter.setFixedBounds({min:0, max: 12 * 1024 * 1024  /* 12 MBs*/});
+    this._STMScratchTexturesMemoryCurrentCounter.setFixedBounds({min:0, max: 12 * 1024 * 1024  /* 12 MBs*/});
 
-    this._countersByName.set('Coherent_STMCurrentMemory', this._STMMemoryCurrentCounter);
-    this._countersByName.set('Coherent_STMLimitMemory', this._STMMemoryLimitCounter);
+    this._STMLayerTexturesMemoryCurrentCounter = this._createCounter('STM (Layer Textures) Memory', 'hsl(89, 100%, 42%)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString);
+    this._STMLayerTexturesMemoryLimitCounter = this._createCounter('STM (Layer Textures) Limit', 'hsla(317, 100%, 42%, 0.8)', CounterType.ScratchTextureManagerCounter, Platform.NumberUtilities.bytesToString)
+    this._counterUI[this._counterUI.length - 1].setShouldDrawDashed(true);
+
+    this._STMScratchTexturesMemoryLimitCounter.setFixedBounds({min:0, max: 20 * 1024 * 1024  /* 20 MBs*/});
+    this._STMScratchTexturesMemoryCurrentCounter.setFixedBounds({min:0, max: 20 * 1024 * 1024  /* 20 MBs*/});
+
+    this._countersByName.set('Coherent_STMScratchTexturesCurrentMemory', this._STMScratchTexturesMemoryCurrentCounter);
+    this._countersByName.set('Coherent_STMScratchTexturesLimitMemory', this._STMScratchTexturesMemoryLimitCounter);
+
+    this._countersByName.set('Coherent_STMLayerTexturesCurrentMemory', this._STMLayerTexturesMemoryCurrentCounter);
+    this._countersByName.set('Coherent_STMLayerTexturesLimitMemory', this._STMLayerTexturesMemoryLimitCounter);
 
     this._countersByName.set('gpuMemoryUsed', this._gpuMemoryCounter);
 
@@ -162,6 +174,8 @@ export class CountersGraph extends UI.Widget.VBox {
     this._showMemoryCounters.addChangeListener(this._onShowCountersChanged, this);
     this._showSimpleCounters.addChangeListener(this._onShowCountersChanged, this);
     this._showScratchTextureManagerCounters.addChangeListener(this._onShowCountersChanged, this);
+
+    this._onShowCountersChanged();
   }
 
   _onShowCountersChanged(): void {
@@ -221,10 +235,16 @@ export class CountersGraph extends UI.Widget.VBox {
         this._gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName]);
       }
 
-      const stmLimitCounterNamer = 'Coherent_STMLimitMemory';
-      if (stmLimitCounterNamer in counters) {
-        this._STMMemoryLimitCounter.setFixedBounds({min:0, max:counters[stmLimitCounterNamer]});
-        this._STMMemoryCurrentCounter.setFixedBounds({min:0, max:counters[stmLimitCounterNamer]});
+      const scratchTexturesLimitCounterName = 'Coherent_STMScratchTexturesLimitMemory';
+      if (scratchTexturesLimitCounterName in counters) {
+        this._STMScratchTexturesMemoryLimitCounter.setFixedBounds({min:0, max:counters[scratchTexturesLimitCounterName] * 1.5});
+        this._STMScratchTexturesMemoryCurrentCounter.setFixedBounds({min:0, max:counters[scratchTexturesLimitCounterName] * 1.5});
+      }
+
+      const layerTexturesLimitCounterName = 'Coherent_STMLayerTexturesLimitMemory';
+      if (layerTexturesLimitCounterName in counters) {
+        this._STMLayerTexturesMemoryLimitCounter.setFixedBounds({min:0, max:counters[layerTexturesLimitCounterName] * 1.5});
+        this._STMLayerTexturesMemoryCurrentCounter.setFixedBounds({min:0, max:counters[layerTexturesLimitCounterName] * 1.5});
       }
     }
   }

@@ -229,27 +229,22 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
-    this.clearFileSystem();
-    this.#fileSystem = null;
-    this.events.dispatchEventToListeners(Events.FileSystemRemoved, OVERRIDES_FILE_SYSTEM_PATH);
-  }
-
-  private clearFileSystem(): void {
-    if (!this.#fileSystem) {
-      return;
-    }
-
-    const innerCallback = (results: Entry[]): void => {
-      results.forEach(result => {
-        if (result.isDirectory) {
-          (result as DirectoryEntry).removeRecursively(() => {});
-        } else if (result.isFile) {
-          result.remove(() => {});
+    const removalCallback = (entries: Entry[]): void => {
+      entries.forEach(entry => {
+        if (entry.isDirectory) {
+          (entry as DirectoryEntry).removeRecursively(() => {});
+        } else if (entry.isFile) {
+          entry.remove(() => {});
         }
       });
     };
 
-    this.#fileSystem.root.createReader().readEntries(innerCallback);
+    if (this.#fileSystem) {
+      this.#fileSystem.root.createReader().readEntries(removalCallback);
+    }
+
+    this.#fileSystem = null;
+    this.events.dispatchEventToListeners(Events.FileSystemRemoved, OVERRIDES_FILE_SYSTEM_PATH);
   }
 
   isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem|null {

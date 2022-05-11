@@ -98,7 +98,6 @@ export class TimelineModelImpl {
   private lastRecalculateStylesEvent!: SDK.TracingModel.Event|null;
   private currentScriptEvent!: SDK.TracingModel.Event|null;
   private eventStack!: SDK.TracingModel.Event[];
-  private knownInputEvents!: Set<string>;
   private browserFrameTracking!: boolean;
   private persistentIds!: boolean;
   private legacyCurrentPage!: any;
@@ -573,7 +572,6 @@ export class TimelineModelImpl {
     this.lastRecalculateStylesEvent = null;
     this.currentScriptEvent = null;
     this.eventStack = [];
-    this.knownInputEvents = new Set();
     this.browserFrameTracking = false;
     this.persistentIds = false;
     this.legacyCurrentPage = null;
@@ -831,44 +829,6 @@ export class TimelineModelImpl {
 
         if (asyncEvent.name === RecordType.Animation) {
           group(TrackType.Animation).push(asyncEvent);
-          continue;
-        }
-
-        if (asyncEvent.hasCategory(TimelineModelImpl.Category.LatencyInfo) ||
-            asyncEvent.name === RecordType.ImplSideFling) {
-          const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
-          if (!lastStep) {
-            throw new Error('AsyncEvent.steps access is out of bounds.');
-          }
-          if (lastStep.phase !== SDK.TracingModel.Phase.NestableAsyncEnd) {
-            continue;
-          }
-          const chromeLatencyInfo = asyncEvent.args['chrome_latency_info'];
-
-          const data = chromeLatencyInfo?.['component_info'];
-          asyncEvent.causedFrame =
-              Boolean(data?.some((c: any) => c['component_type'] === 'COMPONENT_INPUT_EVENT_LATENCY_RENDERER_SWAP'));
-          if (asyncEvent.hasCategory(TimelineModelImpl.Category.LatencyInfo)) {
-            if (lastStep.id && !this.knownInputEvents.has(chromeLatencyInfo.trace_id)) {
-              continue;
-            }
-            if (asyncEvent.name === RecordType.InputLatencyMouseMove && !asyncEvent.causedFrame) {
-              continue;
-            }
-            // Coalesced events are not really been processed, no need to track them.
-            if (!data || data['is_coalesced']) {
-              continue;
-            }
-
-            const rendererMain =
-                data?.find((c: any) => c['component_type'] === 'COMPONENT_INPUT_EVENT_LATENCY_RENDERER_MAIN');
-            if (rendererMain) {
-              const time = rendererMain['time_us'] / 1000;
-              TimelineData.forEvent(asyncEvent.steps[0]).timeWaitingForMainThread =
-                  time - asyncEvent.steps[0].startTime;
-            }
-          }
-          group(TrackType.Input).push(asyncEvent);
           continue;
         }
       }
@@ -1210,13 +1170,6 @@ export class TimelineModelImpl {
   }
 
   private processBrowserEvent(event: SDK.TracingModel.Event): void {
-    if (event.name === RecordType.LatencyInfoFlow) {
-      if (event.args.chrome_latency_info?.trace_id) {
-        this.knownInputEvents.add(event.args.chrome_latency_info.trace_id);
-      }
-      return;
-    }
-
     if (event.name === RecordType.ResourceWillSendRequest) {
       const requestId = event.args?.data?.requestId;
       if (typeof requestId === 'string') {
@@ -1715,7 +1668,6 @@ export class Track {
 export enum TrackType {
   MainThread = 'MainThread',
   Worker = 'Worker',
-  Input = 'Input',
   Animation = 'Animation',
   Timings = 'Timings',
   Console = 'Console',

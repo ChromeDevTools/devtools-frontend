@@ -54,10 +54,6 @@ const UIStrings = {
   */
   onIgnoreList: 'On ignore list',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
-  input: 'Input',
-  /**
   *@description Text that refers to the animation of the web page
   */
   animation: 'Animation',
@@ -428,10 +424,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const eventEntryType = EntryType.Event;
 
-    const weight = (track: TimelineModel.TimelineModel.Track): 0|1|2|3|4|5|6|7|8|9|10|- 1 => {
+    const weight = (track: TimelineModel.TimelineModel.Track): 1|2|3|4|5|6|7|8|9|10|- 1 => {
       switch (track.type) {
-        case TimelineModel.TimelineModel.TrackType.Input:
-          return 0;
         case TimelineModel.TimelineModel.TrackType.Animation:
           return 1;
         case TimelineModel.TimelineModel.TrackType.Timings:
@@ -464,13 +458,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let rasterCount = 0;
     for (const track of tracks) {
       switch (track.type) {
-        case TimelineModel.TimelineModel.TrackType.Input: {
-          this.appendAsyncEventsGroup(
-              track, i18nString(UIStrings.input), track.asyncEvents, this.interactionsHeaderLevel2, eventEntryType,
-              false /* selectable */);
-          break;
-        }
-
         case TimelineModel.TimelineModel.TrackType.Animation: {
           this.appendAsyncEventsGroup(
               track, i18nString(UIStrings.animation), track.asyncEvents, this.interactionsHeaderLevel2, eventEntryType,

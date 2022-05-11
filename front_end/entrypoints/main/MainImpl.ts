@@ -407,6 +407,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.SYNC_SETTINGS,
       Root.Runtime.ExperimentName.CSS_LAYERS,
       Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER,
+      'lighthousePanelFR',
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

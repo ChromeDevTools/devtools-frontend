@@ -1847,6 +1847,9 @@
   "lighthouse-core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} m̂ś ŝṕêńt̂ ón̂ év̂én̂t́ '{interactionType}'"
   },
+  "lighthouse-core/audits/work-during-interaction.js | eventTarget": {
+    "message": "Êv́êńt̂ t́âŕĝét̂"
+  },
   "lighthouse-core/audits/work-during-interaction.js | failureTitle": {
     "message": "M̂ín̂ím̂íẑé ŵór̂ḱ d̂úr̂ín̂ǵ k̂éŷ ín̂t́êŕâćt̂íôń"
   },

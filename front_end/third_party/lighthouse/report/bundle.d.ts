@@ -10,13 +10,6 @@ export type CRCSegment = {
     transferSize: number;
     treeMarkers: boolean[];
 };
-export type LineDetails = {
-    content: string;
-    lineNumber: string | number;
-    contentType: LineContentType;
-    truncated?: boolean;
-    visibility?: LineVisibility;
-};
 /**
  * @license
  * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
@@ -306,19 +299,6 @@ export function format(_: any): void;
  */
 export function renderReport(lhr: LH.Result, opts?: LH.Renderer.Options): HTMLElement;
 export function swapLocale(_: any): void;
-type LineContentType = number;
-declare namespace LineContentType {
-    const CONTENT_NORMAL: number;
-    const CONTENT_HIGHLIGHTED: number;
-    const PLACEHOLDER: number;
-    const MESSAGE: number;
-}
-type LineVisibility = number;
-declare namespace LineVisibility {
-    const ALWAYS: number;
-    const WHEN_COLLAPSED: number;
-    const WHEN_EXPANDED: number;
-}
 /**
  * @license
  * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
@@ -715,10 +695,10 @@ declare class DetailsRenderer {
      */
     _renderTable(details: OpportunityTable | Table): Element;
     /**
-     * @param {LH.Audit.Details.List} details
+     * @param {LH.FormattedIcu<LH.Audit.Details.List>} details
      * @return {Element}
      */
-    _renderList(details: LH.Audit.Details.List): Element;
+    _renderList(details: LH.FormattedIcu<LH.Audit.Details.List>): Element;
     /**
      * @param {LH.Audit.Details.NodeValue} item
      * @return {Element}

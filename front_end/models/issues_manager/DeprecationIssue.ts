@@ -23,42 +23,42 @@ const UIStrings = {
    */
    milestone: 'This change will go into effect with milestone {milestone}.',
   /**
-   *@description Title of issue raised when a deprecated feature is used
+   * @description Title of issue raised when a deprecated feature is used
    */
   title: 'Deprecated Feature Used',
 
   // Store alphabetized messages per DeprecationIssueType in this block.
   /**
-   *@description TODO(crbug.com/1318846): Description needed for translation
+   * @description TODO(crbug.com/1318846): Description needed for translation
    */
   authorizationCoveredByWildcard:
       'Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling.',
   /**
-   *@description TODO(crbug.com/1320334): Description needed for translation
+   * @description TODO(crbug.com/1320334): Description needed for translation
    */
   canRequestURLHTTPContainingNewline:
       'Resource requests whose URLs contained both removed whitespace `\\(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources.',
   /**
-   *@description TODO(crbug.com/1320335): Description needed for translation
+   * @description TODO(crbug.com/1320335): Description needed for translation
    */
   chromeLoadTimesConnectionInfo:
       '`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2.',
   /**
-   *@description TODO(crbug.com/1320336): Description needed for translation
+   * @description TODO(crbug.com/1320336): Description needed for translation
    */
   chromeLoadTimesFirstPaintAfterLoadTime:
       '`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing.',
   /**
-   *@description TODO(crbug.com/1320337): Description needed for translation
+   * @description TODO(crbug.com/1320337): Description needed for translation
    */
   chromeLoadTimesWasAlternateProtocolAvailable:
       '`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2.',
   /**
-   *@description TODO(crbug.com/1318847): Description needed for translation
+   * @description TODO(crbug.com/1318847): Description needed for translation
    */
   cookieWithTruncatingChar: 'Cookies containing a `\\(0|r|n)` character will be rejected instead of truncated.',
   /**
-   *@description This warning occurs when a frame accesses another frame's
+   * @description This warning occurs when a frame accesses another frame's
    *    data after having set `document.domain` without having set the
    *    `Origin-Agent-Cluster` http header. This is a companion warning to
    *    `documentDomainSettingWithoutOriginAgentClusterHeader`, where that
@@ -69,31 +69,31 @@ const UIStrings = {
   crossOriginAccessBasedOnDocumentDomain:
       'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`.',
   /**
-   *@description TODO(crbug.com/1318850): Description needed for translation
+   * @description TODO(crbug.com/1318850): Description needed for translation
    */
   crossOriginWindowAlert:
       'Triggering `window.alert` from cross origin iframes has been deprecated and will be removed in the future.',
   /**
-   *@description TODO(crbug.com/1318851): Description needed for translation
+   * @description TODO(crbug.com/1318851): Description needed for translation
    */
   crossOriginWindowConfirm:
       'Triggering `window.confirm` from cross origin iframes has been deprecated and will be removed in the future.',
   /**
-   *@description TODO(crbug.com/1320339): Description needed for translation
+   * @description TODO(crbug.com/1320339): Description needed for translation
    */
   cssSelectorInternalMediaControlsOverlayCastButton:
       'The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.',
   /**
-   *@description TODO(crbug.com/1320340): Description needed for translation
+   * @description TODO(crbug.com/1320340): Description needed for translation
    */
   customCursorIntersectsViewport:
       'Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed.',
   /**
-   *@description This message is shown when the example deprecated feature is used
+   * @description This message is shown when the example deprecated feature is used
    */
   deprecationExample: 'This is an example of a translated deprecation issue message.',
   /**
-   *@description This warning occurs when a script modifies `document.domain`
+   * @description This warning occurs when a script modifies `document.domain`
    *    without having set on `Origin-Agent-Cluster` http header. In other
    *    words, when a script relies on the default behaviour of
    *    `Origin-Agent-Cluster` when setting document.domain.
@@ -101,151 +101,151 @@ const UIStrings = {
   documentDomainSettingWithoutOriginAgentClusterHeader:
       'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details.',
   /**
-   *@description Warning displayed to developers when the non-standard `Event.path` API is used to notify them that this API is deprecated.
+   * @description Warning displayed to developers when the non-standard `Event.path` API is used to notify them that this API is deprecated.
    */
   eventPath: '`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead.',
   /**
-   *@description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
+   * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
   geolocationInsecureOrigin:
       '`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.',
   /**
-   *@description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is deprecated.
+   * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is deprecated.
    */
   geolocationInsecureOriginDeprecatedNotRemoved:
       '`getCurrentPosition()` and `watchPosition()` are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.',
   /**
-   *@description TODO(crbug.com/1318858): Description needed for translation
+   * @description TODO(crbug.com/1318858): Description needed for translation
    */
   getUserMediaInsecureOrigin:
       '`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.',
   /**
-   *@description TODO(crbug.com/1320342): Description needed for translation
+   * @description TODO(crbug.com/1320342): Description needed for translation
    */
   hostCandidateAttributeGetter:
       '`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead.',
   /**
-   *@description TODO(crbug.com/1320343): Description needed for translation
+   * @description TODO(crbug.com/1320343): Description needed for translation
    */
   insecurePrivateNetworkSubresourceRequest:
       'The website requested a subresource from a network that it could only access because of its users\' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when a video conferencing website attempts to disable
    * use of IPv6 addresses with a non-standard API.
    */
   legacyConstraintGoogIPv6:
       'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` will soon be removed. Please stop using this legacy constraint.',
   /**
-   *@description TODO(crbug.com/1318865): Description needed for translation
+   * @description TODO(crbug.com/1318865): Description needed for translation
    */
   localCSSFileExtensionRejected:
       'CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension.',
   /**
-   *@description TODO(crbug.com/1320344): Description needed for translation
+   * @description TODO(crbug.com/1320344): Description needed for translation
    */
   mediaElementAudioSourceNode:
       'Creating a `MediaElementAudioSourceNode` on an `OfflineAudioContext` is deprecated and will be removed.',
   /**
-   *@description TODO(crbug.com/1320345): Description needed for translation
+   * @description TODO(crbug.com/1320345): Description needed for translation
    */
   mediaSourceAbortRemove:
       'Using `SourceBuffer.abort()` to abort `remove()`\'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await `updateend`. `abort()` is intended to only abort an asynchronous media append or reset parser state.',
   /**
-   *@description TODO(crbug.com/1320346): Description needed for translation
+   * @description TODO(crbug.com/1320346): Description needed for translation
    */
   mediaSourceDurationTruncatingBuffered:
       'Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`.',
   /**
-   *@description TODO(crbug.com/1320347): Description needed for translation
+   * @description TODO(crbug.com/1320347): Description needed for translation
    */
   noSysexWebMIDIWithoutPermission:
       'Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`.',
   /**
-   *@description Warning displayed to developers when the Notification API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
+   * @description Warning displayed to developers when the Notification API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
   notificationInsecureOrigin:
       'The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.',
   /**
-   *@description Warning displayed to developers when permission to use notifications has been requested by a cross-origin iframe, to notify them that this use is no longer supported.
+   * @description Warning displayed to developers when permission to use notifications has been requested by a cross-origin iframe, to notify them that this use is no longer supported.
    */
   notificationPermissionRequestedIframe:
       'Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead.',
   /**
-   *@description TODO(crbug.com/1318867): Description needed for translation
+   * @description TODO(crbug.com/1318867): Description needed for translation
    */
   obsoleteWebRtcCipherSuite:
       'Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed.',
   /**
-   *@description TODO(crbug.com/1320349): Description needed for translation
+   * @description TODO(crbug.com/1320349): Description needed for translation
    */
   paymentRequestBasicCard: 'The `basic-card` payment method is deprecated and will be removed.',
   /**
-   *@description TODO(crbug.com/1320350): Description needed for translation
+   * @description TODO(crbug.com/1320350): Description needed for translation
    */
   paymentRequestShowWithoutGesture:
       'Calling `PaymentRequest.show()` without user activation is deprecated and will be removed.',
   /**
-   *@description This issue indicates that a `<source>` element with a `<picture>` parent was using an `src` attribute, which is not valid and is ignored by the browser. The `srcset` attribute should be used instead.
+   * @description This issue indicates that a `<source>` element with a `<picture>` parent was using an `src` attribute, which is not valid and is ignored by the browser. The `srcset` attribute should be used instead.
    */
   pictureSourceSrc:
       '`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead.',
   /**
-   *@description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
+   * @description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
    */
   prefixedCancelAnimationFrame:
       '`webkitCancelAnimationFrame` is vendor-specific. Please use the standard `cancelAnimationFrame` instead.',
   /**
-   *@description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
+   * @description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
    */
   prefixedRequestAnimationFrame:
       '`webkitRequestAnimationFrame` is vendor-specific. Please use the standard `requestAnimationFrame` instead.',
   /**
-   *@description TODO(crbug.com/1320351): Description needed for translation
+   * @description TODO(crbug.com/1320351): Description needed for translation
    */
   prefixedStorageInfo:
       '`window.webkitStorageInfo` is deprecated. Please use `navigator.webkitTemporaryStorage` or `navigator.webkitPersistentStorage` instead.',
   /**
-   *@description TODO(crbug.com/1320352): Description needed for translation
+   * @description TODO(crbug.com/1320352): Description needed for translation
    */
   prefixedVideoDisplayingFullscreen:
       '`HTMLVideoElement.webkitDisplayingFullscreen` is deprecated. Please use `Document.fullscreenElement` instead.',
   /**
-   *@description TODO(crbug.com/1320353): Description needed for translation
+   * @description TODO(crbug.com/1320353): Description needed for translation
    */
   prefixedVideoEnterFullScreen:
       '`HTMLVideoElement.webkitEnterFullScreen()` is deprecated. Please use `Element.requestFullscreen()` instead.',
   /**
-   *@description TODO(crbug.com/1320353): Description needed for translation
+   * @description TODO(crbug.com/1320353): Description needed for translation
    */
   prefixedVideoEnterFullscreen:
       '`HTMLVideoElement.webkitEnterFullscreen()` is deprecated. Please use `Element.requestFullscreen()` instead.',
   /**
-   *@description TODO(crbug.com/1320354): Description needed for translation
+   * @description TODO(crbug.com/1320354): Description needed for translation
    */
   prefixedVideoExitFullScreen:
       '`HTMLVideoElement.webkitExitFullsSreen()` is deprecated. Please use `Document.exitFullscreen()` instead.',
   /**
-   *@description TODO(crbug.com/1320354): Description needed for translation
+   * @description TODO(crbug.com/1320354): Description needed for translation
    */
   prefixedVideoExitFullscreen:
       '`HTMLVideoElement.webkitExitFullscreen()` is deprecated. Please use `Document.exitFullscreen()` instead.',
   /**
-   *@description TODO(crbug.com/1320355): Description needed for translation
+   * @description TODO(crbug.com/1320355): Description needed for translation
    */
   prefixedVideoSupportsFullscreen:
       '`HTMLVideoElement.webkitSupportsFullscreen` is deprecated. Please use `Document.fullscreenEnabled` instead.',
   /**
-   *@description TODO(crbug.com/1320356): Description needed for translation
+   * @description TODO(crbug.com/1320356): Description needed for translation
    */
   rangeExpand: '`Range.expand()` is deprecated. Please use `Selection.modify()` instead.',
   /**
-   *@description TODO(crbug.com/1320357): Description needed for translation
+   * @description TODO(crbug.com/1320357): Description needed for translation
    */
   requestedSubresourceWithEmbeddedCredentials:
       'Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when a video conferencing website attempts to use a
    * non-standard crypto method when performing a handshake to set up a
    * connection with another endpoint.
@@ -253,7 +253,7 @@ const UIStrings = {
   rtcConstraintEnableDtlsSrtpFalse:
       'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES key negotiation` method. This functionality is removed; use a service that supports `DTLS key negotiation` instead.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when a video conferencing website uses a non-standard
    * API for controlling the crypto method used, but is not having an
    * effect because the desired behavior is already enabled-by-default.
@@ -261,7 +261,7 @@ const UIStrings = {
   rtcConstraintEnableDtlsSrtpTrue:
       'The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * The `Session Description Protocol`, or `SDP` for short, is a
    * protocol used by video conferencing websites to establish the
    * number of audio and/or video streams to send and/or receive. This
@@ -273,7 +273,7 @@ const UIStrings = {
   rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics:
       '`Complex Plan B SDP` detected. This dialect of the `Session Description Protocol` is no longer supported. Please use `Unified Plan SDP` instead.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * The `Session Description Protocol`, or `SDP` for short, is a
    * protocol used by video conferencing websites to establish the
    * number of audio and/or video streams to send and/or receive. This
@@ -285,13 +285,13 @@ const UIStrings = {
   rtcPeerConnectionSdpSemanticsPlanB:
       '`Plan B SDP semantics`, which is used when constructing an `RTCPeerConnection` with `{sdpSemantics:\'plan-b\'}`, is a legacy non-standard version of the `Session Description Protocol` that has been permanently deleted from the Web Platform. It is still available when building with `IS_FUCHSIA`, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown then a video conferencing website attempts to use the
    * `RTCP MUX` policy.
    */
   rtcpMuxPolicyNegotiate: 'The `rtcpMuxPolicy` option is deprecated and will be removed.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when a video conferencing website attempts to turn on or
    * off a feature that has been removed, `RTP data channels`.
    * `RTP data channels` are used to send and receive arbitrary data,
@@ -301,33 +301,33 @@ const UIStrings = {
   rtpDataChannel:
       '`RTP data channels` are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date.',
   /**
-   *@description TODO(crbug.com/1318878): Description needed for translation
+   * @description TODO(crbug.com/1318878): Description needed for translation
    */
   sharedArrayBufferConstructedWithoutIsolation:
       '`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.',
   /**
-   *@description A deprecation warning shown in the DevTools Issues tab.
+   * @description A deprecation warning shown in the DevTools Issues tab.
    * It's shown when the speech synthesis API is called before the page
    * receives a user activation.
    */
   textToSpeech_DisallowedByAutoplay:
       '`speechSynthesis.speak()` without user activation is deprecated and will be removed.',
   /**
-   *@description TODO(crbug.com/1318879): Description needed for translation
+   * @description TODO(crbug.com/1318879): Description needed for translation
    */
   v8SharedArrayBufferConstructedInExtensionWithoutIsolation:
       'Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.',
   /**
-   *@description TODO(crbug.com/1318881): Description needed for translation
+   * @description TODO(crbug.com/1318881): Description needed for translation
    */
   xhrJSONEncodingDetection: 'UTF-16 is not supported by response json in `XMLHttpRequest`',
   /**
-   *@description TODO(crbug.com/1318882): Description needed for translation
+   * @description TODO(crbug.com/1318882): Description needed for translation
    */
   xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload:
       'Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user\u2019s experience. For more help, check https://xhr.spec.whatwg.org/.',
   /**
-   *@description Warning displayed to developers that instead of using
+   * @description Warning displayed to developers that instead of using
    *    `supportsSession()`, which returns a promise that resolves if
    *    the XR session can be supported and rejects if not, they should
    *    use `isSessionSupported()` which will return a promise which

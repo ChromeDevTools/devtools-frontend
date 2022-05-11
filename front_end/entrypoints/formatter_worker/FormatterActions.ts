@@ -22,3 +22,17 @@ export interface FormatResult {
   content: string;
   mapping: FormatMapping;
 }
+
+export const enum DefinitionKind {
+  None = 0,
+  Let = 1,
+  Var = 2,
+  Fixed = 3,
+}
+
+export interface ScopeTreeNode {
+  variables: {name: string, kind: DefinitionKind, offsets: number[]}[];
+  start: number;
+  end: number;
+  children: ScopeTreeNode[];
+}

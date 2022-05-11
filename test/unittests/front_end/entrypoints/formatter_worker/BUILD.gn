@@ -16,6 +16,7 @@ ts_library("formatter_worker") {
     "JavaScriptFormatter_test.ts",
     "JavaScriptOutline_test.ts",
     "SCSSFormatter_test.ts",
+    "ScopeParser_test.ts",
     "Substitute_test.ts",
   ]
   deps = [ "../../../../../front_end/entrypoints/formatter_worker:bundle" ]

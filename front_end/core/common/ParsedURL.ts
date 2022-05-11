@@ -308,14 +308,14 @@ export class ParsedURL {
     return ParsedURL.urlRegexInstance;
   }
 
-  static extractPath(url: string): Platform.DevToolsPath.EncodedPathString {
+  static extractPath(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.EncodedPathString {
     const parsedURL = this.fromString(url);
     return (parsedURL ? parsedURL.path : '') as Platform.DevToolsPath.EncodedPathString;
   }
 
-  static extractOrigin(url: string): string {
+  static extractOrigin(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
     const parsedURL = this.fromString(url);
-    return parsedURL ? parsedURL.securityOrigin() : '';
+    return parsedURL ? parsedURL.securityOrigin() : Platform.DevToolsPath.EmptyUrlString;
   }
 
   static extractExtension(url: string): string {

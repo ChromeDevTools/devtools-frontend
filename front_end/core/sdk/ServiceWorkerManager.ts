@@ -497,8 +497,8 @@ export namespace ServiceWorkerVersion {
 export class ServiceWorkerRegistration {
   #fingerprintInternal!: symbol;
   id!: Protocol.ServiceWorker.RegistrationID;
-  scopeURL!: string;
-  securityOrigin!: string;
+  scopeURL!: Platform.DevToolsPath.UrlString;
+  securityOrigin!: Platform.DevToolsPath.UrlString;
   isDeleted!: boolean;
   versions: Map<string, ServiceWorkerVersion>;
   deleting: boolean;
@@ -514,7 +514,7 @@ export class ServiceWorkerRegistration {
   update(payload: Protocol.ServiceWorker.ServiceWorkerRegistration): void {
     this.#fingerprintInternal = Symbol('fingerprint');
     this.id = payload.registrationId;
-    this.scopeURL = payload.scopeURL;
+    this.scopeURL = payload.scopeURL as Platform.DevToolsPath.UrlString;
     const parsedURL = new Common.ParsedURL.ParsedURL(payload.scopeURL);
     this.securityOrigin = parsedURL.securityOrigin();
     this.isDeleted = payload.isDeleted;

@@ -65,7 +65,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   total: number;
   functionName: string;
   readonly deoptReason: string;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   linkElement: Element|null;
   populated: boolean;
   savedSelf?: number;

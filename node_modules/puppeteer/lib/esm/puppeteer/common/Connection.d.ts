@@ -36,7 +36,7 @@ export declare class Connection extends EventEmitter {
     _closed: boolean;
     _callbacks: Map<number, ConnectionCallback>;
     constructor(url: string, transport: ConnectionTransport, delay?: number);
-    static fromSession(session: CDPSession): Connection;
+    static fromSession(session: CDPSession): Connection | undefined;
     /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
@@ -105,7 +105,7 @@ export declare class CDPSession extends EventEmitter {
     /**
      * @internal
      */
-    _connection: Connection;
+    _connection?: Connection;
     private _sessionId;
     private _targetType;
     private _callbacks;
@@ -113,7 +113,7 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     constructor(connection: Connection, targetType: string, sessionId: string);
-    connection(): Connection;
+    connection(): Connection | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal

@@ -103,7 +103,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         this._connection = connection;
         this._closeCallback = closeCallback || function () { };
         this._targetFilterCallback = targetFilterCallback || (() => true);
-        this._defaultContext = new BrowserContext(this._connection, this, null);
+        this._defaultContext = new BrowserContext(this._connection, this);
         this._contexts = new Map();
         for (const contextId of contextIds)
             this._contexts.set(contextId, new BrowserContext(this._connection, this, contextId));
@@ -126,7 +126,8 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * {@link Puppeteer.connect}.
      */
     process() {
-        return this._process;
+        var _a;
+        return (_a = this._process) !== null && _a !== void 0 ? _a : null;
     }
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
@@ -146,7 +147,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * ```
      */
     async createIncognitoBrowserContext(options = {}) {
-        const { proxyServer = '', proxyBypassList = [] } = options;
+        const { proxyServer, proxyBypassList } = options;
         const { browserContextId } = await this._connection.send('Target.createBrowserContext', {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),
@@ -173,23 +174,30 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * Used by BrowserContext directly so cannot be marked private.
      */
     async _disposeContext(contextId) {
+        if (!contextId) {
+            return;
+        }
         await this._connection.send('Target.disposeBrowserContext', {
-            browserContextId: contextId || undefined,
+            browserContextId: contextId,
         });
         this._contexts.delete(contextId);
     }
     async _targetCreated(event) {
+        var _a;
         const targetInfo = event.targetInfo;
         const { browserContextId } = targetInfo;
         const context = browserContextId && this._contexts.has(browserContextId)
             ? this._contexts.get(browserContextId)
             : this._defaultContext;
+        if (!context) {
+            throw new Error('Missing browser context');
+        }
         const shouldAttachToTarget = this._targetFilterCallback(targetInfo);
         if (!shouldAttachToTarget) {
             this._ignoredTargets.add(targetInfo.targetId);
             return;
         }
-        const target = new Target_js_1.Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, this._defaultViewport, this._screenshotTaskQueue);
+        const target = new Target_js_1.Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, (_a = this._defaultViewport) !== null && _a !== void 0 ? _a : null, this._screenshotTaskQueue);
         (0, assert_js_1.assert)(!this._targets.has(event.targetInfo.targetId), 'Target should not exist before targetCreated');
         this._targets.set(event.targetInfo.targetId, target);
         if (await target._initializedPromise) {
@@ -201,6 +209,9 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         if (this._ignoredTargets.has(event.targetId))
             return;
         const target = this._targets.get(event.targetId);
+        if (!target) {
+            throw new Error(`Missing target in _targetDestroyed (id = ${event.targetId})`);
+        }
         target._initializedCallback(false);
         this._targets.delete(event.targetId);
         target._closedCallback();
@@ -215,7 +226,9 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         if (this._ignoredTargets.has(event.targetInfo.targetId))
             return;
         const target = this._targets.get(event.targetInfo.targetId);
-        (0, assert_js_1.assert)(target, 'target should exist before targetInfoChanged');
+        if (!target) {
+            throw new Error(`Missing target in targetInfoChanged (id = ${event.targetInfo.targetId})`);
+        }
         const previousURL = target.url();
         const wasInitialized = target._isInitialized;
         target._targetInfoChanged(event.targetInfo);
@@ -263,8 +276,17 @@ class Browser extends EventEmitter_js_1.EventEmitter {
             browserContextId: contextId || undefined,
         });
         const target = this._targets.get(targetId);
-        (0, assert_js_1.assert)(await target._initializedPromise, 'Failed to create target for page');
+        if (!target) {
+            throw new Error(`Missing target for page (id = ${targetId})`);
+        }
+        const initialized = await target._initializedPromise;
+        if (!initialized) {
+            throw new Error(`Failed to create target for page (id = ${targetId})`);
+        }
         const page = await target.page();
+        if (!page) {
+            throw new Error(`Failed to create a page for context (id = ${contextId})`);
+        }
         return page;
     }
     /**
@@ -278,7 +300,11 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * The target associated with the browser.
      */
     target() {
-        return this.targets().find((target) => target.type() === 'browser');
+        const browserTarget = this.targets().find((target) => target.type() === 'browser');
+        if (!browserTarget) {
+            throw new Error('Browser target is not found');
+        }
+        return browserTarget;
     }
     /**
      * Searches for a target in all browser contexts.
@@ -296,9 +322,6 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      */
     async waitForTarget(predicate, options = {}) {
         const { timeout = 30000 } = options;
-        const existingTarget = this.targets().find(predicate);
-        if (existingTarget)
-            return existingTarget;
         let resolve;
         const targetPromise = new Promise((x) => (resolve = x));
         this.on("targetcreated" /* TargetCreated */, check);
@@ -306,14 +329,24 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         try {
             if (!timeout)
                 return await targetPromise;
-            return await helper_js_1.helper.waitWithTimeout(targetPromise, 'target', timeout);
+            return await helper_js_1.helper.waitWithTimeout(Promise.race([
+                targetPromise,
+                (async () => {
+                    for (const target of this.targets()) {
+                        if (await predicate(target)) {
+                            return target;
+                        }
+                    }
+                    await targetPromise;
+                })(),
+            ]), 'target', timeout);
         }
         finally {
             this.removeListener("targetcreated" /* TargetCreated */, check);
             this.removeListener("targetchanged" /* TargetChanged */, check);
         }
-        function check(target) {
-            if (predicate(target))
+        async function check(target) {
+            if (await predicate(target))
                 resolve(target);
         }
     }

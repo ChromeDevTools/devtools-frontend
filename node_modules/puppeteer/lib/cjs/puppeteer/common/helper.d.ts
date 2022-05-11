@@ -38,15 +38,15 @@ declare function removeEventListeners(listeners: Array<{
 }>): void;
 declare function isString(obj: unknown): obj is string;
 declare function isNumber(obj: unknown): obj is number;
-declare function waitForEvent<T extends any>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Promise<boolean> | boolean, timeout: number, abortPromise: Promise<Error>): Promise<T>;
+declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Promise<boolean> | boolean, timeout: number, abortPromise: Promise<Error>): Promise<T>;
 declare function evaluationString(fun: Function | string, ...args: unknown[]): string;
 declare function pageBindingInitString(type: string, name: string): string;
 declare function pageBindingDeliverResultString(name: string, seq: number, result: unknown): string;
 declare function pageBindingDeliverErrorString(name: string, seq: number, message: string, stack: string): string;
 declare function pageBindingDeliverErrorValueString(name: string, seq: number, value: unknown): string;
 declare function makePredicateString(predicate: Function, predicateQueryHandler?: Function): string;
-declare function waitWithTimeout<T extends any>(promise: Promise<T>, taskName: string, timeout: number): Promise<T>;
-declare function getReadableAsBuffer(readable: Readable, path?: string): Promise<Buffer>;
+declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string, timeout: number): Promise<T>;
+declare function getReadableAsBuffer(readable: Readable, path?: string): Promise<Buffer | null>;
 declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
 /**
  * Loads the Node fs promises API. Needed because on Node 10.17 and below,

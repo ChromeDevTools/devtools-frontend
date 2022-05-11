@@ -41,6 +41,7 @@ export declare class NetworkEventManager {
     forgetRequest(networkRequestId: NetworkRequestId): void;
     getQueuedEventGroup(networkRequestId: NetworkRequestId): QueuedEventGroup | undefined;
     queueEventGroup(networkRequestId: NetworkRequestId, event: QueuedEventGroup): void;
+    forgetQueuedEventGroup(networkRequestId: NetworkRequestId): void;
 }
 export {};
 //# sourceMappingURL=NetworkEventManager.d.ts.map

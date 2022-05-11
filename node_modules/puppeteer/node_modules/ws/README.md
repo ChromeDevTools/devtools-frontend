@@ -33,7 +33,7 @@ can use one of the many wrappers available on npm, like
   - [Multiple servers sharing a single HTTP/S server](#multiple-servers-sharing-a-single-https-server)
   - [Client authentication](#client-authentication)
   - [Server broadcast](#server-broadcast)
-  - [echo.websocket.org demo](#echowebsocketorg-demo)
+  - [Round-trip time](#round-trip-time)
   - [Use the Node.js streams API](#use-the-nodejs-streams-api)
   - [Other examples](#other-examples)
 - [FAQ](#faq)
@@ -148,8 +148,8 @@ ws.on('open', function open() {
   ws.send('something');
 });
 
-ws.on('message', function incoming(message) {
-  console.log('received: %s', message);
+ws.on('message', function message(data) {
+  console.log('received: %s', data);
 });
 ```
 
@@ -179,8 +179,8 @@ import { WebSocketServer } from 'ws';
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+  ws.on('message', function message(data) {
+    console.log('received: %s', data);
   });
 
   ws.send('something');
@@ -201,8 +201,8 @@ const server = createServer({
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+  ws.on('message', function message(data) {
+    console.log('received: %s', data);
   });
 
   ws.send('something');
@@ -252,21 +252,21 @@ server.listen(8080);
 ### Client authentication
 
 ```js
-import WebSocket from 'ws';
 import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
 
 const server = createServer();
 const wss = new WebSocketServer({ noServer: true });
 
 wss.on('connection', function connection(ws, request, client) {
-  ws.on('message', function message(msg) {
-    console.log(`Received message ${msg} from user ${client}`);
+  ws.on('message', function message(data) {
+    console.log(`Received message ${data} from user ${client}`);
   });
 });
 
 server.on('upgrade', function upgrade(request, socket, head) {
   // This function is not defined on purpose. Implement it with your own logic.
-  authenticate(request, (err, client) => {
+  authenticate(request, function next(err, client) {
     if (err || !client) {
       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
       socket.destroy();
@@ -295,7 +295,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data, isBinary) {
+  ws.on('message', function message(data, isBinary) {
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
         client.send(data, { binary: isBinary });
@@ -314,7 +314,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data, isBinary) {
+  ws.on('message', function message(data, isBinary) {
     wss.clients.forEach(function each(client) {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(data, { binary: isBinary });
@@ -324,14 +324,12 @@ wss.on('connection', function connection(ws) {
 });
 ```
 
-### echo.websocket.org demo
+### Round-trip time
 
 ```js
 import WebSocket from 'ws';
 
-const ws = new WebSocket('wss://echo.websocket.org/', {
-  origin: 'https://websocket.org'
-});
+const ws = new WebSocket('wss://websocket-echo.com/');
 
 ws.on('open', function open() {
   console.log('connected');
@@ -342,8 +340,8 @@ ws.on('close', function close() {
   console.log('disconnected');
 });
 
-ws.on('message', function incoming(data) {
-  console.log(`Roundtrip time: ${Date.now() - data} ms`);
+ws.on('message', function message(data) {
+  console.log(`Round-trip time: ${Date.now() - data} ms`);
 
   setTimeout(function timeout() {
     ws.send(Date.now());
@@ -356,9 +354,7 @@ ws.on('message', function incoming(data) {
 ```js
 import WebSocket, { createWebSocketStream } from 'ws';
 
-const ws = new WebSocket('wss://echo.websocket.org/', {
-  origin: 'https://websocket.org'
-});
+const ws = new WebSocket('wss://websocket-echo.com/');
 
 const duplex = createWebSocketStream(ws, { encoding: 'utf8' });
 
@@ -457,7 +453,7 @@ function heartbeat() {
   }, 30000 + 1000);
 }
 
-const client = new WebSocket('wss://echo.websocket.org/');
+const client = new WebSocket('wss://websocket-echo.com/');
 
 client.on('open', heartbeat);
 client.on('ping', heartbeat);

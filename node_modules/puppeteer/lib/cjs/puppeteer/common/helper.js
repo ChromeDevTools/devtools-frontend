@@ -16,7 +16,11 @@
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -105,7 +109,9 @@ function isNumber(obj) {
     return typeof obj === 'number' || obj instanceof Number;
 }
 async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
-    let eventTimeout, resolveCallback, rejectCallback;
+    let eventTimeout;
+    let resolveCallback;
+    let rejectCallback;
     const promise = new Promise((resolve, reject) => {
         resolveCallback = resolve;
         rejectCallback = reject;
@@ -199,7 +205,9 @@ function makePredicateString(predicate, predicateQueryHandler) {
             return waitForHidden;
         if (!waitForVisible && !waitForHidden)
             return node;
-        const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+        const element = node.nodeType === Node.TEXT_NODE
+            ? node.parentElement
+            : node;
         const style = window.getComputedStyle(element);
         const isVisible = style && style.visibility !== 'hidden' && hasVisibleBoundingBox();
         const success = waitForVisible === isVisible || waitForHidden === !isVisible;
@@ -246,11 +254,11 @@ async function getReadableAsBuffer(readable, path) {
     const buffers = [];
     for await (const chunk of readable) {
         buffers.push(chunk);
-        if (fileHandle) {
+        if (fileHandle && fs) {
             await fs.promises.writeFile(fileHandle, chunk);
         }
     }
-    if (path)
+    if (path && fileHandle)
         await fileHandle.close();
     let resultBuffer = null;
     try {

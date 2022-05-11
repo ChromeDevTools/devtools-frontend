@@ -30,10 +30,11 @@ const {
 const { format, parse } = require('./extension');
 const { toBuffer } = require('./buffer-util');
 
+const closeTimeout = 30 * 1000;
+const kAborted = Symbol('kAborted');
+const protocolVersions = [8, 13];
 const readyStates = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'];
 const subprotocolRegex = /^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;
-const protocolVersions = [8, 13];
-const closeTimeout = 30 * 1000;
 
 /**
  * Class representing a WebSocket.
@@ -58,6 +59,7 @@ class WebSocket extends EventEmitter {
     this._closeMessage = EMPTY_BUFFER;
     this._closeTimer = null;
     this._extensions = {};
+    this._paused = false;
     this._protocol = '';
     this._readyState = WebSocket.CONNECTING;
     this._receiver = null;
@@ -125,6 +127,13 @@ class WebSocket extends EventEmitter {
   }
 
   /**
+   * @type {Boolean}
+   */
+  get isPaused() {
+    return this._paused;
+  }
+
+  /**
    * @type {Function}
    */
   /* istanbul ignore next */
@@ -184,6 +193,8 @@ class WebSocket extends EventEmitter {
    *     server and client
    * @param {Buffer} head The first packet of the upgraded stream
    * @param {Object} options Options object
+   * @param {Function} [options.generateMask] The function used to generate the
+   *     masking key
    * @param {Number} [options.maxPayload=0] The maximum allowed message size
    * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
    *     not to skip UTF-8 validation for text and close messages
@@ -198,7 +209,7 @@ class WebSocket extends EventEmitter {
       skipUTF8Validation: options.skipUTF8Validation
     });
 
-    this._sender = new Sender(socket, this._extensions);
+    this._sender = new Sender(socket, this._extensions, options.generateMask);
     this._receiver = receiver;
     this._socket = socket;
 
@@ -313,6 +324,23 @@ class WebSocket extends EventEmitter {
   }
 
   /**
+   * Pause the socket.
+   *
+   * @public
+   */
+  pause() {
+    if (
+      this.readyState === WebSocket.CONNECTING ||
+      this.readyState === WebSocket.CLOSED
+    ) {
+      return;
+    }
+
+    this._paused = true;
+    this._socket.pause();
+  }
+
+  /**
    * Send a ping.
    *
    * @param {*} [data] The data to send
@@ -374,6 +402,23 @@ class WebSocket extends EventEmitter {
 
     if (mask === undefined) mask = !this._isServer;
     this._sender.pong(data || EMPTY_BUFFER, mask, cb);
+  }
+
+  /**
+   * Resume the socket.
+   *
+   * @public
+   */
+  resume() {
+    if (
+      this.readyState === WebSocket.CONNECTING ||
+      this.readyState === WebSocket.CLOSED
+    ) {
+      return;
+    }
+
+    this._paused = false;
+    if (!this._receiver._writableState.needDrain) this._socket.resume();
   }
 
   /**
@@ -518,6 +563,7 @@ Object.defineProperty(WebSocket.prototype, 'CLOSED', {
   'binaryType',
   'bufferedAmount',
   'extensions',
+  'isPaused',
   'protocol',
   'readyState',
   'url'
@@ -570,6 +616,8 @@ module.exports = WebSocket;
  * @param {Object} [options] Connection options
  * @param {Boolean} [options.followRedirects=false] Whether or not to follow
  *     redirects
+ * @param {Function} [options.generateMask] The function used to generate the
+ *     masking key
  * @param {Number} [options.handshakeTimeout] Timeout in milliseconds for the
  *     handshake request
  * @param {Number} [options.maxPayload=104857600] The maximum allowed message
@@ -600,7 +648,7 @@ function initAsClient(websocket, address, protocols, options) {
     hostname: undefined,
     protocol: undefined,
     timeout: undefined,
-    method: undefined,
+    method: 'GET',
     host: undefined,
     path: undefined,
     port: undefined
@@ -630,24 +678,31 @@ function initAsClient(websocket, address, protocols, options) {
 
   const isSecure = parsedUrl.protocol === 'wss:';
   const isUnixSocket = parsedUrl.protocol === 'ws+unix:';
+  let invalidURLMessage;
 
   if (parsedUrl.protocol !== 'ws:' && !isSecure && !isUnixSocket) {
-    throw new SyntaxError(
-      'The URL\'s protocol must be one of "ws:", "wss:", or "ws+unix:"'
-    );
+    invalidURLMessage =
+      'The URL\'s protocol must be one of "ws:", "wss:", or "ws+unix:"';
+  } else if (isUnixSocket && !parsedUrl.pathname) {
+    invalidURLMessage = "The URL's pathname is empty";
+  } else if (parsedUrl.hash) {
+    invalidURLMessage = 'The URL contains a fragment identifier';
   }
 
-  if (isUnixSocket && !parsedUrl.pathname) {
-    throw new SyntaxError("The URL's pathname is empty");
-  }
+  if (invalidURLMessage) {
+    const err = new SyntaxError(invalidURLMessage);
 
-  if (parsedUrl.hash) {
-    throw new SyntaxError('The URL contains a fragment identifier');
+    if (websocket._redirects === 0) {
+      throw err;
+    } else {
+      emitErrorAndClose(websocket, err);
+      return;
+    }
   }
 
   const defaultPort = isSecure ? 443 : 80;
   const key = randomBytes(16).toString('base64');
-  const get = isSecure ? https.get : http.get;
+  const request = isSecure ? https.request : http.request;
   const protocolSet = new Set();
   let perMessageDeflate;
 
@@ -712,7 +767,66 @@ function initAsClient(websocket, address, protocols, options) {
     opts.path = parts[1];
   }
 
-  let req = (websocket._req = get(opts));
+  let req;
+
+  if (opts.followRedirects) {
+    if (websocket._redirects === 0) {
+      websocket._originalHost = parsedUrl.host;
+
+      const headers = options && options.headers;
+
+      //
+      // Shallow copy the user provided options so that headers can be changed
+      // without mutating the original object.
+      //
+      options = { ...options, headers: {} };
+
+      if (headers) {
+        for (const [key, value] of Object.entries(headers)) {
+          options.headers[key.toLowerCase()] = value;
+        }
+      }
+    } else if (
+      websocket.listenerCount('redirect') === 0 &&
+      parsedUrl.host !== websocket._originalHost
+    ) {
+      //
+      // Match curl 7.77.0 behavior and drop the following headers. These
+      // headers are also dropped when following a redirect to a subdomain.
+      //
+      delete opts.headers.authorization;
+      delete opts.headers.cookie;
+      delete opts.headers.host;
+      opts.auth = undefined;
+    }
+
+    //
+    // Match curl 7.77.0 behavior and make the first `Authorization` header win.
+    // If the `Authorization` header is set, then there is nothing to do as it
+    // will take precedence.
+    //
+    if (opts.auth && !options.headers.authorization) {
+      options.headers.authorization =
+        'Basic ' + Buffer.from(opts.auth).toString('base64');
+    }
+
+    req = websocket._req = request(opts);
+
+    if (websocket._redirects) {
+      //
+      // Unlike what is done for the `'upgrade'` event, no early exit is
+      // triggered here if the user calls `websocket.close()` or
+      // `websocket.terminate()` from a listener of the `'redirect'` event. This
+      // is because the user can also call `request.destroy()` with an error
+      // before calling `websocket.close()` or `websocket.terminate()` and this
+      // would result in an error being emitted on the `request` object with no
+      // `'error'` event listeners attached.
+      //
+      websocket.emit('redirect', websocket.url, req);
+    }
+  } else {
+    req = websocket._req = request(opts);
+  }
 
   if (opts.timeout) {
     req.on('timeout', () => {
@@ -721,12 +835,10 @@ function initAsClient(websocket, address, protocols, options) {
   }
 
   req.on('error', (err) => {
-    if (req === null || req.aborted) return;
+    if (req === null || req[kAborted]) return;
 
     req = websocket._req = null;
-    websocket._readyState = WebSocket.CLOSING;
-    websocket.emit('error', err);
-    websocket.emitClose();
+    emitErrorAndClose(websocket, err);
   });
 
   req.on('response', (res) => {
@@ -746,7 +858,15 @@ function initAsClient(websocket, address, protocols, options) {
 
       req.abort();
 
-      const addr = new URL(location, address);
+      let addr;
+
+      try {
+        addr = new URL(location, address);
+      } catch (e) {
+        const err = new SyntaxError(`Invalid URL: ${location}`);
+        emitErrorAndClose(websocket, err);
+        return;
+      }
 
       initAsClient(websocket, addr, protocols, options);
     } else if (!websocket.emit('unexpected-response', req, res)) {
@@ -762,8 +882,8 @@ function initAsClient(websocket, address, protocols, options) {
     websocket.emit('upgrade', res);
 
     //
-    // The user may have closed the connection from a listener of the `upgrade`
-    // event.
+    // The user may have closed the connection from a listener of the
+    // `'upgrade'` event.
     //
     if (websocket.readyState !== WebSocket.CONNECTING) return;
 
@@ -843,10 +963,26 @@ function initAsClient(websocket, address, protocols, options) {
     }
 
     websocket.setSocket(socket, head, {
+      generateMask: opts.generateMask,
       maxPayload: opts.maxPayload,
       skipUTF8Validation: opts.skipUTF8Validation
     });
   });
+
+  req.end();
+}
+
+/**
+ * Emit the `'error'` and `'close'` events.
+ *
+ * @param {WebSocket} websocket The WebSocket instance
+ * @param {Error} The error to emit
+ * @private
+ */
+function emitErrorAndClose(websocket, err) {
+  websocket._readyState = WebSocket.CLOSING;
+  websocket.emit('error', err);
+  websocket.emitClose();
 }
 
 /**
@@ -894,6 +1030,7 @@ function abortHandshake(websocket, stream, message) {
   Error.captureStackTrace(err, abortHandshake);
 
   if (stream.setHeader) {
+    stream[kAborted] = true;
     stream.abort();
 
     if (stream.socket && !stream.socket.destroyed) {
@@ -905,8 +1042,7 @@ function abortHandshake(websocket, stream, message) {
       stream.socket.destroy();
     }
 
-    stream.once('abort', websocket.emitClose.bind(websocket));
-    websocket.emit('error', err);
+    process.nextTick(emitErrorAndClose, websocket, err);
   } else {
     stream.destroy(err);
     stream.once('error', websocket.emit.bind(websocket, 'error'));
@@ -975,7 +1111,9 @@ function receiverOnConclude(code, reason) {
  * @private
  */
 function receiverOnDrain() {
-  this[kWebSocket]._socket.resume();
+  const websocket = this[kWebSocket];
+
+  if (!websocket.isPaused) websocket._socket.resume();
 }
 
 /**

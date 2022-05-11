@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initializePuppeteerNode = void 0;
 const Puppeteer_js_1 = require("./node/Puppeteer.js");
 const revisions_js_1 = require("./revisions.js");
-const pkg_dir_1 = __importDefault(require("pkg-dir"));
+const pkg_dir_1 = require("pkg-dir");
+const constants_js_1 = require("./constants.js");
 const initializePuppeteerNode = (packageName) => {
-    const puppeteerRootDirectory = pkg_dir_1.default.sync(__dirname);
+    const puppeteerRootDirectory = (0, pkg_dir_1.sync)(constants_js_1.rootDirname);
     let preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
     const isPuppeteerCore = packageName === 'puppeteer-core';
     // puppeteer-core ignores environment variables

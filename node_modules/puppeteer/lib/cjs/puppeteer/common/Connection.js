@@ -135,8 +135,8 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         if (this._closed)
             return;
         this._closed = true;
-        this._transport.onmessage = null;
-        this._transport.onclose = null;
+        this._transport.onmessage = undefined;
+        this._transport.onclose = undefined;
         for (const callback of this._callbacks.values())
             callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Target closed.`));
         this._callbacks.clear();
@@ -158,7 +158,11 @@ class Connection extends EventEmitter_js_1.EventEmitter {
             targetId: targetInfo.targetId,
             flatten: true,
         });
-        return this._sessions.get(sessionId);
+        const session = this._sessions.get(sessionId);
+        if (!session) {
+            throw new Error('CDPSession creation failed.');
+        }
+        return session;
     }
 }
 exports.Connection = Connection;
@@ -232,8 +236,8 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
      * @internal
      */
     _onMessage(object) {
-        if (object.id && this._callbacks.has(object.id)) {
-            const callback = this._callbacks.get(object.id);
+        const callback = object.id ? this._callbacks.get(object.id) : undefined;
+        if (object.id && callback) {
             this._callbacks.delete(object.id);
             if (object.error)
                 callback.reject(createProtocolError(callback.error, callback.method, object));
@@ -263,7 +267,7 @@ class CDPSession extends EventEmitter_js_1.EventEmitter {
         for (const callback of this._callbacks.values())
             callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Target closed.`));
         this._callbacks.clear();
-        this._connection = null;
+        this._connection = undefined;
         this.emit(exports.CDPSessionEmittedEvents.Disconnected);
     }
     /**
@@ -293,7 +297,7 @@ function createProtocolError(error, method, object) {
  */
 function rewriteError(error, message, originalMessage) {
     error.message = message;
-    error.originalMessage = originalMessage;
+    error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
     return error;
 }
 //# sourceMappingURL=Connection.js.map

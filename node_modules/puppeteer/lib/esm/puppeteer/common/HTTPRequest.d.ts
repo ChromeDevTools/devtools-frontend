@@ -158,11 +158,11 @@ export declare class HTTPRequest {
      * @returns The `ResponseForRequest` that gets used if the
      * interception is allowed to respond (ie, `abort()` is not called).
      */
-    responseForRequest(): Partial<ResponseForRequest>;
+    responseForRequest(): Partial<ResponseForRequest> | null;
     /**
      * @returns the most recent reason for aborting the request
      */
-    abortErrorReason(): Protocol.Network.ErrorReason;
+    abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * @returns An InterceptResolutionState object describing the current resolution
      *  action and priority.
@@ -183,7 +183,7 @@ export declare class HTTPRequest {
     /**
      * Adds an async request handler to the processing queue.
      * Deferred handlers are not guaranteed to execute in any particular order,
-     * but they are guarnateed to resolve before the request interception
+     * but they are guaranteed to resolve before the request interception
      * is finalized.
      */
     enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
@@ -273,7 +273,7 @@ export declare class HTTPRequest {
      *
      * @returns `null` unless the request failed. If the request fails this can
      * return an object with `errorText` containing a human-readable error
-     * message, e.g. `net::ERR_FAILED`. It is not guaranteeded that there will be
+     * message, e.g. `net::ERR_FAILED`. It is not guaranteed that there will be
      * failure text if the request fails.
      */
     failure(): {

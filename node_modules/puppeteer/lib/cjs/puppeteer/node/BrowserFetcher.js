@@ -16,7 +16,11 @@
  */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -53,11 +57,15 @@ const URL = __importStar(require("url"));
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
 const proxy_from_env_1 = require("proxy-from-env");
 const assert_js_1 = require("../common/assert.js");
+const tar_fs_1 = __importDefault(require("tar-fs"));
+const unbzip2_stream_1 = __importDefault(require("unbzip2-stream"));
+const { PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM } = process.env;
 const debugFetcher = (0, Debug_js_1.debug)('puppeteer:fetcher');
 const downloadURLs = {
     chrome: {
         linux: '%s/chromium-browser-snapshots/Linux_x64/%d/%s.zip',
         mac: '%s/chromium-browser-snapshots/Mac/%d/%s.zip',
+        mac_arm: '%s/chromium-browser-snapshots/Mac_Arm/%d/%s.zip',
         win32: '%s/chromium-browser-snapshots/Win/%d/%s.zip',
         win64: '%s/chromium-browser-snapshots/Win_x64/%d/%s.zip',
     },
@@ -82,7 +90,7 @@ function archiveName(product, platform, revision) {
     if (product === 'chrome') {
         if (platform === 'linux')
             return 'chrome-linux';
-        if (platform === 'mac')
+        if (platform === 'mac' || platform === 'mac_arm')
             return 'chrome-mac';
         if (platform === 'win32' || platform === 'win64') {
             // Windows archive name changed at r591479.
@@ -161,17 +169,26 @@ class BrowserFetcher {
             options.path ||
                 path.join(projectRoot, browserConfig[this._product].destination);
         this._downloadHost = options.host || browserConfig[this._product].host;
-        this.setPlatform(options.platform);
+        this.setPlatform(options.platform, this._product);
         (0, assert_js_1.assert)(downloadURLs[this._product][this._platform], 'Unsupported platform: ' + this._platform);
     }
-    setPlatform(platformFromOptions) {
+    setPlatform(platformFromOptions, productFromOptions) {
         if (platformFromOptions) {
             this._platform = platformFromOptions;
             return;
         }
         const platform = os.platform();
-        if (platform === 'darwin')
-            this._platform = 'mac';
+        if (platform === 'darwin') {
+            if (productFromOptions === 'chrome') {
+                this._platform =
+                    os.arch() === 'arm64' && PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM
+                        ? 'mac_arm'
+                        : 'mac';
+            }
+            else if (productFromOptions === 'firefox') {
+                this._platform = 'mac';
+            }
+        }
         else if (platform === 'linux')
             this._platform = 'linux';
         else if (platform === 'win32')
@@ -238,8 +255,7 @@ class BrowserFetcher {
             return this.revisionInfo(revision);
         if (!(await existsAsync(this._downloadsFolder)))
             await mkdirAsync(this._downloadsFolder);
-        // Use Intel x86 builds on Apple M1 until native macOS arm64
-        // Chromium builds are available.
+        // Use system Chromium builds on Linux ARM devices
         if (os.platform() !== 'darwin' && os.arch() === 'arm64') {
             handleArm64();
             return;
@@ -292,7 +308,7 @@ class BrowserFetcher {
         const folderPath = this._getFolderPath(revision);
         let executablePath = '';
         if (this._product === 'chrome') {
-            if (this._platform === 'mac')
+            if (this._platform === 'mac' || this._platform === 'mac_arm')
                 executablePath = path.join(folderPath, archiveName(this._product, this._platform, revision), 'Chromium.app', 'Contents', 'MacOS', 'Chromium');
             else if (this._platform === 'linux')
                 executablePath = path.join(folderPath, archiveName(this._product, this._platform, revision), 'chrome');
@@ -302,7 +318,7 @@ class BrowserFetcher {
                 throw new Error('Unsupported platform: ' + this._platform);
         }
         else if (this._product === 'firefox') {
-            if (this._platform === 'mac')
+            if (this._platform === 'mac' || this._platform === 'mac_arm')
                 executablePath = path.join(folderPath, 'Firefox Nightly.app', 'Contents', 'MacOS', 'firefox');
             else if (this._platform === 'linux')
                 executablePath = path.join(folderPath, 'firefox', 'firefox');
@@ -401,16 +417,12 @@ function install(archivePath, folderPath) {
  * @internal
  */
 function extractTar(tarPath, folderPath) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const tar = require('tar-fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const bzip = require('unbzip2-stream');
     return new Promise((fulfill, reject) => {
-        const tarStream = tar.extract(folderPath);
+        const tarStream = tar_fs_1.default.extract(folderPath);
         tarStream.on('error', reject);
         tarStream.on('finish', fulfill);
         const readStream = fs.createReadStream(tarPath);
-        readStream.pipe(bzip()).pipe(tarStream);
+        readStream.pipe((0, unbzip2_stream_1.default)()).pipe(tarStream);
     });
 }
 /**
@@ -465,6 +477,9 @@ function httpRequest(url, method, response) {
     let options = {
         ...urlParsed,
         method,
+        headers: {
+            Connection: 'keep-alive',
+        },
     };
     const proxyURL = (0, proxy_from_env_1.getProxyForUrl)(url);
     if (proxyURL) {

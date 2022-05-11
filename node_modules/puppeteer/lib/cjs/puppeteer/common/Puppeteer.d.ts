@@ -22,7 +22,7 @@ import { Product } from './Product.js';
 import { BrowserConnectOptions } from './BrowserConnector.js';
 import { PredefinedNetworkConditions } from './NetworkConditions.js';
 /**
- * Settings that are common to the Puppeteer class, regardless of enviroment.
+ * Settings that are common to the Puppeteer class, regardless of environment.
  * @internal
  */
 export interface CommonPuppeteerSettings {

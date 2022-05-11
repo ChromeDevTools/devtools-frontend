@@ -52,8 +52,9 @@ import { isNode } from '../environment.js';
  */
 export const debug = (prefix) => {
     if (isNode) {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        return require('debug')(prefix);
+        return async (...logArgs) => {
+            (await import('debug')).default(prefix)(logArgs);
+        };
     }
     return (...logArgs) => {
         const debugLevel = globalThis.__PUPPETEER_DEBUG;

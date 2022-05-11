@@ -21,6 +21,7 @@ import { KeyInput } from './USKeyboardLayout.js';
 import { FrameManager, Frame } from './FrameManager.js';
 import { Protocol } from 'devtools-protocol';
 import { EvaluateFn, SerializableOrJSHandle, EvaluateFnReturnType, EvaluateHandleFn, WrapElementHandle, UnwrapPromiseLike } from './EvalTypes.js';
+import { MouseButton } from './Input.js';
 /**
  * @public
  */
@@ -495,7 +496,7 @@ export interface ClickOptions {
     /**
      * @defaultValue 'left'
      */
-    button?: 'left' | 'right' | 'middle';
+    button?: MouseButton;
     /**
      * @defaultValue 1
      */

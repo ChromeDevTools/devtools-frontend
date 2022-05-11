@@ -1670,7 +1670,7 @@ export declare class Page extends EventEmitter {
     screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
     private _screenshotTask;
     /**
-     * Generatees a PDF of the page with the `print` CSS media type.
+     * Generates a PDF of the page with the `print` CSS media type.
      * @remarks
      *
      * NOTE: PDF generation is only supported in Chrome headless mode.

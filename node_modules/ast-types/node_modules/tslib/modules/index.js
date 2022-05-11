@@ -24,6 +24,7 @@ const {
     __importDefault,
     __classPrivateFieldGet,
     __classPrivateFieldSet,
+    __classPrivateFieldIn,
 } = tslib;
 export {
     __extends,
@@ -50,4 +51,5 @@ export {
     __importDefault,
     __classPrivateFieldGet,
     __classPrivateFieldSet,
+    __classPrivateFieldIn,
 };

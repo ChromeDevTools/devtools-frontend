@@ -56,8 +56,8 @@ import { Product } from '../common/Product.js';
  * @public
  */
 export declare class PuppeteerNode extends Puppeteer {
-    private _lazyLauncher;
-    private _projectRoot;
+    private _lazyLauncher?;
+    private _projectRoot?;
     private __productName?;
     /**
      * @internal
@@ -67,7 +67,7 @@ export declare class PuppeteerNode extends Puppeteer {
      * @internal
      */
     constructor(settings: {
-        projectRoot: string;
+        projectRoot?: string;
         preferredRevision: string;
         productName?: Product;
     } & CommonPuppeteerSettings);
@@ -83,8 +83,8 @@ export declare class PuppeteerNode extends Puppeteer {
     /**
      * @internal
      */
-    get _productName(): Product;
-    set _productName(name: Product);
+    get _productName(): Product | undefined;
+    set _productName(name: Product | undefined);
     /**
      * Launches puppeteer and launches a browser instance with given arguments
      * and options when specified.

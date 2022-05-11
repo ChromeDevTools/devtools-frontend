@@ -101,6 +101,7 @@ export declare class NetworkManager extends EventEmitter {
      *
      */
     _onRequestPaused(event: Protocol.Fetch.RequestPausedEvent): void;
+    _patchRequestEventHeaders(requestWillBeSentEvent: Protocol.Network.RequestWillBeSentEvent, requestPausedEvent: Protocol.Fetch.RequestPausedEvent): void;
     _onRequest(event: Protocol.Network.RequestWillBeSentEvent, fetchRequestId?: FetchRequestId): void;
     _onRequestServedFromCache(event: Protocol.Network.RequestServedFromCacheEvent): void;
     _handleRequestRedirect(request: HTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent): void;

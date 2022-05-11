@@ -36,6 +36,7 @@ copy_to_gen("elements") {
     "shadow-roots.html",
     "sidebar-event-listeners.html",
     "simple-styled-page.html",
+    "slot-element.html",
     "style-pane-properties.html",
     "stylesheets-with-various-sources.html",
     "target.html",

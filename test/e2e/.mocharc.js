@@ -13,9 +13,13 @@ if (!testServerConfig) {
 }
 
 module.exports = createMochaConfig({
-  suiteName: 'e2e',
-  extraMochaConfig: {
+  suiteName : 'e2e',
+  extraMochaConfig : {
     // E2E tests are much slower by default than Mocha's 75ms default threshold.
-    slow: 1000,
+    slow : 1000,
+    // Maintaining pre-allocated frontend tabs in the background while also running
+    // tests can cause very long running tests in some edge cases. We are more linient
+    // in e2e tests.
+    timeout : 10000,
   }
 })

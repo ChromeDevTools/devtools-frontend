@@ -45,7 +45,7 @@ export interface RequestLinkIconData {
   revealOverride?: (revealable: Object|null, omitFocus?: boolean|undefined) => Promise<void>;
 }
 
-export const extractShortPath = (path: string): string => {
+export const extractShortPath = (path: Platform.DevToolsPath.UrlString): string => {
   // 1st regex matches everything after last '/'
   // if path ends with '/', 2nd regex returns everything between the last two '/'
   return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];
@@ -163,9 +163,9 @@ export class RequestLinkIcon extends HTMLElement {
     return i18nString(UIStrings.requestUnavailableInTheNetwork);
   }
 
-  #getUrlForDisplaying(): string|undefined {
+  #getUrlForDisplaying(): Platform.DevToolsPath.UrlString|undefined {
     if (!this.#request) {
-      return this.#affectedRequest?.url;
+      return this.#affectedRequest?.url as Platform.DevToolsPath.UrlString;
     }
     return this.#request.url();
   }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as IconButton from '../icon_button/icon_button.js';
@@ -35,8 +36,8 @@ const previewFeatureUrl = new URL('../../../Images/ic_preview_feature.svg', impo
 const videoThumbnailUrl = new URL('../../../Images/preview_feature_video_thumbnail.svg', import.meta.url).toString();
 
 export interface PanelFeedbackData {
-  feedbackUrl: string;
-  quickStartUrl: string;
+  feedbackUrl: Platform.DevToolsPath.UrlString;
+  quickStartUrl: Platform.DevToolsPath.UrlString;
   quickStartLinkText: string;
 }
 export class PanelFeedback extends HTMLElement {
@@ -45,8 +46,8 @@ export class PanelFeedback extends HTMLElement {
   readonly #boundRender = this.#render.bind(this);
 
   #props: PanelFeedbackData = {
-    feedbackUrl: '',
-    quickStartUrl: '',
+    feedbackUrl: Platform.DevToolsPath.EmptyUrlString,
+    quickStartUrl: Platform.DevToolsPath.EmptyUrlString,
     quickStartLinkText: '',
   };
 

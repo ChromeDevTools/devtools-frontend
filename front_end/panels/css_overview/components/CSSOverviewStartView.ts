@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
@@ -43,8 +44,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {render, html} = LitHtml;
 
-const FEEDBACK_LINK = 'https://g.co/devtools/css-overview-feedback';
-const DOC_LINK = 'https://developer.chrome.com/docs/devtools/css-overview';
+const FEEDBACK_LINK = 'https://g.co/devtools/css-overview-feedback' as Platform.DevToolsPath.UrlString;
+const DOC_LINK = 'https://developer.chrome.com/docs/devtools/css-overview' as Platform.DevToolsPath.UrlString;
 export class OverviewStartRequestedEvent extends Event {
   static readonly eventName = 'overviewstartrequested';
 

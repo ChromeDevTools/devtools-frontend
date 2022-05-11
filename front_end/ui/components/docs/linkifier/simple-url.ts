@@ -4,13 +4,14 @@
 
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as Linkifier from '../../linkifier/linkifier.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
 const link = new Linkifier.Linkifier.Linkifier();
 
 link.data = {
-  url: 'example.com',
+  url: 'example.com' as Platform.DevToolsPath.UrlString,
   lineNumber: 11,
   columnNumber: 1,
 };

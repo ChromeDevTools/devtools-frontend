@@ -21,7 +21,7 @@ describeWithLocale('Feedback button', () => {
     const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
     const component = new PanelFeedback.FeedbackButton.FeedbackButton();
     component.data = {
-      feedbackUrl: 'https://feedbackurl.com',
+      feedbackUrl: 'https://feedbackurl.com' as Platform.DevToolsPath.UrlString,
     };
 
     renderElementIntoDOM(component);

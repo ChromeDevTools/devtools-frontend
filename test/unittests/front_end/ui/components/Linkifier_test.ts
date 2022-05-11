@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Linkifier from '../../../../../front_end/ui/components/linkifier/linkifier.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {describeWithLocale} from '../../helpers/EnvironmentHelpers.js';
@@ -21,7 +22,7 @@ describeWithLocale('Linkifier', () => {
   it('renders a link when given a URL', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com',
+      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
     };
     renderElementIntoDOM(component);
     await coordinator.done();
@@ -35,14 +36,14 @@ describeWithLocale('Linkifier', () => {
     const component = new Linkifier.Linkifier.Linkifier();
 
     assert.throws(() => {
-      component.data = {url: ''};
+      component.data = {url: Platform.DevToolsPath.EmptyUrlString};
     }, 'Cannot construct a Linkifier without providing a valid string URL.');
   });
 
   it('appends the line number to the URL if given, and adds one to deal with 0 indexing', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com',
+      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
       lineNumber: 1,
     };
     renderElementIntoDOM(component);
@@ -56,7 +57,7 @@ describeWithLocale('Linkifier', () => {
   it('emits an event when clicked', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com',
+      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
       lineNumber: 1,
       columnNumber: 50,
     };
@@ -72,7 +73,7 @@ describeWithLocale('Linkifier', () => {
     });
     const clickEvent = await clickEventPromise;
     assert.deepEqual(clickEvent.data, {
-      url: 'https://example.com',
+      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
       lineNumber: 1,
       columnNumber: 50,
     });

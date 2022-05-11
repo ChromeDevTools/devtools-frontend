@@ -4,7 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as Buttons from '../buttons/buttons.js';
@@ -22,7 +22,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const feedbackIconUrl = new URL('../../../Images/feedback_button_icon.svg', import.meta.url).toString();
 
 export interface FeedbackButtonData {
-  feedbackUrl: string;
+  feedbackUrl: Platform.DevToolsPath.UrlString;
 }
 export class FeedbackButton extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-feedback-button`;
@@ -30,7 +30,7 @@ export class FeedbackButton extends HTMLElement {
   readonly #boundRender = this.#render.bind(this);
 
   #props: FeedbackButtonData = {
-    feedbackUrl: '',
+    feedbackUrl: Platform.DevToolsPath.EmptyUrlString,
   };
 
   set data(data: FeedbackButtonData) {
@@ -39,9 +39,7 @@ export class FeedbackButton extends HTMLElement {
   }
 
   #onFeedbackClick(): void {
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-        this.#props.feedbackUrl as Platform.DevToolsPath.UrlString);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#props.feedbackUrl);
   }
 
   #render(): void {

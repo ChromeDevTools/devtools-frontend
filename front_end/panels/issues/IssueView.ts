@@ -181,7 +181,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
         },
       }));
     } else {
-      const filename = extractShortPath(mixedContent.insecureURL);
+      const filename = extractShortPath(mixedContent.insecureURL as Platform.DevToolsPath.UrlString);
       const cell = this.appendIssueDetailCell(element, filename, 'affected-resource-mixed-content-info');
       cell.title = mixedContent.insecureURL;
     }

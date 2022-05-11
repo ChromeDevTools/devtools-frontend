@@ -45,7 +45,7 @@ export const enum AffectedItem {
   Source = 'Source',
 }
 
-export const extractShortPath = (path: string): string => {
+export const extractShortPath = (path: Platform.DevToolsPath.UrlString): string => {
   // 1st regex matches everything after last '/'
   // if path ends with '/', 2nd regex returns everything between the last two '/'
   return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];

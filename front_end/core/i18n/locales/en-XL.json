@@ -1517,9 +1517,6 @@
   "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
     "message": "RTP data channels âŕê ńô ĺôńĝér̂ śûṕp̂ór̂t́êd́. T̂h́ê RtpDataChannels ćôńŝt́r̂áîńt̂ íŝ ćûŕr̂én̂t́l̂ý îǵn̂ór̂éd̂, án̂d́ m̂áŷ ćâúŝé âń êŕr̂ór̂ át̂ á l̂át̂ér̂ d́ât́ê."
   },
-  "models/issues_manager/DeprecationIssue.ts | selectionAddRangeIntersect": {
-    "message": "T̂h́ê b́êh́âv́îór̂ t́ĥát̂ Selection.addRange() ḿêŕĝéŝ éx̂íŝt́îńĝ Ŕâńĝé âńd̂ t́ĥé ŝṕêćîf́îéd̂ Ŕâńĝé ŵáŝ ŕêḿôv́êd́."
-  },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂. Śêé ĥt́t̂ṕŝ://d́êv́êĺôṕêŕ.ĉh́r̂óm̂é.ĉóm̂/b́l̂óĝ/én̂áb̂ĺîńĝ-śĥár̂éd̂-ár̂ŕâý-b̂úf̂f́êŕ/ f̂ór̂ ḿôŕê d́êt́âíl̂ś."
   },

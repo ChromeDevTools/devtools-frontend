@@ -335,11 +335,6 @@ const UIStrings = {
   rtpDataChannel:
       '`RTP data channels` are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date.',
   /**
-   *@description TODO(crbug.com/1320361): Description needed for translation
-   */
-  selectionAddRangeIntersect:
-      'The behavior that `Selection.addRange()` merges existing Range and the specified Range was removed.',
-  /**
    *@description TODO(crbug.com/1318878): Description needed for translation
    */
   sharedArrayBufferConstructedWithoutIsolation:
@@ -610,10 +605,6 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.RTPDataChannel:
         messageFunction = i18nLazyString(UIStrings.rtpDataChannel);
         milestone = 88;
-        break;
-      case Protocol.Audits.DeprecationIssueType.SelectionAddRangeIntersect:
-        messageFunction = i18nLazyString(UIStrings.selectionAddRangeIntersect);
-        feature = 6680566019653632;
         break;
       case Protocol.Audits.DeprecationIssueType.SharedArrayBufferConstructedWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.sharedArrayBufferConstructedWithoutIsolation);

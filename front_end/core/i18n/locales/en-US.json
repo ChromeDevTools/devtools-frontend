@@ -1517,9 +1517,6 @@
   "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
     "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
   },
-  "models/issues_manager/DeprecationIssue.ts | selectionAddRangeIntersect": {
-    "message": "The behavior that Selection.addRange() merges existing Range and the specified Range was removed."
-  },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
   },

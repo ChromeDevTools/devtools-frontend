@@ -272,6 +272,26 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         (this.projectInternal as FileSystem).fileSystemPath(), '/', this.encodedPathFromUrl(url, ignoreInactive));
   }
 
+  private getHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode
+      |null {
+    const fileUrlFromRequest = this.fileUrlFromNetworkUrl(url, /* ignoreNoActive */ true);
+    const folderUrlFromRequest =
+        Common.ParsedURL.ParsedURL.substring(fileUrlFromRequest, 0, fileUrlFromRequest.lastIndexOf('/'));
+    const headersFileUrl = Common.ParsedURL.ParsedURL.concatenate(folderUrlFromRequest, '/', HEADERS_FILENAME);
+    return Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(headersFileUrl);
+  }
+
+  async getOrCreateHeadersUISourceCodeFromUrl(url: Platform.DevToolsPath.UrlString):
+      Promise<Workspace.UISourceCode.UISourceCode|null> {
+    let uiSourceCode = this.getHeadersUISourceCodeFromUrl(url);
+    if (!uiSourceCode && this.projectInternal) {
+      const encodedFilePath = this.encodedPathFromUrl(url, /* ignoreNoActive */ true);
+      const encodedPath = Common.ParsedURL.ParsedURL.substring(encodedFilePath, 0, encodedFilePath.lastIndexOf('/'));
+      uiSourceCode = await this.projectInternal.createFile(encodedPath, HEADERS_FILENAME, '');
+    }
+    return uiSourceCode;
+  }
+
   private decodeLocalPathToUrlPath(path: string): string {
     try {
       return unescape(path);

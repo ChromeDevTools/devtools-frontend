@@ -278,7 +278,7 @@ export class OverridesNavigatorView extends NavigatorView {
     this.toolbar.appendToolbarItem(setupButton);
   }
 
-  private async setupNewWorkspace(): Promise<void> {
+  async setupNewWorkspace(): Promise<void> {
     const fileSystem =
         await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem('overrides');
     if (!fileSystem) {

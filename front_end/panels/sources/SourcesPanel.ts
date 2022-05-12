@@ -528,7 +528,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.showUISourceCode(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, omitFocus);
   }
 
-  private revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): void {
+  revealInNavigator(uiSourceCode: Workspace.UISourceCode.UISourceCode, skipReveal?: boolean): void {
     for (const navigator of registeredNavigatorViews) {
       const navigatorView = navigator.navigatorView();
       const viewId = navigator.viewId;

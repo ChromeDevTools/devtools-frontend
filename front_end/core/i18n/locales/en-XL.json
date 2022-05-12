@@ -7025,6 +7025,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Ĉŕêát̂é r̂éŝṕôńŝé ĥéâd́êŕ ôv́êŕr̂íd̂é"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "D̂ÓM̂Ćôńt̂én̂t́L̂óâd́êd́: {PH1}"
   },
@@ -12496,6 +12499,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "R̂él̂óâd́ D̂év̂T́ôól̂ś"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Ŝél̂éĉt́ f̂ól̂d́êŕ"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Ŝél̂éĉt́ â f́ôĺd̂ér̂ t́ô śt̂ór̂é ôv́êŕr̂íd̂é f̂íl̂éŝ ín̂."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Âĺŵáŷś m̂át̂ćĥ Ćĥŕôḿê'ś l̂án̂ǵûáĝé"

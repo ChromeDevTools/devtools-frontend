@@ -115,6 +115,15 @@ const UIStrings = {
   *@description The aria label for the drawer hidden.
   */
   drawerHidden: 'Drawer hidden',
+  /**
+  * @description Request for the user to select a local file system folder for DevTools
+  * to store local overrides in.
+  */
+  selectOverrideFolder: 'Select a folder to store override files in.',
+  /**
+  *@description Label for a button which opens a file picker.
+  */
+  selectFolder: 'Select folder',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -133,6 +142,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   private focusRestorer?: WidgetFocusRestorer|null;
   private ownerSplitWidget?: SplitWidget;
   private reloadRequiredInfobar?: Infobar;
+  #selectOverrideFolderInfobar?: Infobar;
 
   constructor() {
     super();
@@ -435,6 +445,25 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       this.reloadRequiredInfobar = infobar;
       infobar.setCloseCallback(() => {
         delete this.reloadRequiredInfobar;
+      });
+    }
+  }
+
+  displaySelectOverrideFolderInfobar(callback: () => void): void {
+    if (!this.#selectOverrideFolderInfobar) {
+      const infobar = new Infobar(InfobarType.Info, i18nString(UIStrings.selectOverrideFolder), [
+        {
+          text: i18nString(UIStrings.selectFolder),
+          highlight: true,
+          delegate: (): void => callback(),
+          dismiss: true,
+        },
+      ]);
+      infobar.setParentView(this);
+      this.attachInfobar(infobar);
+      this.#selectOverrideFolderInfobar = infobar;
+      infobar.setCloseCallback(() => {
+        this.#selectOverrideFolderInfobar = undefined;
       });
     }
   }

@@ -14,24 +14,27 @@
   });
 
   const containerElement = LighthouseTestRunner.getContainerElement();
-  const checkboxes = containerElement.querySelectorAll('.checkbox');
-  for (const checkbox of checkboxes) {
-    if (checkbox.textElement.textContent === 'Performance' || checkbox.textElement.textContent === 'Clear storage') {
-      continue;
-    }
+  const ensureDisabledNames = ['Accessibility', 'Best practices', 'SEO', 'Progressive Web App'];
+  for (const checkboxName of ensureDisabledNames) {
+    const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
+    for (const checkbox of checkboxes) {
+      if (checkbox.textElement.textContent !== checkboxName) {
+        continue;
+      }
 
-    if (checkbox.checkboxElement.checked) {
-      checkbox.checkboxElement.click();
+      if (checkbox.checkboxElement.checked) {
+        checkbox.checkboxElement.click();
+      }
     }
   }
 
   LighthouseTestRunner.dumpStartAuditState();
 
   const Events = Lighthouse.LighthousePanel.getEvents();
-  const warningText = containerElement.querySelector('.lighthouse-warning-text');
 
   // Wait for warning event to be handled
   LighthouseTestRunner._panel().controller.addEventListener(Events.PageWarningsChanged, () => {
+    const warningText = containerElement.querySelector('.lighthouse-warning-text');
     TestRunner.addResult(`Warning Text: ${warningText.textContent}`);
     TestRunner.completeTest();
   });

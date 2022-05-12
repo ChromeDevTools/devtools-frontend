@@ -22,12 +22,30 @@
   TestRunner.addResult('\n\n**Prevents audit with no categories**');
   LighthouseTestRunner.openStartAudit();
   const containerElement = LighthouseTestRunner.getContainerElement();
-  const checkboxes = containerElement.querySelectorAll('.checkbox');
-  checkboxes.forEach(checkbox => checkbox.checkboxElement.checked && checkbox.checkboxElement.click());
+  const ensureDisabledNames = ['Performance', 'Accessibility', 'Best practices', 'SEO', 'Progressive Web App'];
+  for (const checkboxName of ensureDisabledNames) {
+    const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
+    for (const checkbox of checkboxes) {
+      if (checkbox.textElement.textContent !== checkboxName) {
+        continue;
+      }
+
+      if (checkbox.checkboxElement.checked) {
+        checkbox.checkboxElement.click();
+      }
+    }
+  }
   LighthouseTestRunner.dumpStartAuditState();
 
   TestRunner.addResult('\n\n**Allows audit with a single category**');
-  checkboxes[0].checkboxElement.click();
+  const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
+  for (const checkbox of checkboxes) {
+    if (checkbox.textElement.textContent !== 'Performance') {
+      continue;
+    }
+
+    checkbox.checkboxElement.click();
+  }
   LighthouseTestRunner.dumpStartAuditState();
 
   TestRunner.addResult('\n\n**Allows audit on undockable page**');

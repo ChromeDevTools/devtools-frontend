@@ -11,7 +11,7 @@ Tests that mobile emulation works.
 [x] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
-Generate report: enabled visible
+Analyze page load: enabled visible
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-emulate-pass.html

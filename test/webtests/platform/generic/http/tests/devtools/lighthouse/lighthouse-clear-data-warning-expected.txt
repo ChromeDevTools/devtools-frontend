@@ -11,6 +11,6 @@ Tests that Lighthouse panel displays a warning when important data may affect pe
 [x] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
-Generate report: enabled visible
+Analyze page load: enabled visible
 Warning Text: There may be stored data affecting loading performance in these locations: Web SQL, IndexedDB. Audit this page in an incognito window to prevent those resources from affecting your scores.
 

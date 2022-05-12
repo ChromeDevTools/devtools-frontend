@@ -11,7 +11,7 @@ Tests that Lighthouse report is translated.
 [x] Legacy navigation
 [x] Clear storage
 [x] Simulated throttling
-Generate report: enabled visible
+Analyze page load: enabled visible
 resolved to locale es
 
 i18n footerIssue: "Notificar un problema"

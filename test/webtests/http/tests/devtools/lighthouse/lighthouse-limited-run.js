@@ -10,15 +10,17 @@
   await TestRunner.showPanel('lighthouse');
 
   const containerElement = LighthouseTestRunner.getContainerElement();
-  const checkboxes = containerElement.querySelectorAll('.checkbox');
-  for (const checkbox of checkboxes) {
-    if (checkbox.textElement.textContent === 'Progressive Web App' ||
-        checkbox.textElement.textContent === 'Clear storage') {
-      continue;
-    }
+  const ensureDisabledNames = ['Performance', 'Accessibility', 'Best practices', 'SEO'];
+  for (const checkboxName of ensureDisabledNames) {
+    const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
+    for (const checkbox of checkboxes) {
+      if (checkbox.textElement.textContent !== checkboxName) {
+        continue;
+      }
 
-    if (checkbox.checkboxElement.checked) {
-      checkbox.checkboxElement.click();
+      if (checkbox.checkboxElement.checked) {
+        checkbox.checkboxElement.click();
+      }
     }
   }
 

@@ -11,7 +11,7 @@ Tests that lighthouse panel passes flags.
 [x] Legacy navigation
 [x] Clear storage
 [ ] Simulated throttling
-Generate report: enabled visible
+Analyze page load: enabled visible
 
 =============== Lighthouse Results ===============
 formFactor: desktop

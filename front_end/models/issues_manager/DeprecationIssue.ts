@@ -69,15 +69,11 @@ const UIStrings = {
   crossOriginAccessBasedOnDocumentDomain:
       'Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`.',
   /**
-   * @description TODO(crbug.com/1318850): Description needed for translation
+   * @description Issue text shown when the web page uses a deprecated web API. The placeholder is
+   * the deprecated web API function.
+   * @example {window.alert} PH1
    */
-  crossOriginWindowAlert:
-      'Triggering `window.alert` from cross origin iframes has been deprecated and will be removed in the future.',
-  /**
-   * @description TODO(crbug.com/1318851): Description needed for translation
-   */
-  crossOriginWindowConfirm:
-      'Triggering `window.confirm` from cross origin iframes has been deprecated and will be removed in the future.',
+  crossOriginWindowApi: 'Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future.',
   /**
    * @description TODO(crbug.com/1320339): Description needed for translation
    */
@@ -192,53 +188,23 @@ const UIStrings = {
       '`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead.',
   /**
    * @description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
+   * Both placeholders are Web API functions (single words).
+   * @example {webkitCancelAnimationFrame} PH1
+   * @example {cancelAnimationFrame} PH2
    */
-  prefixedCancelAnimationFrame:
-      '`webkitCancelAnimationFrame` is vendor-specific. Please use the standard `cancelAnimationFrame` instead.',
-  /**
-   * @description Warning displayed to developers when the vendor-prefixed method is used rather than the equivalent unprefixed method.
-   */
-  prefixedRequestAnimationFrame:
-      '`webkitRequestAnimationFrame` is vendor-specific. Please use the standard `requestAnimationFrame` instead.',
+  vendorSpecificApi: '{PH1} is vendor-specific. Please use the standard {PH2} instead.',
   /**
    * @description TODO(crbug.com/1320351): Description needed for translation
    */
   prefixedStorageInfo:
       '`window.webkitStorageInfo` is deprecated. Please use `navigator.webkitTemporaryStorage` or `navigator.webkitPersistentStorage` instead.',
   /**
-   * @description TODO(crbug.com/1320352): Description needed for translation
+   * @description Standard message when one web API is deprecated in favor of another. Both
+   * placeholders are always web API functions.
+   * @example {HTMLVideoElement.webkitDisplayingFullscreen} PH1
+   * @example {Document.fullscreenElement} PH2
    */
-  prefixedVideoDisplayingFullscreen:
-      '`HTMLVideoElement.webkitDisplayingFullscreen` is deprecated. Please use `Document.fullscreenElement` instead.',
-  /**
-   * @description TODO(crbug.com/1320353): Description needed for translation
-   */
-  prefixedVideoEnterFullScreen:
-      '`HTMLVideoElement.webkitEnterFullScreen()` is deprecated. Please use `Element.requestFullscreen()` instead.',
-  /**
-   * @description TODO(crbug.com/1320353): Description needed for translation
-   */
-  prefixedVideoEnterFullscreen:
-      '`HTMLVideoElement.webkitEnterFullscreen()` is deprecated. Please use `Element.requestFullscreen()` instead.',
-  /**
-   * @description TODO(crbug.com/1320354): Description needed for translation
-   */
-  prefixedVideoExitFullScreen:
-      '`HTMLVideoElement.webkitExitFullsSreen()` is deprecated. Please use `Document.exitFullscreen()` instead.',
-  /**
-   * @description TODO(crbug.com/1320354): Description needed for translation
-   */
-  prefixedVideoExitFullscreen:
-      '`HTMLVideoElement.webkitExitFullscreen()` is deprecated. Please use `Document.exitFullscreen()` instead.',
-  /**
-   * @description TODO(crbug.com/1320355): Description needed for translation
-   */
-  prefixedVideoSupportsFullscreen:
-      '`HTMLVideoElement.webkitSupportsFullscreen` is deprecated. Please use `Document.fullscreenEnabled` instead.',
-  /**
-   * @description TODO(crbug.com/1320356): Description needed for translation
-   */
-  rangeExpand: '`Range.expand()` is deprecated. Please use `Selection.modify()` instead.',
+  deprecatedWithReplacement: '{PH1} is deprecated. Please use {PH2} instead.',
   /**
    * @description TODO(crbug.com/1320357): Description needed for translation
    */
@@ -396,10 +362,10 @@ export class DeprecationIssue extends Issue {
         milestone = 106;
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert:
-        messageFunction = i18nLazyString(UIStrings.crossOriginWindowAlert);
+        messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.alert'});
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginWindowConfirm:
-        messageFunction = i18nLazyString(UIStrings.crossOriginWindowConfirm);
+        messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.confirm'});
         break;
       case Protocol.Audits.DeprecationIssueType.CSSSelectorInternalMediaControlsOverlayCastButton:
         messageFunction = i18nLazyString(UIStrings.cssSelectorInternalMediaControlsOverlayCastButton);
@@ -492,34 +458,49 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.pictureSourceSrc);
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedCancelAnimationFrame:
-        messageFunction = i18nLazyString(UIStrings.prefixedCancelAnimationFrame);
+        messageFunction = i18nLazyString(
+            UIStrings.vendorSpecificApi, {PH1: 'webkitCancelAnimationFrame', PH2: 'cancelAnimationFrame'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedRequestAnimationFrame:
-        messageFunction = i18nLazyString(UIStrings.prefixedRequestAnimationFrame);
+        messageFunction = i18nLazyString(
+            UIStrings.vendorSpecificApi, {PH1: 'webkitRequestAnimationFrame', PH2: 'requestAnimationFrame'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedStorageInfo:
         messageFunction = i18nLazyString(UIStrings.prefixedStorageInfo);
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoDisplayingFullscreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoDisplayingFullscreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitDisplayingFullscreen', PH2: 'Document.fullscreenElement'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoEnterFullScreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoEnterFullScreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitEnterFullScreen()', PH2: 'Element.requestFullscreen()'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoEnterFullscreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoEnterFullscreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitEnterFullscreen()', PH2: 'Element.requestFullscreen()'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoExitFullScreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoExitFullScreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitExitFullScreen()', PH2: 'Document.exitFullscreen()'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoExitFullscreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoExitFullscreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitExitFullscreen()', PH2: 'Document.exitFullscreen()'});
         break;
       case Protocol.Audits.DeprecationIssueType.PrefixedVideoSupportsFullscreen:
-        messageFunction = i18nLazyString(UIStrings.prefixedVideoSupportsFullscreen);
+        messageFunction = i18nLazyString(
+            UIStrings.deprecatedWithReplacement,
+            {PH1: 'HTMLVideoElement.webkitSupportsFullscreen', PH2: 'Document.fullscreenEnabled'});
         break;
       case Protocol.Audits.DeprecationIssueType.RangeExpand:
-        messageFunction = i18nLazyString(UIStrings.rangeExpand);
+        messageFunction =
+            i18nLazyString(UIStrings.deprecatedWithReplacement, {PH1: 'Range.expand()', PH2: 'Selection.modify()'});
         break;
       case Protocol.Audits.DeprecationIssueType.RequestedSubresourceWithEmbeddedCredentials:
         messageFunction = i18nLazyString(UIStrings.requestedSubresourceWithEmbeddedCredentials);

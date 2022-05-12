@@ -1376,17 +1376,17 @@
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
     "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
   },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowAlert": {
-    "message": "Triggering window.alert from cross origin iframes has been deprecated and will be removed in the future."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowConfirm": {
-    "message": "Triggering window.confirm from cross origin iframes has been deprecated and will be removed in the future."
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
+    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
     "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
   },
   "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
     "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
+    "message": "{PH1} is deprecated. Please use {PH2} instead."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "This is an example of a translated deprecation issue message."
@@ -1454,35 +1454,8 @@
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
   },
-  "models/issues_manager/DeprecationIssue.ts | prefixedCancelAnimationFrame": {
-    "message": "webkitCancelAnimationFrame is vendor-specific. Please use the standard cancelAnimationFrame instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedRequestAnimationFrame": {
-    "message": "webkitRequestAnimationFrame is vendor-specific. Please use the standard requestAnimationFrame instead."
-  },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoDisplayingFullscreen": {
-    "message": "HTMLVideoElement.webkitDisplayingFullscreen is deprecated. Please use Document.fullscreenElement instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoEnterFullscreen": {
-    "message": "HTMLVideoElement.webkitEnterFullscreen() is deprecated. Please use Element.requestFullscreen() instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoEnterFullScreen": {
-    "message": "HTMLVideoElement.webkitEnterFullScreen() is deprecated. Please use Element.requestFullscreen() instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoExitFullscreen": {
-    "message": "HTMLVideoElement.webkitExitFullscreen() is deprecated. Please use Document.exitFullscreen() instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoExitFullScreen": {
-    "message": "HTMLVideoElement.webkitExitFullsSreen() is deprecated. Please use Document.exitFullscreen() instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoSupportsFullscreen": {
-    "message": "HTMLVideoElement.webkitSupportsFullscreen is deprecated. Please use Document.fullscreenEnabled instead."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rangeExpand": {
-    "message": "Range.expand() is deprecated. Please use Selection.modify() instead."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
@@ -1516,6 +1489,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
+    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"

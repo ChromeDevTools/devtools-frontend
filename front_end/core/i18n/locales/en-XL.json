@@ -1376,17 +1376,17 @@
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
     "message": "R̂él̂áx̂ín̂ǵ t̂h́ê śâḿê-ór̂íĝín̂ ṕôĺîćŷ b́ŷ śêt́t̂ín̂ǵ document.domain îś d̂ép̂ŕêćât́êd́, âńd̂ ẃîĺl̂ b́ê d́îśâb́l̂éd̂ b́ŷ d́êf́âúl̂t́. T̂h́îś d̂ép̂ŕêćât́îón̂ ẃâŕn̂ín̂ǵ îś f̂ór̂ á ĉŕôśŝ-ór̂íĝín̂ áĉćêśŝ t́ĥát̂ ẃâś êńâb́l̂éd̂ b́ŷ śêt́t̂ín̂ǵ document.domain."
   },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowAlert": {
-    "message": "T̂ŕîǵĝér̂ín̂ǵ window.alert f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowConfirm": {
-    "message": "T̂ŕîǵĝér̂ín̂ǵ window.confirm f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
+    "message": "T̂ŕîǵĝér̂ín̂ǵ {PH1} f̂ŕôḿ ĉŕôśŝ ór̂íĝín̂ íf̂ŕâḿêś ĥáŝ b́êén̂ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ t́ĥé f̂út̂úr̂é."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
     "message": "T̂h́ê disableRemotePlayback át̂t́r̂íb̂út̂é ŝh́ôúl̂d́ b̂é ûśêd́ îń ôŕd̂ér̂ t́ô d́îśâb́l̂é t̂h́ê d́êf́âúl̂t́ Ĉáŝt́ îńt̂éĝŕât́îón̂ ín̂śt̂éâd́ ôf́ ûśîńĝ -internal-media-controls-overlay-cast-button śêĺêćt̂ór̂."
   },
   "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
     "message": "Ĉúŝt́ôḿ ĉúr̂śôŕŝ ẃît́ĥ śîźê ǵr̂éât́êŕ t̂h́âń 32x̂32 D́ÎṔ îńt̂ér̂śêćt̂ín̂ǵ n̂át̂ív̂é ÛÍ îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
+    "message": "{PH1} îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê {PH2} ín̂śt̂éâd́."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "T̂h́îś îś âń êx́âḿp̂ĺê óf̂ á t̂ŕâńŝĺât́êd́ d̂ép̂ŕêćât́îón̂ íŝśûé m̂éŝśâǵê."
@@ -1454,35 +1454,8 @@
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> ŵít̂h́ â <picture> ṕâŕêńt̂ íŝ ín̂v́âĺîd́ âńd̂ t́ĥér̂éf̂ór̂é îǵn̂ór̂éd̂. Ṕl̂éâśê úŝé <source srcset> îńŝt́êád̂."
   },
-  "models/issues_manager/DeprecationIssue.ts | prefixedCancelAnimationFrame": {
-    "message": "webkitCancelAnimationFrame îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ cancelAnimationFrame îńŝt́êád̂."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedRequestAnimationFrame": {
-    "message": "webkitRequestAnimationFrame îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ requestAnimationFrame îńŝt́êád̂."
-  },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
     "message": "window.webkitStorageInfo îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê navigator.webkitTemporaryStorage ór̂ navigator.webkitPersistentStorage ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoDisplayingFullscreen": {
-    "message": "HTMLVideoElement.webkitDisplayingFullscreen îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Document.fullscreenElement ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoEnterFullscreen": {
-    "message": "HTMLVideoElement.webkitEnterFullscreen() îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Element.requestFullscreen() ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoEnterFullScreen": {
-    "message": "HTMLVideoElement.webkitEnterFullScreen() îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Element.requestFullscreen() ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoExitFullscreen": {
-    "message": "HTMLVideoElement.webkitExitFullscreen() îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Document.exitFullscreen() ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoExitFullScreen": {
-    "message": "HTMLVideoElement.webkitExitFullsSreen() îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Document.exitFullscreen() ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedVideoSupportsFullscreen": {
-    "message": "HTMLVideoElement.webkitSupportsFullscreen îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Document.fullscreenEnabled ín̂śt̂éâd́."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rangeExpand": {
-    "message": "Range.expand() îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê Selection.modify() ín̂śt̂éâd́."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Ŝúb̂ŕêśôúr̂ćê ŕêq́ûéŝt́ŝ ẃĥóŝé ÛŔL̂ś ĉón̂t́âín̂ ém̂b́êd́d̂éd̂ ćr̂éd̂én̂t́îál̂ś (ê.ǵ. https://user:pass@host/) âŕê b́l̂óĉḱêd́."
@@ -1516,6 +1489,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Êx́t̂én̂śîón̂ś ŝh́ôúl̂d́ ôṕt̂ ín̂t́ô ćr̂óŝś-ôŕîǵîń îśôĺât́îón̂ t́ô ćôńt̂ín̂úê úŝín̂ǵ SharedArrayBuffer. Ŝéê h́t̂t́p̂ś://d̂év̂él̂óp̂ér̂.ćĥŕôḿê.ćôḿ/d̂óĉś/êx́t̂én̂śîón̂ś/m̂v́3/ĉŕôśŝ-ór̂íĝín̂-íŝól̂át̂íôń/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
+    "message": "{PH1} îś v̂én̂d́ôŕ-ŝṕêćîf́îć. P̂ĺêáŝé ûśê t́ĥé ŝt́âńd̂ár̂d́ {PH2} îńŝt́êád̂."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
     "message": "ÛT́F̂-16 íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ b́ŷ ŕêśp̂ón̂śê j́ŝón̂ ín̂ XMLHttpRequest"

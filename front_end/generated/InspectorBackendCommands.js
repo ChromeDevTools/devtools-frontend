@@ -3348,7 +3348,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'reportProgress', 'type': 'boolean', 'optional': true},
         {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true},
-        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true}
+        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true},
+        {'name': 'exposeInternals', 'type': 'boolean', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(
@@ -3356,7 +3357,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'reportProgress', 'type': 'boolean', 'optional': true},
         {'name': 'treatGlobalObjectsAsRoots', 'type': 'boolean', 'optional': true},
-        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true}
+        {'name': 'captureNumericValue', 'type': 'boolean', 'optional': true},
+        {'name': 'exposeInternals', 'type': 'boolean', 'optional': true}
       ],
       []);
 

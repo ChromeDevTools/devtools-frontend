@@ -23011,7 +23011,7 @@
                         },
                         {
                             "name": "hash",
-                            "description": "Content hash of the script.",
+                            "description": "Content hash of the script, SHA-256.",
                             "type": "string"
                         },
                         {
@@ -23115,7 +23115,7 @@
                         },
                         {
                             "name": "hash",
-                            "description": "Content hash of the script.",
+                            "description": "Content hash of the script, SHA-256.",
                             "type": "string"
                         },
                         {
@@ -23389,12 +23389,21 @@
                         },
                         {
                             "name": "treatGlobalObjectsAsRoots",
+                            "description": "Deprecated in favor of `exposeInternals`.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "boolean"
                         },
                         {
                             "name": "captureNumericValue",
                             "description": "If true, numerical values are included in the snapshot",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "exposeInternals",
+                            "description": "If true, exposes internals of the snapshot.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         }
@@ -23411,13 +23420,21 @@
                         },
                         {
                             "name": "treatGlobalObjectsAsRoots",
-                            "description": "If true, a raw snapshot without artificial roots will be generated",
+                            "description": "If true, a raw snapshot without artificial roots will be generated.\nDeprecated in favor of `exposeInternals`.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "boolean"
                         },
                         {
                             "name": "captureNumericValue",
                             "description": "If true, numerical values are included in the snapshot",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "exposeInternals",
+                            "description": "If true, exposes internals of the snapshot.",
+                            "experimental": true,
                             "optional": true,
                             "type": "boolean"
                         }
@@ -24729,7 +24746,7 @@
                         },
                         {
                             "name": "generateWebDriverValue",
-                            "description": "Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.",
+                            "description": "Whether the result should contain `webDriverValue`, serialized according to\nhttps://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but\nresulting `objectId` is still provided.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

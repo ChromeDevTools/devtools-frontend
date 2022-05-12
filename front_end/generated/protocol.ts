@@ -15414,7 +15414,7 @@ export namespace Debugger {
      */
     executionContextId: Runtime.ExecutionContextId;
     /**
-     * Content hash of the script.
+     * Content hash of the script, SHA-256.
      */
     hash: string;
     /**
@@ -15489,7 +15489,7 @@ export namespace Debugger {
      */
     executionContextId: Runtime.ExecutionContextId;
     /**
-     * Content hash of the script.
+     * Content hash of the script, SHA-256.
      */
     hash: string;
     /**
@@ -15663,11 +15663,18 @@ export namespace HeapProfiler {
      * when the tracking is stopped.
      */
     reportProgress?: boolean;
+    /**
+     * Deprecated in favor of `exposeInternals`.
+     */
     treatGlobalObjectsAsRoots?: boolean;
     /**
      * If true, numerical values are included in the snapshot
      */
     captureNumericValue?: boolean;
+    /**
+     * If true, exposes internals of the snapshot.
+     */
+    exposeInternals?: boolean;
   }
 
   export interface TakeHeapSnapshotRequest {
@@ -15676,13 +15683,18 @@ export namespace HeapProfiler {
      */
     reportProgress?: boolean;
     /**
-     * If true, a raw snapshot without artificial roots will be generated
+     * If true, a raw snapshot without artificial roots will be generated.
+     * Deprecated in favor of `exposeInternals`.
      */
     treatGlobalObjectsAsRoots?: boolean;
     /**
      * If true, numerical values are included in the snapshot
      */
     captureNumericValue?: boolean;
+    /**
+     * If true, exposes internals of the snapshot.
+     */
+    exposeInternals?: boolean;
   }
 
   export interface AddHeapSnapshotChunkEvent {
@@ -16625,7 +16637,9 @@ export namespace Runtime {
      */
     throwOnSideEffect?: boolean;
     /**
-     * Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+     * Whether the result should contain `webDriverValue`, serialized according to
+     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
+     * resulting `objectId` is still provided.
      */
     generateWebDriverValue?: boolean;
   }

@@ -232,6 +232,9 @@
 
 .sidebar-pane-section-toolbar.new-rule-toolbar {
   visibility: hidden;
+  margin-bottom: 5px;
+
+  --toolbar-height: 16px;
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar.new-rule-toolbar {

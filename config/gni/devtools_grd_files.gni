@@ -279,6 +279,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/arAttributionSourceUntrustworthyOrigin.md",
   "front_end/models/issues_manager/descriptions/arAttributionUntrustworthyFrameOrigin.md",
   "front_end/models/issues_manager/descriptions/arAttributionUntrustworthyOrigin.md",
+  "front_end/models/issues_manager/descriptions/arInvalidHeader.md",
   "front_end/models/issues_manager/descriptions/arPermissionPolicyDisabled.md",
   "front_end/models/issues_manager/descriptions/clientHintMetaTagAllowListInvalidOrigin.md",
   "front_end/models/issues_manager/descriptions/clientHintMetaTagModifiedHTML.md",

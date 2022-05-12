@@ -57,6 +57,7 @@ devtools_issue_description_files = [
   "arAttributionSourceUntrustworthyOrigin.md",
   "arAttributionUntrustworthyFrameOrigin.md",
   "arAttributionUntrustworthyOrigin.md",
+  "arInvalidHeader.md",
   "arPermissionPolicyDisabled.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",
   "clientHintMetaTagModifiedHTML.md",

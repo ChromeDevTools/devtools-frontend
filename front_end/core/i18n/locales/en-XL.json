@@ -5513,6 +5513,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "F̂ŕâḿê"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
+    "message": "Îńv̂ál̂íd̂ H́êád̂ér̂ V́âĺûé"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n, plural, =1 {# v̂íôĺât́îón̂} other {# v́îól̂át̂íôńŝ}}"
   },

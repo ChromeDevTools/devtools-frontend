@@ -84,7 +84,10 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           links: [],
         };
       case IssueCode.InvalidHeader:
-        return null;
+        return {
+          file: 'arInvalidHeader.md',
+          links: [],
+        };
     }
   }
 

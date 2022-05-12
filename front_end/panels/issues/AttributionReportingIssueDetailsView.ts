@@ -24,6 +24,10 @@ const UIStrings = {
    */
   element: 'Element',
   /**
+   * @description Noun, label for the column showing the invalid header value in the issue details table.
+   */
+  invalidHeaderValue: 'Invalid Header Value',
+  /**
    * @description Noun, label for the column showing the associated network request in the issue details table.
    */
   request: 'Request',
@@ -74,6 +78,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.untrustworthyOrigin));
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidHeader:
+        this.appendColumnTitle(header, i18nString(UIStrings.frame));
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
+        this.appendColumnTitle(header, i18nString(UIStrings.invalidHeaderValue));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -104,6 +113,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
+        this.#appendRequestOrEmptyCell(element, details.request);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidHeader:
+        this.#appendFrameOrEmptyCell(element, issue);
         this.#appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;

@@ -5513,6 +5513,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "Frame"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
+    "message": "Invalid Header Value"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n, plural, =1 {# violation} other {# violations}}"
   },

@@ -216,8 +216,8 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   };
 }
 
-const SPAN_IDENT = /^#?[\w\P{ASCII}]*$/u, SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/,
-      SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
+const SPAN_IDENT = /^#?(?:[$_\p{ID_Start}])(?:[$_\u200C\u200D\p{ID_Continue}])*$/u,
+      SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/, SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 
 function getExecutionContext(): SDK.RuntimeModel.ExecutionContext|null {
   return UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);

@@ -105,10 +105,6 @@ const UIStrings = {
   */
   experience: 'Experience',
   /**
-  *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-  */
-  interactions: 'Interactions',
-  /**
   *@description Text for rendering frames
   */
   frames: 'Frames',
@@ -178,8 +174,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly collapsibleTimingsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly timingsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly screenshotsHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly interactionsHeaderLevel1: PerfUI.FlameChart.GroupStyle;
-  private readonly interactionsHeaderLevel2: PerfUI.FlameChart.GroupStyle;
+  private readonly animationsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly experienceHeader: PerfUI.FlameChart.GroupStyle;
   private readonly flowEventIndexById: Map<string, number>;
   private entryData!: TimelineFlameChartEntry[];
@@ -239,8 +234,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: false});
     this.screenshotsHeader =
         this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
-    this.interactionsHeaderLevel1 = this.buildGroupStyle({useFirstLineForOverview: true});
-    this.interactionsHeaderLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1});
+    this.animationsHeader = this.buildGroupStyle({useFirstLineForOverview: false});
     this.experienceHeader = this.buildGroupStyle({collapsible: false});
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
@@ -252,8 +246,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.collapsibleTimingsHeader,
         this.timingsHeader,
         this.screenshotsHeader,
-        this.interactionsHeaderLevel1,
-        this.interactionsHeaderLevel2,
+        this.animationsHeader,
         this.experienceHeader,
       ];
       for (const header of headers) {
@@ -460,7 +453,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       switch (track.type) {
         case TimelineModel.TimelineModel.TrackType.Animation: {
           this.appendAsyncEventsGroup(
-              track, i18nString(UIStrings.animation), track.asyncEvents, this.interactionsHeaderLevel2, eventEntryType,
+              track, i18nString(UIStrings.animation), track.asyncEvents, this.animationsHeader, eventEntryType,
               false /* selectable */);
           break;
         }
@@ -752,7 +745,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!interactionRecords.length) {
       return;
     }
-    this.appendHeader(i18nString(UIStrings.interactions), this.interactionsHeaderLevel1, false /* selectable */);
     for (const segment of interactionRecords) {
       const index = this.entryData.length;
       this.entryData.push((segment.data as TimelineModel.TimelineIRModel.Phases));

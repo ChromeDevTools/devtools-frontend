@@ -340,8 +340,6 @@ async function completeProperties(
   return result;
 }
 
-const prototypePropertyPenalty = -80;
-
 async function completePropertiesInner(
     expression: string,
     context: SDK.RuntimeModel.ExecutionContext,
@@ -382,17 +380,10 @@ async function completePropertiesInner(
           (!prop.private || expression === 'this') && (quoted || SPAN_IDENT.test(prop.name))) {
         const label =
             quoted ? quoted + prop.name.replaceAll('\\', '\\\\').replaceAll(quoted, '\\' + quoted) + quoted : prop.name;
-        const completion: CodeMirror.Completion = {
-          label,
-          type: prop.value?.type === 'function' ? functionType : otherType,
-        };
-        if (quoted && !hasBracket) {
-          completion.apply = label + ']';
-        }
-        if (!prop.isOwn) {
-          completion.boost = prototypePropertyPenalty;
-        }
-        result.add(completion);
+        const apply = (quoted && !hasBracket) ? `${label}]` : undefined;
+        const boost = 2 * Number(prop.isOwn) + 1 * Number(prop.enumerable);
+        const type = prop.value?.type === 'function' ? functionType : otherType;
+        result.add({apply, label, type, boost});
       }
     }
   }

@@ -246,6 +246,11 @@ export class UserMetrics {
         EnumeratedHistogram.RecordingReplayFinished, value, RecordingReplayFinished.MaxValue);
   }
 
+  recordingReplaySpeed(value: RecordingReplaySpeed): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.RecordingReplaySpeed, value, RecordingReplaySpeed.MaxValue);
+  }
+
   recordingReplayStarted(value: RecordingReplayStarted): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.RecordingReplayStarted, value, RecordingReplayStarted.MaxValue);
@@ -892,6 +897,16 @@ export enum RecordingReplayFinished {
   TimeoutErrorSelectors = 2,
   TimeoutErrorTarget = 3,
   OtherError = 4,
+  MaxValue = 5,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingReplaySpeed {
+  Normal = 1,
+  Slow = 2,
+  VerySlow = 3,
+  ExtremelySlow = 4,
   MaxValue = 5,
 }
 

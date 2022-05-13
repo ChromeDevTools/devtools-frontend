@@ -32,7 +32,7 @@ export interface FrontedTargetPoolOptions {
  * to clean them up properly.
  */
 export class FrontendTargetPool {
-  private static readonly POOL_SIZE = 0;
+  private static readonly POOL_SIZE = 5;
 
   #pool = new Pool<FrontendTargetTabs>();
   #browser: puppeteer.Browser;

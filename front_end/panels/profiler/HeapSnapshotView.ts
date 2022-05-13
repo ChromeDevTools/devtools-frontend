@@ -183,8 +183,7 @@ const UIStrings = {
   /**
   *@description Text in Heap Snapshot View of a profiler tool
   */
-  treatGlobalObjectsAsRoots:
-      'Treat global objects as roots (recommended, unchecking this exposes internal nodes and introduces excessive detail, but might help debugging cycles in retaining paths)',
+  exposeInternals: 'Expose internals (includes additional implementation-specific details)',
   /**
   *@description Text in Heap Snapshot View of a profiler tool
   * This option turns on inclusion of numerical values in the heap snapshot.
@@ -1182,7 +1181,7 @@ export class StatisticsPerspective extends Perspective {
 export class HeapSnapshotProfileType extends
     Common.ObjectWrapper.eventMixin<HeapSnapshotProfileTypeEventTypes, typeof ProfileType>(ProfileType)
         implements SDK.TargetManager.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
-  readonly treatGlobalObjectsAsRoots: Common.Settings.Setting<boolean>;
+  readonly exposeInternals: Common.Settings.Setting<boolean>;
   readonly captureNumericValue: Common.Settings.Setting<boolean>;
   customContentInternal: HTMLElement|null;
   constructor(id?: string, title?: string) {
@@ -1196,8 +1195,7 @@ export class HeapSnapshotProfileType extends
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.HeapProfilerModel.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this.reportHeapSnapshotProgress, this);
-    this.treatGlobalObjectsAsRoots =
-        Common.Settings.Settings.instance().createSetting('treatGlobalObjectsAsRoots', true);
+    this.exposeInternals = Common.Settings.Settings.instance().createSetting('exposeInternals', false);
     this.captureNumericValue = Common.Settings.Settings.instance().createSetting('captureNumericValue', false);
     this.customContentInternal = null;
   }
@@ -1241,13 +1239,13 @@ export class HeapSnapshotProfileType extends
 
   customContent(): Element|null {
     const optionsContainer = document.createElement('div');
-    const showOptionToNotTreatGlobalObjectsAsRoots =
-        Root.Runtime.experiments.isEnabled('showOptionToNotTreatGlobalObjectsAsRoots');
-    const omitParagraphElement = !showOptionToNotTreatGlobalObjectsAsRoots;
-    if (showOptionToNotTreatGlobalObjectsAsRoots) {
-      const treatGlobalObjectsAsRootsCheckbox = UI.SettingsUI.createSettingCheckbox(
-          i18nString(UIStrings.treatGlobalObjectsAsRoots), this.treatGlobalObjectsAsRoots, omitParagraphElement);
-      optionsContainer.appendChild(treatGlobalObjectsAsRootsCheckbox);
+    const showOptionToExposeInternalsInHeapSnapshot =
+        Root.Runtime.experiments.isEnabled('showOptionToExposeInternalsInHeapSnapshot');
+    const omitParagraphElement = !showOptionToExposeInternalsInHeapSnapshot;
+    if (showOptionToExposeInternalsInHeapSnapshot) {
+      const exposeInternalsInHeapSnapshotCheckbox = UI.SettingsUI.createSettingCheckbox(
+          i18nString(UIStrings.exposeInternals), this.exposeInternals, omitParagraphElement);
+      optionsContainer.appendChild(exposeInternalsInHeapSnapshotCheckbox);
     }
     const captureNumericValueCheckbox = UI.SettingsUI.createSettingCheckbox(
         UIStrings.captureNumericValue, this.captureNumericValue, omitParagraphElement);
@@ -1284,8 +1282,8 @@ export class HeapSnapshotProfileType extends
 
     await heapProfilerModel.takeHeapSnapshot({
       reportProgress: true,
-      treatGlobalObjectsAsRoots: this.treatGlobalObjectsAsRoots.get(),
       captureNumericValue: this.captureNumericValue.get(),
+      exposeInternals: this.exposeInternals.get(),
     });
     profile = this.profileBeingRecorded() as HeapProfileHeader;
     if (!profile) {

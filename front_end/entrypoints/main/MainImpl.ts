@@ -292,8 +292,7 @@ export class MainImpl {
         'recordCoverageWithPerformanceTracing', 'Record coverage while performance tracing');
     Root.Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
-        'showOptionToNotTreatGlobalObjectsAsRoots',
-        'Show option to take heap snapshot where globals are not treated as root');
+        'showOptionToExposeInternalsInHeapSnapshot', 'Show option to expose internals in heap snapshots');
     Root.Runtime.experiments.register(
         'sourceOrderViewer', 'Source order viewer', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');

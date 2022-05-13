@@ -593,7 +593,7 @@ export enum DevtoolsExperiments {
   'developerResourcesView' = 15,
   'recordCoverageWithPerformanceTracing' = 16,
   'samplingHeapProfilerTimeline' = 17,
-  'showOptionToNotTreatGlobalObjectsAsRoots' = 18,
+  'showOptionToExposeInternalsInHeapSnapshot' = 18,
   'sourceOrderViewer' = 20,
   'webauthnPane' = 22,
   'timelineEventInitiators' = 24,

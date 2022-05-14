@@ -60,7 +60,7 @@ export class PreviewToggle extends HTMLElement {
     // clang-format off
     render(
       html`
-      <div class="experiment-preview">
+      <label class="experiment-preview">
         <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name}/>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: 'ic_preview_feature',
@@ -74,7 +74,7 @@ export class PreviewToggle extends HTMLElement {
         ${this.#helperText && this.#feedbackURL
           ? html`<p>${this.#helperText} <x-link href=${this.#feedbackURL}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>`
           : nothing}
-      </div>`,
+      </label>`,
       this.#shadow,
       {
         host: this,

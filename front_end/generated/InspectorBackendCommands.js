@@ -1202,6 +1202,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'Emulation.setDisabledImageTypes', [{'name': 'imageTypes', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
+      'Emulation.setHardwareConcurrencyOverride',
+      [{'name': 'hardwareConcurrency', 'type': 'number', 'optional': false}], []);
+  inspectorBackend.registerCommand(
       'Emulation.setUserAgentOverride',
       [
         {'name': 'userAgent', 'type': 'string', 'optional': false},

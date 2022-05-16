@@ -5454,6 +5454,13 @@ export namespace Emulation {
     imageTypes: DisabledImageType[];
   }
 
+  export interface SetHardwareConcurrencyOverrideRequest {
+    /**
+     * Hardware concurrency to report
+     */
+    hardwareConcurrency: integer;
+  }
+
   export interface SetUserAgentOverrideRequest {
     /**
      * User agent to use.

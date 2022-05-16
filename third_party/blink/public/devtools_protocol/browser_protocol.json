@@ -21488,7 +21488,15 @@
             "commands": [
                 {
                     "name": "enable",
-                    "description": "Enable the WebAuthn domain and start intercepting credential storage and\nretrieval with a virtual authenticator."
+                    "description": "Enable the WebAuthn domain and start intercepting credential storage and\nretrieval with a virtual authenticator.",
+                    "parameters": [
+                        {
+                            "name": "enableUI",
+                            "description": "Whether to enable the WebAuthn user interface. Enabling the UI is\nrecommended for debugging and demo purposes, as it is closer to the real\nexperience. Disabling the UI is recommended for automated testing.\nSupported at the embedder's discretion if UI is available.\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 },
                 {
                     "name": "disable",

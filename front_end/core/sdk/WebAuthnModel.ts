@@ -18,7 +18,7 @@ export class WebAuthnModel extends SDKModel {
 
   setVirtualAuthEnvEnabled(enable: boolean): Promise<Object> {
     if (enable) {
-      return this.#agent.invoke_enable();
+      return this.#agent.invoke_enable({enableUI: true});
     }
     return this.#agent.invoke_disable();
   }

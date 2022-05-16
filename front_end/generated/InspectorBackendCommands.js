@@ -3073,7 +3073,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('WebAuthn.Ctap2Version', {Ctap2_0: 'ctap2_0', Ctap2_1: 'ctap2_1'});
   inspectorBackend.registerEnum(
       'WebAuthn.AuthenticatorTransport', {Usb: 'usb', Nfc: 'nfc', Ble: 'ble', Cable: 'cable', Internal: 'internal'});
-  inspectorBackend.registerCommand('WebAuthn.enable', [], []);
+  inspectorBackend.registerCommand('WebAuthn.enable', [{'name': 'enableUI', 'type': 'boolean', 'optional': true}], []);
   inspectorBackend.registerCommand('WebAuthn.disable', [], []);
   inspectorBackend.registerCommand(
       'WebAuthn.addVirtualAuthenticator', [{'name': 'options', 'type': 'object', 'optional': false}],

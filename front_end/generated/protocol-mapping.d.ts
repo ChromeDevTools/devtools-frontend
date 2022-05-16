@@ -2752,7 +2752,7 @@ export namespace ProtocolMapping {
      * Enable the WebAuthn domain and start intercepting credential storage and
      * retrieval with a virtual authenticator.
      */
-    'WebAuthn.enable': {paramsType: []; returnType: void;};
+    'WebAuthn.enable': {paramsType: [Protocol.WebAuthn.EnableRequest?]; returnType: void;};
     /**
      * Disable the WebAuthn domain.
      */

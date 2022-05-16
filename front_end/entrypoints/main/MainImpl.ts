@@ -420,6 +420,7 @@ export class MainImpl {
       'backgroundServicesNotifications',
       'backgroundServicesPushMessaging',
       'backgroundServicesPaymentHandler',
+      'bfcacheDisplayTree',
       'webauthnPane',
       'developerResourcesView',
     ]);

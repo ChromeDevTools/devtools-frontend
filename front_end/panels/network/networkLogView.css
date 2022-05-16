@@ -70,7 +70,7 @@
   flex: none;
 }
 
-.network-log-grid.data-grid table.data {
+.network-log-grid.data-grid tbody {
   background: transparent;
 }
 
@@ -397,8 +397,8 @@
   /* This is part of the large color block declared above, but should not be
    extracted out. */
   /* stylelint-disable no-descending-specificity */
-  .network-log-grid.data-grid table.data tr.revealed.selected,
-  .network-log-grid.data-grid:focus table.data tr.revealed.selected,
+  .network-log-grid.data-grid tbody tr.revealed.selected,
+  .network-log-grid.data-grid:focus tbody tr.revealed.selected,
   .network-log-grid.data-grid:focus tr.selected .network-dim-cell,
   .network-log-grid.data-grid tr.selected .network-dim-cell,
   .network-log-grid.data-grid:focus tr.selected .initiator-column .devtools-link,

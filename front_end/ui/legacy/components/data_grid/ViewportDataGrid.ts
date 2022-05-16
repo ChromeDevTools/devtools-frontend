@@ -172,7 +172,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
       delete this.updateAnimationFrameId;
     }
 
-    const clientHeight = this.scrollContainer.clientHeight - this.headerHeight();
+    const clientHeight = this.scrollContainer.clientHeight - this.headerHeightInScroller();
     let scrollTop: number = this.scrollContainer.scrollTop;
     const currentScrollTop = scrollTop;
     const maxScrollTop = Math.max(0, this.contentHeight() - clientHeight);
@@ -249,7 +249,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     }
     const toY = fromY + node.nodeSelfHeight();
     let scrollTop: number = this.scrollContainer.scrollTop;
-    const visibleHeight = this.scrollContainer.offsetHeight - this.headerHeight();
+    const visibleHeight = this.scrollContainer.offsetHeight - this.headerHeightInScroller();
     if (scrollTop > fromY) {
       scrollTop = fromY;
       this.stickToBottom = false;

@@ -130,6 +130,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     [x: string]: Element,
   };
   scrollContainerInternal: Element;
+  private dataContainerInternal: Element;
   private readonly dataTable: Element;
   protected inline: boolean;
   private columnsArray: ColumnDescriptor[];
@@ -190,8 +191,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.dataTableHeaders = {};
 
-    this.scrollContainerInternal = this.element.createChild('div', 'data-container');
-    this.dataTable = this.scrollContainerInternal.createChild('table', 'data');
+    this.dataContainerInternal = this.element.createChild('div', 'data-container');
+    this.dataTable = this.dataContainerInternal.createChild('table', 'data');
+    this.scrollContainerInternal = this.dataContainerInternal;
 
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.
@@ -1537,6 +1539,18 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   topFillerRowElement(): HTMLElement {
     return this.topFillerRow;
+  }
+
+  // Note on the following methods:
+  // The header row is a child of the scrollable container, and uses position: sticky
+  // so it can visually obscure other elements below it in the grid. We need to manually
+  // subtract the header's height when calculating the actual client area in which
+  // data rows are visible. However, if a caller has set a different scroll container
+  // then we report 0 height and the caller is expected to ensure their chosen scroll
+  // container's height matches the visible scrollable data area as seen by the user.
+
+  protected headerHeightInScroller(): number {
+    return this.scrollContainer === this.dataContainerInternal ? this.headerHeight() : 0;
   }
 
   protected headerHeight(): number {

@@ -89,6 +89,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
     ]),
     getPermissionsPolicyState: () => null,
+    prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
 };
@@ -135,6 +136,7 @@ describeWithEnvironment('FrameDetailsView', () => {
       'Cross-Origin Opener Policy (COOP)',
       'SharedArrayBuffers',
       'Measure Memory',
+      'Prerendering Status',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
@@ -149,6 +151,7 @@ describeWithEnvironment('FrameDetailsView', () => {
       'SameOrigin',
       'available, transferable',
       'available\xA0Learn more',
+      'TriggerDestroyed',
     ]);
 
     const stackTrace = getElementWithinComponent(

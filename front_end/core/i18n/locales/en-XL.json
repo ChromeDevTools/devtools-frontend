@@ -3068,6 +3068,12 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "T̂h́îś f̂ŕâḿê íŝ ćôńŝíd̂ér̂éd̂ án̂ ád̂ f́r̂ám̂é b̂éĉáûśê ít̂ś p̂ár̂én̂t́ f̂ŕâḿê íŝ án̂ ád̂ f́r̂ám̂é."
   },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ Ŝt́ât́ûś"
+  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "R̂éf̂ŕêśĥ"
   },

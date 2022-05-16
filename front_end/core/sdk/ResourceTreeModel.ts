@@ -64,6 +64,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   isInterstitialShowing: boolean;
   mainFrame: ResourceTreeFrame|null;
   #pendingBackForwardCacheNotUsedEvents: Set<Protocol.Page.BackForwardCacheNotUsedEvent>;
+  #pendingPrerenderAttemptCompletedEvents: Set<Protocol.Page.PrerenderAttemptCompletedEvent>;
 
   constructor(target: Target) {
     super(target);
@@ -77,6 +78,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     void this.agent.invoke_enable();
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.#pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
+    this.#pendingPrerenderAttemptCompletedEvents = new Set<Protocol.Page.PrerenderAttemptCompletedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
 
     this.framesInternal = new Map();
@@ -213,7 +215,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isMainFrame()) {
-      this.processPendingBackForwardCacheNotUsedEvents(frame);
+      this.processPendingEvents(frame);
       this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
       const networkManager = this.target().model(NetworkManager);
       if (networkManager) {
@@ -539,7 +541,16 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
   }
 
-  processPendingBackForwardCacheNotUsedEvents(frame: ResourceTreeFrame): void {
+  onPrerenderAttemptCompleted(event: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+    if (this.mainFrame && this.mainFrame.id === event.initiatingFrameId) {
+      this.mainFrame.setPrerenderFinalStatus(event.finalStatus);
+      this.dispatchEventToListeners(Events.PrerenderingStatusUpdated, this.mainFrame);
+    } else {
+      this.#pendingPrerenderAttemptCompletedEvents.add(event);
+    }
+  }
+
+  processPendingEvents(frame: ResourceTreeFrame): void {
     if (!frame.isMainFrame()) {
       return;
     }
@@ -547,11 +558,17 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       if (frame.id === event.frameId && frame.loaderId === event.loaderId) {
         frame.setBackForwardCacheDetails(event);
         this.#pendingBackForwardCacheNotUsedEvents.delete(event);
-        // No need to dispatch the `BackForwardCacheDetailsUpdated` event here,
-        // as this method call is followed by a `MainFrameNavigated` event.
-        return;
+        break;
       }
     }
+    for (const event of this.#pendingPrerenderAttemptCompletedEvents) {
+      if (frame.id === event.initiatingFrameId) {
+        frame.setPrerenderFinalStatus(event.finalStatus);
+        this.#pendingPrerenderAttemptCompletedEvents.delete(event);
+        break;
+      }
+    }
+    // No need to dispatch events here as this method call is followed by a `MainFrameNavigated` event.
   }
 }
 
@@ -575,6 +592,7 @@ export enum Events {
   InterstitialShown = 'InterstitialShown',
   InterstitialHidden = 'InterstitialHidden',
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
+  PrerenderingStatusUpdated = 'PrerenderingStatusUpdated',
 }
 
 export type EventTypes = {
@@ -595,6 +613,7 @@ export type EventTypes = {
   [Events.InterstitialShown]: void,
   [Events.InterstitialHidden]: void,
   [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
+  [Events.PrerenderingStatusUpdated]: ResourceTreeFrame,
 };
 
 export class ResourceTreeFrame {
@@ -625,6 +644,7 @@ export class ResourceTreeFrame {
     explanations: [],
     explanationsTree: undefined,
   };
+  prerenderFinalStatus: Protocol.Page.PrerenderFinalStatus|null;
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: Protocol.Page.FrameId,
@@ -653,6 +673,7 @@ export class ResourceTreeFrame {
     this.#childFramesInternal = new Set();
 
     this.resourcesMap = new Map();
+    this.prerenderFinalStatus = null;
 
     if (this.#sameTargetParentFrameInternal) {
       this.#sameTargetParentFrameInternal.#childFramesInternal.add(this);
@@ -984,6 +1005,10 @@ export class ResourceTreeFrame {
   getResourcesMap(): Map<string, Resource> {
     return this.resourcesMap;
   }
+
+  setPrerenderFinalStatus(status: Protocol.Page.PrerenderFinalStatus): void {
+    this.prerenderFinalStatus = status;
+  }
 }
 
 export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
@@ -1086,7 +1111,8 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   downloadProgress(): void {
   }
 
-  prerenderAttemptCompleted({}: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+  prerenderAttemptCompleted(params: Protocol.Page.PrerenderAttemptCompletedEvent): void {
+    this.#resourceTreeModel.onPrerenderAttemptCompleted(params);
   }
 }
 

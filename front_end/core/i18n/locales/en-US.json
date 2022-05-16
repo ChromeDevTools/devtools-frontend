@@ -3068,6 +3068,12 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "This frame is considered an ad frame because its parent frame is an ad frame."
   },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Prerendering"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Prerendering Status"
+  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Refresh"
   },

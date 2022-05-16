@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
@@ -48,5 +49,60 @@ describeWithMockConnection('ResourceTreeModel', () => {
       },
     });
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
+  });
+
+  it('records prerenderingStatus', () => {
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        loaderId: 'foo',
+        url: 'http://example.com',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'http://example.com',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': 'main',
+          'prerenderingUrl': 'http://example.com/page.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.TriggerDestroyed,
+        },
+    );
+    dispatchEvent(
+        target,
+        'Page.prerenderAttemptCompleted',
+        {
+          'initiatingFrameId': 'next',
+          'prerenderingUrl': 'http://example.com/page.html',
+          'finalStatus': Protocol.Page.PrerenderFinalStatus.ClientCertRequested,
+        },
+    );
+    assertNotNullOrUndefined(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+    assert.strictEqual(
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.TriggerDestroyed);
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'next',
+        loaderId: 'foo',
+        url: 'http://example.com/next',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'http://example.com',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    assertNotNullOrUndefined(resourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
+    assert.strictEqual(
+        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Page.PrerenderFinalStatus.ClientCertRequested);
   });
 });

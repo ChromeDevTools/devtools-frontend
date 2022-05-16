@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
@@ -45,7 +46,7 @@ LighthouseWorkerService   ││          Either ConnectionProxy or LegacyPort  
 let lastId = 1;
 
 export interface LighthouseRun {
-  inspectedURL: string;
+  inspectedURL: Platform.DevToolsPath.UrlString;
   categoryIDs: string[];
   flags: Record<string, Object|undefined>;
 }

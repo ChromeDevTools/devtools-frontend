@@ -273,6 +273,10 @@ export class ParsedURL {
     return devToolsPath.toLowerCase() as DevToolsPathType;
   }
 
+  static isValidUrlString(str: string): str is Platform.DevToolsPath.UrlString {
+    return new ParsedURL(str).isValid;
+  }
+
   static urlWithoutHash(url: string): string {
     const hashIndex = url.indexOf('#');
     if (hashIndex !== -1) {

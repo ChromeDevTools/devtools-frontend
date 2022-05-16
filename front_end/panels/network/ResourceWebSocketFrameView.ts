@@ -388,13 +388,13 @@ export const _filterTypes: UI.FilterBar.Item[] = [
 ];
 
 export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unknown> {
-  private readonly url: string;
+  private readonly url: Platform.DevToolsPath.UrlString;
   readonly frame: SDK.NetworkRequest.WebSocketFrame;
   private readonly isTextFrame: boolean;
   private dataTextInternal: string;
   private binaryViewInternal: BinaryResourceView|null;
 
-  constructor(url: string, frame: SDK.NetworkRequest.WebSocketFrame) {
+  constructor(url: Platform.DevToolsPath.UrlString, frame: SDK.NetworkRequest.WebSocketFrame) {
     let length = String(frame.text.length);
     const time = new Date(frame.time * 1000);
     const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +

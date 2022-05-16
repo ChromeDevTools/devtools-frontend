@@ -31,8 +31,6 @@
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 /* eslint-disable @typescript-eslint/naming-convention */
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -503,8 +501,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (message.command !== PrivateAPI.Commands.OpenResource) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.OpenResource}`);
     }
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url as Platform.DevToolsPath.UrlString);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
       void Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();

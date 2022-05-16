@@ -158,6 +158,21 @@ describe('Parsed URL', () => {
     assert.strictEqual(convertedPath, 'usr\\lib', 'URL was not converted successfully');
   });
 
+  it('checks that URL is valid', () => {
+    const urlTest = 'http://www.example.com#?test';
+    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), true, 'URL validation was incorrect');
+  });
+
+  it('checks that file:// URL is valid', () => {
+    const urlTest = 'file:///usr/lib';
+    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), true, 'URL validation was incorrect');
+  });
+
+  it('checks that "://" is not a valid URL', () => {
+    const urlTest = '://';
+    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), false, 'URL validation was incorrect');
+  });
+
   it('converts URL with a hash to a URL without a hash', () => {
     const urlTest = 'http://www.example.com#?test';
     const convertedUrl = ParsedURL.urlWithoutHash(urlTest);

@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -79,7 +79,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
     element.appendChild(violatedDirective);
   }
 
-  #appendBlockedURL(element: Element, url: string): void {
+  #appendBlockedURL(element: Element, url: Platform.DevToolsPath.UrlString): void {
     const info = document.createElement('td');
     info.classList.add('affected-resource-directive-info');
     info.textContent = url;
@@ -178,7 +178,8 @@ export class AffectedDirectivesView extends AffectedResourcesView {
       this.appendSourceLocation(element, location, maybeTarget);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
     } else if (this.issue.code() === IssuesManager.ContentSecurityPolicyIssue.urlViolationCode) {
-      const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL : '';
+      const url = cspIssueDetails.blockedURL ? cspIssueDetails.blockedURL as Platform.DevToolsPath.UrlString :
+                                               Platform.DevToolsPath.EmptyUrlString;
       this.#appendBlockedURL(element, url);
       this.#appendStatus(element, cspIssueDetails.isReportOnly);
       this.#appendViolatedDirective(element, cspIssueDetails.violatedDirective);

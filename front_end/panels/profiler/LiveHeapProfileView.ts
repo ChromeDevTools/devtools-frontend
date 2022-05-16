@@ -292,7 +292,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!node || !node.url) {
       return;
     }
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
     const sourceCode =
         Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(node.url as Platform.DevToolsPath.UrlString);
     if (sourceCode) {

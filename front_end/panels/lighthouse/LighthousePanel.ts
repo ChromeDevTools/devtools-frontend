@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
@@ -503,8 +502,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
     // reload to reset the page state
     const inspectedURL = await this.controller.getInspectedURL();
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    await resourceTreeModel.navigate(inspectedURL as Platform.DevToolsPath.UrlString);
+    await resourceTreeModel.navigate(inspectedURL);
   }
 
   wasShown(): void {

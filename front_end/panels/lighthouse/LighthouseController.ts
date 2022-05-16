@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -186,7 +186,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
   private manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
-  private inspectedURL?: string;
+  private inspectedURL?: Platform.DevToolsPath.UrlString;
 
   constructor(protocolService: ProtocolService) {
     super();
@@ -314,9 +314,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return '';
   }
 
-  private async evaluateInspectedURL(): Promise<string> {
+  private async evaluateInspectedURL(): Promise<Platform.DevToolsPath.UrlString> {
     if (!this.manager) {
-      return '';
+      return Platform.DevToolsPath.EmptyUrlString;
     }
     const mainTarget = this.manager.target();
     // target.inspectedURL is reliably populated, however it lacks any url #hash
@@ -331,7 +331,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
 
     const {currentIndex, entries} = navHistory;
     const navigationEntry = entries[currentIndex];
-    return navigationEntry.url;
+    return navigationEntry.url as Platform.DevToolsPath.UrlString;
   }
 
   getFlags(): {
@@ -365,7 +365,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return categoryIDs;
   }
 
-  async getInspectedURL(options?: {force: boolean}): Promise<string> {
+  async getInspectedURL(options?: {force: boolean}): Promise<Platform.DevToolsPath.UrlString> {
     if (options && options.force || !this.inspectedURL) {
       this.inspectedURL = await this.evaluateInspectedURL();
     }

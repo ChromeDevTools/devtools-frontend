@@ -744,7 +744,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (match) {
       url = match[1];
     }
-    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
         url as Platform.DevToolsPath.UrlString);
     this.navigationUrl.value = decodeURI(url);

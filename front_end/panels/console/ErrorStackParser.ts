@@ -7,8 +7,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-// TODO(crbug.com/1253323): Casts to UrlString will be removed from this file when migration to branded types is complete.
-
 export interface ParsedErrorFrame {
   line: string;
   link?: {
@@ -109,9 +107,8 @@ function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel, url:
   if (!url) {
     return null;
   }
-  const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-  if (parsedURL) {
-    return parsedURL.url as Platform.DevToolsPath.UrlString;
+  if (Common.ParsedURL.ParsedURL.isValidUrlString(url)) {
+    return url;
   }
   if (debuggerModel.scriptsForSourceURL(url).length) {
     return url;

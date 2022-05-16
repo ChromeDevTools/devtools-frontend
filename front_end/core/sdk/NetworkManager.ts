@@ -1101,7 +1101,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #updatingInterceptionPatternsPromise: Promise<void>|null;
   readonly #blockingEnabledSetting: Common.Settings.Setting<boolean>;
   readonly #blockedPatternsSetting: Common.Settings.Setting<BlockedPattern[]>;
-  #effectiveBlockedURLs: Platform.DevToolsPath.UrlString[];
+  #effectiveBlockedURLs: string[];
   readonly #urlsForRequestInterceptor:
       Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern>;
   #extraHeaders?: Protocol.Network.Headers;
@@ -1715,7 +1715,7 @@ export interface Conditions {
 }
 
 export interface BlockedPattern {
-  url: Platform.DevToolsPath.UrlString;
+  url: string;
   enabled: boolean;
 }
 

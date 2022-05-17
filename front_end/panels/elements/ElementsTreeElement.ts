@@ -41,6 +41,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -237,6 +238,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private searchHighlightsVisible?: boolean;
   selectionElement?: HTMLDivElement;
   private hintElement?: HTMLElement;
+  #slot?: Adorners.Adorner.Adorner;
   private contentElement: HTMLElement;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
@@ -420,6 +422,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   setExpandedChildrenLimit(expandedChildrenLimit: number): void {
     this.expandedChildrenLimitInternal = expandedChildrenLimit;
+  }
+
+  createSlotLink(nodeShortcut: SDK.DOMModel.DOMNodeShortcut|null): void {
+    if (nodeShortcut) {
+      const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+          ElementsComponents.AdornerManager.RegisteredAdorners.SLOT);
+      this.#slot = this.adornSlot(config);
+      const deferredNode = nodeShortcut.deferredNode;
+      this.#slot.addEventListener('click', () => {
+        deferredNode.resolve(node => {
+          void Common.Revealer.reveal(node);
+        });
+      });
+      this.#slot.addEventListener('mousedown', e => e.consume(), false);
+    }
   }
 
   private createSelection(): void {
@@ -1314,6 +1331,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (!this.isClosingTagInternal && this.adornerContainer) {
         this.contentElement.append(this.adornerContainer);
       }
+      if (this.#slot) {
+        this.contentElement.append(this.#slot);
+      }
       this.highlightResult = [];
       delete this.selectionElement;
       delete this.hintElement;
@@ -1925,6 +1945,27 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   adorn({name}: {name: string}): Adorners.Adorner.Adorner {
     const adornerContent = document.createElement('span');
     adornerContent.textContent = name;
+    const adorner = new Adorners.Adorner.Adorner();
+    adorner.data = {
+      name,
+      content: adornerContent,
+    };
+    this.adorners.push(adorner);
+    ElementsPanel.instance().registerAdorner(adorner);
+    this.updateAdorners();
+    return adorner;
+  }
+
+  adornSlot({name}: {name: string}): Adorners.Adorner.Adorner {
+    const linkIcon = new IconButton.Icon.Icon();
+    linkIcon
+        .data = {iconName: 'ic_show_node_16x16', color: 'var(--color-text-disabled)', width: '12px', height: '12px'};
+    const slotText = document.createElement('span');
+    slotText.textContent = name;
+    const adornerContent = document.createElement('span');
+    adornerContent.append(linkIcon);
+    adornerContent.append(slotText);
+    adornerContent.classList.add('adorner-with-icon');
     const adorner = new Adorners.Adorner.Adorner();
     adorner.data = {
       name,

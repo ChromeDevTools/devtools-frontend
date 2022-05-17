@@ -6,6 +6,7 @@ import {click, goToResource, step, waitFor, waitForFunction} from '../../shared/
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   expandSelectedNodeRecursively,
+  waitForAdorners,
   waitForPartialContentOfSelectedElementsNode,
   waitForSelectedTreeElementSelectorWhichIncludesText,
 } from '../helpers/elements-helpers.js';
@@ -47,8 +48,19 @@ describe('The Elements panel', async () => {
   it('has link from a slot to assigned elements', async () => {
     await goToResource('elements/slot-element.html');
     await expandSelectedNodeRecursively();
-    const revealLink = await waitFor('reveal[role="link"]', undefined, undefined, 'aria');
-    await click(revealLink);
+    const revealElementLink = await waitFor('reveal[role="link"]', undefined, undefined, 'aria');
+    await click(revealElementLink);
     await waitForPartialContentOfSelectedElementsNode('<h1>​headline​</h1>');
+  });
+
+  it('has link from a slot element to a slot', async () => {
+    await goToResource('elements/slot-element.html');
+    await expandSelectedNodeRecursively();
+    await waitForAdorners(([
+      {textContent: 'slot', isActive: false},
+    ]));
+    const revealSlotLink = await waitFor('[aria-label="slot"]', undefined, undefined);
+    await click(revealSlotLink);
+    await waitForPartialContentOfSelectedElementsNode('<slot>');
   });
 });

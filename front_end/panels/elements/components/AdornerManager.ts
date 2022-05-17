@@ -29,6 +29,7 @@ export enum RegisteredAdorners {
   AD = 'ad',
   SCROLL_SNAP = 'scroll-snap',
   CONTAINER = 'container',
+  SLOT = 'slot',
 }
 
 // This enum-like const object serves as the authoritative registry for all the
@@ -62,6 +63,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
     case RegisteredAdorners.CONTAINER:
       return {
         name: 'container',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.SLOT:
+      return {
+        name: 'slot',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

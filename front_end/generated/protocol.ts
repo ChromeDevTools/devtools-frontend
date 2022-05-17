@@ -3212,6 +3212,7 @@ export namespace DOM {
      */
     isSVG?: boolean;
     compatibilityMode?: CompatibilityMode;
+    assignedSlot?: BackendNode;
   }
 
   /**

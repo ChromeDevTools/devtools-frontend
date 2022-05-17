@@ -71,6 +71,7 @@ export class DOMNode {
   #creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null;
   pseudoElementsInternal: Map<string, DOMNode>;
   #distributedNodesInternal: DOMNodeShortcut[];
+  assignedSlot: DOMNodeShortcut|null;
   readonly shadowRootsInternal: DOMNode[];
   #attributesInternal: Map<string, Attribute>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -101,6 +102,7 @@ export class DOMNode {
     this.#creationStackTraceInternal = null;
     this.pseudoElementsInternal = new Map();
     this.#distributedNodesInternal = [];
+    this.assignedSlot = null;
     this.shadowRootsInternal = [];
     this.#attributesInternal = new Map();
     this.#markers = new Map();
@@ -179,6 +181,10 @@ export class DOMNode {
 
     if (payload.distributedNodes) {
       this.setDistributedNodePayloads(payload.distributedNodes);
+    }
+
+    if (payload.assignedSlot) {
+      this.setAssignedSlot(payload.assignedSlot);
     }
 
     if (payload.children) {
@@ -339,6 +345,10 @@ export class DOMNode {
       return null;
     }
     return this.pseudoElementsInternal.get(DOMNode.PseudoElementNames.Marker) || null;
+  }
+
+  hasAssignedSlot(): boolean {
+    return this.assignedSlot !== null;
   }
 
   isInsertionPoint(): boolean {
@@ -678,6 +688,11 @@ export class DOMNode {
       this.#distributedNodesInternal.push(new DOMNodeShortcut(
           this.#domModelInternal.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
     }
+  }
+
+  setAssignedSlot(payload: Protocol.DOM.BackendNode): void {
+    this.assignedSlot =
+        new DOMNodeShortcut(this.#domModelInternal.target(), payload.backendNodeId, payload.nodeType, payload.nodeName);
   }
 
   private renumber(): void {

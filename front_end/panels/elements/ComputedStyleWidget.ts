@@ -97,7 +97,7 @@ const createPropertyElement = (node: SDK.DOMModel.DOMNode, propertyName: string,
   const propertyElement = new ElementsComponents.ComputedStyleProperty.ComputedStyleProperty();
 
   const renderer = new StylesSidebarPropertyRenderer(null, node, propertyName, propertyValue);
-  renderer.setColorHandler(processColor.bind(null, false /* computed styles don't provide the original format */));
+  renderer.setColorHandler(processColor);
 
   const propertyNameElement = renderer.renderName();
   propertyNameElement.slot = 'property-name';
@@ -117,7 +117,7 @@ const createTraceElement =
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const renderer = new StylesSidebarPropertyRenderer(null, node, property.name, (property.value as string));
-      renderer.setColorHandler(processColor.bind(null, true));
+      renderer.setColorHandler(processColor);
       const valueElement = renderer.renderValue();
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
@@ -138,11 +138,11 @@ const createTraceElement =
       return trace;
     };
 
-const processColor = (autoDetectFormat: boolean, text: string): Node => {
+const processColor = (text: string): Node => {
   const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
-  swatch.renderColor(text, autoDetectFormat || Common.Color.Format.RGB);
+  swatch.renderColor(text, true);
   const valueElement = document.createElement('span');
-  valueElement.textContent = text;
+  valueElement.textContent = swatch.getText();
   swatch.append(valueElement);
 
   swatch.addEventListener(
@@ -252,6 +252,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     fontsWidget.show(this.contentElement);
 
     this.idleCallbackManager = new IdleCallbackManager();
+    Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
   }
 
   onResize(): void {

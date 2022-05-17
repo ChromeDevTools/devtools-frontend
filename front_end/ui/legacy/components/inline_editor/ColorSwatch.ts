@@ -64,6 +64,10 @@ export class ColorSwatch extends HTMLElement {
     return this.format;
   }
 
+  getText(): string|null {
+    return this.text;
+  }
+
   get anchorBox(): AnchorBox|null {
     const swatch = this.shadow.querySelector('.color-swatch');
     return swatch ? swatch.boxInWindow() : null;

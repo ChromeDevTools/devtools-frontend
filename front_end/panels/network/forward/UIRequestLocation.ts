@@ -24,6 +24,7 @@ export enum UIRequestTabs {
   Cookies = 'cookies',
   EventSource = 'eventSource',
   Headers = 'headers',
+  HeadersComponent = 'headersComponent',
   Payload = 'payload',
   Initiator = 'initiator',
   Preview = 'preview',

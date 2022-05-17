@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "RequestTrustTokensView_test.ts" ]
+  sources = [
+    "RequestHeadersView_test.ts",
+    "RequestTrustTokensView_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

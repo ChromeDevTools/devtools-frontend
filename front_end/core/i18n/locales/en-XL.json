@@ -6599,6 +6599,42 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "T̂éx̂t́ p̂át̂t́êŕn̂ t́ô b́l̂óĉḱ m̂át̂ćĥín̂ǵ r̂éq̂úêśt̂ś; ûśê * f́ôŕ ŵíl̂d́ĉár̂d́"
   },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(f̂ŕôḿ d̂íŝḱ ĉáĉh́ê)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(f̂ŕôḿ m̂ém̂ór̂ý ĉáĉh́ê)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(f̂ŕôḿ p̂ŕêf́êt́ĉh́ ĉáĉh́ê)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(f̂ŕôḿ service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(f̂ŕôḿ ŝíĝńêd́-êx́ĉh́âńĝé)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(f̂ŕôḿ Ŵéb̂ B́ûńd̂ĺê)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "Ĝén̂ér̂ál̂"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "R̂éf̂ér̂ŕêŕ P̂ól̂íĉý"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "R̂ém̂ót̂é Âd́d̂ŕêśŝ"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "R̂éq̂úêśt̂ Ḿêt́ĥód̂"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "R̂éq̂úêśt̂ ÚR̂Ĺ"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Ŝt́ât́ûś Ĉód̂é"
+  },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Â ćl̂íêńt̂-ṕr̂óv̂íd̂éd̂ ár̂ǵûḿêńt̂ ẃâś m̂ál̂f́ôŕm̂éd̂ ór̂ ót̂h́êŕŵíŝé îńv̂ál̂íd̂."
   },

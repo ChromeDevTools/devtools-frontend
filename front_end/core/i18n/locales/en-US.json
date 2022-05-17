@@ -6599,6 +6599,42 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "Text pattern to block matching requests; use * for wildcard"
   },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(from disk cache)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(from memory cache)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(from prefetch cache)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(from service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(from signed-exchange)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(from Web Bundle)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "General"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Referrer Policy"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Remote Address"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Request Method"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "Request URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Status Code"
+  },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "A client-provided argument was malformed or otherwise invalid."
   },

@@ -30,12 +30,14 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as NetworkComponents from './components/components.js';
 
+import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
+
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
@@ -130,6 +132,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly resourceViewTabSetting: Common.Settings.Setting<NetworkForward.UIRequestLocation.UIRequestTabs>;
   private readonly headersView: RequestHeadersView;
+  private readonly headersViewComponent: NetworkComponents.RequestHeadersView.RequestHeadersView;
   private payloadView: RequestPayloadView|null;
   private readonly responseView: RequestResponseView|undefined;
   private cookiesView: RequestCookiesView|null;
@@ -149,6 +152,12 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.appendTab(
         NetworkForward.UIRequestLocation.UIRequestTabs.Headers, i18nString(UIStrings.headers), this.headersView,
         i18nString(UIStrings.headers));
+    this.headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent, i18nString(UIStrings.headers),
+          this.headersViewComponent, i18nString(UIStrings.headers));
+    }
 
     this.payloadView = null;
     void this.maybeAppendPayloadPanel();

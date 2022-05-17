@@ -35,6 +35,7 @@
 // See https://bugs.webkit.org/show_bug.cgi?id=58127 for details.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -346,8 +347,8 @@ export class Entry {
     return parameters.slice();
   }
 
-  private buildRequestURL(url: string): string {
-    return url.split('#', 2)[0];
+  private buildRequestURL(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+    return Common.ParsedURL.ParsedURL.split(url, '#', 2)[0];
   }
 
   private buildCookies(cookies: SDK.Cookie.Cookie[]): CookieDTO[] {
@@ -438,7 +439,7 @@ export interface Content {
 
 export interface Request {
   method: string;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   httpVersion: string;
   headers: Object;
   queryString: Parameter[];

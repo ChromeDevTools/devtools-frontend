@@ -21,7 +21,9 @@ class MockExecutionContext extends SDK.RuntimeModel.ExecutionContext {
     const target = createTarget();
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     assertNotNullOrUndefined(runtimeModel);
-    super(runtimeModel, 1 as Protocol.Runtime.ExecutionContextId, 'test id', 'test name', 'test origin', true);
+    super(
+        runtimeModel, 1 as Protocol.Runtime.ExecutionContextId, 'test id', 'test name',
+        'test origin' as Platform.DevToolsPath.UrlString, true);
   }
 
   async evaluate(options: SDK.RuntimeModel.EvaluationOptions, userGesture: boolean, _awaitPromise: boolean):

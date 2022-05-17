@@ -264,9 +264,9 @@ export class ParsedURL {
     return devToolsPaths.join(separator) as DevToolsPathType;
   }
 
-  static split<DevToolsPathType extends BrandedPathString>(devToolsPath: DevToolsPathType, separator: string|RegExp):
-      DevToolsPathType[] {
-    return devToolsPath.split(separator) as DevToolsPathType[];
+  static split<DevToolsPathType extends BrandedPathString>(
+      devToolsPath: DevToolsPathType, separator: string|RegExp, limit?: number): DevToolsPathType[] {
+    return devToolsPath.split(separator, limit) as DevToolsPathType[];
   }
 
   static toLowerCase<DevToolsPathType extends BrandedPathString>(devToolsPath: DevToolsPathType): DevToolsPathType {

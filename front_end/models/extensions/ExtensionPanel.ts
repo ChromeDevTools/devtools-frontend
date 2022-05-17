@@ -157,7 +157,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
         expression, true, false, evaluateOptions, securityOrigin, this.onEvaluate.bind(this, title, callback));
   }
 
-  setPage(url: string): void {
+  setPage(url: Platform.DevToolsPath.UrlString): void {
     if (this.objectPropertiesView) {
       this.objectPropertiesView.detach();
       delete this.objectPropertiesView;

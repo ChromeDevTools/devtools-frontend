@@ -54,7 +54,7 @@ import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 
-const extensionOrigins: WeakMap<MessagePort, string> = new WeakMap();
+const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
 
 declare global {
   interface Window {
@@ -342,7 +342,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private getExtensionOrigin(port: MessagePort): string {
+  private getExtensionOrigin(port: MessagePort): Platform.DevToolsPath.UrlString {
     const origin = extensionOrigins.get(port);
     if (!origin) {
       throw new Error('Received a message from an unregistered extension');
@@ -837,7 +837,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'elements');
   }
 
-  sourceSelectionChanged(url: string, range: TextUtils.TextRange.TextRange): void {
+  sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void {
     this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'sources', {
       startLine: range.startLine,
       startColumn: range.startColumn,
@@ -893,7 +893,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return true;
   }
 
-  private registerExtension(origin: string, port: MessagePort): void {
+  private registerExtension(origin: Platform.DevToolsPath.UrlString, port: MessagePort): void {
     if (!this.registeredExtensions.has(origin)) {
       if (origin !== window.location.origin) {  // Just ignore inspector frames.
         console.error('Ignoring unauthorized client request from ' + origin);
@@ -907,7 +907,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private onWindowMessage(event: MessageEvent): void {
     if (event.data === 'registerExtension') {
-      this.registerExtension(event.origin, event.ports[0]);
+      this.registerExtension(event.origin as Platform.DevToolsPath.UrlString, event.ports[0]);
     }
   }
 
@@ -981,8 +981,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         removeLastEventListener.bind(this));
   }
 
-  private expandResourcePath(extensionPath: string, resourcePath: string): string {
-    return extensionPath + '/' + Common.ParsedURL.normalizePath(resourcePath);
+  private expandResourcePath(extensionPath: Platform.DevToolsPath.UrlString, resourcePath: string):
+      Platform.DevToolsPath.UrlString {
+    return extensionPath + '/' + Common.ParsedURL.normalizePath(resourcePath) as Platform.DevToolsPath.UrlString;
   }
 
   evaluate(
@@ -992,7 +993,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       |undefined {
     let context;
 
-    function resolveURLToFrame(url: string): SDK.ResourceTreeModel.ResourceTreeFrame|null {
+    function resolveURLToFrame(url: Platform.DevToolsPath.UrlString): SDK.ResourceTreeModel.ResourceTreeFrame|null {
       let found = null;
       function hasMatchingURL(frame: SDK.ResourceTreeModel.ResourceTreeFrame): SDK.ResourceTreeModel.ResourceTreeFrame|
           null {
@@ -1006,7 +1007,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     options = options || {};
     let frame;
     if (options.frameURL) {
-      frame = resolveURLToFrame(options.frameURL);
+      frame = resolveURLToFrame(options.frameURL as Platform.DevToolsPath.UrlString);
     } else {
       const target = SDK.TargetManager.TargetManager.instance().mainTarget();
       const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -1085,7 +1086,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private canInspectURL(url: string): boolean {
+  private canInspectURL(url: Platform.DevToolsPath.UrlString): boolean {
     let parsedURL;
     // This is only to work around invalid URLs we're occasionally getting from some tests.
     // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.

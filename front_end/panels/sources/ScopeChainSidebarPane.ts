@@ -311,13 +311,14 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
   }
 
   private isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
-    const isWasmMemory = obj.type === 'object' && obj.subtype &&
+    const isWasmOrBuffer = obj.type === 'object' && obj.subtype &&
         LinearMemoryInspector.LinearMemoryInspectorController.ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
-    if (isWasmMemory) {
+    if (isWasmOrBuffer) {
       return true;
     }
 
-    if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
+    const isWasmDWARF = obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode;
+    if (isWasmDWARF) {
       return obj.inspectableAddress !== undefined;
     }
 

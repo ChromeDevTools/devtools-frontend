@@ -34,7 +34,9 @@ const UIStrings = {
   authorizationCoveredByWildcard:
       'Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling.',
   /**
-   * @description TODO(crbug.com/1320334): Description needed for translation
+   * @description This warning occurs when a page attempts to request a resource
+   *    whose URL contained both a newline character (`\n` or `\r`), and a
+   *    less-than character (`<`). These resources are blocked.
    */
   canRequestURLHTTPContainingNewline:
       'Resource requests whose URLs contained both removed whitespace `\\(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources.',

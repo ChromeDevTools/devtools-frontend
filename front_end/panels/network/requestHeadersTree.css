@@ -59,6 +59,12 @@
   display: none;
 }
 
+.tree-outline li .headers-title-left {
+  min-width: 50%;
+  display: flex;
+  justify-content: space-between;
+}
+
 .tree-outline li .header-toggle {
   display: none;
 }

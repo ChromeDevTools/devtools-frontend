@@ -451,7 +451,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     if (headersText) {
       const toggleButton = this.createHeadersToggleButton(this.showRequestHeadersText);
       toggleButton.addEventListener('click', this.toggleRequestHeadersText.bind(this), false);
-      treeElement.listItemElement.appendChild(toggleButton);
+      treeElement.listItemElement.querySelector('.headers-title-left')?.appendChild(toggleButton);
     }
   }
 

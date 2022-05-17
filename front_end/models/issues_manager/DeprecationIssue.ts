@@ -140,11 +140,6 @@ const UIStrings = {
   localCSSFileExtensionRejected:
       'CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension.',
   /**
-   * @description TODO(crbug.com/1320344): Description needed for translation
-   */
-  mediaElementAudioSourceNode:
-      'Creating a `MediaElementAudioSourceNode` on an `OfflineAudioContext` is deprecated and will be removed.',
-  /**
    * @description TODO(crbug.com/1320345): Description needed for translation
    */
   mediaSourceAbortRemove:
@@ -416,11 +411,6 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.LocalCSSFileExtensionRejected:
         messageFunction = i18nLazyString(UIStrings.localCSSFileExtensionRejected);
         milestone = 64;
-        break;
-      case Protocol.Audits.DeprecationIssueType.MediaElementAudioSourceNode:
-        messageFunction = i18nLazyString(UIStrings.mediaElementAudioSourceNode);
-        feature = 5258622686724096;
-        milestone = 71;
         break;
       case Protocol.Audits.DeprecationIssueType.MediaSourceAbortRemove:
         messageFunction = i18nLazyString(UIStrings.mediaSourceAbortRemove);

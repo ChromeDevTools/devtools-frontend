@@ -2081,6 +2081,7 @@ export function registerCommands(inspectorBackend) {
     AmbientLightSensor: 'ambient-light-sensor',
     AttributionReporting: 'attribution-reporting',
     Autoplay: 'autoplay',
+    Bluetooth: 'bluetooth',
     BrowsingTopics: 'browsing-topics',
     Camera: 'camera',
     ChDpr: 'ch-dpr',
@@ -3223,8 +3224,13 @@ export function registerCommands(inspectorBackend) {
       'Debugger.pauseOnAsyncCall', [{'name': 'parentStackTraceId', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Debugger.removeBreakpoint', [{'name': 'breakpointId', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerEnum('Debugger.RestartFrameRequestMode', {StepInto: 'StepInto'});
   inspectorBackend.registerCommand(
-      'Debugger.restartFrame', [{'name': 'callFrameId', 'type': 'string', 'optional': false}],
+      'Debugger.restartFrame',
+      [
+        {'name': 'callFrameId', 'type': 'string', 'optional': false},
+        {'name': 'mode', 'type': 'string', 'optional': true}
+      ],
       ['callFrames', 'asyncStackTrace', 'asyncStackTraceId']);
   inspectorBackend.registerCommand(
       'Debugger.resume', [{'name': 'terminateOnResume', 'type': 'boolean', 'optional': true}], []);

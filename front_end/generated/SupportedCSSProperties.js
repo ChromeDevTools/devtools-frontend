@@ -98,6 +98,7 @@ export const generatedProperties = [
     ]
   },
   {'name': 'all'},
+  {'name': 'anchor-name', 'keywords': ['none']},
   {
     'longhands': [
       'animation-duration', 'animation-timing-function', 'animation-delay', 'animation-iteration-count',
@@ -660,6 +661,7 @@ export const generatedProperties = [
     ]
   },
   {'name': 'position', 'keywords': ['static', 'relative', 'absolute', 'fixed', 'sticky']},
+  {'name': 'position-fallback', 'keywords': ['none']},
   {'name': 'prefix'},
   {'name': 'quotes', 'inherited': true, 'keywords': ['auto', 'none']},
   {'name': 'r'},
@@ -866,6 +868,7 @@ export const generatedPropertyValues = {
       'text-before-edge', 'after-edge', 'text-after-edge', 'hanging'
     ]
   },
+  'anchor-name': {'values': ['none']},
   'animation-direction': {'values': ['normal', 'reverse', 'alternate', 'alternate-reverse']},
   'animation-fill-mode': {'values': ['none', 'forwards', 'backwards', 'both']},
   'animation-iteration-count': {'values': ['infinite']},
@@ -1127,6 +1130,7 @@ export const generatedPropertyValues = {
     ]
   },
   'position': {'values': ['static', 'relative', 'absolute', 'fixed', 'sticky']},
+  'position-fallback': {'values': ['none']},
   'quotes': {'values': ['auto', 'none']},
   'resize': {'values': ['none', 'both', 'horizontal', 'vertical', 'block', 'inline']},
   'right': {'values': ['auto']},

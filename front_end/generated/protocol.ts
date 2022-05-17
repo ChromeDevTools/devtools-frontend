@@ -10177,6 +10177,7 @@ export namespace Page {
     AmbientLightSensor = 'ambient-light-sensor',
     AttributionReporting = 'attribution-reporting',
     Autoplay = 'autoplay',
+    Bluetooth = 'bluetooth',
     BrowsingTopics = 'browsing-topics',
     Camera = 'camera',
     ChDpr = 'ch-dpr',
@@ -11296,7 +11297,8 @@ export namespace Page {
      */
     frameId: FrameId;
     /**
-     * Loader identifier.
+     * Loader identifier. This is omitted in case of same-document navigation,
+     * as the previously committed loaderId would not change.
      */
     loaderId?: Network.LoaderId;
     /**
@@ -15034,11 +15036,20 @@ export namespace Debugger {
     breakpointId: BreakpointId;
   }
 
+  export const enum RestartFrameRequestMode {
+    StepInto = 'StepInto',
+  }
+
   export interface RestartFrameRequest {
     /**
      * Call frame identifier to evaluate on.
      */
     callFrameId: CallFrameId;
+    /**
+     * The `mode` parameter must be present and set to 'StepInto', otherwise
+     * `restartFrame` will error out.
+     */
+    mode?: RestartFrameRequestMode;
   }
 
   export interface RestartFrameResponse extends ProtocolResponseWithError {

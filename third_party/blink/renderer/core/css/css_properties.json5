@@ -1360,6 +1360,18 @@
       converter: "ConvertSelfOrDefaultAlignmentData",
     },
     {
+      name: "anchor-name",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
+      type_name: "AtomicString",
+      default_value: "g_null_atom",
+      field_group: "*",
+      field_template: "external",
+      converter: "ConvertNoneOrCustomIdent",
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSAnchorPositioning",
+    },
+    {
       name: "aspect-ratio",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
@@ -3671,6 +3683,18 @@
       supports_incremental_style: false,
     },
     {
+      name: "position-fallback",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal" ],
+      type_name: "AtomicString",
+      default_value: "g_null_atom",
+      field_group: "*",
+      field_template: "external",
+      converter: "ConvertNoneOrCustomIdent",
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSAnchorPositioning",
+    },
+    {
       name: "quotes",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -4846,6 +4870,7 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       style_builder_custom_functions: ["value"],
       valid_for_first_letter: true,
+      affected_by_all: false,
     },
     {
       name: "-webkit-border-vertical-spacing",
@@ -5217,6 +5242,7 @@
       interpolable: true,
       converter: "ConvertLength",
       computable: false,
+      affected_by_all: false,
     },
     {
       name: "-webkit-perspective-origin-y",
@@ -5224,6 +5250,7 @@
       interpolable: true,
       converter: "ConvertLength",
       computable: false,
+      affected_by_all: false,
     },
     {
       name: "-webkit-print-color-adjust",
@@ -5376,6 +5403,7 @@
       interpolable: true,
       converter: "ConvertLength",
       computable: false,
+      affected_by_all: false,
     },
     {
       name: "-webkit-transform-origin-y",
@@ -5383,6 +5411,7 @@
       interpolable: true,
       converter: "ConvertLength",
       computable: false,
+      affected_by_all: false,
     },
     {
       name: "-webkit-transform-origin-z",
@@ -5390,6 +5419,7 @@
       interpolable: true,
       converter: "ConvertComputedLength<float>",
       computable: false,
+      affected_by_all: false,
     },
     {
       name: "-webkit-user-drag",

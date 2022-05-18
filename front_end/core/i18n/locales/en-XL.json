@@ -1445,9 +1445,6 @@
   "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
     "message": "T̂h́ê basic-card ṕâým̂én̂t́ m̂ét̂h́ôd́ îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
   },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Ĉál̂ĺîńĝ PaymentRequest.show() ẃît́ĥóût́ ûśêŕ âćt̂ív̂át̂íôń îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
-  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> ŵít̂h́ â <picture> ṕâŕêńt̂ íŝ ín̂v́âĺîd́ âńd̂ t́ĥér̂éf̂ór̂é îǵn̂ór̂éd̂. Ṕl̂éâśê úŝé <source srcset> îńŝt́êád̂."
   },

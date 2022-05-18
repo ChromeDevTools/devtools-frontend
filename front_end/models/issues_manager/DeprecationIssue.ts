@@ -174,11 +174,6 @@ const UIStrings = {
    */
   paymentRequestBasicCard: 'The `basic-card` payment method is deprecated and will be removed.',
   /**
-   * @description TODO(crbug.com/1320350): Description needed for translation
-   */
-  paymentRequestShowWithoutGesture:
-      'Calling `PaymentRequest.show()` without user activation is deprecated and will be removed.',
-  /**
    * @description This issue indicates that a `<source>` element with a `<picture>` parent was using an `src` attribute, which is not valid and is ignored by the browser. The `srcset` attribute should be used instead.
    */
   pictureSourceSrc:
@@ -440,11 +435,6 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.paymentRequestBasicCard);
         feature = 5730051011117056;
         milestone = 100;
-        break;
-      case Protocol.Audits.DeprecationIssueType.PaymentRequestShowWithoutGesture:
-        messageFunction = i18nLazyString(UIStrings.paymentRequestShowWithoutGesture);
-        feature = 5948593429020672;
-        milestone = 102;
         break;
       case Protocol.Audits.DeprecationIssueType.PictureSourceSrc:
         messageFunction = i18nLazyString(UIStrings.pictureSourceSrc);

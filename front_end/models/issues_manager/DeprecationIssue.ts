@@ -133,7 +133,7 @@ const UIStrings = {
    * use of IPv6 addresses with a non-standard API.
    */
   legacyConstraintGoogIPv6:
-      'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` will soon be removed. Please stop using this legacy constraint.',
+      'IPv6 is enabled-by-default and the ability to disable it using `googIPv6` is targeted to be removed in M108, after which it will be ignored. Please stop using this legacy constraint.',
   /**
    * @description TODO(crbug.com/1318865): Description needed for translation
    */

@@ -9497,6 +9497,9 @@
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Remove from ignore list"
   },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Restart frame"
+  },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Show ignore-listed frames"
   },

@@ -1248,6 +1248,8 @@ export class CallFrame {
   #returnValueInternal: RemoteObject|null;
   readonly warnings: string[] = [];
 
+  readonly canBeRestarted: boolean;
+
   constructor(
       debuggerModel: DebuggerModel, script: Script, payload: Protocol.Debugger.CallFrame, inlineFrameIndex?: number,
       functionName?: string) {
@@ -1259,6 +1261,7 @@ export class CallFrame {
     this.#localScopeInternal = null;
     this.#inlineFrameIndexInternal = inlineFrameIndex || 0;
     this.#functionNameInternal = functionName || payload.functionName;
+    this.canBeRestarted = Boolean(payload.canBeRestarted);
     for (let i = 0; i < payload.scopeChain.length; ++i) {
       const scope = new Scope(this, i);
       this.#scopeChainInternal.push(scope);
@@ -1388,6 +1391,15 @@ export class CallFrame {
       return {error: error};
     }
     return {object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
+  }
+
+  async restart(): Promise<void> {
+    console.assert(this.canBeRestarted, 'This frame can not be restarted.');
+    // Note that even if `canBeRestarted` is true, the restart frame call can still fail.
+    // The user can evaluate arbitrary code between pausing and restarting the frame that
+    // could mess with the call stack.
+    await this.debuggerModel.agent.invoke_restartFrame(
+        {callFrameId: this.id, mode: Protocol.Debugger.RestartFrameRequestMode.StepInto});
   }
 
   getPayload(): Protocol.Debugger.CallFrame {

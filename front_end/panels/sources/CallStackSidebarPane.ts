@@ -86,6 +86,12 @@ const UIStrings = {
   *@description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
   */
   callFrameWarnings: 'Some call frames have warnings',
+  /**
+   * @description A contex menu item in the Call Stack Sidebar Pane. "Restart" is a verb and
+   * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.
+   * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
+   */
+  restartFrame: 'Restart frame',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -384,6 +390,13 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const debuggerCallFrame = itemToCallFrame.get(item);
+    if (debuggerCallFrame) {
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.StackFrameRestarted);
+        void debuggerCallFrame.restart();
+      }, !debuggerCallFrame.canBeRestarted);
+    }
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this.copyStackTrace.bind(this));
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);

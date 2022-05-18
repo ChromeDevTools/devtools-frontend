@@ -9497,6 +9497,9 @@
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "R̂ém̂óv̂é f̂ŕôḿ îǵn̂ór̂é l̂íŝt́"
   },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "R̂éŝt́âŕt̂ f́r̂ám̂é"
+  },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Ŝh́ôẃ îǵn̂ór̂é-l̂íŝt́êd́ f̂ŕâḿêś"
   },

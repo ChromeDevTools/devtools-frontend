@@ -80,7 +80,7 @@ git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 
 or multiple test files:
 
 ```
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"{network/network-datagrid_test.ts,network/network_test.ts}","ITERATIONS":20}'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts,network/network_test.ts","ITERATIONS":20}'
 ```
 
 Note that by default the stressor runs the test using the debug build. To run it using the release build, add the `builder_config` parameter, e.g.:

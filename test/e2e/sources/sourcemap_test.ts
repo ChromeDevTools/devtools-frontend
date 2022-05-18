@@ -8,7 +8,6 @@ import {
   click,
   enableExperiment,
   getBrowserAndPages,
-  getPendingEvents,
   goToResource,
   pasteText,
   step,
@@ -30,7 +29,6 @@ import {
 import {
   addBreakpointForLine,
   clickOnContextMenu,
-  DEBUGGER_PAUSED_EVENT,
   getBreakpointDecorators,
   getValuesForScope,
   openSourceCodeEditorForFile,
@@ -298,7 +296,6 @@ describe('The Sources Tab', async function() {
         });
 
         await step('wait for pause and check if we stopped at line 4', async () => {
-          await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
           await waitFor(PAUSE_INDICATOR_SELECTOR);
           await waitForFunction(async () => {
             const topCallFrame = await retrieveTopCallFrameWithoutResuming();

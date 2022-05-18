@@ -9,6 +9,7 @@ import {
   goToResource,
   step,
   waitFor,
+  waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -37,10 +38,10 @@ describe('Sources Tab', () => {
     });
 
     await step('wait for the page to stop in "bar"', async () => {
-      await waitFor(PAUSE_INDICATOR_SELECTOR);
-
-      const callFrameNames = await getCallFrameNames();
-      assert.deepStrictEqual(callFrameNames.slice(0, 2), ['bar', 'foo']);
+      await waitForFunction(async () => {
+        const callFrameNames = await getCallFrameNames();
+        return callFrameNames[0] === 'bar' && callFrameNames[1] === 'foo';
+      });
     });
   });
 });

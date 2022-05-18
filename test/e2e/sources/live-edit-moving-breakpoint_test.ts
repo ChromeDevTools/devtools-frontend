@@ -22,7 +22,8 @@ import {
 } from '../helpers/sources-helpers.js';
 
 describe('Live edit', async () => {
-  it('moves the breakpoint after reload when changes are not persisted', async () => {
+  // Flakily freezes, causing the whole e2e suite to block and be cancelled.
+  it.skip('[crbug.com/1326829] moves the breakpoint after reload when changes are not persisted', async () => {
     const {frontend, target} = getBrowserAndPages();
     await openSourceCodeEditorForFile('live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html');
 

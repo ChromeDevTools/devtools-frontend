@@ -60,7 +60,7 @@ deps = {
   'buildtools/linux64': {
     'packages': [
       {
-        'package': 'gn/gn/linux-amd64',
+        'package': 'gn/gn/linux-${{arch}}',
         'version': Var('gn_version'),
       }
     ],
@@ -70,7 +70,7 @@ deps = {
   'buildtools/mac': {
     'packages': [
       {
-        'package': 'gn/gn/mac-amd64',
+        'package': 'gn/gn/mac-${{arch}}',
         'version': Var('gn_version'),
       }
     ],
@@ -80,7 +80,7 @@ deps = {
   'buildtools/win': {
     'packages': [
       {
-        'package': 'gn/gn/windows-amd64',
+        'package': 'gn/gn/windows-${{arch}}',
         'version': Var('gn_version'),
       }
     ],

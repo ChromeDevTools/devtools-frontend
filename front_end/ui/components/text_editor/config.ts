@@ -253,7 +253,6 @@ export function baseConfiguration(text: string): CM.Extension {
     indentUnit.instance(),
     CM.Prec.lowest(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     detectLineSeparator(text),
-    autocompletion,
     CM.tooltips({
       tooltipSpace: getTooltipSpace,
     }),

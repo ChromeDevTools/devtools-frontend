@@ -69,6 +69,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             recipe_name = "devtools/devtools-frontend",
             excluded_from = ["chromium"],
             dims = dimensions.win10,
+            execution_timeout = time.hour + 15 * time.minute,
         ),
         builder_descriptor(
             name = "Linux Compile Debug",

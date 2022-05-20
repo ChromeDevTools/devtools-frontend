@@ -15,16 +15,14 @@
 
   const containerElement = LighthouseTestRunner.getContainerElement();
   const ensureDisabledNames = ['Accessibility', 'Best practices', 'SEO', 'Progressive Web App'];
-  for (const checkboxName of ensureDisabledNames) {
-    const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
-    for (const checkbox of checkboxes) {
-      if (checkbox.textElement.textContent !== checkboxName) {
-        continue;
-      }
+  const checkboxes = Array.from(containerElement.querySelectorAll('.checkbox'));
+  for (const checkbox of checkboxes) {
+    if (!ensureDisabledNames.includes(checkbox.textElement.textContent)) {
+      continue;
+    }
 
-      if (checkbox.checkboxElement.checked) {
-        checkbox.checkboxElement.click();
-      }
+    if (checkbox.checkboxElement.checked) {
+      checkbox.checkboxElement.click();
     }
   }
 

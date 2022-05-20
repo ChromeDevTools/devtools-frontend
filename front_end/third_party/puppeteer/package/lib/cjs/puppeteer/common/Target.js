@@ -25,7 +25,7 @@ class Target {
     /**
      * @internal
      */
-    constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
+    constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue, isPageTargetCallback) {
         this._targetInfo = targetInfo;
         this._browserContext = browserContext;
         this._targetId = targetInfo.targetId;
@@ -33,6 +33,7 @@ class Target {
         this._ignoreHTTPSErrors = ignoreHTTPSErrors;
         this._defaultViewport = defaultViewport;
         this._screenshotTaskQueue = screenshotTaskQueue;
+        this._isPageTargetCallback = isPageTargetCallback;
         /** @type {?Promise<!Puppeteer.Page>} */
         this._pagePromise = null;
         /** @type {?Promise<!WebWorker>} */
@@ -52,7 +53,8 @@ class Target {
         });
         this._isClosedPromise = new Promise((fulfill) => (this._closedCallback = fulfill));
         this._isInitialized =
-            this._targetInfo.type !== 'page' || this._targetInfo.url !== '';
+            !this._isPageTargetCallback(this._targetInfo) ||
+                this._targetInfo.url !== '';
         if (this._isInitialized)
             this._initializedCallback(true);
     }
@@ -66,10 +68,7 @@ class Target {
      * If the target is not of type `"page"` or `"background_page"`, returns `null`.
      */
     async page() {
-        if ((this._targetInfo.type === 'page' ||
-            this._targetInfo.type === 'background_page' ||
-            this._targetInfo.type === 'webview') &&
-            !this._pagePromise) {
+        if (this._isPageTargetCallback(this._targetInfo) && !this._pagePromise) {
             this._pagePromise = this._sessionFactory().then((client) => Page_js_1.Page.create(client, this, this._ignoreHTTPSErrors, this._defaultViewport, this._screenshotTaskQueue));
         }
         return this._pagePromise;
@@ -135,7 +134,8 @@ class Target {
     _targetInfoChanged(targetInfo) {
         this._targetInfo = targetInfo;
         if (!this._isInitialized &&
-            (this._targetInfo.type !== 'page' || this._targetInfo.url !== '')) {
+            (!this._isPageTargetCallback(this._targetInfo) ||
+                this._targetInfo.url !== '')) {
             this._isInitialized = true;
             this._initializedCallback(true);
             return;

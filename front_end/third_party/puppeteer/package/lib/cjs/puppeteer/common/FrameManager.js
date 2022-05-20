@@ -70,6 +70,9 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         session.on('Page.frameDetached', (event) => {
             this._onFrameDetached(event.frameId, event.reason);
         });
+        session.on('Page.frameStartedLoading', (event) => {
+            this._onFrameStartedLoading(event.frameId);
+        });
         session.on('Page.frameStoppedLoading', (event) => {
             this._onFrameStoppedLoading(event.frameId);
         });
@@ -207,6 +210,12 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             return;
         frame._onLifecycleEvent(event.loaderId, event.name);
         this.emit(exports.FrameManagerEmittedEvents.LifecycleEvent, frame);
+    }
+    _onFrameStartedLoading(frameId) {
+        const frame = this._frames.get(frameId);
+        if (!frame)
+            return;
+        frame._onLoadingStarted();
     }
     _onFrameStoppedLoading(frameId) {
         const frame = this._frames.get(frameId);
@@ -446,6 +455,10 @@ class Frame {
          * @internal
          */
         this._loaderId = '';
+        /**
+         * @internal
+         */
+        this._hasStartedLoading = false;
         /**
          * @internal
          */
@@ -1051,6 +1064,12 @@ class Frame {
     _onLoadingStopped() {
         this._lifecycleEvents.add('DOMContentLoaded');
         this._lifecycleEvents.add('load');
+    }
+    /**
+     * @internal
+     */
+    _onLoadingStarted() {
+        this._hasStartedLoading = true;
     }
     /**
      * @internal

@@ -229,7 +229,7 @@ class BrowserFetcher {
         return new Promise((resolve) => {
             const request = httpRequest(url, 'HEAD', (response) => {
                 resolve(response.statusCode === 200);
-            });
+            }, false);
             request.on('error', (error) => {
                 console.error(error);
                 resolve(false);
@@ -472,14 +472,16 @@ function installDMG(dmgPath, folderPath) {
     })
         .finally(unmount);
 }
-function httpRequest(url, method, response) {
+function httpRequest(url, method, response, keepAlive = true) {
     const urlParsed = URL.parse(url);
     let options = {
         ...urlParsed,
         method,
-        headers: {
-            Connection: 'keep-alive',
-        },
+        headers: keepAlive
+            ? {
+                Connection: 'keep-alive',
+            }
+            : undefined,
     };
     const proxyURL = (0, proxy_from_env_1.getProxyForUrl)(url);
     if (proxyURL) {

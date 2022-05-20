@@ -46,6 +46,10 @@ export declare type BrowserCloseCallback = () => Promise<void> | void;
  */
 export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
 /**
+ * @internal
+ */
+export declare type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
+/**
  * @public
  */
 export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
@@ -153,13 +157,14 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback): Promise<Browser>;
+    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<Browser>;
     private _ignoreHTTPSErrors;
     private _defaultViewport?;
     private _process?;
     private _connection;
     private _closeCallback;
     private _targetFilterCallback;
+    private _isPageTargetCallback;
     private _defaultContext;
     private _contexts;
     private _screenshotTaskQueue;
@@ -172,12 +177,16 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback);
+    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback);
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process(): ChildProcess | null;
+    /**
+     * @internal
+     */
+    _setIsPageTargetCallback(isPageTargetCallback?: IsPageTargetCallback): void;
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
      * browser contexts.

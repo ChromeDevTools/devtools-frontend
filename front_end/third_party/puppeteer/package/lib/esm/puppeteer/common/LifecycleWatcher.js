@@ -144,8 +144,10 @@ export class LifecycleWatcher {
                     return false;
             }
             for (const child of frame.childFrames()) {
-                if (!checkLifecycle(child, expectedLifecycle))
+                if (child._hasStartedLoading &&
+                    !checkLifecycle(child, expectedLifecycle)) {
                     return false;
+                }
             }
             return true;
         }

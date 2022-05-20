@@ -14,9 +14,10 @@ import json
 import shutil
 from pkg_resources import parse_version
 import argparse
-import devtools_paths
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import devtools_paths
 
 THIRD_PARTY_NPM_PACKAGE_NAMES = [{
     "package_name": "puppeteer",

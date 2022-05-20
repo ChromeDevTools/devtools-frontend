@@ -93,7 +93,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback) {
+    constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
         super();
         this._ignoredTargets = new Set();
         this._ignoreHTTPSErrors = ignoreHTTPSErrors;
@@ -103,6 +103,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         this._connection = connection;
         this._closeCallback = closeCallback || function () { };
         this._targetFilterCallback = targetFilterCallback || (() => true);
+        this._setIsPageTargetCallback(isPageTargetCallback);
         this._defaultContext = new BrowserContext(this._connection, this);
         this._contexts = new Map();
         for (const contextId of contextIds)
@@ -116,8 +117,8 @@ class Browser extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    static async create(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback) {
-        const browser = new Browser(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback);
+    static async create(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
+        const browser = new Browser(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback);
         await connection.send('Target.setDiscoverTargets', { discover: true });
         return browser;
     }
@@ -128,6 +129,18 @@ class Browser extends EventEmitter_js_1.EventEmitter {
     process() {
         var _a;
         return (_a = this._process) !== null && _a !== void 0 ? _a : null;
+    }
+    /**
+     * @internal
+     */
+    _setIsPageTargetCallback(isPageTargetCallback) {
+        this._isPageTargetCallback =
+            isPageTargetCallback ||
+                ((target) => {
+                    return (target.type === 'page' ||
+                        target.type === 'background_page' ||
+                        target.type === 'webview');
+                });
     }
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
@@ -197,7 +210,7 @@ class Browser extends EventEmitter_js_1.EventEmitter {
             this._ignoredTargets.add(targetInfo.targetId);
             return;
         }
-        const target = new Target_js_1.Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, (_a = this._defaultViewport) !== null && _a !== void 0 ? _a : null, this._screenshotTaskQueue);
+        const target = new Target_js_1.Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, (_a = this._defaultViewport) !== null && _a !== void 0 ? _a : null, this._screenshotTaskQueue, this._isPageTargetCallback);
         (0, assert_js_1.assert)(!this._targets.has(event.targetInfo.targetId), 'Target should not exist before targetCreated');
         this._targets.set(event.targetInfo.targetId, target);
         if (await target._initializedPromise) {

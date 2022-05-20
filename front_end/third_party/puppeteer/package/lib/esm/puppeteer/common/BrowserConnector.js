@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from './Browser.js';
+import { Browser, } from './Browser.js';
 import { assert } from './assert.js';
 import { debugError } from '../common/helper.js';
 import { Connection } from './Connection.js';
@@ -31,7 +31,7 @@ const getWebSocketTransportClass = async () => {
  * @internal
  */
 export const connectToBrowser = async (options) => {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, } = options;
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, isPageTarget, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
     let connection = null;
@@ -50,7 +50,7 @@ export const connectToBrowser = async (options) => {
         connection = new Connection(connectionURL, connectionTransport, slowMo);
     }
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(debugError), targetFilter);
+    return Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(debugError), targetFilter, isPageTarget);
 };
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);

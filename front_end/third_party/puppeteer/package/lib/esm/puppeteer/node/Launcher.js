@@ -131,7 +131,9 @@ class ChromeLauncher {
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
-            '--disable-features=Translate,BackForwardCache',
+            // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
+            // once crbug.com/1324138 is fixed and released.
+            '--disable-features=Translate,BackForwardCache,AvoidUnnecessaryBeforeUnloadCheckSync',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',

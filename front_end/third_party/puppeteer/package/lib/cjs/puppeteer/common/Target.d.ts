@@ -16,7 +16,7 @@
 import { Page } from './Page.js';
 import { WebWorker } from './WebWorker.js';
 import { CDPSession } from './Connection.js';
-import { Browser, BrowserContext } from './Browser.js';
+import { Browser, BrowserContext, IsPageTargetCallback } from './Browser.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Protocol } from 'devtools-protocol';
 import { TaskQueue } from './TaskQueue.js';
@@ -59,7 +59,11 @@ export declare class Target {
     /**
      * @internal
      */
-    constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
+    _isPageTargetCallback: IsPageTargetCallback;
+    /**
+     * @internal
+     */
+    constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue, isPageTargetCallback: IsPageTargetCallback);
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */

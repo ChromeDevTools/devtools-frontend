@@ -177,13 +177,14 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback): Promise<Browser>;
+    static create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<Browser>;
     private _ignoreHTTPSErrors;
     private _defaultViewport?;
     private _process?;
     private _connection;
     private _closeCallback;
     private _targetFilterCallback;
+    private _isPageTargetCallback;
     private _defaultContext;
     private _contexts;
     private _screenshotTaskQueue;
@@ -196,12 +197,16 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback);
+    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback);
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process(): ChildProcess | null;
+    /**
+     * @internal
+     */
+    _setIsPageTargetCallback(isPageTargetCallback?: IsPageTargetCallback): void;
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
      * browser contexts.
@@ -362,6 +367,10 @@ export declare interface BrowserConnectOptions {
      * Callback to decide if Puppeteer should connect to a given target or not.
      */
     targetFilter?: TargetFilterCallback;
+    /**
+     * @internal
+     */
+    isPageTarget?: IsPageTargetCallback;
 }
 
 /**
@@ -1540,6 +1549,61 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
         hidden?: boolean;
         timeout?: number;
     }): Promise<ElementHandle | null>;
+    /**
+     * Wait for the `xpath` within the element. If at the moment of calling the
+     * method the `xpath` already exists, the method will return immediately. If
+     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended automatically.
+     *
+     * This method works across navigation
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     * .waitForXPath('//img')
+     * .then(() => console.log('First URL with image: ' + currentURL));
+     * for (currentURL of [
+     * 'https://example.com',
+     * 'https://google.com',
+     * 'https://bbc.com',
+     * ]) {
+     * await page.goto(currentURL);
+     * }
+     * await browser.close();
+     * })();
+     * ```
+     * @param xpath - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
+     * element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by xpath string is
+     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
+     * not found in DOM.
+     * @remarks
+     * The optional Argument `options` have properties:
+     *
+     * - `visible`: A boolean to wait for element to be present in DOM and to be
+     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     * properties. Defaults to `false`.
+     *
+     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
+     * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+     * Defaults to `false`.
+     *
+     * - `timeout`: A number which is maximum time to wait for in milliseconds.
+     * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
+     * value can be changed by using the {@link Page.setDefaultTimeout} method.
+     */
+    waitForXPath(xpath: string, options?: {
+        visible?: boolean;
+        hidden?: boolean;
+        timeout?: number;
+    }): Promise<ElementHandle | null>;
     asElement(): ElementHandle<ElementType> | null;
     /**
      * Resolves to the content frame for element handles referencing
@@ -2146,6 +2210,10 @@ export declare class Frame {
     /**
      * @internal
      */
+    _hasStartedLoading: boolean;
+    /**
+     * @internal
+     */
     _lifecycleEvents: Set<string>;
     /**
      * @internal
@@ -2668,6 +2736,10 @@ export declare class Frame {
     /**
      * @internal
      */
+    _onLoadingStarted(): void;
+    /**
+     * @internal
+     */
     _detach(): void;
 }
 
@@ -2745,6 +2817,7 @@ export declare class FrameManager extends EventEmitter {
     private _onAttachedToTarget;
     private _onDetachedFromTarget;
     _onLifecycleEvent(event: Protocol.Page.LifecycleEventEvent): void;
+    _onFrameStartedLoading(frameId: string): void;
     _onFrameStoppedLoading(frameId: string): void;
     _handleFrameTree(session: CDPSession, frameTree: Protocol.Page.FrameTree): void;
     page(): Page;
@@ -3282,6 +3355,11 @@ export declare class HTTPResponse {
         queryAll?: (element: ElementHandle, selector: string) => Promise<ElementHandle[]>;
         queryAllArray?: (element: ElementHandle, selector: string) => Promise<JSHandle>;
     }
+
+    /**
+     * @internal
+     */
+    export declare type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
 
     /**
      * @public
@@ -6845,7 +6923,11 @@ export declare class HTTPResponse {
              /**
               * @internal
               */
-             constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
+             _isPageTargetCallback: IsPageTargetCallback;
+             /**
+              * @internal
+              */
+             constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue, isPageTargetCallback: IsPageTargetCallback);
              /**
               * Creates a Chrome Devtools Protocol session attached to the target.
               */

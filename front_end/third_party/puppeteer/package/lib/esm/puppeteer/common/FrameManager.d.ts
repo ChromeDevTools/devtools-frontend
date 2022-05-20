@@ -70,6 +70,7 @@ export declare class FrameManager extends EventEmitter {
     private _onAttachedToTarget;
     private _onDetachedFromTarget;
     _onLifecycleEvent(event: Protocol.Page.LifecycleEventEvent): void;
+    _onFrameStartedLoading(frameId: string): void;
     _onFrameStoppedLoading(frameId: string): void;
     _handleFrameTree(session: CDPSession, frameTree: Protocol.Page.FrameTree): void;
     page(): Page;
@@ -224,6 +225,10 @@ export declare class Frame {
      * @internal
      */
     _name?: string;
+    /**
+     * @internal
+     */
+    _hasStartedLoading: boolean;
     /**
      * @internal
      */
@@ -746,6 +751,10 @@ export declare class Frame {
      * @internal
      */
     _onLoadingStopped(): void;
+    /**
+     * @internal
+     */
+    _onLoadingStarted(): void;
     /**
      * @internal
      */

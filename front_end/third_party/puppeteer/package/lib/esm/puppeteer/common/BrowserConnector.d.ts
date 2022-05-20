@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ConnectionTransport } from './ConnectionTransport.js';
-import { Browser, TargetFilterCallback } from './Browser.js';
+import { Browser, TargetFilterCallback, IsPageTargetCallback } from './Browser.js';
 import { Viewport } from './PuppeteerViewport.js';
 /**
  * Generic browser options that can be passed when launching any browser or when
@@ -40,6 +40,10 @@ export interface BrowserConnectOptions {
      * Callback to decide if Puppeteer should connect to a given target or not.
      */
     targetFilter?: TargetFilterCallback;
+    /**
+     * @internal
+     */
+    isPageTarget?: IsPageTargetCallback;
 }
 /**
  * Users should never call this directly; it's called when calling

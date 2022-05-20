@@ -107,6 +107,43 @@ describe('The Network Tab', async function() {
     });
   });
 
+  it('shows size of chunked responses', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await navigateToNetworkTab('chunked.txt?numChunks=5');
+
+    // Reload to populate network request table
+    await target.reload({waitUntil: 'networkidle0'});
+    await waitForSomeRequestsToAppear(1);
+
+    // Get the size of the first two network request responses (excluding header and favicon.ico).
+    const getNetworkRequestSize = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.size-column')).slice(1, 3).map(node => node.textContent);
+    });
+
+    assert.deepEqual(await getNetworkRequestSize(), [
+      `${formatByteSize(210)}${formatByteSize(25)}`,
+    ]);
+  });
+
+  it('shows size of chunked responses for sync XHR', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await navigateToNetworkTab('chunked_sync.html');
+
+    // Reload to populate network request table
+    await target.reload({waitUntil: 'networkidle0'});
+    await waitForSomeRequestsToAppear(2);
+
+    // Get the size of the first two network request responses (excluding header and favicon.ico).
+    const getNetworkRequestSize = () => frontend.evaluate(() => {
+      return Array.from(document.querySelectorAll('.size-column')).slice(1, 3).map(node => node.textContent);
+    });
+
+    assert.deepEqual(await getNetworkRequestSize(), [
+      `${formatByteSize(313)}${formatByteSize(128)}`,
+      `${formatByteSize(210)}${formatByteSize(25)}`,
+    ]);
+  });
+
   it('the HTML response including cyrillic characters with utf-8 encoding', async () => {
     const {target} = getBrowserAndPages();
     await navigateToNetworkTab('utf-8.rawresponse');

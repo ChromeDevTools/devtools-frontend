@@ -194,9 +194,22 @@ async function requestHandler(request, response) {
       response.setHeader(header, value);
     });
 
+    const waitBeforeHeaders = parseInt(url.searchParams?.get('waitBeforeHeaders'), 10);
+    if (!isNaN(waitBeforeHeaders)) {
+      await new Promise(resolve => setTimeout(resolve, waitBeforeHeaders));
+    }
     response.writeHead(statusCode);
     if (data && encoding) {
-      response.write(data, encoding);
+      const waitBetweenChunks = parseInt(url.searchParams?.get('waitBetweenChunks'), 10);
+      const numChunks = parseInt(url.searchParams?.get('numChunks'), 10);
+      const chunkSize = isNaN(numChunks) ? data.length : data.length / numChunks;
+      for (let i = 0; i < data.length; i += chunkSize) {
+        if (!isNaN(waitBetweenChunks)) {
+          await new Promise(resolve => setTimeout(resolve, waitBetweenChunks));
+        }
+        const chunk = data.subarray ? data.subarray(i, i + chunkSize) : data.substring(i, i + chunkSize);
+        response.write(chunk, encoding);
+      }
     }
     response.end();
   }

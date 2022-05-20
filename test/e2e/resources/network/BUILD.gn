@@ -7,6 +7,8 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("network") {
   sources = [
     "cacheable.rawresponse",
+    "chunked.txt",
+    "chunked_sync.html",
     "csp-report-only.rawresponse",
     "embedded_requests.html",
     "fetch.html",

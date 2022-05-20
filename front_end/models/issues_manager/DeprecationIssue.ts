@@ -143,7 +143,7 @@ const UIStrings = {
    * @description TODO(crbug.com/1320345): Description needed for translation
    */
   mediaSourceAbortRemove:
-      'Using `SourceBuffer.abort()` to abort `remove()`\'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await `updateend`. `abort()` is intended to only abort an asynchronous media append or reset parser state.',
+      'Using `SourceBuffer.abort()` to abort `remove()`\'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state.',
   /**
    * @description TODO(crbug.com/1320346): Description needed for translation
    */

@@ -1464,10 +1464,6 @@ export namespace ProtocolMapping {
     'DOMStorage.removeDOMStorageItem':
         {paramsType: [Protocol.DOMStorage.RemoveDOMStorageItemRequest]; returnType: void;};
     'DOMStorage.setDOMStorageItem': {paramsType: [Protocol.DOMStorage.SetDOMStorageItemRequest]; returnType: void;};
-    'DOMStorage.getStorageKeyForFrame': {
-      paramsType: [Protocol.DOMStorage.GetStorageKeyForFrameRequest];
-      returnType: Protocol.DOMStorage.GetStorageKeyForFrameResponse;
-    };
     /**
      * Disables database tracking, prevents database events from being sent to the client.
      */
@@ -2472,6 +2468,13 @@ export namespace ProtocolMapping {
     'ServiceWorker.unregister': {paramsType: [Protocol.ServiceWorker.UnregisterRequest]; returnType: void;};
     'ServiceWorker.updateRegistration':
         {paramsType: [Protocol.ServiceWorker.UpdateRegistrationRequest]; returnType: void;};
+    /**
+     * Returns a storage key given a frame id.
+     */
+    'Storage.getStorageKeyForFrame': {
+      paramsType: [Protocol.Storage.GetStorageKeyForFrameRequest];
+      returnType: Protocol.Storage.GetStorageKeyForFrameResponse;
+    };
     /**
      * Clears storage for origin.
      */

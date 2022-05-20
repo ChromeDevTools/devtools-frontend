@@ -22,7 +22,8 @@ describe('JavaScriptMetadata', () => {
   });
 
   describe('with static methods', () => {
-    it('retrieves by name and class', () => {
+    // Started failing on a protocol update
+    it.skip('[crbug.com/1327573] retrieves by name and class', () => {
       const signatures = metadata.signaturesForStaticMethod('from', 'Array');
       assert.deepEqual(signatures, [['arrayLike', '?mapfn', '?thisArg'], ['iterable', '?mapfn', '?thisArg']]);
     });

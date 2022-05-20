@@ -280,7 +280,6 @@ export function registerCommands(inspectorBackend) {
     CrossOriginWindowAlert: 'CrossOriginWindowAlert',
     CrossOriginWindowConfirm: 'CrossOriginWindowConfirm',
     CSSSelectorInternalMediaControlsOverlayCastButton: 'CSSSelectorInternalMediaControlsOverlayCastButton',
-    CustomCursorIntersectsViewport: 'CustomCursorIntersectsViewport',
     DeprecationExample: 'DeprecationExample',
     DocumentDomainSettingWithoutOriginAgentClusterHeader: 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
     EventPath: 'EventPath',
@@ -1061,8 +1060,6 @@ export function registerCommands(inspectorBackend) {
         {'name': 'key', 'type': 'string', 'optional': false}, {'name': 'value', 'type': 'string', 'optional': false}
       ],
       []);
-  inspectorBackend.registerCommand(
-      'DOMStorage.getStorageKeyForFrame', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['storageKey']);
 
   // Database.
   inspectorBackend.registerEvent('Database.addDatabase', ['database']);
@@ -2773,6 +2770,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Storage.indexedDBContentUpdated', ['origin', 'databaseName', 'objectStoreName']);
   inspectorBackend.registerEvent('Storage.indexedDBListUpdated', ['origin']);
   inspectorBackend.registerEvent('Storage.interestGroupAccessed', ['accessTime', 'type', 'ownerOrigin', 'name']);
+  inspectorBackend.registerCommand(
+      'Storage.getStorageKeyForFrame', [{'name': 'frameId', 'type': 'string', 'optional': false}], ['storageKey']);
   inspectorBackend.registerCommand(
       'Storage.clearDataForOrigin',
       [

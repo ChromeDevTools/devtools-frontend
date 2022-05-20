@@ -1382,9 +1382,6 @@
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
     "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
   },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
-  },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
     "message": "{PH1} is deprecated. Please use {PH2} instead."
   },

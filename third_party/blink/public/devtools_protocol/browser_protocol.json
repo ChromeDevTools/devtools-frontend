@@ -1553,7 +1553,6 @@
                         "CrossOriginWindowAlert",
                         "CrossOriginWindowConfirm",
                         "CSSSelectorInternalMediaControlsOverlayCastButton",
-                        "CustomCursorIntersectsViewport",
                         "DeprecationExample",
                         "DocumentDomainSettingWithoutOriginAgentClusterHeader",
                         "EventPath",
@@ -7466,21 +7465,6 @@
                         {
                             "name": "value",
                             "type": "string"
-                        }
-                    ]
-                },
-                {
-                    "name": "getStorageKeyForFrame",
-                    "parameters": [
-                        {
-                            "name": "frameId",
-                            "$ref": "Page.FrameId"
-                        }
-                    ],
-                    "returns": [
-                        {
-                            "name": "storageKey",
-                            "$ref": "SerializedStorageKey"
                         }
                     ]
                 }
@@ -18930,6 +18914,22 @@
                 }
             ],
             "commands": [
+                {
+                    "name": "getStorageKeyForFrame",
+                    "description": "Returns a storage key given a frame id.",
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "$ref": "Page.FrameId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "storageKey",
+                            "$ref": "SerializedStorageKey"
+                        }
+                    ]
+                },
                 {
                     "name": "clearDataForOrigin",
                     "description": "Clears storage for origin.",

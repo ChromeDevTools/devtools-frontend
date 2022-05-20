@@ -1382,9 +1382,6 @@
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
     "message": "T̂h́ê disableRemotePlayback át̂t́r̂íb̂út̂é ŝh́ôúl̂d́ b̂é ûśêd́ îń ôŕd̂ér̂ t́ô d́îśâb́l̂é t̂h́ê d́êf́âúl̂t́ Ĉáŝt́ îńt̂éĝŕât́îón̂ ín̂śt̂éâd́ ôf́ ûśîńĝ -internal-media-controls-overlay-cast-button śêĺêćt̂ór̂."
   },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Ĉúŝt́ôḿ ĉúr̂śôŕŝ ẃît́ĥ śîźê ǵr̂éât́êŕ t̂h́âń 32x̂32 D́ÎṔ îńt̂ér̂śêćt̂ín̂ǵ n̂át̂ív̂é ÛÍ îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́."
-  },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
     "message": "{PH1} îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê {PH2} ín̂śt̂éâd́."
   },

@@ -82,11 +82,6 @@ const UIStrings = {
   cssSelectorInternalMediaControlsOverlayCastButton:
       'The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.',
   /**
-   * @description TODO(crbug.com/1320340): Description needed for translation
-   */
-  customCursorIntersectsViewport:
-      'Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed.',
-  /**
    * @description This message is shown when the example deprecated feature is used
    */
   deprecationExample: 'This is an example of a translated deprecation issue message.',
@@ -362,11 +357,6 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.CSSSelectorInternalMediaControlsOverlayCastButton:
         messageFunction = i18nLazyString(UIStrings.cssSelectorInternalMediaControlsOverlayCastButton);
         feature = 5714245488476160;
-        break;
-      case Protocol.Audits.DeprecationIssueType.CustomCursorIntersectsViewport:
-        messageFunction = i18nLazyString(UIStrings.customCursorIntersectsViewport);
-        feature = 5825971391299584;
-        milestone = 75;
         break;
       case Protocol.Audits.DeprecationIssueType.DeprecationExample:
         messageFunction = i18nLazyString(UIStrings.deprecationExample);

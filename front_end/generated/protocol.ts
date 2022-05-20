@@ -1027,7 +1027,6 @@ export namespace Audits {
     CrossOriginWindowAlert = 'CrossOriginWindowAlert',
     CrossOriginWindowConfirm = 'CrossOriginWindowConfirm',
     CSSSelectorInternalMediaControlsOverlayCastButton = 'CSSSelectorInternalMediaControlsOverlayCastButton',
-    CustomCursorIntersectsViewport = 'CustomCursorIntersectsViewport',
     DeprecationExample = 'DeprecationExample',
     DocumentDomainSettingWithoutOriginAgentClusterHeader = 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
     EventPath = 'EventPath',
@@ -4976,14 +4975,6 @@ export namespace DOMStorage {
     storageId: StorageId;
     key: string;
     value: string;
-  }
-
-  export interface GetStorageKeyForFrameRequest {
-    frameId: Page.FrameId;
-  }
-
-  export interface GetStorageKeyForFrameResponse extends ProtocolResponseWithError {
-    storageKey: SerializedStorageKey;
   }
 
   export interface DomStorageItemAddedEvent {
@@ -12778,6 +12769,14 @@ export namespace Storage {
     userBiddingSignals?: string;
     ads: InterestGroupAd[];
     adComponents: InterestGroupAd[];
+  }
+
+  export interface GetStorageKeyForFrameRequest {
+    frameId: Page.FrameId;
+  }
+
+  export interface GetStorageKeyForFrameResponse extends ProtocolResponseWithError {
+    storageKey: SerializedStorageKey;
   }
 
   export interface ClearDataForOriginRequest {

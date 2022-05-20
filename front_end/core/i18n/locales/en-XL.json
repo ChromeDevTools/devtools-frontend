@@ -3803,6 +3803,9 @@
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
+  },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Ŝúb̂t́r̂éê ḿôd́îf́îéd̂"
   },

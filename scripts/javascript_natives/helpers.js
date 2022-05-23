@@ -84,9 +84,7 @@ function walkMembers(thing) {
  * @param {WebIDL2.OperationMemberType} member
  * */
 function handleOperation(member) {
-  storeMethod(
-      member.special === 'static' ? (parent.name + 'Constructor') : member.parent.name, member.name,
-      member.arguments.map(argName));
+  storeMethod(member.parent.name, member.name, member.arguments.map(argName));
 }
 
 /**
@@ -177,13 +175,14 @@ export function postProcess(dryRun = false) {
       // All parents had the same signature so we emit an entry without receiver.
       functions.push({name, signatures: method.get('*')});
     } else {
+      const receiversMap = new Map();
       for (const [parent, signatures] of method) {
-        if (parent.endsWith('Constructor')) {
-          functions.push(
-              {name, signatures, static: true, receiver: parent.substring(0, parent.length - 'Constructor'.length)});
-        } else {
-          functions.push({name, signatures, receiver: parent});
-        }
+        const receivers = receiversMap.get(JSON.stringify(signatures)) || [];
+        receivers.push(parent);
+        receiversMap.set(JSON.stringify(signatures), receivers);
+      }
+      for (const [signatures, receivers] of receiversMap) {
+        functions.push({name, signatures: JSON.parse(signatures), receivers});
       }
     }
   }

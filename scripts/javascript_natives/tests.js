@@ -182,12 +182,12 @@ namespace console {
   {
     name: "diffSig",
     signatures: [["oneSig"]],
-    receiver: "Array"
+    receivers: ["Array"]
   },
   {
     name: "diffSig",
     signatures: [["twoSig"]],
-    receiver: "ReadonlyArray"
+    receivers: ["ReadonlyArray"]
   }
 ];`;
     assert.equal(output, expected);

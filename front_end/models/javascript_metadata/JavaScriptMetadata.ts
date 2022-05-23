@@ -10,8 +10,7 @@ let javaScriptMetadataInstance: JavaScriptMetadataImpl;
 
 export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScriptMetaData {
   private readonly uniqueFunctions: Map<string, string[][]>;
-  private readonly instanceMethods: Map<string, Map<string, string[][]>>;
-  private readonly staticMethods: Map<string, Map<string, string[][]>>;
+  private readonly receiverMethods: Map<string, Map<string, string[][]>>;
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): JavaScriptMetadataImpl {
@@ -24,26 +23,20 @@ export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScr
   }
   constructor() {
     this.uniqueFunctions = new Map();
-    this.instanceMethods = new Map();
-    this.staticMethods = new Map();
+    this.receiverMethods = new Map();
 
     for (const nativeFunction of NativeFunctions) {
-      if (!nativeFunction.receiver) {
+      if (!nativeFunction.receivers) {
         this.uniqueFunctions.set(nativeFunction.name, nativeFunction.signatures);
-      } else if (nativeFunction.static) {
-        let staticMethod = this.staticMethods.get(nativeFunction.receiver);
-        if (!staticMethod) {
-          staticMethod = new Map();
-          this.staticMethods.set(nativeFunction.receiver, staticMethod);
+        continue;
+      }
+      for (const receiver of nativeFunction.receivers) {
+        let method = this.receiverMethods.get(receiver);
+        if (!method) {
+          method = new Map();
+          this.receiverMethods.set(receiver, method);
         }
-        staticMethod.set(nativeFunction.name, nativeFunction.signatures);
-      } else {
-        let instanceMethod = this.instanceMethods.get(nativeFunction.receiver);
-        if (!instanceMethod) {
-          instanceMethod = new Map();
-          this.instanceMethods.set(nativeFunction.receiver, instanceMethod);
-        }
-        instanceMethod.set(nativeFunction.name, nativeFunction.signatures);
+        method.set(nativeFunction.name, nativeFunction.signatures);
       }
     }
   }
@@ -53,7 +46,7 @@ export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScr
   }
 
   signaturesForInstanceMethod(name: string, receiverClassName: string): string[][]|null {
-    const instanceMethod = this.instanceMethods.get(receiverClassName);
+    const instanceMethod = this.receiverMethods.get(receiverClassName);
     if (!instanceMethod) {
       return null;
     }
@@ -61,7 +54,7 @@ export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScr
   }
 
   signaturesForStaticMethod(name: string, receiverConstructorName: string): string[][]|null {
-    const staticMethod = this.staticMethods.get(receiverConstructorName);
+    const staticMethod = this.receiverMethods.get(receiverConstructorName + 'Constructor');
     if (!staticMethod) {
       return null;
     }

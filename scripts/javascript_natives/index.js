@@ -14,9 +14,11 @@ if (process.argv.length !== 4) {
 }
 
 const chromiumSource = process.argv[2];
-const typescriptSource = process.argv[3] + 'node_modules/typescript/lib/lib.esnext.d.ts';
+const REL_TS_LIB_PATH = '/node_modules/typescript/lib/';
+const typescriptSources =
+    fs.readdirSync(process.argv[3] + REL_TS_LIB_PATH).map(name => process.argv[3] + REL_TS_LIB_PATH + name);
 
-const program = ts.createProgram([typescriptSource], {noLib: false, types: []});
+const program = ts.createProgram({rootNames: typescriptSources, options: {noResolve: true, types: []}});
 
 for (const file of program.getSourceFiles()) {
   ts.forEachChild(file, node => {

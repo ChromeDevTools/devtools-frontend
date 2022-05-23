@@ -508,22 +508,20 @@ async function getArgumentsForExpression(
   if (!context) {
     return null;
   }
-  try {
-    const expression = doc.sliceString(callee.from, callee.to);
-    const result = await evaluateExpression(context, expression, 'argumentsHint');
-    if (!result || result.type !== 'function') {
+  const expression = doc.sliceString(callee.from, callee.to);
+  const result = await evaluateExpression(context, expression, 'argumentsHint');
+  if (!result || result.type !== 'function') {
+    return null;
+  }
+  const objGetter = async(): Promise<SDK.RemoteObject.RemoteObject|null> => {
+    const first = callee.firstChild;
+    if (!first || callee.name !== 'MemberExpression') {
       return null;
     }
-    return getArgumentsForFunctionValue(result, async () => {
-      const first = callee.firstChild;
-      if (!first || callee.name !== 'MemberExpression') {
-        return null;
-      }
-      return evaluateExpression(context, doc.sliceString(first.from, first.to), 'argumentsHint');
-    }, expression);
-  } finally {
-    context.runtimeModel.releaseObjectGroup('argumentsHint');
-  }
+    return evaluateExpression(context, doc.sliceString(first.from, first.to), 'argumentsHint');
+  };
+  return getArgumentsForFunctionValue(result, objGetter, expression)
+      .finally(() => context.runtimeModel.releaseObjectGroup('argumentsHint'));
 }
 
 async function getArgumentsForFunctionValue(

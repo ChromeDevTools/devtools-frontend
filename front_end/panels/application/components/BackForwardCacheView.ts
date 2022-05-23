@@ -95,6 +95,10 @@ const UIStrings = {
    */
   learnMore: 'Learn more: back/forward cache eligibility',
   /**
+   * @description Link Text about unload handler
+   */
+  neverUseUnload: 'Learn more: Never use unload handler',
+  /**
    * @description Explanation for 'pending support' items which prevent the page from being eligible
    * for back/forward cache.
    */
@@ -536,6 +540,17 @@ export class BackForwardCacheView extends HTMLElement {
     `;
   }
 
+  #maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.LitTemplate {
+    if (explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInMainFrame ||
+        explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInSubFrame) {
+      return LitHtml.html`
+        <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link">
+          ${i18nString(UIStrings.neverUseUnload)}
+        </x-link>`;
+    }
+    return LitHtml.nothing;
+  }
+
   #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined):
       LitHtml.TemplateResult {
     // clang-format off
@@ -554,6 +569,7 @@ export class BackForwardCacheView extends HTMLElement {
             </div>
             <div>
               ${NotRestoredReasonDescription[explanation.reason].name()}
+              ${this.#maybeRenderDeepLinkToUnload(explanation)}
              ${this.#maybeRenderReasonContext(explanation)}
            </div>` :
             LitHtml.nothing}

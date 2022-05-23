@@ -2939,6 +2939,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Main Frame"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Learn more: Never use unload handler"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Not served from back/forward cache: to trigger back/forward cache, use Chrome's back/forward buttons, or use the test button below to automatically navigate away and back."
   },

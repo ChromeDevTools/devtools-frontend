@@ -2939,6 +2939,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "M̂áîń F̂ŕâḿê"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "L̂éâŕn̂ ḿôŕê: Ńêv́êŕ ûśê ún̂ĺôád̂ h́âńd̂ĺêŕ"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "N̂ót̂ śêŕv̂éd̂ f́r̂óm̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê: t́ô t́r̂íĝǵêŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé, ûśê Ćĥŕôḿê'ś b̂áĉḱ/f̂ór̂ẃâŕd̂ b́ût́t̂ón̂ś, ôŕ ûśê t́ĥé t̂éŝt́ b̂út̂t́ôń b̂él̂óŵ t́ô áût́ôḿât́îćâĺl̂ý n̂áv̂íĝát̂é âẃâý âńd̂ b́âćk̂."
   },

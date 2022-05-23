@@ -13,7 +13,7 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 async function setUpEnvironment() {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -206,7 +206,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   it('updates active state when target detach and attach', async () => {
     const {networkPersistenceManager} = await setUpEnvironment();
     const {project} =
-        createUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
+        createFileSystemUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
     await networkPersistenceManager.setProject(project);
     const targetManager = SDK.TargetManager.TargetManager.instance();
     assert.isNull(targetManager.mainTarget());
@@ -215,7 +215,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     const target = await createTarget();
     assert.isTrue(networkPersistenceManager.active());
 
-    await targetManager.removeTarget(target);
+    targetManager.removeTarget(target);
 
     assert.isFalse(networkPersistenceManager.active());
   });
@@ -426,7 +426,7 @@ describe('NetworkPersistenceManager', () => {
       }
     ]`;
 
-    const {uiSourceCode} = createUISourceCode({
+    const {uiSourceCode} = createFileSystemUISourceCode({
       url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
       content: headers,
       mimeType: 'text/plain',

@@ -13,7 +13,7 @@ import * as Persistence from '../../../../../front_end/models/persistence/persis
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {assertElement, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 const {assert} = chai;
 
@@ -65,7 +65,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('renders a link to \'.headers\'', async () => {
     setUpEnvironment();
-    const {project} = createUISourceCode({
+    const {project} = createFileSystemUISourceCode({
       url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
       mimeType: 'text/plain',
       fileSystemPath: 'file:///path/to/overrides',

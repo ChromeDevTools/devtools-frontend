@@ -11,7 +11,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import type {Chrome} from '../../../../../extension-api/ExtensionAPI.js';
@@ -75,7 +75,7 @@ describeWithRealConnection('BreakpointManager', () => {
   it('allows awaiting the restoration of breakpoints', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
 
-    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
 
     // Create a new DebuggerModel and notify the breakpoint engine about it.
@@ -129,7 +129,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assertNotNullOrUndefined(debuggerModel);
 
     const {uiSourceCode, project} =
-        createUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
+        createContentProviderUISourceCode({url: 'test.cc' as Platform.DevToolsPath.UrlString, mimeType: JS_MIME_TYPE});
     assertNotNullOrUndefined(uiSourceCode);
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, '', true);
 
@@ -191,7 +191,7 @@ describeWithRealConnection('BreakpointManager', () => {
   });
 
   it('allows awaiting on scheduled update in debugger', async () => {
-    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
 
     const debuggerModel = new TestDebuggerModel(target);
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
@@ -211,7 +211,7 @@ describeWithRealConnection('BreakpointManager', () => {
   });
 
   it('allows awaiting on removal of breakpoint in debugger', async () => {
-    const {uiSourceCode, project} = createUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+    const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
     // Set up breakpoint with UISourceCode, and fake DebuggerModel.
     const debuggerModel = new TestDebuggerModel(target);
     const removeSpy = sinon.spy(debuggerModel, 'removeBreakpoint');

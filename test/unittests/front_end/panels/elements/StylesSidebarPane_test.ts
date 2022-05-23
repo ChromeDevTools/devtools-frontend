@@ -4,7 +4,7 @@
 
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
@@ -54,11 +54,10 @@ describeWithRealConnection('StylesSidebarPane', async () => {
   it('tracks property changes with formatting', async () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
-    const {uiSourceCode, project} = createUISourceCode({
+    const {uiSourceCode, project} = createFileSystemUISourceCode({
       url: URL,
       content: '.rule{display:none}',
       mimeType: 'text/css',
-      projectType: Workspace.Workspace.projectTypes.FileSystem,
     });
 
     uiSourceCode.setWorkingCopy('.rule{display:block}');

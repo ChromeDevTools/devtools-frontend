@@ -8,7 +8,7 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describe('WorkspaceImpl', () => {
   it('allows renaming for file names with special characters', () => {
@@ -19,7 +19,7 @@ describe('WorkspaceImpl', () => {
         {} as Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding, platformFileSystem, workspace);
     const URL = 'file:///tmp/NewFile' as Platform.DevToolsPath.UrlString;
     const {uiSourceCode} =
-        createUISourceCode({url: URL, content: 'const data={original:true}', mimeType: 'text/javascript'});
+        createFileSystemUISourceCode({url: URL, content: 'const data={original:true}', mimeType: 'text/javascript'});
 
     fileSystem.addUISourceCode(uiSourceCode);
     assert.isNotNull(fileSystem.uiSourceCodeForURL('file:///tmp/NewFile' as Platform.DevToolsPath.UrlString));

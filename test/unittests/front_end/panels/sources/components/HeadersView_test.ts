@@ -12,7 +12,7 @@ import {
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../../helpers/EnvironmentHelpers.js';
-import {createUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
 
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 
@@ -83,7 +83,7 @@ describe('HeadersView', async () => {
         }
       }
     ]`;
-    const {uiSourceCode, project} = createUISourceCode({
+    const {uiSourceCode, project} = createFileSystemUISourceCode({
       url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
       mimeType: 'text/html',
       content: headers,

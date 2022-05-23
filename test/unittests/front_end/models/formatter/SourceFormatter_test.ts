@@ -13,7 +13,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describeWithEnvironment('SourceFormatter', () => {
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -38,7 +38,7 @@ describeWithEnvironment('SourceFormatter', () => {
       targetManager,
       workspace,
     });
-    ({project, uiSourceCode} = createUISourceCode({
+    ({project, uiSourceCode} = createContentProviderUISourceCode({
        url: DOCUMENT_URL,
        mimeType: MIME_TYPE,
        content: '<html><body></body></html>',

@@ -10,14 +10,14 @@ import * as WorkspaceDiff from '../../../../../front_end/models/workspace_diff/w
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
-import {createUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 describeWithRealConnection('UISourceCodeDiff', () => {
   it('returns formatted mapping with a diff', async () => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;
     const {uiSourceCode, project} =
-        createUISourceCode({url: URL, content: 'const data={original:true}', mimeType: 'text/javascript'});
+        createFileSystemUISourceCode({url: URL, content: 'const data={original:true}', mimeType: 'text/javascript'});
     uiSourceCode.setWorkingCopyGetter(() => 'const data={modified:true,original:false}');
 
     const uiSourceCodeDiff = new WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff(uiSourceCode);

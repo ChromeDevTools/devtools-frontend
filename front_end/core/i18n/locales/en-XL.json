@@ -254,6 +254,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "B̂ĺôćk̂"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch b̂ĺôćk̂"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Ĉĺôśûŕê"
   },
@@ -273,7 +276,7 @@
     "message": "Ŝćr̂íp̂t́"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "With B̂ĺôćk̂"
+    "message": "With b̂ĺôćk̂"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Âńîḿât́îón̂"

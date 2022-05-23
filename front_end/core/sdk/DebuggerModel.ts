@@ -70,9 +70,16 @@ const UIStrings = {
   script: 'Script',
   /**
   *@description Title of a section in the debugger showing JavaScript variables from the a 'with'
-  *block. Block here means section of code, 'with' refers to a JavaScript programming concept.
+  *block. Block here means section of code, 'with' refers to a JavaScript programming concept and
+  *is a fixed term.
   */
-  withBlock: '`With` Block',
+  withBlock: '`With` block',
+  /**
+  *@description Title of a section in the debugger showing JavaScript variables from the a 'catch'
+  *block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
+  *is a fixed term.
+  */
+  catchBlock: '`Catch` block',
   /**
   *@description Title of a section in the debugger showing JavaScript variables from the global scope.
   */
@@ -1464,7 +1471,9 @@ export class Scope implements ScopeChainEntry {
       case Protocol.Debugger.ScopeType.Closure:
         return i18nString(UIStrings.closure);
       case Protocol.Debugger.ScopeType.Catch:
-        return i18n.i18n.lockedString('Catch');
+        return i18nString(UIStrings.catchBlock);
+      case Protocol.Debugger.ScopeType.Eval:
+        return i18n.i18n.lockedString('Eval');
       case Protocol.Debugger.ScopeType.Block:
         return i18nString(UIStrings.block);
       case Protocol.Debugger.ScopeType.Script:

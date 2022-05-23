@@ -254,6 +254,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Block"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch block"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Closure"
   },
@@ -273,7 +276,7 @@
     "message": "Script"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "With Block"
+    "message": "With block"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animation"

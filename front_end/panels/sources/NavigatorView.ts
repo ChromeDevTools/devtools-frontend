@@ -36,6 +36,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
@@ -56,6 +57,14 @@ const UIStrings = {
   *@description Text in Navigator View of the Sources panel
   */
   noDomain: '(no domain)',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  authored: 'Authored',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  deployed: 'Deployed',
   /**
   *@description Text in Navigator View of the Sources panel
   */
@@ -113,6 +122,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const Types = {
+  Authored: 'authored',
+  Deployed: 'deployed',
   Domain: 'domain',
   File: 'file',
   FileSystem: 'fs',
@@ -126,6 +137,8 @@ export const Types = {
 
 const TYPE_ORDERS = new Map([
   [Types.Root, 1],
+  [Types.Authored, 1],
+  [Types.Deployed, 5],
   [Types.Domain, 10],
   [Types.FileSystemFolder, 1],
   [Types.NetworkFolder, 1],
@@ -144,12 +157,16 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private readonly subfolderNodes: Map<string, NavigatorFolderTreeNode>;
   private readonly rootNode: NavigatorRootTreeNode;
   private readonly frameNodes: Map<SDK.ResourceTreeModel.ResourceTreeFrame, NavigatorGroupTreeNode>;
+  private authoredNode?: NavigatorGroupTreeNode;
+  private deployedNode?: NavigatorGroupTreeNode;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private navigatorGroupByFolderSetting: Common.Settings.Setting<any>;
+  private navigatorGroupByAuthoredSetting: Common.Settings.Setting<boolean>;
   private workspaceInternal!: Workspace.Workspace.WorkspaceImpl;
   private lastSelectedUISourceCode?: Workspace.UISourceCode.UISourceCode;
   private groupByFrame?: boolean;
+  private groupByAuthored?: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private groupByDomain?: any;
@@ -181,6 +198,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
+    this.navigatorGroupByAuthoredSetting =
+        Common.Settings.Settings.instance().moduleSetting('navigatorGroupByAuthored');
+    this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
 
     this.initGrouping();
 
@@ -275,14 +295,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       void {
     const binding = event.data;
 
+    let isFromSourceMap = false;
     // Update UISourceCode titles.
     const networkNodes = this.uiSourceCodeNodes.get(binding.network);
     for (const networkNode of networkNodes) {
       networkNode.updateTitle();
+      isFromSourceMap ||= networkNode.uiSourceCode().contentType().isFromSourceMap();
     }
     const fileSystemNodes = this.uiSourceCodeNodes.get(binding.fileSystem);
     for (const fileSystemNode of fileSystemNodes) {
       fileSystemNode.updateTitle();
+      isFromSourceMap ||= fileSystemNode.uiSourceCode().contentType().isFromSourceMap();
     }
 
     // Update folder titles.
@@ -291,8 +314,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     let folderPath = Platform.DevToolsPath.EmptyEncodedPathString;
     for (let i = 0; i < pathTokens.length - 1; ++i) {
       folderPath = Common.ParsedURL.ParsedURL.concatenate(folderPath, pathTokens[i]);
-      const folderId =
-          this.folderNodeId(binding.fileSystem.project(), null, null, binding.fileSystem.origin(), folderPath);
+      const folderId = this.folderNodeId(
+          binding.fileSystem.project(), null, null, binding.fileSystem.origin(), isFromSourceMap, folderPath);
       const folderNode = this.subfolderNodes.get(folderId);
       if (folderNode) {
         folderNode.updateTitle();
@@ -301,7 +324,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
 
     // Update fileSystem root title.
-    const fileSystemRoot = this.rootNode.child(binding.fileSystem.project().id());
+    const fileSystemRoot = this.rootOrDeployedNode().child(binding.fileSystem.project().id());
     if (fileSystemRoot) {
       fileSystemRoot.updateTitle();
     }
@@ -444,8 +467,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const folderNode =
         this.folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
     const uiSourceCodeNode = new NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
-    folderNode.appendChild(uiSourceCodeNode);
-    this.uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
+    const existingNode = folderNode.child(uiSourceCodeNode.id);
+    if (existingNode && existingNode instanceof NavigatorUISourceCodeTreeNode) {
+      this.uiSourceCodeNodes.set(uiSourceCode, existingNode);
+    } else {
+      folderNode.appendChild(uiSourceCodeNode);
+      this.uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
+    }
     this.selectDefaultTreeNode();
   }
 
@@ -470,11 +498,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private projectAdded(project: Workspace.Workspace.Project): void {
+    const rootOrDeployed = this.rootOrDeployedNode();
     if (!this.acceptProject(project) || project.type() !== Workspace.Workspace.projectTypes.FileSystem ||
-        Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) || this.rootNode.child(project.id())) {
+        Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) || rootOrDeployed.child(project.id())) {
       return;
     }
-    this.rootNode.appendChild(
+    rootOrDeployed.appendChild(
         new NavigatorGroupTreeNode(this, project, project.id(), Types.FileSystem, project.displayName()));
     this.selectDefaultTreeNode();
   }
@@ -502,6 +531,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       reversedIndex.add(reversedPath);
     }
 
+    const rootOrDeployed = this.rootOrDeployedNode();
+
     for (let i = 0; i < fileSystemProjects.length; ++i) {
       const reversedPath = reversedPaths[i];
       const project = fileSystemProjects[i];
@@ -512,7 +543,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       const path = Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
           encoder.decode(Platform.StringUtilities.reverse(prefixPath)) as Platform.DevToolsPath.EncodedPathString);
 
-      const fileSystemNode = this.rootNode.child(project.id());
+      const fileSystemNode = rootOrDeployed.child(project.id());
       if (fileSystemNode) {
         fileSystemNode.setTitle(path);
       }
@@ -536,10 +567,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private folderNodeId(
       project: Workspace.Workspace.Project, target: SDK.Target.Target|null,
-      frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string,
+      frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string, isFromSourceMap: boolean,
       path: Platform.DevToolsPath.EncodedPathString): string {
-    const targetId = target ? target.id() : '';
+    let targetId = target && !(this.groupByAuthored && isFromSourceMap) ? target.id() : '';
     const projectId = project.type() === Workspace.Workspace.projectTypes.FileSystem ? project.id() : '';
+    if (this.groupByAuthored) {
+      targetId = isFromSourceMap ? 'Authored' : 'Deployed:' + targetId;
+    }
     const frameId = this.groupByFrame && frame ? frame.id : '';
     return targetId + ':' + projectId + ':' + frameId + ':' + projectOrigin + ':' + path;
   }
@@ -557,7 +591,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
 
     const folderPath = Common.ParsedURL.ParsedURL.join(path, '/');
-    const folderId = this.folderNodeId(project, target, frame, projectOrigin, folderPath);
+    const folderId = this.folderNodeId(project, target, frame, projectOrigin, fromSourceMap, folderPath);
     let folderNode = this.subfolderNodes.get(folderId);
     if (folderNode) {
       return folderNode;
@@ -567,7 +601,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       if (target) {
         return this.domainNode(uiSourceCode, project, target, frame, projectOrigin);
       }
-      return this.rootNode.child(project.id()) as NavigatorTreeNode;
+      return this.rootOrDeployedNode().child(project.id()) as NavigatorTreeNode;
     }
 
     const parentNode =
@@ -588,7 +622,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Workspace.Workspace.Project,
       target: SDK.Target.Target, frame: SDK.ResourceTreeModel.ResourceTreeFrame|null,
       projectOrigin: string): NavigatorTreeNode {
-    const frameNode = this.frameNode(project, target, frame);
+    const isAuthored = uiSourceCode.contentType().isFromSourceMap();
+    const frameNode = this.frameNode(project, target, frame, isAuthored);
     if (!this.groupByDomain) {
       return frameNode;
     }
@@ -603,14 +638,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       boostOrderForNode.add(domainNode.treeNode());
     }
     frameNode.appendChild(domainNode);
+    if (isAuthored && this.groupByAuthored) {
+      domainNode.treeNode().expand();
+    }
     return domainNode;
   }
 
   private frameNode(
       project: Workspace.Workspace.Project, target: SDK.Target.Target,
-      frame: SDK.ResourceTreeModel.ResourceTreeFrame|null): NavigatorTreeNode {
-    if (!this.groupByFrame || !frame) {
-      return this.targetNode(project, target);
+      frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, isAuthored: boolean): NavigatorTreeNode {
+    if (!this.groupByFrame || !frame || (this.groupByAuthored && isAuthored)) {
+      return this.targetNode(project, target, isAuthored);
     }
 
     let frameNode = this.frameNodes.get(frame);
@@ -624,7 +662,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.frameNodes.set(frame, frameNode);
 
     const parentFrame = frame.parentFrame();
-    this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame)
+    this.frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame, isAuthored)
         .appendChild(frameNode);
     if (!parentFrame) {
       boostOrderForNode.add(frameNode.treeNode());
@@ -644,19 +682,43 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     return frameNode;
   }
 
-  private targetNode(project: Workspace.Workspace.Project, target: SDK.Target.Target): NavigatorTreeNode {
-    if (target === SDK.TargetManager.TargetManager.instance().mainTarget()) {
-      return this.rootNode;
+  private targetNode(project: Workspace.Workspace.Project, target: SDK.Target.Target, isAuthored: boolean):
+      NavigatorTreeNode {
+    if (this.groupByAuthored && isAuthored) {
+      if (!this.authoredNode) {
+        this.authoredNode =
+            new NavigatorGroupTreeNode(this, null, 'group:Authored', Types.Authored, UIStrings.authored);
+        this.rootNode.appendChild(this.authoredNode);
+        this.authoredNode.treeNode().expand();
+      }
+      return this.authoredNode;
     }
 
-    let targetNode = this.rootNode.child('target:' + target.id());
+    const rootOrDeployed = this.rootOrDeployedNode();
+    if (target === SDK.TargetManager.TargetManager.instance().mainTarget()) {
+      return rootOrDeployed;
+    }
+
+    let targetNode = rootOrDeployed.child('target:' + target.id());
     if (!targetNode) {
       targetNode = new NavigatorGroupTreeNode(
           this, project, 'target:' + target.id(), target.type() === SDK.Target.Type.Frame ? Types.Frame : Types.Worker,
           target.name());
-      this.rootNode.appendChild(targetNode);
+      rootOrDeployed.appendChild(targetNode);
     }
     return targetNode;
+  }
+
+  private rootOrDeployedNode(): NavigatorTreeNode {
+    if (this.groupByAuthored) {
+      if (!this.deployedNode) {
+        this.deployedNode =
+            new NavigatorGroupTreeNode(this, null, 'group:Deployed', Types.Deployed, UIStrings.deployed);
+        this.rootNode.appendChild(this.deployedNode);
+      }
+      return this.deployedNode;
+    }
+    return this.rootNode;
   }
 
   private computeProjectDisplayName(target: SDK.Target.Target, projectOrigin: string): string {
@@ -721,35 +783,45 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       return;
     }
     parentNode.removeChild(node);
-    let currentNode: (NavigatorUISourceCodeTreeNode|null) = (parentNode as NavigatorUISourceCodeTreeNode | null);
+    let currentNode: (NavigatorTreeNode|null) = parentNode;
 
     while (currentNode) {
       parentNode = currentNode.parent;
       if (!parentNode || !currentNode.isEmpty()) {
         break;
       }
-      if (parentNode === this.rootNode && project.type() === Workspace.Workspace.projectTypes.FileSystem) {
+      if ((parentNode === this.rootNode || parentNode === this.deployedNode) &&
+          project.type() === Workspace.Workspace.projectTypes.FileSystem) {
         break;
       }
       if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
         break;
       }
       if (currentNode.type === Types.Frame) {
-        this.discardFrame((frame as SDK.ResourceTreeModel.ResourceTreeFrame));
+        this.discardFrame(
+            frame as SDK.ResourceTreeModel.ResourceTreeFrame,
+            Boolean(this.groupByAuthored) && uiSourceCode.contentType().isFromSourceMap());
         break;
       }
 
       const folderId = this.folderNodeId(
-          project, target, frame, uiSourceCode.origin(),
+          project, target, frame, uiSourceCode.origin(), uiSourceCode.contentType().isFromSourceMap(),
           currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath ||
               Platform.DevToolsPath.EmptyEncodedPathString);
       this.subfolderNodes.delete(folderId);
       parentNode.removeChild(currentNode);
-      currentNode = (parentNode as NavigatorUISourceCodeTreeNode | null);
+
+      if (currentNode === this.authoredNode) {
+        this.authoredNode = undefined;
+      } else if (currentNode === this.deployedNode) {
+        this.deployedNode = undefined;
+      }
+
+      currentNode = parentNode;
     }
   }
 
-  reset(): void {
+  reset(tearDownOnly?: boolean): void {
     for (const node of this.uiSourceCodeNodes.valuesArray()) {
       node.dispose();
     }
@@ -760,8 +832,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.subfolderNodes.clear();
     this.frameNodes.clear();
     this.rootNode.reset();
-    // Reset the workspace to repopulate filesystem folders.
-    this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
+    this.authoredNode = undefined;
+    this.deployedNode = undefined;
+    if (!tearDownOnly) {
+      // Reset the workspace to repopulate filesystem folders.
+      this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
+    }
   }
 
   handleContextMenu(_event: Event): void {
@@ -932,8 +1008,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private groupingChanged(): void {
-    this.reset();
+    this.reset(true);
     this.initGrouping();
+    // Reset the workspace to repopulate filesystem folders.
+    this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
 
@@ -941,6 +1019,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.groupByFrame = true;
     this.groupByDomain = this.navigatorGroupByFolderSetting.get();
     this.groupByFolder = this.groupByDomain;
+    this.groupByAuthored = this.navigatorGroupByAuthoredSetting.get();
   }
 
   private resetForTest(): void {
@@ -948,7 +1027,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
 
-  private discardFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+  private discardFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame, isAuthored: boolean): void {
+    if (isAuthored) {
+      return;
+    }
     const node = this.frameNodes.get(frame);
     if (!node) {
       return;
@@ -959,7 +1041,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
     this.frameNodes.delete(frame);
     for (const child of frame.childFrames) {
-      this.discardFrame(child);
+      this.discardFrame(child, isAuthored);
     }
   }
 
@@ -967,15 +1049,16 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   targetRemoved(target: SDK.Target.Target): void {
-    const targetNode = this.rootNode.child('target:' + target.id());
+    const rootOrDeployed = this.rootOrDeployedNode();
+    const targetNode = rootOrDeployed.child('target:' + target.id());
     if (targetNode) {
-      this.rootNode.removeChild(targetNode);
+      rootOrDeployed.removeChild(targetNode);
     }
   }
 
   private targetNameChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     const target = event.data;
-    const targetNode = this.rootNode.child('target:' + target.id());
+    const targetNode = this.rootOrDeployedNode().child('target:' + target.id());
     if (targetNode) {
       targetNode.setTitle(target.name());
     }
@@ -1005,15 +1088,32 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.tooltip = title;
     this.navigatorView = navigatorView;
     this.hoverCallback = hoverCallback;
+
     let iconType = 'largeicon-navigator-folder';
+    let legacyIcon = true;
+
     if (type === Types.Domain) {
       iconType = 'largeicon-navigator-domain';
     } else if (type === Types.Frame) {
       iconType = 'largeicon-navigator-frame';
     } else if (type === Types.Worker) {
       iconType = 'largeicon-navigator-worker';
+    } else if (type === Types.Authored) {
+      iconType = 'ic_sources_authored';
+      legacyIcon = false;
+    } else if (type === Types.Deployed) {
+      iconType = 'ic_sources_deployed';
+      legacyIcon = false;
     }
-    this.setLeadingIcons([UI.Icon.Icon.create(iconType, 'icon')]);
+
+    if (legacyIcon) {
+      this.setLeadingIcons([UI.Icon.Icon.create(iconType, 'icon')]);
+    } else {
+      const icon = new IconButton.Icon.Icon();
+      const iconPath = new URL(`../../Images/${iconType}.svg`, import.meta.url).toString();
+      icon.data = {iconPath: iconPath, color: 'var(--override-folder-tree-item-color)', width: '18px'};
+      this.setLeadingIcons([icon]);
+    }
   }
 
   async onpopulate(): Promise<void> {
@@ -1325,7 +1425,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   constructor(
       navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode,
       frame: SDK.ResourceTreeModel.ResourceTreeFrame|null) {
-    super(navigatorView, uiSourceCode.project().id() + ':' + uiSourceCode.url(), Types.File);
+    super(navigatorView, 'UISourceCode:' + uiSourceCode.canononicalScriptId(), Types.File);
     this.uiSourceCodeInternal = uiSourceCode;
     this.treeElement = null;
     this.eventListeners = [];
@@ -1614,12 +1714,13 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
 }
 
 export class NavigatorGroupTreeNode extends NavigatorTreeNode {
-  private readonly project: Workspace.Workspace.Project;
+  private readonly project: Workspace.Workspace.Project|null;
   title: string;
   private hoverCallback?: ((arg0: boolean) => void);
   private treeElement?: NavigatorFolderTreeElement;
   constructor(
-      navigatorView: NavigatorView, project: Workspace.Workspace.Project, id: string, type: string, title: string) {
+      navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
+      title: string) {
     super(navigatorView, id, type);
     this.project = project;
     this.title = title;
@@ -1644,7 +1745,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   }
 
   updateTitle(): void {
-    if (!this.treeElement || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
+    if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
     const fileSystemPath = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(

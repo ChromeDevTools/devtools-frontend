@@ -106,6 +106,10 @@ const UIStrings = {
   */
   groupByFolder: 'Group by folder',
   /**
+  *@description Text in Sources Panel of the Sources panel
+  */
+  groupByAuthored: 'Group by Authored/Deployed (experimental)',
+  /**
   *@description Text for pausing the debugger on exceptions
   */
   pauseOnExceptions: 'Pause on exceptions',
@@ -549,6 +553,10 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     contextMenu.viewSection().appendCheckboxItem(
         i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
         groupByFolderSetting.get());
+    const groupByAuthoredSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByAuthored');
+    contextMenu.viewSection().appendCheckboxItem(
+        i18nString(UIStrings.groupByAuthored), () => groupByAuthoredSetting.set(!groupByAuthoredSetting.get()),
+        groupByAuthoredSetting.get());
   }
 
   setIgnoreExecutionLineEvents(ignoreExecutionLineEvents: boolean): void {

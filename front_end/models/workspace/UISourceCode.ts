@@ -127,6 +127,13 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.urlInternal;
   }
 
+  // Identifier used for deduplicating scripts that are considered by the
+  // DevTools UI to be the same script. For now this is just the url but this
+  // is likely to change in the future.
+  canononicalScriptId(): string {
+    return this.urlInternal;
+  }
+
   parentURL(): Platform.DevToolsPath.UrlString {
     return this.parentURLInternal;
   }

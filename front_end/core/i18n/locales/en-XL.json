@@ -9758,11 +9758,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Âŕê ýôú ŝúr̂é ŷóû ẃâńt̂ t́ô ŕêḿôv́ê t́ĥíŝ f́ôĺd̂ér̂?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Âút̂h́ôŕêd́"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "D̂él̂ét̂é"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "D̂él̂ét̂é âĺl̂ óv̂ér̂ŕîd́êś"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "D̂ép̂ĺôýêd́"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Êx́ĉĺûd́ê f́ôĺd̂ér̂"
@@ -10192,6 +10198,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "D̂ŕôṕ ŵór̂ḱŝṕâćê f́ôĺd̂ér̂ h́êŕê"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Ĝŕôúp̂ b́ŷ Áût́ĥór̂éd̂/D́êṕl̂óŷéd̂ (éx̂ṕêŕîḿêńt̂ál̂)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Ĝŕôúp̂ b́ŷ f́ôĺd̂ér̂"

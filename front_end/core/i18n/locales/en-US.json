@@ -9758,11 +9758,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Are you sure you want to remove this folder?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Authored"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Delete"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Delete all overrides"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Deployed"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Exclude folder"
@@ -10192,6 +10198,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Drop workspace folder here"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Group by Authored/Deployed (experimental)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Group by folder"

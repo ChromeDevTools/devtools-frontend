@@ -103,6 +103,8 @@ devtools_svg_sources = [
   "ic_request_response.svg",
   "ic_response.svg",
   "ic_show_node_16x16.svg",
+  "ic_sources_authored.svg",
+  "ic_sources_deployed.svg",
   "ic_suggest_color.svg",
   "ic_undo_16x16_icon.svg",
   "ic_warning_black_18dp.svg",

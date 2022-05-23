@@ -6,6 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("sources") {
   sources = [
+    "authored-deployed-grouping_test.ts",
     "breakpoint-csp-violations_test.ts",
     "breakpoint-javascript_test.ts",
     "can-break-with-wasm-sourcemaps_test.ts",

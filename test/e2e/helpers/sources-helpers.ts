@@ -445,17 +445,21 @@ export function createSelectorsForWorkerFile(
   };
 }
 
-async function expandSourceTreeItem(selector: string) {
+async function isExpanded(sourceTreeItem: puppeteer.ElementHandle<Element>): Promise<boolean> {
+  return await sourceTreeItem.evaluate(element => {
+    return element.getAttribute('aria-expanded') === 'true';
+  });
+}
+
+export async function expandSourceTreeItem(selector: string) {
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await timeout(50);
   const sourceTreeItem = await waitFor(selector);
-  const isExpanded = await sourceTreeItem.evaluate(element => {
-    return element.getAttribute('aria-expanded') === 'true';
-  });
-  if (!isExpanded) {
+  if (!await isExpanded(sourceTreeItem)) {
     // FIXME(crbug/1112692): Refactor test to remove the timeout.
     await timeout(50);
     await doubleClickSourceTreeItem(selector);
+    await waitForFunction(() => isExpanded(sourceTreeItem));
   }
 }
 
@@ -466,6 +470,13 @@ export async function expandFileTree(selectors: NestedFileSelector) {
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await timeout(50);
   return await waitFor(selectors.fileSelector);
+}
+
+export async function readSourcesTreeView(): Promise<string[]> {
+  const items = await $$('.navigator-folder-tree-item,.navigator-file-tree-item');
+  const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
+  const results = await Promise.all(promises);
+  return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
 export async function stepThroughTheCode() {

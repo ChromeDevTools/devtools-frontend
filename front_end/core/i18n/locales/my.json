@@ -1004,6 +1004,9 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "ပုံဖော်ခြင်းကို ပြရန်"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
+    "message": "Toggle forces CSS prefers-color-scheme color"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "အမြင်အာရုံ ချွတ်ယွင်းချက်"
   },
@@ -1352,11 +1355,152 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်းနှင့် ဇာစ်မြစ်တစ်ခုတည်း"
   },
+  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
+    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+  },
+  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
+    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+  },
+  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
+    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
+    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
+    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+  },
+  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
+  },
+  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
+    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
+    "message": "{PH1} is deprecated. Please use {PH2} instead."
+  },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "ဤအရာသည် ဘာသာပြန်ထားသော ရပ်ဆိုင်းထားသည့် ပြဿနာမက်ဆေ့ဂျ် နမူနာဖြစ်သည်။"
   },
+  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | eventPath": {
+    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | feature": {
+    "message": "နောက်ထပ်အသးစိတ်အတွက် ဝန်ဆောင်မှုအခြေအနေ စာမျက်နှာကို ကြည့်နိုင်သည်။"
+  },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
+    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
+    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
+    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+  },
+  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
+    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
+    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
+    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+  },
+  "models/issues_manager/DeprecationIssue.ts | milestone": {
+    "message": "ဤအပြောင်းအလဲသည် မှတ်တိုင် {milestone} နှင့်အတူ သက်ရောက်မှုရှိမည်။"
+  },
+  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+  },
+  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
+    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
+    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
+    "message": "The basic-card payment method is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
+    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
+    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
+    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
+    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
+    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
+    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
+    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
+    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
+    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+  },
+  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+  },
+  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ရပ်ဆိုင်းထားသည့် ဝန်ဆောင်မှုကို သုံးထားသည်"
+  },
+  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
+    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+  },
+  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
+    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+  },
+  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+  },
+  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
+    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -3248,6 +3392,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ရှေ့-နောက် ကက်ရှ်"
   },
+  "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
+    "message": "URL အလွတ် [{PH1}]"
+  },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
     "message": "နောက်ဆက်တွဲ Id- "
   },
@@ -3263,8 +3410,11 @@
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
     "message": "ဖရိမ်များ"
   },
-  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
-    "message": "{x,plural, =1{ပြဿနာ # ခု}other{ပြဿနာ # ခု}} ကို တွေ့ရှိထားသည် {y,plural, =1{ဖရိန် # ခု}other{ဖရိန် # ခု}}။"
+  "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
+    "message": "{n,plural, =1{ဖရိမ် {m} ခုတွင် ပြဿနာ # ခု တွေ့သည်။}other{ဖရိမ် {m} ခုတွင် ပြဿနာ # ခု တွေ့သည်။}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
+    "message": "{n,plural, =1{ဖရိမ် 1 ခုတွင် ပြဿနာ # ခု တွေ့သည်။}other{ဖရိမ် 1 ခုတွင် ပြဿနာ # ခု တွေ့သည်။}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "ရှေ့-နောက် ကက်ရှ် အရည်အချင်းပြည့်မီမှုအကြောင်း ပိုမိုလေ့လာရန်"
@@ -4796,6 +4946,12 @@
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "အလွှာဖွဲ့စည်းပုံတွင် အလွှာထုတ်ဖော်ရန် နှိပ်နိုင်သည်"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးပြီးပြီ"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "CSS အပြောင်းအလဲအားလုံး မိတ္တူကူးရန်"
+  },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS property အမည်- {PH1}"
   },
@@ -5357,26 +5513,8 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "ဖရိမ်"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
-    "message": "event-source-trigger-data မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
-    "message": "attributionsourceeventid မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
-    "message": "attributionexpiry မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
-    "message": "attributionsourcepriority မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
-    "message": "trigger-data မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
-    "message": "dedup-key မမှန်ကန်ပါ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
-    "message": "priority မမှန်ကန်ပါ"
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
+    "message": "Invalid Header Value"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{ချိုးဖောက်မှု # ခု}other{ချိုးဖောက်မှု # ခု}}"
@@ -5828,6 +5966,9 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ဤစာမျက်နှာကို မသန်စွမ်းသူ (သို့) ချို့ယွင်းသူတို့က သုံးနိုင်သလား"
   },
+  "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
+    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+  },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "ဗားရှင်းဟောင်း လမ်းညွှန်မှုမုဒ်"
   },
@@ -5844,7 +5985,10 @@
     "message": "တဘ်အများအပြားကို service worker တစ်ခုတည်းက ထိန်းချုပ်နေသည်။ ဤစာမျက်နှာကို စစ်ဆေးရန် ဇာစ်မြစ်တစ်ခုတည်းရှိ အခြားတဘ်များကို ပိတ်ပါ။"
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "လမ်းညွှန်မှု"
+    "message": "Navigation (Default)"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
+    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "စွမ်းဆောင်ရည်"
@@ -5873,6 +6017,9 @@
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "လျှပ်တစ်ပြက်"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
+    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "အဆိုပါနေရာများတွင် စွမ်းဆောင်ရည်ဖွင့်ခြင်းအပေါ် သက်ရောက်မှုရှိသော သိမ်းထားသည့်ဒေတာများ ရှိနိုင်သည်- {PH1}။ ထိုရင်းမြစ်များက သင့်ရမှတ်များပေါ် သက်ရောက်မှုမရှိစေရန် ဤစာမျက်နှာကို ရုပ်ဖျက်ဝင်ဒိုးတွင် စစ်ဆေးပါ။"
   },
@@ -5881,6 +6028,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "ကြာချိန်"
+  },
+  "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
+    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "လမ်းညွှန်မှုမုဒ် သုံးချိန်တွင် မူရင်း Lighthouse ဖြင့် စာမျက်နှာကို စိတ်ဖြာလေ့လာနိုင်သည်။"
@@ -5925,7 +6075,7 @@
     "message": "အစီရင်ခံစာများ"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "အမျိုးအစားများ"
+    "message": "Categories"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "ကွန်မြူနတီ ပလတ်အင်များ (စမ်းသပ်ဆော့ဖ်ဝဲ)"
@@ -5943,13 +6093,22 @@
     "message": "ပိုမိုလေ့လာရန်"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "လမ်းညွှန်မှုကို စိတ်ဖြာလေ့လာရန်"
+    "message": "Analyze page load"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "လျှပ်တစ်ပြက်ရိုက်ချက်ကို စိတ်ဖြာလေ့လာရန်"
+    "message": "Analyze page state"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
+    "message": "Categories"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
+    "message": "Generate a Lighthouse report"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "မုဒ်"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+    "message": "Plugins"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "ကြာချိန် စမှတ်ရန်"
@@ -7347,7 +7506,7 @@
     "message": "အမည်မသိ"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "(TTFB) ကို စောင့်နေသည်"
+    "message": "Waiting for server response"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "ရေတံခွန်"
@@ -8463,10 +8622,10 @@
     "message": "အသေးစိတ်အပြည့်အစုံ ဖျောက်ရန်"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "၎င်းကို မှားယွင်းပြီး ပြသည်ဟု ယုံကြည်ပါက https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals သို့ဝင်ကြည့်ပါ။"
+    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "၎င်းကို မှားယွင်းပြီး ပြသည်ဟု ယုံကြည်ပါက https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals သို့ဝင်ကြည့်ပါ။"
+    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "အချက်အလက်"
@@ -10064,6 +10223,12 @@
   "panels/sources/sources-meta.ts | toggleBreakpointInputWindow": {
     "message": "ဖြတ်တောက်မှတ်ထည့်သွင်းမှု ဝင်းဒိုး ပြောင်းမည်"
   },
+  "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
+    "message": "Toggle debugger sidebar"
+  },
+  "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
+    "message": "Toggle navigator sidebar"
+  },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ကပ်ပါလာသော"
   },
@@ -10145,9 +10310,6 @@
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
-  "panels/timeline/TimelineEventOverview.ts | fps": {
-    "message": "တစ်စက္ကန့်တွင် ဖရိမ်နှုန်း"
-  },
   "panels/timeline/TimelineEventOverview.ts | heap": {
     "message": "ကျပန်းမှတ်ဉာဏ်"
   },
@@ -10184,9 +10346,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "လှုပ်ရှားမှုမဲ့ ဖရိမ်"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | input": {
-    "message": "အဝင်"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
     "message": "ပြန်လှန်တုံ့ပြန်မှုများ"
   },
@@ -10213,9 +10372,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
     "message": "ရက်စတာပုံပြောင်းစနစ် Thread {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sFfps": {
-    "message": "{PH1} ~ {PH2} fps"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (ကိုယ်တိုင် {PH2})"
@@ -10747,9 +10903,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "မဖြစ်မနေ ပြန်လည်ဆောင်ရွက်စေသည်"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fps": {
-    "message": "တစ်စက္ကန့်တွင် ဖရိမ်နှုန်း"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "ဖရိမ်"
@@ -11516,6 +11669,9 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "လက်မှတ်အရေအတွက်"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
+    "message": "Supports large blob"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "စက်ပေါ်ရှိကီးများကို ပံ့ပိုးသည်"
   },
@@ -11700,7 +11856,7 @@
     "message": "အားလုံး"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "စာသား ရှင်းပစ်ရန်"
+    "message": "Clear input"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ဥပမာ /small[d]+/ url:a.com/b"
@@ -11869,6 +12025,9 @@
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "စာမျက်နှာကို ပြန်လည်စတင်ပြီးနောက် DevTools ကို အလိုအလျောက် ပြန်ချိတ်ဆက်မည်။"
+  },
+  "ui/legacy/Toolbar.ts | clearInput": {
+    "message": "Clear input"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "နှိပ်မထားပါ"

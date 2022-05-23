@@ -477,7 +477,7 @@
     "message": "Set-Cookie హెడర్ ద్వారా కుక్కీని సెట్ చేయడానికి చేసిన ఈ ప్రయత్నం బ్లాక్ చేయబడింది ఎందుకంటే అది \"Secure\" లక్షణాన్ని కలిగి ఉంది, కానీ సురక్షిత కనెక్షన్ ద్వారా అందుకోబడలేదు."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
-    "message": "ఈ కుకీ బ్లాక్ చేయబడింది ఎందుకంటే రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్‌తో సరిగ్గా మ్యాచ్ అవ్వలేదు, లేదా రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్ లక్షణ విలువ ఉపడొమైన్ కాదు."
+    "message": "ఈ కుకీ బ్లాక్ చేయబడింది ఎందుకంటే రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్‌తో సరిగ్గా మ్యాచ్ అవ్వలేదు, లేదా రిక్వెస్ట్ URL డొమైన్ కుక్కీ డొమైన్ లక్షణ విలువ సబ్-డొమైన్‌ కాదు."
   },
   "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
     "message": "ఈ కుక్కీ చాలా పెద్దగా ఉన్నందున ఇది బ్లాక్ చేయబడింది. పేరు, విలువ రెండింటి సైజ్ కలిపి 4096 అక్షరాలు కంటే తక్కువ లేదా సమానంగా ఉండాలి."
@@ -1004,6 +1004,9 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "రెండరింగ్‌ను చూపండి"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
+    "message": "CSS prefers-color-scheme రంగును టోగుల్ చేస్తుంది"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "దృష్టి ఎర్రర్"
   },
@@ -1352,11 +1355,152 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site, Same-Origin"
   },
+  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers హ్యాండ్లింగ్‌లో ప్రామాణీకరణ వైల్డ్ కార్డ్ చిహ్నం (*) ద్వారా కవర్ కాదు."
+  },
+  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
+    "message": "రిసోర్స్ రిక్వెస్ట్‌లు వేటి URLలు అయితే, తీసివేయబడిన వైట్‌స్పేస్ \\(n|r|t) అక్షరాలను, (<) అక్షరాలు కంటే తక్కువ ఉన్న వాటి రెండింటి కలయికను కలిగి ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి. ఈ రిసోర్స్‌లను లోడ్ చేయడానికి, దయచేసి ఎలిమెంట్ లక్షణం విలువలు వంటి స్థలాల నుండి కొత్తలైన్‌లను తీసివేయండి, అంత కంటే తక్కువ అక్షరాలను ఎన్‌కోడ్ చేయండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() విస్మరించబడింది, బదులుగా ప్రామాణిక APIని ఉపయోగించండి: నావిగేషన్ సమయం 2."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() విస్మరించబడింది, బదులుగా ప్రామాణిక APIని ఉపయోగించండి: పెయింట్ సమయం."
+  },
+  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() విస్మరించబడింది, బదులుగా ప్రామాణిక APIని ఉపయోగించండి: నావిగేషన్ సమయం 2లో nextHopProtocol."
+  },
+  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
+    "message": "\\(0|r|n) అక్షరాన్ని కలిగిన కుక్కీలు కుదించబడటానికి బదులుగా తిరస్కరించబడతాయి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain‌ను సెట్ చేసి, ఒకే ఆరిజిన్ పాలసీని సడలించడం విస్మరించబడింది, అలాగే ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. document.domain‌ను సెట్ చేసి ఎనేబుల్ చేసిన క్రాస్-ఆరిజిన్ యాక్సెస్ కోసం ఈ విస్మరణ హెచ్చరిక."
+  },
+  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
+    "message": "క్రాస్ ఆరిజిన్ iframes నుండి {PH1}‌ను ట్రిగ్గర్ చేయడం విస్మరించబడింది, భవిష్యత్తులో ఈ ఆప్షన్ తీసివేయబడుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "కాస్ట్ ఇంటిగ్రేషన్ ఆటోమేటిక్ సెట్టింగ్‌ను డిజేబుల్ చేయడానికి -internal-media-controls-overlay-cast-button ఎంపిక సాధనానికి బదులుగా disableRemotePlayback ఫీచర్‌ను ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
+    "message": "32x32 DIP ఇంటర్‌సెక్ట్ నేటివ్ UI కంటే ఎక్కువ పరిమాణంలో ఉన్న అనుకూల కర్సర్‌లు విస్మరించబడ్డాయి, అలాగే తీసివేయబడతాయి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
+    "message": "{PH1} విస్మరించబడింది. దయచేసి బదులుగా {PH2} ఉపయోగించండి."
+  },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "ఇది అనువాద విస్మరణ సమస్య మెసేజ్‌కు ఉదాహరణ."
   },
+  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain‌ను సెట్ చేసి, ఒకే ఆరిజిన్ పాలసీని సడలించడం విస్మరించబడింది, అలాగే ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. ఈ ఫీచర్‌ను ఉపయోగించడం కొనసాగించడానికి, దయచేసి డాక్యుమెంట్, ఫ్రేమ్‌ల కోసం HTTP ప్రతిస్పందనతో పాటు Origin-Agent-Cluster: ?0 హెడర్‌ను పంపడం ద్వారా ఆరిజిన్-కీ గల ఏజెంట్ క్లస్టర్‌లను నిలిపివేయండి. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/immutable-document-domain/ లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | eventPath": {
+    "message": "Event.path విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. దయచేసి బదులుగా Event.composedPath() ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | feature": {
+    "message": "మరిన్ని వివరాల కోసం ఫీచర్ స్టేటస్ పేజీని చెక్ చేయండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
+    "message": "getCurrentPosition(), watchPosition() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "సురక్షితం కాని ఆరిజిన్‌లలో getCurrentPosition(), watchPosition() విస్మరించబడ్డాయి. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
+    "message": "getUserMedia() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయదు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate విస్మరించబడింది. బదులుగా దయచేసి RTCPeerConnectionIceErrorEvent.address లేదా RTCPeerConnectionIceErrorEvent.port ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
+    "message": "వెబ్‌సైట్ దాని యూజర్ యోక్క ప్రత్యేక నెట్‌వర్క్ స్థానం కారణంగా మాత్రమే యాక్సెస్ చేయగల నెట్‌వర్క్ నుండి సబ్‌రిసోర్స్‌లను రిక్వెస్ట్ చేసింది. ఈ రిక్వెస్ట్‌లు ప్రైవేట్ పరికరాలను, సర్వర్‌లను ఇంటర్నెట్‌కు బహిర్గతం చేస్తాయి, దీని వలన క్రాస్-సైట్ రిక్వెస్ట్ ఫోర్జరీ (CSRF) దాడి, మరియు/లేదా సమాచారాన్ని బహిర్గతం చేసే ప్రమాదం పెరుగుతుంది. ఈ ప్రమాదాలను తగ్గించడానికి, సురక్షితం కాని ఆరిజిన్‌ల నుండి ప్రారంభించి, ప్రైవేట్ సబ్‌రిసోర్స్‌ల కోసం చేసిన రిక్వెస్ట్‌లను Chrome విస్మరిస్తుంది, వాటిని బ్లాక్ చేయడం ప్రారంభిస్తుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
+    "message": "IPv6 ఆటోమేటిక్‌గా ఎనేబుల్ చేయబడుతుంది, googIPv6‌ను ఉపయోగించి దానిని డిజేబుల్ చేసే ఆప్షన్ త్వరలోనే తీసివేయబడుతుంది. దయచేసి ఈ లెగసీ పరిమితిని ఉపయోగించడం ఆపివేయండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
+    "message": "file: URLల చివర .css ఫైల్ ఎక్స్‌టెన్షన్ ఉంటే మినహా, వాటి నుండి CSSను లోడ్ చేయలేము."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
+    "message": "OfflineAudioContext‌లో MediaElementAudioSourceNode‌ను క్రియేట్ చేయడం విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
+    "message": "remove() యొక్క సింక్రనస్ కాని పరిధి తీసివేతను SourceBuffer.abort() ఉపయోగించి రద్దు చేయడం, నిర్దేశించిన మార్పు కారణంగా విస్మరించబడింది. భవిష్యత్తులో సపోర్ట్ తీసివేయబడుతుంది. బదులుగా మీరు updateend కోసం వేచి ఉండండి. జతపరిచిన సింక్రనస్ కాని మీడియాను రద్దు చేయడానికి లేదా పార్సర్ స్టేట్‌ను రీసెట్ చేయడానికి మాత్రమే abort() ఉద్దేశించి ఉంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
+    "message": "బఫర్ అయిన ఏ కోడెడ్ ఫ్రేమ్‌ల యొక్క ప్రదర్శించిన అత్యధిక టైమ్ స్టాంప్ కంటే MediaSource.duration‌ను తక్కువగా సెట్ చేయడం, నిర్దేశించిన మార్పు కారణంగా విస్మరించబడింది. బఫర్ అయిన మీడియా కుదింపును ఏమీ పేర్కొనకుండా తీసివేయడానికి మద్దతు, భవిష్యత్తులో తీసివేయబడుతుంది. బదులుగా మీరు newDuration < oldDuration దగ్గర అన్ని sourceBuffers‌లలో స్పష్టంగా remove(newDuration, oldDuration)‌ను అమలు చేయాలి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | milestone": {
+    "message": "ఈ మార్పు {milestone} మైల్‌స్టోన్‌తో అమలులోకి వస్తుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
+    "message": "MIDIOptions‌లో sysex పేర్కొనబడనప్పటికీ, ఉపయోగించడానికి వెబ్ MIDI అనుమతిని అడుగుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
+    "message": "నోటిఫికేషన్ API ఇకపై సురక్షితం కాని ఆరిజిన్‌ల నుండి ఉపయోగించబడకపోవచ్చు. మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
+    "message": "నోటిఫికేషన్ APIకి అనుమతిని ఇకపై క్రాస్-ఆరిజిన్ iframe నుండి రిక్వెస్ట్ చేయలేకపోవచ్చు. టాప్ లెవెల్ ఫ్రేమ్ నుండి అనుమతిని రిక్వెస్ట్ చేయడాన్ని, లేదా బదులుగా కొత్త విండోను తెరవడాన్ని పరిగణించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
+    "message": "మీ పార్ట్‌నర్ వాడుకలో లేని (D)TLS వెర్షన్‌ను ఉపయోగిస్తున్నారు. దీనిని పరిష్కరించడం గురించి దయచేసి మీ పార్ట్‌నర్‌తో సంప్రదించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
+    "message": "basic-card పేమెంట్ ఆప్షన్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
+    "message": "యూజర్ యాక్టివేషన్ లేకుండా PaymentRequest.show()‌ను కాల్ చేయడం విస్మరించబడింది, అలాగే ఆ ఆప్షన్ తీసివేయబడుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
+    "message": "<picture> పేరెంట్ కలిగిన <source src> చెల్లదు, కాబట్టి విస్మరించబడింది. బదులుగా దయచేసి <source srcset> ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
+    "message": "window.webkitStorageInfo విస్మరించబడింది. బదులుగా దయచేసి navigator.webkitTemporaryStorage లేదా navigator.webkitPersistentStorage ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
+    "message": "సబ్‌రిసోర్స్ రిక్వెస్ట్‌లు వేటి URLలు అయితే పొందుపరిచిన ఆధారాలు (ఉదా. https://user:pass@host/) కలిగి ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
+    "message": "పరిమితి DtlsSrtpKeyAgreement తీసివేయబడింది. మీరు ఈ పరిమితికి false విలువను పేర్కొన్నారు, అనగా తీసివేసిన SDES key negotiation విధానాన్ని మీరు ఉపయోగించడానికి ప్రయత్నించారని అర్ఠం. ఈ ఫంక్షనాలిటీ తీసివేయబడింది; బదులుగా DTLS key negotiation‌ను సపోర్ట్ చేసే సర్వీస్‌ను ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
+    "message": "పరిమితి DtlsSrtpKeyAgreement తీసివేయబడింది. మీరు ఈ పరిమితికి true విలువను పేర్కొన్నారు, దీని వలన ఎటువంటి ప్రభావం ఉండదు, కానీ స్పష్టత కోసం మీరు దీనిని తీసివేయవచ్చు."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
+    "message": "Complex Plan B SDP గుర్తించబడింది. ఈ Session Description Protocol మాండలికం ఇకపై సపోర్ట్ చేయబడదు. బదులుగా దయచేసి Unified Plan SDP ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
+    "message": "{sdpSemantics:'plan-b'}‌తో RTCPeerConnection‌ను ఏర్పాటు చేయడానికి ఉపయోగించిన Plan B SDP semantics, వెబ్ ప్లాట్‌ఫామ్ నుండి శాశ్వతంగా తొలగించిన Session Description Protocol‌కు లెగసీ నాన్-స్టాండర్డ్ వెర్షన్. IS_FUCHSIA‌ను ఉపయోగించి ఏర్పాటు చేస్తున్నప్పుడు ఇది ఇప్పటికీ అందుబాటులో ఉంది, కానీ వీలయినంత త్వరగా దీనిని తొలగించే ఉద్దేశం మాకు ఉంది. దీన మీద ఆధారపడటం ఆపివేయండి. స్టేటస్ కోసం https://crbug.com/1302249 లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy ఆప్షన్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
+  },
+  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
+    "message": "RTP data channels ఇకపై సపోర్ట్ చేయవు. RtpDataChannels పరిమితి ప్రస్తుతం విస్మరించబడింది, దీని వలన తర్వాతి తేదీన ఎర్రర్ ఏర్పడవచ్చు."
+  },
+  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer‌కు క్రాస్-ఆరిజిన్ ఐసోలేషన్ అవసరం. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/enabling-shared-array-buffer/ లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
+    "message": "యూజర్ యాక్టివేషన్ లేని speechSynthesis.speak() విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
+  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "విస్మరణ ఫీచర్ ఉపయోగించబడింది"
+  },
+  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer‌ను ఉపయోగించడం కొనసాగించడానికి, ఎక్స్‌టెన్షన్‌లు క్రాస్-ఆరిజిన్ ఐసోలేషన్‌ను ఎంపిక చేసుకోవాలి. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ లింక్‌ను చూడండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
+    "message": "{PH1} విక్రేత-నిర్దిష్టమైనది. బదులుగా దయచేసి {PH2} ఉపయోగించండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
+    "message": "XMLHttpRequest‌లోని JSON ప్రతిస్పందన ద్వారా UTF-16 సపోర్ట్ చేయబడదు"
+  },
+  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "ప్రధాన థ్రెడ్‌లోని సింక్రనస్ XMLHttpRequest విస్మరించబడింది, ఎందుకంటే ఇది ఎండ్ యూజర్ అనుభవంపై ప్రతికూల ప్రభావం చూపుతోంది. మరింత సహాయం కోసం, https://xhr.spec.whatwg.org/ లింక్‌ను చెక్ చేయండి."
+  },
+  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
+    "message": "supportsSession() విస్మరించబడింది. దయచేసి isSessionSupported()‌ను ఉపయోగించి, బదులుగా పరిష్కరించిన బూలియన్ విలువను చెక్ చేయండి."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "ఫెడరేటెడ్ క్రెడెన్షియల్ మేనేజ్‌మెంట్ API"
@@ -3248,6 +3392,9 @@
   "panels/application/components/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "వెనుకకు/ముందుకు కాష్"
   },
+  "panels/application/components/BackForwardCacheView.ts | blankURLTitle": {
+    "message": "ఖాళీ URL [{PH1}]"
+  },
   "panels/application/components/BackForwardCacheView.ts | blockingExtensionId": {
     "message": "ఎక్స్‌టెన్షన్ ID: "
   },
@@ -3263,8 +3410,11 @@
   "panels/application/components/BackForwardCacheView.ts | framesTitle": {
     "message": "ఫ్రేమ్‌లు"
   },
-  "panels/application/components/BackForwardCacheView.ts | issuesInFrames": {
-    "message": "{x,plural, =1{# సమస్య}other{# సమస్యలు}} {y,plural, =1{# ఫ్రేమ్}other{# ఫ్రేమ్‌లలో}} కనుగొనబడ్డాయి."
+  "panels/application/components/BackForwardCacheView.ts | issuesInMultipleFrames": {
+    "message": "{n,plural, =1{{m} ఫ్రేమ్‌లలో # సమస్య కనుగొనబడింది.}other{{m} ఫ్రేమ్‌లలో # సమస్యలు కనుగొనబడ్డాయి.}}"
+  },
+  "panels/application/components/BackForwardCacheView.ts | issuesInSingleFrame": {
+    "message": "{n,plural, =1{1 ఫ్రేమ్‌లో # సమస్య కనుగొనబడింది.}other{1 ఫ్రేమ్‌లో # సమస్యలు కనుగొనబడ్డాయి.}}"
   },
   "panels/application/components/BackForwardCacheView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి: వెనుకకు/ముందుకు కాష్ అర్హత"
@@ -3474,7 +3624,7 @@
     "message": "థర్డ్ పార్టీ"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "మ్యాచ్ అయ్యే ఉపడొమైన్"
+    "message": "మ్యాచ్ అయ్యే సబ్-డొమైన్‌"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ఆరిజిన్"
@@ -4796,6 +4946,12 @@
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "లేయర్‌లో లేయర్ గల ట్రీ వీక్షణను చూడటానికి క్లిక్ చేయండి"
   },
+  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
+    "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
+  },
+  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
+    "message": "అన్ని CSS మార్పులను కాపీ చేయండి"
+  },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS ప్రాపర్టీ పేరు: {PH1}"
   },
@@ -5357,26 +5513,8 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "ఫ్రేమ్"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
-    "message": "చెల్లని event-source-trigger-data"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
-    "message": "చెల్లని attributionsourceeventid"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
-    "message": "attributionexpiry చెల్లదు"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
-    "message": "attributionsourcepriority చెల్లదు"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
-    "message": "చెల్లని trigger-data"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
-    "message": "dedup-key చెల్లదు"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
-    "message": "priority చెల్లదు"
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
+    "message": "Invalid Header Value"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ఉల్లంఘన}other{# ఉల్లంఘనలు}}"
@@ -5828,6 +5966,9 @@
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ఈ పేజీ వైకల్యాలు లేదా లోపాలు ఉన్న వారికి ఉపయోగపడుతుందా"
   },
+  "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
+    "message": "JavaScript డిజేబుల్ చేయబడింది. ఈ పేజీని ఆడిట్ చేయడానికి మీరు JavaScriptను ఎనేబుల్ చేయాలి. కమాండ్ మెనూను తెరిచి, 'JavaScript కమాండ్‌ను ఎనేబుల్ చేయండి'ని రన్ చేసి, JavaScriptను ఎనేబుల్ చేయండి."
+  },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "లెగసీ నావిగేషన్"
   },
@@ -5844,7 +5985,10 @@
     "message": "అదే service worker పలు ట్యాబ్‌లను కంట్రోల్ చేస్తోంది. ఈ పేజీని ఆడిట్ చేయడానికి అదే మూలంలోని మీ ఇతర ట్యాబ్‌లను మూసివేయండి."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "నావిగేషన్"
+    "message": "నావిగేషన్ (ఆటోమేటిక్ సెట్టింగ్)"
+  },
+  "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
+    "message": "నావిగేషన్ మోడ్, ఒరిజినల్ Lighthouse రిపోర్ట్‌ల మాదిరిగానే పేజీ లోడ్‌ను విశ్లేషిస్తుంది."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "పనితీరు"
@@ -5873,6 +6017,9 @@
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "స్నాప్‌షాట్"
   },
+  "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
+    "message": "స్నాప్‌షాట్ మోడ్, ఒక నిర్దిష్ట స్థితిలో ఉన్న పేజీని విశ్లేషిస్తుంది, సాధారణంగా ఈ విశ్లేషణ అనేది యూజర్ ఇంటరాక్షన్‌ల తర్వాత జరుగుతుంది."
+  },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "ఈ లొకేషన్‌లలో ఉండే స్టోర్ చేసిన డేటా వల్ల 'లోడింగ్ పనితీరు' ప్రభావితం కావచ్చు: {PH1}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి."
   },
@@ -5881,6 +6028,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "కాల వ్యవధి"
+  },
+  "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
+    "message": "కాల వ్యవధి మోడ్ ఒక యాదృచ్ఛిక సమయ వ్యవధిని విశ్లేషిస్తుంది, సాధారణంగా ఈ వ్యవధి యూజర్ ఇంటరాక్షన్‌లను కలిగి ఉంటుంది."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "నావిగేషన్ మోడ్‌లో ఉన్నప్పుడు క్లాసిక్ లైట్‌హౌస్‌ను ఉపయోగించి పేజీని విశ్లేషించండి."
@@ -5943,13 +6093,22 @@
     "message": "మరింత తెలుసుకోండి"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "నావిగేషన్‌ను విశ్లేషించండి"
+    "message": "పేజీ లోడ్‌ను విశ్లేషించండి"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "స్నాప్‌షాట్‌ను విశ్లేషించండి"
+    "message": "పేజీ స్టేటస్‌ను విశ్లేషించండి"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
+    "message": "కేటగిరీలు"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
+    "message": "ఒక Lighthouse రిపోర్ట్‌ను జెనరేట్ చేయండి"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "మోడ్"
+  },
+  "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
+    "message": "ప్లగ్ఇన్‌లు"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "కాలవ్యవధిని ప్రారంభించండి"
@@ -7347,7 +7506,7 @@
     "message": "తెలియదు"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "వేచి ఉంది (TTFB)"
+    "message": "సర్వర్ ప్రతిస్పందన కోసం వేచి చూస్తోంది"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "వాటర్‌ఫాల్"
@@ -8463,10 +8622,10 @@
     "message": "పూర్తి వివరాలను దాచు"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "ఇది పొరపాటుగా చూపించబడింది అని మీరు అనుకుంటే, దయచేసి https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals లింక్‌ను సందర్శించండి."
+    "message": "ఇది పొరపాటుగా చూపించబడింది అని మీరు అనుకుంటే, దయచేసి https://g.co/chrome/lookalike-warnings లింక్‌ను సందర్శించండి."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "ఇది పొరపాటుగా చూపించబడింది అని మీరు అనుకుంటే, దయచేసి https://bugs.chromium.org/p/chromium/issues/entry?template=Safety+Tips+Appeals లింక్‌ను సందర్శించండి."
+    "message": "ఇది పొరపాటుగా చూపించబడింది అని మీరు అనుకుంటే, దయచేసి https://g.co/chrome/lookalike-warnings లింక్‌ను సందర్శించండి."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "సమాచారం"
@@ -10064,6 +10223,12 @@
   "panels/sources/sources-meta.ts | toggleBreakpointInputWindow": {
     "message": "బ్రేక్ పాయింట్ ఇన్‌పుట్ విండోను టోగుల్ చేయండి"
   },
+  "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
+    "message": "డీబగ్గర్ సైడ్‌బార్‌ను టోగుల్ చేయండి"
+  },
+  "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
+    "message": "నావిగేటర్ సైడ్‌బార్‌ను టోగుల్ చేయండి"
+  },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ట్రయలింగ్"
   },
@@ -10145,9 +10310,6 @@
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
-  "panels/timeline/TimelineEventOverview.ts | fps": {
-    "message": "FPS"
-  },
   "panels/timeline/TimelineEventOverview.ts | heap": {
     "message": "హీప్"
   },
@@ -10184,9 +10346,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "ఇన్‌యాక్టివ్‌గా ఉన్న ఫ్రేమ్"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | input": {
-    "message": "ఇన్‌పుట్"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
     "message": "ఇంటరాక్షన్‌లు"
   },
@@ -10213,9 +10372,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
     "message": "రాస్టరైజర్ థ్రెడ్{PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | sFfps": {
-    "message": "{PH1} ~ {PH2} FPS"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (స్వీయ {PH2})"
@@ -10443,7 +10599,7 @@
     "message": "ఫ్రేమ్ ఆధారంగా గ్రూప్ చేయండి"
   },
   "panels/timeline/TimelineTreeView.ts | groupBySubdomain": {
-    "message": "ఉపడొమైన్ ఆధారంగా గ్రూప్ చేయండి"
+    "message": "సబ్-డొమైన్‌ ఆధారంగా గ్రూప్ చేయండి"
   },
   "panels/timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "URL ఆధారంగా గ్రూప్ చేయండి"
@@ -10747,9 +10903,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "ఫోర్స్ చేయబడిన రీఫ్లో"
-  },
-  "panels/timeline/TimelineUIUtils.ts | fps": {
-    "message": "FPS"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "ఫ్రేమ్"
@@ -11516,6 +11669,9 @@
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "సంతకం సంఖ్య"
   },
+  "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
+    "message": "పెద్ద బ్లాబ్‌ను సపోర్ట్ చేస్తుంది"
+  },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "రెసిడెంట్ కీలను సపోర్ట్ చేస్తుంది"
   },
@@ -11869,6 +12025,9 @@
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
     "message": "ఒకసారి పేజీ రీలోడ్ చేయబడిన తర్వాత, DevTools ఆటోమేటిక్‌గా మళ్లీ కనెక్ట్ అవుతుంది."
+  },
+  "ui/legacy/Toolbar.ts | clearInput": {
+    "message": "ఇన్‌పుట్‌ను క్లియర్ చేయండి"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "నొక్కలేదు"

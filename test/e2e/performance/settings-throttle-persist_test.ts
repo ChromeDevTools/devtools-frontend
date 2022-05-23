@@ -7,7 +7,7 @@ import type {ElementHandle} from 'puppeteer';
 
 import {reloadDevTools, waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToPerformanceTab} from '../helpers/performance-helpers.js';
+import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 
 describe('The Performance panel', async function() {
   // These tests reload panels repeatedly, which can take a longer time.
@@ -21,12 +21,6 @@ describe('The Performance panel', async function() {
   async function assertOption(select: ElementHandle<HTMLSelectElement>, expected: string) {
     assert.strictEqual(await select.evaluate(el => el.selectedOptions.length), 1);
     assert.strictEqual(await select.evaluate(el => el.selectedOptions[0].getAttribute('aria-label')), expected);
-  }
-
-  async function openCaptureSettings(sectionClassName: string) {
-    const captureSettingsButton = await waitForAria('Capture settings');
-    await captureSettingsButton.click();
-    return await waitFor(sectionClassName);
   }
 
   it('can persist throttling conditions', async () => {

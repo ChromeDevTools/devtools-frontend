@@ -618,3 +618,11 @@
   width: 100%;
   height: 100%;
 }
+
+.timeline-concurrency-input {
+  width: 50px;
+}
+
+.timeline-concurrency-hidden {
+  visibility: hidden;
+}

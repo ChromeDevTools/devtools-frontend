@@ -6455,14 +6455,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× ŝĺôẃd̂óŵń"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Êx́ĉéêd́îńĝ t́ĥé d̂éf̂áûĺt̂ v́âĺûé m̂áŷ d́êǵr̂ád̂é ŝýŝt́êḿ p̂ér̂f́ôŕm̂án̂ćê."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "F̂ór̂ćê d́îśĉón̂ńêćt̂éd̂ f́r̂óm̂ ńêt́ŵór̂ḱ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Ĥár̂d́ŵár̂é ĉón̂ćûŕr̂én̂ćŷ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Ĥár̂d́ŵár̂é ĉón̂ćûŕr̂én̂ćŷ óv̂ér̂ŕîd́ê íŝ én̂áb̂ĺêd́"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "V̂ál̂úê óf̂ ńâv́îǵât́ôŕ.ĥár̂d́ŵár̂éĈón̂ćûŕr̂én̂ćŷ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "N̂ó t̂h́r̂ót̂t́l̂ín̂ǵ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Ôf́f̂ĺîńê"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "R̂éŝét̂ t́ô t́ĥé d̂éf̂áûĺt̂ v́âĺûé"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -10600,6 +10615,9 @@
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
     "message": "F̂áîĺêd́ t̂ó ŝáv̂é t̂ím̂él̂ín̂é: {PH1} ({PH2}, {PH3})"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- Ĥár̂d́ŵár̂é ĉón̂ćûŕr̂én̂ćŷ óv̂ér̂ŕîd́ê íŝ én̂áb̂ĺêd́"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Îńît́îál̂íẑín̂ǵ p̂ŕôf́îĺêŕ…"

@@ -13,6 +13,8 @@ let throttlingManagerInstance: CPUThrottlingManager;
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
   #cpuThrottlingRateInternal: number;
+  #hardwareConcurrencyInternal?: number;
+  #pendingMainTargetPromise?: (r: number) => void;
 
   private constructor() {
     super();
@@ -41,9 +43,59 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     this.dispatchEventToListeners(Events.RateChanged, this.#cpuThrottlingRateInternal);
   }
 
+  setHardwareConcurrency(concurrency: number): void {
+    this.#hardwareConcurrencyInternal = concurrency;
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+      void emulationModel.setHardwareConcurrency(concurrency);
+    }
+    this.dispatchEventToListeners(Events.HardwareConcurrencyChanged, this.#hardwareConcurrencyInternal);
+  }
+
+  async getHardwareConcurrency(): Promise<number> {
+    const target = TargetManager.instance().mainTarget();
+    const existingCallback = this.#pendingMainTargetPromise;
+
+    // If the main target hasn't attached yet, block callers until it appears.
+    if (!target) {
+      if (existingCallback) {
+        return new Promise(r => {
+          this.#pendingMainTargetPromise = (result: number): void => {
+            r(result);
+            existingCallback(result);
+          };
+        });
+      }
+      return new Promise(r => {
+        this.#pendingMainTargetPromise = r;
+      });
+    }
+
+    const evalResult = await target.runtimeAgent().invoke_evaluate(
+        {expression: 'navigator.hardwareConcurrency', returnByValue: true, silent: true, throwOnSideEffect: true});
+    const error = evalResult.getError();
+    if (error) {
+      throw new Error(error);
+    }
+    const {result, exceptionDetails} = evalResult;
+    if (exceptionDetails) {
+      throw new Error(exceptionDetails.text);
+    }
+    return result.value;
+  }
+
   modelAdded(emulationModel: EmulationModel): void {
     if (this.#cpuThrottlingRateInternal !== CPUThrottlingRates.NoThrottling) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);
+    }
+    if (this.#hardwareConcurrencyInternal !== undefined) {
+      void emulationModel.setHardwareConcurrency(this.#hardwareConcurrencyInternal);
+    }
+
+    // If there are any callers blocked on a getHardwareConcurrency call, let's wake them now.
+    if (this.#pendingMainTargetPromise) {
+      const existingCallback = this.#pendingMainTargetPromise;
+      this.#pendingMainTargetPromise = undefined;
+      void this.getHardwareConcurrency().then(existingCallback);
     }
   }
 
@@ -56,10 +108,12 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   RateChanged = 'RateChanged',
+  HardwareConcurrencyChanged = 'HardwareConcurrencyChanged',
 }
 
 export type EventTypes = {
   [Events.RateChanged]: number,
+  [Events.HardwareConcurrencyChanged]: number,
 };
 
 export function throttlingManager(): CPUThrottlingManager {

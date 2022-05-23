@@ -314,6 +314,13 @@ export class EmulationModel extends SDKModel<void> {
     await this.#emulationAgent.invoke_setCPUThrottlingRate({rate});
   }
 
+  async setHardwareConcurrency(hardwareConcurrency: number): Promise<void> {
+    if (hardwareConcurrency < 1) {
+      throw new Error('hardwareConcurrency must be a positive value');
+    }
+    await this.#emulationAgent.invoke_setHardwareConcurrencyOverride({hardwareConcurrency});
+  }
+
   async emulateTouch(enabled: boolean, mobile: boolean): Promise<void> {
     this.#touchEnabled = enabled;
     this.#touchMobile = mobile;

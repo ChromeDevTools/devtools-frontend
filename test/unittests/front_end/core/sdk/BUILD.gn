@@ -8,6 +8,7 @@ ts_library("sdk") {
   testonly = true
   sources = [
     "AccessibilityModel_test.ts",
+    "CPUThrottlingManager_test.ts",
     "CSSContainerQuery_test.ts",
     "CSSPropertyParser_test.ts",
     "CSSProperty_test.ts",

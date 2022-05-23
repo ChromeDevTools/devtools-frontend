@@ -4,7 +4,7 @@
 
 import type * as puppeteer from 'puppeteer';
 
-import {click, goToResource, waitFor} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForAria} from '../../shared/helper.js';
 
 export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 export const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
@@ -25,6 +25,12 @@ export async function navigateToPerformanceTab(testName?: string) {
 
   // Make sure the landing page is shown.
   await waitFor('.timeline-landing-page');
+}
+
+export async function openCaptureSettings(sectionClassName: string) {
+  const captureSettingsButton = await waitForAria('Capture settings');
+  await captureSettingsButton.click();
+  return await waitFor(sectionClassName);
 }
 
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {

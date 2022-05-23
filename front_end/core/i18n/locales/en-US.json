@@ -6455,14 +6455,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× slowdown"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Exceeding the default value may degrade system performance."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Force disconnected from network"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Hardware concurrency"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Hardware concurrency override is enabled"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "Value of navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "No throttling"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Reset to the default value"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -10600,6 +10615,9 @@
   },
   "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
     "message": "Failed to save timeline: {PH1} ({PH2}, {PH3})"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- Hardware concurrency override is enabled"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initializing profiler…"

@@ -10,9 +10,12 @@ import {fileURLToPath} from 'url';
 
 /** @type {Map<string, Map<string, string[][]>>} */
 const methods = new Map();
+/** @type {Map<string, string[]>} */
+const includes = new Map();
 
 export function clearState() {
   methods.clear();
+  includes.clear();
 }
 
 export function parseTSFunction(func, node) {
@@ -47,9 +50,22 @@ export function walkRoot(thing) {
     case 'namespace':
       walkMembers(thing);
       break;
+    case 'includes':
+      walkIncludes(thing);
+      break;
   }
 }
 
+/**
+ * @param {WebIDL2.IncludesType} thing
+ * */
+function walkIncludes(thing) {
+  if (includes.has(thing.includes)) {
+    includes.get(thing.includes).push(thing.target);
+  } else {
+    includes.set(thing.includes, [thing.target]);
+  }
+}
 /**
  * @param {WebIDL2.InterfaceType} thing
  * */
@@ -177,12 +193,16 @@ export function postProcess(dryRun = false) {
     } else {
       const receiversMap = new Map();
       for (const [parent, signatures] of method) {
-        const receivers = receiversMap.get(JSON.stringify(signatures)) || [];
-        receivers.push(parent);
+        const receivers = receiversMap.get(JSON.stringify(signatures)) || new Set();
+        if (includes.has(parent)) {
+          includes.get(parent).forEach(receiver => receivers.add(receiver));
+        } else {
+          receivers.add(parent);
+        }
         receiversMap.set(JSON.stringify(signatures), receivers);
       }
       for (const [signatures, receivers] of receiversMap) {
-        functions.push({name, signatures: JSON.parse(signatures), receivers});
+        functions.push({name, signatures: JSON.parse(signatures), receivers: Array.from(receivers)});
       }
     }
   }

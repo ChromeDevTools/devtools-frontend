@@ -32,7 +32,6 @@ for (const file of program.getSourceFiles()) {
     if (node.kind === ts.SyntaxKind.FunctionDeclaration) {
       parseTSFunction(node, {name: {text: 'Window'}});
     }
-
   });
 }
 

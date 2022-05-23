@@ -181,7 +181,7 @@ const UIStrings = {
    */
   vendorSpecificApi: '{PH1} is vendor-specific. Please use the standard {PH2} instead.',
   /**
-   * @description TODO(crbug.com/1320351): Description needed for translation
+   * @description Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.
    */
   prefixedStorageInfo:
       '`window.webkitStorageInfo` is deprecated. Please use `navigator.webkitTemporaryStorage` or `navigator.webkitPersistentStorage` instead.',

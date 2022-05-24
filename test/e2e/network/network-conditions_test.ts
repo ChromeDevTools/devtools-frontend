@@ -7,13 +7,16 @@ import type {ElementHandle, Page} from 'puppeteer';
 import {getBrowserAndPages, pressKey, typeText, waitFor, waitForAria, tabForward} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
-import type * as Protocol from '../../../front_end/generated/protocol.js';
 
-interface MetaData extends Protocol.Emulation.UserAgentMetadata {
-  getHighEntropyValues: (metaDataKeys: string[]) => Promise<string[]>;
-}
-interface NavigatorWithUserAgentData extends Navigator {
-  userAgentData: MetaData;
+interface Navigator {
+  userAgentData?: {
+    brands: {
+      brand: string,
+      version: string,
+    }[],
+    mobile: string,
+    getHighEntropyValues: (metaDataKeys: string[]) => Promise<string[]>,
+  };
 }
 
 describe('The Network Tab', async function() {
@@ -39,11 +42,11 @@ describe('The Network Tab', async function() {
 
   async function getUserAgentMetadataFromTarget(target: Page) {
     const getUserAgentMetaData = async () => {
-      const nav = <NavigatorWithUserAgentData>navigator;
+      const nav = <Navigator>navigator;
       return {
-        brands: nav.userAgentData.brands,
-        mobile: nav.userAgentData.mobile,
-        ...(await nav.userAgentData.getHighEntropyValues([
+        brands: nav.userAgentData?.brands,
+        mobile: nav.userAgentData?.mobile,
+        ...(await nav.userAgentData?.getHighEntropyValues([
           'uaFullVersion',
           'architecture',
           'model',

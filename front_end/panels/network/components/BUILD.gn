@@ -27,6 +27,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../generated:protocol",
     "../../../panels/utils:bundle",
+    "../../../ui/components/buttons:bundle",
     "../../../ui/components/data_grid:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",

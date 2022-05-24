@@ -226,8 +226,8 @@ export function stripLitHtmlCommentNodes(text: string) {
  * Returns an array of textContents.
  * Multiple consecutive newLine and space characters are removed.
  */
-export function getCleanTextContentFromElements(shadowRoot: ShadowRoot, selector: string): string[] {
-  const elements = Array.from(shadowRoot.querySelectorAll(selector));
+export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, selector: string): string[] {
+  const elements = Array.from(el.querySelectorAll(selector));
   return elements.map(element => {
     return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, '') : '';
   });

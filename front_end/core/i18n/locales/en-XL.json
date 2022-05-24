@@ -6626,17 +6626,26 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Ĝén̂ér̂ál̂"
   },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "R̂áŵ"
+  },
   "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
     "message": "R̂éf̂ér̂ŕêŕ P̂ól̂íĉý"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
     "message": "R̂ém̂ót̂é Âd́d̂ŕêśŝ"
   },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "R̂éq̂úêśt̂ H́êád̂ér̂ś"
+  },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "R̂éq̂úêśt̂ Ḿêt́ĥód̂"
   },
   "panels/network/components/RequestHeadersView.ts | requestUrl": {
     "message": "R̂éq̂úêśt̂ ÚR̂Ĺ"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "R̂éŝṕôńŝé Ĥéâd́êŕŝ"
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Ŝt́ât́ûś Ĉód̂é"

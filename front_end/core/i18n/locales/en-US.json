@@ -6626,17 +6626,26 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "General"
   },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Raw"
+  },
   "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
     "message": "Referrer Policy"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
     "message": "Remote Address"
   },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Request Headers"
+  },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "Request Method"
   },
   "panels/network/components/RequestHeadersView.ts | requestUrl": {
     "message": "Request URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Response Headers"
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Status Code"

@@ -23,10 +23,33 @@
   background-color: var(--legacy-focus-bg-color);
 }
 
+details[open] .header-count {
+  display: none;
+}
+
+details summary label {
+  display: none;
+}
+
+details[open] summary label {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.raw-checkbox-container {
+  float: right;
+}
+
+details summary input {
+  vertical-align: middle;
+}
+
 .row {
   display: flex;
   line-height: 20px;
-  padding-left: 25px;
+  padding-left: 8px;
+  gap: 12px;
+  user-select: text;
 }
 
 .row:first-of-type {
@@ -39,14 +62,13 @@
 
 .header-name {
   color: var(--color-primary);
-  font-weight: bold;
+  font-weight: 500;
   width: 160px;
   flex-shrink: 0;
 }
 
 .header-value {
   word-break: break-all;
-  user-select: text;
 }
 
 .green-circle::before,
@@ -75,4 +97,10 @@
 
 .status-with-comment {
   color: var(--color-text-secondary);
+}
+
+.raw-headers {
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size);
+  white-space: pre-wrap;
 }

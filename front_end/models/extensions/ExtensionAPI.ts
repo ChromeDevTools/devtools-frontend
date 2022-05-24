@@ -86,6 +86,7 @@ export namespace PrivateAPI {
     Unsubscribe = 'unsubscribe',
     UpdateButton = 'updateButton',
     RegisterLanguageExtensionPlugin = 'registerLanguageExtensionPlugin',
+    RegisterRecorderExtensionPlugin = 'registerRecorderExtensionPlugin',
   }
 
   export const enum LanguageExtensionPluginCommands {
@@ -108,6 +109,14 @@ export namespace PrivateAPI {
     UnregisteredLanguageExtensionPlugin = 'unregisteredLanguageExtensionPlugin',
   }
 
+  export const enum RecorderExtensionPluginCommands {
+    Stringify = 'stringify',
+  }
+
+  export const enum RecorderExtensionPluginEvents {
+    UnregisteredRecorderExtensionPlugin = 'unregisteredRecorderExtensionPlugin',
+  }
+
   export interface EvaluateOptions {
     frameURL?: string;
     useContentScriptContext?: boolean;
@@ -119,6 +128,11 @@ export namespace PrivateAPI {
     pluginName: string,
     port: MessagePort,
     supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes,
+  };
+  type RegisterRecorderExtensionPluginRequest = {
+    command: Commands.RegisterRecorderExtensionPlugin,
+    pluginName: string,
+    port: MessagePort,
   };
   type SubscribeRequest = {command: Commands.Subscribe, type: string};
   type UnsubscribeRequest = {command: Commands.Unsubscribe, type: string};
@@ -182,13 +196,13 @@ export namespace PrivateAPI {
   type GetHARRequest = {command: Commands.GetHAR};
   type GetPageResourcesRequest = {command: Commands.GetPageResources};
 
-  export type ServerRequests = RegisterLanguageExtensionPluginRequest|SubscribeRequest|UnsubscribeRequest|
-      AddRequestHeadersRequest|ApplyStyleSheetRequest|CreatePanelRequest|ShowPanelRequest|CreateToolbarButtonRequest|
-      UpdateButtonRequest|CompleteTraceSessionRequest|CreateSidebarPaneRequest|SetSidebarHeightRequest|
-      SetSidebarContentRequest|SetSidebarPageRequest|OpenResourceRequest|SetOpenResourceHandlerRequest|
-      SetThemeChangeHandlerRequest|ReloadRequest|EvaluateOnInspectedPageRequest|GetRequestContentRequest|
-      GetResourceContentRequest|SetResourceContentRequest|AddTraceProviderRequest|ForwardKeyboardEventRequest|
-      GetHARRequest|GetPageResourcesRequest;
+  export type ServerRequests = RegisterRecorderExtensionPluginRequest|RegisterLanguageExtensionPluginRequest|
+      SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|ApplyStyleSheetRequest|CreatePanelRequest|
+      ShowPanelRequest|CreateToolbarButtonRequest|UpdateButtonRequest|CompleteTraceSessionRequest|
+      CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|
+      OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
+      EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
+      AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -256,6 +270,13 @@ export namespace PrivateAPI {
       RawLocationToSourceLocationRequest|GetScopeInfoRequest|ListVariablesInScopeRequest|RemoveRawModuleRequest|
       GetTypeInfoRequest|GetFormatterRequest|GetInspectableAddressRequest|GetFunctionInfoRequest|
       GetInlinedFunctionRangesRequest|GetInlinedCalleesRangesRequest|GetMappedLinesRequest;
+
+  type StringifyRequest = {
+    method: RecorderExtensionPluginCommands.Stringify,
+    parameters: {recording: Record<string, unknown>},
+  };
+
+  export type RecorderExtensionRequests = StringifyRequest;
 }
 
 declare global {
@@ -264,7 +285,7 @@ declare global {
         (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
          testHook:
              (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-         injectedScriptId: number) => void;
+         injectedScriptId: number, targetWindow?: Window) => void;
     buildExtensionAPIInjectedScript(
         extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
         testHook: undefined|((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
@@ -283,6 +304,7 @@ export type ExtensionDescriptor = {
 namespace APIImpl {
   export interface InspectorExtensionAPI {
     languageServices: PublicAPI.Chrome.DevTools.LanguageExtensions;
+    recorder: PublicAPI.Chrome.DevTools.RecorderExtensions;
     timeline: Timeline;
     network: PublicAPI.Chrome.DevTools.Network;
     panels: PublicAPI.Chrome.DevTools.Panels;
@@ -357,6 +379,10 @@ namespace APIImpl {
     _plugins: Map<PublicAPI.Chrome.DevTools.LanguageExtensionPlugin, MessagePort>;
   }
 
+  export interface RecorderExtensions extends PublicAPI.Chrome.DevTools.RecorderExtensions {
+    _plugins: Map<PublicAPI.Chrome.DevTools.RecorderExtensionPlugin, MessagePort>;
+  }
+
   export interface ExtensionPanel extends ExtensionView, PublicAPI.Chrome.DevTools.ExtensionPanel {
     show(): void;
   }
@@ -392,7 +418,7 @@ namespace APIImpl {
 self.injectedExtensionAPI = function(
     extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
     testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-    injectedScriptId: number): void {
+    injectedScriptId: number, targetWindowForTest?: Window): void {
   const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
 
@@ -473,6 +499,7 @@ self.injectedExtensionAPI = function(
     this.network = new (Constructor(Network))();
     this.timeline = new (Constructor(Timeline))();
     this.languageServices = new (Constructor(LanguageServicesAPI))();
+    this.recorder = new (Constructor(RecorderServicesAPI))();
     defineDeprecatedProperty(this, 'webInspector', 'resources', 'network');
   }
 
@@ -671,6 +698,60 @@ self.injectedExtensionAPI = function(
     __proto__: ExtensionViewImpl.prototype,
   };
 
+  function RecorderServicesAPIImpl(this: APIImpl.RecorderExtensions): void {
+    this._plugins = new Map();
+  }
+
+  (RecorderServicesAPIImpl.prototype as
+   Pick<APIImpl.RecorderExtensions, 'registerRecorderExtensionPlugin'|'unregisterRecorderExtensionPlugin'>) = {
+    registerRecorderExtensionPlugin: async function(
+        this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin,
+        pluginName: string): Promise<void> {
+      if (this._plugins.has(plugin)) {
+        throw new Error(`Tried to register plugin '${pluginName}' twice`);
+      }
+      const channel = new MessageChannel();
+      const port = channel.port1;
+      this._plugins.set(plugin, port);
+      port.onmessage = ({data}: MessageEvent<{requestId: number}&PrivateAPI.RecorderExtensionRequests>): void => {
+        const {requestId} = data;
+        dispatchMethodCall(data)
+            .then(result => port.postMessage({requestId, result}))
+            .catch(error => port.postMessage({requestId, error: {message: error.message}}));
+      };
+
+      function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
+        switch (request.method) {
+          case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
+            return plugin.stringify(request.parameters.recording);
+          default:
+            throw new Error(`'${request.method}' is not recognized`);
+        }
+      }
+
+      await new Promise<void>(resolve => {
+        extensionServer.sendRequest(
+            {
+              command: PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
+              pluginName,
+              port: channel.port2,
+            },
+            () => resolve(), [channel.port2]);
+      });
+    },
+
+    unregisterRecorderExtensionPlugin: async function(
+        this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin): Promise<void> {
+      const port = this._plugins.get(plugin);
+      if (!port) {
+        throw new Error('Tried to unregister a plugin that was not previously registered');
+      }
+      this._plugins.delete(plugin);
+      port.postMessage({event: PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin});
+      port.close();
+    },
+  };
+
   function LanguageServicesAPIImpl(this: APIImpl.LanguageExtensions): void {
     this._plugins = new Map();
   }
@@ -787,6 +868,7 @@ self.injectedExtensionAPI = function(
   }
 
   const LanguageServicesAPI = declareInterfaceClass(LanguageServicesAPIImpl);
+  const RecorderServicesAPI = declareInterfaceClass(RecorderServicesAPIImpl);
   const Button = declareInterfaceClass(ButtonImpl);
   const EventSink = declareInterfaceClass(EventSinkImpl);
   const ExtensionPanel = declareInterfaceClass(ExtensionPanelImpl);
@@ -1128,7 +1210,7 @@ self.injectedExtensionAPI = function(
 
   document.addEventListener('keydown', forwardKeyboardEvent, false);
 
-  function ExtensionServerClient(this: APIImpl.ExtensionServerClient): void {
+  function ExtensionServerClient(this: APIImpl.ExtensionServerClient, targetWindow: Window): void {
     this._callbacks = {};
     this._handlers = {};
     this._lastRequestId = 0;
@@ -1141,7 +1223,7 @@ self.injectedExtensionAPI = function(
     this._port.addEventListener('message', this._onMessage.bind(this), false);
     this._port.start();
 
-    window.parent.postMessage('registerExtension', '*', [channel.port2]);
+    targetWindow.postMessage('registerExtension', '*', [channel.port2]);
   }
 
   (ExtensionServerClient.prototype as Pick<
@@ -1225,7 +1307,7 @@ self.injectedExtensionAPI = function(
     }
   }
 
-  const extensionServer = new (Constructor(ExtensionServerClient))();
+  const extensionServer = new (Constructor(ExtensionServerClient))(targetWindowForTest || window.parent);
 
   const coreAPI = new (Constructor(InspectorExtensionAPI))();
 
@@ -1241,6 +1323,7 @@ self.injectedExtensionAPI = function(
   chrome.devtools!.panels = coreAPI.panels;
   chrome.devtools!.panels.themeName = themeName;
   chrome.devtools!.languageServices = coreAPI.languageServices;
+  chrome.devtools!.recorder = coreAPI.recorder;
 
   // default to expose experimental APIs for now.
   if (extensionInfo.exposeExperimentalAPIs !== false) {

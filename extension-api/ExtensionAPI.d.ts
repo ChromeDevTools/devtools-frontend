@@ -94,6 +94,7 @@ export namespace Chrome {
       panels: Panels;
       inspectedWindow: InspectedWindow;
       languageServices: LanguageExtensions;
+      recorder: RecorderExtensions;
     }
 
     export interface ExperimentalDevToolsAPI {
@@ -168,6 +169,10 @@ export namespace Chrome {
     export interface EvalBase {
       rootType: TypeInfo;
       payload: unknown;
+    }
+
+    export interface RecorderExtensionPlugin {
+      stringify(obj: Record<string, any>): Promise<string>;
     }
 
     export interface LanguageExtensionPlugin {
@@ -270,6 +275,11 @@ export namespace Chrome {
           plugin: LanguageExtensionPlugin, pluginName: string,
           supportedScriptTypes: SupportedScriptTypes): Promise<void>;
       unregisterLanguageExtensionPlugin(plugin: LanguageExtensionPlugin): Promise<void>;
+    }
+
+    export interface RecorderExtensions {
+      registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string): Promise<void>;
+      unregisterRecorderExtensionPlugin(plugin: RecorderExtensionPlugin): Promise<void>;
     }
 
     export interface Chrome {

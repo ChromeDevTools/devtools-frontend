@@ -52,7 +52,9 @@ import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './Extension
 import type {TracingSession} from './ExtensionTraceProvider.js';
 import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
+import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
+import {RecorderPluginManager} from './RecorderPluginManager.js';
 
 const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
 
@@ -138,6 +140,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.UpdateButton, this.onUpdateButton.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterLanguageExtensionPlugin, this.registerLanguageExtensionEndpoint.bind(this));
+    this.registerHandler(
+        PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
     window.addEventListener('message', this.onWindowMessage.bind(this), false);  // Only for main window.
 
     const existingTabId =
@@ -212,6 +216,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
     const endpoint = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
     pluginManager.addPlugin(endpoint);
+    return this.status.OK();
+  }
+
+  private registerRecorderExtensionEndpoint(
+      message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
+    if (message.command !== PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+    }
+    const {pluginName, port} = message;
+    RecorderPluginManager.instance().addPlugin(new RecorderExtensionEndpoint(pluginName, port));
     return this.status.OK();
   }
 
@@ -854,6 +868,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       // Run deferred init
       this.initializeExtensions();
     }
+  }
+
+  addExtensionForTest(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor, origin: string): boolean
+      |undefined {
+    const name = extensionInfo.name || `Extension ${origin}`;
+    this.registeredExtensions.set(origin, {name});
+    return true;
   }
 
   private addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {

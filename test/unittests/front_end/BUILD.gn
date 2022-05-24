@@ -18,6 +18,7 @@ group("front_end") {
     "entrypoints/missing_entrypoints",
     "models/bindings",
     "models/emulation",
+    "models/extensions",
     "models/formatter",
     "models/har",
     "models/issues_manager",

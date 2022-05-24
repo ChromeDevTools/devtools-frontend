@@ -9,11 +9,14 @@ import("../visibility.gni")
 devtools_module("extensions") {
   sources = [
     "ExtensionAPI.ts",
+    "ExtensionEndpoint.ts",
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
     "ExtensionTraceProvider.ts",
     "ExtensionView.ts",
     "LanguageExtensionEndpoint.ts",
+    "RecorderExtensionEndpoint.ts",
+    "RecorderPluginManager.ts",
   ]
 
   deps = [
@@ -47,6 +50,7 @@ devtools_entrypoint("bundle") {
     "../../panels/elements/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
+    "//test/unittests/front_end/models/extensions:extensions",
   ]
 
   visibility += devtools_models_visibility

@@ -196,11 +196,13 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     return initiatorInfo;
   }
 
-  initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest): InitiatorInfo {
-    const initiatorInfo = this.initializeInitiatorSymbolIfNeeded(request);
-    if (initiatorInfo.info) {
-      return initiatorInfo.info;
-    }
+  static initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest, existingInitiatorData?: InitiatorData):
+      InitiatorInfo {
+    const initiatorInfo: InitiatorData = existingInitiatorData || {
+      info: null,
+      chain: null,
+      request: undefined,
+    };
 
     let type = SDK.NetworkRequest.InitiatorType.Other;
     let url = Platform.DevToolsPath.EmptyUrlString;
@@ -253,9 +255,17 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
         url = initiator.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
       }
     }
-
     initiatorInfo.info = {type, url, lineNumber, columnNumber, scriptId, stack: initiatorStack, initiatorRequest};
     return initiatorInfo.info;
+  }
+
+  initiatorInfoForRequest(request: SDK.NetworkRequest.NetworkRequest): InitiatorInfo {
+    const initiatorInfo = this.initializeInitiatorSymbolIfNeeded(request);
+    if (initiatorInfo.info) {
+      return initiatorInfo.info;
+    }
+
+    return NetworkLog.initiatorInfoForRequest(request, initiatorInfo);
   }
 
   initiatorGraphForRequest(request: SDK.NetworkRequest.NetworkRequest): InitiatorGraph {
@@ -584,7 +594,7 @@ export type EventTypes = {
   [Events.RequestUpdated]: SDK.NetworkRequest.NetworkRequest,
 };
 
-interface InitiatorData {
+export interface InitiatorData {
   info: InitiatorInfo|null;
   chain: Set<SDK.NetworkRequest.NetworkRequest>|null;
   request?: SDK.NetworkRequest.NetworkRequest|null;
@@ -595,7 +605,7 @@ export interface InitiatorGraph {
   initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>;
 }
 
-interface InitiatorInfo {
+export interface InitiatorInfo {
   type: SDK.NetworkRequest.InitiatorType;
   // generally this is a url but can also contain "<anonymous>"
   url: Platform.DevToolsPath.UrlString;

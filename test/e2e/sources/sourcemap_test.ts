@@ -267,6 +267,63 @@ describe('The Sources Tab', async function() {
     });
   });
 
+  it('shows unminified identifiers in scopes with minified names clash and nested scopes', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-scopes-minified.js', 'sourcemap-scopes-minified.html');
+
+    let scriptEvaluation: Promise<unknown>;
+    const breakLocationOuterRegExp = /sourcemap-scopes-minified\.js:2$/;
+    const breakLocationInnerRegExp = /sourcemap-scopes-minified\.js:5$/;
+
+    const outerUnminifiedVariable = 'arg0: 10';
+    const innerUnminifiedVariable = 'loop_var: 0';
+
+    await step('Run to outer scope breakpoint', async () => {
+      await addBreakpointForLine(frontend, 2);
+
+      scriptEvaluation = target.evaluate('foo(10);');
+
+      const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
+      assert.match(scriptLocation, breakLocationOuterRegExp);
+    });
+
+    await step('Check local scope variable is eventually un-minified', async () => {
+      const scopeValues = await waitForFunction(async () => {
+        const values = await getValuesForScope('Local', 0, 0);
+        return (values && values.includes(outerUnminifiedVariable)) ? values : undefined;
+      });
+      assert.include(scopeValues, outerUnminifiedVariable);
+    });
+
+    await step('Resume from outer breakpoint', async () => {
+      await addBreakpointForLine(frontend, 5);
+      await click(RESUME_BUTTON);
+      const scriptLocation = await waitForStackTopMatch(breakLocationInnerRegExp);
+      assert.match(scriptLocation, breakLocationInnerRegExp);
+    });
+
+    await step('Check local and block scope variables are eventually un-minified', async () => {
+      const blockScopeValues = await waitForFunction(async () => {
+        const values = await getValuesForScope('Block', 0, 0);
+        return (values && values.includes(innerUnminifiedVariable)) ? values : undefined;
+      });
+      assert.include(blockScopeValues, innerUnminifiedVariable);
+
+      const scopeValues = await waitForFunction(async () => {
+        const values = await getValuesForScope('Local', 0, 0);
+        return (values && values.includes(outerUnminifiedVariable)) ? values : undefined;
+      });
+      assert.include(scopeValues, outerUnminifiedVariable);
+    });
+
+    await step('Resume from inner breakpoint', async () => {
+      await removeBreakpointForLine(frontend, 2);
+      await removeBreakpointForLine(frontend, 5);
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    });
+  });
+
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-disjoint.js', 'sourcemap-disjoint.html');

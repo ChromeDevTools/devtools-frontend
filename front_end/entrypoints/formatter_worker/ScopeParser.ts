@@ -171,7 +171,12 @@ export class ScopeVariableAnalysis {
       case 'ArrowFunctionExpression': {
         this.#pushScope(node.start, node.end);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Var));
-        this.#processNode(node.body);
+        if (node.body.type === 'BlockStatement') {
+          // Include the body of the arrow function in the same scope as the arguments.
+          node.body.body.forEach(this.#processNode.bind(this));
+        } else {
+          this.#processNode(node.body);
+        }
         this.#popScope(true);
         break;
       }
@@ -199,7 +204,7 @@ export class ScopeVariableAnalysis {
       case 'CatchClause':
         this.#pushScope(node.start, node.end);
         this.#processNodeAsDefinition(DefinitionKind.Let, node.param);
-        node.body.body.forEach(this.#processNode.bind(this));
+        this.#processNode(node.body);
         this.#popScope(false);
         break;
       case 'ClassBody':
@@ -207,17 +212,13 @@ export class ScopeVariableAnalysis {
         break;
       case 'ClassDeclaration':
         this.#processNodeAsDefinition(DefinitionKind.Let, node.id);
-        this.#pushScope(node.start, node.end);
         this.#processNode(node.superClass ?? null);
         this.#processNode(node.body);
-        this.#popScope(false);
         break;
       case 'ClassExpression':
-        this.#pushScope(node.start, node.end);
         // Intentionally ignore the id.
         this.#processNode(node.superClass ?? null);
         this.#processNode(node.body);
-        this.#popScope(false);
         break;
       case 'ChainExpression':
         this.#processNode(node.expression);
@@ -253,16 +254,17 @@ export class ScopeVariableAnalysis {
         this.#addVariable('this', node.start, DefinitionKind.Fixed);
         this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let));
-        this.#processNode(node.body);
+        // Process the body of the block statement directly to avoid creating new scope.
+        node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
         break;
       case 'FunctionExpression':
-        // Id is intentionally ignored in function expressions.
-        this.#pushScope(node.start, node.end);
+        this.#pushScope(node.id?.end ?? node.start, node.end);
         this.#addVariable('this', node.start, DefinitionKind.Fixed);
         this.#addVariable('arguments', node.start, DefinitionKind.Fixed);
         node.params.forEach(this.#processNodeAsDefinition.bind(this, DefinitionKind.Let));
-        this.#processNode(node.body);
+        // Process the body of the block statement directly to avoid creating new scope.
+        node.body.body.forEach(this.#processNode.bind(this));
         this.#popScope(true);
         break;
       case 'Identifier':

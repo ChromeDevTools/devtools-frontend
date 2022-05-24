@@ -24,6 +24,7 @@ group("front_end") {
     "models/javascript_metadata",
     "models/logs",
     "models/persistence",
+    "models/source_map_scopes",
     "models/text_utils",
     "models/timeline_model",
     "models/workspace",

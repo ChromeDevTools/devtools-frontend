@@ -37,6 +37,10 @@ self.onmessage = function(event: MessageEvent): void {
       self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, mapping));
       break;
     }
+    case FormatterActions.JAVASCRIPT_SCOPE_TREE: {
+      self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content)?.export());
+      break;
+    }
     case FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING:
       self.postMessage(FormatterWorker.FormatterWorker.evaluatableJavaScriptSubstring(params.content));
       break;

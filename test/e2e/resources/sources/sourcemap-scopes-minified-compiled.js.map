@@ -1,0 +1,1 @@
+{"version":3,"sources":["sourcemap-scopes-minified.js"],"names":["foo","arg0","console","log","loop_var"],"mappings":"AAAA,SAASA,IAAIC,GACXC,QAAQC,IAAIF,GACZ,IAAK,IAAIG,EAAW,EAAGA,EAAW,IAAMA,IACxC,CACEF,QAAQC,IAAIC","sourcesContent":["function foo(arg0) {\n  console.log(arg0);\n  for (let loop_var = 0; loop_var < 2000; loop_var++)\n  {\n    console.log(loop_var);\n  }\n}\n"]}

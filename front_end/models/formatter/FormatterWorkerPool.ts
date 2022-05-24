@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
+export {DefinitionKind, type ScopeTreeNode} from '../../entrypoints/formatter_worker/FormatterActions.js';
 
 const MAX_WORKERS = Math.min(2, navigator.hardwareConcurrency - 1);
 
@@ -138,6 +139,11 @@ export class FormatterWorkerPool {
             FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE,
             {content: expression, mapping: Array.from(mapping.entries())})
         .then(result => result || '');
+  }
+
+  javaScriptScopeTree(expression: string): Promise<FormatterActions.ScopeTreeNode|null> {
+    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression})
+        .then(result => result || null);
   }
 
   evaluatableJavaScriptSubstring(content: string): Promise<string> {

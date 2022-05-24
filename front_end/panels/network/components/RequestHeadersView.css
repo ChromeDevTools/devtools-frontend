@@ -52,6 +52,10 @@ details summary input {
   user-select: text;
 }
 
+div.raw-headers-row {
+  display: block;
+}
+
 .row:first-of-type {
   margin-top: 2px;
 }
@@ -103,4 +107,5 @@ details summary input {
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
   white-space: pre-wrap;
+  word-break: break-all;
 }

@@ -6653,6 +6653,9 @@
   "panels/network/components/RequestHeadersView.ts | responseHeaders": {
     "message": "Response Headers"
   },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Show more"
+  },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Status Code"
   },

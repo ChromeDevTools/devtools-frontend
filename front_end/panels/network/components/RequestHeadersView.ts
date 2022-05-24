@@ -6,12 +6,14 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 
+const RAW_HEADER_CUTOFF = 3000;
 const {render, html} = LitHtml;
 
 const UIStrings = {
@@ -63,6 +65,10 @@ const UIStrings = {
   *@description A context menu item in the Network Log View Columns of the Network panel
   */
   responseHeaders: 'Response Headers',
+  /**
+  *@description Text to show more content
+  */
+  showMore: 'Show more',
   /**
   *@description HTTP response code
   */
@@ -117,6 +123,8 @@ export class RequestHeadersComponent extends HTMLElement {
   #request?: Readonly<SDK.NetworkRequest.NetworkRequest>;
   #showResponseHeadersText = false;
   #showRequestHeadersText = false;
+  #showResponseHeadersTextFull = false;
+  #showRequestHeadersTextFull = false;
 
   set data(data: RequestHeadersComponentData) {
     this.#request = data.request;
@@ -161,9 +169,8 @@ export class RequestHeadersComponent extends HTMLElement {
         } as CategoryData}
         aria-label=${i18nString(UIStrings.responseHeaders)}
       >
-        ${this.#showResponseHeadersText ? html`
-          <div class="row raw-headers">${this.#request.responseHeadersText.trim()}</div>
-        ` : html`
+        ${this.#showResponseHeadersText ?
+            this.#renderRawHeaders(this.#request.responseHeadersText, true) : html`
           ${this.#request.sortedResponseHeaders.map(header => html`
             <div class="row">
               <div class="header-name">${header.name}:</div>
@@ -198,9 +205,8 @@ export class RequestHeadersComponent extends HTMLElement {
         } as CategoryData}
         aria-label=${i18nString(UIStrings.requestHeaders)}
       >
-        ${(this.#showRequestHeadersText && requestHeadersText) ? html`
-          <div class="row raw-headers">${requestHeadersText.trim()}</div>
-        ` : html`
+        ${(this.#showRequestHeadersText && requestHeadersText) ?
+            this.#renderRawHeaders(requestHeadersText, false) : html`
           ${this.#request.requestHeaders().map(header => html`
             <div class="row">
               <div class="header-name">${header.name}:</div>
@@ -209,6 +215,50 @@ export class RequestHeadersComponent extends HTMLElement {
           `)}
         `}
       </${Category.litTagName}>
+    `;
+  }
+
+  #renderRawHeaders(rawHeadersText: string, forResponseHeaders: boolean): LitHtml.TemplateResult {
+    const trimmed = rawHeadersText.trim();
+    const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
+    const isShortened = !showFull && trimmed.length > RAW_HEADER_CUTOFF;
+
+    const showMore = ():void => {
+      if (forResponseHeaders) {
+        this.#showResponseHeadersTextFull = true;
+      } else {
+        this.#showRequestHeadersTextFull = true;
+      }
+      this.#render();
+    };
+
+    const onContextMenuOpen = (event: Event): void => {
+      const showFull = forResponseHeaders ? this.#showResponseHeadersTextFull : this.#showRequestHeadersTextFull;
+      if (!showFull) {
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        const section = contextMenu.newSection();
+        section.appendItem(i18nString(UIStrings.showMore), showMore);
+        void contextMenu.show();
+      }
+    };
+
+    const addContextMenuListener = (el: Element):void => {
+      if (isShortened) {
+        el.addEventListener('contextmenu', onContextMenuOpen);
+      }
+    };
+
+    return html`
+      <div class="row raw-headers-row" on-render=${ComponentHelpers.Directives.nodeRenderedCallback(addContextMenuListener)}>
+        <div class="raw-headers">${isShortened ? trimmed.substring(0, RAW_HEADER_CUTOFF) : trimmed}</div>
+        ${isShortened ? html`
+          <${Buttons.Button.Button.litTagName}
+            .size=${Buttons.Button.Size.SMALL}
+            .variant=${Buttons.Button.Variant.SECONDARY}
+            @click=${showMore}
+          >${i18nString(UIStrings.showMore)}</${Buttons.Button.Button.litTagName}>
+        ` : LitHtml.nothing}
+      </div>
     `;
   }
 

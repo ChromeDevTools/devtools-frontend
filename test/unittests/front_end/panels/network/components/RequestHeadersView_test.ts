@@ -22,7 +22,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function renderHeadersComponent() {
+async function renderHeadersComponent(responseHeadersText?: string) {
   const component = new NetworkComponents.RequestHeadersView.RequestHeadersComponent();
   renderElementIntoDOM(component);
   component.data = {
@@ -46,7 +46,7 @@ async function renderHeadersComponent() {
            {name: 'accept-encoding', value: 'gzip, deflate, br'},
            {name: 'cache-control', value: 'no-cache'},
   ],
-      responseHeadersText: `HTTP/1.1 200 OK
+      responseHeadersText: responseHeadersText || `HTTP/1.1 200 OK
       age: 0
       cache-control: max-age=600
       content-encoding: gzip
@@ -150,6 +150,38 @@ describeWithEnvironment('RequestHeadersView', () => {
       'gzip',
       '661',
     ]);
+  });
+
+  it('cuts off long raw headers and shows full content on button click', async () => {
+    const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+    ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+    in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+    cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+
+    const component = await renderHeadersComponent(loremIpsum.repeat(10));
+    assertShadowRoot(component.shadowRoot);
+
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+
+    // Switch to viewing source view
+    responseHeadersCategory.dispatchEvent(new NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent());
+
+    const rawHeadersDiv = responseHeadersCategory.querySelector('.raw-headers');
+    assertElement(rawHeadersDiv, HTMLDivElement);
+    const shortenedRawTextContent = rawHeadersDiv.textContent?.replace(/ {2,}/g, '');
+    assert.strictEqual(shortenedRawTextContent?.length, 2896);
+
+    const showMoreButton = responseHeadersCategory.querySelector('devtools-button');
+    assertElement(showMoreButton, HTMLElement);
+    assert.strictEqual(showMoreButton.textContent, 'Show more');
+    showMoreButton.click();
+    const noMoreShowMoreButton = responseHeadersCategory.querySelector('devtools-button');
+    assert.isNull(noMoreShowMoreButton);
+
+    const fullRawTextContent = rawHeadersDiv.textContent?.replace(/ {2,}/g, '');
+    assert.strictEqual(fullRawTextContent?.length, 4450);
   });
 });
 

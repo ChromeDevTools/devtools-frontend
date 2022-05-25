@@ -1,0 +1,27 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!doctype html>
+<html>
+    <style>
+     #inspected1 {
+         /* Longhand overridden by shorthand */
+         margin-top: 100px;
+         margin: 0;
+     }
+     #inspected2 {
+         /* Shorthand overridden by itself */
+         padding: 100px;
+         padding: 0;
+     }
+     #inspected3 {
+         border-width: 100px;
+         border: 0 solid;
+     }
+    </style>
+    <div id="inspected1">Test 1</div>
+    <div id="inspected2">Test 2</div>
+    <div id="inspected3">Test 3</div>
+</html>

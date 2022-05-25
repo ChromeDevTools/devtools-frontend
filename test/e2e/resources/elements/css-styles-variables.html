@@ -1,0 +1,41 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!doctype html>
+<style>
+ body {
+     --a: red;
+ }
+
+ #id1 {
+     --b: 44px;
+ }
+
+ #id2 {
+     --a: green;
+ }
+
+ #id3 {
+     --a: inherit;
+ }
+
+ #id4 {
+     --a: var(--z);
+ }
+
+ #id5 {
+     --a: var(--b);
+     --b: var(--a);
+ }
+
+</style>
+<div id="id1">
+    <div id="id2">
+        <div id="id3">
+        </div>
+    </div>
+</div>
+<div id="id4"> </div>
+<div id="id5"> </div>

@@ -14,31 +14,40 @@
 .computed-style-property {
   --goto-size: 16px;
 
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
   min-height: 16px;
   box-sizing: border-box;
   padding-top: 2px;
   white-space: nowrap;
 }
 
+.computed-style-property:hover {
+  background-color: var(--legacy-focus-bg-color);
+  cursor: text;
+}
+
 .computed-style-property.inherited {
   opacity: 50%;
 }
 
-slot[name="property-name"],
-slot[name="property-value"] {
+.property-name,
+.property-value {
+  display: contents;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-slot[name="property-name"] {
+.property-name {
   width: 16em;
   max-width: 52%;
   margin-right: calc(var(--goto-size) / 2);
   display: inline-block;
   vertical-align: text-top;
+  color: var(--webkit-css-property-color, var(--color-syntax-1)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
 }
 
-slot[name="property-value"] {
+.property-value {
   margin-left: 2em;
 }
 
@@ -66,8 +75,8 @@ slot[name="property-value"] {
   white-space: normal;
 }
 
-:host-context(.computed-narrow) slot[name="property-name"],
-:host-context(.computed-narrow) slot[name="property-value"] {
+:host-context(.computed-narrow) .property-name,
+:host-context(.computed-narrow) .property-value {
   display: inline-block;
   width: 100%;
   max-width: 100%;

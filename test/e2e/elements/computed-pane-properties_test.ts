@@ -4,19 +4,24 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, goToResource, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
+  filterComputedProperties,
   focusElementsTree,
   getAllPropertiesFromComputedPane,
+  getComputedPanel,
+  getComputedStyleProperties,
   getContentOfComputedPane,
   navigateToSidePane,
   toggleShowAllComputedProperties,
   waitForComputedPaneChange,
   waitForElementsComputedSection,
+  waitForNumberOfComputedProperties,
+  waitForPartialContentOfSelectedElementsNode,
 } from '../helpers/elements-helpers.js';
 
-describe('The Computed pane', async () => {
+describe('The Computed pane', async function() {
   beforeEach(async function() {
     await goToResource('elements/simple-styled-page.html');
     await navigateToSidePane('Computed');
@@ -84,5 +89,130 @@ describe('The Computed pane', async () => {
       name: 'align-content',
       value: 'normal',
     });
+  });
+
+  it('remembers which properties that are expanded when re-rendering', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.keyboard.press('ArrowDown');
+    const colorProperty = await waitFor(
+        'CSS property name: color : CSS property value: rgb(255, 0, 102) ;', undefined, undefined, 'aria');
+    const arrowIcon = await waitFor('.arrow-icon', colorProperty);
+    await click(arrowIcon);
+    const isExpandedBefore = await colorProperty.evaluate(element => element.ariaExpanded);
+    assert(isExpandedBefore);
+    await focusElementsTree();
+    await frontend.keyboard.press('ArrowDown');
+    const colorPropertyAfter =
+        await waitFor('CSS property name: color : CSS property value: rgb(0, 0, 0) ;', undefined, undefined, 'aria');
+    const isExpandedAfter = await colorPropertyAfter.evaluate(element => element.ariaExpanded);
+    assert(isExpandedAfter);
+  });
+
+  it('allows tracing to style rules (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResource('elements/css-styles-variables.html');
+    await waitForNumberOfComputedProperties(7);
+    await toggleShowAllComputedProperties();
+    await filterComputedProperties('--');
+    await waitForNumberOfComputedProperties(1);
+    await focusElementsTree();
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id1"');
+    await waitForNumberOfComputedProperties(2);
+    const computedPane = await getComputedPanel();
+    await computedPane.$$eval(
+        'pierce/.arrow-icon', elements => elements.map(element => (element as HTMLElement).click()));
+    const expectedPropId1 = [
+      {
+        'name': '--a',
+        'value': ' red',
+        'trace': [{
+          'value': 'red',
+          'selector': 'body',
+          'link': 'css-styles-variables.html:8',
+        }],
+      },
+      {
+        'name': '--b',
+        'value': ' 44px',
+        'trace': [{
+          'value': '44px',
+          'selector': '#id1',
+          'link': 'css-styles-variables.html:12',
+        }],
+      },
+    ];
+    await waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId1));
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id2"');
+    const expectedPropId2 = [
+      {
+        'name': '--a',
+        'value': ' green',
+        'trace': [
+          {
+            'value': 'green',
+            'selector': '#id2',
+            'link': 'css-styles-variables.html:16',
+          },
+          {
+            'value': 'red',
+            'selector': 'body',
+            'link': 'css-styles-variables.html:8',
+          },
+        ],
+      },
+      {
+        'name': '--b',
+        'value': ' 44px',
+        'trace': [{
+          'value': '44px',
+          'selector': '#id1',
+          'link': 'css-styles-variables.html:12',
+        }],
+      },
+    ];
+    await waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId2));
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id3"');
+    const expectedPropId3 = [
+      {
+        'name': '--a',
+        'value': ' green',
+        'trace': [
+          {
+            'value': 'inherit',
+            'selector': '#id3',
+            'link': 'css-styles-variables.html:20',
+          },
+          {
+            'value': 'green',
+            'selector': '#id2',
+            'link': 'css-styles-variables.html:16',
+          },
+          {
+            'value': 'red',
+            'selector': 'body',
+            'link': 'css-styles-variables.html:8',
+          },
+        ],
+      },
+      {
+        'name': '--b',
+        'value': ' 44px',
+        'trace': [{
+          'value': '44px',
+          'selector': '#id1',
+          'link': 'css-styles-variables.html:12',
+        }],
+      },
+    ];
+    await waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId3));
   });
 });

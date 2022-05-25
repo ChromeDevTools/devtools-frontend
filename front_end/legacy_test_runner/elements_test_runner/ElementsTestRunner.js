@@ -183,20 +183,20 @@ ElementsTestRunner.computedStyleWidget = function() {
 
 ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
   const computed = ElementsTestRunner.computedStyleWidget();
-  const treeOutline = computed.propertiesOutline;
-  const children = treeOutline.rootElement().children();
+  const treeOutline = computed.propertiesOutline.querySelector('devtools-tree-outline');
+  const children = treeOutline.shadowRoot.querySelector('[role="treeitem"]');
 
   for (const treeElement of children) {
-    const property = computed.propertyByTreeElement.get(treeElement);
-    if (!property || property.name === 'width' || property.name === 'height') {
+    const property = treeElement.querySelector('devtools-computed-style-property')?.shadowRoot;
+    const propertyName = text(property?.querySelector('.webkit-css-property'));
+    const propertyValue = text(property?.querySelector('.value'));
+    if (!property || propertyName === 'width' || propertyName === 'height') {
       continue;
     }
 
-    const propertyName = text(treeElement.title.querySelector('.webkit-css-property'));
-    const propertyValue = text(treeElement.title.querySelector('.value'));
     TestRunner.addResult(`${propertyName}: ${propertyValue};`);
 
-    if (doNotAutoExpand && !treeElement.expanded) {
+    if (doNotAutoExpand && !treeElement.ariaExpanded) {
       continue;
     }
 
@@ -211,7 +211,7 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
       dumpText += text(trace.querySelector('.value'));
       dumpText += ' - ';
       dumpText += text(trace.shadowRoot.querySelector('.trace-selector'));
-      const link = trace.querySelector('[slot="trace-link"]');
+      const link = trace.shadowRoot.querySelector('.trace-link');
 
       if (link) {
         dumpText += ' ' + await extractLinkText(link);

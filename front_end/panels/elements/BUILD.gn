@@ -12,7 +12,6 @@ generate_css("css_files") {
   sources = [
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",
-    "computedStyleWidgetTree.css",
     "domLinkifier.css",
     "elementStatePaneWidget.css",
     "elementsPanel.css",

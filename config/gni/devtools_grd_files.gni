@@ -984,7 +984,6 @@ grd_files_debug_sources = [
   "front_end/panels/elements/components/queryContainer.css.js",
   "front_end/panels/elements/components/stylePropertyEditor.css.js",
   "front_end/panels/elements/computedStyleSidebarPane.css.js",
-  "front_end/panels/elements/computedStyleWidgetTree.css.js",
   "front_end/panels/elements/domLinkifier.css.js",
   "front_end/panels/elements/elementStatePaneWidget.css.js",
   "front_end/panels/elements/elementsPanel.css.js",

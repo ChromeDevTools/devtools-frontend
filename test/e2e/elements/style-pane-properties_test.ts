@@ -21,6 +21,7 @@ import {
   getComputedStylesForDomNode,
   getDisplayedCSSPropertyNames,
   getDisplayedStyleRules,
+  getDisplayedStyleRulesCompact,
   getStyleRule,
   getStyleSectionSubtitles,
   waitForPartialContentOfSelectedElementsNode,
@@ -28,6 +29,7 @@ import {
   waitForElementsStyleSection,
   waitForPropertyToHighlight,
   waitForStyleRule,
+  expandSelectedNodeRecursively,
 } from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
@@ -561,5 +563,514 @@ describe.skip('[crbug.com/1318314]: The Styles pane', async () => {
       'Pseudo ::selection element',
       'Inherited from ::selection pseudo of ',
     ]);
+  });
+
+  it('can show styles properly (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/elements-panel-styles.html');
+    await frontend.keyboard.press('ArrowDown');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#container');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('.foo');
+    const fooRules = await getDisplayedStyleRules();
+    const expected = [
+      {
+        'selectorText': 'element.style',
+        'propertyData': [
+          {'propertyName': 'display', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': '-webkit-font-smoothing', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': '#container .foo',
+        'propertyData': [{'propertyName': 'font-style', 'isOverLoaded': false, 'isInherited': false}],
+      },
+      {
+        'selectorText': 'body .foo',
+        'propertyData': [{'propertyName': 'text-indent', 'isOverLoaded': true, 'isInherited': false}],
+      },
+      {'selectorText': '.foo', 'propertyData': []},
+      {
+        'selectorText': '.foo, .foo::before',
+        'propertyData': [
+          {'propertyName': 'content', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': '.foo',
+        'propertyData': [
+          {'propertyName': 'display', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'margin-left', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'margin', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-left', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-radius', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-left-radius', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-right-radius', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-right-radius', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-left-radius', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'font-style', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'font-weight', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'font-weight', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'padding', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-right', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'padding-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-left', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'text-indent', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': 'div[Attributes Style]',
+        'propertyData': [{'propertyName': 'text-align', 'isOverLoaded': false, 'isInherited': false}],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'display', 'isOverLoaded': true, 'isInherited': false}],
+      },
+      {
+        'selectorText': '#container',
+        'propertyData': [
+          {'propertyName': 'font-family', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'font-size', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'padding', 'isOverLoaded': false, 'isInherited': true},
+          {'propertyName': 'padding-top', 'isOverLoaded': false, 'isInherited': true},
+          {'propertyName': 'padding-right', 'isOverLoaded': false, 'isInherited': true},
+          {'propertyName': 'padding-bottom', 'isOverLoaded': false, 'isInherited': true},
+          {'propertyName': 'padding-left', 'isOverLoaded': false, 'isInherited': true},
+        ],
+      },
+      {
+        'selectorText': 'body',
+        'propertyData': [
+          {'propertyName': 'font-size', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'text-indent', 'isOverLoaded': true, 'isInherited': false},
+        ],
+      },
+      {'selectorText': 'html', 'propertyData': [{'propertyName': 'color', 'isOverLoaded': true, 'isInherited': false}]},
+      {'selectorText': '.foo::before', 'propertyData': []},
+      {
+        'selectorText': '.foo::before',
+        'propertyData': [{'propertyName': 'color', 'isOverLoaded': false, 'isInherited': false}],
+      },
+      {
+        'selectorText': '.foo, .foo::before',
+        'propertyData': [
+          {'propertyName': 'content', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': '.foo::after',
+        'propertyData': [
+          {'propertyName': 'font-family', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'content', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': '.foo::after',
+        'propertyData': [
+          {'propertyName': 'content', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': '.foo::marker',
+        'propertyData': [
+          {'propertyName': 'content', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'color', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+    ];
+    assert.deepEqual(fooRules, expected);
+  });
+
+  it('can show overriden shorthands as inactive (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-shorthand-override.html');
+    await waitForStyleRule('body');
+
+    await frontend.keyboard.press('ArrowDown');
+    await waitForStyleRule('#inspected1');
+    const inspected1Rules = await getDisplayedStyleRules();
+    const expectedInspected1Rules = [
+      {'selectorText': 'element.style', 'propertyData': []},
+      {
+        'selectorText': '#inspected1',
+        'propertyData': [
+          {'propertyName': 'margin-top', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'margin', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-left', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
+      },
+    ];
+    assert.deepEqual(inspected1Rules, expectedInspected1Rules);
+
+    await frontend.keyboard.press('ArrowDown');
+    await waitForStyleRule('#inspected2');
+    const inspected2Rules = await getDisplayedStyleRules();
+
+    const expectedInspected2Rules = [
+      {'selectorText': 'element.style', 'propertyData': []},
+      {
+        'selectorText': '#inspected2',
+        'propertyData': [
+          {'propertyName': 'padding', 'isOverLoaded': true, 'isInherited': false},
+          {'propertyName': 'padding-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-left', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'padding-left', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
+      },
+    ];
+    assert.deepEqual(inspected2Rules, expectedInspected2Rules);
+
+    await frontend.keyboard.press('ArrowDown');
+    await waitForStyleRule('#inspected3');
+    const inspected3Rules = await getDisplayedStyleRules();
+    const expectedInspected3Rules = [
+      {'selectorText': 'element.style', 'propertyData': []},
+      {
+        'selectorText': '#inspected3',
+        'propertyData': [
+          {'propertyName': 'border-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-right-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-left-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-color', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-style', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-top-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-right-color', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-right-style', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-right-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-color', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-style', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-bottom-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-left-color', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-left-style', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-left-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-image-source', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-image-slice', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-image-width', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-image-outset', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'border-image-repeat', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
+      },
+    ];
+    assert.deepEqual(inspected3Rules, expectedInspected3Rules);
+  });
+
+  it('shows longhands overriden by shorthands with var() as inactive (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-longhand-override.html');
+    await waitForStyleRule('body');
+
+    await frontend.keyboard.press('ArrowDown');
+    await waitForStyleRule('#inspected');
+    const inspectedRules = await getDisplayedStyleRules();
+    const expectedInspected1Rules = [
+      {'selectorText': 'element.style', 'propertyData': []},
+      {
+        'selectorText': '#inspected',
+        'propertyData': [
+          {'propertyName': 'margin', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-top', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-right', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-bottom', 'isOverLoaded': false, 'isInherited': false},
+          {'propertyName': 'margin-left', 'isOverLoaded': false, 'isInherited': false},
+        ],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'margin-top', 'isOverLoaded': true, 'isInherited': false}],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{'propertyName': 'display', 'isOverLoaded': false, 'isInherited': false}],
+      },
+    ];
+    assert.deepEqual(inspectedRules, expectedInspected1Rules);
+  });
+
+  it('shows overriden properties as inactive (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-override.html');
+    await waitForStyleRule('body');
+
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('div');
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#inspected');
+    const inspectedRules = await getDisplayedStyleRules();
+    const expectedInspected1Rules = [
+      {
+        'selectorText': 'element.style',
+        'propertyData': [],
+      },
+      {
+        'selectorText': '#inspected',
+        'propertyData': [
+          {
+            'propertyName': 'text-align',
+            'isOverLoaded': true,
+            'isInherited': false,
+          },
+          {
+            'propertyName': 'text-align',
+            'isOverLoaded': true,
+            'isInherited': false,
+          },
+          {
+            'propertyName': 'text-align',
+            'isOverLoaded': false,
+            'isInherited': false,
+          },
+        ],
+      },
+      {
+        'selectorText': 'div[Attributes Style]',
+        'propertyData': [{
+          'propertyName': 'text-align',
+          'isOverLoaded': true,
+          'isInherited': false,
+        }],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{
+          'propertyName': 'display',
+          'isOverLoaded': false,
+          'isInherited': false,
+        }],
+      },
+    ];
+    assert.deepEqual(inspectedRules, expectedInspected1Rules);
+  });
+
+  it('shows non-standard mixed-cased properties correctly (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-mixed-case.html');
+    await waitForStyleRule('body');
+
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#container');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#nested');
+    const inspectedRules = await getDisplayedStyleRules();
+    const expectedInspected1Rules = [
+      {
+        'selectorText': 'element.style',
+        'propertyData': [],
+      },
+      {
+        'selectorText': '#nested',
+        'propertyData': [{
+          'propertyName': 'color',
+          'isOverLoaded': false,
+          'isInherited': false,
+        }],
+      },
+      {
+        'selectorText': 'div',
+        'propertyData': [{
+          'propertyName': 'display',
+          'isOverLoaded': false,
+          'isInherited': false,
+        }],
+      },
+      {
+        'selectorText': 'style attribute',
+        'propertyData': [{
+          'propertyName': 'CoLoR',
+          'isOverLoaded': true,
+          'isInherited': false,
+        }],
+      },
+      {
+        'selectorText': '#container',
+        'propertyData': [{
+          'propertyName': '-webkit-FONT-smoothing',
+          'isOverLoaded': false,
+          'isInherited': false,
+        }],
+      },
+    ];
+    assert.deepEqual(inspectedRules, expectedInspected1Rules);
+  });
+
+  it('shows styles from injected user stylesheets (ported layout test)', async () => {
+    const {frontend, target} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
+    await waitForStyleRule('body');
+    await target.addScriptTag({
+      content: `
+      function injectStyleSheet(context) {
+          const styleSheet = "#main { color: red; border-style: solid; -webkit-border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAiElEQVR42r2RsQrDMAxEBRdl8SDcX8lQPGg1GBI6lvz/h7QyRRXV0qUULwfvwZ1tenw5PxToRPWMC52eA9+WDnlh3HFQ/xBQl86NFYJqeGflkiogrOvVlIFhqURFVho3x1moGAa3deMs+LS30CAhBN5nNxeT5hbJ1zwmji2k+aF6NENIPf/hs54f0sZFUVAMigAAAABJRU5ErkJggg==) }  #iframeBody { background: red }";
+          const style = document.createElement('style');
+          style.textContent = styleSheet;
+          context.document.head.append(style);
+      }
+
+      injectStyleSheet(window);
+      function loadIframe() {
+          var iframe = document.createElement("iframe");
+          iframe.src = "css-inject-stylesheet-iframe-data.html";
+          document.getElementById("main").appendChild(iframe);
+      }`,
+    });
+
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#main');
+    const inspectedRulesBefore = await getDisplayedStyleRulesCompact();
+    const expectedInspectedRulesBefore = [
+      {
+        'selectorText': 'element.style',
+        'propertyNames': [],
+      },
+      {
+        'selectorText': '#main',
+        'propertyNames': [
+          'color',
+          'border-style',
+          'border-top-style',
+          'border-right-style',
+          'border-bottom-style',
+          'border-left-style',
+          '-webkit-border-image',
+        ],
+      },
+      {
+        'selectorText': '#main',
+        'propertyNames': [
+          'background',
+          'background-image',
+          'background-position-x',
+          'background-position-y',
+          'background-size',
+          'background-repeat-x',
+          'background-repeat-y',
+          'background-attachment',
+          'background-origin',
+          'background-clip',
+          'background-color',
+        ],
+      },
+      {
+        'selectorText': 'div',
+        'propertyNames': ['display'],
+      },
+    ];
+    assert.deepEqual(inspectedRulesBefore, expectedInspectedRulesBefore);
+    await target.evaluate('loadIframe()');
+    await expandSelectedNodeRecursively();
+    const iframeBody = await waitFor('onload', undefined, undefined, 'pierceShadowText');
+    await click(iframeBody);
+    await waitForStyleRule('#iframeBody');
+    const inspectedRulesAfter = await getDisplayedStyleRulesCompact();
+    const expectedInspectedRulesAfter = [
+      {
+        'selectorText': 'element.style',
+        'propertyNames': [],
+      },
+      {
+        'selectorText': '#iframeBody',
+        'propertyNames': [
+          'background',
+          'background-image',
+          'background-position-x',
+          'background-position-y',
+          'background-size',
+          'background-repeat-x',
+          'background-repeat-y',
+          'background-attachment',
+          'background-origin',
+          'background-clip',
+          'background-color',
+        ],
+      },
+      {
+        'selectorText': 'body',
+        'propertyNames': [
+          'background',
+          'background-image',
+          'background-position-x',
+          'background-position-y',
+          'background-size',
+          'background-repeat-x',
+          'background-repeat-y',
+          'background-attachment',
+          'background-origin',
+          'background-clip',
+          'background-color',
+        ],
+      },
+      {
+        'selectorText': 'body',
+        'propertyNames': ['display', 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+      },
+    ];
+    assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
+  });
+
+  it('can parse webkit css region styling (ported layout test)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-webkit-region.html');
+    await waitForStyleRule('body');
+    await frontend.keyboard.press('ArrowRight');
+    await waitForStyleRule('#article1');
+    await frontend.keyboard.press('ArrowRight');
+    await frontend.keyboard.press('ArrowDown');
+    await waitForStyleRule('#p1');
+    const inspectedRules = await getDisplayedStyleRulesCompact();
+    const expectedInspectedRules = [
+      {
+        'selectorText': 'element.style',
+        'propertyNames': [],
+      },
+      {
+        'selectorText': '#p1',
+        'propertyNames': ['color'],
+      },
+      {
+        'selectorText': 'p',
+        'propertyNames':
+            ['display', 'margin-block-start', 'margin-block-end', 'margin-inline-start', 'margin-inline-end'],
+      },
+    ];
+    assert.deepEqual(inspectedRules, expectedInspectedRules);
   });
 });

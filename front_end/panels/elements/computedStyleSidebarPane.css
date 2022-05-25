@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-.computed-properties {
-  user-select: text;
-  flex-shrink: 0;
-}
-
 .styles-sidebar-pane-toolbar {
   border-bottom: 1px solid var(--color-details-hairline-light);
   flex-shrink: 0;

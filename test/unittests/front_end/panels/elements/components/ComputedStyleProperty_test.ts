@@ -8,6 +8,12 @@ import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelper
 const {assert} = chai;
 
 const initialData = {
+  propertyNameRenderer: () => {
+    return document.createElement('span');
+  },
+  propertyValueRenderer: () => {
+    return document.createElement('span');
+  },
   inherited: false,
   traceable: true,
   onNavigateToSource: () => {},
@@ -26,14 +32,8 @@ describe('ComputedStyleProperty', () => {
 
     assertShadowRoot(component.shadowRoot);
 
-    const slots = Array.from(component.shadowRoot.querySelectorAll('.inherited slot'));
-    assert.deepEqual(
-        slots.map(slot => slot.getAttribute('name')),
-        [
-          'property-name',
-          'property-value',
-        ],
-        'should contain name and value slots under .inherited selector');
+    const wrapper = component.shadowRoot.querySelector('.computed-style-property.inherited');
+    assert.exists(wrapper, 'it should add .inherited class to wrapper for inherited properties');
   });
 
   it('renders a clickable goto icon that calls onNavigateToSource when it contains traces', () => {

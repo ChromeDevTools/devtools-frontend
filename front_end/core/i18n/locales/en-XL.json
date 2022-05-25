@@ -5954,6 +5954,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "D̂éŝḱt̂óp̂"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "D̂év̂T́ôól̂ś t̂h́r̂ót̂t́l̂ín̂ǵ (âd́v̂án̂ćêd́)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "D̂óêś t̂h́îś p̂áĝé f̂ól̂ĺôẃ b̂éŝt́ p̂ŕâćt̂íĉéŝ f́ôŕ m̂ód̂ér̂ń ŵéb̂ d́êv́êĺôṕm̂én̂t́"
   },
@@ -6018,10 +6021,10 @@
     "message": "ŜÉÔ"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Ŝím̂úl̂át̂é â śl̂óŵér̂ ṕâǵê ĺôád̂, b́âśêd́ ôń d̂át̂á f̂ŕôḿ âń îńît́îál̂ ún̂t́ĥŕôt́t̂ĺêd́ l̂óâd́. Îf́ d̂íŝáb̂ĺêd́, t̂h́ê ṕâǵê íŝ áĉt́ûál̂ĺŷ śl̂óŵéd̂ ẃît́ĥ áp̂ṕl̂íêd́ t̂h́r̂ót̂t́l̂ín̂ǵ."
+    "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ śîḿûĺât́êś â śl̂óŵér̂ ṕâǵê ĺôád̂ b́âśêd́ ôń d̂át̂á f̂ŕôḿ âń îńît́îál̂ ún̂t́ĥŕôt́t̂ĺêd́ l̂óâd́. D̂év̂T́ôól̂ś t̂h́r̂ót̂t́l̂ín̂ǵ âćt̂úâĺl̂ý ŝĺôẃŝ d́ôẃn̂ t́ĥé p̂áĝé."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ"
+    "message": "Ŝím̂úl̂át̂éd̂ t́ĥŕôt́t̂ĺîńĝ (d́êf́âúl̂t́)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Ŝńâṕŝh́ôt́"
@@ -6034,6 +6037,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "T̂h́êŕê ḿâý b̂é ŝt́ôŕêd́ d̂át̂á âf́f̂éĉt́îńĝ ĺôád̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê ín̂ t́ĥíŝ ĺôćât́îón̂: {PH1}. Áûd́ît́ t̂h́îś p̂áĝé îń âń îńĉóĝńît́ô ẃîńd̂óŵ t́ô ṕr̂év̂én̂t́ t̂h́ôśê ŕêśôúr̂ćêś f̂ŕôḿ âf́f̂éĉt́îńĝ ýôúr̂ śĉór̂éŝ."
+  },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "T̂h́r̂ót̂t́l̂ín̂ǵ m̂ét̂h́ôd́"
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "T̂ím̂éŝṕâń"

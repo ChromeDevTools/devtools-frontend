@@ -101,6 +101,18 @@ LighthouseTestRunner._checkboxStateLabel = function(checkboxContainer) {
 };
 
 /**
+ * @param {?Element} combobox
+ * @return {string}
+ */
+LighthouseTestRunner._comboboxStateLabel = function(combobox) {
+  if (!combobox) {
+    return 'missing';
+  }
+
+  return `${combobox.ariaLabel}: ${combobox.value}`;
+};
+
+/**
  * @param {?Element} button
  * @return {string}
  */
@@ -129,6 +141,10 @@ LighthouseTestRunner.dumpStartAuditState = function() {
   checkboxes.forEach(element => {
     TestRunner.addResult(LighthouseTestRunner._checkboxStateLabel(element));
   });
+
+  for (const combobox of toolbarShadowRoot.querySelectorAll('select')) {
+    TestRunner.addResult(LighthouseTestRunner._comboboxStateLabel(combobox));
+  }
 
   const helpText = containerElement.querySelector('.lighthouse-help-text');
   if (!helpText.classList.contains('hidden')) {

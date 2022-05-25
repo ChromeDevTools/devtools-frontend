@@ -10,7 +10,7 @@ Tests that lighthouse panel passes flags.
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[ ] Simulated throttling
+Throttling method: devtools
 Analyze page load: enabled visible
 
 =============== Lighthouse Results ===============

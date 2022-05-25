@@ -5954,6 +5954,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Desktop"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevTools throttling (advanced)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Does this page follow best practices for modern web development"
   },
@@ -6018,10 +6021,10 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Simulate a slower page load, based on data from an initial unthrottled load. If disabled, the page is actually slowed with applied throttling."
+    "message": "Simulated throttling simulates a slower page load based on data from an initial unthrottled load. DevTools throttling actually slows down the page."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Simulated throttling"
+    "message": "Simulated throttling (default)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Snapshot"
@@ -6034,6 +6037,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+  },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Throttling method"
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Timespan"

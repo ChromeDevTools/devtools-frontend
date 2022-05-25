@@ -103,6 +103,30 @@ export class StartView extends UI.Widget.Widget {
     }
   }
 
+  protected populateRuntimeSettingAsToolbarDropdown(settingName: string, toolbar: UI.Toolbar.Toolbar): void {
+    const runtimeSetting = RuntimeSettings.find(item => item.setting.name === settingName);
+    if (!runtimeSetting || !runtimeSetting.title) {
+      throw new Error(`${settingName} is not a setting with a title`);
+    }
+
+    const options = runtimeSetting.options?.map(option => ({label: option.label(), value: option.value})) || [];
+
+    runtimeSetting.setting.setTitle(runtimeSetting.title());
+    const control = new UI.Toolbar.ToolbarSettingComboBox(
+        options,
+        runtimeSetting.setting as Common.Settings.Setting<string>,
+        runtimeSetting.title(),
+    );
+    control.setTitle(runtimeSetting.description());
+    toolbar.appendToolbarItem(control);
+    if (runtimeSetting.learnMore) {
+      const link =
+          UI.XLink.XLink.create(runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more');
+      link.style.padding = '5px';
+      control.element.appendChild(link);
+    }
+  }
+
   protected populateFormControls(fragment: UI.Fragment.Fragment, mode?: string): void {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
@@ -134,7 +158,7 @@ export class StartView extends UI.Widget.Widget {
   protected render(): void {
     this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.legacy_navigation', this.settingsToolbarInternal);
     this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.clear_storage', this.settingsToolbarInternal);
-    this.populateRuntimeSettingAsToolbarCheckbox('lighthouse.throttling', this.settingsToolbarInternal);
+    this.populateRuntimeSettingAsToolbarDropdown('lighthouse.throttling', this.settingsToolbarInternal);
 
     this.startButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.generateReport),

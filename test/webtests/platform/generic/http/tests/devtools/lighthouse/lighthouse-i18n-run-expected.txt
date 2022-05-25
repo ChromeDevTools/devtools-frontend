@@ -10,7 +10,7 @@ Tests that Lighthouse report is translated.
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Analyze page load: enabled visible
 resolved to locale es
 

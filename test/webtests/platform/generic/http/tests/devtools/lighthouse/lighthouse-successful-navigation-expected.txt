@@ -10,7 +10,7 @@ Tests that navigation mode works correctly.
 [x] Publisher Ads
 [ ] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Analyze page load: enabled visible
 
 =============== Lighthouse Status Updates ===============

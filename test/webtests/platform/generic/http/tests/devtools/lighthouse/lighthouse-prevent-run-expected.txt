@@ -13,7 +13,7 @@ Tests that audits panel prevents run of unauditable pages.
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Help text: At least one category must be selected.
 Analyze page load: disabled visible
 
@@ -29,7 +29,7 @@ Analyze page load: disabled visible
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Analyze page load: enabled visible
 
 
@@ -44,7 +44,7 @@ Analyze page load: enabled visible
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Analyze page load: enabled visible
 
 
@@ -60,7 +60,7 @@ URL: about:blank
 [ ] Publisher Ads
 [x] Legacy navigation
 [x] Clear storage
-[x] Simulated throttling
+Throttling method: simulate
 Help text: Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.
 Analyze page load: disabled visible
 

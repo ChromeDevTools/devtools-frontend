@@ -143,10 +143,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     const {page} = puppeteerConnection;
     const configContext = {
       logLevel: flags.logLevel,
-      settingsOverrides: {
-        channel: flags.channel,
-        locale: flags.locale,
-      },
+      settingsOverrides: flags,
     };
 
     if (action === 'snapshot') {

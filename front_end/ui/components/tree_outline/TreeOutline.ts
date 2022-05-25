@@ -31,6 +31,7 @@ export interface TreeOutlineData<TreeNodeDataType> {
    */
   tree: readonly TreeNode<TreeNodeDataType>[];
   filter?: (node: TreeNodeDataType) => FilterOption;
+  compact?: boolean;
 }
 
 export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult {
@@ -111,6 +112,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     return LitHtml.html`${String(node.treeNodeData)}`;
   };
   #nodeFilter?: ((node: TreeNodeDataType) => FilterOption);
+  #compact = false;
 
   /**
    * scheduledRender = render() has been called and scheduled a render.
@@ -155,6 +157,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.#defaultRenderer = data.defaultRenderer;
     this.#treeData = data.tree;
     this.#nodeFilter = data.filter;
+    this.#compact = data.compact || false;
 
     if (!this.#hasRenderedAtLeastOnce) {
       this.#selectedTreeNode = this.#treeData[0];
@@ -454,6 +457,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       parent: isExpandableNode(node),
       selected: this.#isSelectedNode(node),
       'is-top-level': depth === 0,
+      compact: this.#compact,
     });
     const ariaExpandedAttribute =
         LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);

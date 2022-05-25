@@ -9,15 +9,21 @@
 }
 
 li {
+  border: 2px solid transparent;
   list-style: none;
   text-overflow: ellipsis;
   min-height: 12px;
+}
+
+.compact {
+  border: 0;
 }
 
 .tree-node-key {
   white-space: var(--override-key-whitespace-wrapping);
   /* Override the default |min-width: auto| to avoid overflows of flex items */
   min-width: 0;
+  flex-grow: 1;
 }
 
 .arrow-icon {
@@ -79,7 +85,6 @@ li.is-top-level:last-child {
 }
 
 .arrow-and-key-wrapper {
-  border: 2px solid transparent;
   display: flex;
   align-content: center;
   align-items: center;

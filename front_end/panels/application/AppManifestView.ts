@@ -663,7 +663,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     }
 
     const userPreferences = parsedManifest['user_preferences'] || {};
-    const colorSchemeDark = userPreferences['color_scheme_dark'] || {};
+    const colorScheme = userPreferences['color_scheme'] || {};
+    const colorSchemeDark = colorScheme['dark'] || {};
     const darkThemeColorString = colorSchemeDark['theme_color'];
     const hasDarkThemeColor = typeof darkThemeColorString === 'string';
     this.darkThemeColorField.parentElement?.classList.toggle('hidden', !hasDarkThemeColor);

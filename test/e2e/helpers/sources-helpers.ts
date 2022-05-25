@@ -459,7 +459,6 @@ export async function expandSourceTreeItem(selector: string) {
     // FIXME(crbug/1112692): Refactor test to remove the timeout.
     await timeout(50);
     await doubleClickSourceTreeItem(selector);
-    await waitForFunction(() => isExpanded(sourceTreeItem));
   }
 }
 

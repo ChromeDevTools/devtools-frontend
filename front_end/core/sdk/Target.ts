@@ -61,8 +61,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
             Capability.IO | Capability.Media | Capability.Inspector;
         break;
       case Type.Worker:
-        this.#capabilitiesMask =
-            Capability.JS | Capability.Log | Capability.Network | Capability.Target | Capability.IO | Capability.Media;
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
+            Capability.IO | Capability.Media | Capability.Emulation;
         break;
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;

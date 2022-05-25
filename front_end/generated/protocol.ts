@@ -1062,7 +1062,6 @@ export namespace Audits {
         'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
     RTCPeerConnectionSdpSemanticsPlanB = 'RTCPeerConnectionSdpSemanticsPlanB',
     RtcpMuxPolicyNegotiate = 'RtcpMuxPolicyNegotiate',
-    RTPDataChannel = 'RTPDataChannel',
     SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
     TextToSpeech_DisallowedByAutoplay = 'TextToSpeech_DisallowedByAutoplay',
     V8SharedArrayBufferConstructedInExtensionWithoutIsolation =
@@ -11765,6 +11764,8 @@ export namespace Page {
      * JavaScript stack trace of when frame was attached, only set if frame initiated from script.
      */
     stack?: Runtime.StackTrace;
+    adScriptId?: Runtime.ScriptId;
+    debuggerId?: Runtime.UniqueDebuggerId;
   }
 
   /**

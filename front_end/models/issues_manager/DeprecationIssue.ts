@@ -244,16 +244,6 @@ const UIStrings = {
    */
   rtcpMuxPolicyNegotiate: 'The `rtcpMuxPolicy` option is deprecated and will be removed.',
   /**
-   * @description A deprecation warning shown in the DevTools Issues tab.
-   * It's shown when a video conferencing website attempts to turn on or
-   * off a feature that has been removed, `RTP data channels`.
-   * `RTP data channels` are used to send and receive arbitrary data,
-   * but have been removed in favor of standardized versions of
-   * `data channels`: `SCTP data channels`.
-   */
-  rtpDataChannel:
-      '`RTP data channels` are no longer supported. The `RtpDataChannels` constraint is currently ignored, and may cause an error at a later date.',
-  /**
    * @description TODO(crbug.com/1318878): Description needed for translation
    */
   sharedArrayBufferConstructedWithoutIsolation:
@@ -499,10 +489,6 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.rtcpMuxPolicyNegotiate);
         feature = 5654810086866944;
         milestone = 62;
-        break;
-      case Protocol.Audits.DeprecationIssueType.RTPDataChannel:
-        messageFunction = i18nLazyString(UIStrings.rtpDataChannel);
-        milestone = 88;
         break;
       case Protocol.Audits.DeprecationIssueType.SharedArrayBufferConstructedWithoutIsolation:
         messageFunction = i18nLazyString(UIStrings.sharedArrayBufferConstructedWithoutIsolation);

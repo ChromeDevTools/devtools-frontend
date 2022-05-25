@@ -1587,7 +1587,6 @@
                         "RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics",
                         "RTCPeerConnectionSdpSemanticsPlanB",
                         "RtcpMuxPolicyNegotiate",
-                        "RTPDataChannel",
                         "SharedArrayBufferConstructedWithoutIsolation",
                         "TextToSpeech_DisallowedByAutoplay",
                         "V8SharedArrayBufferConstructedInExtensionWithoutIsolation",
@@ -17332,6 +17331,16 @@
                             "description": "JavaScript stack trace of when frame was attached, only set if frame initiated from script.",
                             "optional": true,
                             "$ref": "Runtime.StackTrace"
+                        },
+                        {
+                            "name": "adScriptId",
+                            "optional": true,
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
+                            "name": "debuggerId",
+                            "optional": true,
+                            "$ref": "Runtime.UniqueDebuggerId"
                         }
                     ]
                 },

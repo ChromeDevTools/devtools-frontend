@@ -8,7 +8,7 @@
       "preLaunchTask": "1-build_Debug",
       "runtimeExecutable": "/usr/bin/npm",
       "runtimeArgs": ["run", "unittest"],
-      "port": 9222,
+      "port": 7722,
       "timeout": 30000,
       "browserLaunchLocation": "workspace",
       "outputCapture": "std",

@@ -292,14 +292,19 @@ describeWithMockConnection('NameResolver', () => {
       scopes: '          {         <    B    F    FFFFFFF     B > }',
     },
     {
-      name: 'computes identifiers in arrow function',
+      name: 'computes identifiers in nested arrow function',
       source: 'function f(x) { return (i) => { let j = i; return j } }',
       scopes: '          {            <B           B   B         B > }',
     },
     {
       name: 'computes identifiers in arrow function',
-      source: 'function f(x) { return (i) => { let j = i; return j } }',
-      scopes: '          {            <B           B   B         B > }',
+      source: 'const f = (x) => { let i = 1; return x + i; }',
+      scopes: '          {B           B             B   B  }',
+    },
+    {
+      name: 'computes identifiers in an arrow function\'s nested scope',
+      source: 'const f = (x) => { let i = 1; { let j = i + x; return j; } }',
+      scopes: '          {                   <     B   F   F         B  > }',
     },
     {
       name: 'returns empty identifier list for scope with syntax error',

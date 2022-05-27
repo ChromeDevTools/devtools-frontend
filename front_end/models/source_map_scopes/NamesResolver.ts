@@ -51,8 +51,13 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
       functionEndLocation.columnNumber);
   const scopeText = text.extract(scopeRange);
   const scopeStart = text.toSourceRange(scopeRange).offset;
-  const prefix = 'function fui';
-  const scopeTree = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText);
+  let prefix = 'function fui';
+  let scopeTree = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText);
+  if (!scopeTree) {
+    // Try to parse the function as an arrow function.
+    prefix = 'let fui = ';
+    scopeTree = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText);
+  }
   if (!scopeTree) {
     return null;
   }

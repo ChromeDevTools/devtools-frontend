@@ -523,7 +523,7 @@ export const RuntimeSettings: RuntimeSetting[] = [
   {
     // This setting is disabled, but we keep it around to show in the UI.
     setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.throttling', 'simulated', Common.Settings.SettingStorageType.Synced),
+        'lighthouse.throttling', 'simulate', Common.Settings.SettingStorageType.Synced),
     title: i18nLazyString(UIStrings.throttlingMethod),
     // We will disable this when we have a Lantern trace viewer within DevTools.
     learnMore:

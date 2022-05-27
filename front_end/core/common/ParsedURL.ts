@@ -470,8 +470,16 @@ export class ParsedURL {
     return ParsedURL.substring(url as Platform.DevToolsPath.UrlString, 0, wasmFunctionIndex);
   }
 
+  private static beginsWithWindowsDriveLetter(url: string): boolean {
+    return /^[A-Za-z]:/.test(url);
+  }
+
+  private static beginsWithScheme(url: string): boolean {
+    return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(url);
+  }
+
   static isRelativeURL(url: string): boolean {
-    return !(/^[A-Za-z][A-Za-z0-9+.-]*:/.test(url));
+    return !this.beginsWithScheme(url) || this.beginsWithWindowsDriveLetter(url);
   }
 
   get displayName(): string {

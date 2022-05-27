@@ -464,15 +464,15 @@ describe('Parsed URL', () => {
      });
 
   it('uses the isRelativeURL function to return true if the URL is relative', () => {
-    const urlTest = '/test/path';
-    const isRelativeResult = ParsedURL.isRelativeURL(urlTest);
-    assert.isTrue(isRelativeResult);
+    assert.isTrue(ParsedURL.isRelativeURL('/test/path'));
+    assert.isTrue(ParsedURL.isRelativeURL('C:/'));
+    assert.isTrue(ParsedURL.isRelativeURL('C'));
   });
 
   it('uses the isRelativeURL function to return false if the URL is not relative', () => {
-    const urlTest = 'http://www.example.com/test/path';
-    const isRelativeResult = ParsedURL.isRelativeURL(urlTest);
-    assert.isFalse(isRelativeResult);
+    assert.isFalse(ParsedURL.isRelativeURL('http://www.example.com/test/path'));
+    assert.isFalse(ParsedURL.isRelativeURL('about:blank'));
+    assert.isFalse(ParsedURL.isRelativeURL('file:///C:/'));
   });
 
   it('uses the displayName function to return the name if it exists for a URL', () => {

@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer';
 import {expectError} from '../../conductor/events.js';
 import {
+  $,
   $$,
   click,
   enableExperiment,
@@ -22,6 +23,7 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {triggerLocalFindDialog} from '../helpers/memory-helpers.js';
 import {
   getAllRequestNames,
   navigateToNetworkTab,
@@ -364,5 +366,29 @@ describe('The Network Request view', async () => {
     assert.match(textContent, new RegExp(`localhost(:|%3A)${getTestServerPort()}/test/e2e/resources/network`));
 
     await waitFor('.tabbed-pane-header-tab[aria-label=".headers"]');
+  });
+
+  it('can search by headers name', async () => {
+    await navigateToNetworkTab('headers-and-payload.html');
+
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('image.svg?id=42&param=a%20b');
+    const SEARCH_QUERY = '[aria-label="Search Query"]';
+    const SEARCH_RESULT = '.search-result';
+    const {frontend} = getBrowserAndPages();
+
+    await triggerLocalFindDialog(frontend);
+    await waitFor(SEARCH_QUERY);
+    const inputElement = await $(SEARCH_QUERY);
+    if (!inputElement) {
+      assert.fail('Unable to find search input field');
+    }
+
+    await inputElement.focus();
+    await inputElement.type('Cache-Control');
+    await frontend.keyboard.press('Enter');
+
+    await waitFor(SEARCH_RESULT);
   });
 });

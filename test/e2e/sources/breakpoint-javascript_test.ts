@@ -15,6 +15,7 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
   isEqualOrAbbreviation,
@@ -174,8 +175,18 @@ describe('The Sources Tab', async function() {
          await openSourceCodeEditorForFile('breakpoint-hit-on-first-load.html', 'breakpoint-hit-on-first-load.html');
        });
 
+       await step('open the hello.js file (inline script)', async () => {
+         await openFileQuickOpen();
+         await frontend.keyboard.type('hello.js');
+
+         const firstItemTitle = await getMenuItemTitleAtPosition(0);
+         const firstItem = await getMenuItemAtPosition(0);
+         assert.strictEqual(firstItemTitle, 'hello.js');
+         await click(firstItem);
+       });
+
        await step('add a breakpoint to the beginning of the inline script with sourceURL', async () => {
-         await addBreakpointForLine(frontend, 15);
+         await addBreakpointForLine(frontend, 2);
        });
 
        await step('Navigate to a different site to refresh devtools and remove back-end state', async () => {
@@ -186,9 +197,9 @@ describe('The Sources Tab', async function() {
          void goToResource('sources/breakpoint-hit-on-first-load.html');
        });
 
-       await step('wait for pause and check if we stopped at line 15', async () => {
+       await step('wait for pause and check if we stopped at line 2', async () => {
          await waitFor(PAUSE_INDICATOR_SELECTOR);
-         await assertScriptLocation('breakpoint-hit-on-first-load.html:15');
+         await assertScriptLocation('hello.js:2');
        });
 
        await step('Resume', async () => {

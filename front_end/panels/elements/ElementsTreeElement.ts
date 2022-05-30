@@ -209,13 +209,36 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const enum TagType {
+  OPENING = 'OPENING_TAG',
+  CLOSING = 'CLOSING_TAG',
+}
+
+type OpeningTagContext = {
+    tagType: TagType.OPENING,
+    readonly adornerContainer: HTMLElement,
+    adorners: Adorners.Adorner.Adorner[],
+    styleAdorners: Adorners.Adorner.Adorner[],
+    readonly adornersThrottler: Common.Throttler.Throttler,
+    slot?: Adorners.Adorner.Adorner,
+    canAddAttributes: boolean,
+};
+
+type ClosingTagContext = {
+  tagType: TagType.CLOSING,
+};
+
+export type TagTypeContext = OpeningTagContext|ClosingTagContext;
+
+function isOpeningTag(context: TagTypeContext): context is OpeningTagContext {
+  return context.tagType === TagType.OPENING;
+}
+
 export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   nodeInternal: SDK.DOMModel.DOMNode;
   treeOutline: ElementsTreeOutline|null;
   private gutterContainer: HTMLElement;
   private readonly decorationsElement: HTMLElement;
-  private isClosingTagInternal: boolean|undefined;
-  private readonly canAddAttributes: boolean|undefined;
   private searchQuery: string|null;
   private expandedChildrenLimitInternal: number;
   private readonly decorationsThrottler: Common.Throttler.Throttler;
@@ -223,23 +246,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private hoveredInternal: boolean;
   private editing: EditorHandles|null;
   private highlightResult: UI.UIUtils.HighlightChange[];
-  private readonly adornerContainer: HTMLElement|undefined;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // @ts-expect-error
-  private adorners: Adorners.Adorner.Adorner[];
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // @ts-expect-error
-  private styleAdorners: Adorners.Adorner.Adorner[];
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // @ts-expect-error
-  private readonly adornersThrottler: Common.Throttler.Throttler;
-  private htmlEditElement!: HTMLElement|undefined;
+  private htmlEditElement?: HTMLElement;
   expandAllButtonElement: UI.TreeOutline.TreeElement|null;
   private searchHighlightsVisible?: boolean;
   selectionElement?: HTMLDivElement;
   private hintElement?: HTMLElement;
-  #slot?: Adorners.Adorner.Adorner;
   private contentElement: HTMLElement;
+
+  readonly tagTypeContext: TagTypeContext;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
     // The title will be updated in onattach.
@@ -253,11 +267,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.gutterContainer.append(gutterMenuIcon);
     this.decorationsElement = this.gutterContainer.createChild('div', 'hidden');
 
-    this.isClosingTagInternal = isClosingTag;
-
-    if (this.nodeInternal.nodeType() === Node.ELEMENT_NODE && !isClosingTag) {
-      this.canAddAttributes = true;
-    }
     this.searchQuery = null;
     this.expandedChildrenLimitInternal = InitialChildrenLimit;
     this.decorationsThrottler = new Common.Throttler.Throttler(100);
@@ -269,22 +278,26 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     this.highlightResult = [];
 
-    if (!isClosingTag) {
-      this.adornerContainer = this.contentElement.createChild('div', 'adorner-container hidden');
-      this.adorners = [];
-      this.styleAdorners = [];
-      this.adornersThrottler = new Common.Throttler.Throttler(100);
-
+    if (isClosingTag) {
+      this.tagTypeContext = {tagType: TagType.CLOSING};
+    } else {
+      this.tagTypeContext = {
+        tagType: TagType.OPENING,
+        adornerContainer: this.contentElement.createChild('div', 'adorner-container hidden'),
+        adorners: [],
+        styleAdorners: [],
+        adornersThrottler: new Common.Throttler.Throttler(100),
+        canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
+      };
       void this.updateStyleAdorners();
 
       if (node.isAdFrameNode()) {
         const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
             ElementsComponents.AdornerManager.RegisteredAdorners.AD);
-        const adorner = this.adorn(config);
+        const adorner = this.adorn(config, this.tagTypeContext);
         UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
       }
     }
-
     this.expandAllButtonElement = null;
   }
 
@@ -341,7 +354,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   isClosingTag(): boolean {
-    return Boolean(this.isClosingTagInternal);
+    return !isOpeningTag(this.tagTypeContext);
   }
 
   node(): SDK.DOMModel.DOMNode {
@@ -425,17 +438,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   createSlotLink(nodeShortcut: SDK.DOMModel.DOMNodeShortcut|null): void {
+    if (!isOpeningTag(this.tagTypeContext)) {
+      return;
+    }
     if (nodeShortcut) {
       const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
           ElementsComponents.AdornerManager.RegisteredAdorners.SLOT);
-      this.#slot = this.adornSlot(config);
+      this.tagTypeContext.slot = this.adornSlot(config, this.tagTypeContext);
       const deferredNode = nodeShortcut.deferredNode;
-      this.#slot.addEventListener('click', () => {
+      this.tagTypeContext.slot.addEventListener('click', () => {
         deferredNode.resolve(node => {
           void Common.Revealer.reveal(node);
         });
       });
-      this.#slot.addEventListener('mousedown', e => e.consume(), false);
+      this.tagTypeContext.slot.addEventListener('mousedown', e => e.consume(), false);
     }
   }
 
@@ -464,7 +480,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   onbind(): void {
-    if (this.treeOutline && !this.isClosingTagInternal) {
+    if (this.treeOutline && !this.isClosingTag()) {
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
     }
   }
@@ -500,7 +516,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   onexpand(): void {
-    if (this.isClosingTagInternal) {
+    if (this.isClosingTag()) {
       return;
     }
 
@@ -508,7 +524,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   oncollapse(): void {
-    if (this.isClosingTagInternal) {
+    if (this.isClosingTag()) {
       return;
     }
 
@@ -574,7 +590,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   ondblclick(event: Event): boolean {
-    if (this.editing || this.isClosingTagInternal) {
+    if (this.editing || this.isClosingTag()) {
       return false;
     }
     if (this.startEditingTarget((event.target as Element))) {
@@ -646,7 +662,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   populateTagContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: Event): void {
     // Add attribute-related actions.
     const treeElement =
-        this.isClosingTagInternal && this.treeOutline ? this.treeOutline.findTreeElement(this.nodeInternal) : this;
+        this.isClosingTag() && this.treeOutline ? this.treeOutline.findTreeElement(this.nodeInternal) : this;
     if (!treeElement) {
       return;
     }
@@ -787,7 +803,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const listItem = this.listItemElement;
 
-    if (this.canAddAttributes) {
+    if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
       const attribute = listItem.getElementsByClassName('webkit-html-attribute')[0];
       if (attribute) {
         return this.startEditingAttribute(
@@ -1328,11 +1344,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.title = this.contentElement;
       this.updateDecorations();
       this.contentElement.prepend(this.gutterContainer);
-      if (!this.isClosingTagInternal && this.adornerContainer) {
-        this.contentElement.append(this.adornerContainer);
-      }
-      if (this.#slot) {
-        this.contentElement.append(this.#slot);
+      if (isOpeningTag(this.tagTypeContext)) {
+        this.contentElement.append(this.tagTypeContext.adornerContainer);
+        if (this.tagTypeContext.slot) {
+          this.contentElement.append(this.tagTypeContext.slot);
+        }
       }
       this.highlightResult = [];
       delete this.selectionElement;
@@ -1697,7 +1713,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
 
         const tagName = node.nodeNameInCorrectCase();
-        if (this.isClosingTagInternal) {
+        if (this.isClosingTag()) {
           this.buildTagDOM(titleDOM, tagName, true, true, updateRecord);
           break;
         }
@@ -1942,7 +1958,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   // TODO: add unit tests for adorner-related methods after component and TypeScript works are done
-  adorn({name}: {name: string}): Adorners.Adorner.Adorner {
+  adorn({name}: {name: string}, context: OpeningTagContext): Adorners.Adorner.Adorner {
     const adornerContent = document.createElement('span');
     adornerContent.textContent = name;
     const adorner = new Adorners.Adorner.Adorner();
@@ -1950,13 +1966,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       name,
       content: adornerContent,
     };
-    this.adorners.push(adorner);
+    context.adorners.push(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
-    this.updateAdorners();
+    this.updateAdorners(context);
     return adorner;
   }
 
-  adornSlot({name}: {name: string}): Adorners.Adorner.Adorner {
+  adornSlot({name}: {name: string}, context: OpeningTagContext): Adorners.Adorner.Adorner {
     const linkIcon = new IconButton.Icon.Icon();
     linkIcon
         .data = {iconName: 'ic_show_node_16x16', color: 'var(--color-text-disabled)', width: '12px', height: '12px'};
@@ -1971,45 +1987,45 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       name,
       content: adornerContent,
     };
-    this.adorners.push(adorner);
+    context.adorners.push(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
-    this.updateAdorners();
+    this.updateAdorners(context);
     return adorner;
   }
 
-  removeAdorner(adornerToRemove: Adorners.Adorner.Adorner): void {
-    const adorners = this.adorners;
+  removeAdorner(adornerToRemove: Adorners.Adorner.Adorner, context: OpeningTagContext): void {
+    const adorners = context.adorners;
     ElementsPanel.instance().deregisterAdorner(adornerToRemove);
     adornerToRemove.remove();
     for (let i = 0; i < adorners.length; ++i) {
       if (adorners[i] === adornerToRemove) {
         adorners.splice(i, 1);
-        this.updateAdorners();
+        this.updateAdorners(context);
         return;
       }
     }
   }
 
-  removeAllAdorners(): void {
-    for (const adorner of this.adorners) {
+  removeAllAdorners(context: OpeningTagContext): void {
+    for (const adorner of context.adorners) {
       ElementsPanel.instance().deregisterAdorner(adorner);
       adorner.remove();
     }
 
-    this.adorners = [];
-    this.updateAdorners();
+    context.adorners = [];
+    this.updateAdorners(context);
   }
 
-  private updateAdorners(): void {
-    void this.adornersThrottler.schedule(this.updateAdornersInternal.bind(this));
+  private updateAdorners(context: OpeningTagContext): void {
+    void context.adornersThrottler.schedule(this.updateAdornersInternal.bind(null, context));
   }
 
-  private updateAdornersInternal(): Promise<void> {
-    const adornerContainer = this.adornerContainer;
+  private updateAdornersInternal(context: OpeningTagContext): Promise<void> {
+    const adornerContainer = context.adornerContainer;
     if (!adornerContainer) {
       return Promise.resolve();
     }
-    const adorners = this.adorners;
+    const adorners = context.adorners;
     if (adorners.length === 0) {
       adornerContainer.classList.add('hidden');
       return Promise.resolve();
@@ -2026,7 +2042,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   async updateStyleAdorners(): Promise<void> {
-    if (this.isClosingTagInternal) {
+    if (!isOpeningTag(this.tagTypeContext)) {
       return;
     }
 
@@ -2038,10 +2054,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const styles = await node.domModel().cssModel().getComputedStyle(nodeId);
-    for (const styleAdorner of this.styleAdorners) {
-      this.removeAdorner(styleAdorner);
+    for (const styleAdorner of this.tagTypeContext.styleAdorners) {
+      this.removeAdorner(styleAdorner, this.tagTypeContext);
     }
-    this.styleAdorners = [];
+    this.tagTypeContext.styleAdorners = [];
     if (!styles) {
       return;
     }
@@ -2055,35 +2071,30 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isContainer =
         SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.None;
 
-    const appendAdorner = (adorner?: Adorners.Adorner.Adorner|null): void => {
-      if (adorner) {
-        this.styleAdorners.push(adorner);
-      }
-    };
     if (isGrid) {
-      appendAdorner(this.createGridAdorner());
+      this.pushGridAdorner(this.tagTypeContext);
     }
     if (isFlex) {
-      appendAdorner(this.createFlexAdorner());
+      this.pushFlexAdorner(this.tagTypeContext);
     }
     if (styles.get('scroll-snap-type') && styles.get('scroll-snap-type') !== 'none') {
-      appendAdorner(this.createScrollSnapAdorner());
+      this.pushScrollSnapAdorner(this.tagTypeContext);
     }
     if (isContainer) {
-      appendAdorner(this.createContainerAdorner());
+      this.pushContainerAdorner(this.tagTypeContext);
     }
   }
 
-  createGridAdorner(): Adorners.Adorner.Adorner|null {
+  pushGridAdorner(context: OpeningTagContext): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
-      return null;
+      return;
     }
 
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
         ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
-    const adorner = this.adorn(config);
+    const adorner = this.adorn(config, context);
     adorner.classList.add('grid');
 
     const onClick = (((): void => {
@@ -2109,18 +2120,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    return adorner;
+    context.styleAdorners.push(adorner);
   }
 
-  createScrollSnapAdorner(): Adorners.Adorner.Adorner|null {
+  pushScrollSnapAdorner(context: OpeningTagContext): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
-      return null;
+      return;
     }
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
         ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP);
-    const adorner = this.adorn(config);
+    const adorner = this.adorn(config, context);
     adorner.classList.add('scroll-snap');
 
     const onClick = (((): void => {
@@ -2148,18 +2159,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    return adorner;
+    context.styleAdorners.push(adorner);
   }
 
-  createFlexAdorner(): Adorners.Adorner.Adorner|null {
+  pushFlexAdorner(context: OpeningTagContext): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
-      return null;
+      return;
     }
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
         ElementsComponents.AdornerManager.RegisteredAdorners.FLEX);
-    const adorner = this.adorn(config);
+    const adorner = this.adorn(config, context);
     adorner.classList.add('flex');
 
     const onClick = (((): void => {
@@ -2187,18 +2198,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    return adorner;
+    context.styleAdorners.push(adorner);
   }
 
-  createContainerAdorner(): Adorners.Adorner.Adorner|null {
+  pushContainerAdorner(context: OpeningTagContext): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
-      return null;
+      return;
     }
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
         ElementsComponents.AdornerManager.RegisteredAdorners.CONTAINER);
-    const adorner = this.adorn(config);
+    const adorner = this.adorn(config, context);
     adorner.classList.add('container');
 
     const onClick = (((): void => {
@@ -2226,7 +2237,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    return adorner;
+    context.styleAdorners.push(adorner);
   }
 }
 

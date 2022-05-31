@@ -11,7 +11,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
-import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import type {Chrome} from '../../../../../extension-api/ExtensionAPI.js';
@@ -90,9 +90,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assertNotNullOrUndefined(modelBreakpoint);
 
     // Make sure that we do not have a linked script yet.
-    assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.isEmpty(modelBreakpoint.currentState.positions[0].scriptId);
+    assert.isNull(modelBreakpoint.currentState);
 
     // Create a fake mapping that can be used to set a breakpoint.
     const mapping = createFakeScriptMapping(debuggerModel, SCRIPT_ID);
@@ -141,9 +139,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assertNotNullOrUndefined(modelBreakpoint);
 
     // Make sure that we do not have a linked script yet.
-    assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.isEmpty(modelBreakpoint.currentState.positions[0].scriptId);
+    assert.isNull(modelBreakpoint.currentState);
 
     class Plugin extends TestPlugin {
       constructor() {
@@ -249,4 +245,35 @@ describeWithRealConnection('BreakpointManager', () => {
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
 
+  it('can wait for file system breakpoints to be mapped to network ui source code', async () => {
+    const metadata = new Workspace.UISourceCode.UISourceCodeMetadata(new Date(), 10);
+    const url = 'file://example.js' as Platform.DevToolsPath.UrlString;
+    const content = 'console.log(3)';
+    const fileSystem =
+        createFileSystemUISourceCode({url, content, mimeType: JS_MIME_TYPE, metadata, autoMapping: true});
+
+    const debuggerModel = new TestDebuggerModel(target);
+    const breakpoint = await breakpointManager.setBreakpoint(fileSystem.uiSourceCode, 0, 0, '', true);
+
+    const networkURL = 'http://www.google.com/example.js' as Platform.DevToolsPath.UrlString;
+    const network = createContentProviderUISourceCode({
+      url: networkURL,
+      content,
+      mimeType: JS_MIME_TYPE,
+      metadata,
+      projectType: Workspace.Workspace.projectTypes.Network,
+    });
+
+    const script = new SDK.Script.Script(
+        debuggerModel, SCRIPT_ID, networkURL, 0, 0, 43, 0, 0, '0', true, false, undefined, false, 10, null, null, null,
+        null, null, null);
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(fileSystem.uiSourceCode), 1);
+    assert.isEmpty(breakpointManager.breakpointLocationsForUISourceCode(network.uiSourceCode));
+    await breakpointManager.getUpdatedUISourceCode(script);
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(network.uiSourceCode), 1);
+
+    breakpointManager.removeBreakpoint(breakpoint, true);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(network.project);
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(fileSystem.project);
+  });
 });

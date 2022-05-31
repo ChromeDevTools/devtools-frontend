@@ -14,6 +14,7 @@ export function createContentProviderUISourceCode(options: {
   content?: string, mimeType: string,
   projectType?: Workspace.Workspace.projectTypes,
   projectId?: string,
+  metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
 }): {
   project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
   uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -29,7 +30,8 @@ export function createContentProviderUISourceCode(options: {
   const uiSourceCode = project.createUISourceCode(options.url, resourceType);
   const contentProvider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
       options.url, resourceType, options.content || '');
-  project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null /* metadata*/, options.mimeType);
+  const metadata = options.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
+  project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, options.mimeType);
   return {uiSourceCode, project};
 }
 
@@ -52,19 +54,28 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
 
 class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
   readonly #content: string;
+  readonly #metadata: Workspace.UISourceCode.UISourceCodeMetadata;
+
   constructor(options: {
     fileSystemWorkspaceBinding: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding,
     platformFileSystem: Persistence.PlatformFileSystem.PlatformFileSystem,
     workspace: Workspace.Workspace.WorkspaceImpl,
     content: string,
+    metadata: Workspace.UISourceCode.UISourceCodeMetadata,
   }) {
     super(options.fileSystemWorkspaceBinding, options.platformFileSystem, options.workspace);
     this.#content = options.content;
+    this.#metadata = options.metadata;
   }
 
   requestFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<TextUtils.ContentProvider.DeferredContent> {
     return Promise.resolve({content: this.#content, isEncoded: false});
+  }
+
+  requestMetadata(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Promise<Workspace.UISourceCode.UISourceCodeMetadata|null> {
+    return Promise.resolve(this.#metadata);
   }
 }
 
@@ -75,6 +86,7 @@ export function createFileSystemUISourceCode(options: {
   fileSystemPath?: string,
   autoMapping?: boolean,
   type?: string,
+  metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
 }) {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
@@ -85,8 +97,9 @@ export function createFileSystemUISourceCode(options: {
   const content = options.content || '';
   const platformFileSystem =
       new TestPlatformFileSystem(fileSystemPath, type, options.mimeType, Boolean(options.autoMapping));
+  const metadata = options.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
 
-  const project = new TestFileSystem({fileSystemWorkspaceBinding, platformFileSystem, workspace, content});
+  const project = new TestFileSystem({fileSystemWorkspaceBinding, platformFileSystem, workspace, content, metadata});
 
   const uiSourceCode =
       project.createUISourceCode(options.url, Common.ResourceType.ResourceType.fromMimeType(options.mimeType));

@@ -210,6 +210,7 @@ export async function deinitializeGlobalVars() {
   Workspace.Workspace.WorkspaceImpl.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
+  Bindings.ResourceMapping.ResourceMapping.removeInstance();
   IssuesManager.IssuesManager.IssuesManager.removeInstance();
   Common.Settings.resetSettings();
 

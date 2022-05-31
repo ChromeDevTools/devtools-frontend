@@ -10,6 +10,7 @@ ts_library("bindings") {
     "BreakpointManager_test.ts",
     "FileUtils_test.ts",
     "LiveLocation_test.ts",
+    "ResourceMapping_test.ts",
   ]
 
   deps = [

@@ -57,6 +57,11 @@ const UIStrings = {
   */
   domStorageItems: 'DOM Storage Items',
   /**
+   *@description Text for announcing number of entries after filtering
+   *@example {'DOM Storage Items'} PH1
+   */
+  domStorageItemsCleared: '{PH1} cleared',
+  /**
   *@description Text in DOMStorage Items View of the Application panel
   */
   selectAValueToPreview: 'Select a value to preview',
@@ -149,6 +154,7 @@ export class DOMStorageItemsView extends StorageItemsView {
 
     this.dataGrid.rootNode().removeChildren();
     this.dataGrid.addCreationNode(false);
+    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemsCleared, {PH1: this.dataGrid.displayName}));
     this.setCanDeleteSelected(false);
   }
 

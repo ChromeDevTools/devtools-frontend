@@ -3293,6 +3293,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "D̂ÓM̂ Śt̂ór̂áĝé Ît́êḿŝ"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} ĉĺêár̂éd̂"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "N̂úm̂b́êŕ ôf́ êńt̂ŕîéŝ śĥóŵń îń t̂áb̂ĺê: {PH1}"
   },

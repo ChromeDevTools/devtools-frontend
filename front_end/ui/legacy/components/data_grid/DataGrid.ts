@@ -122,7 +122,7 @@ const elementToIndexMap = new WeakMap<Element, number>();
 
 export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
-  private displayName: string;
+  displayName: string;
   private editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => void)|undefined;
   private readonly deleteCallback: ((arg0: any) => void)|undefined;
   private readonly refreshCallback: (() => void)|undefined;

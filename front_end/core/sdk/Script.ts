@@ -192,7 +192,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
     if (!this.#originalContentProviderInternal) {
-      /* } */
       let lazyContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
       this.#originalContentProviderInternal =
           new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => {
@@ -220,7 +219,9 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
                     return {content: bytecode, isEncoded: true};
                   }
                   let content: string = scriptSource || '';
-                  if (this.hasSourceURL) {
+                  if (this.hasSourceURL && this.sourceURL.startsWith('snippet://')) {
+                    // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
+                    // a sourceURL comment before evaluation and removing it here.
                     content = Script.trimSourceURLComment(content);
                   }
                   return {content, isEncoded: false};

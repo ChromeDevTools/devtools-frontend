@@ -222,10 +222,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private registerRecorderExtensionEndpoint(
       message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
     if (message.command !== PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`);
     }
-    const {pluginName, port} = message;
-    RecorderPluginManager.instance().addPlugin(new RecorderExtensionEndpoint(pluginName, port));
+    const {pluginName, mimeType, port} = message;
+    RecorderPluginManager.instance().addPlugin(new RecorderExtensionEndpoint(pluginName, mimeType, port));
     return this.status.OK();
   }
 

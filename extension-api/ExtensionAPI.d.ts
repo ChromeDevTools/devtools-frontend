@@ -172,7 +172,8 @@ export namespace Chrome {
     }
 
     export interface RecorderExtensionPlugin {
-      stringify(obj: Record<string, any>): Promise<string>;
+      stringify(recording: Record<string, any>): Promise<string>;
+      stringifyStep(step: Record<string, any>): Promise<string>;
     }
 
     export interface LanguageExtensionPlugin {
@@ -278,7 +279,8 @@ export namespace Chrome {
     }
 
     export interface RecorderExtensions {
-      registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string): Promise<void>;
+      registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string, mimeType: string):
+          Promise<void>;
       unregisterRecorderExtensionPlugin(plugin: RecorderExtensionPlugin): Promise<void>;
     }
 

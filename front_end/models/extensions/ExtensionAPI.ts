@@ -727,12 +727,15 @@ self.injectedExtensionAPI = function(
             .catch(error => port.postMessage({requestId, error: {message: error.message}}));
       };
 
-      function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
+      async function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
         switch (request.method) {
           case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
             return plugin.stringify(request.parameters.recording);
           case PrivateAPI.RecorderExtensionPluginCommands.StringifyStep:
             return plugin.stringifyStep(request.parameters.step);
+          default:
+            // @ts-expect-error
+            throw new Error(`'${request.method}' is not recognized`);
         }
       }
 

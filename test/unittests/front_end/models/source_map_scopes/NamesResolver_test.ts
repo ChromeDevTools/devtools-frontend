@@ -8,46 +8,51 @@ import * as SourceMapScopes from '../../../../../front_end/models/source_map_sco
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import type * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+  getMockConnectionResponseHandler,
+  setMockConnectionResponseHandler,
+} from '../../helpers/MockConnection.js';
 
-class ScriptWithContent extends SDK.Script.Script {
-  readonly content: string;
+function addMockScript(
+    target: SDK.Target.Target, scriptId: string, url: string, mapUrl: string, scriptSource: string): void {
+  dispatchEvent(target, 'Debugger.scriptParsed', {
+    scriptId,
+    url,
+    startLine: 0,
+    startColumn: 0,
+    endLine: (scriptSource.match(/^/gm)?.length ?? 1) - 1,
+    endColumn: scriptSource.length - scriptSource.lastIndexOf('\n') - 1,
+    executionContextId: 1,
+    hash: '',
+    hasSourceURL: false,
+    sourceMapURL: mapUrl,
+  });
 
-  constructor(
-      debuggerModel: SDK.DebuggerModel.DebuggerModel, scriptId: Protocol.Runtime.ScriptId,
-      url: Platform.DevToolsPath.UrlString, mapUrl: Platform.DevToolsPath.UrlString, content: string) {
-    super(
-        debuggerModel, scriptId, url, 0, 0, 0, 0, 0, '', false, false, mapUrl, false, 0, null, null, null, null, null,
-        null);
-    this.content = content;
-  }
-
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return Promise.resolve({content: this.content, isEncoded: false});
-  }
-}
-
-class TestDebuggerModel extends SDK.DebuggerModel.DebuggerModel {
-  readonly #scriptIdToScript = new Map<Protocol.Runtime.ScriptId, SDK.Script.Script>();
-
-  constructor(target: SDK.Target.Target) {
-    super(target);
-  }
-
-  scriptForId(scriptId: string): SDK.Script.Script|null {
-    return this.#scriptIdToScript.get(scriptId as Protocol.Runtime.ScriptId) ?? null;
-  }
-
-  addScript(scriptId: string, url: string, mapUrl: string, content: string): ScriptWithContent {
-    const brandedScriptId = scriptId as Protocol.Runtime.ScriptId;
-    const brandedUrl = url as Platform.DevToolsPath.UrlString;
-    const brandedMapUrl = mapUrl as Platform.DevToolsPath.UrlString;
-    const script = new ScriptWithContent(this, brandedScriptId, brandedUrl, brandedMapUrl, content);
-    this.#scriptIdToScript.set(brandedScriptId, script);
-    return script;
-  }
+  const originalHandler = getMockConnectionResponseHandler('Debugger.getScriptSource');
+  setMockConnectionResponseHandler(
+      'Debugger.getScriptSource',
+      (request: Protocol.Debugger.GetScriptSourceRequest): Protocol.Debugger.GetScriptSourceResponse => {
+        if (request.scriptId === scriptId) {
+          return {
+            scriptSource,
+            getError() {
+              return undefined;
+            },
+          };
+        }
+        if (originalHandler) {
+          return originalHandler(request);
+        }
+        return {
+          scriptSource: 'Unknown script',
+          getError() {
+            return 'Unknown script';
+          },
+        };
+      });
 }
 
 describeWithMockConnection('NameResolver', () => {
@@ -57,11 +62,11 @@ describeWithMockConnection('NameResolver', () => {
   let target: SDK.Target.Target;
 
   beforeEach(() => {
-    target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.Frame});
+    target = createTarget();
   });
 
-  function createMockScopeEntry(
-      debuggerModel: TestDebuggerModel, startColumn: number, endColumn: number): SDK.DebuggerModel.ScopeChainEntry {
+  function createMockScopeEntry(debuggerModel: SDK.DebuggerModel.DebuggerModel, startColumn: number, endColumn: number):
+      SDK.DebuggerModel.ScopeChainEntry {
     return {
       callFrame() {
         throw Error('not implemented for test');
@@ -95,8 +100,8 @@ describeWithMockConnection('NameResolver', () => {
 
   function initializeModelAndScopes(source: string, scopeDescriptor: string):
       {functionScope: SDK.DebuggerModel.ScopeChainEntry, scope: SDK.DebuggerModel.ScopeChainEntry} {
-    const debuggerModel = new TestDebuggerModel(target);
-    debuggerModel.addScript(SCRIPT_ID, URL, MAP_URL, source);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    addMockScript(target, SCRIPT_ID, URL, MAP_URL, source);
 
     // Identify function scope.
     const functionStart = scopeDescriptor.indexOf('{');

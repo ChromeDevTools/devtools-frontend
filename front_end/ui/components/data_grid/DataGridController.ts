@@ -23,6 +23,7 @@ export interface DataGridControllerData {
    */
   initialSort?: SortState;
   contextMenus?: DataGridContextMenusConfiguration;
+  label?: string;
 }
 
 export class DataGridController extends HTMLElement {
@@ -33,6 +34,7 @@ export class DataGridController extends HTMLElement {
   #columns: readonly Column[] = [];
   #rows: Row[] = [];
   #contextMenus?: DataGridContextMenusConfiguration = undefined;
+  #label?: string = undefined;
 
   /**
    * Because the controller will sort data in place (e.g. mutate it) when we get
@@ -56,6 +58,7 @@ export class DataGridController extends HTMLElement {
       rows: this.#originalRows as Row[],
       filters: this.#filters,
       contextMenus: this.#contextMenus,
+      label: this.#label,
     };
   }
 
@@ -65,6 +68,7 @@ export class DataGridController extends HTMLElement {
     this.#contextMenus = data.contextMenus;
     this.#filters = data.filters || [];
     this.#contextMenus = data.contextMenus;
+    this.#label = data.label;
 
     this.#columns = [...this.#originalColumns];
     this.#rows = this.#cloneAndFilterRows(data.rows, this.#filters);
@@ -210,6 +214,7 @@ export class DataGridController extends HTMLElement {
           rows: this.#rows,
           activeSort: this.#sortState,
           contextMenus: this.#contextMenus,
+          label: this.#label,
         } as DataGridData}
         @columnheaderclick=${this.#onColumnHeaderClick}
         @contextmenucolumnsortclick=${this.#onContextMenuColumnSortClick}

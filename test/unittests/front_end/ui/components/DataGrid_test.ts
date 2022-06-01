@@ -77,6 +77,7 @@ const columnsWithNoneSortable = createColumns().map(col => {
   col.sortable = false;
   return col;
 });
+const label: string = 'Test Data Grid Label';
 
 Object.freeze(columns);
 Object.freeze(columnsWithNoneSortable);
@@ -88,6 +89,7 @@ const renderDataGrid = (data: Partial<DataGrid.DataGrid.DataGridData>): DataGrid
     rows: data.rows || [],
     columns: data.columns || [],
     activeSort: data.activeSort || null,
+    label: data.label,
   };
   return component;
 };
@@ -265,6 +267,24 @@ describe('DataGrid', () => {
   });
 
   describe('aria-labels', () => {
+    it('it adds aria-label to the table if one is specified', async () => {
+      const component = renderDataGrid({columns, rows, label});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const table = component.shadowRoot.querySelector('table');
+      assertElement(table, HTMLTableElement);
+      assert.strictEqual(table.getAttribute('aria-label'), label);
+    });
+
+    it('it does not add an aria-label to the table if one is not specified', async () => {
+      const component = renderDataGrid({columns, rows});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const table = component.shadowRoot.querySelector('table');
+      assertElement(table, HTMLTableElement);
+      assert.strictEqual(table.getAttribute('aria-label'), null);
+    });
+
     it('adds rowcount and colcount to the table', async () => {
       const component = renderDataGrid({columns, rows});
       assertShadowRoot(component.shadowRoot);

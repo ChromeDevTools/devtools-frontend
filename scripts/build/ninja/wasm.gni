@@ -1,0 +1,25 @@
+# Copyright 2022 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("./copy.gni")
+
+template("wasm_module") {
+  assert(defined(invoker.sources), "Need sources in $target_name")
+  action_foreach(target_name) {
+    script = "//scripts/build/wasm-as.py"
+    outputs = [
+      "$target_gen_dir/{{source_name_part}}.wasm",
+      "$target_gen_dir/{{source_name_part}}.wasm.map",
+      "$target_gen_dir/{{source_name_part}}.wasm.map.json",
+    ]
+    args = [
+      "{{source}}",
+      rebase_path("$target_gen_dir/{{source_name_part}}.wasm", root_build_dir),
+    ]
+    sources = invoker.sources
+  }
+
+  copy_to_gen(target_name + "_sources") {
+    sources = invoker.sources
+  }
+}

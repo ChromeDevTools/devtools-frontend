@@ -3,11 +3,17 @@
 # found in the LICENSE file.
 
 import("../../../../scripts/build/ninja/copy.gni")
+import("../../../../scripts/build/ninja/wasm.gni")
 
 copy_to_gen("extensions") {
   sources = [
     "empty_extension.html",
     "language_extensions.html",
     "test_panel.html",
+    "wasm_module.html",
   ]
+}
+
+wasm_module("extension_wasm_modules") {
+  sources = [ "global_variable.wat" ]
 }

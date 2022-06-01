@@ -3,11 +3,16 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as fs from 'fs';
+import * as path from 'path';
+
 import type * as puppeteer from 'puppeteer';
+import {requireTestRunnerConfigSetting} from '../../conductor/test_runner_config.js';
 
 import {
   $,
   $$,
+  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   getPendingEvents,
@@ -608,4 +613,123 @@ export async function refreshDevToolsAndRemoveBackendState(target: puppeteer.Pag
   // Navigate to a different site to make sure that back-end state will be removed.
   await target.goto('about:blank');
   await reloadDevTools({selectedPanel: {name: 'sources'}});
+}
+
+export type LabelMapping = {
+  moduleOffset: number,
+  bytecode: number,
+  sourceLine: number,
+  labelLine: number,
+  labelColumn: number,
+};
+
+export class WasmLocationLabels {
+  readonly #mappings: Map<string, LabelMapping[]>;
+  readonly #source: string;
+  readonly #wasm: string;
+  constructor(source: string, wasm: string, mappings: Map<string, LabelMapping[]>) {
+    this.#mappings = mappings;
+    this.#source = source;
+    this.#wasm = wasm;
+  }
+
+  static load(source: string, wasm: string): WasmLocationLabels {
+    const testSuitePath = requireTestRunnerConfigSetting<string>('test-suite-path');
+    const target = requireTestRunnerConfigSetting<string>('target');
+    const mapFileName = path.join('out', target, testSuitePath, 'resources', `${wasm}.map.json`);
+    const mapFile = JSON.parse(fs.readFileSync(mapFileName, {encoding: 'utf-8'})) as Array<{
+                      source: string,
+                      generatedLine: number,
+                      generatedColumn: number,
+                      bytecodeOffset: number,
+                      originalLine: number,
+                      originalColumn: number,
+                    }>;
+    const sourceFileName = path.join('out', target, testSuitePath, 'resources', source);
+    const sourceFile = fs.readFileSync(sourceFileName, {encoding: 'utf-8'});
+    const labels = new Map<string, number>();
+    for (const [index, line] of sourceFile.split('\n').entries()) {
+      if (line.trim().startsWith(';;@')) {
+        const label = line.trim().substr(3).trim();
+        assert.isFalse(labels.has(label), `Label ${label} must be unique`);
+        labels.set(label, index + 1);
+      }
+    }
+    const mappings = new Map<string, LabelMapping[]>();
+    for (const m of mapFile) {
+      const entry = mappings.get(m.source) ?? [];
+      if (entry.length === 0) {
+        mappings.set(m.source, entry);
+      }
+      const labelLine = m.originalLine as number;
+      const labelColumn = m.originalColumn as number;
+      const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
+      assertNotNullOrUndefined(sourceLine);
+      entry.push({moduleOffset: m.generatedColumn, bytecode: m.bytecodeOffset, sourceLine, labelLine, labelColumn});
+    }
+    return new WasmLocationLabels(source, wasm, mappings);
+  }
+
+  async checkLocationForLabel(label: string) {
+    const mappedLines = this.#mappings.get(label);
+    assertNotNullOrUndefined(mappedLines);
+
+    const pauseLocation = await retrieveTopCallFrameWithoutResuming();
+    const pausedLine = mappedLines.find(
+        line => pauseLocation === `${path.basename(this.#wasm)}:0x${line.moduleOffset.toString(16)}` ||
+            pauseLocation === `${path.basename(this.#source)}:${line.sourceLine}`);
+    assertNotNullOrUndefined(pausedLine);
+    return pausedLine;
+  }
+
+  async addBreakpointsForLabelInSource(label: string) {
+    const {frontend} = getBrowserAndPages();
+    const mappedLines = this.#mappings.get(label);
+    assertNotNullOrUndefined(mappedLines);
+    await openFileInEditor(path.basename(this.#source));
+    for (const line of mappedLines) {
+      await addBreakpointForLine(frontend, line.sourceLine);
+    }
+  }
+
+  async addBreakpointsForLabelInWasm(label: string) {
+    const {frontend} = getBrowserAndPages();
+    const mappedLines = this.#mappings.get(label);
+    assertNotNullOrUndefined(mappedLines);
+    await openFileInEditor(path.basename(this.#wasm));
+    const visibleLines = await $$(CODE_LINE_SELECTOR);
+    const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
+    const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
+
+    for (const line of mappedLines) {
+      const lineNumberLabel = lineNumberLabels.get(line.moduleOffset);
+      assertNotNullOrUndefined(lineNumberLabel);
+      await addBreakpointForLine(frontend, lineNumberLabel);
+    }
+  }
+
+  async setBreakpointInSourceAndRun(label: string, script: string) {
+    const {target} = getBrowserAndPages();
+    await this.addBreakpointsForLabelInSource(label);
+
+    target.evaluate(script);
+    await this.checkLocationForLabel(label);
+  }
+
+  async setBreakpointInWasmAndRun(label: string, script: string) {
+    const {target} = getBrowserAndPages();
+    await this.addBreakpointsForLabelInWasm(label);
+
+    target.evaluate(script);
+    await this.checkLocationForLabel(label);
+  }
+
+  async continueAndCheckForLabel(label: string) {
+    await click(RESUME_BUTTON);
+    await this.checkLocationForLabel(label);
+  }
+
+  getMappingsForPlugin(): LabelMapping[] {
+    return Array.from(this.#mappings.values()).flat();
+  }
 }

@@ -27,24 +27,22 @@ import {
   getCurrentConsoleMessages,
   getStructuredConsoleMessages,
 } from '../helpers/console-helpers.js';
+import type {LabelMapping} from '../helpers/sources-helpers.js';
 import {
-  addBreakpointForLine,
   getCallFrameLocations,
   getCallFrameNames,
   getNonBreakableLines,
   getValuesForScope,
-  isBreakpointSet,
   listenForSourceFilesAdded,
   openFileInEditor,
-  openFileInSourcesPanel,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_ON_EXCEPTION_BUTTON,
   RESUME_BUTTON,
   retrieveSourceFilesAdded,
-  retrieveTopCallFrameScriptLocation,
   switchToCallFrame,
   waitForAdditionalSourceFiles,
+  WasmLocationLabels,
 } from '../helpers/sources-helpers.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -77,14 +75,16 @@ describe('The Debugger Language Plugins', async () => {
       RegisterExtension(new SingleFilePlugin(), 'Single File', {language: 'WebAssembly', symbol_types: ['None']});
     });
 
-    await openFileInSourcesPanel('wasm/global_variable.html');
+    await goToResource(
+        'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
+    await openSourcesPanel();
     await listenForSourceFilesAdded(frontend);
     const additionalFilesPromise = waitForAdditionalSourceFiles(frontend);
-    await target.evaluate('go();');
+    await target.evaluate('loadModule();');
     await additionalFilesPromise;
 
     const capturedFileNames = await retrieveSourceFilesAdded(frontend);
-    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/sources/wasm/global_variable.wasm', '/source_file.c']);
+    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm', '/source_file.c']);
   });
 
   // Resolve a single code offset to a source line to test the correctness of offset computations.
@@ -142,51 +142,57 @@ describe('The Debugger Language Plugins', async () => {
 
   // Resolve the location for a breakpoint.
   it('resolve locations for breakpoints correctly', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const locationLabels = WasmLocationLabels.load('extensions/global_variable.wat', 'extensions/global_variable.wasm');
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
-    await extension.evaluate(() => {
+    await extension.evaluate((mappings: LabelMapping[]) => {
       // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
       // code offset pair.
       class LocationMappingPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private module: undefined|{rawModuleId: string, sourceFileURL: string} = undefined;
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
-          const sourceFileURL = new URL('global_variable.ll', rawModule.url || symbols).href;
-          this.modules.set(rawModuleId, {
-            rawLocationRange: {rawModuleId, startOffset: 25, endOffset: 26},
-            sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 8, columnNumber: -1},
-          });
+          if (this.module) {
+            throw new Error('Expected only one module');
+          }
+          const sourceFileURL = new URL('global_variable.wat', rawModule.url || symbols).href;
+          this.module = {rawModuleId, sourceFileURL};
           return [sourceFileURL];
         }
 
         async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
-          const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
-          if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
-              rawLocation.codeOffset < rawLocationRange.endOffset) {
-            return [sourceLocation];
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === rawLocation.rawModuleId) {
+              const mapping = mappings.find(m => rawLocation.codeOffset === m.bytecode);
+              if (mapping) {
+                return [{rawModuleId, sourceFileURL, lineNumber: mapping.sourceLine - 1, columnNumber: -1}];
+              }
+            }
           }
           return [];
         }
 
-        async sourceLocationToRawLocation(sourceLocationArg: Chrome.DevTools.SourceLocation) {
-          const {rawLocationRange, sourceLocation} = this.modules.get(sourceLocationArg.rawModuleId) || {};
-          if (rawLocationRange && sourceLocation &&
-              JSON.stringify(sourceLocation) === JSON.stringify(sourceLocationArg)) {
-            return [rawLocationRange];
+        async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
+            Promise<Chrome.DevTools.RawLocationRange[]> {
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === sourceLocation.rawModuleId && sourceFileURL === sourceLocation.sourceFileURL) {
+              const mapping = mappings.find(m => sourceLocation.lineNumber === m.sourceLine - 1);
+              if (mapping) {
+                return [{rawModuleId, startOffset: mapping.bytecode, endOffset: mapping.bytecode + 1}];
+              }
+            }
           }
           return [];
         }
 
-        async getMappedLines(rawModuleId: string, sourceFileURL: string) {
-          const {sourceLocation} = this.modules.get(rawModuleId) || {};
-          if (sourceLocation && sourceLocation.sourceFileURL === sourceFileURL) {
-            return [5, 6, 7, 8, 9];
+        async getMappedLines(rawModuleIdArg: string, sourceFileURLArg: string) {
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === rawModuleIdArg && sourceFileURL === sourceFileURLArg) {
+              return Array.from(new Set(mappings.map(m => m.sourceLine - 1)).values()).sort();
+            }
           }
           return undefined;
         }
@@ -194,11 +200,11 @@ describe('The Debugger Language Plugins', async () => {
 
       RegisterExtension(
           new LocationMappingPlugin(), 'Location Mapping', {language: 'WebAssembly', symbol_types: ['None']});
-    });
+    }, locationLabels.getMappingsForPlugin());
 
-    await openFileInSourcesPanel('wasm/global_variable.html');
-    await target.evaluate('go();');
-    await openFileInEditor('global_variable.ll');
+    await goToResource('extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm');
+    await openSourcesPanel();
+    await openFileInEditor('global_variable.wat');
 
     const toolbar = await waitFor('.sources-toolbar');
     const itemElements = await waitForMany('.toolbar-item', 2, toolbar);
@@ -206,15 +212,12 @@ describe('The Debugger Language Plugins', async () => {
     assert.isAtLeast(
         items.indexOf('(provided via debug info by global_variable.wasm)'), 0, 'Toolbar debug info hint not found');
 
-    // Line 4 is non-breakable.
-    assert.include(await getNonBreakableLines(), 4);
+    assert.isNotEmpty(await getNonBreakableLines());
 
-    await addBreakpointForLine(frontend, 9);
+    await locationLabels.setBreakpointInSourceAndRun('BREAK(return)', 'Module.instance.exports.Main();');
 
-    const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
-    assert.deepEqual(scriptLocation, 'global_variable.ll:9');
-
-    await waitForFunction(async () => !(await isBreakpointSet(4)));
+    // FIXME(pfaffe) what was the point of this check?
+    // await waitForFunction(async () => !(await isBreakpointSet(4)));
   });
 
   it('shows top-level and nested variables', async () => {

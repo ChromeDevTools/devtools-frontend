@@ -1,0 +1,33 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+
+<script>
+  function imported_func() {
+    throw new Error();
+  }
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const url = queryParams.get('module');
+  if(!url) {
+    throw new Error('No module URL to load');
+  }
+
+
+  const autorun = queryParams.get('autorun');
+  window.loadModule = async function () {
+    window.Module = await WebAssembly.instantiateStreaming(fetch(url), {imports: {imported_func}});
+
+    if (autorun) {
+      window.Module.instance.exports[autorun]();
+    }
+  }
+
+  const defer = queryParams.get('defer');
+  if (defer !== '1') {
+    window.loadModule();
+  }
+
+</script>

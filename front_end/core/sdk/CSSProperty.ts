@@ -188,7 +188,7 @@ export class CSSProperty {
     if (insideProperty) {
       result += propertyText;
     }
-    result = result.substring(2, result.length - 1).trimRight();
+    result = result.substring(2, result.length - 1).trimEnd();
     return result + (indentation ? '\n' + endIndentation : '');
 
     function processToken(token: string, tokenType: string|null): void {
@@ -230,8 +230,8 @@ export class CSSProperty {
       }
       if (cssMetadata().isGridAreaDefiningProperty(propertyName)) {
         const rowResult = GridAreaRowRegex.exec(token);
-        if (rowResult && rowResult.index === 0 && !propertyText.trimRight().endsWith(']')) {
-          propertyText = propertyText.trimRight() + '\n' + doubleIndent;
+        if (rowResult && rowResult.index === 0 && !propertyText.trimEnd().endsWith(']')) {
+          propertyText = propertyText.trimEnd() + '\n' + doubleIndent;
         }
       }
       if (!propertyName && token === ':') {

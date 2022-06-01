@@ -298,7 +298,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     }
 
     // Match ignoring sourceURL.
-    if (!workingCopy.startsWith(this.#scriptSource.trimRight())) {
+    if (!workingCopy.startsWith(this.#scriptSource.trimEnd())) {
       return true;
     }
     const suffix = this.#uiSourceCodeInternal.workingCopy().substr(this.#scriptSource.length);

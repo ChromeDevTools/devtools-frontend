@@ -242,7 +242,7 @@ export class Automapping {
       } else {
         if (networkContent.content) {
           // Trim trailing whitespaces because V8 adds trailing newline.
-          isValid = fileContent.trimRight() === networkContent.content.trimRight();
+          isValid = fileContent.trimEnd() === networkContent.content.trimEnd();
         }
       }
       if (!isValid) {

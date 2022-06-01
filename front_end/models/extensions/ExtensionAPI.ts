@@ -111,6 +111,7 @@ export namespace PrivateAPI {
 
   export const enum RecorderExtensionPluginCommands {
     Stringify = 'stringify',
+    StringifyStep = 'stringifyStep',
   }
 
   export const enum RecorderExtensionPluginEvents {
@@ -277,7 +278,12 @@ export namespace PrivateAPI {
     parameters: {recording: Record<string, unknown>},
   };
 
-  export type RecorderExtensionRequests = StringifyRequest;
+  type StringifyStepRequest = {
+    method: RecorderExtensionPluginCommands.StringifyStep,
+    parameters: {step: Record<string, unknown>},
+  };
+
+  export type RecorderExtensionRequests = StringifyRequest|StringifyStepRequest;
 }
 
 declare global {
@@ -725,8 +731,8 @@ self.injectedExtensionAPI = function(
         switch (request.method) {
           case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
             return plugin.stringify(request.parameters.recording);
-          default:
-            throw new Error(`'${request.method}' is not recognized`);
+          case PrivateAPI.RecorderExtensionPluginCommands.StringifyStep:
+            return plugin.stringifyStep(request.parameters.step);
         }
       }
 

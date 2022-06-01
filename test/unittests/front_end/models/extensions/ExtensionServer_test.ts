@@ -47,7 +47,7 @@ describe('Extensions', () => {
       steps: [],
     });
 
-    const stepResult = await plugin.stringify({
+    const stepResult = await plugin.stringifyStep({
       type: 'scroll',
     });
 

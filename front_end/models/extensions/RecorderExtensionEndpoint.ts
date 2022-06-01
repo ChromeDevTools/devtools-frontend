@@ -46,4 +46,15 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
   stringify(recording: Object): Promise<string> {
     return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, {recording});
   }
+
+  /**
+   * In practice, `step` is a Step[1], but we avoid defining this type on the
+   * API in order to prevent dependencies between Chrome and puppeteer. Extensions
+   * are responsible for working out compatibility issues.
+   *
+   * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L243
+   */
+  stringifyStep(step: Object): Promise<string> {
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, {step});
+  }
 }

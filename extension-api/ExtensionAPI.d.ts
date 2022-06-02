@@ -279,7 +279,7 @@ export namespace Chrome {
     }
 
     export interface RecorderExtensions {
-      registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string, mimeType: string):
+      registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string, mediaType: string):
           Promise<void>;
       unregisterRecorderExtensionPlugin(plugin: RecorderExtensionPlugin): Promise<void>;
     }

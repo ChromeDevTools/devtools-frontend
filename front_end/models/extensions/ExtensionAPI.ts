@@ -133,7 +133,7 @@ export namespace PrivateAPI {
   type RegisterRecorderExtensionPluginRequest = {
     command: Commands.RegisterRecorderExtensionPlugin,
     pluginName: string,
-    mimeType: string,
+    mediaType: string,
     port: MessagePort,
   };
   type SubscribeRequest = {command: Commands.Subscribe, type: string};
@@ -713,7 +713,7 @@ self.injectedExtensionAPI = function(
    Pick<APIImpl.RecorderExtensions, 'registerRecorderExtensionPlugin'|'unregisterRecorderExtensionPlugin'>) = {
     registerRecorderExtensionPlugin: async function(
         this: APIImpl.RecorderExtensions, plugin: PublicAPI.Chrome.DevTools.RecorderExtensionPlugin, pluginName: string,
-        mimeType: string): Promise<void> {
+        mediaType: string): Promise<void> {
       if (this._plugins.has(plugin)) {
         throw new Error(`Tried to register plugin '${pluginName}' twice`);
       }
@@ -744,7 +744,7 @@ self.injectedExtensionAPI = function(
             {
               command: PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
               pluginName,
-              mimeType,
+              mediaType,
               port: channel.port2,
             },
             () => resolve(), [channel.port2]);

@@ -52,7 +52,7 @@ describe('Extensions', () => {
     });
 
     assert.strictEqual(manager.plugins().length, 1);
-    assert.strictEqual(manager.plugins()[0].getMimeType(), 'text/javascript');
+    assert.strictEqual(manager.plugins()[0].getMediaType(), 'text/javascript');
     assert.strictEqual(manager.plugins()[0].getName(), 'Test');
     assert.deepStrictEqual(result, '{"name":"test","steps":[]}');
     assert.deepStrictEqual(stepResult, '{"type":"scroll"}');

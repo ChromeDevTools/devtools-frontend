@@ -8,20 +8,20 @@ import {RecorderPluginManager} from './RecorderPluginManager.js';
 
 export class RecorderExtensionEndpoint extends ExtensionEndpoint {
   private readonly name: string;
-  private readonly mimeType: string;
+  private readonly mediaType: string;
 
-  constructor(name: string, mimeType: string, port: MessagePort) {
+  constructor(name: string, mediaType: string, port: MessagePort) {
     super(port);
     this.name = name;
-    this.mimeType = mimeType;
+    this.mediaType = mediaType;
   }
 
   getName(): string {
     return this.name;
   }
 
-  getMimeType(): string {
-    return this.mimeType;
+  getMediaType(): string {
+    return this.mediaType;
   }
 
   protected handleEvent({event}: {event: string}): void {

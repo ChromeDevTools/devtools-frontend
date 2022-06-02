@@ -1241,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "The debug information for function {PH1} is incomplete"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Error in debugger language plugin: {PH1}"
   },
@@ -1248,7 +1251,7 @@
     "message": "[{PH1}] Failed to load debug symbols for {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Missing debug symbols for function \"{PH1}\""
+    "message": "No debug information for function \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Loaded debug symbols for {PH2}, but didn't find any source files"
@@ -1261,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Symbol file \"{PH1}\" not found"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit compile failed: {PH1}"
@@ -9518,6 +9518,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Copy stack trace"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Failed to load debug file \"{PH1}\"."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Not paused"
   },
@@ -9652,6 +9655,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Configure"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Failed to load debug file \"{PH1}\"."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Failed to load any debug info for {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n, plural, =1 {Disable breakpoint} other {Disable all breakpoints in line}}"

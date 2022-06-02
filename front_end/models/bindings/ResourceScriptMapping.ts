@@ -423,6 +423,18 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     return this.scriptInternal !== undefined && Boolean(this.scriptInternal.sourceMapURL);
   }
 
+  async missingSymbolFiles(): Promise<string[]|null> {
+    if (!this.scriptInternal) {
+      return null;
+    }
+    const {pluginManager} = this.#resourceScriptMapping.debuggerWorkspaceBinding;
+    if (!pluginManager) {
+      return null;
+    }
+    const sources = await pluginManager.getSourcesForScript(this.scriptInternal);
+    return sources && 'missingSymbolFiles' in sources ? sources.missingSymbolFiles : null;
+  }
+
   get script(): SDK.Script.Script|null {
     return this.scriptInternal || null;
   }

@@ -141,6 +141,16 @@ const UIStrings = {
   *@description Text in Debugger Plugin of the Sources panel
   */
   theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions.',
+  /**
+  *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+  *@example {src/myapp.debug.wasm.dwp} PH1
+  */
+  debugFileNotFound: 'Failed to load debug file "{PH1}".',
+  /**
+  *@description Error message that is displayed when no debug info could be loaded
+  *@example {app.wasm} PH1
+  */
+  debugInfoNotFound: 'Failed to load any debug info for {PH1}.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -194,6 +204,7 @@ export class DebuggerPlugin extends Plugin {
   private prettyPrintInfobar!: UI.Infobar.Infobar|null;
   private refreshBreakpointsTimeout: undefined|number = undefined;
   private activeBreakpointDialog: BreakpointEditDialog|null = null;
+  private missingDebugInfoBar: UI.Infobar.Infobar|null = null;
 
   constructor(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -237,7 +248,6 @@ export class DebuggerPlugin extends Plugin {
 
     this.ignoreListInfobar = null;
     this.showIgnoreListInfobarIfNeeded();
-
     for (const scriptFile of this.scriptFileForDebuggerModel.values()) {
       scriptFile.checkMapping();
     }
@@ -332,6 +342,9 @@ export class DebuggerPlugin extends Plugin {
         editor.dispatch({effects: SourceFrame.SourceFrame.addNonBreakableLines.of(linePositions)});
       }
     }, console.error);
+    if (this.missingDebugInfoBar) {
+      this.attachInfobar(this.missingDebugInfoBar);
+    }
     if (!this.muted) {
       void this.refreshBreakpoints();
     }
@@ -1350,6 +1363,42 @@ export class DebuggerPlugin extends Plugin {
     if (newScriptFile.hasSourceMapURL()) {
       this.showSourceMapInfobar();
     }
+
+    void newScriptFile.missingSymbolFiles().then(resources => {
+      if (resources) {
+        const details = i18nString(UIStrings.debugInfoNotFound, {PH1: newScriptFile.uiSourceCode.url()});
+        this.updateMissingDebugInfoInfobar({resources, details});
+      } else {
+        this.updateMissingDebugInfoInfobar(null);
+      }
+    });
+  }
+
+  private updateMissingDebugInfoInfobar(warning: SDK.DebuggerModel.MissingDebugInfoDetails|null): void {
+    if (this.missingDebugInfoBar) {
+      return;
+    }
+    if (warning === null) {
+      this.removeInfobar(this.missingDebugInfoBar);
+      this.missingDebugInfoBar = null;
+      return;
+    }
+    this.missingDebugInfoBar = UI.Infobar.Infobar.create(UI.Infobar.Type.Error, warning.details, []);
+    if (!this.missingDebugInfoBar) {
+      return;
+    }
+    for (const resource of warning.resources) {
+      const detailsRow =
+          this.missingDebugInfoBar?.createDetailsRowMessage(i18nString(UIStrings.debugFileNotFound, {PH1: resource}));
+      if (detailsRow) {
+        detailsRow.classList.add('infobar-selectable');
+      }
+    }
+    this.missingDebugInfoBar.setCloseCallback(() => {
+      this.removeInfobar(this.missingDebugInfoBar);
+      this.missingDebugInfoBar = null;
+    });
+    this.attachInfobar(this.missingDebugInfoBar);
   }
 
   private showSourceMapInfobar(): void {
@@ -1481,6 +1530,7 @@ export class DebuggerPlugin extends Plugin {
             const uiLocation = await liveLocation.uiLocation();
             if (uiLocation && uiLocation.uiSourceCode.url() === this.uiSourceCode.url()) {
               this.setExecutionLocation(uiLocation);
+              this.updateMissingDebugInfoInfobar(callFrame.missingDebugInfoDetails);
             } else {
               this.setExecutionLocation(null);
             }

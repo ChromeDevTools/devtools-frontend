@@ -1242,6 +1242,11 @@ export class BreakLocation extends Location {
   }
 }
 
+export interface MissingDebugInfoDetails {
+  details: string;
+  resources: string[];
+}
+
 export class CallFrame {
   debuggerModel: DebuggerModel;
   readonly #scriptInternal: Script;
@@ -1253,7 +1258,7 @@ export class CallFrame {
   readonly #functionNameInternal: string;
   readonly #functionLocationInternal: Location|undefined;
   #returnValueInternal: RemoteObject|null;
-  readonly warnings: string[] = [];
+  #missingDebugInfoDetails: MissingDebugInfoDetails|null = null;
 
   readonly canBeRestarted: boolean;
 
@@ -1299,8 +1304,12 @@ export class CallFrame {
     return new CallFrame(this.debuggerModel, this.#scriptInternal, this.payload, inlineFrameIndex, name);
   }
 
-  addWarning(warning: string): void {
-    this.warnings.push(warning);
+  setMissingDebugInfoDetails(details: MissingDebugInfoDetails): void {
+    this.#missingDebugInfoDetails = details;
+  }
+
+  get missingDebugInfoDetails(): MissingDebugInfoDetails|null {
+    return this.#missingDebugInfoDetails;
   }
 
   get script(): Script {

@@ -59,12 +59,12 @@ const UIStrings = {
   *@description Error message that is displayed in UI debugging information cannot be found for a call frame
   *@example {main} PH1
   */
-  failedToLoadDebugSymbolsForFunction: 'Missing debug symbols for function "{PH1}"',
+  failedToLoadDebugSymbolsForFunction: 'No debug information for function "{PH1}"',
   /**
   *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
-  *@example {src/myapp.debug.wasm.dwp} PH1
+  *@example {mainp.debug.wasm.dwp} PH1
   */
-  symbolFileNotFound: 'Symbol file "{PH1}" not found',
+  debugSymbolsIncomplete: 'The debug information for function {PH1} is incomplete',
 };
 const str_ = i18n.i18n.registerUIStrings('models/bindings/DebuggerLanguagePlugins.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -766,7 +766,7 @@ export class DebuggerLanguagePluginManager implements
     rawModuleId: string,
     plugin: DebuggerLanguagePlugin,
     scripts: Array<SDK.Script.Script>,
-    addRawModulePromise: Promise<Array<Platform.DevToolsPath.UrlString>>,
+    addRawModulePromise: Promise<Array<Platform.DevToolsPath.UrlString>|{missingSymbolFiles: string[]}>,
   }>;
 
   constructor(
@@ -819,17 +819,19 @@ export class DebuggerLanguagePluginManager implements
         .all(callFrames.map(async callFrame => {
           const functionInfo = await this.getFunctionInfo(callFrame.script, callFrame.location());
           if (functionInfo) {
-            const {frames, missingSymbolFiles} = functionInfo;
-            if (frames.length) {
-              return frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
+            if ('frames' in functionInfo && functionInfo.frames.length) {
+              return functionInfo.frames.map(({name}, index) => callFrame.createVirtualCallFrame(index, name));
             }
-            if (missingSymbolFiles && missingSymbolFiles.length) {
-              for (const file of missingSymbolFiles) {
-                callFrame.addWarning(i18nString(UIStrings.symbolFileNotFound, {PH1: file}));
-              }
+            if ('missingSymbolFiles' in functionInfo && functionInfo.missingSymbolFiles.length) {
+              const resources = functionInfo.missingSymbolFiles;
+              const details = i18nString(UIStrings.debugSymbolsIncomplete, {PH1: callFrame.functionName});
+              callFrame.setMissingDebugInfoDetails({details, resources});
+            } else {
+              callFrame.setMissingDebugInfoDetails({
+                resources: [],
+                details: i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: callFrame.functionName}),
+              });
             }
-            callFrame.addWarning(
-                i18nString(UIStrings.failedToLoadDebugSymbolsForFunction, {PH1: callFrame.functionName}));
           }
           return callFrame;
         }))
@@ -1069,40 +1071,45 @@ export class DebuggerLanguagePluginManager implements
       const rawModuleId = rawModuleIdForScript(script);
       let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
       if (!rawModuleHandle) {
-        const sourceFileURLsPromise = (async(): Promise<Platform.DevToolsPath.UrlString[]> => {
-          const console = Common.Console.Console.instance();
-          const url = script.sourceURL;
-          const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
-          if (symbolsUrl) {
-            console.log(i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
-          } else {
-            console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
-          }
-          try {
-            const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
-            const sourceFileURLs =
-                await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code}) as Platform.DevToolsPath.UrlString[];
-            // Check that the handle isn't stale by now. This works because the code that assigns to
-            // `rawModuleHandle` below will run before this code because of the `await` in the preceding
-            // line. This is primarily to avoid logging the message below, which would give the developer
-            // the misleading information that we're done, while in reality it was a stale call that finished.
-            if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
-              return [];
-            }
-            if (sourceFileURLs.length === 0) {
-              console.warn(i18nString(UIStrings.loadedDebugSymbolsForButDidnt, {PH1: plugin.name, PH2: url}));
-            } else {
-              console.log(i18nString(
-                  UIStrings.loadedDebugSymbolsForFound, {PH1: plugin.name, PH2: url, PH3: sourceFileURLs.length}));
-            }
-            return sourceFileURLs;
-          } catch (error) {
-            console.error(
-                i18nString(UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
-            this.#rawModuleHandles.delete(rawModuleId);
-            return [];
-          }
-        })();
+        const sourceFileURLsPromise =
+            (async(): Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: string[]}> => {
+              const console = Common.Console.Console.instance();
+              const url = script.sourceURL;
+              const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
+              if (symbolsUrl) {
+                console.log(
+                    i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
+              } else {
+                console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
+              }
+              try {
+                const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
+                const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
+                // Check that the handle isn't stale by now. This works because the code that assigns to
+                // `rawModuleHandle` below will run before this code because of the `await` in the preceding
+                // line. This is primarily to avoid logging the message below, which would give the developer
+                // the misleading information that we're done, while in reality it was a stale call that finished.
+                if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
+                  return [];
+                }
+                if ('missingSymbolFiles' in addModuleResult) {
+                  return {missingSymbolFiles: addModuleResult.missingSymbolFiles};
+                }
+                const sourceFileURLs = addModuleResult as Platform.DevToolsPath.UrlString[];
+                if (sourceFileURLs.length === 0) {
+                  console.warn(i18nString(UIStrings.loadedDebugSymbolsForButDidnt, {PH1: plugin.name, PH2: url}));
+                } else {
+                  console.log(i18nString(
+                      UIStrings.loadedDebugSymbolsForFound, {PH1: plugin.name, PH2: url, PH3: sourceFileURLs.length}));
+                }
+                return sourceFileURLs;
+              } catch (error) {
+                console.error(i18nString(
+                    UIStrings.failedToLoadDebugSymbolsFor, {PH1: plugin.name, PH2: url, PH3: error.message}));
+                this.#rawModuleHandles.delete(rawModuleId);
+                return [];
+              }
+            })();
         rawModuleHandle = {rawModuleId, plugin, scripts: [script], addRawModulePromise: sourceFileURLsPromise};
         this.#rawModuleHandles.set(rawModuleId, rawModuleHandle);
       } else {
@@ -1114,12 +1121,14 @@ export class DebuggerLanguagePluginManager implements
       // for the DebuggerModel again, which may disappear
       // in the meantime...
       void rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
-        // The script might have disappeared meanwhile...
-        if (script.debuggerModel.scriptForId(script.scriptId) === script) {
-          const modelData = this.#debuggerModelToData.get(script.debuggerModel);
-          if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
-            modelData.addSourceFiles(script, sourceFileURLs);
-            void this.#debuggerWorkspaceBinding.updateLocations(script);
+        if (!('missingSymbolFiles' in sourceFileURLs)) {
+          // The script might have disappeared meanwhile...
+          if (script.debuggerModel.scriptForId(script.scriptId) === script) {
+            const modelData = this.#debuggerModelToData.get(script.debuggerModel);
+            if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
+              modelData.addSourceFiles(script, sourceFileURLs);
+              void this.#debuggerWorkspaceBinding.updateLocations(script);
+            }
           }
         }
       });
@@ -1127,7 +1136,8 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  getSourcesForScript(script: SDK.Script.Script): Promise<Array<Platform.DevToolsPath.UrlString>|undefined> {
+  getSourcesForScript(script: SDK.Script.Script):
+      Promise<Array<Platform.DevToolsPath.UrlString>|{missingSymbolFiles: string[]}|undefined> {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
     if (rawModuleHandle) {
@@ -1173,10 +1183,8 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location): Promise<{
-    frames: Array<Chrome.DevTools.FunctionInfo>,
-    missingSymbolFiles?: Array<string>,
-  }|null> {
+  async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location):
+      Promise<{frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: string[]}|null> {
     const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
@@ -1189,7 +1197,8 @@ export class DebuggerLanguagePluginManager implements
     };
 
     try {
-      return await plugin.getFunctionInfo(rawLocation);
+      const functionInfo = await plugin.getFunctionInfo(rawLocation);
+      return functionInfo;
     } catch (error) {
       Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, {PH1: error.message}));
       return {frames: []};
@@ -1362,7 +1371,7 @@ class ModelData {
   }
 }
 
-export class DebuggerLanguagePlugin {
+export class DebuggerLanguagePlugin implements Chrome.DevTools.LanguageExtensionPlugin {
   name: string;
   constructor(name: string) {
     this.name = name;
@@ -1378,7 +1387,7 @@ export class DebuggerLanguagePlugin {
   /** Notify the #plugin about a new script
     */
   async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
-      Promise<string[]> {
+      Promise<string[]|{missingSymbolFiles: string[]}> {
     throw new Error('Not implemented yet');
   }
 
@@ -1445,10 +1454,8 @@ export class DebuggerLanguagePlugin {
   /**
    * Find #locations in source files from a #location in a raw module
    */
-  async getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation): Promise<{
-    frames: Array<Chrome.DevTools.FunctionInfo>,
-    missingSymbolFiles?: Array<string>,
-  }> {
+  async getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+      Promise<{frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: string[]}> {
     throw new Error('Not implemented yet');
   }
 

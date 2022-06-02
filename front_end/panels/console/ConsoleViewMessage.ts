@@ -1397,7 +1397,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (scripts.length) {
         const location =
             new SDK.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
-        return await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location) ?? {frames: []};
+        const functionInfo = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
+        return functionInfo && 'frames' in functionInfo ? functionInfo : {frames: []};
       }
     }
 

@@ -153,7 +153,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     const {pluginManager} = this.debuggerWorkspaceBinding;
     if (pluginManager) {
       const sourceUrls = await pluginManager.getSourcesForScript(script);
-      if (sourceUrls) {
+      if (Array.isArray(sourceUrls)) {
         for (const sourceURL of sourceUrls) {
           if (this.#hasBreakpointsForUrl(sourceURL)) {
             const uiSourceCode =

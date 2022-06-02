@@ -236,4 +236,5 @@ export enum Type {
   Warning = 'warning',
   Info = 'info',
   Issue = 'issue',
+  Error = 'error',
 }

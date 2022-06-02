@@ -1241,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ûńk̂ńôẃn̂ ér̂ŕôŕ l̂óâd́îńĝ f́îĺê"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "T̂h́ê d́êb́ûǵ îńf̂ór̂ḿât́îón̂ f́ôŕ f̂ún̂ćt̂íôń {PH1} îś îńĉóm̂ṕl̂ét̂é"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Êŕr̂ór̂ ín̂ d́êb́ûǵĝér̂ ĺâńĝúâǵê ṕl̂úĝín̂: {PH1}"
   },
@@ -1248,7 +1251,7 @@
     "message": "[{PH1}] F̂áîĺêd́ t̂ó l̂óâd́ d̂éb̂úĝ śŷḿb̂ól̂ś f̂ór̂ {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "M̂íŝśîńĝ d́êb́ûǵ ŝým̂b́ôĺŝ f́ôŕ f̂ún̂ćt̂íôń \"{PH1}\""
+    "message": "N̂ó d̂éb̂úĝ ín̂f́ôŕm̂át̂íôń f̂ór̂ f́ûńĉt́îón̂ \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] L̂óâd́êd́ d̂éb̂úĝ śŷḿb̂ól̂ś f̂ór̂ {PH2}, b́ût́ d̂íd̂ń't̂ f́îńd̂ án̂ý ŝóûŕĉé f̂íl̂éŝ"
@@ -1261,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] L̂óâd́îńĝ d́êb́ûǵ ŝým̂b́ôĺŝ f́ôŕ {PH2} (v̂íâ {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Ŝým̂b́ôĺ f̂íl̂é \"{PH1}\" n̂ót̂ f́ôún̂d́"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit ĉóm̂ṕîĺê f́âíl̂éd̂: {PH1}"
@@ -9518,6 +9518,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Ĉóp̂ý ŝt́âćk̂ t́r̂áĉé"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "F̂áîĺêd́ t̂ó l̂óâd́ d̂éb̂úĝ f́îĺê \"{PH1}\"."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "N̂ót̂ ṕâúŝéd̂"
   },
@@ -9652,6 +9655,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Ĉón̂f́îǵûŕê"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "F̂áîĺêd́ t̂ó l̂óâd́ d̂éb̂úĝ f́îĺê \"{PH1}\"."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "F̂áîĺêd́ t̂ó l̂óâd́ âńŷ d́êb́ûǵ îńf̂ó f̂ór̂ {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n, plural, =1 {D̂íŝáb̂ĺê b́r̂éâḱp̂óîńt̂} other {D́îśâb́l̂é âĺl̂ b́r̂éâḱp̂óîńt̂ś îń l̂ín̂é}}"

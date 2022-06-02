@@ -87,6 +87,11 @@ const UIStrings = {
   */
   callFrameWarnings: 'Some call frames have warnings',
   /**
+  *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
+  *@example {src/myapp.debug.wasm.dwp} PH1
+  */
+  debugFileNotFound: 'Failed to load debug file "{PH1}".',
+  /**
    * @description A contex menu item in the Call Stack Sidebar Pane. "Restart" is a verb and
    * "frame" is a noun. "Frame" refers to an individual item in the call stack, i.e. a call frame.
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
@@ -204,8 +209,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
             return item;
           });
       itemPromises.push(itemPromise);
-      for (const warning of frame.warnings) {
-        uniqueWarnings.add(warning);
+      if (frame.missingDebugInfoDetails) {
+        uniqueWarnings.add(frame.missingDebugInfoDetails.details);
       }
     }
     const items = await Promise.all(itemPromises);
@@ -316,9 +321,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-call-frame-icon'));
     element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
 
-    if (callframe && callframe.warnings.length) {
+    if (callframe && callframe.missingDebugInfoDetails) {
       const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
-      UI.Tooltip.Tooltip.install(icon, callframe.warnings.join('\n'));
+      const messages =
+          callframe.missingDebugInfoDetails.resources.map(r => i18nString(UIStrings.debugFileNotFound, {PH1: r}));
+      UI.Tooltip.Tooltip.install(icon, [callframe.missingDebugInfoDetails.details, ...messages].join('\n'));
       element.appendChild(icon);
     }
     return element;

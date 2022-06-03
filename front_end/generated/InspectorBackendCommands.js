@@ -2085,7 +2085,6 @@ export function registerCommands(inspectorBackend) {
     ChDeviceMemory: 'ch-device-memory',
     ChDownlink: 'ch-downlink',
     ChEct: 'ch-ect',
-    ChPartitionedCookies: 'ch-partitioned-cookies',
     ChPrefersColorScheme: 'ch-prefers-color-scheme',
     ChRtt: 'ch-rtt',
     ChSaveData: 'ch-save-data',
@@ -2379,8 +2378,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
   inspectorBackend.registerEvent('Page.fileChooserOpened', ['frameId', 'backendNodeId', 'mode']);
-  inspectorBackend.registerEvent(
-      'Page.frameAttached', ['frameId', 'parentFrameId', 'stack', 'adScriptId', 'debuggerId']);
+  inspectorBackend.registerEvent('Page.frameAttached', ['frameId', 'parentFrameId', 'stack', 'adScriptId']);
   inspectorBackend.registerEvent('Page.frameClearedScheduledNavigation', ['frameId']);
   inspectorBackend.registerEnum('Page.FrameDetachedEventReason', {Remove: 'remove', Swap: 'swap'});
   inspectorBackend.registerEvent('Page.frameDetached', ['frameId', 'reason']);

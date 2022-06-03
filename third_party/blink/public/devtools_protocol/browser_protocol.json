@@ -14958,6 +14958,24 @@
                     ]
                 },
                 {
+                    "id": "AdScriptId",
+                    "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "scriptId",
+                            "description": "Script Id of the bottom-most script which caused the frame to be labelled\nas an ad.",
+                            "$ref": "Runtime.ScriptId"
+                        },
+                        {
+                            "name": "debuggerId",
+                            "description": "Id of adScriptId's debugger.",
+                            "$ref": "Runtime.UniqueDebuggerId"
+                        }
+                    ]
+                },
+                {
                     "id": "SecureContextType",
                     "description": "Indicates whether the frame is a secure context and why it is the case.",
                     "experimental": true,
@@ -15008,7 +15026,6 @@
                         "ch-device-memory",
                         "ch-downlink",
                         "ch-ect",
-                        "ch-partitioned-cookies",
                         "ch-prefers-color-scheme",
                         "ch-rtt",
                         "ch-save-data",
@@ -17334,13 +17351,10 @@
                         },
                         {
                             "name": "adScriptId",
+                            "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad. Only sent if frame is labelled as an ad and id is available.",
+                            "experimental": true,
                             "optional": true,
-                            "$ref": "Runtime.ScriptId"
-                        },
-                        {
-                            "name": "debuggerId",
-                            "optional": true,
-                            "$ref": "Runtime.UniqueDebuggerId"
+                            "$ref": "AdScriptId"
                         }
                     ]
                 },

@@ -10139,6 +10139,22 @@ export namespace Page {
   }
 
   /**
+   * Identifies the bottom-most script which caused the frame to be labelled
+   * as an ad.
+   */
+  export interface AdScriptId {
+    /**
+     * Script Id of the bottom-most script which caused the frame to be labelled
+     * as an ad.
+     */
+    scriptId: Runtime.ScriptId;
+    /**
+     * Id of adScriptId's debugger.
+     */
+    debuggerId: Runtime.UniqueDebuggerId;
+  }
+
+  /**
    * Indicates whether the frame is a secure context and why it is the case.
    */
   export const enum SecureContextType {
@@ -10180,7 +10196,6 @@ export namespace Page {
     ChDeviceMemory = 'ch-device-memory',
     ChDownlink = 'ch-downlink',
     ChEct = 'ch-ect',
-    ChPartitionedCookies = 'ch-partitioned-cookies',
     ChPrefersColorScheme = 'ch-prefers-color-scheme',
     ChRtt = 'ch-rtt',
     ChSaveData = 'ch-save-data',
@@ -11764,8 +11779,11 @@ export namespace Page {
      * JavaScript stack trace of when frame was attached, only set if frame initiated from script.
      */
     stack?: Runtime.StackTrace;
-    adScriptId?: Runtime.ScriptId;
-    debuggerId?: Runtime.UniqueDebuggerId;
+    /**
+     * Identifies the bottom-most script which caused the frame to be labelled
+     * as an ad. Only sent if frame is labelled as an ad and id is available.
+     */
+    adScriptId?: AdScriptId;
   }
 
   /**

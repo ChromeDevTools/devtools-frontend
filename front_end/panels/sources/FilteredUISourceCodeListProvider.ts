@@ -110,8 +110,14 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       multiplier = 5;
     }
 
+    let contentTypeBonus = 0;
+    if (uiSourceCode.contentType().isFromSourceMap()) {
+      contentTypeBonus = 100;
+      // Maybe also have a bonus for being a script?
+    }
+
     const fullDisplayName = uiSourceCode.fullDisplayName();
-    return score + multiplier * this.scorer.calculateScore(fullDisplayName, null);
+    return score + multiplier * (contentTypeBonus + this.scorer.calculateScore(fullDisplayName, null));
   }
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {

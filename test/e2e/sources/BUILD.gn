@@ -25,6 +25,7 @@ node_ts_library("sources") {
     "live-edit-moving-breakpoint_test.ts",
     "navigation_test.ts",
     "popover_test.ts",
+    "quick-open_test.ts",
     "restart-frame_test.ts",
     "script-in-multiple-workers_test.ts",
     "sourcemap-without-mappings_test.ts",

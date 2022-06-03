@@ -970,7 +970,7 @@ export namespace Audits {
 
   /**
    * Details for issues around "Attribution Reporting API" usage.
-   * Explainer: https://github.com/WICG/conversion-measurement-api
+   * Explainer: https://github.com/WICG/attribution-reporting-api
    */
   export interface AttributionReportingIssueDetails {
     violationType: AttributionReportingIssueType;
@@ -1043,7 +1043,6 @@ export namespace Audits {
     NotificationInsecureOrigin = 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
-    PaymentRequestBasicCard = 'PaymentRequestBasicCard',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
     PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
@@ -8156,9 +8155,10 @@ export namespace Network {
   export const enum CrossOriginOpenerPolicyValue {
     SameOrigin = 'SameOrigin',
     SameOriginAllowPopups = 'SameOriginAllowPopups',
+    RestrictProperties = 'RestrictProperties',
     UnsafeNone = 'UnsafeNone',
     SameOriginPlusCoep = 'SameOriginPlusCoep',
-    SameOriginAllowPopupsPlusCoep = 'SameOriginAllowPopupsPlusCoep',
+    RestrictPropertiesPlusCoep = 'RestrictPropertiesPlusCoep',
   }
 
   export interface CrossOriginOpenerPolicyStatus {
@@ -10929,7 +10929,6 @@ export namespace Page {
     ContentMediaDevicesDispatcherHost = 'ContentMediaDevicesDispatcherHost',
     ContentWebBluetooth = 'ContentWebBluetooth',
     ContentWebUSB = 'ContentWebUSB',
-    ContentMediaSession = 'ContentMediaSession',
     ContentMediaSessionService = 'ContentMediaSessionService',
     ContentScreenReader = 'ContentScreenReader',
     EmbedderPopupBlockerTabHelper = 'EmbedderPopupBlockerTabHelper',

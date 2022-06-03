@@ -296,7 +296,6 @@ export function registerCommands(inspectorBackend) {
     NotificationInsecureOrigin: 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe: 'NotificationPermissionRequestedIframe',
     ObsoleteWebRtcCipherSuite: 'ObsoleteWebRtcCipherSuite',
-    PaymentRequestBasicCard: 'PaymentRequestBasicCard',
     PictureSourceSrc: 'PictureSourceSrc',
     PrefixedCancelAnimationFrame: 'PrefixedCancelAnimationFrame',
     PrefixedRequestAnimationFrame: 'PrefixedRequestAnimationFrame',
@@ -1735,9 +1734,10 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum('Network.CrossOriginOpenerPolicyValue', {
     SameOrigin: 'SameOrigin',
     SameOriginAllowPopups: 'SameOriginAllowPopups',
+    RestrictProperties: 'RestrictProperties',
     UnsafeNone: 'UnsafeNone',
     SameOriginPlusCoep: 'SameOriginPlusCoep',
-    SameOriginAllowPopupsPlusCoep: 'SameOriginAllowPopupsPlusCoep'
+    RestrictPropertiesPlusCoep: 'RestrictPropertiesPlusCoep'
   });
   inspectorBackend.registerEnum(
       'Network.CrossOriginEmbedderPolicyValue',
@@ -2316,7 +2316,6 @@ export function registerCommands(inspectorBackend) {
     ContentMediaDevicesDispatcherHost: 'ContentMediaDevicesDispatcherHost',
     ContentWebBluetooth: 'ContentWebBluetooth',
     ContentWebUSB: 'ContentWebUSB',
-    ContentMediaSession: 'ContentMediaSession',
     ContentMediaSessionService: 'ContentMediaSessionService',
     ContentScreenReader: 'ContentScreenReader',
     EmbedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',

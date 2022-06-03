@@ -702,7 +702,7 @@ experimental domain Audits
       InvalidHeader
 
   # Details for issues around "Attribution Reporting API" usage.
-  # Explainer: https://github.com/WICG/conversion-measurement-api
+  # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
     properties
       AttributionReportingIssueType violationType
@@ -767,7 +767,6 @@ experimental domain Audits
       NotificationInsecureOrigin
       NotificationPermissionRequestedIframe
       ObsoleteWebRtcCipherSuite
-      PaymentRequestBasicCard
       PictureSourceSrc
       PrefixedCancelAnimationFrame
       PrefixedRequestAnimationFrame
@@ -6312,9 +6311,10 @@ domain Network
     enum
       SameOrigin
       SameOriginAllowPopups
+      RestrictProperties
       UnsafeNone
       SameOriginPlusCoep
-      SameOriginAllowPopupsPlusCoep
+      RestrictPropertiesPlusCoep
 
   experimental type CrossOriginOpenerPolicyStatus extends object
     properties
@@ -8261,7 +8261,6 @@ domain Page
       ContentMediaDevicesDispatcherHost
       ContentWebBluetooth
       ContentWebUSB
-      ContentMediaSession
       ContentMediaSessionService
       ContentScreenReader
 

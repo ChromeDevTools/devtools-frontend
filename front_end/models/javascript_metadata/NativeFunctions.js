@@ -7866,10 +7866,6 @@ export const NativeFunctions = [
     signatures: [['buf','r','g','b','a']]
   },
   {
-    name: 'isEnablediOES',
-    signatures: [['target','index']]
-  },
-  {
     name: 'WebGLContextEvent',
     signatures: [['type','?eventInit']]
   },
@@ -7908,6 +7904,10 @@ export const NativeFunctions = [
   {
     name: 'releaseVideoFrame',
     signatures: [['handle']]
+  },
+  {
+    name: 'requestAdapterInfo',
+    signatures: [['?unmaskHints']]
   },
   {
     name: 'mapAsync',

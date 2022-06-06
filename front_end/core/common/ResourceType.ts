@@ -136,6 +136,10 @@ const UIStrings = {
   /**
   *@description Name of a network resource type
   */
+  prefetch: 'Prefetch',
+  /**
+  *@description Name of a network resource type
+  */
   eventsource: 'EventSource',
   /**
   *@description Name of a network resource type
@@ -366,6 +370,7 @@ export const resourceTypes = {
   TextTrack: new ResourceType('texttrack', i18nLazyString(UIStrings.texttrack), resourceCategories.Other, true),
   XHR: new ResourceType('xhr', i18n.i18n.lockedLazyString('XHR'), resourceCategories.XHR, true),
   Fetch: new ResourceType('fetch', i18nLazyString(UIStrings.fetch), resourceCategories.XHR, true),
+  Prefetch: new ResourceType('prefetch', i18nLazyString(UIStrings.prefetch), resourceCategories.Document, true),
   EventSource: new ResourceType('eventsource', i18nLazyString(UIStrings.eventsource), resourceCategories.XHR, true),
   WebSocket: new ResourceType('websocket', i18nLazyString(UIStrings.websocket), resourceCategories.WebSocket, false),
   // TODO(yoichio): Consider creating new category WT or WS/WT with WebSocket.

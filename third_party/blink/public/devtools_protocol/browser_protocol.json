@@ -1,4 +1,8 @@
 {
+    "version": {
+        "major": "1",
+        "minor": "3"
+    },
     "domains": [
         {
             "domain": "Accessibility",
@@ -10670,6 +10674,7 @@
                         "TextTrack",
                         "XHR",
                         "Fetch",
+                        "Prefetch",
                         "EventSource",
                         "WebSocket",
                         "Manifest",
@@ -25675,9 +25680,5 @@
                 }
             ]
         }
-    ],
-    "version": {
-        "major": "1",
-        "minor": "3"
-    }
+    ]
 }

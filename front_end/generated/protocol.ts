@@ -7049,6 +7049,7 @@ export namespace Network {
     TextTrack = 'TextTrack',
     XHR = 'XHR',
     Fetch = 'Fetch',
+    Prefetch = 'Prefetch',
     EventSource = 'EventSource',
     WebSocket = 'WebSocket',
     Manifest = 'Manifest',

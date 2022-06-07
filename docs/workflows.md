@@ -59,7 +59,7 @@ This works with Chromium 79 or later.
 **(Requires `brew install coreutils` on Mac.)**
 
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.
@@ -79,7 +79,7 @@ Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `pyth
 Then point to that web server when starting Chromium, for example:
 
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=http://localhost:8000/
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=http://localhost:8000/
 ```
 
 Open DevTools via F12 on Windows/Linux or Cmd+Option+I on Mac.
@@ -91,7 +91,7 @@ Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `pyth
 Then point to that web server when starting Chromium, for example:
 
 ```bash
-<path-to-chrome>/chrome --custom-devtools-frontend=http://localhost:8000/ --remote-debugging-port=9222
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=http://localhost:8000/ --remote-debugging-port=9222
 ```
 
 In a regular Chrome tab, go to the URL `http://localhost:9222#custom=true`. It lists URLs that can be copied to new Chrome tabs to inspect individual debug targets.

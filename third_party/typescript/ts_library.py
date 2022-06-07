@@ -231,7 +231,7 @@ def main():
     parser.add_argument('--is_web_worker', action='store_true')
     parser.add_argument('--module', required=False)
     parser.add_argument('--reset_timestamps', action='store_true')
-    parser.add_argument('--use-rbe', action='store_true')
+    parser.add_argument('--use-remoteexec', action='store_true')
     parser.add_argument('--rewrapper-binary', required=False)
     parser.add_argument('--rewrapper-cfg', required=False)
     parser.add_argument('--rewrapper-exec-root', required=False)
@@ -305,8 +305,8 @@ def main():
     previously_generated_file_metadata = compute_previous_generated_file_metadata(
         sources, tsconfig_output_directory)
 
-    use_remote_execution = opts.use_rbe and (opts.deps is None
-                                             or len(opts.deps) == 0)
+    use_remote_execution = opts.use_remoteexec and (opts.deps is None
+                                                    or len(opts.deps) == 0)
     if use_remote_execution:
         found_errors, stderr = runTscRemote(
             tsconfig_location=tsconfig_output_location,

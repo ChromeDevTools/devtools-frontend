@@ -454,6 +454,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #removeAuthenticatorSections(): void {
     this.#authenticatorsView.innerHTML = '';
+    for (const dataGrid of this.#dataGrids.values()) {
+      dataGrid.asWidget().detach();
+    }
     this.#dataGrids.clear();
   }
 
@@ -788,7 +791,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         child.remove();
       }
     }
-    this.#dataGrids.delete(authenticatorId);
+    const dataGrid = this.#dataGrids.get(authenticatorId);
+    if (dataGrid) {
+      dataGrid.asWidget().detach();
+      this.#dataGrids.delete(authenticatorId);
+    }
 
     if (this.#model) {
       void this.#model.removeAuthenticator(authenticatorId);

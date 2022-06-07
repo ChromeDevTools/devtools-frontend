@@ -315,7 +315,7 @@ export class CSSMatchedStyles {
     for (let i = 0; i < pseudoPayload.length; ++i) {
       const entryPayload = pseudoPayload[i];
       // PseudoElement nodes are not created unless "content" css property is set.
-      const pseudoElement = this.#nodeInternal.pseudoElements().get(entryPayload.pseudoType) || null;
+      const pseudoElement = this.#nodeInternal.pseudoElements().get(entryPayload.pseudoType)?.at(-1) || null;
       const pseudoStyles = [];
       const rules = entryPayload.matches || [];
 

@@ -15,6 +15,7 @@ ts_library("common") {
     "Debouncer_test.ts",
     "EventTarget_test.ts",
     "Lazy_test.ts",
+    "Mutex_test.ts",
     "Object_test.ts",
     "ParsedURL_test.ts",
     "Progress_test.ts",

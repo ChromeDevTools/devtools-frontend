@@ -22,6 +22,7 @@ devtools_module("common") {
     "JavaScriptMetaData.ts",
     "Lazy.ts",
     "Linkifier.ts",
+    "Mutex.ts",
     "Object.ts",
     "ParsedURL.ts",
     "Progress.ts",

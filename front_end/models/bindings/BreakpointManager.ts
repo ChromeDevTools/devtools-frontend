@@ -133,7 +133,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
 
     const debuggerModel = script.debuggerModel;
-    const uiSourceCode = await this.getUpdatedUISourceCode(script);
+    const uiSourceCode = await this.getUISourceCodeWithUpdatedBreakpointInfo(script);
     if (this.#hasBreakpointsForUrl(script.sourceURL)) {
       await this.#restoreBreakpointsForUrl(uiSourceCode);
     }
@@ -165,7 +165,8 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
   }
 
-  async getUpdatedUISourceCode(script: SDK.Script.Script): Promise<Workspace.UISourceCode.UISourceCode> {
+  async getUISourceCodeWithUpdatedBreakpointInfo(script: SDK.Script.Script):
+      Promise<Workspace.UISourceCode.UISourceCode> {
     const isSnippet = script.sourceURL.startsWith('snippet://');
     const projectType = isSnippet ? Workspace.Workspace.projectTypes.Network : undefined;
 

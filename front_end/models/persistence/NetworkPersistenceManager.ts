@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import type {FileSystem} from './FileSystemWorkspaceBinding.js';
@@ -35,6 +36,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private enabled: boolean;
   private eventDescriptors: Common.EventTarget.EventDescriptor[];
   #headerOverridesMap: Map<Platform.DevToolsPath.EncodedPathString, HeaderOverrideWithRegex[]> = new Map();
+  readonly #sourceCodeToBindProcessMutex = new WeakMap<Workspace.UISourceCode.UISourceCode, Common.Mutex.Mutex>();
 
   private constructor(workspace: Workspace.Workspace.WorkspaceImpl) {
     super();
@@ -66,6 +68,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     });
 
     PersistenceImpl.instance().addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
+    Bindings.BreakpointManager.BreakpointManager.instance().addUpdateBindingsCallback(
+        this.networkUISourceCodeAdded.bind(this));
 
     this.eventDescriptors = [];
     void this.enabledChanged();
@@ -301,24 +305,63 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     return path;
   }
 
-  private async unbind(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+  async #unbind(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const binding = this.bindings.get(uiSourceCode);
     if (binding) {
-      this.bindings.delete(binding.network);
-      this.bindings.delete(binding.fileSystem);
-      await PersistenceImpl.instance().removeBinding(binding);
+      const mutex = this.#getOrCreateMutex(binding.network);
+      const release = await mutex.acquire();
+      await this.#innerUnbind(binding);
+      release();
     }
   }
 
-  private async bind(
+  async #unbindUnguarded(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const binding = this.bindings.get(uiSourceCode);
+    if (binding) {
+      await this.#innerUnbind(binding);
+    }
+  }
+
+  #innerUnbind(binding: PersistenceBinding): Promise<void> {
+    this.bindings.delete(binding.network);
+    this.bindings.delete(binding.fileSystem);
+    return PersistenceImpl.instance().removeBinding(binding);
+  }
+
+  async #bind(
       networkUISourceCode: Workspace.UISourceCode.UISourceCode,
       fileSystemUISourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    if (this.bindings.has(networkUISourceCode)) {
-      await this.unbind(networkUISourceCode);
+    const mutex = this.#getOrCreateMutex(networkUISourceCode);
+    const release = await mutex.acquire();
+    try {
+      const existingBinding = this.bindings.get(networkUISourceCode);
+      if (existingBinding) {
+        const {network, fileSystem} = existingBinding;
+        if (networkUISourceCode === network && fileSystemUISourceCode === fileSystem) {
+          return;
+        }
+      }
+
+      await this.#unbindUnguarded(networkUISourceCode);
+      await this.#unbindUnguarded(fileSystemUISourceCode);
+      await this.#innerAddBinding(networkUISourceCode, fileSystemUISourceCode);
+    } finally {
+      release();
     }
-    if (this.bindings.has(fileSystemUISourceCode)) {
-      await this.unbind(fileSystemUISourceCode);
+  }
+
+  #getOrCreateMutex(networkUISourceCode: Workspace.UISourceCode.UISourceCode): Common.Mutex.Mutex {
+    let mutex = this.#sourceCodeToBindProcessMutex.get(networkUISourceCode);
+    if (!mutex) {
+      mutex = new Common.Mutex.Mutex();
+      this.#sourceCodeToBindProcessMutex.set(networkUISourceCode, mutex);
     }
+    return mutex;
+  }
+
+  async #innerAddBinding(
+      networkUISourceCode: Workspace.UISourceCode.UISourceCode,
+      fileSystemUISourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this.bindings.set(networkUISourceCode, binding);
     this.bindings.set(fileSystemUISourceCode, binding);
@@ -394,7 +437,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const project = this.projectInternal as FileSystem;
     const fileSystemUISourceCode = project.uiSourceCodeForURL(this.fileUrlFromNetworkUrl(url));
     if (fileSystemUISourceCode) {
-      await this.bind(uiSourceCode, fileSystemUISourceCode);
+      await this.#bind(uiSourceCode, fileSystemUISourceCode);
     }
   }
 
@@ -408,7 +451,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const networkUISourceCode =
         this.networkUISourceCodeForEncodedPath.get(Common.ParsedURL.ParsedURL.join(relativePath, '/'));
     if (networkUISourceCode) {
-      await this.bind(networkUISourceCode, uiSourceCode);
+      await this.#bind(networkUISourceCode, uiSourceCode);
     }
   }
 
@@ -521,7 +564,8 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   private async networkUISourceCodeRemoved(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
-      await this.unbind(uiSourceCode);
+      await this.#unbind(uiSourceCode);
+      this.#sourceCodeToBindProcessMutex.delete(uiSourceCode);
       this.networkUISourceCodeForEncodedPath.delete(this.encodedPathFromUrl(uiSourceCode.url()));
     }
   }
@@ -532,7 +576,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     this.updateInterceptionPatterns();
     this.originalResponseContentPromises.delete(uiSourceCode);
-    await this.unbind(uiSourceCode);
+    await this.#unbind(uiSourceCode);
   }
 
   async setProject(project: Workspace.Workspace.Project|null): Promise<void> {

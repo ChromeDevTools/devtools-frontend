@@ -291,6 +291,7 @@ export enum ExperimentName {
   CSS_LAYERS = 'cssLayers',
   EYEDROPPER_COLOR_PICKER = 'eyedropperColorPicker',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentationBreakpoints',
+  CSS_AUTHORING_HINTS = 'cssAuthoringHints',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

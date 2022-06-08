@@ -13,10 +13,11 @@ describeWithMockConnection('FontFace', function() {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const src = 'mock.com';
-    const fontFace = {fontFamily: 'Roboto', src} as unknown as Protocol.CSS.FontFace;
+    const fontFace = {fontFamily: 'Roboto', src, fontDisplay: 'swap'} as unknown as Protocol.CSS.FontFace;
     cssModel.fontsUpdated(fontFace);
     const fontFaceForSource = cssModel.fontFaceForSource(src);
     assert.strictEqual(fontFaceForSource?.getFontFamily() as string, fontFace.fontFamily);
     assert.strictEqual(fontFaceForSource?.getSrc() as string, fontFace.src);
+    assert.strictEqual(fontFaceForSource?.getFontDisplay() as string, fontFace.fontDisplay);
   });
 });

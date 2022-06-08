@@ -2352,6 +2352,10 @@ export namespace CSS {
      */
     fontStretch: string;
     /**
+     * The font-display.
+     */
+    fontDisplay: string;
+    /**
      * The unicode-range.
      */
     unicodeRange: string;

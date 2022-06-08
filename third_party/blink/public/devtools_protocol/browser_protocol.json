@@ -3437,6 +3437,11 @@
                             "type": "string"
                         },
                         {
+                            "name": "fontDisplay",
+                            "description": "The font-display.",
+                            "type": "string"
+                        },
+                        {
                             "name": "unicodeRange",
                             "description": "The unicode-range.",
                             "type": "string"

@@ -1247,7 +1247,7 @@ export const NativeFunctions = [
   },
   {
     name: 'add',
-    signatures: [['install_url']],
+    signatures: [['sub_apps']],
     receivers: ['SubApps']
   },
   {
@@ -1744,11 +1744,6 @@ export const NativeFunctions = [
   {
     name: 'replaceWith',
     signatures: [['...nodes']]
-  },
-  {
-    name: 'read',
-    signatures: [['?options']],
-    receivers: ['Clipboard']
   },
   {
     name: 'read',
@@ -2572,7 +2567,7 @@ export const NativeFunctions = [
   {
     name: 'focus',
     signatures: [['focus_behavior']],
-    receivers: ['FocusableMediaStreamTrack']
+    receivers: ['BrowserCaptureMediaStreamTrack','FocusableMediaStreamTrack']
   },
   {
     name: 'assign',
@@ -5899,10 +5894,6 @@ export const NativeFunctions = [
     signatures: [['definition']]
   },
   {
-    name: 'setElement',
-    signatures: [['element','tag','?options']]
-  },
-  {
     name: 'timeout',
     signatures: [['milliseconds']]
   },
@@ -6767,7 +6758,7 @@ export const NativeFunctions = [
   },
   {
     name: 'ClipboardItem',
-    signatures: [['items','?options']]
+    signatures: [['items']]
   },
   {
     name: 'CompressionStream',
@@ -7114,16 +7105,16 @@ export const NativeFunctions = [
     signatures: [['crop_id']]
   },
   {
+    name: 'fromElement',
+    signatures: [['element']]
+  },
+  {
     name: 'getDisplayMediaSet',
     signatures: [['?constraints']]
   },
   {
     name: 'setCaptureHandleConfig',
     signatures: [['?config']]
-  },
-  {
-    name: 'produceCropId',
-    signatures: [['target']]
   },
   {
     name: 'MediaStreamEvent',
@@ -7399,7 +7390,7 @@ export const NativeFunctions = [
   },
   {
     name: 'requestPictureInPictureWindow',
-    signatures: [['options']]
+    signatures: [['?options']]
   },
   {
     name: 'PresentationConnectionAvailableEvent',

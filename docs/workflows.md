@@ -246,6 +246,34 @@ third_party/blink/tools/run_web_tests.py -t Default http/tests/devtools
 
 Usual [steps](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in the DevTools frontend repository.
 
+Tips to create meaningful CL descriptions:
+- Provide information on what was changed and why
+- Provide before/after screenshots (if applicable)
+- Provide relevant link to demo or example (if applicable)
+- Provide link to design doc (if applicable)
+
+Example CL, adapted from [Chromium guidelines](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#uploading-a-change-for-review):
+
+```
+Summary of change (one line)
+
+Longer description of change addressing as appropriate:
+what change was made, why the change is made, context if
+it is part of many changes, description of previous behavior
+and newly introduced differences, etc.
+
+Long lines should be wrapped to 72 columns for easier log message
+viewing in terminals.
+
+How to test:
+  1. ..
+  2. ..
+
+Before:  https://page-to-before-screenshot.com/before
+After:  https://page-to-after-screenshot.com/after
+Bug: 123456
+
+```
 ## Managing dependencies
 
 - To sync dependencies from Chromium to DevTools frontend, use `scripts/deps/roll_deps.py && npm run generate-protocol-resources`.

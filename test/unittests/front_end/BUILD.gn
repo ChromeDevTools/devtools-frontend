@@ -17,6 +17,7 @@ group("front_end") {
     "entrypoints/meta",
     "entrypoints/missing_entrypoints",
     "models/bindings",
+    "models/css",
     "models/emulation",
     "models/extensions",
     "models/formatter",

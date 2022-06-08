@@ -517,6 +517,10 @@ export class CSSModel extends SDKModel<EventTypes> {
     return [...this.#fontFaces.values()];
   }
 
+  fontFaceForSource(src: string): CSSFontFace|undefined {
+    return this.#fontFaces.get(src);
+  }
+
   styleSheetHeaderForId(id: Protocol.CSS.StyleSheetId): CSSStyleSheetHeader|null {
     return this.#styleSheetIdToHeader.get(id) || null;
   }

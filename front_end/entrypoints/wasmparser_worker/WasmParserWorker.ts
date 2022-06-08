@@ -55,7 +55,6 @@ export function dissambleWASM(
     const lines = [];
     const offsets = [];
     const functionBodyOffsets = [];
-    const MAX_LINES = 1000 * 1000;
     let chunkSize: number = 128 * 1024;
     let buffer: Uint8Array = new Uint8Array(chunkSize);
     let pendingSize = 0;
@@ -86,6 +85,7 @@ export function dissambleWASM(
           end: number,
         }>,
       });
+
       for (const line of result.lines) {
         lines.push(line);
       }
@@ -96,14 +96,6 @@ export function dissambleWASM(
         functionBodyOffsets.push(functionBodyOffset);
       }
 
-      if (lines.length > MAX_LINES) {
-        lines[MAX_LINES] = ';; .... text is truncated due to size';
-        lines.splice(MAX_LINES + 1);
-        if (offsets) {
-          offsets.splice(MAX_LINES + 1);
-        }
-        break;
-      }
       if (finished) {
         break;
       }
@@ -124,13 +116,9 @@ export function dissambleWASM(
       postMessage({event: 'progress', params: {percentage}});
     }
 
-    postMessage({event: 'progress', params: {percentage: 99}});
-
-    const source = lines.join('\n');
-
     postMessage({event: 'progress', params: {percentage: 100}});
 
-    postMessage({method: 'disassemble', result: {source, offsets, functionBodyOffsets}});
+    postMessage({method: 'disassemble', result: {lines, offsets, functionBodyOffsets}});
   } catch (error) {
     postMessage({method: 'disassemble', error});
   }

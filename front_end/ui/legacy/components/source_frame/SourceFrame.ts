@@ -105,7 +105,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     UI.View.SimpleView) implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable, Transformer {
   private readonly lazyContent: () => Promise<TextUtils.ContentProvider.DeferredContent>;
   private prettyInternal: boolean;
-  private rawContent: string|null;
+  private rawContent: string|CodeMirror.Text|null;
   private formattedContentPromise: Promise<Formatter.ScriptFormatter.FormattedContent>|null;
   private formattedMap: Formatter.ScriptFormatter.FormatterSourceMapping|null;
   private readonly prettyToggle: UI.Toolbar.ToolbarToggle;
@@ -203,7 +203,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     });
   }
 
-  protected editorConfiguration(doc: string): CodeMirror.Extension {
+  protected editorConfiguration(doc: string|CodeMirror.Text): CodeMirror.Extension {
     return [
       CodeMirror.EditorView.updateListener.of(update => this.dispatchEventToListeners(Events.EditorUpdate, update)),
       TextEditor.Config.baseConfiguration(doc),
@@ -459,7 +459,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         const worker = Common.Worker.WorkerWrapper.fromURL(
             new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
         const promise = new Promise<{
-          source: string,
+          lines: string[],
           offsets: number[],
           functionBodyOffsets: {
             start: number,
@@ -492,8 +492,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         });
         worker.postMessage({method: 'disassemble', params: {content}});
         try {
-          const {source, offsets, functionBodyOffsets} = await promise;
-          this.rawContent = content = source;
+          const {lines, offsets, functionBodyOffsets} = await promise;
+          this.rawContent = content = CodeMirror.Text.of(lines);
           this.wasmDisassemblyInternal = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
         } catch (e) {
           this.rawContent = content = error = e.message;
@@ -528,8 +528,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.formattedContentPromise) {
       return this.formattedContentPromise;
     }
-    this.formattedContentPromise =
-        Formatter.ScriptFormatter.formatScriptContent(this.contentType, this.rawContent || '');
+    const content = this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || '';
+    this.formattedContentPromise = Formatter.ScriptFormatter.formatScriptContent(this.contentType, content);
     return this.formattedContentPromise;
   }
 
@@ -648,7 +648,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.prettyToggle.setEnabled(true);
   }
 
-  private simplifyMimeType(content: string, mimeType: string): string {
+  private simplifyMimeType(content: string|CodeMirror.Text, mimeType: string): string {
     if (!mimeType) {
       return '';
     }
@@ -663,8 +663,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       return 'text/jsx';
     }
     // A hack around the fact that files with "php" extension might be either standalone or html embedded php scripts.
-    if (mimeType === 'text/x-php' && content.match(/\<\?.*\?\>/g)) {
-      return 'application/x-httpd-php';
+    if (mimeType === 'text/x-php') {
+      const strContent = typeof content === 'string' ? content : content.sliceString(0);
+      if (strContent.match(/\<\?.*\?\>/g)) {
+        return 'application/x-httpd-php';
+      }
     }
     if (mimeType === 'application/wasm') {
       // text/webassembly is not a proper MIME type, but CodeMirror uses it for WAT syntax highlighting.
@@ -674,7 +677,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     return mimeType;
   }
 
-  protected async getLanguageSupport(content: string): Promise<CodeMirror.Extension> {
+  protected async getLanguageSupport(content: string|CodeMirror.Text): Promise<CodeMirror.Extension> {
     const mimeType = this.simplifyMimeType(content, this.contentType) || '';
     const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(mimeType);
     if (!languageDesc) {
@@ -694,7 +697,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.textEditor.dispatch({effects: config.language.reconfigure(langExtension)});
   }
 
-  async setContent(content: string): Promise<void> {
+  async setContent(content: string|CodeMirror.Text): Promise<void> {
     this.muteChangeEventsForSetContent = true;
     const {textEditor} = this;
     const wasLoaded = this.loadedInternal;

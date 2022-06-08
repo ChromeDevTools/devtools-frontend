@@ -236,7 +236,7 @@ function getTooltipSpace(): DOMRect {
   return sideBarElement.getBoundingClientRect();
 }
 
-export function baseConfiguration(text: string): CM.Extension {
+export function baseConfiguration(text: string|CM.Text): CM.Extension {
   return [
     theme(),
     CM.highlightSpecialChars(),
@@ -252,7 +252,7 @@ export function baseConfiguration(text: string): CM.Extension {
     bracketMatching.instance(),
     indentUnit.instance(),
     CM.Prec.lowest(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
-    detectLineSeparator(text),
+    text instanceof CM.Text ? [] : detectLineSeparator(text),
     CM.tooltips({
       tooltipSpace: getTooltipSpace,
     }),

@@ -340,10 +340,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         if (networkUISourceCode === network && fileSystemUISourceCode === fileSystem) {
           return;
         }
+        await this.#unbindUnguarded(networkUISourceCode);
+        await this.#unbindUnguarded(fileSystemUISourceCode);
       }
 
-      await this.#unbindUnguarded(networkUISourceCode);
-      await this.#unbindUnguarded(fileSystemUISourceCode);
       await this.#innerAddBinding(networkUISourceCode, fileSystemUISourceCode);
     } finally {
       release();

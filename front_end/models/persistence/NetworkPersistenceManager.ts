@@ -310,8 +310,11 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (binding) {
       const mutex = this.#getOrCreateMutex(binding.network);
       const release = await mutex.acquire();
-      await this.#innerUnbind(binding);
-      release();
+      try {
+        await this.#innerUnbind(binding);
+      } finally {
+        release();
+      }
     }
   }
 

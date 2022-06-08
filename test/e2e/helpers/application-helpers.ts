@@ -18,6 +18,13 @@ export async function navigateToServiceWorkers() {
   await click(SERVICE_WORKER_ROW_SELECTOR);
 }
 
+export async function navigateToManifestInApplicationTab(testName: string) {
+  const MANIFEST_SELECTOR = '[aria-label="Manifest"]';
+  const {target} = getBrowserAndPages();
+  await navigateToApplicationTab(target, testName);
+  await click(MANIFEST_SELECTOR);
+}
+
 export async function doubleClickSourceTreeItem(selector: string) {
   const element = await waitFor(selector);
   element.evaluate(el => el.scrollIntoView(true));

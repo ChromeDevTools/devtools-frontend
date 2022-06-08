@@ -2426,6 +2426,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Primary manifest icon from {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Protocol Handlers"
+  },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Screenshot"
   },
@@ -3196,6 +3199,24 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Show details"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "manifest"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Need help? Read {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "Found valid protocol handler registration in the {PH1}. With the app installed, test the registered protocols."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "URL protocol handler registration for PWAs"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Define protocol handlers in the {PH1} to register your app as a handler for custom protocols when your app is installed."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Test protocol"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destination"

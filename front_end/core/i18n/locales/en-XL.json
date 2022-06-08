@@ -2426,6 +2426,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "P̂ŕîḿâŕŷ ḿâńîf́êśt̂ íĉón̂ f́r̂óm̂ {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "P̂ŕôt́ôćôĺ Ĥán̂d́l̂ér̂ś"
+  },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ŝćr̂éêńŝh́ôt́"
   },
@@ -3196,6 +3199,24 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "m̂án̂íf̂éŝt́"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "N̂éêd́ ĥél̂ṕ? R̂éâd́ {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "F̂óûńd̂ v́âĺîd́ p̂ŕôt́ôćôĺ ĥán̂d́l̂ér̂ ŕêǵîśt̂ŕât́îón̂ ín̂ t́ĥé {PH1}. Ŵít̂h́ t̂h́ê áp̂ṕ îńŝt́âĺl̂éd̂, t́êśt̂ t́ĥé r̂éĝíŝt́êŕêd́ p̂ŕôt́ôćôĺŝ."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "ÛŔL̂ ṕr̂ót̂óĉól̂ h́âńd̂ĺêŕ r̂éĝíŝt́r̂át̂íôń f̂ór̂ ṔŴÁŝ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "D̂éf̂ín̂é p̂ŕôt́ôćôĺ ĥán̂d́l̂ér̂ś îń t̂h́ê {PH1} t́ô ŕêǵîśt̂ér̂ ýôúr̂ áp̂ṕ âś â h́âńd̂ĺêŕ f̂ór̂ ćûśt̂óm̂ ṕr̂ót̂óĉól̂ś ŵh́êń ŷóûŕ âṕp̂ íŝ ín̂śt̂ál̂ĺêd́."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "T̂éŝt́ p̂ŕôt́ôćôĺ"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "D̂éŝt́îńât́îón̂"

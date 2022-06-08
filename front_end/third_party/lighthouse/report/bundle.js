@@ -314,24 +314,26 @@ class Util {
     }
 
     const MAX_LENGTH = 64;
-    // Always elide hexadecimal hash
-    name = name.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${ELLIPSIS}`);
-    // Also elide other hash-like mixed-case strings
-    name = name.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g,
-      `$1${ELLIPSIS}`);
-    // Also elide long number sequences
-    name = name.replace(/(\d{3})\d{6,}/g, `$1${ELLIPSIS}`);
-    // Merge any adjacent ellipses
-    name = name.replace(/\u2026+/g, ELLIPSIS);
+    if (parsedUrl.protocol !== 'data:') {
+      // Always elide hexadecimal hash
+      name = name.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${ELLIPSIS}`);
+      // Also elide other hash-like mixed-case strings
+      name = name.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g,
+        `$1${ELLIPSIS}`);
+      // Also elide long number sequences
+      name = name.replace(/(\d{3})\d{6,}/g, `$1${ELLIPSIS}`);
+      // Merge any adjacent ellipses
+      name = name.replace(/\u2026+/g, ELLIPSIS);
 
-    // Elide query params first
-    if (name.length > MAX_LENGTH && name.includes('?')) {
-      // Try to leave the first query parameter intact
-      name = name.replace(/\?([^=]*)(=)?.*/, `?$1$2${ELLIPSIS}`);
+      // Elide query params first
+      if (name.length > MAX_LENGTH && name.includes('?')) {
+        // Try to leave the first query parameter intact
+        name = name.replace(/\?([^=]*)(=)?.*/, `?$1$2${ELLIPSIS}`);
 
-      // Remove it all if it's still too long
-      if (name.length > MAX_LENGTH) {
-        name = name.replace(/\?.*/, `?${ELLIPSIS}`);
+        // Remove it all if it's still too long
+        if (name.length > MAX_LENGTH) {
+          name = name.replace(/\?.*/, `?${ELLIPSIS}`);
+        }
       }
     }
 
@@ -5702,6 +5704,30 @@ function renderReport(lhr, opts = {}) {
   return rootEl;
 }
 
-const swapLocale = _ => {}; const format = _ => {};
+/**
+ * Returns a new LHR with all strings changed to the new requestedLocale.
+ * @param {LH.Result} lhr
+ * @param {LH.Locale} requestedLocale
+ * @return {{lhr: LH.Result, missingIcuMessageIds: string[]}}
+ */
+function swapLocale(lhr, requestedLocale) {
+  // Stub function only included for types
+  return {
+    lhr,
+    missingIcuMessageIds: [],
+  };
+}
+
+/**
+ * Populate the i18n string lookup dict with locale data
+ * Used when the host environment selects the locale and serves lighthouse the intended locale file
+ * @see https://docs.google.com/document/d/1jnt3BqKB-4q3AE94UWFA0Gqspx8Sd_jivlB7gQMlmfk/edit
+ * @param {LH.Locale} locale
+ * @param {Record<string, {message: string}>} lhlMessages
+ */
+function registerLocaleData(locale, lhlMessages) {
+  // Stub function only included for types
+}
+const format = {registerLocaleData};
 
 export { DOM, ReportRenderer, ReportUIFeatures, format, renderReport, swapLocale };

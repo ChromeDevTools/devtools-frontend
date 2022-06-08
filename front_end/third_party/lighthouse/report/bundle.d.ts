@@ -286,7 +286,9 @@ export class ReportUIFeatures {
      */
     _saveFile(blob: Blob | File): void;
 }
-export function format(_: any): void;
+export namespace format {
+    export { registerLocaleData };
+}
 /**
  * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -298,7 +300,16 @@ export function format(_: any): void;
  * @return {HTMLElement}
  */
 export function renderReport(lhr: LH.Result, opts?: LH.Renderer.Options): HTMLElement;
-export function swapLocale(_: any): void;
+/**
+ * Returns a new LHR with all strings changed to the new requestedLocale.
+ * @param {LH.Result} lhr
+ * @param {LH.Locale} requestedLocale
+ * @return {{lhr: LH.Result, missingIcuMessageIds: string[]}}
+ */
+export function swapLocale(lhr: LH.Result, requestedLocale: LH.Locale): {
+    lhr: LH.Result;
+    missingIcuMessageIds: string[];
+};
 /**
  * @license
  * Copyright 2017 The Lighthouse Authors. All Rights Reserved.
@@ -569,6 +580,16 @@ declare class TopbarFeatures {
      */
     _updateStickyHeader(): void;
 }
+/**
+ * Populate the i18n string lookup dict with locale data
+ * Used when the host environment selects the locale and serves lighthouse the intended locale file
+ * @see https://docs.google.com/document/d/1jnt3BqKB-4q3AE94UWFA0Gqspx8Sd_jivlB7gQMlmfk/edit
+ * @param {LH.Locale} locale
+ * @param {Record<string, {message: string}>} lhlMessages
+ */
+declare function registerLocaleData(locale: LH.Locale, lhlMessages: Record<string, {
+    message: string;
+}>): void;
 declare class DetailsRenderer {
     /**
      * @param {DOM} dom

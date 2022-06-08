@@ -95,6 +95,9 @@ module.exports = {
 
     function checkTSTypeAnnotationForPotentialIssue(node) {
       const annotation = node.typeAnnotation;
+      if (!annotation) {
+        return;
+      }
       if (annotation.type === 'TSUnionType') {
         // matches foo(): X|Y
         checkUnionReturnTypeForLit(annotation);
@@ -137,6 +140,9 @@ module.exports = {
       },
       // Match values in interfaces or types.
       TSPropertySignature(node) {
+        if (!node.typeAnnotation) {
+          return;
+        }
         checkTSTypeAnnotationForPotentialIssue(node.typeAnnotation);
       },
     };

@@ -48,6 +48,7 @@ const EXEMPTED_FILES = new Set([
   ['front_end', 'panels', 'profiler', 'profilesPanel.css'],
   ['front_end', 'panels', 'screencast', 'screencastView.css'],
   ['front_end', 'panels', 'sources', 'navigatorTree.css'],
+  ['front_end', 'panels', 'sources', 'sourcesNavigator.css'],
   ['front_end', 'panels', 'sources', 'sourcesPanel.css'],
   ['front_end', 'panels', 'sources', 'sourcesView.css'],
   ['front_end', 'panels', 'timeline', 'timelinePanel.css'],

@@ -32,10 +32,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -108,7 +110,7 @@ const UIStrings = {
   /**
   *@description Text in Sources Panel of the Sources panel
   */
-  groupByAuthored: 'Group by Authored/Deployed (experimental)',
+  groupByAuthored: 'Group by Authored/Deployed',
   /**
   *@description Text for pausing the debugger on exceptions
   */
@@ -547,16 +549,36 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
+  private toggleAuthoredDeployedExperiment(): void {
+    const experiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+    const checked = Root.Runtime.experiments.isEnabled(experiment);
+    Root.Runtime.experiments.setEnabled(experiment, !checked);
+    Host.userMetrics.experimentChanged(experiment, checked);
+    // Need to signal to the NavigatorView that grouping has changed. Unfortunately,
+    // it can't listen to an experiment, and this class doesn't directly interact
+    // with it, so we will convince it a different grouping setting changed. When we switch
+    // from using an experiment to a setting, it will listen to that setting and we
+    // won't need to do this.
+    const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
+    groupByFolderSetting.set(groupByFolderSetting.get());
+  }
+
   private populateNavigatorMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     contextMenu.appendItemsAtLocation('navigatorMenu');
     contextMenu.viewSection().appendCheckboxItem(
         i18nString(UIStrings.groupByFolder), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
         groupByFolderSetting.get());
-    const groupByAuthoredSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByAuthored');
+    const previewIcon = new IconButton.Icon.Icon();
+    const experiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+    previewIcon.data = {
+      iconName: 'ic_preview_feature',
+      color: 'var(--icon-color)',
+      width: '14px',
+    };
     contextMenu.viewSection().appendCheckboxItem(
-        i18nString(UIStrings.groupByAuthored), () => groupByAuthoredSetting.set(!groupByAuthoredSetting.get()),
-        groupByAuthoredSetting.get());
+        i18nString(UIStrings.groupByAuthored), this.toggleAuthoredDeployedExperiment,
+        Root.Runtime.experiments.isEnabled(experiment), false, previewIcon);
   }
 
   setIgnoreExecutionLineEvents(ignoreExecutionLineEvents: boolean): void {

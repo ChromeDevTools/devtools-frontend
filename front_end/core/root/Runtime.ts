@@ -292,6 +292,7 @@ export enum ExperimentName {
   EYEDROPPER_COLOR_PICKER = 'eyedropperColorPicker',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentationBreakpoints',
   CSS_AUTHORING_HINTS = 'cssAuthoringHints',
+  AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

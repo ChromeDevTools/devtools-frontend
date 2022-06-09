@@ -32,14 +32,17 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Feedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import type {NavigatorUISourceCodeTreeNode} from './NavigatorView.js';
 import {NavigatorView} from './NavigatorView.js';
+import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const UIStrings = {
   /**
@@ -100,20 +103,61 @@ const UIStrings = {
   *@description Text to save content as a specific file type
   */
   saveAs: 'Save as...',
+  /**
+   *@description Description of the new experimental Authored/Deployed view
+   */
+  authoredDescription: 'Group files by Authored/Deployed',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance: NetworkNavigatorView;
 
 export class NetworkNavigatorView extends NavigatorView {
+  private previewToggle: Feedback.PreviewToggle.PreviewToggle;
   private constructor() {
-    super();
+    super(true);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this);
+
+    this.previewToggle = new Feedback.PreviewToggle.PreviewToggle();
+    this.onGroupingChanged();
+
+    const div = UI.Fragment.html`<div class="border-container"></div>`;
+    div.append(this.previewToggle);
+    this.contentElement.prepend(div);
 
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
   }
+
+  onGroupingChanged(): void {
+    // Setting the data will re-render it.
+    this.previewToggle.data = {
+      name: i18nString(UIStrings.authoredDescription),
+      helperText: null,
+      experiment: Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING,
+      learnMoreURL: 'https://goo.gle/authored-deployed',
+      feedbackURL: 'https://goo.gle/authored-deployed-feedback',
+      onChangeCallback: this.onAuthoredDeployedChanged,
+    };
+  }
+
+  wasShown(): void {
+    this.registerCSSFiles([sourcesNavigatorStyles]);
+    super.wasShown();
+  }
+
+  private onAuthoredDeployedChanged(checked: boolean): void {
+    Host.userMetrics.experimentChanged(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, checked);
+    // Need to signal to the NavigatorView that grouping has changed. Unfortunately,
+    // it can't listen to an experiment, and this class doesn't directly interact
+    // with it, so we will convince it a different grouping setting changed. When we switch
+    // from using an experiment to a setting, it will listen to that setting and we
+    // won't need to do this.
+    const groupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
+    groupByFolderSetting.set(groupByFolderSetting.get());
+  }
+
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): NetworkNavigatorView {

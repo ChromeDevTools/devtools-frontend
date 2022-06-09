@@ -6,9 +6,6 @@ import("//build/toolchain/rbe.gni")
 import("../../scripts/build/ninja/vars.gni")
 
 declare_args() {
-  # Deprecated flag, use devtools_use_remoteexec.
-  devtools_use_rbe = false
-
   # Set to true to enable remote compilation of TypeScript using reclient.
   # This flag is temporarily until DevTools reclient support has stabilized.
   # At that point, this flag will be folded together with "use_remoteexec".
@@ -16,20 +13,6 @@ declare_args() {
   devtools_use_remoteexec = false
 
   devtools_skip_typecheck = build_with_chromium && !is_official_build
-}
-
-# Set devtools_use_remoteexec if devtools_use_rbe is set.  Remove this once devtools_use_rbe is no
-# longer used to configure builds.
-if (!devtools_use_remoteexec && devtools_use_rbe) {
-  devtools_use_remoteexec = true
-}
-
-# Set devtools_use_rbe if devtools_use_remoteexec is set.  This is to ensure compatibility with
-# https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/scripts/build/ninja/devtools_entrypoint.gni;l=125;drc=cfcea4217a0640af11fff1e16dcf5797e65b72e2
-# as changes cannot be made in third_party and out of third_party simultaneously.
-# Remove this once devtools_use_rbe is no longer used to configure builds.
-if (!devtools_use_rbe && devtools_use_remoteexec) {
-  devtools_use_rbe = true
 }
 
 assert(!devtools_skip_typecheck || !is_official_build,

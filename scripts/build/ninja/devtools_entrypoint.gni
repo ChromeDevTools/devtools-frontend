@@ -121,9 +121,9 @@ template("devtools_entrypoint") {
 
       is_web_worker = _is_web_worker
 
-      if (defined(use_rbe) && use_rbe && defined(devtools_use_rbe) &&
-          devtools_use_rbe) {
-        use_rbe = false
+      if (defined(use_remoteexec) && use_remoteexec &&
+          defined(devtools_use_remoteexec) && devtools_use_remoteexec) {
+        use_remoteexec = false
       }
     }
 

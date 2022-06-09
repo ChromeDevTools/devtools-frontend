@@ -1560,6 +1560,7 @@
                         "GeolocationInsecureOriginDeprecatedNotRemoved",
                         "GetUserMediaInsecureOrigin",
                         "HostCandidateAttributeGetter",
+                        "IdentityInCanMakePaymentEvent",
                         "InsecurePrivateNetworkSubresourceRequest",
                         "LegacyConstraintGoogIPv6",
                         "LocalCSSFileExtensionRejected",
@@ -1569,6 +1570,7 @@
                         "NotificationInsecureOrigin",
                         "NotificationPermissionRequestedIframe",
                         "ObsoleteWebRtcCipherSuite",
+                        "OpenWebDatabaseInsecureContext",
                         "PictureSourceSrc",
                         "PrefixedCancelAnimationFrame",
                         "PrefixedRequestAnimationFrame",
@@ -2682,6 +2684,12 @@
                             "name": "pseudoType",
                             "description": "Pseudo element type.",
                             "$ref": "DOM.PseudoType"
+                        },
+                        {
+                            "name": "pseudoIdentifier",
+                            "description": "Pseudo element custom ident.",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "matches",
@@ -4731,6 +4739,12 @@
                             "description": "Pseudo element type for this node.",
                             "optional": true,
                             "$ref": "PseudoType"
+                        },
+                        {
+                            "name": "pseudoIdentifier",
+                            "description": "Pseudo element identifier for this node. Only present if there is a\nvalid pseudoType.",
+                            "optional": true,
+                            "type": "string"
                         },
                         {
                             "name": "shadowRootType",
@@ -7072,6 +7086,12 @@
                         {
                             "name": "pseudoType",
                             "description": "Type of a pseudo element node.",
+                            "optional": true,
+                            "$ref": "RareStringData"
+                        },
+                        {
+                            "name": "pseudoIdentifier",
+                            "description": "Pseudo element identifier for this node. Only present if there is a\nvalid pseudoType.",
                             "optional": true,
                             "$ref": "RareStringData"
                         },

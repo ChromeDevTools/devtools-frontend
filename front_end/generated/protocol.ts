@@ -1034,6 +1034,7 @@ export namespace Audits {
     GeolocationInsecureOriginDeprecatedNotRemoved = 'GeolocationInsecureOriginDeprecatedNotRemoved',
     GetUserMediaInsecureOrigin = 'GetUserMediaInsecureOrigin',
     HostCandidateAttributeGetter = 'HostCandidateAttributeGetter',
+    IdentityInCanMakePaymentEvent = 'IdentityInCanMakePaymentEvent',
     InsecurePrivateNetworkSubresourceRequest = 'InsecurePrivateNetworkSubresourceRequest',
     LegacyConstraintGoogIPv6 = 'LegacyConstraintGoogIPv6',
     LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
@@ -1043,6 +1044,7 @@ export namespace Audits {
     NotificationInsecureOrigin = 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
+    OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
     PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
@@ -1785,6 +1787,10 @@ export namespace CSS {
      * Pseudo element type.
      */
     pseudoType: DOM.PseudoType;
+    /**
+     * Pseudo element custom ident.
+     */
+    pseudoIdentifier?: string;
     /**
      * Matches of CSS rules applicable to the pseudo style.
      */
@@ -3172,6 +3178,11 @@ export namespace DOM {
      * Pseudo element type for this node.
      */
     pseudoType?: PseudoType;
+    /**
+     * Pseudo element identifier for this node. Only present if there is a
+     * valid pseudoType.
+     */
+    pseudoIdentifier?: string;
     /**
      * Shadow root type.
      */
@@ -4760,6 +4771,11 @@ export namespace DOMSnapshot {
      * Type of a pseudo element node.
      */
     pseudoType?: RareStringData;
+    /**
+     * Pseudo element identifier for this node. Only present if there is a
+     * valid pseudoType.
+     */
+    pseudoIdentifier?: RareStringData;
     /**
      * Whether this DOM node responds to mouse clicks. This includes nodes that have had click
      * event listeners attached via JavaScript as well as anchor tags that naturally navigate when

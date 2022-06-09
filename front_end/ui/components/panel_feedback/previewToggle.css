@@ -18,7 +18,27 @@
   font-style: italic;
 }
 
-x-link { /* stylelint-disable-line selector-type-no-unknown */
+.feedback {
+  text-align: right;
+}
+
+.checkbox-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.container {
+  padding: 4px;
+}
+
+.x-link {
   color: var(--color-primary);
   text-decoration-line: underline;
+  padding: 4px;
+}
+
+.feedback .x-link {
+  color: var(--color-text-secondary);
 }

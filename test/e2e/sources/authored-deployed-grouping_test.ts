@@ -183,7 +183,7 @@ describe('Source Panel grouping', async function() {
     await waitFor(createSelectorsForWorkerFile('multi-workers.js', 'test/e2e/resources/sources', 'multi-workers.js', 10)
                       .rootSelector);
   }
-  const authoredMenuText = 'Group by Authored/Deployed (experimental)';
+  const authoredMenuText = 'Group by Authored/Deployed';
   const folderMenuText = 'Group by folder';
 
   async function enableGroupByAuthored(noAuthored?: boolean) {

@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -64,7 +65,15 @@ const UIStrings = {
   /**
   *@description Text in Navigator View of the Sources panel
   */
+  authoredTooltip: 'Contains original sources',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
   deployed: 'Deployed',
+  /**
+  *@description Text in Navigator View of the Sources panel
+  */
+  deployedTooltip: 'Contains final sources the browser sees',
   /**
   *@description Text in Navigator View of the Sources panel
   */
@@ -162,7 +171,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private navigatorGroupByFolderSetting: Common.Settings.Setting<any>;
-  private navigatorGroupByAuthoredSetting: Common.Settings.Setting<boolean>;
+  private navigatorGroupByAuthoredExperiment?: string;
   private workspaceInternal!: Workspace.Workspace.WorkspaceImpl;
   private lastSelectedUISourceCode?: Workspace.UISourceCode.UISourceCode;
   private groupByFrame?: boolean;
@@ -173,7 +182,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private groupByFolder?: any;
-  constructor() {
+  constructor(enableAuthoredGrouping?: boolean) {
     super(true);
 
     this.placeholder = null;
@@ -198,9 +207,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     this.navigatorGroupByFolderSetting = Common.Settings.Settings.instance().moduleSetting('navigatorGroupByFolder');
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
-    this.navigatorGroupByAuthoredSetting =
-        Common.Settings.Settings.instance().moduleSetting('navigatorGroupByAuthored');
-    this.navigatorGroupByAuthoredSetting.addChangeListener(this.groupingChanged.bind(this));
+    if (enableAuthoredGrouping) {
+      this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
+    }
 
     this.initGrouping();
 
@@ -686,8 +695,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       NavigatorTreeNode {
     if (this.groupByAuthored && isAuthored) {
       if (!this.authoredNode) {
-        this.authoredNode =
-            new NavigatorGroupTreeNode(this, null, 'group:Authored', Types.Authored, UIStrings.authored);
+        this.authoredNode = new NavigatorGroupTreeNode(
+            this, null, 'group:Authored', Types.Authored, i18nString(UIStrings.authored),
+            i18nString(UIStrings.authoredTooltip));
         this.rootNode.appendChild(this.authoredNode);
         this.authoredNode.treeNode().expand();
       }
@@ -712,8 +722,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private rootOrDeployedNode(): NavigatorTreeNode {
     if (this.groupByAuthored) {
       if (!this.deployedNode) {
-        this.deployedNode =
-            new NavigatorGroupTreeNode(this, null, 'group:Deployed', Types.Deployed, UIStrings.deployed);
+        this.deployedNode = new NavigatorGroupTreeNode(
+            this, null, 'group:Deployed', Types.Deployed, i18nString(UIStrings.deployed),
+            i18nString(UIStrings.deployedTooltip));
         this.rootNode.appendChild(this.deployedNode);
       }
       return this.deployedNode;
@@ -1007,10 +1018,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
+  /**
+   * Subclasses can override to listen to grouping changes.
+   */
+  onGroupingChanged(): void {
+  }
+
   private groupingChanged(): void {
     this.reset(true);
     this.initGrouping();
     // Reset the workspace to repopulate filesystem folders.
+    this.onGroupingChanged();
     this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }
@@ -1019,7 +1037,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.groupByFrame = true;
     this.groupByDomain = this.navigatorGroupByFolderSetting.get();
     this.groupByFolder = this.groupByDomain;
-    this.groupByAuthored = this.navigatorGroupByAuthoredSetting.get();
+    if (this.navigatorGroupByAuthoredExperiment) {
+      this.groupByAuthored = Root.Runtime.experiments.isEnabled(this.navigatorGroupByAuthoredExperiment);
+    } else {
+      this.groupByAuthored = false;
+    }
   }
 
   private resetForTest(): void {
@@ -1130,14 +1152,18 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
 
   setNode(node: NavigatorTreeNode): void {
     this.node = node;
-    const paths = [];
-    let currentNode: NavigatorTreeNode|null = node;
-    while (currentNode && !currentNode.isRoot()) {
-      paths.push(currentNode.title);
-      currentNode = currentNode.parent;
+    if (node.tooltip) {
+      this.tooltip = node.tooltip;
+    } else {
+      const paths = [];
+      let currentNode: NavigatorTreeNode|null = node;
+      while (currentNode && !currentNode.isRoot() && currentNode.type === node.type) {
+        paths.push(currentNode.title);
+        currentNode = currentNode.parent;
+      }
+      paths.reverse();
+      this.tooltip = paths.join('/');
     }
-    paths.reverse();
-    this.tooltip = paths.join('/');
     UI.ARIAUtils.setAccessibleName(this.listItemElement, `${this.title}, ${this.nodeType}`);
   }
 
@@ -1303,12 +1329,14 @@ export class NavigatorTreeNode {
   isMerged: boolean;
   parent!: NavigatorTreeNode|null;
   title!: string;
+  tooltip?: string;
 
-  constructor(navigatorView: NavigatorView, id: string, type: string) {
+  constructor(navigatorView: NavigatorView, id: string, type: string, tooltip?: string) {
     this.id = id;
     this.navigatorView = navigatorView;
     this.type = type;
     this.childrenInternal = new Map();
+    this.tooltip = tooltip;
 
     this.populated = false;
     this.isMerged = false;
@@ -1719,9 +1747,9 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   private hoverCallback?: ((arg0: boolean) => void);
   private treeElement?: NavigatorFolderTreeElement;
   constructor(
-      navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
-      title: string) {
-    super(navigatorView, id, type);
+      navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string, title: string,
+      tooltip?: string) {
+    super(navigatorView, id, type, tooltip);
     this.project = project;
     this.title = title;
     this.populate();

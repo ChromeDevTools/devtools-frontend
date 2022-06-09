@@ -9794,6 +9794,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Authored"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Contains original sources"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Delete"
   },
@@ -9802,6 +9805,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Deployed"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Contains final sources the browser sees"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Exclude folder"
@@ -10163,6 +10169,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Group files by Authored/Deployed"
+  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
   },
@@ -10233,7 +10242,7 @@
     "message": "Drop workspace folder here"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Group by Authored/Deployed (experimental)"
+    "message": "Group by Authored/Deployed"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Group by folder"
@@ -11906,8 +11915,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Video and documentation"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Learn More"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Send us your feedback."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Send feedback"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Click to open the network panel and show request for URL: {url}"

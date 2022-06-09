@@ -1252,6 +1252,7 @@ grd_files_debug_sources = [
   "front_end/panels/sources/navigatorTree.css.js",
   "front_end/panels/sources/navigatorView.css.js",
   "front_end/panels/sources/scopeChainSidebarPane.css.js",
+  "front_end/panels/sources/sourcesNavigator.css.js",
   "front_end/panels/sources/sourcesPanel.css.js",
   "front_end/panels/sources/sourcesView.css.js",
   "front_end/panels/sources/threadsSidebarPane.css.js",

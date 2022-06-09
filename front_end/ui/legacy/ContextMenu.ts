@@ -111,7 +111,7 @@ export class Item {
         };
       }
       case 'checkbox': {
-        return {
+        const result = {
           type: 'checkbox',
           id: this.idInternal,
           label: this.label,
@@ -119,6 +119,11 @@ export class Item {
           enabled: !this.disabled,
           subItems: undefined,
         };
+        if (this.customElement) {
+          const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
+          resultAsSoftContextMenuItem.element = (this.customElement as Element);
+        }
+        return result;
       }
     }
     throw new Error('Invalid item type:' + this.typeInternal);
@@ -187,11 +192,15 @@ export class Section {
     return item;
   }
 
-  appendCheckboxItem(label: string, handler: () => void, checked?: boolean, disabled?: boolean): Item {
+  appendCheckboxItem(
+      label: string, handler: () => void, checked?: boolean, disabled?: boolean, additionalElement?: Element): Item {
     const item = new Item(this.contextMenu, 'checkbox', label, disabled, checked);
     this.items.push(item);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item.id(), handler);
+    }
+    if (additionalElement) {
+      item.customElement = additionalElement;
     }
     return item;
   }

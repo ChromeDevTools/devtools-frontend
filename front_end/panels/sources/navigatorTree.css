@@ -91,6 +91,10 @@
   background-color: var(--override-folder-tree-item-color);
 }
 
+.navigator-folder-tree-item.force-white-icons {
+  --icon-color: var(--override-force-white-icons-background);
+}
+
 .navigator-sm-folder-tree-item .icon,
 .navigator-fs-tree-item .icon,
 .navigator-fs-folder-tree-item .icon {

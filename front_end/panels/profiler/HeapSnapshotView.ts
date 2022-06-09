@@ -181,7 +181,9 @@ const UIStrings = {
   heapSnapshotProfilesShowMemory:
       'Heap snapshot profiles show memory distribution among your page\'s JavaScript objects and related DOM nodes.',
   /**
-  *@description Text in Heap Snapshot View of a profiler tool
+  *@description Label for a checkbox in the heap snapshot view of the profiler tool. The "heap snapshot" contains the
+  * current state of JavaScript memory. With this checkbox enabled, the snapshot also includes internal data that is
+  * specific to Chrome (hence implementation-specific).
   */
   exposeInternals: 'Expose internals (includes additional implementation-specific details)',
   /**

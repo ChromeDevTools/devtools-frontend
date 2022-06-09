@@ -3291,7 +3291,7 @@
     "message": "DOM Storage Items"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} cleared"
+    "message": "DOM Storage Items cleared"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Number of entries shown in table: {PH1}"

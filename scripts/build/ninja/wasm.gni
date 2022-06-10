@@ -6,7 +6,7 @@ import("./copy.gni")
 template("wasm_module") {
   assert(defined(invoker.sources), "Need sources in $target_name")
   action_foreach(target_name) {
-    script = "//scripts/build/wasm-as.py"
+    script = devtools_location_prepend + "scripts/build/wasm-as.py"
     outputs = [
       "$target_gen_dir/{{source_name_part}}.wasm",
       "$target_gen_dir/{{source_name_part}}.wasm.map",

@@ -14,6 +14,8 @@ copy_to_gen("extensions") {
   ]
 }
 
-wasm_module("extension_wasm_modules") {
-  sources = [ "global_variable.wat" ]
+if (!build_with_chromium) {
+  wasm_module("extension_wasm_modules") {
+    sources = [ "global_variable.wat" ]
+  }
 }

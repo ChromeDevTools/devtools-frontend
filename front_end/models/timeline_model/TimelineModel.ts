@@ -1757,6 +1757,7 @@ export enum RecordType {
 
   Coherent_SubmitGlyphs = 'Coherent_SubmitGlyphs',
   Coherent_SubmitManagerChanges = 'Coherent_SubmitManagerChanges',
+  Coherent_EndFrame = 'Coherent_EndFrame',
   Coherent_ProcessFrontendCommandsOnly = 'Coherent_ProcessFrontendCommandsOnly',
   Coherent_DrawSDFGlyphs = 'Coherent_DrawSDFGlyphs',
   Coherent_DrawSubLayerWithShaderFilter = 'Coherent_DrawSubLayerWithShaderFilter',

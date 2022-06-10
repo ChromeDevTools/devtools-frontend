@@ -1240,6 +1240,7 @@ const UIStrings = {
 
   submitGlyphs: 'Submit Glyphs',
   submitManagerChanges: 'Submit Manager Changes',
+  endFrame: 'End Frame',
   processFrontendCommandsOnly: 'Process Frontend Commands Only',
   drawSDFGlyphs: 'Draw SDF Glyphs',
   drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
@@ -1485,6 +1486,7 @@ export class TimelineUIUtils {
     eventStyles[type.Coherent_DistributeLayers] = new TimelineRecordStyle(UIStrings.distributeLayers, painting);
     eventStyles[type.Coherent_SubmitGlyphs] = new TimelineRecordStyle(UIStrings.submitGlyphs, painting);
     eventStyles[type.Coherent_SubmitManagerChanges] = new TimelineRecordStyle(UIStrings.submitManagerChanges, painting);
+    eventStyles[type.Coherent_EndFrame] = new TimelineRecordStyle(UIStrings.endFrame, painting);
     eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
     eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
     eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);

@@ -18,9 +18,8 @@ function inheritance(tokeniser) {
 
 export class Container extends Base {
   /**
-   * @template T
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
-   * @param {T} instance
+   * @param {*} instance TODO: This should be {T extends Container}, but see https://github.com/microsoft/TypeScript/issues/4628
    * @param {*} args
    */
   static parse(tokeniser, instance, { inheritable, allowedMembers }) {

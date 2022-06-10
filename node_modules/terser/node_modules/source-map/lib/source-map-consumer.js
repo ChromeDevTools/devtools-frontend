@@ -64,30 +64,13 @@ class SourceMapConsumer {
    * console.log(xSquared);
    * ```
    */
-  static with(rawSourceMap, sourceMapUrl, f) {
-    // Note: The `acorn` version that `webpack` currently depends on doesn't
-    // support `async` functions, and the nodes that we support don't all have
-    // `.finally`. Therefore, this is written a bit more convolutedly than it
-    // should really be.
-
-    let consumer = null;
-    const promise = new SourceMapConsumer(rawSourceMap, sourceMapUrl);
-    return promise
-      .then(c => {
-        consumer = c;
-        return f(c);
-      })
-      .then(x => {
-        if (consumer) {
-          consumer.destroy();
-        }
-        return x;
-      }, e => {
-        if (consumer) {
-          consumer.destroy();
-        }
-        throw e;
-      });
+  static async with(rawSourceMap, sourceMapUrl, f) {
+    const consumer = await new SourceMapConsumer(rawSourceMap, sourceMapUrl);
+    try {
+      return await f(consumer);
+    } finally {
+      consumer.destroy();
+    }
   }
 
   /**

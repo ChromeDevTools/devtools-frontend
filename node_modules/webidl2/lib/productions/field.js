@@ -9,7 +9,7 @@ import { Default } from "./default.js";
 
 export class Field extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     /** @type {Base["tokens"]} */

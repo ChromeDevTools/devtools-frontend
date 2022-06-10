@@ -1,11 +1,9 @@
-// @ts-check
-
 import { Container } from "./container.js";
 import { Field } from "./field.js";
 
 export class Dictionary extends Container {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {object} [options]
    * @param {import("../tokeniser.js").Token} [options.partial]
    */

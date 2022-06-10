@@ -1,12 +1,10 @@
-// @ts-check
-
 import { Container } from "./container.js";
 import { Operation } from "./operation.js";
 import { Constant } from "./constant.js";
 
 export class CallbackInterface extends Container {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser, callback, { partial = null } = {}) {
     const tokens = { callback };

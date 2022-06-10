@@ -1,11 +1,9 @@
-// @ts-check
-
 import { Base } from "./base.js";
 import { unescape } from "./helpers.js";
 
 export class Includes extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const target = tokeniser.consumeKind("identifier");

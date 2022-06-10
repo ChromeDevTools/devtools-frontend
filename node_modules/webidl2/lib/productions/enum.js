@@ -2,9 +2,9 @@ import { list, unescape, autoParenter } from "./helpers.js";
 import { WrappedToken } from "./token.js";
 import { Base } from "./base.js";
 
-class EnumValue extends WrappedToken {
+export class EnumValue extends WrappedToken {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const value = tokeniser.consumeKind("string");
@@ -36,7 +36,7 @@ class EnumValue extends WrappedToken {
 
 export class Enum extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     /** @type {Base["tokens"]} */

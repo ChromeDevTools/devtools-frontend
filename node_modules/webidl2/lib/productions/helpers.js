@@ -17,7 +17,7 @@ export function unescape(identifier) {
 
 /**
  * Parses comma-separated list
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  * @param {object} args
  * @param {Function} args.parser parser function for each item
  * @param {boolean} [args.allowDangler] whether to allow dangling comma
@@ -46,7 +46,7 @@ export function list(tokeniser, { parser, allowDangler, listName = "list" }) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 export function const_value(tokeniser) {
   return (
@@ -86,7 +86,7 @@ export function const_data({ type, value }) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 export function primitive_type(tokeniser) {
   function integer_type() {
@@ -109,7 +109,7 @@ export function primitive_type(tokeniser) {
   }
 
   const { source } = tokeniser;
-  const num_type = integer_type(tokeniser) || decimal_type(tokeniser);
+  const num_type = integer_type() || decimal_type();
   if (num_type) return num_type;
   const base = tokeniser.consume(
     "bigint",
@@ -124,7 +124,7 @@ export function primitive_type(tokeniser) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 export function argument_list(tokeniser) {
   return list(tokeniser, {
@@ -134,8 +134,8 @@ export function argument_list(tokeniser) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
- * @param {string} typeName
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
+ * @param {string=} typeName (TODO: See Type.type for more details)
  */
 export function type_with_extended_attributes(tokeniser, typeName) {
   const extAttrs = ExtendedAttributes.parse(tokeniser);
@@ -145,8 +145,8 @@ export function type_with_extended_attributes(tokeniser, typeName) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
- * @param {string} typeName
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
+ * @param {string=} typeName (TODO: See Type.type for more details)
  */
 export function return_type(tokeniser, typeName) {
   const typ = Type.parse(tokeniser, typeName || "return-type");
@@ -165,7 +165,7 @@ export function return_type(tokeniser, typeName) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 export function stringifier(tokeniser) {
   const special = tokeniser.consume("stringifier");
@@ -202,8 +202,7 @@ export function getMemberIndentation(parentTrivia) {
 }
 
 /**
- * @param {object} def
- * @param {import("./extended-attributes.js").ExtendedAttributes} def.extAttrs
+ * @param {import("./interface.js").Interface} def
  */
 export function autofixAddExposedWindow(def) {
   return () => {
@@ -257,7 +256,7 @@ export function findLastIndex(array, predicate) {
 
 /**
  * Returns a proxy that auto-assign `parent` field.
- * @template T
+ * @template {Record<string | symbol, any>} T
  * @param {T} data
  * @param {*} [parent] The object that will be assigned to `parent`.
  *                     If absent, it will be `data` by default.
@@ -273,10 +272,10 @@ export function autoParenter(data, parent) {
     // `autoParenter(parse())` where the function may return nothing.
     return data;
   }
-  return new Proxy(data, {
+  const proxy = new Proxy(data, {
     get(target, p) {
       const value = target[p];
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) && p !== "source") {
         // Wraps the array so that any added items will also automatically
         // get their `parent` values.
         return autoParenter(value, target);
@@ -284,6 +283,7 @@ export function autoParenter(data, parent) {
       return value;
     },
     set(target, p, value) {
+      // @ts-ignore https://github.com/microsoft/TypeScript/issues/47357
       target[p] = value;
       if (!value) {
         return true;
@@ -300,4 +300,5 @@ export function autoParenter(data, parent) {
       return true;
     },
   });
+  return proxy;
 }

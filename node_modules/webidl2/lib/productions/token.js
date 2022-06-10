@@ -1,11 +1,9 @@
-// @ts-check
-
 import { Base } from "./base.js";
 import { unescape } from "./helpers.js";
 
 export class WrappedToken extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {string} type
    */
   static parser(tokeniser, type) {
@@ -24,7 +22,7 @@ export class WrappedToken extends Base {
     return unescape(this.tokens.value.value);
   }
 
-  /** @param {import("../writer").Writer} w */
+  /** @param {import("../writer.js").Writer} w */
   write(w) {
     return w.ts.wrap([
       w.token(this.tokens.value),
@@ -35,7 +33,7 @@ export class WrappedToken extends Base {
 
 export class Eof extends WrappedToken {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const value = tokeniser.consumeKind("eof");

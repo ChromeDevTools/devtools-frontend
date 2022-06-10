@@ -1,5 +1,3 @@
-// @ts-check
-
 import { Base } from "./base.js";
 import { Default } from "./default.js";
 import { ExtendedAttributes } from "./extended-attributes.js";
@@ -18,7 +16,7 @@ import {
 
 export class Argument extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const start_position = tokeniser.position;

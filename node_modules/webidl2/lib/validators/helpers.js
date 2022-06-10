@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * @typedef {import("../productions/dictionary.js").Dictionary} Dictionary
  *

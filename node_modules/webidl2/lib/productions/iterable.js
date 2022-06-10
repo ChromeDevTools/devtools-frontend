@@ -11,10 +11,10 @@ export class IterableLike extends Base {
    */
   static parse(tokeniser) {
     const start_position = tokeniser.position;
-    const tokens = {};
     const ret = autoParenter(
-      new IterableLike({ source: tokeniser.source, tokens })
+      new IterableLike({ source: tokeniser.source, tokens: {} })
     );
+    const { tokens } = ret;
     tokens.readonly = tokeniser.consume("readonly");
     if (!tokens.readonly) {
       tokens.async = tokeniser.consume("async");

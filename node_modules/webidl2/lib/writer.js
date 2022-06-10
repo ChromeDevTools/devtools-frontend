@@ -21,6 +21,13 @@ export class Writer {
     this.ts = Object.assign({}, templates, ts);
   }
 
+  /**
+   * @param {string} raw
+   * @param {object} options
+   * @param {string} [options.unescaped]
+   * @param {import("./productions/base.js").Base} [options.context]
+   * @returns
+   */
   reference(raw, { unescaped, context }) {
     if (!unescaped) {
       unescaped = raw.startsWith("_") ? raw.slice(1) : raw;
@@ -28,6 +35,12 @@ export class Writer {
     return this.ts.reference(raw, unescaped, context);
   }
 
+  /**
+   * @param {import("./tokeniser.js").Token} t
+   * @param {Function} wrapper
+   * @param {...any} args
+   * @returns
+   */
   token(t, wrapper = noop, ...args) {
     if (!t) {
       return "";

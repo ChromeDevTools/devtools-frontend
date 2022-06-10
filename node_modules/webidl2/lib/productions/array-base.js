@@ -1,5 +1,3 @@
-// @ts-check
-
 export class ArrayBase extends Array {
   constructor({ source, tokens }) {
     super();

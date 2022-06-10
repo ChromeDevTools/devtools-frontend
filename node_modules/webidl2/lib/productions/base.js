@@ -1,5 +1,3 @@
-// @ts-check
-
 export class Base {
   /**
    * @param {object} initializer

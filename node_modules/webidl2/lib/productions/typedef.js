@@ -7,7 +7,7 @@ import {
 
 export class Typedef extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     /** @type {Base["tokens"]} */

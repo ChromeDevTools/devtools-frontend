@@ -1,5 +1,3 @@
-// @ts-check
-
 import { validationError as error } from "./error.js";
 
 function getMixinMap(all, unique) {
@@ -88,8 +86,8 @@ function flatten(array) {
 }
 
 /**
- * @param {import("./productions/base").Base[]} ast
- * @return {import("./error").WebIDLErrorData[]} validation errors
+ * @param {import("./productions/base.js").Base[]} ast
+ * @return {import("./error.js").WebIDLErrorData[]} validation errors
  */
 export function validate(ast) {
   return [...validateIterable(flatten(ast))];

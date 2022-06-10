@@ -12,7 +12,7 @@ import { idlTypeIncludesDictionary } from "../validators/helpers.js";
 import { ExtendedAttributes } from "./extended-attributes.js";
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  * @param {string} typeName
  */
 function generic_type(tokeniser, typeName) {
@@ -80,7 +80,7 @@ function generic_type(tokeniser, typeName) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 function type_suffix(tokeniser, obj) {
   const nullable = tokeniser.consume("?");
@@ -91,7 +91,7 @@ function type_suffix(tokeniser, obj) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  * @param {string} typeName
  */
 function single_type(tokeniser, typeName) {
@@ -118,7 +118,7 @@ function single_type(tokeniser, typeName) {
 }
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  * @param {string} type
  */
 function union_type(tokeniser, type) {
@@ -154,7 +154,7 @@ function union_type(tokeniser, type) {
 
 export class Type extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {string} typeName
    */
   static parse(tokeniser, typeName) {
@@ -164,7 +164,7 @@ export class Type extends Base {
   constructor({ source, tokens }) {
     super({ source, tokens });
     Object.defineProperty(this, "subtype", { value: [], writable: true });
-    this.extAttrs = new ExtendedAttributes({});
+    this.extAttrs = new ExtendedAttributes({ source, tokens: {} });
   }
 
   get generic() {
@@ -234,7 +234,7 @@ for more information.`;
     }
   }
 
-  /** @param {import("../writer.js").Writer)} w */
+  /** @param {import("../writer.js").Writer} w */
   write(w) {
     const type_body = () => {
       if (this.union || this.generic) {
@@ -255,7 +255,12 @@ for more information.`;
           this.tokens.base.value,
           w.token(this.tokens.postfix),
         ]),
-        { unescaped: this.idlType, context: this }
+        {
+          unescaped: /** @type {string} (because it's not union) */ (
+            this.idlType
+          ),
+          context: this,
+        }
       );
       return w.ts.wrap([w.ts.trivia(firstToken.trivia), ref]);
     };

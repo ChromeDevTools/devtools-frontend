@@ -28,12 +28,16 @@ function contextAsText(node) {
  * @typedef {object} WebIDL2ErrorOptions
  * @property {"error" | "warning"} [level]
  * @property {Function} [autofix]
+ * @property {string} [ruleName]
  *
  * @typedef {ReturnType<typeof error>} WebIDLErrorData
  *
  * @param {string} message error message
+ * @param {*} position
+ * @param {*} current
+ * @param {*} message
  * @param {"Syntax" | "Validation"} kind error type
- * @param {WebIDL2ErrorOptions} [options]
+ * @param {WebIDL2ErrorOptions=} options
  */
 function error(
   source,
@@ -52,6 +56,12 @@ function error(
       : source.slice(Math.max(position + count, 0), position);
   }
 
+  /**
+   * @param {import("./tokeniser.js").Token[]} inputs
+   * @param {object} [options]
+   * @param {boolean} [options.precedes]
+   * @returns
+   */
   function tokensToText(inputs, { precedes } = {}) {
     const text = inputs.map((t) => t.trivia + t.value).join("");
     const nextToken = source[position];

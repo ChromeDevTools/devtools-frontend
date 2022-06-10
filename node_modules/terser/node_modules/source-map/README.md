@@ -208,7 +208,7 @@ calling `initialize` before constructing any `SourceMapConsumer`s.
 The options object has the following properties:
 
 * `"lib/mappings.wasm"`: A `String` containing the URL of the
-  `lib/mappings.wasm` file.
+  `lib/mappings.wasm` file, or an `ArrayBuffer` with the contents of `lib/mappings.wasm`.
 
 ```js
 sourceMap.SourceMapConsumer.initialize({

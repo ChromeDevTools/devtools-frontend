@@ -3,7 +3,7 @@ import { const_data, const_value } from "./helpers.js";
 
 export class Default extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const assign = tokeniser.consume("=");
@@ -50,7 +50,7 @@ export class Default extends Base {
     return const_data(this.expression[0]).negative;
   }
 
-  /** @param {import("../writer.js").Writer)} w */
+  /** @param {import("../writer.js").Writer} w */
   write(w) {
     return w.ts.wrap([
       w.token(this.tokens.assign),

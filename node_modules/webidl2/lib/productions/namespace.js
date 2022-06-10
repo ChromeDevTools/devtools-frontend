@@ -7,7 +7,7 @@ import { Constant } from "./constant.js";
 
 export class Namespace extends Container {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {object} [options]
    * @param {import("../tokeniser.js").Token} [options.partial]
    */

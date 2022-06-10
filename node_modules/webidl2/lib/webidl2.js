@@ -16,6 +16,7 @@ import { Eof } from "./productions/token.js";
  * @param {Tokeniser} tokeniser
  * @param {object} options
  * @param {boolean} [options.concrete]
+ * @param {Function[]} [options.productions]
  */
 function parseByTokens(tokeniser, options) {
   const source = tokeniser.source;
@@ -110,11 +111,12 @@ function parseByTokens(tokeniser, options) {
  * @param {*} [options.sourceName]
  * @param {boolean} [options.concrete]
  * @param {Function[]} [options.productions]
- * @return {import("./productions/base").Base[]}
+ * @return {import("./productions/base.js").Base[]}
  */
 export function parse(str, options = {}) {
   const tokeniser = new Tokeniser(str);
   if (typeof options.sourceName !== "undefined") {
+    // @ts-ignore (See Tokeniser.source in supplement.d.ts)
     tokeniser.source.name = options.sourceName;
   }
   return parseByTokens(tokeniser, options);

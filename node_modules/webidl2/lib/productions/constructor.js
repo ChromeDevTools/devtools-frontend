@@ -3,7 +3,7 @@ import { argument_list, autoParenter } from "./helpers.js";
 
 export class Constructor extends Base {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser) {
     const base = tokeniser.consume("constructor");
@@ -31,9 +31,6 @@ export class Constructor extends Base {
   }
 
   *validate(defs) {
-    if (this.idlType) {
-      yield* this.idlType.validate(defs);
-    }
     for (const argument of this.arguments) {
       yield* argument.validate(defs);
     }

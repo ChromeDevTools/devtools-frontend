@@ -101,7 +101,8 @@ DEPS = {
     "ws": "8.4.0",
     "yargs": "17.3.1",
     "glob": "7.1.7",
-    "webidl2": "24.2.0",
+    "webidl2": "24.2.2",
+    "@webref/idl": "3.12.0",
 }
 
 ADDITIONAL_NPM_ARGS = [

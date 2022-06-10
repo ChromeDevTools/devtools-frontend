@@ -19,7 +19,7 @@ import { Tokeniser } from "../tokeniser.js";
 import { ExtendedAttributes } from "./extended-attributes.js";
 
 /**
- * @param {import("../tokeniser").Tokeniser} tokeniser
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
  */
 function static_member(tokeniser) {
   const special = tokeniser.consume("static");
@@ -33,7 +33,7 @@ function static_member(tokeniser) {
 
 export class Interface extends Container {
   /**
-   * @param {import("../tokeniser").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Tokeniser} tokeniser
    */
   static parse(tokeniser, base, { partial = null } = {}) {
     const tokens = { partial, base };
@@ -147,7 +147,10 @@ function autofixConstructor(interfaceDef, constructorExtAttr) {
     const constructorOp = Constructor.parse(
       new Tokeniser(`\n${memberIndent}constructor();`)
     );
-    constructorOp.extAttrs = new ExtendedAttributes({});
+    constructorOp.extAttrs = new ExtendedAttributes({
+      source: interfaceDef.source,
+      tokens: {},
+    });
     autoParenter(constructorOp).arguments = constructorExtAttr.arguments;
 
     const existingIndex = findLastIndex(

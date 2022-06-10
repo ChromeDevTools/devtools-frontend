@@ -1,5 +1,3 @@
-// @ts-check
-
 import { validationError } from "../error.js";
 import { idlTypeIncludesDictionary } from "../validators/helpers.js";
 import { Base } from "./base.js";

@@ -165,6 +165,11 @@ const UIStrings = {
   obsoleteWebRtcCipherSuite:
       'Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed.',
   /**
+   * @description Warning displayed to developers when `window.openDatabase` is used in non-secure contexts to notify that the API is deprecated and will be removed.
+   */
+  openWebDatabaseInsecureContext:
+      'WebSQL in non-secure contexts is deprecated and will be removed in M107. Please use Web Storage or Indexed Database.',
+  /**
    * @description This issue indicates that a `<source>` element with a `<picture>` parent was using an `src` attribute, which is not valid and is ignored by the browser. The `srcset` attribute should be used instead.
    */
   pictureSourceSrc:
@@ -406,6 +411,11 @@ export class DeprecationIssue extends Issue {
       case Protocol.Audits.DeprecationIssueType.ObsoleteWebRtcCipherSuite:
         messageFunction = i18nLazyString(UIStrings.obsoleteWebRtcCipherSuite);
         milestone = 81;
+        break;
+      case Protocol.Audits.DeprecationIssueType.OpenWebDatabaseInsecureContext:
+        messageFunction = i18nLazyString(UIStrings.openWebDatabaseInsecureContext);
+        feature = 5175124599767040;
+        milestone = 105;
         break;
       case Protocol.Audits.DeprecationIssueType.PictureSourceSrc:
         messageFunction = i18nLazyString(UIStrings.pictureSourceSrc);

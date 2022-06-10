@@ -28,6 +28,7 @@ node_ts_library("issues") {
     "sab-issues_test.ts",
     "twa-issues_test.ts",
     "wasm-co-issues_test.ts",
+    "websql-issues_test.ts",
   ]
 
   deps = [

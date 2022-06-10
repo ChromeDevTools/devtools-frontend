@@ -131,7 +131,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   // DevTools UI to be the same script. For now this is just the url but this
   // is likely to change in the future.
   canononicalScriptId(): string {
-    return this.urlInternal;
+    return `${this.contentTypeInternal.name()},${this.urlInternal}`;
   }
 
   parentURL(): Platform.DevToolsPath.UrlString {

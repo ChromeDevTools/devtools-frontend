@@ -115,19 +115,22 @@ export class LinearMemoryViewer extends HTMLElement {
 
     // We initially just plot one row with one byte group (here: byte group size of 4).
     // Depending on that initially plotted row we can determine how many rows and
-    // bytes per row we can fit:
-    // > 0000000 | b0 b1 b2 b4 | a0 a1 a2 a3       <
-    //             ^-^           ^-^
-    //             byteCellWidth textCellWidth
-    //             ^-------------------------------^
-    //                 widthToFill
+    // bytes per row we can fit.
+    // >    0000000 | b0 b1 b2 b4 | a0 a1 a2 a3    <
+    //      ^-------^ ^-^           ^-^
+    //          |     byteCellWidth textCellWidth
+    //          |
+    //     addressTextAndDividerWidth
+    //  ^--^   +     ^----------------------------^
+    //      widthToFill
 
     const firstByteCell = this.shadowRoot.querySelector('.byte-cell');
     const textCell = this.shadowRoot.querySelector('.text-cell');
     const divider = this.shadowRoot.querySelector('.divider');
     const rowElement = this.shadowRoot.querySelector('.row');
+    const addressText = this.shadowRoot.querySelector('.address');
 
-    if (!firstByteCell || !textCell || !divider || !rowElement) {
+    if (!firstByteCell || !textCell || !divider || !rowElement || !addressText) {
       this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
@@ -140,16 +143,18 @@ export class LinearMemoryViewer extends HTMLElement {
 
     // Calculate the width to fill.
     const dividerWidth = divider.getBoundingClientRect().width;
-    // this.clientWidth is rounded, while the other values are not. Subtract one to make
+    const addressTextAndDividerWidth =
+        firstByteCell.getBoundingClientRect().left - addressText.getBoundingClientRect().left;
+
+    // this.clientWidth is rounded, while the other values are not. Subtract 1 to make
     // sure that we correctly calculate the widths.
-    const widthToFill = this.clientWidth - 1 -
-        (firstByteCell.getBoundingClientRect().left - this.getBoundingClientRect().left) - dividerWidth;
+    const widthToFill = this.clientWidth - 1 - addressTextAndDividerWidth - dividerWidth;
+
     if (widthToFill < groupWidth) {
       this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
     }
-
     this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * BYTE_GROUP_SIZE;
     this.#numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
   }

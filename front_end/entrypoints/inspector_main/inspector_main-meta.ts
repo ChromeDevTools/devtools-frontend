@@ -103,7 +103,7 @@ const UIStrings = {
   * @description Title of an action that toggle
   * "forces CSS prefers-color-scheme" color
   */
-  toggleCssPrefersColorSchemeMedia: 'Toggle forces CSS prefers-color-scheme color',
+  toggleCssPrefersColorSchemeMedia: 'Toggle CSS media feature prefers-color-scheme',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/inspector_main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

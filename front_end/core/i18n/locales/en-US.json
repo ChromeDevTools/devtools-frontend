@@ -903,7 +903,7 @@
     "message": "Show Rendering"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Toggle CSS media feature prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "vision deficiency"

@@ -77,7 +77,9 @@ const UIStrings = {
    */
   crossOriginWindowApi: 'Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future.',
   /**
-   * @description TODO(crbug.com/1320339): Description needed for translation
+   * @description Warning displayed to developers when they hide the Cast button
+   * on a video element using the deprecated CSS selector instead of using the
+   * disableRemotePlayback attribute on the element.
    */
   cssSelectorInternalMediaControlsOverlayCastButton:
       'The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.',

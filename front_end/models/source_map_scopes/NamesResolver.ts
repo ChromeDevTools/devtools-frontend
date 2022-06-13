@@ -17,14 +17,17 @@ interface CachedScopeMap {
 const scopeToCachedIdentifiersMap = new WeakMap<SDK.DebuggerModel.ScopeChainEntry, CachedScopeMap>();
 const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string>>();
 
-export class Identifier {
+export class IdentifierPositions {
   name: string;
-  lineNumber: number;
-  columnNumber: number;
-  constructor(name: string, lineNumber: number, columnNumber: number) {
+  positions: {lineNumber: number, columnNumber: number}[];
+
+  constructor(name: string, positions: {lineNumber: number, columnNumber: number}[] = []) {
     this.name = name;
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber;
+    this.positions = positions;
+  }
+
+  addPosition(lineNumber: number, columnNumber: number): void {
+    this.positions.push({lineNumber, columnNumber});
   }
 }
 
@@ -66,7 +69,7 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
 
 export const scopeIdentifiers = async function(
     functionScope: SDK.DebuggerModel.ScopeChainEntry|null, scope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
-  freeVariables: Identifier[], boundVariables: Identifier[],
+  freeVariables: IdentifierPositions[], boundVariables: IdentifierPositions[],
 }|null> {
   if (!functionScope) {
     return null;
@@ -132,23 +135,32 @@ export const scopeIdentifiers = async function(
       continue;
     }
 
+    const identifier = new IdentifierPositions(variable.name);
     for (const offset of variable.offsets) {
       const start = offset + slide;
       cursor.resetTo(start);
-      boundVariables.push(new Identifier(variable.name, cursor.lineNumber(), cursor.columnNumber()));
+      identifier.addPosition(cursor.lineNumber(), cursor.columnNumber());
     }
+    boundVariables.push(identifier);
   }
 
   // Compute free variables by collecting all the ancestor variables that are used in |containingScope|.
   const freeVariables = [];
   for (const ancestor of ancestorScopes) {
     for (const ancestorVariable of ancestor.variables) {
+      let identifier = null;
       for (const offset of ancestorVariable.offsets) {
         if (offset >= containingScope.start && offset < containingScope.end) {
+          if (!identifier) {
+            identifier = new IdentifierPositions(ancestorVariable.name);
+          }
           const start = offset + slide;
           cursor.resetTo(start);
-          freeVariables.push(new Identifier(ancestorVariable.name, cursor.lineNumber(), cursor.columnNumber()));
+          identifier.addPosition(cursor.lineNumber(), cursor.columnNumber());
         }
+      }
+      if (identifier) {
+        freeVariables.push(identifier);
       }
     }
   }
@@ -187,17 +199,33 @@ const resolveScope =
           // missing identifier names from SourceMap ranges.
           const promises: Promise<void>[] = [];
 
-          const resolveEntry = (id: Identifier, handler: (sourceName: string) => void): void => {
-            const entry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
-            if (entry && entry.name) {
-              handler(entry.name);
-            } else {
-              promises.push(resolveSourceName(script, sourceMap, id, textCache).then(sourceName => {
+          const resolveEntry = (id: IdentifierPositions, handler: (sourceName: string) => void): void => {
+            // First see if we have a source map entry with a name for the identifier.
+            for (const position of id.positions) {
+              const entry = sourceMap.findEntry(position.lineNumber, position.columnNumber);
+              if (entry && entry.name) {
+                handler(entry.name);
+                return;
+              }
+            }
+            // If there is no entry with the name field, try to infer the name from the source positions.
+            async function resolvePosition(): Promise<void> {
+              if (!sourceMap) {
+                return;
+              }
+              // Let us find the first non-empty mapping of |id| and return that. Ideally, we would
+              // try to compute all the mappings and only use the mapping if all the non-empty
+              // mappings agree. However, that can be expensive for identifiers with many uses,
+              // so we iterate sequentially, stopping at the first non-empty mapping.
+              for (const position of id.positions) {
+                const sourceName = await resolveSourceName(script, sourceMap, id.name, position, textCache);
                 if (sourceName) {
                   handler(sourceName);
+                  return;
                 }
-              }));
+              }
             }
+            promises.push(resolvePosition());
           };
 
           const functionScope = findFunctionScope();
@@ -229,10 +257,11 @@ const resolveScope =
   return await cachedScopeMap.mappingPromise;
 
   async function resolveSourceName(
-      script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap, id: Identifier,
+      script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap, name: string,
+      position: {lineNumber: number, columnNumber: number},
       textCache: Map<string, TextUtils.Text.Text>): Promise<string|null> {
-    const startEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber);
-    const endEntry = sourceMap.findEntry(id.lineNumber, id.columnNumber + id.name.length);
+    const startEntry = sourceMap.findEntry(position.lineNumber, position.columnNumber);
+    const endEntry = sourceMap.findEntry(position.lineNumber, position.columnNumber + name.length);
     if (!startEntry || !endEntry || !startEntry.sourceURL || startEntry.sourceURL !== endEntry.sourceURL ||
         !startEntry.sourceLineNumber || !startEntry.sourceColumnNumber || !endEntry.sourceLineNumber ||
         !endEntry.sourceColumnNumber) {

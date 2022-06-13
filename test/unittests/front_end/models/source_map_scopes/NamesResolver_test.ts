@@ -4,104 +4,190 @@
 
 const {assert} = chai;
 
+import type * as Host from '../../../../../front_end/core/host/host.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SourceMapScopes from '../../../../../front_end/models/source_map_scopes/source_map_scopes.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
-  getMockConnectionResponseHandler,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
 
-function addMockScript(
-    target: SDK.Target.Target, scriptId: string, url: string, mapUrl: string, scriptSource: string): void {
-  dispatchEvent(target, 'Debugger.scriptParsed', {
-    scriptId,
-    url,
-    startLine: 0,
-    startColumn: 0,
-    endLine: (scriptSource.match(/^/gm)?.length ?? 1) - 1,
-    endColumn: scriptSource.length - scriptSource.lastIndexOf('\n') - 1,
-    executionContextId: 1,
-    hash: '',
-    hasSourceURL: false,
-    sourceMapURL: mapUrl,
-  });
-
-  const originalHandler = getMockConnectionResponseHandler('Debugger.getScriptSource');
-  setMockConnectionResponseHandler(
-      'Debugger.getScriptSource',
-      (request: Protocol.Debugger.GetScriptSourceRequest): Protocol.Debugger.GetScriptSourceResponse => {
-        if (request.scriptId === scriptId) {
-          return {
-            scriptSource,
-            getError() {
-              return undefined;
-            },
-          };
-        }
-        if (originalHandler) {
-          return originalHandler(request);
-        }
-        return {
-          scriptSource: 'Unknown script',
-          getError() {
-            return 'Unknown script';
-          },
-        };
-      });
+interface LoadResult {
+  success: boolean;
+  content: string;
+  errorDescription: Host.ResourceLoader.LoadErrorDescription;
 }
 
-describeWithMockConnection('NameResolver', () => {
-  const URL = 'file:///tmp/example.js' as Platform.DevToolsPath.UrlString;
-  const MAP_URL = 'file:///tmp/example.js.map' as Platform.DevToolsPath.UrlString;
-  const SCRIPT_ID = 'SCRIPT_ID' as Protocol.Runtime.ScriptId;
-  let target: SDK.Target.Target;
+class MockProtocolBackend {
+  #scriptSources = new Map<string, string>();
+  #sourceMapContents = new Map<string, string>();
+  #objectProperties = new Map<string, {name: string, value: number}[]>();
+  #nextObjectIndex = 0;
+  #nextScriptIndex = 0;
 
-  beforeEach(() => {
-    target = createTarget();
-  });
+  constructor() {
+    // One time setup of the response handlers.
+    setMockConnectionResponseHandler('Debugger.getScriptSource', this.#getScriptSourceHandler.bind(this));
+    setMockConnectionResponseHandler('Runtime.getProperties', this.#getPropertiesHandler.bind(this));
+    SDK.PageResourceLoader.PageResourceLoader.instance({
+      forceNew: true,
+      loadOverride: async (url: string) => this.#loadSourceMap(url),
+      maxConcurrentLoads: 1,
+      loadTimeout: 2000,
+    });
+  }
 
-  function createMockScopeEntry(debuggerModel: SDK.DebuggerModel.DebuggerModel, startColumn: number, endColumn: number):
-      SDK.DebuggerModel.ScopeChainEntry {
+  async addScript(target: SDK.Target.Target, script: {url: string, content: string}, sourceMap: {
+    url: string,
+    content: string,
+  }): Promise<SDK.Script.Script> {
+    const scriptId = 'SCRIPTID.' + this.#nextScriptIndex++;
+    this.#scriptSources.set(scriptId, script.content);
+    this.#sourceMapContents.set(sourceMap.url, sourceMap.content);
+    dispatchEvent(target, 'Debugger.scriptParsed', {
+      scriptId,
+      url: script.url,
+      startLine: 0,
+      startColumn: 0,
+      endLine: (script.content.match(/^/gm)?.length ?? 1) - 1,
+      endColumn: script.content.length - script.content.lastIndexOf('\n') - 1,
+      executionContextId: 1,
+      hash: '',
+      hasSourceURL: false,
+      sourceMapURL: sourceMap.url,
+    });
+
+    // Wait until the source map loads.
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    const scriptObject = debuggerModel.scriptForId(scriptId);
+    assertNotNullOrUndefined(scriptObject);
+    const loadedSourceMap = await debuggerModel.sourceMapManager().sourceMapForClientPromise(scriptObject);
+
+    assert.strictEqual(loadedSourceMap?.url() as string, sourceMap.url);
+    return scriptObject;
+  }
+
+  createProtocolLocation(scriptId: string, lineNumber: number, columnNumber: number): Protocol.Debugger.Location {
+    return {scriptId: scriptId as Protocol.Runtime.ScriptId, lineNumber, columnNumber};
+  }
+
+  createProtocolScope(
+      type: Protocol.Debugger.ScopeType, object: Protocol.Runtime.RemoteObject, scriptId: string, startColumn: number,
+      endColumn: number) {
     return {
-      callFrame() {
-        throw Error('not implemented for test');
-      },
-      type() {
-        throw Error('not implemented for test');
-      },
-      typeName() {
-        throw Error('not implemented for test');
-      },
-      name() {
-        throw Error('not implemented for test');
-      },
-      startLocation() {
-        return new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID, 0, startColumn);
-      },
-      endLocation() {
-        return new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID, 0, endColumn);
-      },
-      object() {
-        throw Error('not implemented for test');
-      },
-      description() {
-        throw Error('not implemented for test');
-      },
-      icon() {
-        throw Error('not implemented for test');
+      type,
+      object,
+      startLocation: this.createProtocolLocation(scriptId, 0, startColumn),
+      endLocation: this.createProtocolLocation(scriptId, 0, endColumn),
+    };
+  }
+
+  createSimpleRemoteObject(properties: {name: string, value: number}[]): Protocol.Runtime.RemoteObject {
+    const objectId = 'OBJECTID.' + this.#nextObjectIndex++;
+    this.#objectProperties.set(objectId, properties);
+
+    return {type: Protocol.Runtime.RemoteObjectType.Object, objectId: objectId as Protocol.Runtime.RemoteObjectId};
+  }
+
+  #getScriptSourceHandler(request: Protocol.Debugger.GetScriptSourceRequest):
+      Protocol.Debugger.GetScriptSourceResponse {
+    const scriptSource = this.#scriptSources.get(request.scriptId);
+    if (scriptSource) {
+      return {
+        scriptSource,
+        getError() {
+          return undefined;
+        },
+      };
+    }
+    return {
+      scriptSource: 'Unknown script',
+      getError() {
+        return 'Unknown script';
       },
     };
   }
 
-  function initializeModelAndScopes(source: string, scopeDescriptor: string):
-      {functionScope: SDK.DebuggerModel.ScopeChainEntry, scope: SDK.DebuggerModel.ScopeChainEntry} {
-    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
-    addMockScript(target, SCRIPT_ID, URL, MAP_URL, source);
+  #getPropertiesHandler(request: Protocol.Runtime.GetPropertiesRequest): Protocol.Runtime.GetPropertiesResponse {
+    const objectProperties = this.#objectProperties.get(request.objectId as string);
+    if (!objectProperties) {
+      return {
+        result: [],
+        getError() {
+          return 'Unknown object';
+        },
+      };
+    }
+
+    const result: Protocol.Runtime.PropertyDescriptor[] = [];
+    for (const property of objectProperties) {
+      result.push({
+        name: property.name,
+        value: {
+          type: Protocol.Runtime.RemoteObjectType.Number,
+          value: property.value,
+          description: `${property.value}`,
+        },
+        writable: true,
+        configurable: true,
+        enumerable: true,
+        isOwn: true,
+      });
+    }
+    return {
+      result,
+      getError() {
+        return undefined;
+      },
+    };
+  }
+
+  #loadSourceMap(url: string): LoadResult {
+    const content = this.#sourceMapContents.get(url);
+    if (!content) {
+      return {
+        success: false,
+        content: '',
+        errorDescription:
+            {message: 'source map not found', statusCode: 123, netError: 0, netErrorName: '', urlValid: true},
+      };
+    }
+    return {
+      success: true,
+      content,
+      errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+    };
+  }
+}
+
+describeWithMockConnection('NameResolver', () => {
+  const URL = 'file:///tmp/example.js' as Platform.DevToolsPath.UrlString;
+  let target: SDK.Target.Target;
+  let backend: MockProtocolBackend;
+
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+    });
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+    target = createTarget();
+    backend = new MockProtocolBackend();
+  });
+
+  function parseScopeChain(scopeDescriptor: string):
+      {type: Protocol.Debugger.ScopeType, startColumn: number, endColumn: number}[] {
+    const scopeChain = [];
 
     // Identify function scope.
     const functionStart = scopeDescriptor.indexOf('{');
@@ -112,27 +198,63 @@ describeWithMockConnection('NameResolver', () => {
     if (functionEnd < 0) {
       throw new Error('Test descriptor must contain "}"');
     }
-    const functionScope = createMockScopeEntry(debuggerModel, functionStart, functionEnd + 1);
+
+    scopeChain.push({type: Protocol.Debugger.ScopeType.Local, startColumn: functionStart, endColumn: functionEnd + 1});
 
     // Find the block scope.
     const blockScopeStart = scopeDescriptor.indexOf('<');
-    if (blockScopeStart < 0) {
-      // If there is no block scope, use the function scope as the target scope.
-      return {functionScope, scope: functionScope};
+    if (blockScopeStart >= 0) {
+      const blockScopeEnd = scopeDescriptor.indexOf('>');
+      if (blockScopeEnd < 0) {
+        throw new Error('Test descriptor must contain matching "." for "<"');
+      }
+      scopeChain.push(
+          {type: Protocol.Debugger.ScopeType.Block, startColumn: blockScopeStart, endColumn: blockScopeEnd + 1});
     }
-    const blockScopeEnd = scopeDescriptor.indexOf('>');
-    if (blockScopeEnd < 0) {
-      throw new Error('Test descriptor must contain matching "." for "<"');
+
+    return scopeChain;
+  }
+
+  async function initializeModelAndScopes(
+      script: {url: string, content: string}, scopeDescriptor: string, sourceMap: {url: string, content: string},
+      scopeObject: Protocol.Runtime.RemoteObject|null =
+          null): Promise<{functionScope: SDK.DebuggerModel.ScopeChainEntry, scope: SDK.DebuggerModel.ScopeChainEntry}> {
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    const scriptObject = await backend.addScript(target, script, sourceMap);
+
+    const parsedScopes = parseScopeChain(scopeDescriptor);
+    const scopeChain = parsedScopes.map(
+        s => backend.createProtocolScope(
+            s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId, s.startColumn,
+            s.endColumn));
+
+    const innerScope = scopeChain[scopeChain.length - 1];
+    if (scopeObject) {
+      innerScope.object = scopeObject;
     }
-    return {functionScope, scope: createMockScopeEntry(debuggerModel, blockScopeStart, blockScopeEnd + 1)};
+
+    const payload: Protocol.Debugger.CallFrame = {
+      callFrameId: '0' as Protocol.Debugger.CallFrameId,
+      functionName: 'test',
+      functionLocation: undefined,
+      location: innerScope.startLocation,
+      url: scriptObject.sourceURL,
+      scopeChain,
+      this: {type: 'object'} as Protocol.Runtime.RemoteObject,
+      returnValue: undefined,
+      canBeRestarted: false,
+    };
+
+    const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, scriptObject, payload, 0);
+    return {functionScope: callFrame.scopeChain()[0], scope: callFrame.scopeChain()[callFrame.scopeChain().length - 1]};
   }
 
   function getIdentifiersFromScopeDescriptor(source: string, scopeDescriptor: string): {
-    bound: SourceMapScopes.NamesResolver.Identifier[],
-    free: SourceMapScopes.NamesResolver.Identifier[],
+    bound: SourceMapScopes.NamesResolver.IdentifierPositions[],
+    free: SourceMapScopes.NamesResolver.IdentifierPositions[],
   } {
-    const bound = [];
-    const free = [];
+    const bound = new Map<string, SourceMapScopes.NamesResolver.IdentifierPositions>();
+    const free = new Map<string, SourceMapScopes.NamesResolver.IdentifierPositions>();
     let current = 0;
 
     while (current < scopeDescriptor.length) {
@@ -152,21 +274,29 @@ describeWithMockConnection('NameResolver', () => {
       while (end < scopeDescriptor.length && scopeDescriptor[end] === kind) {
         end++;
       }
-      const id = new SourceMapScopes.NamesResolver.Identifier(source.substring(start, end), 0, start);
       if (kind === 'B') {
-        bound.push(id);
+        addPosition(bound, start, end);
       } else {
         console.assert(kind === 'F');
-        free.push(id);
+        addPosition(free, start, end);
       }
       current = end + 1;
     }
 
-    return {bound, free};
+    return {bound: [...bound.values()], free: [...free.values()]};
+
+    function addPosition(
+        collection: Map<string, SourceMapScopes.NamesResolver.IdentifierPositions>, start: number, end: number) {
+      const name = source.substring(start, end);
+      let id = collection.get(name);
+      if (!id) {
+        id = new SourceMapScopes.NamesResolver.IdentifierPositions(name);
+        collection.set(name, id);
+      }
+      id.addPosition(0, start);
+    }
   }
 
-  // The scope name resolver assertions are of the following form:
-  //
   // Given a function scope <fn-start>,<fn-end> and a nested scope <start>,<end>,
   // we expect the scope parser to return a list of identifiers of the form [{name, offset}]
   // for the nested scope. (The nested scope may be the same as the function scope.)
@@ -179,10 +309,10 @@ describeWithMockConnection('NameResolver', () => {
   //
   // expect.that(
   //  scopeIdentifiers(functionScope: {start: 10, end: 45}, scope:{start: 21, end: 43}).bound)
-  //   .equals([Identifier(name: a, offset: 27), Identifier(name: a, offset: 41)]).
+  //   .equals([Identifier(name: a, offsets: [27, 41])]).
   // expect.that(
   //  scopeIdentifiers(functionScope: {start: 10, end: 45}, scope:{start: 21, end: 43}).free)
-  //   .equals([Identifier(name: x, offset: 31)]).
+  //   .equals([Identifier(name: x, offsets: [31])]).
   //
   // This is not ideal because the explicit offsets are hard to read and maintain.
   // To avoid typing the exact offset we encode the offsets in a scope assertion string
@@ -202,32 +332,30 @@ describeWithMockConnection('NameResolver', () => {
     const scopes = '          {           <    B   F         B> }';
     const identifiers = getIdentifiersFromScopeDescriptor(source, scopes);
     assert.deepEqual(identifiers.bound, [
-      new SourceMapScopes.NamesResolver.Identifier('a', 0, 27),
-      new SourceMapScopes.NamesResolver.Identifier('a', 0, 41),
+      new SourceMapScopes.NamesResolver.IdentifierPositions(
+          'a', [{lineNumber: 0, columnNumber: 27}, {lineNumber: 0, columnNumber: 41}]),
     ]);
     assert.deepEqual(identifiers.free, [
-      new SourceMapScopes.NamesResolver.Identifier('x', 0, 31),
+      new SourceMapScopes.NamesResolver.IdentifierPositions('x', [{lineNumber: 0, columnNumber: 31}]),
     ]);
   });
 
   it('test helper parses scopes from test descriptor', () => {
-    const source = 'function f(x) { g(x); {let a = x, return a} }';
+    //    source = 'function f(x) { g(x); {let a = x, return a} }';
     const scopes = '          {           <    B             B> }';
-    const {functionScope, scope} = initializeModelAndScopes(source, scopes);
-    assert.strictEqual(functionScope.startLocation()?.columnNumber, 10);
-    assert.strictEqual(functionScope.endLocation()?.columnNumber, 45);
-    assert.strictEqual(scope.startLocation()?.columnNumber, 22);
-    assert.strictEqual(scope.endLocation()?.columnNumber, 43);
+    const [functionScope, scope] = parseScopeChain(scopes);
+    assert.strictEqual(functionScope.startColumn, 10);
+    assert.strictEqual(functionScope.endColumn, 45);
+    assert.strictEqual(scope.startColumn, 22);
+    assert.strictEqual(scope.endColumn, 43);
   });
 
   it('test helper parses function scope from test descriptor', () => {
-    const source = 'function f(x) { g(x); {let a = x, return a} }';
+    //    source = 'function f(x) { g(x); {let a = x, return a} }';
     const scopes = '          {B      B            B            }';
-    const {functionScope, scope} = initializeModelAndScopes(source, scopes);
-    assert.strictEqual(functionScope.startLocation()?.columnNumber, 10);
-    assert.strictEqual(functionScope.endLocation()?.columnNumber, 45);
-    assert.strictEqual(scope.startLocation()?.columnNumber, 10);
-    assert.strictEqual(scope.endLocation()?.columnNumber, 45);
+    const [functionScope] = parseScopeChain(scopes);
+    assert.strictEqual(functionScope.startColumn, 10);
+    assert.strictEqual(functionScope.endColumn, 45);
   });
 
   const tests = [
@@ -318,16 +446,77 @@ describeWithMockConnection('NameResolver', () => {
     },
   ];
 
+  const dummyMapContent = JSON.stringify({
+    'version': 3,
+    'sources': [],
+  });
+
   for (const test of tests) {
     it(test.name, async () => {
-      const {functionScope, scope} = initializeModelAndScopes(test.source, test.scopes);
+      const {functionScope, scope} = await initializeModelAndScopes(
+          {url: URL, content: test.source}, test.scopes, {url: 'file:///dummy.map', content: dummyMapContent});
       const identifiers = await SourceMapScopes.NamesResolver.scopeIdentifiers(functionScope, scope);
       const boundIdentifiers = identifiers?.boundVariables ?? [];
       const freeIdentifiers = identifiers?.freeVariables ?? [];
-      boundIdentifiers.sort((l, r) => l.lineNumber - r.lineNumber || l.columnNumber - r.columnNumber);
-      freeIdentifiers.sort((l, r) => l.lineNumber - r.lineNumber || l.columnNumber - r.columnNumber);
+      boundIdentifiers.sort(
+          (l, r) => l.positions[0].lineNumber - r.positions[0].lineNumber ||
+              l.positions[0].columnNumber - r.positions[0].columnNumber);
+      freeIdentifiers.sort(
+          (l, r) => l.positions[0].lineNumber - r.positions[0].lineNumber ||
+              l.positions[0].columnNumber - r.positions[0].columnNumber);
       assert.deepEqual(boundIdentifiers, getIdentifiersFromScopeDescriptor(test.source, test.scopes).bound);
       assert.deepEqual(freeIdentifiers, getIdentifiersFromScopeDescriptor(test.source, test.scopes).free);
     });
   }
+
+  // TODO(crbug.com/1335338): This is in preparation for handling the identifiers merged with punctuation correctly.
+  it.skip('[crbug.com/1335338]: resolves name tokens with punctuation', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'sources': ['index.js'],
+      'sourcesContent': ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
+      'mappings': 'AAAA,WAAW,EAAM,EAAM,CACrB,QAAQ,IAAI,EAAM,CAAI,CACxB,CACA,EAAE,EAAG,CAAC',
+      'names': [],
+    });
+
+    const source = `function f(o,n){console.log(o,n)}f(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '          {                     }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}, {name: 'n', value: 2}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
+  });
+
+  it('resolves name tokens with source map names', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map" --toplevel' v5.7.0.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['f', 'par1', 'par2', 'console', 'log'],
+      'sources': ['index.js'],
+      'sourcesContent': ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
+      'mappings': 'AAAA,SAASA,EAAEC,EAAMC,GACfC,QAAQC,IAAIH,EAAMC,GAEpBF,EAAE,EAAG',
+    });
+
+    const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '          {                     }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 1}, {name: 'n', value: 2}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
+  });
 });

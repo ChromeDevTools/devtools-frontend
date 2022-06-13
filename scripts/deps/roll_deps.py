@@ -81,8 +81,18 @@ def generate_signatures(options):
     ])
 
 
+def generate_dom_pinned_properties(options):
+    print('generating DOM pinned properties dataset from .idl definitions')
+    subprocess.check_call([
+        node_path(options),
+        os.path.join(options.devtools_dir, 'scripts', 'webidl-properties',
+                     'index.js'), options.devtools_dir
+    ])
+
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     update(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
+    generate_dom_pinned_properties(OPTIONS)

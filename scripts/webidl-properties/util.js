@@ -28,8 +28,9 @@ export function merge(a, b) {
   }
 
   function mergeArrays(a, b) {
+    const set = new Set(a);
     for (const value of b) {
-      if (!a.includes(value)) {
+      if (!set.has(value)) {
         a.push(value);
       }
     }

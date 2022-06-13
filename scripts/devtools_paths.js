@@ -51,7 +51,7 @@ function isInChromiumDirectory() {
   const normalizedPath = PATH_TO_EXECUTED_FILE.split(path.sep).join('/');
   const devtoolsPath = 'src/third_party/devtools-frontend';
   const isInChromium = normalizedPath.includes(devtoolsPath);
-  const potentialChromiumDir = PATH_TO_EXECUTED_FILE.substring(0, PATH_TO_EXECUTED_FILE.indexOf(devtoolsPath));
+  const potentialChromiumDir = PATH_TO_EXECUTED_FILE.substring(0, normalizedPath.indexOf(devtoolsPath));
   const result = {isInChromium, chromiumDirectory: potentialChromiumDir};
   _lookUpCaches.set('chromium', result);
   return result;

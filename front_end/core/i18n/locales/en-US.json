@@ -1449,7 +1449,7 @@
     "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo is deprecated. Please use standardized navigator.storage instead."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."

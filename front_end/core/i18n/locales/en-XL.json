@@ -1449,7 +1449,7 @@
     "message": "<source src> ŵít̂h́ â <picture> ṕâŕêńt̂ íŝ ín̂v́âĺîd́ âńd̂ t́ĥér̂éf̂ór̂é îǵn̂ór̂éd̂. Ṕl̂éâśê úŝé <source srcset> îńŝt́êád̂."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê navigator.webkitTemporaryStorage ór̂ navigator.webkitPersistentStorage ín̂śt̂éâd́."
+    "message": "window.webkitStorageInfo îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê śt̂án̂d́âŕd̂íẑéd̂ navigator.storage ín̂śt̂éâd́."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Ŝúb̂ŕêśôúr̂ćê ŕêq́ûéŝt́ŝ ẃĥóŝé ÛŔL̂ś ĉón̂t́âín̂ ém̂b́êd́d̂éd̂ ćr̂éd̂én̂t́îál̂ś (ê.ǵ. https://user:pass@host/) âŕê b́l̂óĉḱêd́."

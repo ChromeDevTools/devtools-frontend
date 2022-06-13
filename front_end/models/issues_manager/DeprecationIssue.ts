@@ -185,7 +185,7 @@ const UIStrings = {
    * @description Warning displayed to developers when `window.webkitStorageInfo` is used to notify that the API is deprecated.
    */
   prefixedStorageInfo:
-      '`window.webkitStorageInfo` is deprecated. Please use `navigator.webkitTemporaryStorage` or `navigator.webkitPersistentStorage` instead.',
+      '`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead.',
   /**
    * @description Standard message when one web API is deprecated in favor of another. Both
    * placeholders are always web API functions.

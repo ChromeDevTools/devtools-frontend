@@ -519,4 +519,29 @@ describeWithMockConnection('NameResolver', () => {
 
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
   });
+
+  // TODO(crbug.com/1335825): Scope view name resolution fails on super calls.
+  it.skip('[crbug.com/1335825]: resolves names in constructors with super call', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['C', 'B', 'constructor', 'par1', 'super', 'console', 'log'],
+      'sources': ['index.js'],
+      'mappings': 'AAAA,MAAMA,UAAUC,EACdC,YAAYC,GACVC,MAAMD,GACNE,QAAQC,IAAIH',
+    });
+
+    const source = `class C extends B{constructor(s){super(s),console.log(s)}}\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '                             {                          }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 42}]);
+  });
 });

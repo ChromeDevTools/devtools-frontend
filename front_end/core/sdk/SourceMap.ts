@@ -315,42 +315,53 @@ export class TextSourceMap implements SourceMap {
   }
 
   mappings(): SourceMapEntry[] {
-    if (this.#mappingsInternal === null) {
-      this.#mappingsInternal = [];
-      this.eachSection(this.parseMap.bind(this));
-      this.#json = null;
-    }
-    return this.#mappingsInternal;
+    this.#ensureMappingsProcessed();
+    return this.#mappingsInternal ?? [];
   }
 
   private reversedMappings(sourceURL: Platform.DevToolsPath.UrlString): number[] {
-    const info = this.#sourceInfos.get(sourceURL);
-    if (!info) {
-      return [];
+    this.#ensureMappingsProcessed();
+    return this.#sourceInfos.get(sourceURL)?.reverseMappings ?? [];
+  }
+
+  #ensureMappingsProcessed(): void {
+    if (this.#mappingsInternal === null) {
+      this.#mappingsInternal = [];
+      this.eachSection(this.parseMap.bind(this));
+      this.#computeReverseMappings(this.#mappingsInternal);
+      this.#json = null;
     }
-    const mappings = this.mappings();
-    if (info.reverseMappings === null) {
-      const indexes = Array(mappings.length).fill(0).map((_, i) => i);
-      info.reverseMappings = indexes.filter(i => mappings[i].sourceURL === sourceURL).sort(sourceMappingComparator);
+  }
+
+  #computeReverseMappings(mappings: SourceMapEntry[]): void {
+    const reverseMappingsPerUrl = new Map<Platform.DevToolsPath.UrlString, number[]>();
+    for (let i = 0; i < mappings.length; i++) {
+      const entryUrl = mappings[i].sourceURL;
+      if (!entryUrl) {
+        continue;
+      }
+      let reverseMap = reverseMappingsPerUrl.get(entryUrl);
+      if (!reverseMap) {
+        reverseMap = [];
+        reverseMappingsPerUrl.set(entryUrl, reverseMap);
+      }
+      reverseMap.push(i);
     }
 
-    return info.reverseMappings;
+    for (const [url, reverseMap] of reverseMappingsPerUrl.entries()) {
+      const info = this.#sourceInfos.get(url);
+      if (!info) {
+        continue;
+      }
+      reverseMap.sort(sourceMappingComparator);
+      info.reverseMappings = reverseMap;
+    }
 
     function sourceMappingComparator(indexA: number, indexB: number): number {
       const a = mappings[indexA];
       const b = mappings[indexB];
-      if (a.sourceLineNumber !== b.sourceLineNumber) {
-        return a.sourceLineNumber - b.sourceLineNumber;
-      }
-      if (a.sourceColumnNumber !== b.sourceColumnNumber) {
-        return a.sourceColumnNumber - b.sourceColumnNumber;
-      }
-
-      if (a.lineNumber !== b.lineNumber) {
-        return a.lineNumber - b.lineNumber;
-      }
-
-      return a.columnNumber - b.columnNumber;
+      return a.sourceLineNumber - b.sourceLineNumber || a.sourceColumnNumber - b.sourceColumnNumber ||
+          a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
     }
   }
 
@@ -392,7 +403,7 @@ export class TextSourceMap implements SourceMap {
       if (this.#sourceInfos.has(url)) {
         continue;
       }
-      this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source || null, null));
+      this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source ?? null));
       sourcesList.push(url);
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
@@ -560,11 +571,10 @@ export namespace TextSourceMap {
 
   export class SourceInfo {
     content: string|null;
-    reverseMappings: number[]|null;
+    reverseMappings: number[]|null = null;
 
-    constructor(content: string|null, reverseMappings: number[]|null) {
+    constructor(content: string|null) {
       this.content = content;
-      this.reverseMappings = reverseMappings;
     }
   }
 }

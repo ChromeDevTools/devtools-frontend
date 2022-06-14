@@ -61,3 +61,11 @@
   background-color: var(--color-details-hairline);
   margin: 0 4px;
 }
+
+.selectable-text {
+  user-select: text;
+}
+
+.selectable-text::selection {
+  background-color: var(--legacy-item-selection-bg-color);
+}

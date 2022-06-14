@@ -153,10 +153,10 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <span class="value-type-cell-no-mode value-type-cell">${i18n.i18n.lockedString(type)}</span>
+      <span class="value-type-cell-no-mode value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
       <div class="value-type-cell">
         <div class="value-type-value-with-link" data-value="true">
-        <span>${unsignedValue}</span>
+        <span class="selectable-text">${unsignedValue}</span>
           ${
             html`
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
@@ -179,7 +179,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <span class="value-type-cell">${i18n.i18n.lockedString(type)}</span>
+      <span class="value-type-cell selectable-text">${i18n.i18n.lockedString(type)}</span>
       <div>
         <select title=${i18nString(UIStrings.changeValueTypeMode)}
           data-mode-settings="true"
@@ -206,7 +206,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     const showSignedAndUnsigned =
         signedValue !== unsignedValue && mode !== ValueTypeMode.Hexadecimal && mode !== ValueTypeMode.Octal;
 
-    const unsignedRendered = html`<span class="value-type-cell"  title=${
+    const unsignedRendered = html`<span class="value-type-cell selectable-text"  title=${
         i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
     if (!showSignedAndUnsigned) {
       return unsignedRendered;
@@ -214,8 +214,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
     // Some values are too long to show in one line, we're putting them into the next line.
     const showInMultipleLines = type === ValueType.Int32 || type === ValueType.Int64;
-    const signedRendered =
-        html`<span data-value="true" title=${i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
+    const signedRendered = html`<span class="selectable-text" data-value="true" title=${
+        i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
 
     if (showInMultipleLines) {
       return html`

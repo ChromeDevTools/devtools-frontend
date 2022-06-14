@@ -19,6 +19,7 @@ module.exports = {
       noDefineCall: 'Could not find a defineComponent() call for the component {{ tagName }}.',
       defineCallNonLiteral: 'defineComponent() first argument must be a string literal.',
       staticLiteralInvalid: 'static readonly litTagName must use a literal string, with no interpolation.',
+      duplicateStaticLitTagName: 'found a duplicated litTagName: {{ tagName }}',
       litTagNameNotLiteral:
           'litTagName must be defined as a string passed in as LitHtml.literal`component-name`, but no tagged template was found.',
       staticLiteralNotReadonly: 'static litTagName must be readonly.'
@@ -90,8 +91,9 @@ module.exports = {
       });
     }
 
-    /** @type {Set<{classNode: any, tagName: string}>} */
-    const componentClassDefinitionLitTagNamesFound = new Set();
+    // Map of litTagName to the class node.
+    /** @type {Map<string, any}>} */
+    const componentClassDefinitionLitTagNameNodes = new Map();
 
     /** @type {Set<string>} */
     const defineComponentCallsFound = new Set();
@@ -147,8 +149,15 @@ module.exports = {
           // Grab the name of the component, e.g:
           // LitHtml.literal`devtools-foo` will pull "devtools-foo" out.
           const componentTagName = componentTagNameNode.value.quasi.quasis[0].value.cooked;
-          componentClassDefinitionLitTagNamesFound.add(
-              {tagName: componentTagName, classNode: componentClassDefinition});
+
+          // Now we ensure that we haven't found this tag name before. If we
+          // have, we have two components with the same litTagName property,
+          // which is an error.
+          if (componentClassDefinitionLitTagNameNodes.has(componentTagName)) {
+            context.report({node: componentClassDefinition, messageId: 'duplicateStaticLitTagName', data: {tagName: componentTagName}});
+          }
+
+          componentClassDefinitionLitTagNameNodes.set(componentTagName, componentClassDefinition);
         }
 
         // Find all defineComponent() calls and store the arguments to them.
@@ -177,8 +186,7 @@ module.exports = {
           }
         }
 
-        for (const foundComponentClass of componentClassDefinitionLitTagNamesFound) {
-          const {tagName, classNode} = foundComponentClass;
+        for (const [tagName, classNode] of componentClassDefinitionLitTagNameNodes) {
           // Check that each tagName has a matching entry in both other places we expect it.
           if (!defineComponentCallsFound.has(tagName)) {
             context.report({node: classNode, messageId: 'noDefineCall', data: {tagName}});

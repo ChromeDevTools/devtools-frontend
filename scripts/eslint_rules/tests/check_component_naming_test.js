@@ -233,5 +233,28 @@ ruleTester.run('check_component_naming', rule, {
       filename: 'front_end/ui/components/Foo.ts',
       errors: [{messageId: 'noDefineCall', data: {tagName: 'devtools-bar'}}]
     },
+    {
+      // Multiple components in one file is valid.
+      // But here devtools-foo is fine, but devtools-bar has the wrong static tag name
+      code: `export class Foo extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
+      }
+
+      export class Bar extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
+      }
+
+      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+      ComponentHelpers.CustomElements.defineComponent('devtools-bar', Foo);
+
+      declare global {
+        interface HTMLElementTagNameMap {
+          'devtools-foo': Foo
+          'devtools-bar': Bar
+        }
+      }`,
+      filename: 'front_end/ui/components/Foo.ts',
+      errors: [{messageId: 'duplicateStaticLitTagName', data: {tagName: 'devtools-foo'}}]
+    },
   ]
 });

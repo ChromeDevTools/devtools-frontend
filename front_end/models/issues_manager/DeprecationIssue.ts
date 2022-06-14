@@ -120,6 +120,12 @@ const UIStrings = {
   hostCandidateAttributeGetter:
       '`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead.',
   /**
+   * @description A deprecation warning shown in the DevTools Issues tab,
+   * when a service worker reads one of the fields from an event named
+   * "canmakepayment".
+   */
+  identityInCanMakePaymentEvent: 'The merchant origin and arbitrary data from the `canmakepayment` service worker event are deprecated and will be removed: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`.',
+  /**
    * @description TODO(crbug.com/1320343): Description needed for translation
    */
   insecurePrivateNetworkSubresourceRequest:
@@ -376,6 +382,10 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.HostCandidateAttributeGetter:
         messageFunction = i18nLazyString(UIStrings.hostCandidateAttributeGetter);
+        break;
+      case Protocol.Audits.DeprecationIssueType.IdentityInCanMakePaymentEvent:
+        messageFunction = i18nLazyString(UIStrings.identityInCanMakePaymentEvent);
+        feature = 5190978431352832;
         break;
       case Protocol.Audits.DeprecationIssueType.InsecurePrivateNetworkSubresourceRequest:
         messageFunction = i18nLazyString(UIStrings.insecurePrivateNetworkSubresourceRequest);

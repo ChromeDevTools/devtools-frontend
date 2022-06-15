@@ -174,6 +174,15 @@ export const scopeIdentifiers = async function(
   }
 };
 
+const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,]?)\s*$/;
+
+const enum Punctuation {
+  None = 0,
+  Comma = 1,
+  Dot = 2,
+  Semicolon = 3,
+}
+
 const resolveScope =
     async(scope: SDK.DebuggerModel
               .ScopeChainEntry): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
@@ -182,8 +191,6 @@ const resolveScope =
   const sourceMap = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(script);
 
   if (!cachedScopeMap || cachedScopeMap.sourceMap !== sourceMap) {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const identifiersPromise =
@@ -260,33 +267,95 @@ const resolveScope =
       script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap, name: string,
       position: {lineNumber: number, columnNumber: number},
       textCache: Map<string, TextUtils.Text.Text>): Promise<string|null> {
-    const startEntry = sourceMap.findEntry(position.lineNumber, position.columnNumber);
-    const endEntry = sourceMap.findEntry(position.lineNumber, position.columnNumber + name.length);
-    if (!startEntry || !endEntry || !startEntry.sourceURL || startEntry.sourceURL !== endEntry.sourceURL ||
-        !startEntry.sourceLineNumber || !startEntry.sourceColumnNumber || !endEntry.sourceLineNumber ||
-        !endEntry.sourceColumnNumber) {
+    const ranges = sourceMap.findEntryRanges(position.lineNumber, position.columnNumber);
+    if (!ranges) {
       return null;
     }
-    const sourceTextRange = new TextUtils.TextRange.TextRange(
-        startEntry.sourceLineNumber, startEntry.sourceColumnNumber, endEntry.sourceLineNumber,
-        endEntry.sourceColumnNumber);
+    // Extract the underlying text from the compiled code's range and make sure that
+    // it starts with the identifier |name|.
     const uiSourceCode =
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(
-            script.debuggerModel, startEntry.sourceURL, script.isContentScript());
+            script.debuggerModel, ranges.sourceURL, script.isContentScript());
     if (!uiSourceCode) {
       return null;
     }
-    const {content} = await uiSourceCode.requestContent();
-    if (!content) {
+    const compiledText = getTextFor((await script.requestContent()).content);
+    if (!compiledText) {
       return null;
     }
-    let text = textCache.get(content);
-    if (!text) {
-      text = new TextUtils.Text.Text(content);
-      textCache.set(content, text);
+    const compiledToken = compiledText.extract(ranges.range);
+    const parsedCompiledToken = extractIdentifier(compiledToken);
+    if (!parsedCompiledToken) {
+      return null;
     }
-    const originalIdentifier = text.extract(sourceTextRange).trim();
-    return /[a-zA-Z0-9_$]+/.test(originalIdentifier) ? originalIdentifier : null;
+    const {name: compiledName, punctuation: compiledPunctuation} = parsedCompiledToken;
+    if (compiledName !== name) {
+      return null;
+    }
+
+    // Extract the mapped name from the source code range and ensure that the punctuation
+    // matches the one from the compiled code.
+    const sourceText = getTextFor((await uiSourceCode.requestContent()).content);
+    if (!sourceText) {
+      return null;
+    }
+    const sourceToken = sourceText.extract(ranges.sourceRange);
+    const parsedSourceToken = extractIdentifier(sourceToken);
+    if (!parsedSourceToken) {
+      return null;
+    }
+    const {name: sourceName, punctuation: sourcePunctuation} = parsedSourceToken;
+    // Accept the source name if it is followed by the same punctuation.
+    if (compiledPunctuation === sourcePunctuation) {
+      return sourceName;
+    }
+    // Let us also allow semicolons into commas since that it is a common transformation.
+    if (compiledPunctuation === Punctuation.Comma && sourcePunctuation === Punctuation.Semicolon) {
+      return sourceName;
+    }
+
+    return null;
+
+    function extractIdentifier(token: string): {name: string, punctuation: Punctuation}|null {
+      const match = token.match(identifierAndPunctuationRegExp);
+      if (!match) {
+        return null;
+      }
+
+      const name = match[1];
+      let punctuation: Punctuation|null = null;
+      switch (match[2]) {
+        case '.':
+          punctuation = Punctuation.Dot;
+          break;
+        case ',':
+          punctuation = Punctuation.Comma;
+          break;
+        case ';':
+          punctuation = Punctuation.Semicolon;
+          break;
+        case '':
+          punctuation = Punctuation.None;
+          break;
+        default:
+          console.error(`Name token parsing error: unexpected token "${match[2]}"`);
+          return null;
+      }
+
+      return {name, punctuation};
+    }
+
+    function getTextFor(content: string|null): TextUtils.Text.Text|null {
+      if (!content) {
+        return null;
+      }
+      let text = textCache.get(content);
+      if (!text) {
+        text = new TextUtils.Text.Text(content);
+        textCache.set(content, text);
+      }
+      return text;
+    }
   }
 
   function findFunctionScope(): SDK.DebuggerModel.ScopeChainEntry|null {

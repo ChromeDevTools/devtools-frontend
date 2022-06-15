@@ -469,8 +469,7 @@ describeWithMockConnection('NameResolver', () => {
     });
   }
 
-  // TODO(crbug.com/1335338): This is in preparation for handling the identifiers merged with punctuation correctly.
-  it.skip('[crbug.com/1335338]: resolves name tokens with punctuation', async () => {
+  it('resolves name tokens with punctuation', async () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
     const sourceMapContent = JSON.stringify({

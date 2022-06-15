@@ -66,6 +66,11 @@ export interface SourceMap {
       TextUtils.ContentProvider.ContentProvider;
   embeddedContentByURL(sourceURL: Platform.DevToolsPath.UrlString): string|null;
   findEntry(lineNumber: number, columnNumber: number): SourceMapEntry|null;
+  findEntryRanges(lineNumber: number, columnNumber: number): {
+    range: TextUtils.TextRange.TextRange,
+    sourceRange: TextUtils.TextRange.TextRange,
+    sourceURL: Platform.DevToolsPath.UrlString,
+  }|null;
   findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
       TextUtils.TextRange.TextRange[];
   sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
@@ -231,6 +236,52 @@ export class TextSourceMap implements SourceMap {
     const index = Platform.ArrayUtilities.upperBound(
         mappings, undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     return index ? mappings[index - 1] : null;
+  }
+
+  findEntryRanges(lineNumber: number, columnNumber: number): {
+    range: TextUtils.TextRange.TextRange,
+    sourceRange: TextUtils.TextRange.TextRange,
+    sourceURL: Platform.DevToolsPath.UrlString,
+  }|null {
+    const mappings = this.mappings();
+    const index = Platform.ArrayUtilities.upperBound(
+        mappings, undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    if (!index) {
+      // If the line and column are preceding all the entries, then there is nothing to map.
+      return null;
+    }
+    const sourceURL = mappings[index].sourceURL;
+    if (!sourceURL) {
+      return null;
+    }
+
+    // Let us compute the range that contains the source position in the compiled code.
+    const endLine = index < mappings.length ? mappings[index].lineNumber : 2 ** 31 - 1;
+    const endColumn = index < mappings.length ? mappings[index].columnNumber : 2 ** 31 - 1;
+    const range = new TextUtils.TextRange.TextRange(
+        mappings[index - 1].lineNumber, mappings[index - 1].columnNumber, endLine, endColumn);
+
+    // Now try to find the corresponding token in the original code.
+    const reverseMappings = this.reversedMappings(sourceURL);
+    const startSourceLine = mappings[index - 1].sourceLineNumber;
+    const startSourceColumn = mappings[index - 1].sourceColumnNumber;
+    const endReverseIndex = Platform.ArrayUtilities.upperBound(
+        reverseMappings, undefined,
+        (unused, i) =>
+            startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber);
+    if (!endReverseIndex) {
+      return null;
+    }
+    const endSourceLine = endReverseIndex < reverseMappings.length ?
+        mappings[reverseMappings[endReverseIndex]].sourceLineNumber :
+        2 ** 31 - 1;
+    const endSourceColumn = endReverseIndex < reverseMappings.length ?
+        mappings[reverseMappings[endReverseIndex]].sourceColumnNumber :
+        2 ** 31 - 1;
+
+    const sourceRange =
+        new TextUtils.TextRange.TextRange(startSourceLine, startSourceColumn, endSourceLine, endSourceColumn);
+    return {range, sourceRange, sourceURL};
   }
 
   sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):

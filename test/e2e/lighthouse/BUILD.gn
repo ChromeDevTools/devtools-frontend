@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("lighthouse") {
-  sources = [ "generate-report.ts" ]
+  sources = [
+    "generate-report_test.ts",
+    "indexeddb-warning_test.ts",
+  ]
 
   deps = [
     "../../shared",

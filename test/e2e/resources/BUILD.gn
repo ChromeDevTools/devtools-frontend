@@ -21,6 +21,7 @@ group("resources") {
     "inline_editor",
     "issues",
     "layers",
+    "lighthouse",
     "media",
     "memory",
     "network",

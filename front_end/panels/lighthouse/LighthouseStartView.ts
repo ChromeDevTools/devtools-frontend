@@ -256,6 +256,7 @@ export class StartView extends UI.Widget.Widget {
   }
   wasShown(): void {
     super.wasShown();
+    this.controller.recomputePageAuditability();
     this.registerCSSFiles([lighthouseStartViewStyles]);
   }
 }

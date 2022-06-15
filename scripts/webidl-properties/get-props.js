@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {GLOBAL_ATTRIBUTES, SPECS, VALID_MEMBERS} from './config.js';
+import {APPLICABLE_MEMBERS, GLOBAL_ATTRIBUTES, SPECS} from './config.js';
 import {merge} from './util.js';
 
 /**
@@ -40,7 +40,7 @@ function transform({name, idls}, output = {}) {
       case 'dictionary': {
         output[idl.name] = output[idl.name] ?? makeEntry();
         let props = idl.members?.filter(member => ACCEPTED_MEMBER_TYPES.has(member.type));
-        props = props?.map(member => [member.name, {global: GLOBAL_ATTRIBUTES.has(member.name), specs: [name]}, ]);
+        props = props?.map(member => [member.name, {specs: [name]}]);
         merge(output[idl.name], {
           inheritance: idl.inheritance,
           props: Object.fromEntries(props),
@@ -71,22 +71,33 @@ function transform({name, idls}, output = {}) {
 /**
  * Adds additional metadata to the DOM pinned properties dataset.
  *
- * Currently only adds information about which properties are valid based on
- * some state, such as for the HTMLInputElement. See `VALID_MEMBERS`.
+ * Currently:
+ * - Adds a field specifying whether a member is a global attribute or not.
+ * - Adds information about which properties are "applicable" members for
+ * certain "states" their parent WebIDL type can be in, such as for the
+ * HTMLInputElement where the set of valid members are determined by the "type"
+ * property. See `APPLICABLE_MEMBERS`.
  *
  * @param {*} output
  */
 export function addMetadata(output) {
   for (const [key, value] of Object.entries(output)) {
-    const rule = VALID_MEMBERS[key];
-    if (!rule) {
-      continue;
+    for (const [name, prop] of Object.entries(value.props)) {
+      prop.global = GLOBAL_ATTRIBUTES.has(name);
+
+      const rules = APPLICABLE_MEMBERS[key];
+      if (!rules) {
+        continue;
+      }
+
+      for (const {rule, members} of rules) {
+        if (members.has(name.toLowerCase())) {
+          merge(prop, {rules: [rule]});
+        }
+      }
+
+      value.rules = rules.map(({rule}) => rule);
     }
-    const states = Object.entries(rule).map(([selector, allowlist]) => {
-      const valid = Object.entries(value.props).filter(([prop]) => allowlist.has(prop.toLowerCase()));
-      return [selector, Object.fromEntries(valid)];
-    });
-    value.states = Object.fromEntries(states);
   }
   return output;
 }

@@ -22,6 +22,8 @@ export interface DOMPinnedWebIDLProp {
   // A bitfield of the specs in which the property is found.
   // If missing, it implies the default spec: "html".
   specs?: number;
+  // The "states" in which this property is "applicable".
+  rules?: Array<DOMPinnedWebIDLRule>;
 }
 
 export interface DOMPinnedWebIDLType {
@@ -35,12 +37,12 @@ export interface DOMPinnedWebIDLType {
     [PropName: string]: DOMPinnedWebIDLProp,
   };
   // The "states" in which only certain properties are "applicable".
-  states?: {
-    // A CSS selector such as "[type=checkbox]".
-    [State: string]: {
-      [PropName: string]: DOMPinnedWebIDLProp,
-    },
-  };
+  rules?: Array<DOMPinnedWebIDLRule>;
+}
+
+export interface DOMPinnedWebIDLRule {
+  when: string;
+  is: string;
 }
 
 export interface DOMPinnedPropertiesDataset {
@@ -848,275 +850,946 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
   'HTMLInputElement': {
     'inheritance': 'HTMLElement',
     'props': {
-      'accept': {},
-      'alt': {},
-      'autocomplete': {},
+      'accept': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'file',
+          },
+        ],
+      },
+      'alt': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'autocomplete': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'hidden',
+          },
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+          {
+            'when': 'type',
+            'is': 'color',
+          },
+        ],
+      },
       'defaultChecked': {},
-      'checked': {},
-      'dirName': {},
+      'checked': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'checkbox',
+          },
+          {
+            'when': 'type',
+            'is': 'radio',
+          },
+        ],
+      },
+      'dirName': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+        ],
+      },
       'disabled': {},
       'form': {},
-      'files': {},
-      'formAction': {},
-      'formEnctype': {},
-      'formMethod': {},
-      'formNoValidate': {},
-      'formTarget': {},
-      'height': {},
+      'files': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'file',
+          },
+        ],
+      },
+      'formAction': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'formEnctype': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'formMethod': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'formNoValidate': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'formTarget': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'height': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
       'indeterminate': {},
-      'list': {},
-      'max': {},
-      'maxLength': {},
-      'min': {},
-      'minLength': {},
-      'multiple': {},
+      'list': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+          {
+            'when': 'type',
+            'is': 'color',
+          },
+        ],
+      },
+      'max': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+        ],
+      },
+      'maxLength': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'min': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+        ],
+      },
+      'minLength': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'multiple': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'file',
+          },
+        ],
+      },
       'name': {},
-      'pattern': {},
-      'placeholder': {},
-      'readOnly': {},
-      'required': {},
-      'size': {},
-      'src': {},
-      'step': {},
+      'pattern': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'placeholder': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+        ],
+      },
+      'readOnly': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+        ],
+      },
+      'required': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'checkbox',
+          },
+          {
+            'when': 'type',
+            'is': 'radio',
+          },
+          {
+            'when': 'type',
+            'is': 'file',
+          },
+        ],
+      },
+      'size': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'src': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
+      'step': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+        ],
+      },
       'type': {},
       'defaultValue': {},
-      'value': {},
-      'valueAsDate': {},
-      'valueAsNumber': {},
-      'width': {},
+      'value': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'hidden',
+          },
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'email',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+          {
+            'when': 'type',
+            'is': 'color',
+          },
+          {
+            'when': 'type',
+            'is': 'checkbox',
+          },
+          {
+            'when': 'type',
+            'is': 'radio',
+          },
+          {
+            'when': 'type',
+            'is': 'file',
+          },
+          {
+            'when': 'type',
+            'is': 'submit',
+          },
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+          {
+            'when': 'type',
+            'is': 'reset',
+          },
+          {
+            'when': 'type',
+            'is': 'button',
+          },
+        ],
+      },
+      'valueAsDate': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+        ],
+      },
+      'valueAsNumber': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'date',
+          },
+          {
+            'when': 'type',
+            'is': 'month',
+          },
+          {
+            'when': 'type',
+            'is': 'week',
+          },
+          {
+            'when': 'type',
+            'is': 'time',
+          },
+          {
+            'when': 'type',
+            'is': 'datetime-local',
+          },
+          {
+            'when': 'type',
+            'is': 'number',
+          },
+          {
+            'when': 'type',
+            'is': 'range',
+          },
+        ],
+      },
+      'width': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'image',
+          },
+        ],
+      },
       'willValidate': {},
       'validity': {},
       'validationMessage': {},
       'labels': {},
-      'selectionStart': {},
-      'selectionEnd': {},
-      'selectionDirection': {},
+      'selectionStart': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'selectionEnd': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
+      'selectionDirection': {
+        'rules': [
+          {
+            'when': 'type',
+            'is': 'text',
+          },
+          {
+            'when': 'type',
+            'is': 'search',
+          },
+          {
+            'when': 'type',
+            'is': 'url',
+          },
+          {
+            'when': 'type',
+            'is': 'tel',
+          },
+          {
+            'when': 'type',
+            'is': 'password',
+          },
+        ],
+      },
       'align': {},
       'useMap': {},
     },
-    'states': {
-      '[type=hidden]': {
-        'autocomplete': {},
-        'value': {},
+    'rules': [
+      {
+        'when': 'type',
+        'is': 'hidden',
       },
-      '[type=text]': {
-        'autocomplete': {},
-        'dirName': {},
-        'list': {},
-        'maxLength': {},
-        'minLength': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
-        'selectionStart': {},
-        'selectionEnd': {},
-        'selectionDirection': {},
+      {
+        'when': 'type',
+        'is': 'text',
       },
-      '[type=search]': {
-        'autocomplete': {},
-        'dirName': {},
-        'list': {},
-        'maxLength': {},
-        'minLength': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
-        'selectionStart': {},
-        'selectionEnd': {},
-        'selectionDirection': {},
+      {
+        'when': 'type',
+        'is': 'search',
       },
-      '[type=url]': {
-        'autocomplete': {},
-        'list': {},
-        'maxLength': {},
-        'minLength': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
-        'selectionStart': {},
-        'selectionEnd': {},
-        'selectionDirection': {},
+      {
+        'when': 'type',
+        'is': 'url',
       },
-      '[type=tel]': {
-        'autocomplete': {},
-        'list': {},
-        'maxLength': {},
-        'minLength': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
-        'selectionStart': {},
-        'selectionEnd': {},
-        'selectionDirection': {},
+      {
+        'when': 'type',
+        'is': 'tel',
       },
-      '[type=email]': {
-        'autocomplete': {},
-        'list': {},
-        'maxLength': {},
-        'minLength': {},
-        'multiple': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'email',
       },
-      '[type=password]': {
-        'autocomplete': {},
-        'maxLength': {},
-        'minLength': {},
-        'pattern': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'size': {},
-        'value': {},
-        'selectionStart': {},
-        'selectionEnd': {},
-        'selectionDirection': {},
+      {
+        'when': 'type',
+        'is': 'password',
       },
-      '[type=date]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsDate': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'date',
       },
-      '[type=month]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsDate': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'month',
       },
-      '[type=week]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsDate': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'week',
       },
-      '[type=time]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsDate': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'time',
       },
-      '[type=datetime-local]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'datetime-local',
       },
-      '[type=number]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'placeholder': {},
-        'readOnly': {},
-        'required': {},
-        'step': {},
-        'value': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'number',
       },
-      '[type=range]': {
-        'autocomplete': {},
-        'list': {},
-        'max': {},
-        'min': {},
-        'step': {},
-        'value': {},
-        'valueAsNumber': {},
+      {
+        'when': 'type',
+        'is': 'range',
       },
-      '[type=color]': {
-        'autocomplete': {},
-        'list': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'color',
       },
-      '[type=checkbox]': {
-        'checked': {},
-        'required': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'checkbox',
       },
-      '[type=radio]': {
-        'checked': {},
-        'required': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'radio',
       },
-      '[type=file]': {
-        'accept': {},
-        'files': {},
-        'multiple': {},
-        'required': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'file',
       },
-      '[type=submit]': {
-        'formAction': {},
-        'formEnctype': {},
-        'formMethod': {},
-        'formNoValidate': {},
-        'formTarget': {},
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'submit',
       },
-      '[type=image]': {
-        'alt': {},
-        'formAction': {},
-        'formEnctype': {},
-        'formMethod': {},
-        'formNoValidate': {},
-        'formTarget': {},
-        'height': {},
-        'src': {},
-        'value': {},
-        'width': {},
+      {
+        'when': 'type',
+        'is': 'image',
       },
-      '[type=reset]': {
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'reset',
       },
-      '[type=button]': {
-        'value': {},
+      {
+        'when': 'type',
+        'is': 'button',
       },
-    },
+    ],
   },
   'HTMLButtonElement': {
     'inheritance': 'HTMLElement',
@@ -2643,8 +3316,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
   'ElementCreationOptions': {
     'props': {
       'is': {
-        'global': true,
         'specs': 2,
+        'global': true,
       },
     },
   },
@@ -3262,8 +3935,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
         'specs': 16,
       },
       'title': {
-        'global': true,
         'specs': 16,
+        'global': true,
       },
       'media': {
         'specs': 16,
@@ -3344,8 +4017,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
         'specs': 16,
       },
       'style': {
-        'global': true,
         'specs': 16,
+        'global': true,
       },
     },
   },
@@ -3378,8 +4051,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
         'specs': 16,
       },
       'style': {
-        'global': true,
         'specs': 16,
+        'global': true,
       },
     },
   },
@@ -3390,8 +4063,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
         'specs': 16,
       },
       'style': {
-        'global': true,
         'specs': 16,
+        'global': true,
       },
     },
   },
@@ -3425,8 +4098,8 @@ export const DOMPinnedProperties: DOMPinnedPropertiesDataset = {
   'ElementCSSInlineStyle': {
     'props': {
       'style': {
-        'global': true,
         'specs': 16,
+        'global': true,
       },
     },
   },

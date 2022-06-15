@@ -39,7 +39,7 @@ describe('DOM pinned properties dataset generation', function() {
       global: true,
       specs: ['html'],
     });
-    assert.strictEqual(type.states, undefined);
+    assert.strictEqual(type.rules, undefined);
   });
 
   it('generates valid data for HTMLInputElement', () => {
@@ -49,12 +49,34 @@ describe('DOM pinned properties dataset generation', function() {
     assert.deepEqual(type.props.checked, {
       global: false,
       specs: ['html'],
+      rules: [{when: 'type', is: 'checkbox'}, {when: 'type', is: 'radio'}],
     });
-    assert.deepEqual(type.states['[type=checkbox]'], {
-      checked: {global: false, specs: ['html']},
-      required: {global: false, specs: ['html']},
-      value: {global: false, specs: ['html']},
+    assert.deepEqual(type.props.required, {
+      global: false,
+      specs: ['html'],
+      rules: [
+        {when: 'type', is: 'text'}, {when: 'type', is: 'search'}, {when: 'type', is: 'url'}, {when: 'type', is: 'tel'},
+        {when: 'type', is: 'email'}, {when: 'type', is: 'password'}, {when: 'type', is: 'date'},
+        {when: 'type', is: 'month'}, {when: 'type', is: 'week'}, {when: 'type', is: 'time'},
+        {when: 'type', is: 'datetime-local'}, {when: 'type', is: 'number'}, {when: 'type', is: 'checkbox'},
+        {when: 'type', is: 'radio'}, {when: 'type', is: 'file'}
+      ]
     });
+    assert.deepEqual(type.props.value, {
+      global: false,
+      specs: ['html'],
+      rules: type.rules,
+    });
+    assert.deepEqual(type.rules, [
+      {when: 'type', is: 'hidden'},   {when: 'type', is: 'text'},  {when: 'type', is: 'search'},
+      {when: 'type', is: 'url'},      {when: 'type', is: 'tel'},   {when: 'type', is: 'email'},
+      {when: 'type', is: 'password'}, {when: 'type', is: 'date'},  {when: 'type', is: 'month'},
+      {when: 'type', is: 'week'},     {when: 'type', is: 'time'},  {when: 'type', is: 'datetime-local'},
+      {when: 'type', is: 'number'},   {when: 'type', is: 'range'}, {when: 'type', is: 'color'},
+      {when: 'type', is: 'checkbox'}, {when: 'type', is: 'radio'}, {when: 'type', is: 'file'},
+      {when: 'type', is: 'submit'},   {when: 'type', is: 'image'}, {when: 'type', is: 'reset'},
+      {when: 'type', is: 'button'},
+    ]);
   });
 
   it('generates valid data for MouseEvent', () => {
@@ -65,7 +87,7 @@ describe('DOM pinned properties dataset generation', function() {
       global: false,
       specs: ['uievents'],
     });
-    assert.strictEqual(type.states, undefined);
+    assert.strictEqual(type.rules, undefined);
   });
 
   it('generates valid data for PointerEvent', () => {
@@ -76,7 +98,7 @@ describe('DOM pinned properties dataset generation', function() {
       global: false,
       specs: ['pointerevents'],
     });
-    assert.strictEqual(type.states, undefined);
+    assert.strictEqual(type.rules, undefined);
   });
 
   it('generates an entry for DOMParser', () => {
@@ -84,7 +106,7 @@ describe('DOM pinned properties dataset generation', function() {
     assert.strictEqual(type.inheritance, null);
     assert.deepEqual(type.includes, []);
     assert.deepEqual(type.props, {});
-    assert.strictEqual(type.states, undefined);
+    assert.strictEqual(type.rules, undefined);
   });
 
   it('minimizes the data for HTMLInputElement', () => {
@@ -92,12 +114,34 @@ describe('DOM pinned properties dataset generation', function() {
     const type = minimized.HTMLInputElement;
     assert.strictEqual(type.inheritance, 'HTMLElement');
     assert.strictEqual(type.includes, undefined);
-    assert.deepEqual(type.props.checked, {});
-    assert.deepEqual(type.states['[type=checkbox]'], {
-      checked: {},
-      required: {},
-      value: {},
+    assert.deepEqual(type.props.checked, {
+      rules: [
+        {when: 'type', is: 'checkbox'},
+        {when: 'type', is: 'radio'},
+      ],
     });
+    assert.deepEqual(type.props.required, {
+      rules: [
+        {when: 'type', is: 'text'}, {when: 'type', is: 'search'}, {when: 'type', is: 'url'}, {when: 'type', is: 'tel'},
+        {when: 'type', is: 'email'}, {when: 'type', is: 'password'}, {when: 'type', is: 'date'},
+        {when: 'type', is: 'month'}, {when: 'type', is: 'week'}, {when: 'type', is: 'time'},
+        {when: 'type', is: 'datetime-local'}, {when: 'type', is: 'number'}, {when: 'type', is: 'checkbox'},
+        {when: 'type', is: 'radio'}, {when: 'type', is: 'file'}
+      ],
+    });
+    assert.deepEqual(type.props.value, {
+      rules: type.rules,
+    });
+    assert.deepEqual(type.rules, [
+      {when: 'type', is: 'hidden'},   {when: 'type', is: 'text'},  {when: 'type', is: 'search'},
+      {when: 'type', is: 'url'},      {when: 'type', is: 'tel'},   {when: 'type', is: 'email'},
+      {when: 'type', is: 'password'}, {when: 'type', is: 'date'},  {when: 'type', is: 'month'},
+      {when: 'type', is: 'week'},     {when: 'type', is: 'time'},  {when: 'type', is: 'datetime-local'},
+      {when: 'type', is: 'number'},   {when: 'type', is: 'range'}, {when: 'type', is: 'color'},
+      {when: 'type', is: 'checkbox'}, {when: 'type', is: 'radio'}, {when: 'type', is: 'file'},
+      {when: 'type', is: 'submit'},   {when: 'type', is: 'image'}, {when: 'type', is: 'reset'},
+      {when: 'type', is: 'button'},
+    ]);
   });
 
   it('minimizes the data for PointerEvent', () => {
@@ -108,7 +152,7 @@ describe('DOM pinned properties dataset generation', function() {
     assert.deepEqual(type.props.pressure, {
       specs: 8,
     });
-    assert.strictEqual(type.states, undefined);
+    assert.strictEqual(type.rules, undefined);
   });
 
   it('removes the entry for DOMParser in the minimized output', () => {

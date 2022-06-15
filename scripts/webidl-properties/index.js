@@ -21,8 +21,8 @@ const names = Object.keys(SPECS);
 const specs = await Promise.all(names.map(name => files[name].parse().then(idls => ({name, idls}))));
 
 const output = addMetadata(getIDLProps(specs));
-const missing = getMissingTypes(output);
 
+const missing = getMissingTypes(output);
 for (const type of missing) {
   console.warn('Found missing type:', type);
 }
@@ -51,6 +51,8 @@ export interface DOMPinnedWebIDLProp {
   // A bitfield of the specs in which the property is found.
   // If missing, it implies the default spec: "html".
   specs?: number;
+  // The "states" in which this property is "applicable".
+  rules?: Array<DOMPinnedWebIDLRule>;
 }
 
 export interface DOMPinnedWebIDLType {
@@ -64,12 +66,12 @@ export interface DOMPinnedWebIDLType {
     [PropName: string]: DOMPinnedWebIDLProp,
   };
   // The "states" in which only certain properties are "applicable".
-  states?: {
-    // A CSS selector such as "[type=checkbox]".
-    [State: string]: {
-      [PropName: string]: DOMPinnedWebIDLProp,
-    },
-  };
+  rules?: Array<DOMPinnedWebIDLRule>;
+}
+
+export interface DOMPinnedWebIDLRule {
+  when: string;
+  is: string;
 }
 
 export interface DOMPinnedPropertiesDataset {

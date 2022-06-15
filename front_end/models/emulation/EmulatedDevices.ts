@@ -1555,19 +1555,6 @@ const emulatedDevices = [
     'type': 'tablet',
   },
   {
-    'show-by-default': false,
-    'title': 'iPad Mini',
-    'screen': {
-      'horizontal': {'width': 1024, 'height': 768},
-      'device-pixel-ratio': 2,
-      'vertical': {'width': 768, 'height': 1024},
-    },
-    'capabilities': ['touch', 'mobile'],
-    'user-agent':
-        'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
-    'type': 'tablet',
-  },
-  {
     'order': 140,
     'show-by-default': false,
     'title': 'iPad',

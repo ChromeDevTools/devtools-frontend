@@ -519,8 +519,7 @@ describeWithMockConnection('NameResolver', () => {
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
   });
 
-  // TODO(crbug.com/1335825): Scope view name resolution fails on super calls.
-  it.skip('[crbug.com/1335825]: resolves names in constructors with super call', async () => {
+  it('resolves names in constructors with super call', async () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
     const sourceMapContent = JSON.stringify({

@@ -54,12 +54,19 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
       functionEndLocation.columnNumber);
   const scopeText = text.extract(scopeRange);
   const scopeStart = text.toSourceRange(scopeRange).offset;
-  let prefix = 'function fui';
-  let scopeTree = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText);
+  // We wrap the scope in a class constructor. This handles the case where the
+  // scope is a (non-arrow) function and the case where it is a constructor
+  // (so that parsing 'super' calls succeeds).
+  let prefix = 'class DummyClass extends DummyBase { constructor';
+  let suffix = '}';
+  let scopeTree =
+      await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
   if (!scopeTree) {
     // Try to parse the function as an arrow function.
-    prefix = 'let fui = ';
-    scopeTree = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText);
+    prefix = '';
+    suffix = '';
+    scopeTree =
+        await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
   }
   if (!scopeTree) {
     return null;

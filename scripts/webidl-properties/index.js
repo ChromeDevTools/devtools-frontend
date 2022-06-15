@@ -32,6 +32,8 @@ const jsMetadataPath = path.join(frontendPath, 'front_end/models/javascript_meta
 const outPath = path.join(jsMetadataPath, 'DOMPinnedProperties.ts');
 const thisPath = path.relative(frontendPath, url.fileURLToPath(import.meta.url));
 
+const stringify = object => JSON.stringify(object, null, 2);
+
 fs.writeFileSync(outPath, `
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -41,7 +43,7 @@ fs.writeFileSync(outPath, `
 /**
  * All the specs used when generating the DOM pinned properties dataset.
  */
-export const SPECS = ${JSON.stringify(SPECS)};
+export const SPECS = ${stringify(SPECS)};
 
 export interface DOMPinnedWebIDLProp {
   // A flag specifying whether it's a "global" attribute.
@@ -81,5 +83,6 @@ export interface DOMPinnedPropertiesDataset {
  * This is an object with WebIDL type names as keys and their WebIDL properties
  * and inheritance/include chains as values.
  */
-export const DOMPinnedProperties: DOMPinnedPropertiesDataset = ${JSON.stringify(minimize(output))};
+export const DOMPinnedProperties: DOMPinnedPropertiesDataset = ${stringify(minimize(output))};
+
 `);

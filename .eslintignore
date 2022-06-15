@@ -7,6 +7,7 @@ front_end/.eslintrc.js
 front_end/diff/diff_match_patch.js
 front_end/generated/protocol.ts
 front_end/javascript_metadata/NativeFunctions.js
+front_end/javascript_metadata/DOMPinnedProperties.ts
 front_end/third_party/
 node_modules
 scripts/migration/**/*.js

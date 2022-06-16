@@ -4,9 +4,8 @@
 
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
-import {assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-
-import {assertNodeTextContent} from './ElementsComponentsHelper.js';
+import * as NodeText from '../../../../../../front_end/ui/components/node_text/node_text.js';
+import {assertNodeTextContent, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -33,7 +32,7 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
 const assertContainerContent = (container: HTMLElement, expectedContent: string): void => {
   assertShadowRoot(container.shadowRoot);
   const nodeText =
-      container.shadowRoot.querySelector<HTMLElement>(`${ElementsComponents.NodeText.NodeText.litTagName.value}`);
+      container.shadowRoot.querySelector<NodeText.NodeText.NodeText>(`${NodeText.NodeText.NodeText.litTagName.value}`);
   if (!nodeText || !nodeText.shadowRoot) {
     assert.fail('node text element and its shadowRoot should exist');
     return;

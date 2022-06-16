@@ -39,6 +39,7 @@ ts_library("helpers") {
     "../../../../front_end/models/workspace:bundle",
     "../../../../front_end/panels/elements:meta",
     "../../../../front_end/panels/sensors:meta",
+    "../../../../front_end/ui/components/node_text:bundle",
     "../../../../front_end/ui/legacy:bundle",
     "../../../../front_end/ui/lit-html:bundle",
     "../../../../inspector_overlay",

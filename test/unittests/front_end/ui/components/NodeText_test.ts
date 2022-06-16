@@ -2,16 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ElementsComponents from '../../../../../../front_end/panels/elements/components/components.js';
-import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
-
-import {assertNodeTextContent} from './ElementsComponentsHelper.js';
+import * as NodeText from '../../../../../front_end/ui/components/node_text/node_text.js';
+import {
+  assertElement,
+  assertNodeTextContent,
+  assertShadowRoot,
+  renderElementIntoDOM,
+} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
 describe('NodeText', async () => {
+  const NodeTextComponent = NodeText.NodeText.NodeText;
+
   it('renders element with a title', async () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',
@@ -20,7 +25,7 @@ describe('NodeText', async () => {
   });
 
   it('renders element with a title and id', async () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',
@@ -30,7 +35,7 @@ describe('NodeText', async () => {
   });
 
   it('renders element with a title, id and classes', async () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',
@@ -41,7 +46,7 @@ describe('NodeText', async () => {
   });
 
   it('renders element with a title, id and empty classes', async () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',
@@ -52,7 +57,7 @@ describe('NodeText', async () => {
   });
 
   it('applies the multiple descriptors class when a node has both an ID and some classes', () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',
@@ -69,7 +74,7 @@ describe('NodeText', async () => {
   });
 
   it('does not apply the multiple descriptors class when the node has only an ID', () => {
-    const component = new ElementsComponents.NodeText.NodeText();
+    const component = new NodeTextComponent();
     renderElementIntoDOM(component);
     component.data = {
       nodeTitle: 'test',

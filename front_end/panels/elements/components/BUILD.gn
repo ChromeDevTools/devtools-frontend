@@ -15,7 +15,6 @@ generate_css("css_files") {
     "cssQuery.css",
     "elementsBreadcrumbs.css",
     "elementsPanelLink.css",
-    "nodeText.css",
     "queryContainer.css",
     "stylePropertyEditor.css",
   ]
@@ -36,7 +35,6 @@ devtools_module("components") {
     "Helper.ts",
     "LayoutPane.ts",
     "LayoutPaneUtils.ts",
-    "NodeText.ts",
     "QueryContainer.ts",
     "StylePropertyEditor.ts",
   ]
@@ -49,6 +47,7 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/survey_link:bundle",
     "../../../ui/components/tree_outline:bundle",

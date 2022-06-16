@@ -9,6 +9,7 @@
  * Note that `resetTestDOM` is automatically run before each test (see `test_setup.ts`).
  **/
 
+import type * as NodeText from '../../../../front_end/ui/components/node_text/node_text.js';
 const {assert} = chai;
 
 const TEST_CONTAINER_ID = '__devtools-test-container-id';
@@ -231,4 +232,10 @@ export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, sele
   return elements.map(element => {
     return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, '') : '';
   });
+}
+
+export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string) {
+  assertShadowRoot(component.shadowRoot);
+  const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');
+  assert.strictEqual(content, expectedContent);
 }

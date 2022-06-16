@@ -14,9 +14,7 @@ ts_library("components") {
     "ComputedStyleProperty_test.ts",
     "ComputedStyleTrace_test.ts",
     "ElementsBreadcrumbs_test.ts",
-    "ElementsComponentsHelper.ts",
     "LayoutPane_test.ts",
-    "NodeText_test.ts",
     "QueryContainer_test.ts",
     "StylePropertyEditor_test.ts",
   ]
@@ -24,6 +22,7 @@ ts_library("components") {
   deps = [
     "../../../../../../front_end/core/sdk:bundle",
     "../../../../../../front_end/panels/elements/components:bundle",
+    "../../../../../../front_end/ui/components/node_text:bundle",
     "../../../../../../front_end/ui/components/render_coordinator:bundle",
     "../../../../../../front_end/ui/legacy/components/inline_editor:bundle",
     "../../../helpers",

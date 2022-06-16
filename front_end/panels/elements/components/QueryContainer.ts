@@ -5,11 +5,10 @@
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {DOMNode} from './Helper.js';
-import {NodeText} from './NodeText.js';
-import type {NodeTextData} from './NodeText.js';
 import queryContainerStyles from './queryContainer.css.js';
 
 const {render, html} = LitHtml;
@@ -90,13 +89,13 @@ export class QueryContainer extends HTMLElement {
         @click=${this.#onContainerLinkClick}
         @mouseenter=${this.#onContainerLinkMouseEnter}
         @mouseleave=${this.#onContainerLinkMouseLeave}
-      ><${NodeText.litTagName}
+      ><${NodeText.NodeText.NodeText.litTagName}
           data-node-title=${nodeTitle}
           .data=${{
         nodeTitle,
         nodeId: idToDisplay,
         nodeClasses: classesToDisplay,
-      } as NodeTextData}></${NodeText.litTagName}></a>
+      } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}></a>
       ${this.#isContainerLinkHovered ? this.#renderQueriedSizeDetails() : LitHtml.nothing}
     `, this.#shadow, {
       host: this,

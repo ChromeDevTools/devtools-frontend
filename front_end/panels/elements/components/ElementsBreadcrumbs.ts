@@ -14,8 +14,7 @@ import {crumbsToRender} from './ElementsBreadcrumbsUtils.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type {DOMNode} from './Helper.js';
 
-import {NodeText} from './NodeText.js';
-import type {NodeTextData} from './NodeText.js';
+import * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 const UIStrings = {
   /**
@@ -300,11 +299,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
                       @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
                       @focus=${this.#onCrumbFocus(crumb.node)}
                       @blur=${this.#onCrumbBlur(crumb.node)}
-                    ><${NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
+                    ><${NodeText.NodeText.NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
                       nodeTitle: crumb.title.main,
                       nodeId: crumb.title.extras.id,
                       nodeClasses: crumb.title.extras.classes,
-                    } as NodeTextData}></${NodeText.litTagName}></a>
+                    } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}></a>
                   </li>`;
               })}
             </ul>

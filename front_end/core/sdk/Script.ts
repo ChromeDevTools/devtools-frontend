@@ -259,10 +259,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
   async editSource(
       newSource: string,
-      callback:
-          (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined,
-           arg2?: Array<Protocol.Debugger.CallFrame>|undefined, arg3?: Protocol.Runtime.StackTrace|undefined,
-           arg4?: Protocol.Runtime.StackTraceId|undefined, arg5?: boolean|undefined) => void): Promise<void> {
+      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): Promise<void> {
     newSource = Script.trimSourceURLComment(newSource);
     // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
@@ -284,10 +281,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
-    const needsStepIn = Boolean(response.stackChanged);
-    callback(
-        response.getError() || null, response.exceptionDetails, response.callFrames, response.asyncStackTrace,
-        response.asyncStackTraceId, needsStepIn);
+    callback(response.getError() || null, response.exceptionDetails);
   }
 
   rawLocation(lineNumber: number, columnNumber: number): Location|null {

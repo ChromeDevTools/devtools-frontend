@@ -585,26 +585,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): void {
     const script = this.#scriptsInternal.get(scriptId);
     if (script) {
-      void script.editSource(newSource, this.didEditScriptSource.bind(this, scriptId, newSource, callback));
-    }
-  }
-
-  private didEditScriptSource(
-      scriptId: string, newSource: string,
-      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void, error: string|null,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails, callFrames?: Protocol.Debugger.CallFrame[],
-      asyncStackTrace?: Protocol.Runtime.StackTrace, asyncStackTraceId?: Protocol.Runtime.StackTraceId,
-      needsStepIn?: boolean): void {
-    callback(error, exceptionDetails);
-    if (needsStepIn) {
-      void this.stepInto();
-      return;
-    }
-
-    if (!error && callFrames && callFrames.length && this.#debuggerPausedDetailsInternal) {
-      void this.pausedScript(
-          callFrames, this.#debuggerPausedDetailsInternal.reason, this.#debuggerPausedDetailsInternal.auxData,
-          this.#debuggerPausedDetailsInternal.breakpointIds, asyncStackTrace, asyncStackTraceId);
+      void script.editSource(newSource, callback);
     }
   }
 

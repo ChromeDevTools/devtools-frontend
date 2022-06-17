@@ -59,9 +59,22 @@
   overflow: hidden;
 }
 
+.object-properties-section [data-webidl="true"] > .name-and-value > .adorner {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+}
+
+.object-properties-section [data-webidl="true"] > .name-and-value > .name {
+  font-weight: bold;
+}
+
 .name-and-value {
   overflow: hidden;
   line-height: 16px;
+  display: flex;
+  white-space: break-spaces;
 }
 
 .editing-sub-part .name-and-value {

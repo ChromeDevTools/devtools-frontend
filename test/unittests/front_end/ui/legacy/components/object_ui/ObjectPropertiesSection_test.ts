@@ -13,7 +13,8 @@ import {someMutations} from '../../../../helpers/MutationHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 
 describeWithRealConnection('ObjectPropertiesSection', () => {
-  it('can reveal private accessor values', async () => {
+  async function setupTreeOutline(
+      code: string, accessorPropertiesOnly: boolean, generatePreview: boolean, nonIndexedPropertiesOnly?: boolean) {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const target = targetManager.mainTarget();
     assertNotNullOrUndefined(target);
@@ -21,27 +22,34 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     assertNotNullOrUndefined(runtimeModel);
     const executionContext = await getExecutionContext(runtimeModel);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
-    const VALUE = '42';
 
     const {result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        `(() => {
-           class A {
-             get #bar() { return ${VALUE}; }
-           };
-           return new A();
-         })()`,
-        false /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
+        code, false /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
     if (!(result && 'object' in result && result.object)) {
       throw new Error('Cannot evaluate test object');
     }
     const {properties} =
-        await result.object.getAllProperties(true /* accessorPropertiesOnly */, false /* generatePreview */);
+        await result.object.getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly);
 
     assertNotNullOrUndefined(properties);
     const treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline({readOnly: true});
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
         treeOutline.rootElement(), properties, null, true /* skipProto */, false /* skipGettersAndSetters */,
         result.object);
+
+    return treeOutline;
+  }
+
+  it('can reveal private accessor values', async () => {
+    const VALUE = '42';
+    const treeOutline = await setupTreeOutline(
+        `(() => {
+           class A {
+             get #bar() { return ${VALUE}; }
+           };
+           return new A();
+         })()`,
+        true, false);
 
     const propertiesSection =
         treeOutline.rootElement().firstChild() as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
@@ -56,5 +64,77 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     await mutations;
 
     assert.strictEqual(VALUE, propertiesSection.valueElement.innerHTML);
+  });
+
+  it('visually distinguishes important DOM properties for checkbox inputs', async () => {
+    const treeOutline = await setupTreeOutline(
+        `(() => {
+           const input = document.createElement("input");
+           input.type = "checkbox";
+           return input;
+         })()`,
+        false, false);
+
+    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
+    const expected = new Set<string>([
+      'checked: false',
+      'required: false',
+      'type: "checkbox"',
+      'value: "on"',
+    ]);
+    const notExpected = new Set<string>([
+      'accept: ""',
+      'files: FileList',
+      'multiple: false',
+    ]);
+
+    for (const element of webidlProperties) {
+      const textContent = element.querySelector('.name-and-value')?.textContent;
+      if (textContent && expected.has(textContent)) {
+        expected.delete(textContent);
+      }
+      if (textContent && notExpected.has(textContent)) {
+        notExpected.delete(textContent);
+      }
+    }
+
+    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
+    assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
+  });
+
+  it('visually distinguishes important DOM properties for file inputs', async () => {
+    const treeOutline = await setupTreeOutline(
+        `(() => {
+           const input = document.createElement("input");
+           input.type = "file";
+           return input;
+         })()`,
+        false, false);
+
+    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
+    const notExpected = new Set<string>([
+      'checked: false',
+      'type: "checkbox"',
+      'value: "on"',
+    ]);
+    const expected = new Set<string>([
+      'accept: ""',
+      'files: FileList',
+      'multiple: false',
+      'required: false',
+    ]);
+
+    for (const element of webidlProperties) {
+      const textContent = element.querySelector('.name-and-value')?.textContent;
+      if (textContent && expected.has(textContent)) {
+        expected.delete(textContent);
+      }
+      if (textContent && notExpected.has(textContent)) {
+        notExpected.delete(textContent);
+      }
+    }
+
+    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
+    assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
   });
 });

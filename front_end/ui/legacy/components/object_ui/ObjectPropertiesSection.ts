@@ -36,6 +36,7 @@ import * as LinearMemoryInspector from '../../../components/linear_memory_inspec
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as JavaScriptMetaData from '../../../../models/javascript_metadata/javascript_metadata.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as UI from '../../legacy.js';
@@ -126,8 +127,9 @@ const EXPANDABLE_MAX_LENGTH = 50;
 const EXPANDABLE_MAX_DEPTH = 100;
 
 const parentMap = new WeakMap<SDK.RemoteObject.RemoteObjectProperty, SDK.RemoteObject.RemoteObject|null>();
-
 const objectPropertiesSectionMap = new WeakMap<Element, ObjectPropertiesSection>();
+const domPinnedProperties =
+    JavaScriptMetaData.JavaScriptMetadata.JavaScriptMetadataImpl.domPinnedProperties.DOMPinnedProperties;
 
 export const getObjectPropertiesSectionFrom = (element: Element): ObjectPropertiesSection|undefined => {
   return objectPropertiesSectionMap.get(element);
@@ -201,6 +203,37 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     return objectPropertiesSection;
+  }
+
+  static assignWebIDLMetadata(
+      value: SDK.RemoteObject.RemoteObject|null, properties: SDK.RemoteObject.RemoteObjectProperty[]): void {
+    if (!value) {
+      return;
+    }
+
+    const isInstance = value.type === 'object' && value.className !== null;
+    const webIdlType = isInstance ? domPinnedProperties[value.className] : undefined;
+    if (webIdlType) {
+      value.webIdl = {info: webIdlType, state: new Map()};
+    } else {
+      return;
+    }
+
+    for (const property of properties) {
+      const webIdlProperty = webIdlType?.props?.[property.name];
+      if (webIdlProperty) {
+        property.webIdl = {info: webIdlProperty};
+      }
+    }
+  }
+
+  static getPropertyValuesByNames(properties: SDK.RemoteObject.RemoteObjectProperty[]):
+      Map<string, SDK.RemoteObject.RemoteObject|undefined> {
+    const map = new Map();
+    for (const property of properties) {
+      map.set(property.name, property.value);
+    }
+    return map;
   }
 
   static compareProperties(
@@ -744,6 +777,33 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null, skipProto: boolean,
       skipGettersAndSetters: boolean, value: SDK.RemoteObject.RemoteObject|null,
       linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null): void {
+    ObjectPropertiesSection.assignWebIDLMetadata(value, properties);
+    const names = ObjectPropertiesSection.getPropertyValuesByNames(properties);
+
+    if (value?.webIdl) {
+      const parentRules = value.webIdl.info.rules;
+      if (parentRules) {
+        for (const {when: name, is: expected} of parentRules) {
+          if (names.get(name)?.value === expected) {
+            value.webIdl.state.set(name, expected);
+          }
+        }
+      }
+
+      for (const property of properties) {
+        if (property.webIdl) {
+          const parentState = value.webIdl.state;
+          const propertyRules = property.webIdl.info.rules;
+          if (!parentRules && !propertyRules) {
+            property.webIdl.applicable = true;
+          } else {
+            property.webIdl.applicable =
+                !propertyRules || propertyRules?.some(rule => parentState.get(rule.when) === rule.is);
+          }
+        }
+      }
+    }
+
     properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];
 
@@ -1053,15 +1113,36 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedValueElement = this.createExpandedValueElement(this.property.value);
     }
 
-    this.listItemElement.removeChildren();
+    let adorner: Element|string = '';
     let container: Element;
-    if (isInternalEntries) {
-      container = UI.Fragment.html`<span class='name-and-value'>${this.nameElement}</span>`;
-    } else {
-      container = UI.Fragment.html`<span class='name-and-value'>${this.nameElement}: ${this.valueElement}</span>`;
+
+    if (this.property.webIdl?.applicable) {
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {
+        iconName: 'elements_panel_icon',
+        color: 'var(--color-text-secondary)',
+        width: '16px',
+        height: '16px',
+      };
+      adorner = UI.Fragment.html`
+         <span class='adorner'>${icon}</span>
+       `;
     }
+
+    if (isInternalEntries) {
+      container = UI.Fragment.html`
+        <span class='name-and-value'>${adorner}${this.nameElement}</span>
+      `;
+    } else {
+      container = UI.Fragment.html`
+        <span class='name-and-value'>${adorner}${this.nameElement}: ${this.valueElement}</span>
+      `;
+    }
+
+    this.listItemElement.removeChildren();
     this.rowContainer = (container as HTMLElement);
     this.listItemElement.appendChild(this.rowContainer);
+    this.listItemElement.dataset.webidl = this.property.webIdl?.applicable ? 'true' : 'false';
   }
 
   private updatePropertyPath(): void {

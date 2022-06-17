@@ -34,6 +34,7 @@
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import type {DOMPinnedWebIDLProp, DOMPinnedWebIDLType} from '../common/JavaScriptMetaData.js';
 
 import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js';
 import type {RuntimeModel} from './RuntimeModel.js';
@@ -309,6 +310,8 @@ export class RemoteObject {
   isNode(): boolean {
     return false;
   }
+
+  webIdl?: RemoteObjectWebIdlTypeMetadata;
 }
 
 export class RemoteObjectImpl extends RemoteObject {
@@ -727,6 +730,8 @@ export class RemoteObjectProperty {
   private: boolean;
   getter: RemoteObject|undefined;
   setter: RemoteObject|undefined;
+
+  webIdl?: RemoteObjectWebIdlPropertyMetadata;
 
   constructor(
       name: string, value: RemoteObject|null, enumerable?: boolean, writable?: boolean, isOwn?: boolean,
@@ -1187,4 +1192,14 @@ export interface CallFunctionResult {
 export interface GetPropertiesResult {
   properties: RemoteObjectProperty[]|null;
   internalProperties: RemoteObjectProperty[]|null;
+}
+
+export interface RemoteObjectWebIdlTypeMetadata {
+  info: DOMPinnedWebIDLType;
+  state: Map<string, string>;
+}
+
+export interface RemoteObjectWebIdlPropertyMetadata {
+  info: DOMPinnedWebIDLProp;
+  applicable?: boolean;
 }

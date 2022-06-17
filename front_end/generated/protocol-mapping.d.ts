@@ -125,6 +125,10 @@ export namespace ProtocolMapping {
      */
     'DOM.pseudoElementAdded': [Protocol.DOM.PseudoElementAddedEvent];
     /**
+     * Called when top layer elements are changed.
+     */
+    'DOM.topLayerElementsUpdated': [];
+    /**
      * Called when a pseudo element is removed from an element.
      */
     'DOM.pseudoElementRemoved': [Protocol.DOM.PseudoElementRemovedEvent];
@@ -1266,6 +1270,12 @@ export namespace ProtocolMapping {
      */
     'DOM.querySelectorAll':
         {paramsType: [Protocol.DOM.QuerySelectorAllRequest]; returnType: Protocol.DOM.QuerySelectorAllResponse;};
+    /**
+     * Returns NodeIds of current top layer elements.
+     * Top layer is rendered closest to the user within a viewport, therefore its elements always
+     * appear on top of all other content.
+     */
+    'DOM.getTopLayerElements': {paramsType: []; returnType: Protocol.DOM.GetTopLayerElementsResponse;};
     /**
      * Re-does the last undone action.
      */
@@ -2961,6 +2971,12 @@ export namespace ProtocolMapping {
     'Debugger.setReturnValue': {paramsType: [Protocol.Debugger.SetReturnValueRequest]; returnType: void;};
     /**
      * Edits JavaScript source live.
+     *
+     * In general, functions that are currently on the stack can not be edited with
+     * a single exception: If the edited function is the top-most stack frame and
+     * that is the only activation of that function on the stack. In this case
+     * the live edit will be successful and a `Debugger.restartFrame` for the
+     * top-most function is automatically triggered.
      */
     'Debugger.setScriptSource': {
       paramsType: [Protocol.Debugger.SetScriptSourceRequest]; returnType: Protocol.Debugger.SetScriptSourceResponse;

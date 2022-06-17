@@ -2652,6 +2652,14 @@ domain DOM
       # Query selector result.
       array of NodeId nodeIds
 
+  # Returns NodeIds of current top layer elements.
+  # Top layer is rendered closest to the user within a viewport, therefore its elements always 
+  # appear on top of all other content.
+  experimental command getTopLayerElements
+    returns
+      # NodeIds of top layer elements
+      array of NodeId nodeIds
+
   # Re-does the last undone action.
   experimental command redo
 
@@ -2911,6 +2919,9 @@ domain DOM
       NodeId parentId
       # The added pseudo element.
       Node pseudoElement
+
+  # Called when top layer elements are changed.
+  experimental event topLayerElementsUpdated
 
   # Called when a pseudo element is removed from an element.
   experimental event pseudoElementRemoved
@@ -7048,6 +7059,7 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
+      federated-credentials
       focus-without-user-activation
       fullscreen
       frobulate
@@ -7994,12 +8006,12 @@ domain Page
     parameters
       # Id of the frame containing input node.
       experimental FrameId frameId
-      # Input node id.
-      experimental DOM.BackendNodeId backendNodeId
       # Input mode.
       enum mode
         selectSingle
         selectMultiple
+      # Input node id. Only present for file choosers opened via an <input type="file"> element.
+      experimental optional DOM.BackendNodeId backendNodeId
 
   # Fired when frame has been attached to its parent.
   event frameAttached

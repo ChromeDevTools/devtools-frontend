@@ -1644,6 +1644,9 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   distributedNodesUpdated({insertionPointId, distributedNodes}: Protocol.DOM.DistributedNodesUpdatedEvent): void {
     this.#domModel.distributedNodesUpdated(insertionPointId, distributedNodes);
   }
+
+  topLayerElementsUpdated(): void {
+  }
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

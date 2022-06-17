@@ -3783,6 +3783,13 @@ export namespace DOM {
     nodeIds: NodeId[];
   }
 
+  export interface GetTopLayerElementsResponse extends ProtocolResponseWithError {
+    /**
+     * NodeIds of top layer elements
+     */
+    nodeIds: NodeId[];
+  }
+
   export interface RemoveAttributeRequest {
     /**
      * Id of the element to remove attribute from.
@@ -10243,6 +10250,7 @@ export namespace Page {
     EncryptedMedia = 'encrypted-media',
     ExecutionWhileOutOfViewport = 'execution-while-out-of-viewport',
     ExecutionWhileNotRendered = 'execution-while-not-rendered',
+    FederatedCredentials = 'federated-credentials',
     FocusWithoutUserActivation = 'focus-without-user-activation',
     Fullscreen = 'fullscreen',
     Frobulate = 'frobulate',
@@ -11773,13 +11781,13 @@ export namespace Page {
      */
     frameId: FrameId;
     /**
-     * Input node id.
-     */
-    backendNodeId: DOM.BackendNodeId;
-    /**
      * Input mode.
      */
     mode: FileChooserOpenedEventMode;
+    /**
+     * Input node id. Only present for file choosers opened via an <input type="file"> element.
+     */
+    backendNodeId?: DOM.BackendNodeId;
   }
 
   /**
@@ -15298,6 +15306,13 @@ export namespace Debugger {
     newValue: Runtime.CallArgument;
   }
 
+  export const enum SetScriptSourceResponseStatus {
+    Ok = 'Ok',
+    CompileError = 'CompileError',
+    BlockedByActiveGenerator = 'BlockedByActiveGenerator',
+    BlockedByActiveFunction = 'BlockedByActiveFunction',
+  }
+
   export interface SetScriptSourceRequest {
     /**
      * Id of the script to edit.
@@ -15312,6 +15327,11 @@ export namespace Debugger {
      * description without actually modifying the code.
      */
     dryRun?: boolean;
+    /**
+     * If true, then `scriptSource` is allowed to change the function on top of the stack
+     * as long as the top-most stack frame is the only activation of that function.
+     */
+    allowTopFrameEditing?: boolean;
   }
 
   export interface SetScriptSourceResponse extends ProtocolResponseWithError {
@@ -15332,7 +15352,13 @@ export namespace Debugger {
      */
     asyncStackTraceId?: Runtime.StackTraceId;
     /**
-     * Exception details if any.
+     * Whether the operation was successful or not. Only `Ok` denotes a
+     * successful live edit while the other enum variants denote why
+     * the live edit failed.
+     */
+    status: SetScriptSourceResponseStatus;
+    /**
+     * Exception details if any. Only present when `status` is `CompileError`.
      */
     exceptionDetails?: Runtime.ExceptionDetails;
   }

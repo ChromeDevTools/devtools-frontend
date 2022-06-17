@@ -5476,6 +5476,10 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
+    name: 'ViewTimeline',
+    signatures: [['?options']]
+  },
+  {
     name: 'AccessibleNodeList',
     signatures: [['?nodes']]
   },
@@ -7531,10 +7535,6 @@ export const NativeFunctions = [
   {
     name: 'FetchEvent',
     signatures: [['type','eventInitDict']]
-  },
-  {
-    name: 'addPerformanceEntry',
-    signatures: [['entry']]
   },
   {
     name: 'InstallEvent',

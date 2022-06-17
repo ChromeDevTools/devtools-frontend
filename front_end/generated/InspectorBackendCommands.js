@@ -732,6 +732,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('DOM.documentUpdated', []);
   inspectorBackend.registerEvent('DOM.inlineStyleInvalidated', ['nodeIds']);
   inspectorBackend.registerEvent('DOM.pseudoElementAdded', ['parentId', 'pseudoElement']);
+  inspectorBackend.registerEvent('DOM.topLayerElementsUpdated', []);
   inspectorBackend.registerEvent('DOM.pseudoElementRemoved', ['parentId', 'pseudoElementId']);
   inspectorBackend.registerEvent('DOM.setChildNodes', ['parentId', 'nodes']);
   inspectorBackend.registerEvent('DOM.shadowRootPopped', ['hostId', 'rootId']);
@@ -875,6 +876,7 @@ export function registerCommands(inspectorBackend) {
         {'name': 'selector', 'type': 'string', 'optional': false}
       ],
       ['nodeIds']);
+  inspectorBackend.registerCommand('DOM.getTopLayerElements', [], ['nodeIds']);
   inspectorBackend.registerCommand('DOM.redo', [], []);
   inspectorBackend.registerCommand(
       'DOM.removeAttribute',
@@ -2114,6 +2116,7 @@ export function registerCommands(inspectorBackend) {
     EncryptedMedia: 'encrypted-media',
     ExecutionWhileOutOfViewport: 'execution-while-out-of-viewport',
     ExecutionWhileNotRendered: 'execution-while-not-rendered',
+    FederatedCredentials: 'federated-credentials',
     FocusWithoutUserActivation: 'focus-without-user-activation',
     Fullscreen: 'fullscreen',
     Frobulate: 'frobulate',
@@ -2378,7 +2381,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEvent('Page.domContentEventFired', ['timestamp']);
   inspectorBackend.registerEnum(
       'Page.FileChooserOpenedEventMode', {SelectSingle: 'selectSingle', SelectMultiple: 'selectMultiple'});
-  inspectorBackend.registerEvent('Page.fileChooserOpened', ['frameId', 'backendNodeId', 'mode']);
+  inspectorBackend.registerEvent('Page.fileChooserOpened', ['frameId', 'mode', 'backendNodeId']);
   inspectorBackend.registerEvent('Page.frameAttached', ['frameId', 'parentFrameId', 'stack', 'adScriptId']);
   inspectorBackend.registerEvent('Page.frameClearedScheduledNavigation', ['frameId']);
   inspectorBackend.registerEnum('Page.FrameDetachedEventReason', {Remove: 'remove', Swap: 'swap'});
@@ -3297,9 +3300,10 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'scriptId', 'type': 'string', 'optional': false},
         {'name': 'scriptSource', 'type': 'string', 'optional': false},
-        {'name': 'dryRun', 'type': 'boolean', 'optional': true}
+        {'name': 'dryRun', 'type': 'boolean', 'optional': true},
+        {'name': 'allowTopFrameEditing', 'type': 'boolean', 'optional': true}
       ],
-      ['callFrames', 'stackChanged', 'asyncStackTrace', 'asyncStackTraceId', 'exceptionDetails']);
+      ['callFrames', 'stackChanged', 'asyncStackTrace', 'asyncStackTraceId', 'status', 'exceptionDetails']);
   inspectorBackend.registerCommand(
       'Debugger.setSkipAllPauses', [{'name': 'skip', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(

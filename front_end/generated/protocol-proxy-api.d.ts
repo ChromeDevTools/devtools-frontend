@@ -960,6 +960,13 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.DOM.QuerySelectorAllResponse>;
 
     /**
+     * Returns NodeIds of current top layer elements.
+     * Top layer is rendered closest to the user within a viewport, therefore its elements always
+     * appear on top of all other content.
+     */
+    invoke_getTopLayerElements(): Promise<Protocol.DOM.GetTopLayerElementsResponse>;
+
+    /**
      * Re-does the last undone action.
      */
     invoke_redo(): Promise<Protocol.ProtocolResponseWithError>;
@@ -1127,6 +1134,11 @@ declare namespace ProtocolProxyApi {
      * Called when a pseudo element is added to an element.
      */
     pseudoElementAdded(params: Protocol.DOM.PseudoElementAddedEvent): void;
+
+    /**
+     * Called when top layer elements are changed.
+     */
+    topLayerElementsUpdated(): void;
 
     /**
      * Called when a pseudo element is removed from an element.
@@ -3785,6 +3797,12 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Edits JavaScript source live.
+     *
+     * In general, functions that are currently on the stack can not be edited with
+     * a single exception: If the edited function is the top-most stack frame and
+     * that is the only activation of that function on the stack. In this case
+     * the live edit will be successful and a `Debugger.restartFrame` for the
+     * top-most function is automatically triggered.
      */
     invoke_setScriptSource(params: Protocol.Debugger.SetScriptSourceRequest):
         Promise<Protocol.Debugger.SetScriptSourceResponse>;

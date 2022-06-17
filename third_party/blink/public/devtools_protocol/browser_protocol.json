@@ -5635,6 +5635,21 @@
                     ]
                 },
                 {
+                    "name": "getTopLayerElements",
+                    "description": "Returns NodeIds of current top layer elements.\nTop layer is rendered closest to the user within a viewport, therefore its elements always\nappear on top of all other content.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "nodeIds",
+                            "description": "NodeIds of top layer elements",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NodeId"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "redo",
                     "description": "Re-does the last undone action.",
                     "experimental": true
@@ -6174,6 +6189,11 @@
                             "$ref": "Node"
                         }
                     ]
+                },
+                {
+                    "name": "topLayerElementsUpdated",
+                    "description": "Called when top layer elements are changed.",
+                    "experimental": true
                 },
                 {
                     "name": "pseudoElementRemoved",
@@ -15078,6 +15098,7 @@
                         "encrypted-media",
                         "execution-while-out-of-viewport",
                         "execution-while-not-rendered",
+                        "federated-credentials",
                         "focus-without-user-activation",
                         "fullscreen",
                         "frobulate",
@@ -17337,12 +17358,6 @@
                             "$ref": "FrameId"
                         },
                         {
-                            "name": "backendNodeId",
-                            "description": "Input node id.",
-                            "experimental": true,
-                            "$ref": "DOM.BackendNodeId"
-                        },
-                        {
                             "name": "mode",
                             "description": "Input mode.",
                             "type": "string",
@@ -17350,6 +17365,13 @@
                                 "selectSingle",
                                 "selectMultiple"
                             ]
+                        },
+                        {
+                            "name": "backendNodeId",
+                            "description": "Input node id. Only present for file choosers opened via an <input type=\"file\"> element.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
                         }
                     ]
                 },
@@ -22824,7 +22846,7 @@
                 },
                 {
                     "name": "setScriptSource",
-                    "description": "Edits JavaScript source live.",
+                    "description": "Edits JavaScript source live.\n\nIn general, functions that are currently on the stack can not be edited with\na single exception: If the edited function is the top-most stack frame and\nthat is the only activation of that function on the stack. In this case\nthe live edit will be successful and a `Debugger.restartFrame` for the\ntop-most function is automatically triggered.",
                     "parameters": [
                         {
                             "name": "scriptId",
@@ -22841,12 +22863,20 @@
                             "description": "If true the change will not actually be applied. Dry run may be used to get result\ndescription without actually modifying the code.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "allowTopFrameEditing",
+                            "description": "If true, then `scriptSource` is allowed to change the function on top of the stack\nas long as the top-most stack frame is the only activation of that function.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
                         {
                             "name": "callFrames",
                             "description": "New stack trace in case editing has happened while VM was stopped.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -22856,25 +22886,39 @@
                         {
                             "name": "stackChanged",
                             "description": "Whether current call stack  was modified after applying the changes.",
+                            "deprecated": true,
                             "optional": true,
                             "type": "boolean"
                         },
                         {
                             "name": "asyncStackTrace",
                             "description": "Async stack trace, if any.",
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "Runtime.StackTrace"
                         },
                         {
                             "name": "asyncStackTraceId",
                             "description": "Async stack trace, if any.",
-                            "experimental": true,
+                            "deprecated": true,
                             "optional": true,
                             "$ref": "Runtime.StackTraceId"
                         },
                         {
+                            "name": "status",
+                            "description": "Whether the operation was successful or not. Only `Ok` denotes a\nsuccessful live edit while the other enum variants denote why\nthe live edit failed.",
+                            "experimental": true,
+                            "type": "string",
+                            "enum": [
+                                "Ok",
+                                "CompileError",
+                                "BlockedByActiveGenerator",
+                                "BlockedByActiveFunction"
+                            ]
+                        },
+                        {
                             "name": "exceptionDetails",
-                            "description": "Exception details if any.",
+                            "description": "Exception details if any. Only present when `status` is `CompileError`.",
                             "optional": true,
                             "$ref": "Runtime.ExceptionDetails"
                         }

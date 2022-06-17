@@ -580,15 +580,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return result;
   }
 
-  setScriptSource(
-      scriptId: string, newSource: string,
-      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): void {
-    const script = this.#scriptsInternal.get(scriptId);
-    if (script) {
-      void script.editSource(newSource, callback);
-    }
-  }
-
   get callFrames(): CallFrame[]|null {
     return this.#debuggerPausedDetailsInternal ? this.#debuggerPausedDetailsInternal.callFrames : null;
   }

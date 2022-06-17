@@ -257,22 +257,19 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return source + '\n //# sourceURL=' + this.sourceURL;
   }
 
-  async editSource(
-      newSource: string,
-      callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): Promise<void> {
+  async editSource(newSource: string):
+      Promise<{error: string | null, exceptionDetails?: Protocol.Runtime.ExceptionDetails}> {
     newSource = Script.trimSourceURLComment(newSource);
     // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
 
     if (!this.scriptId) {
-      callback('Script failed to parse');
-      return;
+      return {error: 'Script failed to parse'};
     }
 
     const {content: oldSource} = await this.requestContent();
     if (oldSource === newSource) {
-      callback(null);
-      return;
+      return {error: null};
     }
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
@@ -281,7 +278,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
-    callback(response.getError() || null, response.exceptionDetails);
+    return {error: response.getError() || null, exceptionDetails: response.exceptionDetails};
   }
 
   rawLocation(lineNumber: number, columnNumber: number): Location|null {

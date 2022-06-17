@@ -316,12 +316,11 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     if (!this.scriptInternal) {
       return;
     }
-    const debuggerModel = this.#resourceScriptMapping.debuggerModel;
     const breakpoints = BreakpointManager.instance()
                             .breakpointLocationsForUISourceCode(this.#uiSourceCodeInternal)
                             .map(breakpointLocation => breakpointLocation.breakpoint);
     const source = this.#uiSourceCodeInternal.workingCopy();
-    debuggerModel.setScriptSource(this.scriptInternal.scriptId, source, (error, exceptionDetails) => {
+    void this.scriptInternal.editSource(source).then(({error, exceptionDetails}) => {
       void this.scriptSourceWasSet(source, breakpoints, error, exceptionDetails);
     });
   }

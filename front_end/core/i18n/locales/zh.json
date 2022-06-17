@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "代码块"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch 代码块"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "闭包"
   },
@@ -1005,7 +1008,7 @@
     "message": "显示“渲染”工具"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "开启/关闭“强制使用 CSS prefers-color-scheme”设置对应的颜色"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "视觉缺陷"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "加载文件时发生未知错误"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "函数“{PH1}”的调试信息不完整"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "调试程序语言插件发生错误：{PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] 无法加载 {PH2} 的调试符号（{PH3}）"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "函数“{PH1}”缺少调试符号"
+    "message": "未找到函数“{PH1}”的调试信息"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] 已加载 {PH2} 的调试符号，但找不到任何源文件"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] 正在通过 {PH3} 加载 {PH2} 的调试符号…"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "找不到符号文件“{PH1}”"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit 编译失败：{PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Same-Site 和 Same-Origin"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "处理 CORS Access-Control-Allow-Headers 时，授权将不在通配符 (*) 的涵盖范围内。"
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "如果对应的网址同时包含已移除的空白字符 \\(n|r|t) 和小于字符 (<)，资源请求会被屏蔽。请从元素属性值等位置移除换行符并编码小于字符，以便加载这些资源。"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() 已被弃用，请改用标准化 API：Navigation Timing 2。"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() 已被弃用，请改用标准化 API：Paint Timing。"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() 已被弃用，请改用标准化 API：Navigation Timing 2 中的 nextHopProtocol。"
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "包含 \\(0|r|n) 字符的 Cookie 将被拒，而不是被截断。"
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "通过设置 document.domain 放宽同源政策的功能已被弃用，并将默认处于停用状态。此弃用警告针对的是通过设置 document.domain 启用的跨源访问。"
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "从跨源 iframe 触发 {PH1} 的功能已被弃用，日后将被移除。"
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "若要停用默认 Cast 集成，应使用 disableRemotePlayback 属性，而非 -internal-media-controls-overlay-cast-button 选择器。"
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} 已被弃用。请改用 {PH2}。"
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "这个示例是翻译后的弃用问题消息。"
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "通过设置 document.domain 放宽同源政策的功能已被弃用，并将默认处于停用状态。若要继续使用此功能，请通过发送 Origin-Agent-Cluster: ?0 标头以及文档和框架的 HTTP 响应来选择停用以源为键的代理集群。如需了解详情，请访问 https://developer.chrome.com/blog/immutable-document-domain/。"
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path 已被弃用，并将被移除。请改用 Event.composedPath()。"
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "如需了解详情，请参阅功能状态页面。"
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate 已被弃用。请改用 RTCPeerConnectionIceErrorEvent.address 或 RTCPeerConnectionIceErrorEvent.port。"
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "该网站向网络请求了一项子资源，而且仅仅因为其用户的特权网络位置而能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 默认处于启用状态，我们计划在 M108 中移除使用 googIPv6 停用 IPv6 的功能，之后系统会忽略它。请停止使用此旧版约束条件。"
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "无法从 file: 网址加载 CSS，除非它们以 .css 文件扩展名结尾。"
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "由于规范变更，使用 SourceBuffer.abort() 中止 remove() 的异步范围移除的功能已被弃用。日后我们会移除相应支持。您应改为监听 updateend 事件。abort() 只应用于中止异步媒体附加或重置解析状态。"
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "由于规范变更，我们不再支持将 MediaSource.duration 设为低于任何缓冲编码帧的最高呈现时间戳。日后我们将不再支持隐式移除被截断的缓冲媒体。您应改为对 newDuration < oldDuration 的所有 sourceBuffers 执行显式 remove(newDuration, oldDuration)。"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "此变更将从里程碑 {milestone} 生效。"
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "即使 MIDIOptions 中未指定 sysex，Web MIDI 也会请求获得使用许可。"
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "无法再从不安全的源使用 Notification API。您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "无法再从跨源 iframe 中请求 Notification API 权限。您应考虑改为从顶级框架中请求权限，或者打开一个新窗口。"
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "您的合作伙伴正在协商某个已过时的 (D)TLS 版本。请与您的合作伙伴联系，以解决此问题。"
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "带有 <picture> 父级的 <source src> 无效，因此会被忽略。请改用 <source srcset>。"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo 已被弃用。请改用 navigator.webkitTemporaryStorage 或 navigator.webkitPersistentStorage。"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "如果对应的网址包含嵌入式凭据（例如 https://user:pass@host/），子资源请求会被屏蔽。"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "约束条件 DtlsSrtpKeyAgreement 已被移除。您已为此约束条件指定 false 值，系统会将这种情况解读为尝试使用已被移除的 SDES key negotiation 方法。此功能已被移除；请改用支持 DTLS key negotiation的服务。"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "约束条件 DtlsSrtpKeyAgreement 已被移除。您已为此约束条件指定 true 值，这没有任何作用，但为整洁起见，您可以移除此约束条件。"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "检测到Complex Plan B SDP。Session Description Protocol的这种方言不再受支持。请改用Unified Plan SDP。"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "使用 {sdpSemantics:'plan-b'} 构造 RTCPeerConnection 时采用了 Plan B SDP semantics，该协议是 Session Description Protocol 的非标准旧版本，已从 Web 平台中永久删除。使用 IS_FUCHSIA 进行构建时，这个旧版本仍可用，但我们打算尽快将其删除，因此请不要再依赖它。如需查看状态，请访问 https://crbug.com/1302249。"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "rtcpMuxPolicy 选项已被弃用，并将被移除。"
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer 将要求进行跨域隔离。如需了解详情，请访问 https://developer.chrome.com/blog/enabling-shared-array-buffer/。"
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "无需用户激活的 speechSynthesis.speak() 已被弃用，并将被移除。"
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "使用了已弃用的功能"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "扩展程序应选择启用跨域隔离，以便继续使用 SharedArrayBuffer。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} 是特定于供应商的方法。请改用标准 {PH2}。"
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "XMLHttpRequest 中的响应 JSON 不再支持 UTF-16"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "我们不再支持主线程上的同步 XMLHttpRequest，因为这会对最终用户的体验产生不利影响。如需更多帮助，请访问 https://xhr.spec.whatwg.org/。"
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() 已被弃用。请改用 isSessionSupported() 并查看已解析的布尔值。"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM 存储项"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1}已清除"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "表格中显示的条目的数量：{PH1}"
   },
@@ -3225,7 +3216,7 @@
     "message": "主资源包含 ache-control:no-cache 的网页无法储存至往返缓存。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "主资源包含 ache-control:no-store 的网页无法储存至往返缓存。"
+    "message": "主资源包含 cache-control:no-store 的网页无法储存至往返缓存。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
     "message": "该网页还没从往返缓存中恢复时导航就被取消了。"
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "主框架"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "了解详情：一律不使用卸载处理程序"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "不是从往返缓存中恢复的：若要触发往返缓存，请使用 Chrome 的“后退”/“前进”按钮，或者使用下面的“测试”按钮自动离开并返回。"
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "此框架被视为广告框架，因为它的父框架是广告框架。"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "预渲染"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "预渲染状态"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "刷新"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}：{PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}：{PH2}，{PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "已修改子树"
@@ -5514,7 +5517,7 @@
     "message": "框架"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "无效的标头值"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# 项违规行为}other{# 项违规行为}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "桌面设备"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "开发者工具节流（高级）"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "此网页是否遵循现代 Web 开发的最佳做法"
   },
@@ -5967,7 +5973,7 @@
     "message": "此网页是否可供残障人士使用"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript 已被停用。您需要启用 JavaScript 才能审核此网页。若要启用 JavaScript，请打开“命令”菜单，然后运行“启用 JavaScript”命令。"
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "旧版导航"
@@ -5985,10 +5991,10 @@
     "message": "多个标签页正受到同一个 service worker 的控制。请关闭同一来源的其他标签页以审核此网页。"
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "导航（默认）"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "导航模式旨在分析网页加载情况，与最初的 Lighthouse 报告完全一样。"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "性能"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "根据初始未节流加载的数据，模拟较慢的网页加载速度。若停用此设置，网页实际上将因为节流而降低速度。"
+    "message": "模拟节流会根据初始未节流加载的数据来模拟较慢的网页加载速度。开发者工具节流确实会减慢网页的加载速度。"
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "模拟节流"
+    "message": "模拟节流（默认）"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "快照"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "快照模式旨在分析处于特定状态（通常是用户互动之后）的网页。"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "下列位置可能存储了会影响加载性能的数据：{PH1}。请在无痕式窗口中审核此页面，以防止这些资源影响您的得分。"
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "下列位置可能存储了会影响加载性能的数据：{PH1}。请在无痕式窗口中审核此网页，以防止这些资源影响您的得分。"
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "节流方法"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "时间跨度"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "时间跨度模式旨在分析任意时间段（通常包含用户互动）。"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "在导航模式下使用传统版 Lighthouse 分析网页。"
@@ -6075,7 +6084,7 @@
     "message": "报告"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "类别"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "社区插件（Beta 版）"
@@ -6093,22 +6102,22 @@
     "message": "了解详情"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "分析网页加载情况"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "分析网页状态"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "类别"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "生成 Lighthouse 报告"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "模式"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "插件"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "启用时间跨度模式"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1} 倍降速"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "超过默认值可能会降低系统性能。"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "强制断开网络连接"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "硬件并发"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "硬件并发替换已启用"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency 的值"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "已停用节流模式"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "离线"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "重置为默认值"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}：{PH2}"
@@ -6898,6 +6922,9 @@
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "复制堆栈轨迹"
+  },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "创建响应标头替换值"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded：{PH1}"
@@ -7506,7 +7533,7 @@
     "message": "未知"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "正在等待服务器响应"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "瀑布"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看证书"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "（来自磁盘缓存）"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "（来自内存缓存）"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "（来自预提取缓存）"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "（来自 service worker）"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "（来自 signed-exchange）"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "（来自 Web Bundle）"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "常规"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "原始"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "引荐来源网址政策"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "远程地址"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "请求标头"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "请求方法"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "请求网址"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "响应标头"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "展开"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "状态代码"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "客户端提供的参数格式不正确或无效。"
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "控制"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "公开内部设置（包括因实现而异的更多详情）"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "过滤"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "拍摄堆快照"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "将全局对象视为根（推荐，取消选中此项会公开内部节点并引入过多细节，但可能有助于调试保留路径的周期）"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "类型化数组"
@@ -8622,10 +8697,10 @@
     "message": "隐藏完整的详细信息"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "如果您认为系统不该向您显示这条提示，请访问 https://g.co/chrome/lookalike-warnings。"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "如果您认为系统不该向您显示这条提示，请访问 https://g.co/chrome/lookalike-warnings。"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "信息"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "复制堆栈轨迹"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "未能加载调试文件“{PH1}”。"
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "未暂停"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "从忽略列表中移除"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "重启帧"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "显示已列入忽略列表的帧"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "配置"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "未能加载调试文件“{PH1}”。"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "未能加载“{PH1}”的任何调试信息。"
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{停用断点}other{停用行内所有断点}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "确定要移除此文件夹吗？"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "已编写"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "删除"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "删除所有替换项"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "已部署"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "排除文件夹"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "将工作区文件夹拖放到此处"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "按已编写/已部署分组（实验性）"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "按文件夹分组"
@@ -10224,10 +10320,10 @@
     "message": "开启/关闭断点输入窗口"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "开启/关闭调试程序边栏"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "开启/关闭导航器边栏"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "尾随"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "空闲帧"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "互动"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "长帧"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU 节流已启用"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- 硬件并发替换已启用"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- JavaScript 采样已停用"
@@ -11670,7 +11766,7 @@
     "message": "签名数量"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "支持大型 blob"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "支持常驻密钥"
@@ -11856,7 +11952,7 @@
     "message": "全部"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "清除输入的内容"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "例如：/small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "重新加载 DevTools"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "选择文件夹"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "选择要用来存储替换文件的文件夹。"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "始终以 Chrome 所用的语言显示"
@@ -12027,7 +12129,7 @@
     "message": "网页重新加载后，DevTools 会自动重新连接。"
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "清除输入的内容"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "未按下"

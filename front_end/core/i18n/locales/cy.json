@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Bloc"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Bloc Catch"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Cau"
   },
@@ -1005,7 +1008,7 @@
     "message": "Dangos Rendrad"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Mae'r togl yn gorfodi lliw prefers-color-scheme CCS"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "diffyg golwg"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Gwall anhysbys wrth lwytho'r ffeil"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "Mae gwybodaeth dadfygio ar gyfer swyddogaeth {PH1} yn anghyflawn"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Bu gwall yn ategyn iaith y dadfygiwr: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] Methwyd â llwytho symbolau dadfygio ar gyfer {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Symbolau dadfygio ar goll ar gyfer y swyddogaeth \"{PH1}\""
+    "message": "Nid oes unrhyw wybodaeth dadfygio ar gyfer swyddogaeth \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Llwythwyd symbolau dadfygio ar gyfer {PH2}, ond ni chanfuwyd unrhyw ffeiliau ffynhonnell"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Wrthi'n llwytho symbolau dadfygio ar gyfer {PH2} (drwy {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Ni chanfuwyd y ffeil symbol \"{PH1}\""
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Mae casglu LiveEdit wedi methu: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Yr Un Wefan a'r Un Tarddiad"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "Ni fydd awdurdodiad yn cael ei gynnwys gan y symbol nodchwiliwr (*) wrth drin Access-Control-Allow-Headers â CORS."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "Mae ceisiadau adnoddau yr oedd eu URL yn cynnwys nodau gofod gwyn \\(n|r|t) a nodau llai na (<) wedi'u rhwystro. Tynnwch linellau newydd ac amgodiwch nodau llai na (less than) o leoedd fel gwerthoedd priodoledd elfen er mwyn llwytho'r adnoddau hyn."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "Mae chrome.loadTimes() wedi'i anghymeradwyo, defnyddiwch API safonol: Navigation Timing 2 yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "Mae chrome.loadTimes() wedi'i anghymeradwyo, defnyddiwch API safonol: Paint Timing yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "Mae chrome.loadTimes() wedi'i anghymeradwyo, defnyddiwch API safonol yn lle: nextHopProtocol yn Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "Bydd cwcis sy'n cynnwys nod \\(0|r|n) yn cael eu gwrthod yn lle eu cwtogi."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "Mae llacio'r polisi o'r un tarddiad gan osod document.domain wedi'i anghymeradwyo, a bydd yn cael ei analluogi'n ddiofyn. Mae'r rhybudd anghymeradwyo hwn ar gyfer mynediad traws-darddiad a alluogwyd gan osod document.domain."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "Mae sbarduno {PH1} o iframes traws-darddiad wedi'i anghymeradwyo a bydd yn cael ei dynnu yn y dyfodol."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "Dylid defnyddio'r briodwedd disableRemotePlayback er mwyn analluogi'r integreiddiad Cast diofyn yn lle defnyddio'r dewisydd -internal-media-controls-overlay-cast-button."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "Mae {PH1} wedi'i anghymeradwyo. Defnyddiwch {PH2} yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "Dyma enghraifft o neges problem anghymeradwyaeth sydd wedi'i chyfieithu."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "Mae llacio'r polisi o'r un tarddiad gan osod document.domain wedi'i anghymeradwyo, a bydd yn cael ei analluogi'n ddiofyn. I barhau i ddefnyddio'r nodwedd hon, optiwch allan o glystyrau asiantau tarddiad-allweddol trwy anfon pennyn Origin-Agent-Cluster: ?0 ynghyd â'r ymateb HTTP ar gyfer y ddogfen a'r fframiau. Gweler https://developer.chrome.com/blog/immutable-document-domain/ am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Mae Event.path wedi'i anghymeradwyo a bydd yn cael ei dynnu. Defnyddiwch Event.composedPath() yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Gwiriwch y dudalen statws nodwedd am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Nid yw getCurrentPosition() na watchPosition() yn gweithio ar darddiadau anniogel bellach. I ddefnyddio'r nodwedd hon, dylech ystyried newid eich ap i darddiad diogel, megis HTTPS. Gweler https://goo.gle/chrome-insecure-origins am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Mae getCurrentPosition() a watchPosition() wedi'u hanghymeradwyo ar darddiadau anniogel. I ddefnyddio'r nodwedd hon, dylech ystyried newid eich ap i darddiad diogel, megis HTTPS. Gweler https://goo.gle/chrome-insecure-origins am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Nid yw getUserMedia() yn gweithio ar darddiadau anniogel bellach. I ddefnyddio'r nodwedd hon, dylech ystyried newid eich ap i darddiad diogel, megis HTTPS. Gweler https://goo.gle/chrome-insecure-origins am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "Mae RTCPeerConnectionIceErrorEvent.hostCandidate wedi'i anghymeradwyo. Defnyddiwch RTCPeerConnectionIceErrorEvent.address neu RTCPeerConnectionIceErrorEvent.port yn lle hynny."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "Gofynnodd y wefan am is-ffynhonnell gan rwydwaith y gallai ond gael mynediad iddo oherwydd safle rhwydwaith breintiedig ei ddefnyddwyr. Mae'r ceisiadau hyn yn datgelu dyfeisiau a gweinyddion nad ydynt yn gyhoeddus i'r rhyngrwyd, gan gynyddu'r perygl o ymosodiad cross-site request forgery (CSRF), a/neu ollwng gwybodaeth. I liniaru'r peryglon hyn, mae Chrome yn anghymeradwyo ceisiadau i is-ffynonellau nad ydynt yn gyhoeddus pan gychwynnir o gyd-destunau nad ydynt yn ddiogel, a bydd yn dechrau eu rhwystro."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "Mae IPv6 wedi'i alluogi yn ddiofyn a bydd y gallu i'w analluogi gan ddefnyddio googIPv6 yn cael ei dargedu i gael ei dynnu o M108, ac ar ôl hynny bydd yn cael ei anwybyddu. Stopiwch ddefnyddio'r cyfyngiad etifeddiaeth hwn."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "Ni ellir llwytho CSS o gyfeiriadau URL file: oni bai eu bod yn gorffen ag estyniad ffeil .css."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "Mae defnyddio SourceBuffer.abort() i derfynu'r broses o dynnu ystod anghydamserol remove() wedi'i anghymeradwyo oherwydd newid yn y fanyleb. Bydd cymorth yn cael ei dynnu yn y dyfodol. Dylech wrando ar ddigwyddiad updateend yn lle. Bwriedir abort() i derfynu atodiad cyfryngau anghydamserol neu i ailosod cyflwr dosrannwr yn unig."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "Mae gosod MediaSource.duration yn is na'r stamp amser cyflwyno uchaf o unrhyw fframiau byffer sydd wedi'u codio wedi'i anghymeradwyo oherwydd newid yn y fanyleb. Bydd cefnogaeth ar gyfer tynnu ymhlyg o gyfryngau sydd wedi'u cwtogi a'u byffro yn cael ei thynnu yn y dyfodol. Yn lle, dylech berfformio remove(newDuration, oldDuration) penodol ar bob sourceBuffers, ble mae newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Bydd y newid hwn yn dod i rym gyda'r cerrig milltir {milestone}."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "Bydd Web MIDI yn gofyn am ganiatâd i ddefnyddio hyd yn oed os nad yw'r sysex wedi'i nodi yn y MIDIOptions."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Ni ellir defnyddio'r Notification API o darddiadau anniogel bellach. Dylech ystyried newid eich ap i darddiad diogel, megis HTTPS. Gweler https://goo.gle/chrome-insecure-origins am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Ni ellir gofyn am ganiatâd ar gyfer y Notification API o iframe traws-darddiad bellach. Dylech ystyried gofyn am ganiatâd gan ffrâm lefel uchaf neu agor ffenestr newydd yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "Mae'ch partner yn trafod fersiwn (D)TLS sydd wedi darfod. Gwiriwch gyda'ch partner i drwsio hyn."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "Mae <source src> gyda rhiant <picture> yn annilys ac felly'n cael ei anwybyddu. Defnyddiwch <source srcset> yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "Mae window.webkitStorageInfo wedi'i anghymeradwyo. Defnyddiwch navigator.webkitTemporaryStorage neu navigator.webkitPersistentStorage yn lle hynny."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "Mae ceisiadau is-ffynhonnell y mae eu URL yn cynnwys manylion adnabod sydd wedi'u hymgorffori (e.e. https://user:pass@host/) wedi'u rhwystro."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "Mae'r cyfyngiad DtlsSrtpKeyAgreement wedi'i dynnu. Rydych wedi nodi gwerth false ar gyfer y cyfyngiad hwn, sy'n cael ei ddehongli fel ymgais i ddefnyddio'r dull SDES key negotiation sydd wedi'i dynnu. Mae'r swyddogaeth hon wedi'i thynnu; defnyddiwch wasanaeth sy'n cefnogi DTLS key negotiation yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "Mae'r cyfyngiad DtlsSrtpKeyAgreement wedi'i dynnu. Rydych wedi nodi gwerth true ar gyfer y cyfyngiad hwn, a gafodd ddim effaith, ond gallwch dynnu'r cyfyngiad hwn er taclusrwydd."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Complex Plan B SDP wedi'i ganfod. Ni chefnogir y dafodiaith hon o'r Session Description Protocol bellach. Defnyddiwch Unified Plan SDP yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Mae Plan B SDP semantics, sy'n cael ei ddefnyddio wrth adeiladu RTCPeerConnection gyda {sdpSemantics:'plan-b'}, yn fersiwn etifeddiaeth ansafonol o'r Session Description Protocol sydd wedi'i dileu'n barhaol o'r Platfform Gwe. Mae ar gael o hyd wrth adeiladu gyda IS_FUCHSIA, ond rydym yn bwriadu ei ddileu cyn gynted â phosib. Stopiwch ddibynnu arno. Gweler https://crbug.com/1302249 ar gyfer statws."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "Mae'r opsiwn rtcpMuxPolicy wedi'i anghymeradwyo a bydd yn cael ei dynnu."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "Bydd angen ynysu traws-darddiad ar SharedArrayBuffer. Gweler https://developer.chrome.com/blog/enabling-shared-array-buffer/ am ragor o fanylion."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "Mae speechSynthesis.speak() heb weithredu defnyddiwr wedi'i anghymeradwyo a bydd yn cael ei dynnu."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Nodwedd Anghymeradwy wedi'i Defnyddio"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "Dylai estyniadau optio i mewn i ynysu traws-darddiad er mwyn parhau i ddefnyddio SharedArrayBuffer. Gweler https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "Mae {PH1} yn benodol i'r gwerthwr. Defnyddiwch y {PH2} safonol yn lle."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "Ni chefnogir UTF-16 gan ymateb json yn XMLHttpRequest"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "Mae XMLHttpRequest cydamserig ar y prif drywydd wedi'i anghymeradwyo oherwydd ei effaith niweidiol ar brofiad y defnyddiwr. Am ragor o help, gwiriwch https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "Mae supportsSession() wedi'i anghymeradwyo. Defnyddiwch isSessionSupported() a gwiriwch y gwerth booleaidd wedi'i ddatrys yn lle."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Rheolaeth Credyd Ffederal"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Eitemau Storfa DOM"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "Cliriwyd {PH1}"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Nifer y cofnodion a ddangosir yn y dabl: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Prif Ffrâm"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Dysgu rhagor: Peidio byth â defnyddio trinydd dadlwytho"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Ni wasanaethir o storfa yn ôl/ymlaen: i sbarduno'r storfa yn ôl/ymlaen, defnyddiwch fotymau yn ôl/ymlaen Chrome, neu defnyddiwch y botwm profi isod i lywio i ffwrdd ac yn ôl yn awtomatig."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Mae'r ffrâm hon yn cael ei hystyried yn ffrâm hysbyseb oherwydd bod ei ffrâm rhiant yn ffrâm hysbyseb."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Cyn-rendro"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Statws Cyn-Rendro"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Ail-lwytho"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Mae is-goeden wedi'i haddasu"
@@ -5514,7 +5517,7 @@
     "message": "Ffrâm"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "Gwerth Pennawd Annilys"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# tor-rheol}zero{# tor-rheol}two{# dor-rheol}few{# thor-rheol}many{# thor-rheol}other{# tor-rheol}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Bwrdd gwaith"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "Throtlo DevTools (uwch)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "A yw'r dudalen hon yn dilyn arferion gorau ar gyfer datblygu gwe fodern"
   },
@@ -5967,7 +5973,7 @@
     "message": "A ellir defnyddio'r dudalen hon gan bobl ag anableddau neu namau?"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "Mae JavaScript wedi'i analluogi. Mae angen i chi alluogi JavaScript i archwilio'r dudalen hon. Agorwch y Ddewislen Gorchmynion a rhedeg y gorchymyn Galluogi JavaScript i alluogi JavaScript."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Llywio etifeddiaeth"
@@ -5985,10 +5991,10 @@
     "message": "Mae mwy nag un tab yn cael eu rheoli gan yr un service worker. Caewch eich tabiau eraill ar yr un tarddiad i archwilio'r dudalen hon."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Llywio (Diofyn)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "Mae modd llywio yn dadansoddi llwythiad tudalen, yn union fel yr adroddiadau Lighthouse gwreiddiol."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Perfformiad"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Efelychu llwytho tudalen yn arafach, yn seiliedig ar ddata o lwytho cychwynnol heb ei hidlo. Os yw wedi'i analluogi, mae'r dudalen yn cael ei arafu â throtlo cymhwysol mewn gwirionedd."
+    "message": "Mae throtlo sydd wedi'i efelychu yn efelychu llwytho tudalen arafach yn seiliedig ar ddata o lwytho cychwynnol sydd heb ei throtlo. Mae throtlo DevTools mewn gwirionedd yn arafu'r tudalen."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Throtlo sydd wedi'i efelychu"
+    "message": "Throtlo sydd wedi'i efelychu (diofyn)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Ciplun"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "Mae modd ciplun yn dadansoddi'r dudalen mewn cyflwr penodol, fel arfer ar ôl rhyngweithio â defnyddwyr."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Mae'n bosib y bydd data sydd wedi'u storio sy'n effeithio ar berfformiad llwytho yn y lleoliadau hyn: {PH1}. Archwiliwch y dudalen hon mewn ffenestr anhysbys i atal yr adnoddau hynny rhag effeithio ar eich sgorau."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mae'n bosib y bydd data sydd wedi'u storio sy'n effeithio ar berfformiad yn llwytho yn y lleoliad hwn: {PH1}. Archwiliwch y dudalen hon mewn ffenestr anhysbys i atal yr adnoddau hynny rhag effeithio ar eich sgorau."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Dull throtlo"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Cyfnod"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "Mae modd cyfnod yn dadansoddi cyfnod mympwyol o amser, gan amlaf yn cynnwys rhyngweithiadau defnyddwyr."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Dadansoddi'r dudalen hon gan ddefnyddio Lighthouse clasurol pan fyddwch yn y modd llywio."
@@ -6075,7 +6084,7 @@
     "message": "Adroddiadau"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "Categorïau"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "Ategion Cymunedol (beta)"
@@ -6093,22 +6102,22 @@
     "message": "Dysgu rhagor"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "Dadansoddi llwythiad tudalen"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "Dadansoddi cyflwr tudalen"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "Categorïau"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Cynhyrchu adroddiad Lighthouse"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Modd"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "Ategion"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Dechrau cyfnod"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× arafu"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Gall fynd y tu hwnt i'r gwerth diofyn ddirywio perfformiad y system."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Gorfodi datgysylltu o'r rhwydwaith"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Cytundeb caledwedd"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Mae diystyru cytundeb caledwedd wedi'i alluogi"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "Gwerth navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Dim throtlo"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "All-lein"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Ailosod i'r gwerth diofyn"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Copïo’r olion pentyrru"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Creu diystyriad pennyn ymateb"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7281,7 +7308,7 @@
     "message": "Cyfeiriad o Bell"
   },
   "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Penawdau cais"
+    "message": "Penynnau Cais"
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "Dull Cais"
@@ -7506,7 +7533,7 @@
     "message": "Anhysbys"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "Aros am ymateb y gweinydd"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Rhaeadr"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Gweld y dystysgrif"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(o storfa disg)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(o'r storfa gof)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(o storfa cyn-nôl)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(gan service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(o gyfnewid a lofnodwyd)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(o Fwndel Gwe)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "Cyffredinol"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Crai"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Polisi Cyfeiriwr"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Cyfeiriad o Bell"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Penynnau Cais"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Dull Cais"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "URL Cais"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Penynnau Ymateb"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Dangos rhagor"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Cod Statws"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Roedd arg a ddarparwyd gan gleientiaid wedi'i chamffurfio neu fel arall yn annilys."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Cyfyngiant"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "Datgelu mewnol (yn cynnwys manylion sy'n benodol i'r gweithrediad ychwanegol)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Hidlo"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Tynnu ciplun pentwr"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "Trin gwrthrychau cyffredinol fel gwreiddiau (argymhellir, mae dad-dicio hyn yn datgelu nodau mewnol ac yn cyflwyno gormod o fanylion, ond gallai helpu cylchoedd dadfygio wrth gadw llwybrau)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Araeau sydd wedi'u teipio"
@@ -8622,10 +8697,10 @@
     "message": "Cuddio'r manylion llawn"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Os ydych yn credu bod hyn yn cael ei ddangos drwy gamgymeriad, ewch i https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Os ydych yn credu bod hyn yn cael ei ddangos drwy gamgymeriad, ewch i https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Gwybodaeth"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Copïo’r olion pentyrru"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Methwyd â llwytho symbolau dadfygio ar gyfer \"{PH1}\"."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Heb ei seibio"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Tynnu o'r rhestr anwybyddu"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Ailddechrau'r ffrâm"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Dangos fframiau sydd wedi'u rhoi ar y rhestr anwybyddu"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Ffurfweddu"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Methwyd â llwytho symbolau dadfygio ar gyfer \"{PH1}\"."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Methwyd â llwytho gwybodaeth dadfygio ar gyfer {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Diffodd y torbwynt}zero{Diffodd yr holl dorbwyntiau yn y llinell}two{Diffodd yr holl dorbwyntiau yn y llinell}few{Diffodd yr holl dorbwyntiau yn y llinell}many{Diffodd yr holl dorbwyntiau yn y llinell}other{Diffodd yr holl dorbwyntiau yn y llinell}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Ydych chi'n siŵr eich bod am dynnu'r ffolder hon?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Awdurwyd"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Dileu"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Dileu'r holl ddiystyriadau"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Gosodwyd"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Eithrio'r ffolder"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Gollyngwch y ffolder man gwaith yma"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Grwpio yn ôl Awdurwyd/Gosodwyd (arbrofol)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Grwpio yn ôl ffolder"
@@ -10224,10 +10320,10 @@
     "message": "Toglo ffenestr mewnbwn torbwynt"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "Toglo bar ochr dadfygiwr"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "Toglo bar ochr llywio"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Ôl nodau"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Ffrâm Segur"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "Rhyngweithiadau"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Ffrâm hir"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- mae throtlo CPU wedi'i alluogi"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- Mae diystyru cytundeb caledwedd wedi'i alluogi"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- Mae samplu JavaScript wedi'i ddiffodd"
@@ -11670,7 +11766,7 @@
     "message": "Cyfrif Llofnod"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "Yn cefnogi blob mawr"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Yn cefnogi allweddi preswylwyr"
@@ -11856,7 +11952,7 @@
     "message": "Pob un"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "Clirio mewnbwn"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "e.e. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Ail-lwytho DevTools"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Dewis ffolder"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Dewiswch ffolder i storio ffeiliau diystyru ynddi."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Cyfateb i iaith Chrome bob amser"
@@ -12027,7 +12129,7 @@
     "message": "Ar ôl i'r dudalen ail-lwytho, bydd DevTools yn ailgysylltu'n awtomatig."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Clirio mewnbwn"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "heb ei bwyso"

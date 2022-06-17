@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Blokir"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Blok Catch"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Penutup"
   },
@@ -399,7 +402,7 @@
     "message": "Skrip"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "With Blokir"
+    "message": "Blok With"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "Worklet Lelang Iklan"
@@ -1005,7 +1008,7 @@
     "message": "Tampilkan Rendering"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Tombol warna paksa CSS prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "kekurangan daya penglihatan"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Terjadi error yang tidak diketahui saat memuat file"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "Informasi debug untuk fungsi {PH1} tidak lengkap"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Error dalam plugin bahasa debugger: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] Gagal memuat simbol debug untuk {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Simbol debug tidak ada untuk fungsi \"{PH1}\""
+    "message": "Tidak ada informasi debug untuk fungsi \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Simbol debug yang dimuat untuk {PH2}, tetapi tidak ditemukan file sumber apa pun"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Memuat simbol debug untuk {PH2} (melalui {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "File simbol \"{PH1}\" tidak ditemukan"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit kompilasi gagal: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Situs yang Sama dan Asal yang Sama"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "Otorisasi tidak akan dicakup oleh simbol karakter pengganti (*) dalam penanganan Access-Control-Allow-Headers CORS."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "Permintaan resource yang URL-nya berisi karakter \\(n|r|t) spasi kosong yang dihapus dan karakter kurang dari (<) akan diblokir. Hapus baris baru dan enkode karakter kurang dari, dari tempat seperti nilai atribut elemen untuk memuat resource ini."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Paint Timing."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() tidak digunakan lagi. Sebagai gantinya, gunakan API standar: nextHopProtocol di Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "Cookie yang berisi karakter \\(0|r|n) akan ditolak, bukan dipotong."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "Melonggarkan kebijakan asal yang sama dengan menyetel document.domain sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Peringatan penghentian ini ditujukan untuk akses lintas asal yang diaktifkan dengan menyetel document.domain."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "Memicu {PH1} dari iframe lintas asal tidak digunakan lagi dan akan dihapus pada masa mendatang."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "Daripada menggunakan pemilih -internal-media-controls-overlay-cast-button, sebaiknya gunakan disableRemotePlayback untuk menonaktifkan integrasi Cast default."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} tidak digunakan lagi. Sebagai gantinya, gunakan {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "Ini adalah contoh terjemahan pesan masalah penghentian penggunaan."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "Melonggarkan kebijakan asal yang sama dengan menyetel document.domain sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Untuk terus menggunakan fitur ini, pilih untuk tidak menggunakan cluster agen dengan kunci asal dengan mengirimkan header Origin-Agent-Cluster: ?0 bersama respons HTTP untuk dokumen dan bingkai. Lihat https://developer.chrome.com/blog/immutable-document-domain/ untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path tidak digunakan lagi dan akan dihapus. Sebagai gantinya, gunakan Event.composedPath()."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Periksa halaman status fitur untuk mendapatkan detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() dan watchPosition() tidak lagi berfungsi pada asal yang tidak aman. Untuk menggunakan fitur ini, sebaiknya Anda mengalihkan aplikasi ke asal yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() dan watchPosition() tidak digunakan lagi karena asal yang tidak aman. Untuk menggunakan fitur ini, sebaiknya Anda mengalihkan aplikasi ke asal yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() tidak lagi berfungsi pada asal yang tidak aman. Untuk menggunakan fitur ini, sebaiknya Anda mengalihkan aplikasi ke asal yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate tidak digunakan lagi. Sebagai gantinya, gunakan RTCPeerConnectionIceErrorEvent.address atau RTCPeerConnectionIceErrorEvent.port."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "Situs meminta subresource dari jaringan yang hanya dapat diakses karena posisi jaringan istimewa penggunanya. Permintaan ini mengekspos perangkat dan server non-publik ke internet, yang meningkatkan risiko serangan pemalsuan permintaan lintas situs (CSRF), dan/atau kebocoran informasi. Untuk mengurangi risiko tersebut, Chrome menghentikan permintaan ke subresource non-publik saat dimulai dari konteks yang tidak aman, dan akan mulai memblokirnya."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 diaktifkan secara default dan kemampuan untuk menonaktifkannya menggunakan googIPv6 ditargetkan akan dihapus di M108, setelah itu akan diabaikan. Harap berhenti menggunakan batasan lama ini."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "CSS tidak dapat dimuat dari URL file: kecuali jika diakhiri dengan ekstensi file .css."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "Penggunaan SourceBuffer.abort() untuk membatalkan penghapusan rentang asinkron remove() tidak digunakan lagi karena perubahan spesifikasi. Dukungan akan dihapus pada masa mendatang. Sebagai gantinya, Anda harus memproses peristiwa updateend. abort() dimaksudkan untuk hanya membatalkan penambahan media asinkron atau mereset status parser."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "Menyetel MediaSource.duration di bawah stempel waktu presentasi tertinggi dari semua bingkai berkode dan yang di-buffer kini tidak digunakan lagi karena perubahan spesifikasi. Dukungan untuk penghapusan implisit media yang di-buffer dan terpotong akan dihapus pada masa mendatang. Anda harus menjalankan remove(newDuration, oldDuration) eksplisit pada semua sourceBuffers, saat status menunjukkan newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Perubahan ini akan berlaku saat pencapaian {milestone}."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "Web MIDI akan meminta izin untuk menggunakan sysex meskipun sysex tidak ditentukan dalam MIDIOptions."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Notification API mungkin tidak lagi digunakan dari asal yang tidak aman. Sebaiknya Anda mengalihkan aplikasi Anda ke asal yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Izin untuk Notification API mungkin tidak lagi diminta dari iframe lintas asal. Sebaiknya Anda meminta izin dari bingkai level teratas atau membuka jendela baru."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "Partner Anda sedang menegosiasikan versi (D)TLS yang usang. Hubungi partner Anda untuk memperbaikinya."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<source src> dengan induk <picture> tidak valid dan akan diabaikan. Sebagai gantinya, gunakan <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo tidak digunakan lagi. Sebagai gantinya, gunakan navigator.webkitTemporaryStorage atau navigator.webkitPersistentStorage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "Permintaan subresource yang URL-nya berisi kredensial yang disematkan (mis. https://user:pass@host/) akan diblokir."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "Batasan DtlsSrtpKeyAgreement dihapus. Anda telah menentukan nilai false untuk batasan ini, yang ditafsirkan sebagai upaya untuk menggunakan metode SDES key negotiation yang dihapus. Fungsi ini dihapus. Sebagai gantinya, gunakan layanan yang mendukung DTLS key negotiation."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "Batasan DtlsSrtpKeyAgreement dihapus. Anda telah menentukan nilai true untuk batasan ini, yang tidak berpengaruh, tetapi Anda dapat menghapus batasan ini agar rapi."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Complex Plan B SDP terdeteksi. Dialek Session Description Protocol ini tidak lagi didukung. Sebagai gantinya, gunakan Unified Plan SDP."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, yang digunakan saat membuat RTCPeerConnection dengan {sdpSemantics:'plan-b'}, adalah versi non-standar lama dari Session Description Protocol yang telah dihapus secara permanen dari Web Platform. Protokol ini masih tersedia saat membuat dengan IS_FUCHSIA, tetapi kami ingin menghapusnya sesegera mungkin. Jangan mengandalkan protokol ini. Lihat https://crbug.com/1302249 untuk mengetahui status."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "Opsi rtcpMuxPolicy tidak digunakan lagi dan akan dihapus."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer akan memerlukan isolasi lintas asal. Lihat https://developer.chrome.com/blog/enabling-shared-array-buffer/ untuk detail selengkapnya."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "speechSynthesis.speak() tanpa aktivasi pengguna tidak digunakan lagi dan akan dihapus."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Menggunakan Fitur yang Tidak Digunakan Lagi"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "Ekstensi harus ikut serta dalam isolasi lintas asal untuk terus menggunakan SharedArrayBuffer. Lihat https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} adalah metode khusus vendor. Sebagai gantinya, gunakan {PH2} standar."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "UTF-16 tidak didukung oleh respons JSON di XMLHttpRequest"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "XMLHttpRequest sinkron pada thread utama tidak digunakan lagi karena efeknya yang merugikan terhadap pengalaman pengguna akhir. Untuk mendapatkan bantuan lebih lanjut, buka https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() tidak digunakan lagi. Sebagai gantinya, gunakan isSessionSupported() dan periksa nilai boolean yang di-resolve."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Item Penyimpanan DOM"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} dihapus"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Jumlah entri yang ditampilkan dalam tabel: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Frame Utama"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Pelajari lebih lanjut: Jangan pernah menggunakan pengendali penghapus muatan"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Tidak disalurkan dari back-forward cache: untuk memicu back-forward cache, gunakan tombol back/forward Chrome, atau gunakan tombol uji di bawah untuk keluar dan kembali secara otomatis."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Frame ini dianggap sebagai frame iklan karena frame induknya adalah frame iklan."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Pra-rendering"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Status Pra-rendering"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Refresh"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Subhierarki diubah"
@@ -5514,7 +5517,7 @@
     "message": "Frame"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "Nilai Header yang Tidak Valid"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# pelanggaran}other{# pelanggaran}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Desktop"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "Throttling DevTools (lanjutan)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Apakah halaman ini mengikuti praktik terbaik untuk pengembangan web modern?"
   },
@@ -5967,7 +5973,7 @@
     "message": "Apakah halaman ini dapat digunakan oleh orang dengan disabilitas atau gangguan"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript tidak aktif. Anda harus mengaktifkan JavaScript untuk mengaudit halaman ini. Buka Menu Command dan jalankan perintah Enable JavaScript untuk mengaktifkan JavaScript."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Navigasi lama"
@@ -5985,10 +5991,10 @@
     "message": "Beberapa tab sedang dikontrol oleh service worker yang sama. Tutup tab lainnya di asal yang sama untuk mengaudit halaman ini."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Navigasi (Default)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "Mode navigasi menganalisis pemuatan halaman, persis seperti laporan Lighthouse asli."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performa"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Simulasikan pemuatan halaman yang lebih lambat, berdasarkan data dari pemuatan awal yang tidak di-throttle. Jika dinonaktifkan, halaman sebenarnya akan dilambatkan dengan throttling yang diterapkan."
+    "message": "Simulasi throttling menyimulasikan pemuatan halaman yang lebih lambat berdasarkan data dari pemuatan awal yang tidak di-throttle. Throttling DevTools sebenarnya memperlambat halaman."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Simulasi throttling"
+    "message": "Simulasi throttling (default)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Snapshot"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "Mode snapshot menganalisis halaman dalam status tertentu, biasanya setelah interaksi pengguna."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini {PH1}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Mungkin terdapat data tersimpan yang memengaruhi performa pemuatan di lokasi ini: {PH1}. Audit halaman ini di jendela Samaran untuk mencegah resource tersebut memengaruhi performa Anda."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Metode throttling"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Rentang waktu"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "Mode rentang waktu menganalisis periode waktu yang arbitrer, biasanya yang berisi interaksi pengguna."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Lakukan analisis halaman menggunakan Lighthouse klasik saat dalam mode navigasi."
@@ -6075,7 +6084,7 @@
     "message": "Laporan"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "Kategori"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "Plugin Komunitas (beta)"
@@ -6093,22 +6102,22 @@
     "message": "Pelajari lebih lanjut"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "Analisis pemuatan halaman"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "Analisis status halaman"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "Kategori"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Membuat laporan Lighthouse"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mode"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "Plugin"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Mulai rentang waktu"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× pelambatan"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Melebihi nilai default dapat menurunkan performa sistem."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Paksa untuk putus dari jaringan"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Konkurensi hardware"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Penggantian konkurensi hardware diaktifkan"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "Nilai navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Tanpa throttling"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Reset ke nilai default"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Salin pelacakan tumpukan"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Buat penggantian header respons"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7242,7 +7269,7 @@
     "message": "(dari service worker)"
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
-    "message": "(dari pertukaran bertanda tangan)"
+    "message": "(dari Signed HTTP Exchange)"
   },
   "panels/network/RequestHeadersView.ts | fromWebBundle": {
     "message": "(dari Paket Web)"
@@ -7506,7 +7533,7 @@
     "message": "Tidak dikenal"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "Menunggu respons server"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Lihat sertifikat"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(dari cache disk)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(dari cache memori)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(dari cache pengambilan data)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(dari service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(dari Signed HTTP Exchange)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(dari Paket Web)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "Umum"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Raw"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Kebijakan Perujuk"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Alamat Jarak Jauh"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Header Permintaan"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Metode Permintaan"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "Minta URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Header Respons"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Tampilkan lainnya"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Kode Status"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argumen yang diberikan klien salah atau tidak valid."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Penahanan"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "Mengekspos data internal (termasuk detail khusus penerapan tambahan)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filter"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Ambil cuplikan heap"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "Tangani objek global sebagai root (direkomendasikan, menghapus tanda centang ini akan mengekspos node internal dan memasukkan detail yang berlebihan, tetapi mungkin membantu siklus proses debug dalam mempertahankan jalur)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Array yang memiliki jenis"
@@ -8622,10 +8697,10 @@
     "message": "Sembunyikan detail lengkap"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Jika Anda yakin bahwa ini keliru, buka https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Jika Anda yakin bahwa ini keliru, buka https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Info"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Salin pelacakan tumpukan"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Gagal memuat file debug \"{PH1}\"."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Tidak dijeda"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Hapus dari daftar yang diabaikan"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Mulai ulang frame"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Tampilkan frame dalam daftar diabaikan"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Konfigurasi"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Gagal memuat file debug \"{PH1}\"."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Gagal memuat info debug apa pun untuk {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Nonaktifkan titik henti sementara}other{Nonaktifkan semua titik henti sementara dalam baris}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Yakin ingin menghapus folder ini?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Ditulis"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Hapus"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Hapus semua penggantian"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Di-deploy"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Kecualikan folder"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Tempatkan folder ruang kerja di sini"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Kelompokkan menurut status Ditulis/Di-deploy (eksperimental)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Kelompokkan menurut folder"
@@ -10224,10 +10320,10 @@
     "message": "Alihkan jendela input titik henti sementara"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "Tombol sidebar debugger"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "Tombol sidebar navigator"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Tambahan"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Frame Tidak Ada Aktivitas"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "Interaksi"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Frame panjang"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Throttling CPU diaktifkan"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- Penggantian konkurensi hardware diaktifkan"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- Pengambilan sampel JavaScript dinonaktifkan"
@@ -11670,7 +11766,7 @@
     "message": "Jumlah Tanda Tangan"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "Mendukung blob besar"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Mendukung kunci lokal"
@@ -11856,7 +11952,7 @@
     "message": "Semua"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "Hapus input"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "mis. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Muat ulang DevTools"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Pilih folder"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Pilih folder untuk menyimpan file pengganti."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Selalu cocokkan dengan bahasa Chrome"
@@ -12027,7 +12129,7 @@
     "message": "Setelah halaman dimuat ulang, DevTools akan terhubung kembali secara otomatis."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Hapus input"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "tidak ditekan"

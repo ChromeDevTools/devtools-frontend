@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Secțiune"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Bloc Catch"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Închidere"
   },
@@ -399,7 +402,7 @@
     "message": "Script"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "Secțiunea With"
+    "message": "Bloc With"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "Worklet pentru licitație publicitară"
@@ -1005,7 +1008,7 @@
     "message": "Afișează Redarea"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Comutarea forțează funcția CSS prefers-color-scheme color"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "deficiență de vedere"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Eroare necunoscută la încărcarea fișierului"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "Informațiile de remediere a erorilor pentru funcția {PH1} sunt incomplete"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Eroare a pluginului pentru limbă al depanatorului: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] Nu s-au încărcat simbolurile de remediere a erorilor pentru {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Lipsesc simbolurile de remediere a simbolurilor pentru funcția „{PH1}”"
+    "message": "Nu s-au obținut informații de remediere a erorilor pentru funcția {PH1}"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] S-au încărcat simbolurile de remediere a erorilor pentru {PH2}, dar nu s-au detectat fișiere sursă"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Se încarcă simbolurile de remediere a erorilor pentru {PH2} (prin {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Fișierul de simboluri „{PH1}” nu a fost găsit"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Compilarea LiveEdit nu a reușit: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Same-Site și Same-Origin"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "Autorizarea nu va fi acoperită de simbolul pentru metacaracter (*) în cadrul gestionării Access-Control-Allow-Headers prin CORS."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "Solicitările de resurse ale căror adrese URL conțineau atât caractere pentru spații \\(n|r|t), cât și semnul mai mic decât (<) sunt blocate. Pentru a încărca resursele, elimină caracterele de rând nou și codifică semnul mai mic decât în locuri cum ar fi valorile atributelor elementelor."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() s-a învechit. Folosește API-ul standardizat Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() s-a învechit. Folosește API-ul standardizat Paint Timing."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() s-a învechit. Folosește API-ul standardizat nextHopProtocol din Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "Cookie-urile care conțin un caracter \\(0|r|n) vor fi respinse în loc de a fi trunchiate."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "Relaxarea politicii pentru aceeași origine prin setarea document.domain este învechită și va fi dezactivată în mod prestabilit. Acest avertisment privind renunțarea la dezvoltare este asociat unei accesări cu origini diferite, care a fost activată din setarea document.domain."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "Declanșarea {PH1} din cadre iframe cu origini diferite s-a învechit și va fi eliminată pe viitor."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "Pentru a dezactiva integrarea Cast prestabilită, trebuie folosit atributul disableRemotePlayback în locul selectorului -internal-media-controls-overlay-cast-button."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} s-a învechit. Folosește {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "Acesta este un exemplu de mesaj tradus privind o problemă legată de renunțarea la dezvoltare."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "Relaxarea politicii pentru aceeași origine prin setarea document.domain este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet Origin-Agent-Cluster: ?0 împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "API-ul Event.path este învechit și va fi eliminat. Folosește Event.composedPath()."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Pentru mai multe detalii accesează pagina cu starea funcțiilor."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() și watchPosition() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() și watchPosition() sunt învechite, având origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate s-a învechit. Folosește RTCPeerConnectionIceErrorEvent.address sau RTCPeerConnectionIceErrorEvent.port."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "Site-ul a solicitat o subresursă de la o rețea pe care a putut să o acceseze numai datorită poziției privilegiate în rețea a utilizatorilor săi. Aceste solicitări expun pe internet dispozitive și servere care nu sunt publice, crescând riscul de atacuri prin falsificarea solicitărilor de pe alt site (CSRF) și de scurgeri de informații. Pentru a reduce aceste riscuri, Chrome marchează drept învechite solicitările de la subresurse care nu sunt publice atunci când sunt inițiate din contexte nesigure și va începe să le blocheze."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 este activat în mod prestabilit, iar capacitatea de a-l dezactiva prin googIPv6 este eliminată în M108, după care va fi ignorată. Nu mai folosi această restricție veche."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "Fișierul CSS nu se poate încărca din adrese URL file: dacă acestea nu se termină cu extensia de fișier .css."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "Folosirea SourceBuffer.abort() pentru a abandona eliminarea intervalului asincron pentru remove() este învechită din cauza modificării specificațiilor. Pe viitor, aceasta nu va mai fi acceptată. Ar trebui să asculți evenimentul updateend. abort() are numai rolul de a abandona atașări media asincrone sau de a reseta starea parserului."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "Setarea MediaSource.duration sub cel mai mare marcaj temporal de prezentare al oricăror cadre codificate din memoria temporară este învechită din cauza modificării specificațiilor. Eliminarea implicită a elementelor media trunchiate din memoria temporară va fi eliminată pe viitor. În locul acesteia, trebuie să rulezi remove(newDuration, oldDuration) pentru toate obiectele sourceBuffers, unde newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Această modificare va intra în vigoare cu obiectivul {milestone}."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "Web MIDI va solicita o permisiune de folosit chiar dacă sysex nu este specificat în MIDIOptions."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Este posibil ca permisiunea pentru API-ul Notification să nu mai fie solicitată dintr-un iframe cu origini diferite. Îți recomandăm să soliciți permisiunea dintr-un cadru de nivel superior sau să deschizi o fereastră nouă."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "Partenerul tău negociază o versiune (D)TLS învechită. Consultă-te cu partenerul pentru a remedia problema."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<source src> cu un element părinte <picture> nu este valid, deci va fi ignorat. Folosește <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo s-a învechit. Folosește navigator.webkitTemporaryStorage sau navigator.webkitPersistentStorage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "Solicitările de subresurse ale căror adrese URL conțin date de conectare încorporate (de ex., https://user:pass@host/) sunt blocate."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "Restricția DtlsSrtpKeyAgreement a fost eliminată. Ai specificat o valoare false pentru această restricție, care este interpretată ca o încercare de a folosi metoda SDES key negotiation eliminată. Această funcție a fost eliminată. Folosește un serviciu care acceptă DTLS key negotiation."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "Restricția DtlsSrtpKeyAgreement a fost eliminată. Ai specificat o valoare true pentru această restricție, care nu a avut niciun efect, dar poți elimina restricția pentru un aspect ordonat."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "S-a detectat Complex Plan B SDP. Acest dialect pentru Session Description Protocol nu mai este acceptat. Folosește Unified Plan SDP."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, care se folosește la construirea unui obiect RTCPeerConnection cu {sdpSemantics:'plan-b'}, care este o versiune non-standard veche Session Description Protocol care a fost ștearsă definitiv de pe platforma web. Aceasta este disponibilă și când construiești cu IS_FUCHSIA, dar intenționăm să o ștergem cât mai curând. Nu te mai baza pe aceasta. Consultă https://crbug.com/1302249 pentru stare."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "Opțiunea rtcpMuxPolicy este învechită și va fi eliminată."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer va necesita blocarea accesului de la mai multe surse. Consultă https://developer.chrome.com/blog/enabling-shared-array-buffer/ pentru mai multe detalii."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "Apelarea speechSynthesis.speak() fără activarea utilizatorului este învechită și va fi eliminată."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "S-a folosit o funcție învechită"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "Extensiile trebuie să aibă blocarea accesului de la mai multe surse activată pentru a folosi în continuare SharedArrayBuffer. Consultă https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "Metoda {PH1} este specifică furnizorului. Folosește metoda standard, {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "Fișierul JSON de răspuns din XMLHttpRequest nu acceptă UTF-16"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "Obiectul sincron XMLHttpRequest din firul principal este învechit din cauza efectelor sale negative asupra experienței utilizatorului final. Pentru mai mult ajutor, consultă https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() s-a învechit. Folosește isSessionSupported() și verifică valoarea booleană rezultată."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API-ul Federated Credential Management"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Articole de stocare DOM"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} golite"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Numărul de introduceri afișate în tabel: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Cadrul principal"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Află mai multe: nu folosi niciodată un handler de descărcare"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Nu s-a difuzat din memoria cache înainte-înapoi: pentru a declanșa memoria cache înainte-înapoi, folosește butoanele pentru înainte sau înapoi de la Chrome sau, pentru a naviga automat înainte și înapoi, folosește butonul de testare de mai jos."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Acest cadru este considerat cadru de anunț, deoarece documentul său părinte este un cadru de anunțuri."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Redare anticipată"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Starea redării anticipate"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Actualizează"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Subarborele a fost modificat"
@@ -5514,7 +5517,7 @@
     "message": "Cadru"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "Valoare nevalidă pentru antet"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# încălcare}few{# încălcări}other{# de încălcări}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Computer"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "Limitarea DevTools (avansată)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Această pagină urmează recomandările de dezvoltare web modernă?"
   },
@@ -5967,7 +5973,7 @@
     "message": "Această pagină poate fi folosită de persoane cu dizabilități sau deficiențe?"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript este dezactivat. Trebuie să activezi JavaScript pentru a verifica pagina. Deschide Meniul de comenzi și rulează comanda Activează JavaScript pentru a activa JavaScript."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Experiența de navigare anterioară"
@@ -5985,10 +5991,10 @@
     "message": "Mai multe file sunt controlate de același service worker. Închide celelalte file cu aceeași origine pentru a verifica această pagină."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Navigare (prestabilită)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "Modul de navigare analizează încărcarea unei pagini, exact ca rapoartele Lighthouse inițiale."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Performanță"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Simulează o încărcare mai lentă a paginii, pe baza datelor de la o încărcare inițială fără limitare. Dacă opțiunea este dezactivată, pagina devine mai lentă și i se aplică o limitare."
+    "message": "Limitarea simulată simulează o încărcare mai lentă a paginii pe baza datelor încărcate inițial și nelimitate. Limitarea DevTools încetinește pagina."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Limitare simulată"
+    "message": "Limitare simulată (prestabilită)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Instantaneu"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "Modul Instantaneu analizează pagina într-o anumită stare, de obicei după interacțiunile cu utilizatorul."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Este posibil să existe date stocate care afectează performanța de încărcare în următoarele locații: {PH1}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Este posibil să existe date stocate care afectează performanța de încărcare în următoarea locație: {PH1}. Verifică pagina într-o fereastră incognito pentru a împiedica resursele să îți afecteze scorurile."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Metoda de limitare"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Perioadă"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "Modul interval de timp analizează o perioadă arbitrară, care conține de obicei interacțiuni cu utilizatorul."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Analizează pagina folosind experiența Lighthouse anterioară în modul de navigare."
@@ -6075,7 +6084,7 @@
     "message": "Rapoarte"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "Categorii"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "Pluginurile comunității (beta)"
@@ -6093,22 +6102,22 @@
     "message": "Află mai multe"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "Analizează încărcarea paginii"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "Analizează starea paginii"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "Categorii"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Generează un raport Lighthouse"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Mod"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "Pluginuri"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Începe perioada"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "Încetinește redarea de {PH1} ori"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Depășirea valorii prestabilite poate reduce performanța sistemului."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "S-a deconectat forțat de la rețea"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Simultaneitate hardware"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Modificarea simultaneității hardware este activată"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "Valoarea navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Fără limitare"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Resetează la valoarea prestabilită"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Copiază urmărirea stivei"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Creează o modificare a antetului de răspuns"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7275,13 +7302,13 @@
     "message": "S-a înregistrat o atribuire cu trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Politica privind adresele URL sursă"
+    "message": "Politica privind persoanele care recomandă"
   },
   "panels/network/RequestHeadersView.ts | remoteAddress": {
     "message": "Adresă la distanță"
   },
   "panels/network/RequestHeadersView.ts | requestHeaders": {
-    "message": "Anteturi de cerere"
+    "message": "Anteturile solicitărilor"
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "Metoda de solicitare"
@@ -7506,7 +7533,7 @@
     "message": "Necunoscută"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "Se așteaptă răspunsul serverului"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Cascadă"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Vezi certificatul"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(din memoria cache a discului)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(din memoria cache)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(din memoria cache de preluare anticipată)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(de la service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(din schimbul cu semnătură)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(din web bundle)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "General"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Brute"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Politica privind persoanele care recomandă"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Adresă la distanță"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Anteturile solicitărilor"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Metoda de solicitare"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "Solicită o adresă URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Anteturi de răspuns"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Afișează mai mult"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Cod de stare"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Un argument introdus de client este incorect sau nevalid."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Conținere"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "Expune datele interne (include detalii suplimentare specifice implementării)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Filtrează"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Fă un instantaneu de memorie heap"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "Tratează obiectele globale ca root (recomandat, debifarea acestei opțiuni expune nodurile interne și introduce detalii excesive, dar ar putea ajuta la remedierea erorilor de cicluri din căile de reținere)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Vectori tastați"
@@ -8622,10 +8697,10 @@
     "message": "Ascunde toate detaliile"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "În cazul în care consideri că este o greșeală, accesează https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Informații"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Copiază urmărirea stivei"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Fișierul de remediere a erorilor {PH1} nu s-a încărcat."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Neîntrerupt"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Elimină din lista de ignorat"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Repornește cadrul"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Afișează cadrele de pe lista de ignorat"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Configurează"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Fișierul de remediere a erorilor {PH1} nu s-a încărcat."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Nu s-au încărcat informațiile de remediere a erorilor pentru {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Dezactivează punctul de întrerupere}few{Dezactivează toate punctele de întrerupere din linie}other{Dezactivează toate punctele de întrerupere din linie}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Sigur vrei să elimini acest dosar?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Autor"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Șterge"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Șterge toate modificările"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Implementat"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Exclude dosarul"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Plasează aici dosarul pentru spațiul de lucru"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Grupează în funcție de autor / persoana care a implementat (experimental)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Grupează după dosar"
@@ -10224,10 +10320,10 @@
     "message": "Activează / dezactivează fereastra de introducere a punctelor de întrerupere"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "Comută bara laterală a depanatorului"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "Comută bara laterală a navigatorului"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Spațiile libere de la sfârșit"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Cadru inactiv"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "Interacțiuni"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Cadru lung"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Limitarea CPU este activată"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "– Modificarea simultaneității hardware este activată"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "– Eșantionarea JavaScript este dezactivată"
@@ -11670,7 +11766,7 @@
     "message": "Numărul de semnături"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "Acceptă bloburi mari"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Compatibilitate cu cheile rezidente"
@@ -11856,7 +11952,7 @@
     "message": "Toate"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "Șterge textul introdus"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "de ex., /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Reîncarcă DevTools"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Selectează dosarul"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Selectează un dosar în care să stochezi fișierele modificate."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Potrivește întotdeauna cu limba din Chrome"
@@ -12027,7 +12129,7 @@
     "message": "După reîncărcarea paginii, DevTools se va reconecta automat."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Șterge textul introdus"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "dezactivat"

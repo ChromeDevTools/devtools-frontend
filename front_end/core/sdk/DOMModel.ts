@@ -64,6 +64,7 @@ export class DOMNode {
   #localNameInternal!: string;
   nodeValueInternal!: string;
   #pseudoTypeInternal!: Protocol.DOM.PseudoType|undefined;
+  #pseudoIdentifier?: string;
   #shadowRootTypeInternal!: Protocol.DOM.ShadowRootType|undefined;
   #frameOwnerFrameIdInternal!: Protocol.Page.FrameId|null;
   #xmlVersion!: string|undefined;
@@ -135,6 +136,7 @@ export class DOMNode {
     this.#localNameInternal = payload.localName;
     this.nodeValueInternal = payload.nodeValue;
     this.#pseudoTypeInternal = payload.pseudoType;
+    this.#pseudoIdentifier = payload.pseudoIdentifier;
     this.#shadowRootTypeInternal = payload.shadowRootType;
     this.#frameOwnerFrameIdInternal = payload.frameId || null;
     this.#xmlVersion = payload.xmlVersion;
@@ -316,6 +318,10 @@ export class DOMNode {
 
   pseudoType(): string|undefined {
     return this.#pseudoTypeInternal;
+  }
+
+  pseudoIdentifier(): string|undefined {
+    return this.#pseudoIdentifier;
   }
 
   hasPseudoElements(): boolean {

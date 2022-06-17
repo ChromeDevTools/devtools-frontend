@@ -1706,9 +1706,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         break;
 
       case Node.ELEMENT_NODE: {
-        const pseudoType = node.pseudoType();
-        if (pseudoType) {
-          this.buildPseudoElementDOM(titleDOM, pseudoType);
+        let pseudoElementName = node.pseudoType();
+        if (pseudoElementName) {
+          const pseudoIdentifier = node.pseudoIdentifier();
+          if (pseudoIdentifier) {
+            pseudoElementName += `(${pseudoIdentifier})`;
+          }
+          this.buildPseudoElementDOM(titleDOM, pseudoElementName);
           break;
         }
 

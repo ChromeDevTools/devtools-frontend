@@ -7,6 +7,7 @@ load(
     "defaults",
     "dimensions",
     "generate_ci_configs",
+    "highly_privileged_builder",
 )
 load("//definitions.star", "versions")
 
@@ -119,7 +120,7 @@ target_config = {
     "cipd_log_template": "Rolling %s: %s..%s",
 }
 
-builder(
+highly_privileged_builder(
     name = "Auto-roll - devtools deps",
     bucket = "ci",
     builder_group = "client.devtools-frontend.integration",
@@ -146,7 +147,7 @@ builder(
     notifies = ["autoroll sheriff notifier"],
 )
 
-builder(
+highly_privileged_builder(
     name = "Auto-roll - devtools chromium",
     bucket = "ci",
     builder_group = "client.devtools-frontend.integration",

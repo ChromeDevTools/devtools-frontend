@@ -89,6 +89,13 @@ def builder(
         **kwargs
     )
 
+def highly_privileged_builder(**kwargs):
+    dimensions = dict(kwargs.pop("dimensions", {}))
+    dimensions.update(pool = "luci.v8.highly-privileged")
+    kwargs["dimensions"] = dimensions
+
+    return builder(**kwargs)
+
 os_dimensions = {
     "linux": dimensions.default_ubuntu,
     "win64": dimensions.win10,

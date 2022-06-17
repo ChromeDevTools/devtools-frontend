@@ -9890,9 +9890,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Closure ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Could not open linear memory inspector: failed locating buffer."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Exception"
   },
@@ -11878,6 +11875,9 @@
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Address has to be a number between {PH1} and {PH2}"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Could not open linear memory inspector: failed locating buffer."
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "No open inspections"

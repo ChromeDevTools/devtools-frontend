@@ -359,7 +359,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     // TypedArrays DataViews are also supported, but showing the icon next to their
     // previews is quite a significant visual overhead, and users can easily get to
     // their buffers and open the memory inspector from there.
-    if (obj.type !== 'object' || (obj.subtype !== 'arraybuffer' && obj.subtype !== 'webassemblymemory')) {
+    if (!LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(obj)) {
       return;
     }
     const memoryIcon = new IconButton.Icon.Icon();
@@ -369,12 +369,15 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       width: '13px',
       height: '13px',
     };
-    memoryIcon.onclick = (event: MouseEvent): void => {
-      Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
-      void LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance()
-          .openInspectorView(obj);
+
+    memoryIcon.onclick = async(event: MouseEvent): Promise<void> => {
       event.stopPropagation();
+      const controller =
+          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+      Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
+      void controller.openInspectorView(obj, 0);
     };
+
     UI.Tooltip.Tooltip.install(memoryIcon, 'Reveal in Memory Inspector panel');
     element.classList.add('object-value-with-memory-icon');
     element.appendChild(memoryIcon);

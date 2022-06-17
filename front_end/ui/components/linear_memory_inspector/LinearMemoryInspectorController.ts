@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../legacy/legacy.js';
@@ -12,7 +13,17 @@ import type {Settings} from './LinearMemoryInspector.js';
 import {Events as LmiEvents, LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import {Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 
+const UIStrings = {
+  /**
+  *@description Error message that shows up in the console if a buffer to be opened in the linear memory inspector cannot be found.
+  */
+  couldNotOpenLinearMemory: 'Could not open linear memory inspector: failed locating buffer.',
+};
+const str_ =
+    i18n.i18n.registerUIStrings('ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const LINEAR_MEMORY_INSPECTOR_OBJECT_GROUP = 'linear-memory-inspector';
 const MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1000;
 export const ACCEPTED_MEMORY_TYPES = ['webassemblymemory', 'typedarray', 'dataview', 'arraybuffer'];
@@ -64,6 +75,20 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   }
   obj = obj.runtimeModel().createRemoteObject(response.result);
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
+}
+
+export function isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
+  const isWasmOrBuffer = obj.type === 'object' && obj.subtype && ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
+  if (isWasmOrBuffer) {
+    return true;
+  }
+
+  const isWasmDWARF = obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode;
+  if (isWasmDWARF) {
+    return obj.inspectableAddress !== undefined;
+  }
+
+  return false;
 }
 
 type SerializableSettings = {
@@ -142,21 +167,52 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     };
   }
 
+  static async retrieveDWARFMemoryObjectAndAddress(obj: SDK.RemoteObject.RemoteObject):
+      Promise<{obj: SDK.RemoteObject.RemoteObject, address: number}|undefined> {
+    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
+      return;
+    }
+
+    const valueNode = obj;
+    const address = valueNode.inspectableAddress || 0;
+    const callFrame = valueNode.callFrame;
+    const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
+      callFrameId: callFrame.id,
+      expression: 'memories[0]',
+    });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      Common.Console.Console.instance().error(i18nString(UIStrings.couldNotOpenLinearMemory));
+    }
+    const runtimeModel = obj.debuggerModel().runtimeModel();
+    obj = runtimeModel.createRemoteObject(response.result);
+    return {obj, address};
+  }
+
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number): Promise<void> {
-    if (address !== undefined) {
+    const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(obj);
+    let memoryObj = obj;
+    let memoryAddress = address;
+    if (response !== undefined) {
+      memoryAddress = response.address;
+      memoryObj = response.obj;
+    }
+
+    if (memoryAddress !== undefined) {
       Host.userMetrics.linearMemoryInspectorTarget(
           Host.UserMetrics.LinearMemoryInspectorTarget.DWARFInspectableAddress);
-    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Arraybuffer) {
+    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Arraybuffer) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.ArrayBuffer);
-    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Dataview) {
+    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Dataview) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.DataView);
-    } else if (obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Typedarray) {
+    } else if (memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Typedarray) {
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.TypedArray);
     } else {
-      console.assert(obj.subtype === Protocol.Runtime.RemoteObjectSubtype.Webassemblymemory);
+      console.assert(memoryObj.subtype === Protocol.Runtime.RemoteObjectSubtype.Webassemblymemory);
       Host.userMetrics.linearMemoryInspectorTarget(Host.UserMetrics.LinearMemoryInspectorTarget.WebAssemblyMemory);
     }
-    const buffer = await getBufferFromObject(obj);
+    const buffer = await getBufferFromObject(memoryObj);
     const {internalProperties} = await buffer.object().getOwnProperties(false);
     const idProperty = internalProperties?.find(({name}) => name === '[[ArrayBufferData]]');
     const id = idProperty?.value?.value;
@@ -167,7 +223,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const memory = memoryProperty?.value;
 
     if (this.#bufferIdToRemoteObject.has(id)) {
-      this.#paneInstance.reveal(id, address);
+      this.#paneInstance.reveal(id, memoryAddress);
       void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }
@@ -176,7 +232,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     this.#bufferIdToRemoteObject.set(id, buffer.object());
     const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
-    this.#paneInstance.create(id, title, arrayBufferWrapper, address);
+    this.#paneInstance.create(id, title, arrayBufferWrapper, memoryAddress);
     void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 

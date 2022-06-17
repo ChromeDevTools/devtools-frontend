@@ -18,7 +18,9 @@
 }
 
 .lighthouse-start-view-fr {
-  margin: 24px;
+  padding: 24px;
+  overflow: auto;
+  height: 100%;
 }
 
 .lighthouse-start-view header {

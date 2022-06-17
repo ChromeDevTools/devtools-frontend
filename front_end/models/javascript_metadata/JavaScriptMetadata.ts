@@ -5,10 +5,13 @@
 import type * as Common from '../../core/common/common.js';
 
 import {NativeFunctions} from './NativeFunctions.js';
+import * as DOMPinnedProperties from './DOMPinnedProperties.js';
 
 let javaScriptMetadataInstance: JavaScriptMetadataImpl;
 
 export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScriptMetaData {
+  static readonly domPinnedProperties = DOMPinnedProperties;
+
   private readonly uniqueFunctions: Map<string, string[][]>;
   private readonly receiverMethods: Map<string, Map<string, string[][]>>;
   static instance(opts: {

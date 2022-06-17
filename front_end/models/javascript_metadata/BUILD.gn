@@ -8,6 +8,7 @@ import("../visibility.gni")
 
 devtools_module("javascript_metadata") {
   sources = [
+    "DOMPinnedProperties.ts",
     "JavaScriptMetadata.ts",
     "NativeFunctions.js",
   ]

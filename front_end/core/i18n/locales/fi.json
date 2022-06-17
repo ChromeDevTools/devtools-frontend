@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Estä"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Lohko: Catch"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Sulkeuma"
   },
@@ -399,7 +402,7 @@
     "message": "Skripti"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "Tyypin With lohko"
+    "message": "Lohko: With"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "Mainoshuutokauppa-worklet"
@@ -1005,7 +1008,7 @@
     "message": "Näytä renderöinti"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Laita CSS:n prefers-color-scheme: light ‑asetus päälle tai pois päältä"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "näkörajoite"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Tuntematon virhe ladattaessa tiedostoa"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "Funktion {PH1} virheenkorjaustiedot ovat puutteelliset"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Virheenkorjauksen kieliliitännäisen virhe: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] Kohteen {PH2} virheenkorjaussymboleiden lataaminen epäonnistui ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Puuttuvat viankorjaussymbolit toiminnolle {PH1}"
+    "message": "Ei virheenkorjaustietoja toiminnolle {PH1}"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Ladattiin virheenkorjaussymbolit kohteelle {PH2}, mutta lähdetiedostoja ei löytynyt"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Ladataan virheenkorjaussymboleita: {PH2} (osoitteen {PH3} kautta)..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Symbolitiedostoa \"{PH1}\" ei löydy"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit, kääntäminen epäonnistui: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Same-Site ja Same-Origin"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "Jokerimerkki (*) CORS Access-Control-Allow-Headers ‑käsittelyssä ei kata valtuutusta."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "Resurssipyynnöt, joiden URL-osoitteet sisälsivät sekä poistettuja tyhjätilamerkkejä (\\(n|r|t)) että pienempi kuin ‑merkkejä (<) on estetty. Poista newline-koodit ja koodaa pienempi kuin ‑merkkejä esimerkiksi elementin attribuuttiarvoista, jos haluat ladata näitä resursseja."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Paint Timing."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() on poistettu käytöstä, käytä sen sijaan standardoitua APIa: nextHopProtocol Navigation Timing 2:ssa."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "\\(0|r|n) ‑merkin sisältävät evästeet hylätään lyhentämisen sijaan."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "Saman alkuperän käytännön lieventäminen määrittämällä document.domain on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Tämä käytöstäpoistovaroitus koskee eri lähteistä peräisin olevaa pääsyoikeutta, joka on otettu käyttöön asetuksella document.domain."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "Kohteen {PH1} käynnistäminen eri lähteistä peräisin olevista iframeista on poistettu käytöstä ja poistetaan kokonaan tulevaisuudessa."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "disableRemotePlayback ‑attribuuttia pitäisi käyttää oletusarvoisen Cast-integraation käytöstä poistamiseen -internal-media-controls-overlay-cast-button ‑valitsimen sijaan."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} on poistettu käytöstä. Käytä sen sijaan tätä: {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "Tämä on esimerkki käännetystä viestistä, joka kertoo käytöstä poistamiseen liittyvästä ongelmasta."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "Saman alkuperän käytännön lieventäminen määrittämällä document.domain on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Jos haluat jatkaa tämän ominaisuuden käyttöä, poista käytöstä alkuperään sidotut agenttiklusterit lähettämällä Origin-Agent-Cluster: ?0 ‑otsikko dokumentin ja kehysten HTTP-vastauksen mukana. Lue lisää osoitteesta https://developer.chrome.com/blog/immutable-document-domain/."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path on poistettu käytöstä ja poistetaan kokonaan. Käytä sen sijaan tätä: Event.composedPath()."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Lisätietoa löydät ominaisuuden tilasivulta."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() ja watchPosition() eivät enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() ja watchPosition() on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate on poistettu käytöstä. Käytä sen sijaan näitä: RTCPeerConnectionIceErrorEvent.address tai RTCPeerConnectionIceErrorEvent.port."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "Verkkosivusto pyysi aliresurssia verkosta, johon sillä oli pääsy vain käyttäjiensä oikeutetun verkkoaseman vuoksi. Nämä pyynnöt altistavat ei-julkisia laitteita ja palvelimia näkyville internetiin, mikä lisää sivustojen välisten pyyntöjen väärennykseen (CSRF) liittyvän hyökkäyksen ja/tai tietovuodon riskiä. Pienentääkseen riskiä Chrome poistaa käytöstä ei-julkisille aliresursseille osoitetut pyynnöt, jos ne ovat peräisin suojaamattomista konteksteista, ja alkaa estää niitä."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 on oletuksena käytössä. Mahdollisuus poistaa se käytöstä googIPv6-osoitteen avulla on poistumassa M108:ssa, minkä jälkeen se ohitetaan. Lopeta tämän vanhan rajoituksen käyttö."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "CSS:ää ei voi ladata file: ‑URL-osoitteista, elleivät ne pääty .css ‑tiedostotunnisteeseen."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "Kohteen SourceBuffer.abort() käyttö kohteen remove() asynkronisen välin poistamiseen on poistettu käytöstä määritysmuutoksen vuoksi. Tuki poistetaan tulevaisuudessa. Kuuntele sen sijaan tapahtuma updateend. abort() on tarkoitettu ainoastaan asynkronisen medialiitteen tai nollausjäsentäjän tilan keskeytykseen."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "Kohteen MediaSource.duration asettaminen puskuroidun koodatun kehyksen korkeinta esitysaikaleimaa alemmas on poistettu käytöstä määritysmuutoksen vuoksi. Lyhennetyn puskuroidun median implisiittisen poiston tuki poistetaan tulevaisuudessa. Tee sen sijaan eksplisiittinen remove(newDuration, oldDuration) kaikkien sourceBuffers ‑kohteiden kohdalla, joissa newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Tämä muutos tulee voimaan, kun versionumero {milestone} saavutetaan."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "Web MIDI pyytää käyttölupaa, vaikka MIDIOptions ei ole määrittänyt sysexiä."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Notification APIa ei saa enää käyttää suojaamattomista alkuperistä. Suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Notification APIn lupaa ei välttämättä enää pyydetä eri lähteistä peräisin olevalta iframelta. Suosittelemme sen sijaan pyytämään lupaa ylätason kehykseltä tai avaamaan uuden ikkunan."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "Yhteistyökumppanisi neuvottelee vanhentuneesta (D)TLS-versiosta. Pyydä yhteistyökumppaniasi korjaamaan tämä."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<source src>, jolla on <picture>-ylätaso, on virheellinen ja jätetään näin ollen huomiotta. Käytä sen sijaan tätä: <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo on poistettu käytöstä. Käytä sen sijaan näitä: navigator.webkitTemporaryStorage tai navigator.webkitPersistentStorage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "Aliresurssipyynnöt, joiden URL-osoitteet sisältävät upotettuja kirjautumistietoja (esim. https://user:pass@host/), on estetty."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "Rajoitus DtlsSrtpKeyAgreement on poistettu. Olet määrittänyt false ‑arvon tälle rajoitukselle, mikä tulkitaan yrityksenä käyttää poistettua SDES key negotiation ‑metodia. Tämä toiminto on poistettu. Käytä sen sijaan palvelua, joka tukee tätä: DTLS key negotiation."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "Rajoitus DtlsSrtpKeyAgreement on poistettu. Olet määrittänyt true ‑arvon tälle rajoitukselle, jolla ei ollut mitään vaikutusta, mutta voit poistaa rajoituksen siisteyden vuoksi."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Complex Plan B SDP havaittu. Tätä Session Description Protocol ‑murretta ei enää tueta. Käytä sen sijaan tätä: Unified Plan SDP."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, jota käytetään kohteen RTCPeerConnection rakentamiseen kohteella {sdpSemantics:'plan-b'}, on vanha, ei-standardiversio kohteesta Session Description Protocol, joka on poistettu pysyvästi verkkoalustalta. Se on edelleen käytettävissä, kun IS_FUCHSIA on käytössä rakentamisessa, mutta aiomme poistaa sen mahdollisimman pian. Älä enää laske sen varaan. Katso sen tila osoitteesta https://crbug.com/1302249."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "rtcpMuxPolicy ‑vaihtoehto on poistettu käytöstä ja poistetaan kokonaan."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer edellyttää muista lähteistä eristämistä. Lue lisää osoitteesta https://developer.chrome.com/blog/enabling-shared-array-buffer/."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "speechSynthesis.speak() ilman käyttäjän aktivointia on poistettu käytöstä ja poistetaan kokonaan."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Käytöstä poistettua ominaisuutta käytetty"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "Laajennusten pitäisi ottaa muista lähteistä eristäminen käyttöön, jotta ne voivat jatkaa tämän käyttöä: SharedArrayBuffer. Lue lisää osoitteesta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} on myyjäkohtainen. Käytä sen sijaan {PH2} ‑standardiversiota."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "Vastaus-JSON ei tue UTF-16:ta kohteessa XMLHttpRequest"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "Pääviestiketjun samanaikainen XMLHttpRequest on poistettu käytöstä, koska sillä oli haitallisia vaikutuksia loppukäyttäjän kokemukseen. Lue lisäohjeita osoitteesta https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() on poistettu käytöstä. Ota sen sijaan isSessionSupported() käyttöön ja tarkista ratkaistu looginen arvo."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM-tallennustilan kohteet"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} tyhjennetty"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Taulukossa näkyvien kohteiden määrä: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Pääkehys"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Lue lisää: Älä koskaan käytä tyhjennyksen käsittelijää"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Ei näytetty siirtymisvälimuistista: Ota siirtymisvälimuisti käyttöön Chromen takaisin- ja eteenpäin-painikkeilla. Voit myös siirtyä pois ja takaisin automaattisesti alla olevalla testipainikkeella."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Tätä kehystä pidetään mainoskehyksenä, koska sen ylätason kehys on mainoskehys."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Esirenderöinti"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Esirenderöinnin tila"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Päivitä"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Alapuuta muokattu"
@@ -5514,7 +5517,7 @@
     "message": "Kehys"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "Virheellinen otsikon arvo"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# rikkomus}other{# rikkomusta}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Työpöytä"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevToolsin rajoittaminen (edistynyt)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Noudattaako sivu nykyisen verkkokehityksen parhaita käytäntöjä"
   },
@@ -5967,7 +5973,7 @@
     "message": "Voiko tätä sivua käyttää vamman tai muiden erikoistarpeiden kanssa"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript on poistettu käytöstä. JavaScript on otettava käyttöön, jotta tämä sivu voidaan tarkastaa. Avaa komentovalikko ja ota JavaScript käyttöön suorittamalla Enable JavaScript ‑komento."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Vanha navigointi"
@@ -5985,10 +5991,10 @@
     "message": "Sama service worker hallinnoi useita välilehtiä. Sulje saman alkuperän muut välilehdet voidaksesi auditoida tämän sivun."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Navigointi (oletus)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "Navigointitilassa analysoidaan sivun lataus, aivan kuten alkuperäisissä Lighthouse-raporteissa."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Suorituskyky"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Simuloi hitaampi sivun lataus, joka perustuu ensimmäisestä rajoittamattomasta latauksesta saatuun dataan. Jos tämä on poistettu käytöstä, sivu hidastuu sovellettavalla rajoituksella."
+    "message": "Simuloitu rajoittaminen simuloi hitaamman sivun latauksen, joka perustuu ensimmäisestä rajoittamattomasta latauksesta saatuun dataan. DevToolsin rajoittaminen hidastaa sivua."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Simuloitu rajoittaminen"
+    "message": "Simuloitu rajoittaminen (oletus)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Tilannekuva"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "Snapshot-tilassa analysoidaan sivua tietyssä tilassa, yleensä käyttäjien toiminnan jälkeen."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Näihin sijainteihin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {PH1}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Tähän sijaintiin on voitu tallentaa dataa, joka vaikuttaa lataukseen: {PH1}. Tarkista sivu incognito-ikkunassa, jotta voit estää kyseisten resurssien vaikutuksen tuloksiisi."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Rajoitusmenetelmä"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Aikaväli"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "Aikavälitilassa analysoidaan satunnainen ajanjakso, joka yleensä sisältää käyttäjien toimintaa."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Analysoi sivu navigointitilassa klassisella Lighthousella."
@@ -6075,7 +6084,7 @@
     "message": "Raportit"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "Kategoriat"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "Yhteisöliitännäiset (beta)"
@@ -6093,22 +6102,22 @@
     "message": "Lue lisää"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "Analysoi sivun lataamista"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "Analysoi sivun tila"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "Kategoriat"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Luo Lighthouse-raportti"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Tila"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "Liitännäiset"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Aloita aikaväli"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}-kertainen hidastus"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Oletusarvon ylittäminen saattaa heikentää järjestelmän toimintaa."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Verkkoyhteyden katkaisu pakotettu"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Laitteiston samanaikaisuus"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Laitteiston samanaikaisuuden ohitus on käytössä"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency-arvo"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Ei rajoitusta"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline-tila"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Palauta oletusarvo"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Kopioi jäljityslista"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Luo ohitus vastauksen otsikolle"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7248,7 +7275,7 @@
     "message": "(lähde: Web Bundle)"
   },
   "panels/network/RequestHeadersView.ts | general": {
-    "message": "Yleiset"
+    "message": "Yleistä"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
     "message": "Otsikon ohitukset"
@@ -7506,7 +7533,7 @@
     "message": "Tuntematon"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "Odotetaan vastausta palvelimelta"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Katso varmenne"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(levyn välimuistista)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(välimuistista)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(esihaetusta välimuistista)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(lähde: service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(lähde: Signed Exchange)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(lähde: Web Bundle)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "Yleistä"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Raaka"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Viittauskäytäntö"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Etäosoite"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Pyynnön otsikot"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Pyyntötapa"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "Pyynnön URL-osoite"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Vastausten otsikot"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Näytä lisää"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Tilakoodi"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Asiakassovelluksen argumentti oli väärin muotoiltu tai muuten virheellinen."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Säilytys"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "Näytä sisäiset tiedot (sisältää muita toteutuskohtaisia tietoja)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Suodata"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Ota keon tilannekuva"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "Käsittele yleisiä objekteja juurina (suositus, valinnan poistaminen vaarantaa sisäiset noodit ja lisää liiallisia tietoja mutta saattaa auttaa säilytyspolkujen virheenkorjaussykleissä)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Kirjoitetut taulukot"
@@ -8622,10 +8697,10 @@
     "message": "Piilota lisätiedot"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Jos uskot, että ilmoitus on virheellinen, siirry osoitteeseen https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Jos uskot, että ilmoitus on virheellinen, siirry osoitteeseen https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Tiedot"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Kopioi jäljityslista"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Virheenkorjaustiedoston lataaminen epäonnistui: {PH1}."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Ei keskeytetty"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Poista ohituslistalta"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Käynnistä kehys uudelleen"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Näytä ohitettujen luetteloon lisätyt kehykset"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Määritä"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Virheenkorjaustiedoston lataaminen epäonnistui: {PH1}."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Osoitteen {PH1} virheenkorjaustietojen lataaminen epäonnistui."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Poista pysäytyspiste käytöstä}other{Poista kaikki rivin pysäytyspisteet käytöstä}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Haluatko varmasti poistaa tämän kansion?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Tekijä"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Poista"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Poista kaikki ohitukset"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Otettu käyttöön"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Ohita kansio"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Pudota työtilakansio tähän"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Ryhmittely tekijän/käyttöönoton mukaan (kokeellinen)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Ryhmittele kansion mukaan"
@@ -10224,10 +10320,10 @@
     "message": "Vaihda pysäytyspisteen syöteikkunaa"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "Laita viankorjaussivupalkki päälle tai pois päältä"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "Laita navigointisivupalkki päälle tai pois päältä"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Lopussa"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Epäaktiivinen kehys"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "Interaktiot"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Pitkä kehys"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Suorittimen rajoittaminen on käytössä"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "– Laitteiston samanaikaisuuden ohitus on käytössä"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "– JavaScript-näytteenotto on poistettu käytöstä"
@@ -11670,7 +11766,7 @@
     "message": "Allekirjoitusten määrä"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "Tukee large blobia"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Tukee vakinaisia avaimia"
@@ -11856,7 +11952,7 @@
     "message": "Kaikki"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "Tyhjennä"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "esim. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Lataa DevTools uudelleen"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Valitse kansio"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Valitse kansio, johon ohitustiedostot tallennetaan."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Käytä aina Chromen kieltä"
@@ -12027,7 +12129,7 @@
     "message": "Kun sivu on ladattu uudelleen, DevTools palauttaa yhteyden automaattisesti."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Tyhjennä"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "ei painettu"

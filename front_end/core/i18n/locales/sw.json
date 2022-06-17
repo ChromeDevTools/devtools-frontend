@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Zuia"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Sehemu ya msimbo ya Catch"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "Kufungwa"
   },
@@ -1005,7 +1008,7 @@
     "message": "Onyesha Utekelezaji"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "Ugeuzaji hulazimisha kipengele cha CSS cha chati ya rangi"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "tatizo la kuona"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Hitilafu isiyojulikana imetokea wakati wa kupakia faili"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "Maelezo ya utatuzi wa hitilafu ya utendaji wa {PH1} hayajakamilika"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "Hitilafu kwenye programu jalizi ya lugha ya kitatuzi: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] Imeshindwa kupakia ishara za utatuzi za {PH2} ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "Ishara za utatuzi za fremu ya utekelezaji ya \"{PH1}\" hazipo"
+    "message": "Hakuna taarifa ya utatuzi wa hitilafu ya utendaji wa \"{PH1}\""
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] Imepakia ishara za utatuzi za {PH2}, lakini haijapata faili zozote chanzo"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Inapakia ishara za utatuzi za {PH2} (kupitia {PH3})..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "Faili ya ishara ya \"{PH1}\" haipatikani"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "Ukusanyaji wa LiveEdit haujafaulu: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Maelezo kuhusu Tovuti Sawa na Chanzo Sawa"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "Uidhinishaji hautaangaziwa kwa ishara ya herufi wakilishi (*) kwenye ushughulikiaji wa Access-Control-Allow-Headers ya CORS."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "Maombi ya nyenzo ambazo URL zake zilikuwa na herufi za nafasi nyeupe zilizoondolewa \\(n|r|t) pamoja na herufi zisizopaswa kuzidi (<) yamezuiwa. Tafadhali ondoa mistari mipya na usimbe herufi zisizopaswa kuzidi kwenye sehemu kama thamani ya sifa za vipengee ili kupakia nyenzo hizi."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() imeacha kuendesha huduma, badala yake tumia API ya kawaida: Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() imeacha kuendesha huduma, badala yake tumia API ya kawaida: Paint Timing."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() imeacha kuendesha huduma, badala yake tumia API ya kawaida: nextHopProtocol kwenye Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "Vidakuzi vyenye herufi \\(0|r|n) vitakataliwa badala ya kupunguzwa."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "Usimamishaji wa sera yenye chanzo kimoja kwa kuweka mipangilio ya document.domain, umeacha kuendesha huduma na utazimwa kwa chaguomsingi. Onyo hili la kuacha kuendesha huduma ni la ufikiaji wenye vyanzo mbalimbali uliowashwa kwa kuweka mipangilio ya document.domain."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "Uwezo wa kuwasha {PH1} kutoka kwenye iframe zenye vyanzo mbalimbali umeacha kuendesha huduma na utaondolewa hapo baadaye."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "Sifa ya disableRemotePlayback inabidi itumike ili kuzima muunganisho chaguomsingi wa Cast badala ya kutumia kiteuzi cha -internal-media-controls-overlay-cast-button."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} imeacha kuendesha huduma. Tafadhali tumia {PH2} badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "Huu ni mfano wa ujumbe uliotafsiriwa wa hitilafu ya kuacha kuendesha huduma."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "Usimamishaji wa sera yenye chanzo kimoja kwa kuweka mipangilio ya document.domain, umeacha kuendesha huduma na utazimwa kwa chaguomsingi. Ili uendelee kutumia kipengele hiki, tafadhali chagua kutopokea vishada vya huduma vyenye ufunguo asilia kwa kutuma kichwa cha Origin-Agent-Cluster: ?0 pamoja na jibu la HTTP kwa ajili ya hati na fremu. Angalia https://developer.chrome.com/blog/immutable-document-domain/ kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path imeacha kuendesha huduma na itaondolewa. Tafadhali tumia Event.composedPath() badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Kagua ukurasa wa hali ya kipengele kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "API ya getCurrentPosition() na watchPosition() hazifanyi kazi tena kwenye vyanzo visivyo salama. Ili utumie kipengele hiki, unaweza kuamua kubadilisha matumizi yako kwenda chanzo salama kama vile HTTPS. Angalia https://goo.gle/chrome-insecure-origins kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() na watchPosition() zimeacha kuendesha huduma kwenye vyanzo visivyo salama. Ili utumie kipengele hiki, unaweza kuamua kubadilisha matumizi yako kwenda chanzo salama kama vile HTTPS. Angalia https://goo.gle/chrome-insecure-origins kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() havifanyi kazi tena kwenye vyanzo visivyo salama. Ili utumie kipengele hiki, unaweza kuamua kubadilisha matumizi yako kwenda chanzo salama kama vile HTTPS. Angalia https://goo.gle/chrome-insecure-origins kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate imeacha kuendesha huduma. Tafadhali tumia RTCPeerConnectionIceErrorEvent.address au RTCPeerConnectionIceErrorEvent.port badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "Tovuti imeomba nyenzo ndogo kutoka kwenye mtandao ambao iliweza tu kuufikia kwa sababu ya nafasi maalum ya mtandao wa watumiaji wake. Maombi haya hufichua vifaa na seva zisizo za umma kwenye intaneti, yakiongeza hatari ya mashambulio ya kughushi maombi kutoka tovuti tofauti (CSRF) na/au kuvuja kwa taarifa. Ili kukabiliana na hatari hizi, Chrome imeacha kuendesha huduma ya maombi ya nyenzo ndogo zisizo za umma zinapoanzishwa kutoka kwenye miktadha isiyo salama na itaanza kuzizuia."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 inawashwa kwa chaguomsingi na uwezo wa kuizima kwa kutumia googIPv6 unakusudiwa kuondolewa kwenye M108, baada ya hapo itapuuzwa. Tafadhali acha kutumia kizuizi hiki kilichopitwa na wakati."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "CSS haiwezi kupakiwa kutoka kwenye URL za file: isipokuwa zikiishia kwa kiambishi cha faili ya .css."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "Kutumia SourceBuffer.abort() ili kughairi uondoaji wa vipengele mbalimbali vya remove() visivyosawazishwa kumeacha kuendesha huduma kwa sababu ya mabadiliko ya maelezo. Usaidizi utaondolewa hapo baadaye. Unapaswa kusikiliza tukio la updateend badala yake. abort() imekusudiwa tu kughairi kiambatisho cha maudhui yasiyosawazishwa au kuadilisha hali ya kichanganuzi."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "Kuweka MediaSource.duration chini ya muhuri wa wakati wa juu zaidi wa uwasilishaji wa fremu zozote za msimbo zilizoakibishwa kumeacha kuendesha huduma kwa sababu ya mabadiliko ya maelezo. Usaidizi wa uondoaji kamili wa maudhui pungufu yaliyoakibishwa utaondolewa hapo baadaye. Badala yake itabidi utekeleze remove(newDuration, oldDuration) dhahiri kwenye akiba zote za sourceBuffers, ambapo newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Mabadiliko haya yatatekelezwa yakiwa na nambari ya toleo kubwa {milestone}."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "MIDI ya wavuti itaomba ruhusa ili itumie hata kama sysex haijabainishwa kwenye MIDIOptions."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "Huenda API ya Arifa isitumike tena kutoka kwenye vyanzo visivyo salama. Unaweza kuamua kubadilisha matumizi yako kwenda chanzo salama kama vile HTTPS. Angalia https://goo.gle/chrome-insecure-origins kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Huenda ruhusa ya API ya Arifa isiombwe tena kutoka kwenye iframe yenye vyanzo mbalimbali. Unaweza kuamua kuomba ruhusa kutoka kwenye fremu kuu au kufungua dirisha jipya badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "Mshirika wako anajadili toleo lililopitwa na wakati la (D)TLS. Tafadhali wasiliana na mshirika wako ili atatue tatizo hili."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<source src> yenye <picture> kuu si sahihi, hivyo imepuuzwa. Tafadhali tumia <source srcset> badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo imeacha kuendesha huduma. Tafadhali tumia navigator.webkitTemporaryStorage au navigator.webkitPersistentStorage badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "Maombi ya nyenzo ndogo ambazo URL zake zinajumuisha vitambulisho vilivyopachikwa (mfano https://user:pass@host/) yamezuiwa."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "DtlsSrtpKeyAgreement ya kizuizi imeondolewa. Umebainisha thamani false ya kizuizi hiki, ambayo imechanganuliwa kama jaribio la kutumia njia ya SDES key negotiation iliyoondolewa. Utendaji huu umeondolewa, tumia huduma inayotumiaDTLS key negotiation badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "DtlsSrtpKeyAgreement ya kizuizi imeondolewa. Umebainisha thamani true ya kizuizi hiki, ambacho hakikuwa na athari, lakini unaweza kuondoa kizuizi hiki kwa ajili ya unadhifu."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Imetambua Complex Plan B SDP. Lahaja hii ya Session Description Protocol haitumiki tena Tafadhali tumia Unified Plan SDP badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, ambayo hutumika unapotengeneza RTCPeerConnection yenye {sdpSemantics:'plan-b'}, ni toleo lililopitwa na wakati la Session Description Protocol ambalo limefutwa kabisa kwenye Mfumo wa Wavuti. Bado inapatikana unapotengeneza IS_FUCHSIA, lakini tunakusudia kuifuta haraka iwezekanavyo. Acha kuitegemea. Angalia https://crbug.com/1302249 ili uone hali."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "Chaguo la rtcpMuxPolicy limeacha kuendesha huduma na litaondolewa."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer itahitaji utengaji kwenye vyanzo mbalimbali. Angalia https://developer.chrome.com/blog/enabling-shared-array-buffer/ kwa maelezo zaidi."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "speechSynthesis.speak() ambayo haijawezeshwa na mtumiaji imeacha kuendesha huduma na itaondolewa."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Kipengele kilichoacha kuendesha huduma kimetumika"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "Viendelezi vinapaswa kujumuishwa kwenye utengaji wenye vyanzo mbalimbali ili kuendelea kutumia SharedArrayBuffer. Angalia https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} ni mahususi kwa muuzaji. Tafadhali tumia {PH2} ya kawaida badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "UTF-16 haitumiwi na njia ya response json kwenye XMLHttpRequest"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "XMLHttpRequest inayosawazisha kwenye mazungumzo makuu imeacha kuendesha huduma kwa sababu ya madhara yake kwa hali ya utumiaji ya mtumiaji wa hatima. Kwa usaidizi zaidi, tembelea https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() imeacha kuendesha huduma. Tafadhali tumia isSessionSupported() na uhakiki thamani ya boolean iliyoshughulikwa badala yake."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Iliyoshirikishwa ya Usimamizi wa Vitambulisho"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "Vipengee vya Hifadhi ya DOM"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} vimefutwa"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Idadi ya vipengee iliyoonyeshwa kwenye jedwali: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "Fremu Kuu"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "Pata maelezo zaidi: Usitumie kidhibiti cha kuondoa"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "Ukurasa haujatolewa kwenye kipengele cha kuakibisha ukurasa kamili: ili uanzishe kipengele cha kuakibisha ukurasa kamili, tumia vitufe vya Chrome vya kipengele cha kuakibisha ukurasa kamili, au utumie kitufe cha jaribio kilicho hapo chini ili uondoke au urejee kwenye ukurasa kiotomatiki."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Fremu hii inachukuliwa kwamba ni fremu ya tangazo kwa sababu fremu yake kuu ni fremu ya tangazo."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "Uonyeshaji wa awali wa ukurasa"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "Hali ya Uonyeshaji wa awali wa ukurasa"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Onyesha upya"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1} : {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "Mfumo mdogo wa ngazi umerekebishwa"
@@ -5514,7 +5517,7 @@
     "message": "Fremu"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "Thamani ya Kichwa si Sahihi"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{Kukiuka mara #}other{Kukiuka mara #}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "Kompyuta ya mezani"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "Kupunguza kasi kwa kutumia Zana za Wasanidi Programu (kwa ajili ya watumiaji wa waliobobea)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "Iwapo ukurasa huu unafuata mbinu bora za kisasa za kusanidi programu za wavuti"
   },
@@ -5967,7 +5973,7 @@
     "message": "Je, ukurasa huu unaweza kutumiwa na watu wenye ulemavu au matatizo mengine?"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript imezimwa. Unahitaji kuwasha JavaScript ili ukague ukurasa huu. Fungua Menyu ya Amri na utekeleze amri ya Washa JavaScript ili uwashe JavaScript."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "Usogezaji wa hali iliyopitwa na wakati"
@@ -5985,10 +5991,10 @@
     "message": "Vichupo vingi vinadhibitiwa na service worker moja. Funga vichupo vyako vingine kwenye chanzo kimoja ili ukague ukurasa huu."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Usogezaji (Chaguomsingi)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "Hali ya usogezaji huchanganua upakiaji wa ukurasa, kama vile ripoti halisi za Lighthouse."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "Utendaji"
@@ -6009,16 +6015,16 @@
     "message": "Kuimarisha Upatikanaji katika Injini Tafuti"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "Iga upakiaji wa kasi ya chini wa ukurasa, kulingana na data ya upakiaji wa awali ambao haukupunguziwa kasi. Ikiwa kipengele hiki kimezimwa, ukurasa hupakia polepole kwa kasi iliyopunguzwa."
+    "message": "Kipengele cha kupunguza kasi kwa kuiga huiga kasi ya chini ya upakiaji wa ukurasa kulingana na data ya upakiaji wa awali ambao haukupunguzwa kasi. Kupunguza kasi kwa kutumia Zana za Wasanidi Programu kunapunguza kasi ya upakiaji wa ukurasa."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "Upunguzaji kasi ulioigwa"
+    "message": "Upunguzaji kasi ulioigwa (chaguomsingi)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "Kijipicha"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "Hali ya vijipicha huchanganua ukurasa katika hali fulani, kwa kawaida baada ya kutumiwa na mtumiaji."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "Huenda kuna data iliyohifadhiwa inayoathiri hali ya upakiaji katika maeneo haya: {PH1}. Kagua ukurasa huu katika dirisha fiche ili uzuie nyenzo hizo zisiathiri alama zako."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "Huenda kukawa na data iliyohifadhiwa inayoathiri utendaji katika mahali hapa: {PH1}. Kagua ukurasa huu katika dirisha fiche ili kuzuia nyenzo hizo zisiathiri alama zako."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "Mbinu ya kupunguza kasi"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "Muda wa tukio"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "Hali ya muda wa tukio huchanganua kipindi cha muda kisicho maalumu, kwa kawaida hujumuisha na matumizi ya mtumiaji."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "Changanua ukurasa kwa kutumia hali ya Lighthouse ya awali unapokuwa kwenye hali ya kusogeza."
@@ -6075,7 +6084,7 @@
     "message": "Ripoti"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "Aina"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "Programu-jalizi za Jumuiya (beta)"
@@ -6093,22 +6102,22 @@
     "message": "Pata maelezo zaidi"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "Changanua upakiaji wa ukurasa"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "Changanua hali ya ukurasa"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "Aina"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Zalisha ripoti ya Lighthouse"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "Hali"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "Programu jalizi"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "Anzisha muda wa tukio"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× kupunguza kasi"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "Kuzidisha thamani chaguomsingi kunaweza kupunguza utendaji wa mfumo."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Kasi ya mtandao imepunguzwa"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "Uwezo wa maunzi kutekeleza jukumu zaidi ya moja kwa wakati mmoja"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "Kipengele cha kubatilisha uwezo wa maunzi kutekeleza jukumu zaidi ya moja kwa wakati mmoja kimewashwa"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "Thamani ya navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Hakuna upunguzaji wa kasi ya mtandao"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Nje ya mtandao"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "Badilisha iwe thamani chaguomsingi"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "Nakili rekodi ya data ya ufuatiliaji wa rafu"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "Weka kichwa cha kubatilisha jibu"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7230,7 +7257,7 @@
     "message": "Imesimbuliwa:"
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(kutoka kwenye akiba ya diski)"
+    "message": "(kutoka katika akiba ya diski)"
   },
   "panels/network/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(kutoka kwenye akiba ya hifadhi)"
@@ -7239,7 +7266,7 @@
     "message": "(kutoka kwenye akiba inayoletwa mapema)"
   },
   "panels/network/RequestHeadersView.ts | fromServiceWorker": {
-    "message": "(kuanzia service worker)"
+    "message": "(kutoka service worker)"
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(kutoka kwenye ubadilishaji ulioambatishwa cheti)"
@@ -7506,7 +7533,7 @@
     "message": "Haijulikani"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "Inasubiria majibu ya seva"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Maporomoko ya maji"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Angalia cheti"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(kutoka katika akiba ya diski)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(kutoka kwenye akiba ya hifadhi)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(kutoka kwenye akiba inayoletwa mapema)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(kutoka service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(kutoka kwenye ubadilishaji ulioambatishwa cheti)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(kutoka kwenye Kifurushi cha Wavuti)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "Jumla"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "Kichwa Ghafi"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "Sera ya Anayeelekeza"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "Anwani ya Mbali"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "Vichwa vya Maombi"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "Mbinu ya Ombi"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "URL ya Ombi"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "Vichwa vya Jibu"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "Onyesha zaidi"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "Nambari ya Kuonyesha Hali"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Kipengele kilichotolewa na programu teja kina hitilafu au si sahihi."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "Udhibiti"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "Fichua data ya ndani (ikijumuisha maelezo mahususi ya ziada ya utekelezaji)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "Kichujio"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Piga kijipicha cha mgao wa hifadhi"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "Chukulia vipengee vya jumla kuwa msingi (inapendekezwa, kuondoa uteuzi kutafichua vituo vya ndani na kuleta maelezo mengi mno, lakini kunaweza kusaidia mizunguko ya utatuzi katika kubakisha njia)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "Array zilizochapwa"
@@ -8622,10 +8697,10 @@
     "message": "Ficha maelezo kamili"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Ikiwa unaamini taarifa hii imeonyeshwa kimakosa, tembelea https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "Ikiwa unaamini taarifa hii imeonyeshwa kimakosa, tembelea https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Maelezo"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "Nakili rekodi ya data ya ufuatiliaji wa rafu"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "Imeshindwa kupakia faili ya utatuzi \"{PH1}\"."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "Haijasitishwa"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "Ondoa kwenye orodha ya vipengee vilivyopuuzwa"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "Anzisha fremu upya"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "Onyesha fremu zilizo kwenye orodha ya vipengee vilivyopuuzwa"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "Weka mipangilio"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "Imeshindwa kupakia faili ya utatuzi \"{PH1}\"."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "Imeshindwa kupakia maelezo yoyote ya utatuzi ya {PH1}."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Zima sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi}other{Zima sehemu zote za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi zilizo kwenye mstari huu}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Una uhakika ungependa kuondoa folda hii?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "Imeandikwa na"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Futa"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "Futa mipangilio yote ya ubatilishaji"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "Imesambazwa"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Usijumuishe folda"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Dondosha folda ya nafasi ya kazi hapa"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "Weka katika kikundi kulingana na ilivyoandikwa au ilivyosambazwa (kwa majaribio)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Weka kwenye vikundi kulingana na folda"
@@ -10224,10 +10320,10 @@
     "message": "Onyesha au ufiche dirisha la mipangilio ya sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "Onyesha au ufiche utepe wa kitatuzi"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "Onyesha au ufiche utepe wa kusogeza"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Za mwishoni"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Fremu Ambayo Haitumiki"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "Mawasiliano"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "Fremu ndefu"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Kipengele cha kubana CPU kimewashwa"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- Kipengele cha kubatilisha uwezo wa maunzi kutekeleza jukumu zaidi ya moja kwa wakati mmoja kimewashwa"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- Kipengele cha sampuli za JavaScript kimezimwa"
@@ -11670,7 +11766,7 @@
     "message": "Idadi ya Sahihi"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "Inatumia kijisehemu kikubwa"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "Inaruhusu matumizi ya vitambulisho vilivyo kwenye kifaa"
@@ -11856,7 +11952,7 @@
     "message": "Yote"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "Futa neno"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "k.m. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Pakia zana za DevTools upya"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "Chagua folda"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "Chagua folda ili uhifadhi faili zilizobatilishwa."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Tumia lugha ya Chrome kila wakati"
@@ -12027,7 +12129,7 @@
     "message": "Ukurasa ukipakiwa upya, zana za DevTools zitaunganishwa tena kiotomatiki."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "Futa neno"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "haijabonyezwa"

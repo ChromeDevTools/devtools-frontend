@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "బ్లాక్ చేయి"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch బ్లాక్"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "ముగింపు"
   },
@@ -399,7 +402,7 @@
     "message": "స్క్రిప్ట్"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "With బ్లాక్ చేయండి"
+    "message": "With బ్లాక్"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "యాడ్ ఆక్షన్ వర్క్‌లెట్"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ఫైల్‌ను లోడ్ చేయడంలో తెలియని ఎర్రర్ ఏర్పడింది"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "ఫంక్షన్ {PH1}‌కు సంబంధించిన డీబగ్ సమాచారం అసంపూర్ణంగా ఉంది"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "డీబగ్గర్ భాష ప్లగ్ఇన్‌లో ఎర్రర్: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] {PH2} ({PH3})కు డీబగ్ చిహ్నాలను లోడ్ చేయడం విఫలమైంది"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "\"{PH1}\" ఫంక్షన్‌కు సంబంధించిన డీబగ్ చిహ్నాలు కనిపించడం లేదు"
+    "message": "ఫంక్షన్ \"{PH1}\" కోసం డీబగ్ సమాచారం ఏదీ లేదు"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ చేయబడ్డాయి, కానీ సోర్స్ ఫైళ్లు ఏవీ కనుగొనబడలేదు"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ అవుతున్నాయి ({PH3} ద్వారా)..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "సంకేత గుర్తు ఉన్న ఫైల్ \"{PH1}\" దొరకలేదు"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit కంపైల్ చేయడం విఫలమైంది: {PH1}"
@@ -1382,9 +1385,6 @@
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
     "message": "కాస్ట్ ఇంటిగ్రేషన్ ఆటోమేటిక్ సెట్టింగ్‌ను డిజేబుల్ చేయడానికి -internal-media-controls-overlay-cast-button ఎంపిక సాధనానికి బదులుగా disableRemotePlayback ఫీచర్‌ను ఉపయోగించండి."
   },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "32x32 DIP ఇంటర్‌సెక్ట్ నేటివ్ UI కంటే ఎక్కువ పరిమాణంలో ఉన్న అనుకూల కర్సర్‌లు విస్మరించబడ్డాయి, అలాగే తీసివేయబడతాయి."
-  },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
     "message": "{PH1} విస్మరించబడింది. దయచేసి బదులుగా {PH2} ఉపయోగించండి."
   },
@@ -1416,16 +1416,13 @@
     "message": "వెబ్‌సైట్ దాని యూజర్ యోక్క ప్రత్యేక నెట్‌వర్క్ స్థానం కారణంగా మాత్రమే యాక్సెస్ చేయగల నెట్‌వర్క్ నుండి సబ్‌రిసోర్స్‌లను రిక్వెస్ట్ చేసింది. ఈ రిక్వెస్ట్‌లు ప్రైవేట్ పరికరాలను, సర్వర్‌లను ఇంటర్నెట్‌కు బహిర్గతం చేస్తాయి, దీని వలన క్రాస్-సైట్ రిక్వెస్ట్ ఫోర్జరీ (CSRF) దాడి, మరియు/లేదా సమాచారాన్ని బహిర్గతం చేసే ప్రమాదం పెరుగుతుంది. ఈ ప్రమాదాలను తగ్గించడానికి, సురక్షితం కాని ఆరిజిన్‌ల నుండి ప్రారంభించి, ప్రైవేట్ సబ్‌రిసోర్స్‌ల కోసం చేసిన రిక్వెస్ట్‌లను Chrome విస్మరిస్తుంది, వాటిని బ్లాక్ చేయడం ప్రారంభిస్తుంది."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 ఆటోమేటిక్‌గా ఎనేబుల్ చేయబడుతుంది, googIPv6‌ను ఉపయోగించి దానిని డిజేబుల్ చేసే ఆప్షన్ త్వరలోనే తీసివేయబడుతుంది. దయచేసి ఈ లెగసీ పరిమితిని ఉపయోగించడం ఆపివేయండి."
+    "message": "IPv6 ఆటోమేటిక్‌గా ఎనేబుల్ చేయబడింది, googIPv6‌ను ఉపయోగించి దీన్ని డిజేబుల్ చేయగల సామర్థ్యం M108లో తీసివేయబడాలని టార్గెట్ చేయబడింది, అలా చేసిన తర్వాత ఇది విస్మరించబడుతుంది. దయచేసి ఈ లెగసీ పరిమితిని ఉపయోగించడం ఆపివేయండి."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
     "message": "file: URLల చివర .css ఫైల్ ఎక్స్‌టెన్షన్ ఉంటే మినహా, వాటి నుండి CSSను లోడ్ చేయలేము."
   },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "OfflineAudioContext‌లో MediaElementAudioSourceNode‌ను క్రియేట్ చేయడం విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
-  },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "remove() యొక్క సింక్రనస్ కాని పరిధి తీసివేతను SourceBuffer.abort() ఉపయోగించి రద్దు చేయడం, నిర్దేశించిన మార్పు కారణంగా విస్మరించబడింది. భవిష్యత్తులో సపోర్ట్ తీసివేయబడుతుంది. బదులుగా మీరు updateend కోసం వేచి ఉండండి. జతపరిచిన సింక్రనస్ కాని మీడియాను రద్దు చేయడానికి లేదా పార్సర్ స్టేట్‌ను రీసెట్ చేయడానికి మాత్రమే abort() ఉద్దేశించి ఉంది."
+    "message": "remove() యొక్క సింక్రనస్ కాని పరిధి తీసివేతను SourceBuffer.abort() ఉపయోగించి రద్దు చేయడం, నిర్దేశించిన మార్పు కారణంగా విస్మరించబడింది. భవిష్యత్తులో సపోర్ట్ తీసివేయబడుతుంది. బదులుగా మీరు updateend ఈవెంట్‌ను వినాలి. జతపరిచిన సింక్రనస్ కాని మీడియాను రద్దు చేయడానికి లేదా పార్సర్ స్టేట్‌ను రీసెట్ చేయడానికి మాత్రమే abort() ఉద్దేశించి ఉంది."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
     "message": "బఫర్ అయిన ఏ కోడెడ్ ఫ్రేమ్‌ల యొక్క ప్రదర్శించిన అత్యధిక టైమ్ స్టాంప్ కంటే MediaSource.duration‌ను తక్కువగా సెట్ చేయడం, నిర్దేశించిన మార్పు కారణంగా విస్మరించబడింది. బఫర్ అయిన మీడియా కుదింపును ఏమీ పేర్కొనకుండా తీసివేయడానికి మద్దతు, భవిష్యత్తులో తీసివేయబడుతుంది. బదులుగా మీరు newDuration < oldDuration దగ్గర అన్ని sourceBuffers‌లలో స్పష్టంగా remove(newDuration, oldDuration)‌ను అమలు చేయాలి."
@@ -1444,12 +1441,6 @@
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "మీ పార్ట్‌నర్ వాడుకలో లేని (D)TLS వెర్షన్‌ను ఉపయోగిస్తున్నారు. దీనిని పరిష్కరించడం గురించి దయచేసి మీ పార్ట్‌నర్‌తో సంప్రదించండి."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "basic-card పేమెంట్ ఆప్షన్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "యూజర్ యాక్టివేషన్ లేకుండా PaymentRequest.show()‌ను కాల్ చేయడం విస్మరించబడింది, అలాగే ఆ ఆప్షన్ తీసివేయబడుతుంది."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> పేరెంట్ కలిగిన <source src> చెల్లదు, కాబట్టి విస్మరించబడింది. బదులుగా దయచేసి <source srcset> ఉపయోగించండి."
@@ -1474,9 +1465,6 @@
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
     "message": "rtcpMuxPolicy ఆప్షన్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels ఇకపై సపోర్ట్ చేయవు. RtpDataChannels పరిమితి ప్రస్తుతం విస్మరించబడింది, దీని వలన తర్వాతి తేదీన ఎర్రర్ ఏర్పడవచ్చు."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
     "message": "SharedArrayBuffer‌కు క్రాస్-ఆరిజిన్ ఐసోలేషన్ అవసరం. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/enabling-shared-array-buffer/ లింక్‌ను చూడండి."
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM స్టోరేజ్ ఐటెమ్‌లు"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} క్లియర్ చేయబడింది"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "టేబుల్‌లో చూపిన ఎంట్రీల సంఖ్య: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "ప్రధాన ఫ్రేమ్"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "మరింత తెలుసుకోండి: అన్‌లోడ్ హ్యాండ్లర్‌ను ఎప్పుడూ ఉపయోగించవద్దు"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "వెనుకకు/ముందుకు కాష్ నుండి సర్వ్ చేయబడలేదు: వెనుకకు/ముందుకు కాష్‌ను ట్రిగ్గర్ చేయడానికి, Chrome వెనుకకు/ముందుకు బటన్‌లను ఉపయోగించండి లేదా ఆటోమేటిక్‌గా దూరంగా, వెనుకకు నావిగేట్ చేయడానికి ఈ కింద టెస్ట్ బటన్‌ను ఉపయోగించండి."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ఈ ఫ్రేమ్ యాడ్ ఫ్రేమ్‌గా పరిగణించబడింది, ఎందుకంటే దాని పేరెంట్ ఫ్రేమ్ ఒక యాడ్ ఫ్రేమ్."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "ప్రీరెండరింగ్"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "ప్రీరెండరింగ్ స్టేటస్"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "రిఫ్రెష్ చేయండి"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "సబ్‌ట్రీ సవరించబడింది"
@@ -5514,7 +5517,7 @@
     "message": "ఫ్రేమ్"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "చెల్లని హెడర్ విలువ"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ఉల్లంఘన}other{# ఉల్లంఘనలు}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "డెస్క్‌టాప్"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevTools త్రోట్లింగ్ (అధునాతన)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "ఆధునిక వెబ్ డెవలప్‌మెంట్ కోసం ఈ పేజీ బెస్ట్ ప్రాక్టీసులను అనుసరిస్తుందా"
   },
@@ -6009,10 +6015,10 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "మొదటి సారి కుదించిన లోడ్‌లోని డేటా ఆధారంగా అత్యంత నెమ్మదిగా ఉన్న పేజీ లోడ్‌ను అనుకరించండి. డిజేబుల్ చేయబడితే, వర్తింపజేసిన త్రోట్లింగ్‌తో పేజీ వాస్తవానికి నెమ్మదిగా అవుతుంది."
+    "message": "సిమ్యులేటెడ్ త్రోట్లింగ్, నెమ్మదిగా పేజీ లోడ్ అవ్వడాన్ని సిమ్యులేట్ చేస్తుంది, ప్రారంభంలో త్రోట్లింగ్ లేని లోడ్ నుండి వచ్చే డేటాను ఆధారంగా తీసుకొని అది ఇలా చేస్తుంది. DevTools త్రోట్లింగ్ కారణంగా నిజానికి పేజీ లోడింగ్ వేగం అనేది తగ్గుతుంది."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "త్రోట్లింగ్ అనుకరణ"
+    "message": "సిమ్యులేటెడ్ త్రోట్లింగ్ (ఆటోమేటిక్ సెట్టింగ్)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "స్నాప్‌షాట్"
@@ -6025,6 +6031,9 @@
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "ఈ లొకేషన్‌లో 'లోడింగ్ పనితీరు'ను ప్రభావితం చేసే స్టోర్డ్ డేటా ఉండవచ్చు: {PH1}. మీ స్కోర్‌లను ఆ రిసోర్స్‌లు ప్రభావితం చేయకుండా నివారించడానికి అజ్ఞాత విండోలో ఈ పేజీని ఆడిట్ చేయండి."
+  },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "త్రోట్లింగ్ పద్ధతి"
   },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "కాల వ్యవధి"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× నెమ్మది చలనం"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "ఆటోమేటిక్‌గా సెట్ చేసి ఉండే విలువ కంటే ఎక్కువ ఉంటే, సిస్టమ్ పనితీరు తగ్గవచ్చు."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "నెట్‌వర్క్ నుండి బలవంతంగా డిస్‌కనెక్ట్ చేయబడింది"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "హార్డ్‌వేర్ ఒకేసారి అమలు చేయగల టాస్క్‌ల సంఖ్య"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "హార్డ్‌వేర్ ఒకేసారి అమలు చేయగల టాస్క్‌ల సంఖ్యకు సంబంధించిన ఓవర్‌రైడ్ సెట్టింగ్ ఎనేబుల్ చేయబడింది"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency విలువ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "త్రోట్లింగ్ చేయడం లేదు"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "ఆఫ్‌లైన్"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "ఆటోమేటిక్‌గా సెట్ చేసి ఉండే విలువకు రీసెట్ చేయండి"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6899,6 +6923,9 @@
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "స్టాక్ ట్రేస్‌ను కాపీ చేయండి"
   },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "ప్రతిస్పందన హెడర్ ఓవర్‌రైడ్‌ను క్రియేట్ చేయండి"
+  },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
   },
@@ -7275,7 +7302,7 @@
     "message": "trigger-data ద్వారా రికార్డ్ చేయబడిన ఆట్రిబ్యూషన్: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "సిఫార్సు చేసిన వారి పాలసీ"
+    "message": "రెఫర్ చేసిన వారి పాలసీ"
   },
   "panels/network/RequestHeadersView.ts | remoteAddress": {
     "message": "రిమోట్ అడ్రస్"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "సర్టిఫికెట్‌ను చూడండి"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(డిస్క్ కాష్ నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(మెమరీ కాష్ నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(ప్రీఫెచ్ కాష్ నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(service worker నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(సైన్ చేసిన ఎక్స్‌ఛేంజ్ నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(వెబ్ బండిల్ నుండి)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "సాధారణం"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "ప్రాసెస్ చేయనిది"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "రెఫర్ చేసిన వారి పాలసీ"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "రిమోట్ అడ్రస్"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "హెడర్‌లను రిక్వెస్ట్ చేయండి"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "రిక్వెస్ట్ పద్ధతి"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "URLను రిక్వెస్ట్ చేయండి"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "ప్రతిస్పందన హెడర్‌లు"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "మరిన్ని చూపించు"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "స్టేటస్ కోడ్"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "క్లయింట్ అందించిన తర్కం తప్పు లేదా చెల్లదు."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "కలిగి ఉంది"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "అంతర్గత డేటాను అందించండి (దీనిలో అదనపు అమలు-నిర్దిష్ట వివరాలు ఉంటాయి)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "ఫిల్టర్ చేయి"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "హీప్ స్నాప్‌షాట్ తీయండి"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "గ్లోబల్ ఆబ్జెక్ట్‌లను మూలాలుగా పరిగణించండి (సిఫార్సు చేయబడింది, దీని ఎంపికను తీసివేయడం వల్ల అంతర్గత నోడ్‌లు బహిర్గతం అవుతాయి, అలాగే అధికంగా వివరాలు తెలుస్తాయి, అయితే పాత్‌ల నిల్వను కొనసాగించడంలో డీబగ్గింగ్ కాల వ్యవధులకు సహాయపడవచ్చు)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "టైప్ చేసిన అర్రేలు"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "స్టాక్ ట్రేస్‌ను కాపీ చేయండి"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "\"{PH1}\" డీబగ్ ఫైల్‌ను లోడ్ చేయడం విఫలమైంది."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "పాజ్ చేయబడలేదు"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "'విస్మరించు' లిస్ట్ నుండి తీసివేయండి"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "ఫ్రేమ్‌ను రీస్టార్ట్ చేయండి"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "విస్మరించడానికి లిస్ట్ చేయబడిన ఫ్రేమ్‌లను చూపండి"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "కాన్ఫిగర్ చేయి"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "\"{PH1}\" డీబగ్ ఫైల్‌ను లోడ్ చేయడం విఫలమైంది."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "{PH1} కోసం ఏదైనా డీబగ్ సమాచారాన్ని లోడ్ చేయడంలో విఫలమైంది."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{బ్రేక్ పాయింట్‌ను డిజేబుల్ చేయండి}other{లైన్‌లోని బ్రేక్ పాయింట్‌లు అన్నింటినీ డిజేబుల్ చేయండి}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "మీరు ఈ ఫోల్డర్‌ను ఖచ్చితంగా తీసివేయాలనుకుంటున్నారా?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "ప్రామాణీకరించబడింది"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "తొలగించు"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "అన్ని ఓవర్‌రైడ్‌లను తొలగించండి"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "అమలు చేయబడింది"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ఫోల్డర్‌ను మినహాయించండి"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "వర్క్ స్పేస్ ఫోల్డర్‌ను ఇక్కడ డ్రాప్ చేయండి"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "ప్రామాణీకరించబడిన/అమలు చేయబడిన సోర్స్ ఆధారంగా గ్రూప్ చేయబడింది (ప్రయోగాత్మకం)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ఫోల్డర్ ఆధారంగా గ్రూప్ చేయండి"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "ఇన్‌యాక్టివ్‌గా ఉన్న ఫ్రేమ్"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "ఇంటరాక్షన్‌లు"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "పొడవైన ఫ్రేమ్"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU త్రోట్లింగ్ ఎనేబుల్ చేయబడింది"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- హార్డ్‌వేర్ ఒకేసారి అమలు చేయగల టాస్క్‌ల సంఖ్యకు సంబంధించిన ఓవర్‌రైడ్ సెట్టింగ్ ఎనేబుల్ చేయబడింది"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- జావాస్క్రిప్ట్ శాంప్లింగ్ డిజేబుల్ చేయబడింది"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "DevToolsను రీలోడ్ చేయండి"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "ఫోల్డర్‌ను ఎంచుకోండి"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "ఓవర్‌రైడ్ ఫైల్స్‌ను స్టోర్ చేయడానికి ఫోల్డర్‌ను ఎంచుకోండి."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "ఎల్లప్పుడూ Chrome భాషతో మ్యాచ్ చేయండి"

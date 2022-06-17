@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "අවහිර කරන්න"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch අවහිරය"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "වැසීම"
   },
@@ -399,7 +402,7 @@
     "message": "ස්ක්‍රිප්ට"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "With අවහිර කරන්න"
+    "message": "With අවහිරය"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "වෙළඳ දැන්වීම වෙන්දේසි Worklet"
@@ -1005,7 +1008,7 @@
     "message": "විදැහීම පෙන්වන්න"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "CSS prefers-color-scheme ටොගල බල කරන්න"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "දෘශ්‍ය ඌනතාව"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ගොනුව පූරණය කිරීමේ නොදන්නා දෝෂයකි"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "{PH1} ශ්‍රිතය සඳහා නිදොස් කිරීමේ තොරතුරු අසම්පූර්ණයි"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "නිදොස් කිරීමේ භාෂා ප්ලගිනයේ දෝෂයකි: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] {PH2} ({PH3}) සඳහා නිදොස් කිරීමේ සංකේත පූරණය කිරීමට අසමත් විය"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "\"{PH1}\" ශ්‍රිතය සඳහා අස්ථානගත නිදොස් කිරීමේ සංකේත"
+    "message": "\"{PH1}\" ශ්‍රිතය සඳහා නිදොස් කිරීමේ තොරතුරු නැත"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] {PH2} සඳහා නිදොස් කිරීමේ සංකේත පූරණය කළ නමුත්, මූලාශ්‍ර ගොනු කිසිවක් හමු නොවීය"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2} සඳහා නිදොස් කිරීමේ සංකේත පූරණය කරමින් ({PH3} හරහා)..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "\"{PH1}\" සංකේත ගොනුව හමු නොවීය"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit සම්පාදනය අසාර්ථක විය: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "එකම-අඩවිය සහ එකම-මූලාරම්භය"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "CORS Access-Control-Allow-Headers හැසිරවීමේදී ආදේශක සංකේතය (*) මගින් අවසරය ආවරණය නොවනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "ඉවත් කරන ලද හිස්ඉඩ \\(n|r|t) අනුලකුණු සහ අනුලකුණුවලට වඩා අඩු (<) යන දෙකම අඩංගු URL ඉල්ලන සම්පත් අවහිර කර ඇත. කරුණාකර මෙම සම්පත් පූරණය කිරීම සඳහා මූලාංග උපලක්ෂණ අගයන් වැනි ස්ථානවලින් නව පේළි ඉවත් කර අනුලකුණුවලට වඩා අඩු ඒවා කේතනය කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() අත්හැර ඇත, ඒ වෙනුවට ප්‍රමිතිගත API භාවිත කරන්න: සංචාලන වේලාව 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() අත්හැර ඇත, ඒ වෙනුවට ප්‍රමිතිගත API භාවිත කරන්න: සිතුවම් කාල නියාමනය."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() අත්හැර ඇත, ඒ වෙනුවට ප්‍රමිතිගත API භාවිත කරන්න: සංචාලන වේලාව තුළ nextHopProtocol 2."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "\\(0|r|n) අනුලකුණක් අඩංගු කුකි කප්පාදු කිරීම වෙනුවට ප්‍රතික්ෂේප කරනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "document.domain සැකසීමෙන් එකම මූලාරම්භ ප්‍රතිපත්තිය ලිහිල් කිරීම අත්හරින අතර, පෙරනිමියෙන් අබල කරනු ඇත. මෙම ක්ෂය කිරීමේ අනතුරු ඇඟවීම document.domain සැකසීම මගින් සක්‍රීය කරන ලද හරස් මූලාරම්භ ප්‍රවේශයක් සඳහා වේ."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "හරස් සම්භවයක් ඇති iframes වෙතින් {PH1} ප්‍රේරණය කිරීම අත්හරින අතර අනාගතයේදී ඉවත් කරනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "-internal-media-controls-overlay-cast-button තෝරකය භාවිත කරනවා වෙනුවට පෙරනිමි විකාශ ඒකාබද්ධ කිරීම අබල කිරීම සඳහා disableRemotePlayback උපලක්ෂණය භාවිත කළ යුතුය."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} අත්හැරේ. කරුණාකර ඒ වෙනුවට {PH2} භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "මෙය පරිවර්තිත අත් හැරීමේ ගැටලු පණිවිඩයක උදාහරණයකි."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "document.domain සැකසීමෙන් එකම මූලාරම්භ ප්‍රතිපත්තිය ලිහිල් කිරීම අත්හරින අතර, පෙරනිමියෙන් අබල කරනු ඇත. මෙම විශේෂාංගය දිගටම භාවිත කිරීමට, කරුණාකර ලේඛනය සහ රාමු සඳහා HTTP ප්‍රතිචාරය සමඟ Origin-Agent-Cluster: ?0 ශීර්ෂයක් යැවීමෙන් මූලාරම්භ-යතුරු සහිත නියෝජිත පොකුරුවලින් ඉවත් වන්න. වැඩි විස්තර සඳහා https://developer.chrome.com/blog/immutable-document-domain/ බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path අත්හැර ඇති අතර ඉවත් කරනු ඇත. කරුණාකර ඒ වෙනුවට Event.composedPath() භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "වැඩි විස්තර සඳහා විශේෂාංග තත්ත්ව පිටුව පරීක්ෂා කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() සහ watchPosition() අනාරක්ෂිත මූලාරම්භවල තවදුරටත් ක්‍රියා නොකරයි. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබගේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() සහ watchPosition() අනාරක්ෂිත මූලාරම්භවල අත්හැර ඇත. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබගේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() අනාරක්ෂිත මූලාරම්භවල තවදුරටත් ක්‍රියා නොකරයි. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබගේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate අත්හැරේ. කරුණාකර ඒ වෙනුවට RTCPeerConnectionIceErrorEvent.address හෝ RTCPeerConnectionIceErrorEvent.port භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "වෙබ් අඩවිය එහි පරිශීලකයින්ගේ වරප්‍රසාද ලත් ජාල පිහිටීම නිසා පමණක් ප්‍රවේශ විය හැකි ජාලයකින් උප සම්පතක් ඉල්ලා ඇත. මෙම ඉල්ලීම් අන්තර්ජාලයට පොදු නොවන උපාංග සහ සේවාදායක, හරස් අඩවි ඉල්ලීම් ව්‍යාජ (CSRF) ප්‍රහාරයක් සහ/හෝ තොරතුරු කාන්දු වීමේ අවදානම වැඩි කරමින් නිරාවරණය කරයි. මෙම අවදානම් අවම කිරීම සඳහා, ආරක්ෂිත නොවන සන්දර්භවලින් ආරම්භ කරන විට Chrome විසින් පොදු නොවන උප සම්පත් වෙත ඉල්ලීම් අවලංගු කරන අතර, ඒවා අවහිර කිරීම ආරම්භ කරනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 පෙරනිමියෙන් සබල කර ඇති අතර googIPv6 භාවිතයෙන් එය අබල කිරීමේ හැකියාව M108 හි ඉවත් කිරීමට ඉලක්ක කරන අතර, එයින් පසු එය නොසලකා හරිනු ඇත. කරුණාකර මෙම ලෙගසි බාධාව භාවිතය නවත්වන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "ඒවා .css ගොනු දිගුවකින් අවසන් වන්නේ නම් මිස file: URL වෙතින් CSS පූරණය කළ නොහැකිය."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "පිරිවිතර වෙනස් වීම හේතුවෙන් remove() හි අසමමුහුර්ත පරාසය ඉවත් කිරීම අවලංගු කිරීමට SourceBuffer.abort() භාවිත කිරීම. අනාගතයේදී සහාය ඉවත් කරනු ඇත. ඔබ ඒ වෙනුවට updateend සිදුවීමට සවන් දිය යුතුය. abort() අසමමුහුර්ත මාධ්‍ය ඇමුණුමක් හෝ විග්‍රහ කිරීමේ තත්ත්වය යළි පිහිටුවීමක් පමණක් නතර කිරීමට අදහස් කෙරේ."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "පිරිවිතර වෙනස් වීම හේතුවෙන් ඕනෑම බෆර කළ කේත රාමුවල ඉහළම ඉදිරිපත් කිරීමේ කාල මුද්‍රාවට පහළින් MediaSource.duration සැකසීම අත්හරිනු ලැබේ. කප්පාදු කරන ලද බෆර මාධ්‍ය ව්‍යංගයෙන් ඉවත් කිරීම සඳහා වන සහාය අනාගතයේදී ඉවත් කෙරෙනු ඇත. ඔබ එ වෙනුවට remove(newDuration, oldDuration) සියලු sourceBuffers හි, newDuration < oldDuration තැන්වල පැහැදිලිව සිදු කළ යුතුය."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "මෙම වෙනස් කිරීම {milestone} සන්ධිස්ථානය සමග බලාත්මක වනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "වෙබ් MIDI MIDIOptions තුළ sysex නිශ්චිතව දක්වා නොමැති වුවද භාවිත කිරීමට අවසරය ඉල්ලනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "දැනුම්දීම් API තවදුරටත් අනාරක්ෂිත මූලාරම්භවලින් භාවිත නොකළ හැකිය. ඔබ ඔබගේ යෙදුම HTTPS වැනි, ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Notification API සඳහා අවසරය හරස් සම්භවයක් ඇති iframe වෙතින් තවදුරටත් ඉල්ලිය නොහැකිය. ඔබ ඉහළ මට්ටමේ රාමුවකින් අවසර ඉල්ලීම හෝ ඒ වෙනුවට නව කවුළුවක් විවෘත කිරීම සලකා බැලිය යුතුය."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "ඔබගේ සහායක යල් පැන ගිය (D)TLS අනුවාදයක් ගැන සාකච්ඡා කරමින් සිටී. මෙය නිවැරදි කිරීමට කරුණාකර ඔබගේ සහායක සමඟ පරීක්ෂා කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<picture> මූලය සහිත <source src> වලංගු නොවන අතර එබැවින් නොසලකා හැරේ. කරුණාකර ඒ වෙනුවට <source srcset> භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo අත්හැරේ. කරුණාකර ඒ වෙනුවට navigator.webkitTemporaryStorage හෝ navigator.webkitPersistentStorage භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "URL හි කාවැද්දූ අක්තපත්‍ර අඩංගු උප සම්පත් ඉල්ලීම් (උදා. https://user:pass@host/) අවහිර කර ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "DtlsSrtpKeyAgreement බාධාව ඉවත් කර ඇත. ඔබ මෙම සීමාව සඳහා false අගයක් සඳහන් කර ඇත, එය ඉවත් කරන ලද SDES key negotiation ක්‍රමය භාවිත කිරීමේ උත්සාහයක් ලෙස අර්ථ දැක්වේ. මෙම ක්‍රියාකාරිත්වය ඉවත් කර ඇත; ඒ වෙනුවට DTLS key negotiation සහාය දක්වන සේවාවක් භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "DtlsSrtpKeyAgreement බාධාව ඉවත් කර ඇත. ඔබ මෙම සීමාව සඳහා true අගයක් සඳහන් කර ඇත, එහි බලපෑමක් නැත, නමුත් ඔබට මෙම බාධාව පිළිවෙළට සකස් කිරීම සඳහා ඉවත් කළ හැකිය."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Complex Plan B SDP හඳුනා ගන්නා ලදි. Session Description Protocol හි උපභාෂාව තවදුරටත් සහාය නොදක්වයි. කරුණාකර ඒ වෙනුවට Unified Plan SDP භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, RTCPeerConnection {sdpSemantics:'plan-b'} සමග සෑදීමට භාවිත කරන, Session Description Protocol හි ලෙගසි සම්මත නොවන අනුවාදයක් වන අතර එය ස්ථිරවම වෙබ් වේදිකාවෙන් මකා ඇත. එය තවම IS_FUCHSIA සමග ගොඩනගන විට ලබා ගත හැකිය, නමුත් අපි එය හැකි ඉක්මනින් මැකීමට අදහස් කරමු. එය මත රඳා සිටීම නවත්වන්න. තත්ත්වය සඳහා https://crbug.com/1302249 බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "rtcpMuxPolicy විකල්පය අත්හැර ඇති අතර ඉවත් කරනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer හරස් සම්භවය හුදකලා කිරීම අවශ්‍ය වනු ඇත. වැඩි විස්තර සඳහා https://developer.chrome.com/blog/enabling-shared-array-buffer/ බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "පරිශීලක සක්‍රිය කිරීමෙන් තොරව speechSynthesis.speak() අත්හරින අතර ඉවත් කරනු ඇත."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "අත් හරින ලද විශේෂාංගය භාවිත කරන ලදි"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "SharedArrayBuffer භාවිත කිරීම දිගටම කරගෙන යාමට දිගු හරස් සම්භවය හුදකලාව තෝරා ගත යුතුය. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ බලන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} වෙළෙන්දා-විශේෂිත වේ. කරුණාකර ඒ වෙනුවට සම්මත {PH2} භාවිත කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "UTF-16 XMLHttpRequest හි ප්‍රතිචාර json මගින් සහාය නොදක්වයි"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "ප්‍රධාන පොටෙහි සමමුහුර්ත XMLHttpRequest අවසාන පරිශීලකයාගේ අත්දැකීමට ඇති අහිතකර බලපෑම් නිසා අත්හරිනු ලැබේ. තවත් උදවු සඳහා, https://xhr.spec.whatwg.org/ පරීක්ෂා කරන්න."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() අත්හැරේ. කරුණාකර ඒ වෙනුවට isSessionSupported() භාවිත කරන්න සහ විසඳන ලද බූලියන් අගය පරීක්ෂා කරන්න."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM ගබඩා අයිතම"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} හිස් කරන ලදි"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "වගුවෙහි පෙන්වන ඇතුළත් කිරීම් ගණන: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "ප්‍රධාන රාමුව"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "තව දැන ගන්න: කිසිවිටක බෑම හසුරුවන්නා භාවිත නොකරන්න"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් පිරිනොනමයි: පසුපසට ඉදිරියට හැඹිලිය ක්‍රියාරම්භ කිරීමට, Chrome හි පසුපසට/ඉදිරියට බොත්තම් භාවිත කරන්න, නැතහොත් ස්වයංක්‍රීයව ඉවතට සහ පසුපසට සංචාලනය කිරීමට පහත පරීක්ෂණ බොත්තම භාවිත කරන්න."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "මෙහි මව් රාමුව වෙළඳ දැන්වීම් රාමුවක් වන බැවින් මෙම රාමුව වෙළඳ දැන්වීම් රාමුවක් ලෙස සැලකේ."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "පූර්ව ඉදිරිපත් කිරීම"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "පූර්ව ඉදිරිපත් කිරීමේ තත්ත්වය"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "නැවුම් කරන්න"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "උප රුක වෙනස් කරන ලදි"
@@ -5514,7 +5517,7 @@
     "message": "රාමුව"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "වලංගු නොවන ශීර්ෂ අගය"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{උල්ලංඝන #}one{උල්ලංඝන #}other{උල්ලංඝන #}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "ඩෙස්ක්ටොප්"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevTools හැකිළීම (උසස්)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "මෙම පිටුව නවීන වෙබ් සංවර්ධනය සඳහා වන හොඳම පරිචයන් අනුගමනය කරන්නේද?"
   },
@@ -5967,7 +5973,7 @@
     "message": "මෙම පිටුව ආබාධිත හෝ දුබලතා සහිත පුද්ගලයින් විසින් භාවිත කළ හැකිද?"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "ජාවාස්ක්‍රිප්ට් අබලයි. මෙම පිටුව විගණනය කිරීමට ඔබ ජාවාස්ක්‍රිප්ට් සබල කිරීම අවශ්‍ය වේ. ජාවාස්ක්‍රිප්ට් සබල කිරීමට විධාන මෙනුව විවෘත කර ජාවාස්ක්‍රිප්ට් විධානය සබල කරන්න ක්‍රියාත්මක කරන්න."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "ලෙගසි සංචාලනය"
@@ -5985,10 +5991,10 @@
     "message": "එකම service worker මගින් බහුවිධ ටැබ පාලනය කරමින් පවතී. මෙම පිටුව විගණනය කිරීම සඳහා එකම මූලාරම්භයේ ඔබගේ අනෙක් ටැබ වසන්න."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "සංචාලනය (පෙරනිමි)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "සංචාලන ප්‍රකාරය මුල් Lighthouse වාර්තා වැනිම, පිටු පූරණයක් විශ්ලේෂණය කරයි."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "කාර්ය සාධනය"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "ආරම්භක නොහකුළන ලද පූරණයකින් වන දත්ත මත පදනම්ව, මන්දගාමී පිටු පූරණය කිරීමක් අනුකරණය කරන්න. අබල කර ඇත්නම්, ව්‍යවහාරික හැකිළීම සමඟ පිටුව සැබවින්ම මන්දගාමී වේ."
+    "message": "අනුකරණය කළ හැකිළීම ආරම්භක නොහකුළන ලද පූරණයකින් වන දත්ත මත පදනම්ව, වඩා මන්දගාමී පිටු පූරණය කිරීමක් අනුකරණය කරයි. DevTools හැකිළීම සැබවින්ම පිටුව මන්දගාමී කරයි."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "අනුකාරක අවකරණය කිරීම"
+    "message": "අනුකරණය කරන ලද හැකිළීම (පෙරනිමිය)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "සැණ රුව"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "සැණ රූ ප්‍රකාරය, සාමාන්‍යයෙන් පරිශීලක අන්තර්ක්‍රියාවලින් පසුව, විශේෂිත තත්ත්වයක පිටුව විශ්ලේෂණය කරයි."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "මෙම ස්ථානවල පූරණය කිරීමේ ක්‍රියාකාරිත්වයට බලපාන දත්ත ගබඩා කර තිබිය හැක: {PH1}. එම සම්පත් ඔබගේ ලකුණුවලට බලපෑම වැළැක්වීම සඳහා මෙම පිටුව අප්‍රසිද්ධ කවුළුවක විගණනය කරන්න."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "මෙම ස්ථානයේ පූරණය කිරීමේ ක්‍රියාකාරිත්වයට බලපාන ගබඩා කළ දත්ත තිබිය හැකිය: {PH1}. එම සම්පත් ඔබේ ලකුණුවලට බලපෑම වැළැක්වීම සඳහා මෙම පිටුව අප්‍රසිද්ධ කවුළුවක විගණනය කරන්න."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "හැකිළීමේ ක්‍රමය"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "කාල පරාසය"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "කාල පරාස ආකෘතිය සාමාන්‍යයෙන් පරිශීලක අන්තර්ක්‍රියා අඩංගු අත්තනෝමතික කාල පරිච්ඡේදයක් විශ්ලේෂණය කරයි."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "සංචාලන ප්‍රකාරය තුළ සිටින විට පැරණි Lighthouse භාවිතයෙන් පිටුව විශ්ලේෂණය කරන්න."
@@ -6075,7 +6084,7 @@
     "message": "වාර්තා"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "ප්‍රවර්ග"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "ප්‍රජා ප්ලගීන (බීටා)"
@@ -6093,22 +6102,22 @@
     "message": "තව දැන ගන්න"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "පිටු පූරණය විශ්ලේෂණය කරන්න"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "පිටු සංඛ්‍යාලේඛන විශ්ලේෂණය කරන්න"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "ප්‍රවර්ග"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Lighthouse වාර්තාවක් ජනනය කරන්න"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "ප්‍රකාරය"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "ප්ලගින"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "කාල පරාසය ආරම්භ කරන්න"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× වේගය අඩු කරන්න"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "පෙරනිමි අගය ඉක්මවීම පද්ධතියේ ක්‍රියාකාරිත්වය අවශ්‍රේණි කළ හැකිය."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "ජාලයෙන් බලය විසන්ධි කර ඇත"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "දෘඪාංග සමගාමී"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "දෘඪාංග සමගාමී ප්‍රතික්ෂේප කිරීම සබල කර ඇත"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency හි අගය"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "තෙරපීමක් නැත"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "නොබැඳි"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "පෙරනිමි අගයට යළි පිහිටුවන්න"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6898,6 +6922,9 @@
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "ඇමතුම් අට්ටි අනුසාරය පිටපත් කරන්න"
+  },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "ප්‍රතිචාර ශීර්ෂය ප්‍රතික්ෂේප කරන්න"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
@@ -7506,7 +7533,7 @@
     "message": "නොදනී"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "සේවාදායක ප්‍රතිචාරය සඳහා රැඳී සිටිමින්"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "දිය ඇල්ල"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "සහතිකය බලන්න"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(තැටි හැඹිලිය වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(මතක හැඹිලිය වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(පූර්ව යළි ලබා ගැනීම් හැඹිලිය වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(service worker වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(අත්සන් කළ හුවමාරුව වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(වෙබ් පොදිය වෙතින්)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "පොදු"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "RAW"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "යොමු කිරීමේ ප්‍රතිපත්තිය"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "දුරස්ථ ලිපිනය"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "ඉල්ලීම් ශීර්ෂක"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "ඉල්ලීම් ක්‍රමය"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "ඉල්ලීම් URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "ප්‍රතිචාර ශීර්ෂක"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "තව පෙන්වන්න"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "තත්ත්ව කේතය"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "සේවාලාභීයා සපයන ලද තර්කයක් විකෘති වී ඇත නැතහොත් වලංගු නැත."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "සීමා කිරීම"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "අභ්‍යන්තරය නිරාවරණය කරන්න (අතිරේක ක්‍රියාත්මක කිරීම්-විශේෂිත විස්තර ඇතුළත් වේ)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "පෙරහන"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "Heap තිර රුවක් ගන්න"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "ගෝලීය වස්තු මූල ලෙස සලකන්න (නිර්දේශිතයි, මෙය ලකුණු කිරීම ඉවත් කිරීම අභ්‍යන්තර නෝඩ් නිරාවරණය කරන අතර අධික විස්තර හඳුන්වා දෙයි, නමුත් පෙත් රඳවා තබා ගැනීමේදී නිදොස් කිරීමේ චක්‍රවලට උපකාරී විය හැකිය)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "ටයිප් කළ අරා"
@@ -8622,10 +8697,10 @@
     "message": "සම්පූර්ණ විස්තර සඟවන්න"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "මෙය වැරදීමකින් පෙන්වන බව ඔබ විශ්වාස කරන්නේ නම් කරුණාකර https://g.co/chrome/lookalike-warnings වෙත පිවිසෙන්න."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "මෙය වැරදීමකින් පෙන්වන බව ඔබ විශ්වාස කරන්නේ නම් කරුණාකර https://g.co/chrome/lookalike-warnings වෙත පිවිසෙන්න."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "තතු"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "ඇමතුම් අට්ටි අනුසාරය පිටපත් කරන්න"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "\"{PH1}\" නිදොස් කිරීමේ ගොනුව පූරණය කිරීම අසාර්ථක විය"
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "විරාම නොකරන ලදි"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "නොසලකා හරින්න ලැයිස්තුවෙන් ඉවත් කරන්න"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "රාමුව යළි අරඹන්න"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "නොසලකා හරින ලද ලැයිස්තුවේ රාමු පෙන්වන්න"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "වින්‍යාස කරන්න"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "\"{PH1}\" නිදොස් කිරීමේ ගොනුව පූරණය කිරීම අසාර්ථක විය"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "{PH1} සඳහා කිනම් හෝ නිදොස් කිරීමේ තොරතුරු පූරණය කිරීම අසාර්ථක විය."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{බිඳුම් ලක්ෂ්‍යය අබල කරන්න}one{පේළියේ සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න}other{පේළියේ සියලු බිඳුම් ලක්ෂ්‍ය අබල කරන්න}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "ඔබට මෙම ෆෝල්ඩරය ඉවත් කිරීමට අවශ්‍ය බව ඔබට විශ්වාසද?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "කර්තෘත්වය දක්වන ලද"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "මකන්න"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "සියලු ප්‍රතික්ෂේප කිරීම් මකන්න"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "යොදන ලදි"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ෆෝල්ඩරය බැහැර කරන්න"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "කාර්ය ඉඩ ෆෝල්ඩරය මෙහි හෙළන්න"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "කර්තෘත්වය ඇති/යොදවන ලද (පරීක්ෂණාත්මක) අනුව සමූහ කරන්න"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ෆෝල්ඩරය අනුව සමූහ කරන්න"
@@ -10224,10 +10320,10 @@
     "message": "බිඳුම් ලක්ෂ්‍ය ආදාන කවුළුව ටොගල කරන්න"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "නිදොස් කිරීම් පැති තීරුව ටොගල කරන්න"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "සංචාලන පැති තීරුව ටොගල කරන්න"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "එල්ලෙන"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "නිෂ්ක්‍රිය රාමුව"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "අන්තර්ක්‍රියා"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "දිගු රාමුව"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU අවකරණය සබලයි"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- දෘඪාංග සමගාමී ප්‍රතික්ෂේප කිරීම සබල කර ඇත"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- ජාවාස්ක්‍රිප්ට නියැදි කිරීම අබලයි"
@@ -11670,7 +11766,7 @@
     "message": "අත්සන් සංඛ්‍යාව"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "විශාල බ්ලොබ් සඳහා සහාය දක්වයි"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "නේවාසික යතුරු සඳහා සහාය දක්වයි"
@@ -11856,7 +11952,7 @@
     "message": "සියල්ල"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "ආදානය හිස් කරන්න"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "උදා. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "DevTools නැවත පූරණය කරන්න"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "ෆෝල්ඩරය තෝරන්න"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "ප්‍රතික්ෂේප ගොනු ගබඩා කිරීමට ෆෝල්ඩරයක් තෝරන්න."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "සැම විට Chrome හි භාෂාව ගළපන්න"
@@ -12027,7 +12129,7 @@
     "message": "පිටුව ප්‍රතිපූරණය කිරීමට, DevTools ස්වයංක්‍රියව යළි සබැඳෙනු ඇත."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "ආදානය හිස් කරන්න"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "ඔබා නැත"

@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "ব্লক করুন"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch ব্লক করা"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "বন্ধ হওয়া"
   },
@@ -399,7 +402,7 @@
     "message": "স্ক্রিপ্ট"
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
-    "message": "ব্লক With"
+    "message": "With ব্লক করা"
   },
   "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
     "message": "বিজ্ঞাপন নিলামের ওয়ার্কলেট"
@@ -1005,7 +1008,7 @@
     "message": "রেন্ডারিং দেখান"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "forces CSS prefers-color-scheme রঙ টগল করুন"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "দৃষ্টিশক্তির ঘাটতি"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ফাইল লোড করার সময় অজানা সমস্যা হয়েছে"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "ফাংশন {PH1}-এর ডিবাগ তথ্য সম্পূর্ণ নেই"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "ডিবাগার ভাষা প্লাগ-ইনে সমস্যা হয়েছে: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] {PH2}-এর জন্য ডিবাগ চিহ্ন লোড করা যায়নি ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "\"{PH1}\" ফাংশনের জন্য ডিবাগ চিহ্নটি খুঁজে পাওয়া যায়নি"
+    "message": "ফাংশন \"{PH1}\"-এর জন্য কোনও ডিবাগ তথ্য নেই"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] {PH2}-এর জন্য ডিবাগ চিহ্ন লোড করা হয়েছে, কিন্তু কোনও সোর্স ফাইল খুঁজে পাওয়া যায়নি"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] {PH2}-এর জন্য ডিবাগ চিহ্ন লোড করা হচ্ছে ({PH3}-এর মাধ্যমে)..."
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "\"{PH1}\" চিহ্নের ফাইলটি খুঁজে পাওয়া যায়নি"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit কম্পাইল করা যায়নি: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Same-Site এবং Same-Origin"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "CORS Access-Control-Allow-Headers ম্যানেজ করার ক্ষেত্রে অনুমোদন ওয়াইল্ডকার্ড চিহ্নের (*) মাধ্যমে কভার করা হবে না।"
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ সরিয়ে দেওয়া 'হোয়াইটস্পেস' \\(n|r|t) অক্ষরগুলি এবং (<)-এর কম অক্ষর রয়েছে, সেই দুটিই ব্লক করা হয়েছে। এইসব রিসোর্স লোড করতে এলিমেন্ট অ্যাট্রিবিউটের মতো জায়গা থেকে নতুন লাইন সরিয়ে দিন এবং এর চেয়ে কম অক্ষর এনকোড করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: নেভিগেশন টাইমিং ২ ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: পেইন্ট টাইমিং ২ ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে নেভিগেশন টাইমিং ২-এ API: nextHopProtocol ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "সেইসব কুকি যার মধ্যে \\(0|r|n) অক্ষর রয়েছে তা সংক্ষিপ্ত করার পরিবর্তে সরিয়ে দেওয়া হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই বন্ধ করা সম্পর্কিত সতর্কতা হল ক্রস-অরিজিনের অ্যাক্সেসের জন্য যেটিdocument.domain সেট করার মাধ্যমে চালু করা হয়েছিল।"
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "ক্রস অরিজিন iframe থেকে {PH1} ট্রিগার করা বন্ধ করা হয়েছে এবং ভবিষ্যতে এটি সরিয়ে দেওয়া হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "-internal-media-controls-overlay-cast-button বাছাইকারী ব্যবহার করার পরিবর্তে ডিফল্ট 'কাস্ট' ইন্টিগ্রেশন বন্ধ করতে disableRemotePlayback অ্যাট্রিবিউট ব্যবহার করা উচিত।"
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} বন্ধ করা হয়েছে। এর পরিবর্তে {PH2} ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "এটি একটি অনুবাদ শীঘ্রই বন্ধ করার সমস্যা সংক্রান্ত মেসেজের উদাহরণ।"
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই ফিচার ব্যবহার করা চালিয়ে যেতে, ডকুমেন্ট ও ফ্রেমের জন্য HTTP প্রতিক্রিয়ার সাথে Origin-Agent-Cluster: ?0 হেডার পাঠানোর মাধ্যমে অরিজিন-কী এজেন্ট ক্লাস্টার থেকে বেরিয়ে আসুন। আরও বিবরণের জন্য https://developer.chrome.com/blog/immutable-document-domain/ দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "আরও বিস্তারিত জানার জন্য ফিচার স্ট্যাটাস পৃষ্ঠা চেক করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "অসুরক্ষিত উৎসে getCurrentPosition() ও watchPosition() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "অসুরক্ষিত উৎসে getCurrentPosition() এবং watchPosition() বন্ধ করা হয়েছে। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "অসুরক্ষিত উৎসে getUserMedia() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate বন্ধ করা হয়েছে। এর পরিবর্তে RTCPeerConnectionIceErrorEvent.address বা RTCPeerConnectionIceErrorEvent.port ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "সাবরিসোর্স নেটওয়ার্ক থেকে ওয়েবসাইটের মাধ্যমে অনুরোধ করা হয় যাতে এটি শুধুমাত্র ব্যবহারকারীর জন্য নির্দিষ্ট করা নেটওয়ার্কের অবস্থানের কারণে অ্যাক্সেস করা যায়। এইসব অনুরোধ ইন্টারনেটে সর্বজনীন নয় এমন ডিভাইস ও সার্ভার সম্পর্কে তথ্য সর্বজনীনভাবে প্রকাশ করে, এর ফলে ক্রস-সাইট অনুরোধ সম্পর্কিত জালিয়াতি (CSRF) মূলক আক্রমণ এবং/বা তথ্য প্রকাশিত হওয়ার ঝুঁকি বেড়ে যায়। এইসব ধরনের ঝুঁকি কমাতে, Chrome সর্বজনীন নয় এমন সাবরিসোর্সের অনুরোধ বন্ধ করে যা অসুরক্ষিত কনটেক্সট সম্পর্কে চালু করা হয়েছে, এবং এগুলি ব্লক করা চালু করবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "Pv6 ডিফল্ট হিসেবেই চালু করা এবং googIPv6 ব্যবহার করে এটি বন্ধ করার ক্ষমতা খুব শীঘ্র M108-এ সরিয়ে দেওয়া হবে, পরে সেটি উপেক্ষা করা হবে। পুরনো এই সীমাবদ্ধতা ব্যবহার করা বন্ধ করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": ".css ফাইল এক্সটেনশনে শেষ না হওয়া পর্যন্ত CSS file:-এর URL থেকে লোড করা যাবে না।"
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "স্পেসিফিকেশন সম্পর্কিত পরিবর্তনের কারণে remove()-এর অ্যাসিঙ্ক্রোনাস রেঞ্জ সরিয়ে দেওয়ার বিষয়টি বাতিল করতে SourceBuffer.abort() ব্যবহার করা বন্ধ করা হয়েছে। ভবিষ্যতে সহায়তা সরিয়ে দেওয়া হবে। পরিবর্তে আপনার updateend ইভেন্ট শোনা উচিত। abort()-এর উদ্দেশ্য হল শুধুমাত্র অ্যাসিঙ্ক্রোনাস মিডিয়া অ্যাপেন্ড বাতিল করা বা পার্সার স্ট্যাটাস রিসেট করা।"
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "স্পেসিফিকেশন পরিবর্তনের জন্য যেকোনও  বাফার করা কোডেড ফ্রেমের সবচেয়ে উপরের প্রেজেন্টেশন টাইমস্ট্যাম্প নিচে MediaSource.duration সেট করা বন্ধ করা আছে। ভবিষ্যতে সংক্ষিপ্ত বাফার করা মিডিয়া বিজ্ঞপ্তি ছাড়াই সরিয়ে দেওয়ার সুবিধা ভবিষ্যতে সরিয়ে দেওয়া হবে। এর পরিবর্তে আপনি যেখানে newDuration < oldDuration আছে সেখানে সব sourceBuffers-এর ক্ষেত্রে স্পষ্টভাবে remove(newDuration, oldDuration) প্রয়োগ করতে পারেন।"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "এই পরিবর্তন মাইলস্টোন {milestone}-এ কার্যকর হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "এমনকি MIDIOptions-এ সিসেক্সের (Sysex) উল্লেখ না থাকলেও ওয়েব MIDI ব্যবহার করা অনুমতি চাইবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "অসুরক্ষিত উৎস থেকে নোটিফিকেশন এপিআই (Notification API) আর হয়ত ব্যবহার করা যাবে না। আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "নোটিফিকেশন এপিআই (Notification API)-এর জন্য অনুরোধ আর হয়ত ক্রস-অরিজিন iframe থেকে করা যাবে না। এর পরিবর্তে সেরা লেভেলের ফ্রেম থেকে অনুরোধের জন্য অনুরোধ করা বা নতুন উইন্ডো খোলার কথা আপনাকে বিবেচনা করতে হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "আপনার পার্টনার পুরনো (D)TLS ভার্সন ব্যবহার করছেন। আপনার পার্টনার এটি সমাধান করেছেন কিনা তা চেক করে দেখে নিন।"
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<picture> অভিভাবক সহ <source src> ভুল তাই এর ব্যবহার বন্ধ করা হয়েছে। এর পরিবর্তে <source srcset> ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo বন্ধ করা হয়েছে। এর পরিবর্তে navigator.webkitTemporaryStorage বা navigator.webkitPersistentStorage ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য false মানের উল্লেখ করেছেন, যা সরিয়ে দেওয়া SDES key negotiation পদ্ধতি ব্যবহার করার চেষ্টা হিসেবে ব্যাখ্যা করা হয়েছে। এই কার্যকারিতা সরিয়ে দেওয়া হয়েছে; এর পরিবর্তে এমন পরিষেবা ব্যবহার করুন যেখানে DTLS key negotiation কাজ করে।"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য true মানের উল্লেখ করেছেন, যার কোনও প্রভাব নেই তবে আপনি এই এই সীমাবদ্ধতা স্বচ্ছতার জন্য সরিয়ে দিতে পারবেন।"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "Complex Plan B SDP শনাক্ত করা হয়েছে। Session Description Protocol-এর এই উপভাষা আর কাজ করে না। এর পরিবর্তে Unified Plan SDP ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, {sdpSemantics:'plan-b'}-এর মাধ্যমে RTCPeerConnection তৈরি হওয়ার সময় ব্যবহার করা হয়, যা 'ওয়েব প্ল্যাটফর্ম' থেকে স্থায়ীভাবে মুছে ফেলা Session Description Protocol-এর পুরনো ভার্সন নয়। এটি IS_FUCHSIA সহ তৈরি হওয়ার সময়েও উপলভ্য আছে, তবে আমাদের উদ্দেশ্য এটি যত শীঘ্র সম্ভব মুছে দেওয়া। এর উপরে নির্ভর করা বন্ধ করুন। স্ট্যাটাসের জন্য https://crbug.com/1302249 দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "rtcpMuxPolicy বিকল্পটি বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer-এর ক্রস-অরিজিন আইসোলেশন প্রয়োজন হবে। আরও বিবরণের জন্য https://developer.chrome.com/blog/enabling-shared-array-buffer/ দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "ইউজার অ্যাক্টিভেশন ছাড়াspeechSynthesis.speak() সুবিধা বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "শীঘ্রই বন্ধ করা হয়েছে এমন ফিচার ব্যবহার করা হয়েছে"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "SharedArrayBuffer ব্যবহার করা চালিয়ে যেতে ক্রস-অরিজিন আইসোলেশ থেকে এক্সটেনশন বেছে নিতে হবে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} হল ভেন্ডরের মাধ্যমে নির্দিষ্ট করা। এর পরিবর্তে {PH2} ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "XMLHttpRequest-এ প্রতিক্রিয়া json-মাধ্যমে UTF-16 কাজ করে না"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "ব্যবহারকারীর অভিজ্ঞতার উপর ক্ষতিকর প্রভাবের জন্য প্রধান থ্রেডে সিঙ্ক্রোনাস XMLHttpRequest-এর ব্যবহার বন্ধ করা হয়েছে। আরও সহায়তার জন্য, https://xhr.spec.whatwg.org/ দেখুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() বন্ধ করা হয়েছে। isSessionSupported() ব্যবহার করুন এবং এর পরিবর্তে সমাধান করা বুলিয়ান মান চেক করুন।"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM স্টোরেজ আইটেম"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} মুছে ফেলা হয়েছে"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "এন্ট্রির সংখ্যা টেবিলে দেখানো হয়েছে: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "প্রধান ফ্রেম"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "আরও জানুন: আনলোড হ্যান্ডেল কখনও ব্যবহার করবেন না"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করা যায়নি: ব্যাক-ফরোয়ার্ড ক্যাশে ট্রিগার করতে, Chrome-এর ব্যাক-ফরোয়ার্ড বোতাম ব্যবহার করুন বা অটোমেটিক দূরে সরিয়ে নেভিগেট করে যাওয়া ও ফিরে আসার জন্য নিচে পরীক্ষা বোতাম ব্যবহার করুন।"
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "এই ফ্রেমটি বিজ্ঞাপনের ফ্রেম হিসেবে বিবেচনা করা হয়, এর পেরেন্ট ফ্রেম হল একটি বিজ্ঞাপনের ফ্রেম।"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "প্রি-রেন্ডারিং"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "প্রি-রেন্ডারিং স্ট্যাটাস"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "রিফ্রেশ করুন"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "সাবট্রি পরিবর্তন করা হয়েছে"
@@ -5514,7 +5517,7 @@
     "message": "ফ্রেম"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "হেডারের ভুল মান"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# বার লঙ্ঘন}one{# বার লঙ্ঘন}other{# বার লঙ্ঘন}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "ডেস্কটপ"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevTools থ্রটলিং (উন্নত)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "এই পৃষ্ঠা কি আধুনিক ওয়েব ডেভেলপমেন্টের পেশাদার পদ্ধতি মেনে তৈরি করা হয়েছে"
   },
@@ -5967,7 +5973,7 @@
     "message": "এই পৃষ্ঠাটি কি শারীরিকভাবে অক্ষম বা প্রতিবন্ধী কোনও ব্যক্তি ব্যবহার করতে পারেন"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "জাভাস্ক্রিপ্ট বন্ধ আছে। এই পৃষ্ঠাটি অডিট করতে আপনাকে জাভাস্ক্রিপ্ট চালু করতে হবে। জাভাস্ক্রিপ্ট চালু করতে 'কমান্ড মেনু' খুলে চালু করা জাভাস্ক্রিপ্ট কমান্ড চালু করুন।"
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "পুরনো নেভিগেশন মোড"
@@ -5985,10 +5991,10 @@
     "message": "একাধিক ট্যাব একই service worker দিয়ে কন্ট্রোল করা হচ্ছে। এই পৃষ্ঠা অডিট করতে একই অরিজিনে আপনার অন্যান্য ট্যাব বন্ধ করুন।"
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "নেভিগেশন (ডিফল্ট)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "'নেভিগেশন' মোড আসল 'লাইটহাউস' রিপোর্টের মতো পৃষ্ঠার লোড বিশ্লেষণ করে।"
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "পারফর্ম্যান্স"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "প্রাথমিক আনথ্রটল করা লোডের উপর ভিত্তি করে ধীরে পৃষ্ঠা লোড হওয়া সিমুলেট করুন। বন্ধ থাকলে, পৃষ্ঠাটি আসলে প্রয়োগ করা থ্রটলিংয়ের সাহায্যে ধীরে লোড করা হয়।"
+    "message": "সিমুলেটেড থ্রটলিং প্রাথমিক আনথ্রটল করা লোডের উপর ভিত্তি করে ধীরে পৃষ্ঠা লোড হওয়া সিমুলেট করে। DevTools থ্রটলিং আসলে পৃষ্ঠার স্পিড ধীর করে দেয়।"
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "সিমুলেট করা থ্রটলিং"
+    "message": "সিমুলেট করা থ্রটলিং (ডিফল্ট)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "স্ন্যাপশট মোড"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "সাধারণত ইউজারের ইন্টারঅ্যাকশনের পরে, 'স্ন্যাপশট' মোড পৃষ্ঠাটি বিশ্লেষণ করে।"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "এই লোকেশনগুলিতে স্টোর করা ডেটা থাকতে পারে যার ফলে লোড হওয়ার পারফর্ম্যান্সে প্রভাব পড়তে পারে: {PH1}। আপনার স্কোরকে এইসব রিসোর্স থেকে সুরক্ষিত রাখতে এই পৃষ্ঠাটি 'ছদ্মবেশী' উইন্ডোতে অডিট করুন।"
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "এই লোকেশনে স্টোর করা ডেটা থাকতে পারে যার ফলে লোড হওয়ার পারফর্ম্যান্সে প্রভাব পড়তে পারে: {PH1}। আপনার স্কোরকে এইসব রিসোর্স থেকে সুরক্ষিত রাখতে এই পৃষ্ঠাটি ছদ্মবেশী উইন্ডোতে অডিট করুন।"
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "থ্রটলিং সংক্রান্ত পদ্ধতি"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "টাইমস্প্যান"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "'টাইমস্প্যান' মোড কোনও সময়সীমা পর্যন্ত বিশ্লেষণ করে, যার মধ্যে সাধারণত ব্যবহারকারীর ইন্টারঅ্যাকশন থাকে।"
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "নেভিগেশন মোডে থাকলে ক্লাসিক 'লাইটহাউস' ব্যবহার করে পৃষ্ঠা অ্যানালাইজ করুন।"
@@ -6075,7 +6084,7 @@
     "message": "রিপোর্ট"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "বিভাগ"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "কমিউনিটি প্লাগ-ইন (বিটা)"
@@ -6093,22 +6102,22 @@
     "message": "আরও জানুন"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "পৃষ্ঠার লোড বিশ্লেষণ করুন"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "পৃষ্ঠার স্ট্যাটাস বিশ্লেষণ করুন"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "বিভাগ"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "'লাইটহাউস' রিপোর্ট তৈরি করুন"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "মোড"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "প্লাগ-ইন"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "টাইমস্প্যান শুরু করুন"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}× স্লোডাউন"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "ডিফল্ট মান অতিক্রম করলে সিস্টেমের কর্মক্ষমতা হ্রাস পেতে পারে।"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "নেটওয়ার্ক থেকে জোর করে ডিসকানেক্ট করা হয়েছে"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "হার্ডওয়্যার কনকারেন্সি"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "হার্ডওয়্যার কনকারেন্সি ওভাররাইড চালু করা হয়েছে"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency-এর মান"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "নেটওয়ার্ক আলাদা করা হচ্ছে না"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "অফলাইন আছে"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "ডিফল্ট মানে রিসেট করুন"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6898,6 +6922,9 @@
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "স্ট্যাক ট্রেস কপি করুন"
+  },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "প্রতিক্রিয়া শিরোনাম ওভাররাইড তৈরি করুন"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
@@ -7506,7 +7533,7 @@
     "message": "অজানা"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "সার্ভারের তরফ থেকে প্রতিক্রিয়ার অপেক্ষা করা হচ্ছে"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "ওয়াটারফল"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "সার্টিফিকেট দেখুন"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(ডিস্ক ক্যাশে থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "('মেমরি ক্যাশে' থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(প্রিফেচ ক্যাশে থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(service worker থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(সাইন্ড-এক্সচেঞ্জ থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(ওয়েব বান্ডেল থেকে)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "সাধারণ"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "RAW"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "রেফারারের পলিসি"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "রিমোট অ্যাড্রেস"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "অনুরোধের হেডার"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "অনুরোধ করার পদ্ধতি"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "URL অনুরোধ করুন"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "প্রতিক্রিয়ার হেডার"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "আরও দেখুন"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "স্ট্যাটাস কোড"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ক্লায়েন্টের দেওয়া যুক্তি ভুল ফর্ম্যাটে ছিল বা অন্য কোনওদিক দিয়ে তাতে ভুল ছিল।"
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "কন্টেনমেন্ট"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "ইন্টার্নাল ব্যবহারকারীর ডেটা সর্বজনীনভাবে প্রকাশ করা (অতিরিক্ত বাস্তবায়ন-নির্দিষ্ট বিবরণ অন্তর্ভুক্ত)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "ফিল্টার করুন"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "হিপ স্ন্যাপশট তুলুন"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "গ্লোবাল অবজেক্টকে আসল হিসেবে ধরে নিন (আমাদের সাজেশন হল যে যদিও এর থেকে টিকচিহ্ন সরিয়ে নিলে ইন্টার্নাল নোড সবার সামনে চলে আসে এবং প্রয়োজনের অতিরিক্ত তথ্য পাওয়া যায়, কিন্তু এর ফলে পাথ রিটেন করার জন্য সাইকেল ডিবাগ করার ব্যাপারে সাহায্য পাওয়া যেতে পারে)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "টাইপ করা অ্যারে"
@@ -8622,10 +8697,10 @@
     "message": "পূর্ণ বিবরণ লুকান"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings-এ যান।"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "যদি আপনার মনে হয় যে এটি ভুল করে দেখানো হয়েছে তাহলে https://g.co/chrome/lookalike-warnings-এ যান।"
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "তথ্য"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "স্ট্যাক ট্রেস কপি করুন"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "ডিবাগ ফাইল \"{PH1}\" লোড করা যায়নি।"
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "পজ করা নেই"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "উপেক্ষা তালিকা থেকে সরান"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "ফ্রেম রিস্টার্ট করুন"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "উপেক্ষা-তালিকার ফ্রেম দেখান"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "কনফিগার করুন"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "ডিবাগ ফাইল \"{PH1}\" লোড করা যায়নি।"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "{PH1}-এর জন্য যেকোনও ডিবাগ তথ্য লোড করা যায়নি।"
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{ব্রেকপয়েন্ট বন্ধ করুন}one{লাইনের সব ব্রেকপয়েন্ট বন্ধ করুন}other{লাইনের সব ব্রেকপয়েন্ট বন্ধ করুন}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "আপনি কি সত্যিই এই ফোল্ডার সরাতে চান?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "লেখক"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "মুছুন"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "সব ওভাররাইড মুছুন"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "ডেপ্লয়েড"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ফোল্ডার বাদ দিন"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "ওয়ার্কস্পেস ফোল্ডার টেনে এনে এখানে রাখুন"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "লেখক/ডেপ্লয়েড অনুযায়ী গ্রুপ করুন (পরীক্ষামূলক)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ফোল্ডার অনুযায়ী গ্রুপ করুন"
@@ -10224,10 +10320,10 @@
     "message": "ব্রেকপয়েন্ট ইনপুট উইন্ডো টগল করুন"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "ডিবাগার সাইডবার টগল করুন"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "নেভিগেটর সাইডবার টগল করুন"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ট্রেলিং"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "অ্যাক্টিভ না থাকা ফ্রেম"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "ইন্টারঅ্যাকশন"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "লম্বা ফ্রেম"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "সিপিইউ থ্রটলিং চালু আছে"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "- হার্ডওয়্যার কনকারেন্সি ওভাররাইড চালু করা হয়েছে"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- জাভাস্ক্রিপ্ট স্যাম্পলিং বন্ধ করা হয়েছে"
@@ -11670,7 +11766,7 @@
     "message": "সিগনেচার কাউন্ট"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "আরও বড় BLOB কাজ করে"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "রেসিডেন্ট কী কাজ করে"
@@ -11856,7 +11952,7 @@
     "message": "সব"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "ইনপুট মুছুন"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "উদাহরণ: /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "DevTools আবার লোড করুন"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "ফোল্ডার বেছে নিন"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "ওভাররাইড ফাইল সেভ করতে একটি ফোল্ডার বেছে নিন।"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "সবসময় Chrome-এর ভাষার সাথে মিলিয়ে কনফিগার করুন"
@@ -12027,7 +12129,7 @@
     "message": "পৃষ্ঠা রিলোড হয়ে গেলে DevTools আবার অটোমেটিক কানেক্ট হবে।"
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "ইনপুট মুছুন"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "প্রেস করা হয়নি"

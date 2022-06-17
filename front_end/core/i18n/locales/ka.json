@@ -380,6 +380,9 @@
   "core/sdk/DebuggerModel.ts | block": {
     "message": "დაბლოკვა"
   },
+  "core/sdk/DebuggerModel.ts | catchBlock": {
+    "message": "Catch დაბლოკვა"
+  },
   "core/sdk/DebuggerModel.ts | closure": {
     "message": "დახურვა"
   },
@@ -1005,7 +1008,7 @@
     "message": "რენდერის ჩვენება"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Toggle forces CSS prefers-color-scheme color"
+    "message": "CSS prefers-color-scheme ფერის იძულების გადართვა"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "მხედველობის დეფიციტი"
@@ -1238,6 +1241,9 @@
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ფაილის ჩატვირთვისას მოხდა უცნობი შეცდომა"
   },
+  "models/bindings/DebuggerLanguagePlugins.ts | debugSymbolsIncomplete": {
+    "message": "ფუნქციისთვის {PH1} გამართვის ინფორმაცია არასრულია"
+  },
   "models/bindings/DebuggerLanguagePlugins.ts | errorInDebuggerLanguagePlugin": {
     "message": "შეცდომა შეცდომების გამმართველის ენის დანამატში: {PH1}"
   },
@@ -1245,7 +1251,7 @@
     "message": "[{PH1}] შეცდომების გამართვის სიმბოლოები {PH2}-ისთვის ვერ ჩაიტვირთა ({PH3})"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | failedToLoadDebugSymbolsForFunction": {
-    "message": "აკლია გამართვის სიმბოლოები ფუნქციისთვის „{PH1}“"
+    "message": "ფუნქციისთვის „{PH1}“ გამართვის ინფორმაცია არ არის"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
     "message": "[{PH1}] ჩაიტვირთა შეცდომების გამართვის სიმბოლოები {PH2}-ისთვის, თუმცა საწყისი ფაილები ვერ მოიძებნა"
@@ -1258,9 +1264,6 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] იტვირთება შეცდომების გამართვის სიმბოლოები {PH2}-ისთვის ({PH3}-ის მეშვეობით)…"
-  },
-  "models/bindings/DebuggerLanguagePlugins.ts | symbolFileNotFound": {
-    "message": "სიმბოლოს ფაილი „{PH1}“ ვერ მოიძებნა"
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditCompileFailed": {
     "message": "LiveEdit კომპილაცია ვერ მოხერხდა: {PH1}"
@@ -1356,151 +1359,136 @@
     "message": "Same-Site და Same-Origin"
   },
   "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
+    "message": "CORS-ის მიერ Access-Control-Allow-Headers-ის დამუშავებისას ჩანაცვლების ნიშანი (*) არ მოიცავს ავტორიზაციას."
   },
   "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+    "message": "რესურსების მოთხოვნები, რომელთა URL-ებიც შეიცავდა როგორც შორისების გაუქმებულ \\(n|r|t) სიმბოლოებს, ისე ნაკლებობის სიმბოლოებს (<), დაბლოკილია. ეს რესურსები რომ ჩაიტვირთოს, გთხოვთ, ამოშალოთ ახალ ხაზზე გადატანები და დაურთეთ კოდირება ნაკლებობის სიმბოლოებს, მაგალითად, ელემენტების ატრიბუტების მნიშვნელობებში."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
+    "message": "chrome.loadTimes() მოძველდა. სანაცვლოდ გამოიყენეთ სტანდარტიზებული API: Navigation Timing 2."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: Paint Timing."
+    "message": "chrome.loadTimes() მოძველდა. სანაცვლოდ გამოიყენეთ სტანდარტიზებული API: Paint Timing."
   },
   "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() is deprecated, instead use standardized API: nextHopProtocol in Navigation Timing 2."
+    "message": "chrome.loadTimes() მოძველდა. სანაცვლოდ გამოიყენეთ სტანდარტიზებული API: „nextHopProtocol“ Navigation Timing 2-ში."
   },
   "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies containing a \\(0|r|n) character will be rejected instead of truncated."
+    "message": "ქუქი-ჩანაწერები, რომლებიც შეიცავს \\(0|r|n) სიმბოლოს, შემოკლების ნაცვლად უარყოფილი იქნება."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting document.domain."
+    "message": "document.domain-ის განსაზღვრის მეშვეობით ერთსა და იმავე წყაროსთან დაკავშირებული წესების შემსუბუქების შესაძლებლობა მოძველდა და ნაგულისხმევად გათიშული იქნება. მოძველების შესახებ ეს გაფრთხილება განკუთვნილია ჯვარედინი წარმოშობის წვდომისთვის, რომელიც ჩაირთო document.domain-ის განსაზღვრის მეშვეობით."
   },
   "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
+    "message": "ჯვარედინი წარმოშობის iframe-ებიდან {PH1}-ის გაშვების შესაძლებლობა მოძველდა და მომავალში გაუქმდება."
   },
   "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
-  },
-  "models/issues_manager/DeprecationIssue.ts | customCursorIntersectsViewport": {
-    "message": "Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed."
+    "message": "ნაგულისხმევი Cast-ინტეგრაციის გასათიშად -internal-media-controls-overlay-cast-button ამომრჩევით სარგებლობის ნაცვლად გამოყენებული უნდა იყოს disableRemotePlayback ატრიბუტი."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
+    "message": "{PH1} მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
     "message": "ეს არის მოძველებასთან დაკავშირებული პრობლემის შესახებ შეტყობინების თარგმანის მაგალითი."
   },
   "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+    "message": "document.domain-ის განსაზღვრის მეშვეობით ერთსა და იმავე წყაროსთან დაკავშირებული წესების შემსუბუქების შესაძლებლობა მოძველდა და ნაგულისხმევად გათიშული იქნება. ამ ფუნქციის გამოყენების გასაგრძელებლად, გთხოვთ, უარი თქვათ აგენტების იმ კლასტერების გამოყენებაზე, რომლებისთვისაც განსაზღვრულია კონკრეტული წყაროები. ამისთვის, დოკუმენტებისა და ფრეიმებისთვის უნდა გაიგზავნოს Origin-Agent-Cluster: ?0 ჰედერი HTTP პასუხთან ერთად. დეტალური ინფორმაციისთვის იხილეთ https://developer.chrome.com/blog/immutable-document-domain/."
   },
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
+    "message": "Event.path მოძველდა და მომავალში გაუქმდება. გთხოვთ, სანაცვლოდ, გამოიყენოთ Event.composedPath()."
   },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "დეტალური ინფორმაციისთვის შეამოწმეთ ფუნქციის სტატუსი."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() და watchPosition() აღარ მუშაობს დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() and watchPosition() are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getCurrentPosition() და watchPosition() მოძველებულია დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "getUserMedia() აღარ მუშაობს დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ RTCPeerConnectionIceErrorEvent.address ან RTCPeerConnectionIceErrorEvent.port."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+    "message": "ვებსაიტმა მოითხოვა ქვერესურსი ქსელიდან, რომელზეც მხოლოდ წვდომა შეუძლია, ქსელში მისი მომხმარებლების მიერ პრივილეგირებული პოზიციის გამო. ეს მოთხოვნები ინტერნეტში ამჟღავნებს არასაჯარო მოწყობილობებსა და სერვერებს, რაც ზრდის საიტებსშორისი მოთხოვნის გაყალბებით (CSRF) თავდასხმის ან/და ინფორმაციის გაჟონვის რისკს. ამ რისკის შემცირების მიზნით, Chrome აუქმებს არასაჯარო ქვერესურსების მიმართ იმ მოთხოვნებს, რომლებიც ინიციირებულია არაუსაფრთხო კონტექსტებიდან, და დაიწყებს მათ დაბლოკვას."
   },
   "models/issues_manager/DeprecationIssue.ts | legacyConstraintGoogIPv6": {
-    "message": "IPv6 is enabled-by-default and the ability to disable it using googIPv6 will soon be removed. Please stop using this legacy constraint."
+    "message": "IPv6 ჩართულია ნაგულისხმევად, ხოლო googIPv6-ის მეშვეობით მისი გათიშვის შესაძლებლობა გაუქმდება M108-ში, რის შემდეგაც ის იგნორირებული იქნება. გთხოვთ, შეწყვიტოთ ამ მოძველებული შეზღუდვის გამოყენება."
   },
   "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from file: URLs unless they end in a .css file extension."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaElementAudioSourceNode": {
-    "message": "Creating a MediaElementAudioSourceNode on an OfflineAudioContext is deprecated and will be removed."
+    "message": "CSS ვერ ჩაიტვირთება file: URL-ებიდან, თუ ისინი არ ბოლოვდება ფაილების .css გაფართოებით."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Using SourceBuffer.abort() to abort remove()'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should instead await updateend. abort() is intended to only abort an asynchronous media append or reset parser state."
+    "message": "remove()-ის ასინქრონული დიაპაზონის მოშორების შესაწყვეტად SourceBuffer.abort()-ის გამოყენების შესაძლებლობა მოძველდა სპეციფიკაციის ცვლილების გამო. აღნიშნული მომავალში აღარ იქნება მხარდაჭერილი. სანაცვლოდ უნდა მოისმინოთ updateend მოვლენა. abort()-ს მიზანია, შეწყვიტოს მხოლოდ ასინქრონული მედიის დამატება, ან გადააყენოთ სინტაქსიკური ანალიზის პროგრამის მდგომარეობა."
   },
   "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting MediaSource.duration below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit remove(newDuration, oldDuration) on all sourceBuffers, where newDuration < oldDuration."
+    "message": "MediaSource.duration-ის მნიშვნელობად ბუფერიზებული კოდირებული ფრეიმების პრეზენტაციის დროის ყველაზე მაღალ ანაბეჭდზე დაბალი რიცხვის განსაზღვრის შესაძლებლობა მოძველდა სპეციფიკაციის ცვლილების გამო. შემოკლებული ბუფერიზებული მედიის ფარული ამოშლა აღარ იქნება მხარდაჭერილი მომავალში. სანაცვლოდ, თქვენ მიერ უნდა შესრულდეს გამოკვეთილი remove(newDuration, oldDuration) ყველა sourceBuffers-ზე, სადაც newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "ეს ცვლილება ამოქმედდება ნიშანსვეტთან {milestone} ერთად."
   },
   "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the MIDIOptions."
+    "message": "Web MIDI მოითხოვს გამოყენების ნებართვას იმ შემთხვევაშიც კი, თუ MIDIOptions-ში არ არის განსაზღვრული sysex."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+    "message": "დაუცველი წყაროებიდან Notification API-ს გამოყენება ვეღარ მოხერხდება. გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+    "message": "Notification API-სთვის ნებართვის მოთხოვნა ვეღარ მოხერხდება ჯვარედინი წარმოშობის iframe-იდან. გირჩევთ, მოითხოვოთ ნებართვა ზედა დონის ფრეიმიდან, ან სანაცვლოდ გახსნათ ახალი ფანჯარა."
   },
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestBasicCard": {
-    "message": "The basic-card payment method is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestShowWithoutGesture": {
-    "message": "Calling PaymentRequest.show() without user activation is deprecated and will be removed."
+    "message": "თქვენი პარტნიორი ათანხმებს (D)TLS-ის ხმარებიდან ამოღებულ ვერსიას. გთხოვთ, გაესაუბროთ თქვენს პარტნიორს ამ პრობლემის მოგვარების თაობაზე."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
+    "message": "<source src>, რომლის მშობელიცაა <picture>, არასწორია და ამიტომ იგნორირებულია. გთხოვთ, სანაცვლოდ, გამოიყენოთ <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo is deprecated. Please use navigator.webkitTemporaryStorage or navigator.webkitPersistentStorage instead."
+    "message": "window.webkitStorageInfo მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ navigator.webkitTemporaryStorage ან navigator.webkitPersistentStorage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
+    "message": "ქვერესურსების მოთხოვნები, რომელთა URL-ებიც შეიცავს ავტორიზაციის ჩაშენებულ მონაცემებს (მაგ., https://user:pass@host/), დაბლოკილია."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a false value for this constraint, which is interpreted as an attempt to use the removed SDES key negotiation method. This functionality is removed; use a service that supports DTLS key negotiation instead."
+    "message": "შეზღუდვა DtlsSrtpKeyAgreement გაუქმებულია. ამ შეზღუდვისთვის მნიშვნელობად false მიუთითეთ, რაც ინტერპრეტირდება, როგორც გაუქმებული SDES key negotiation მეთოდის გამოყენების მცდელობა. ეს ფუნქციონალი გაუქმებულია, ამიტომ სანაცვლოდ გამოიყენეთ სერვისი, რომლის მიერაც მხარდაჭერილია DTLS key negotiation."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint DtlsSrtpKeyAgreement is removed. You have specified a true value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+    "message": "შეზღუდვა DtlsSrtpKeyAgreement გაუქმებულია. ამ შეზღუდვისთვის მნიშვნელობად true მიუთითეთ, თუმცა ამას შედეგი არ ჰქონდა. სურვილისამებრ, მეტი მოწესრიგებულობისთვის, შეგიძლიათ ამოშალოთ ეს შეზღუდვა."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP detected. This dialect of the Session Description Protocol is no longer supported. Please use Unified Plan SDP instead."
+    "message": "აღმოჩენილია Complex Plan B SDP. Session Description Protocol-ის ეს დიალექტი აღარ არის მხარდაჭერილი. გთხოვთ, სანაცვლოდ, გამოიყენოთ Unified Plan SDP."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, which is used when constructing an RTCPeerConnection with {sdpSemantics:'plan-b'}, is a legacy non-standard version of the Session Description Protocol that has been permanently deleted from the Web Platform. It is still available when building with IS_FUCHSIA, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
+    "message": "Plan B SDP semantics, რომელიც გამოიყენება RTCPeerConnection-ის შესაქმნელად {sdpSemantics:'plan-b'}-ის მეშვეობით, არის Session Description Protocol-ის მოძველებული, არასტანდარტული ვერსია, რომელიც სამუდამოდ წაიშალა Web Platform-იდან. ის კვლავ ხელმისაწვდომია IS_FUCHSIA-ის მეშვეობით შექმნისას, თუმცა ვაპირებთ, შეძლებისდაგვარად მალე წავშალოთ ის. გთხოვთ, ნუ იქნებით მასზე დამოკიდებული. სტატუსისთვის იხილეთ https://crbug.com/1302249."
   },
   "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "The rtcpMuxPolicy option is deprecated and will be removed."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtpDataChannel": {
-    "message": "RTP data channels are no longer supported. The RtpDataChannels constraint is currently ignored, and may cause an error at a later date."
+    "message": "ვარიანტი rtcpMuxPolicy მოძველდა და მომავალში გაუქმდება."
   },
   "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+    "message": "SharedArrayBuffer-ს დასჭირდება ჯვარედინი წარმოშობის იზოლაცია. დეტალური ინფორმაციისთვის იხილეთ https://developer.chrome.com/blog/enabling-shared-array-buffer/."
   },
   "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() without user activation is deprecated and will be removed."
+    "message": "მომხმარებლის აქტივაციის გარეშე speechSynthesis.speak()-ის გამოყენების შესაძლებლობა მოძველდა და მომავალში გაუქმდება."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "გამოყენებულია მოძველებული ფუნქცია"
   },
   "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+    "message": "გაფართოებებმა SharedArrayBuffer-ით სარგებლობა რომ გააგრძელონ, ისინი უნდა დაეთანხმონ ჯვარედინი წარმოშობის იზოლაციას. დეტალური ინფორმაციისთვის იხილეთ https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
   "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+    "message": "{PH1} მომწოდებლის მიხედვით სპეციფიკურია. გთხოვთ, სანაცვლოდ, გამოიყენოთ სტანდარტული {PH2}."
   },
   "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 is not supported by response json in XMLHttpRequest"
+    "message": "UTF-16 მხარდაუჭერელია response.json-ის მიერ XMLHttpRequest-ში"
   },
   "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+    "message": "მთავარ ძაფში სინქრონული XMLHttpRequest-ის გამოყენება მოძველდა საბოლოო მომხმარებლისთვის ხელმისაწვდომ ფუნქციონალზე უარყოფითი ზეგავლენის გამო. დამატებითი ინფორმაციისთვის წაიკითხეთ https://xhr.spec.whatwg.org/."
   },
   "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() is deprecated. Please use isSessionSupported() and check the resolved boolean value instead."
+    "message": "supportsSession() მოძველდა. გთხოვთ, სანაცვლოდ, გამოიყენოთ isSessionSupported() და შეამოწმოთ მიღებული ლოგიკური მნიშვნელობა."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -2588,6 +2576,9 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItems": {
     "message": "DOM მეხსიერების ერთეულები"
   },
+  "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
+    "message": "{PH1} გასუფთავდა"
+  },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "ცხრილში ნაჩვენები ჩანაწერების რაოდენობა: {PH1}"
   },
@@ -3422,6 +3413,9 @@
   "panels/application/components/BackForwardCacheView.ts | mainFrame": {
     "message": "ძირითადი ფრეიმი"
   },
+  "panels/application/components/BackForwardCacheView.ts | neverUseUnload": {
+    "message": "შეიტყვეთ მეტი: არასოდეს გამოიყენოთ განტვირთვის დამმუშავებელი"
+  },
   "panels/application/components/BackForwardCacheView.ts | normalNavigation": {
     "message": "არ არის უზრუნველყოფილი უკან-წინ გადასვლის ქეშიდან: უკან-წინ გადასვლის ქეშის გასააქტიურებლად გამოიყენეთ Chrome-ის ღილაკები უკან/წინ, ან ტესტის ქვემოთ მოცემული ღილაკი, წინ და უკან გადასვლა ავტომატურად რომ განხორციელდეს."
   },
@@ -3541,6 +3535,12 @@
   },
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "ეს ფრეიმი ითვლება სარეკლამო ფრეიმად, რადგან მისი ზედა ფრეიმი სარეკლამო ფრეიმია."
+  },
+  "panels/application/components/FrameDetailsView.ts | prerendering": {
+    "message": "წინასწარი ვიზუალიზაცია"
+  },
+  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
+    "message": "წინასწარი ვიზუალიზაციის სტატუსი"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "განახლება"
@@ -3751,6 +3751,9 @@
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sS": {
     "message": "{PH1}: {PH2}"
+  },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | sSS": {
+    "message": "{PH1}: {PH2}, {PH3}"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | subtreeModified": {
     "message": "ქვეხე შეიცვალა"
@@ -5514,7 +5517,7 @@
     "message": "ფრეიმი"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
+    "message": "ჰედერის მნიშვნელობა არასწორია"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# დარღვევა}other{# დარღვევა}}"
@@ -5945,6 +5948,9 @@
   "panels/lighthouse/LighthouseController.ts | desktop": {
     "message": "დესკტოპი"
   },
+  "panels/lighthouse/LighthouseController.ts | devtoolsThrottling": {
+    "message": "DevTools რეგულირება (გაფართოებული)"
+  },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
     "message": "შეესაბამება თუ არა ეს გვერდი თანამედროვე ვებ-დეველოპმენტის საუკეთესო პრაქტიკებს"
   },
@@ -5967,7 +5973,7 @@
     "message": "შეუძლიათ თუ არა ამ გვერდის გამოყენება შეზღუდული შესაძლებლობების ან დაქვეითებების მქონე ადამიანებს"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript გათიშულია. ამ გვერდის აუდიტისთვის უნდა ჩართოთ JavaScript. JavaScript-ის ჩასართავად გახსენით ბრძანებათა მენიუ და გაუშვით JavaScript-ის ჩართვის ბრძანება."
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "მოძველებული ნავიგაცია"
@@ -5985,10 +5991,10 @@
     "message": "ერთი და იგივე service worker რამდენიმე ჩანართს აკონტროლებს. ამ გვერდის აუდიტის ჩასატარებლად დახურეთ სხვა ჩანართები იმავე წყაროდან."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "ნავიგაცია (ნაგულისხმევი)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
-    "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
+    "message": "ნავიგაციის რეჟიმი აანალიზებს გვერდების ჩატვირთვას ზუსტად ისე, როგორც Lighthouse-ის ორიგინალი ანგარიშების შემთხვევაში."
   },
   "panels/lighthouse/LighthouseController.ts | performance": {
     "message": "წარმადობა"
@@ -6009,16 +6015,16 @@
     "message": "SEO"
   },
   "panels/lighthouse/LighthouseController.ts | simulateASlowerPageLoadBasedOn": {
-    "message": "გვერდის უფრო ნელი ჩატვირთვის სიმულირება, თავდაპირველი, არარეგულირებული ჩატვირთვის მონაცემების საფუძველზე. გათიშვის შემთხვევაში გვერდის შენელება მოხდება ფაქტობრივი რეგულირების მეშვეობით."
+    "message": "სიმულირებული რეგულირება ახდენს გვერდების უფრო ნელი ჩატვირთვის სიმულირებას, თავდაპირველი, არარეგულირებული ჩატვირთვის მონაცემების საფუძველზე. DevTools რეგულირება ფაქტობრივად ანელებს გვერდს."
   },
   "panels/lighthouse/LighthouseController.ts | simulatedThrottling": {
-    "message": "სიმულირებული რეგულირება"
+    "message": "სიმულირებული რეგულირება (ნაგულისხმევი)"
   },
   "panels/lighthouse/LighthouseController.ts | snapshot": {
     "message": "სნეპშოტი"
   },
   "panels/lighthouse/LighthouseController.ts | snapshotTooltip": {
-    "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
+    "message": "სნეპშოტის რეჟიმი აანალიზებს გვერდს კონკრეტულ მდგომარეობაში, როგორც წესი, მომხმარებელთა მხრიდან ინტერაქციის შემდეგ."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
     "message": "შესაძლოა, შენახული მონაცემები აისახებოდეს ჩატვირთვის წარმადობაზე ამ მდებარეობებზე: {PH1}. შეასრულეთ ამ გვერდის აუდიტი ინკოგნიტო ფანჯარაში, რომ აღნიშნული რესურსები უარყოფითად აღარ აისახებოდეს თქვენს ქულებზე."
@@ -6026,11 +6032,14 @@
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
     "message": "შესაძლოა, შენახული მონაცემები აისახებოდეს ჩატვირთვის წარმადობაზე ამ მდებარეობაზე: {PH1}. შეასრულეთ ამ გვერდის აუდიტი ინკოგნიტო ფანჯარაში, რომ აღნიშნული რესურსები უარყოფითად აღარ აისახებოდეს თქვენს ქულებზე."
   },
+  "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
+    "message": "რეგულირების მეთოდი"
+  },
   "panels/lighthouse/LighthouseController.ts | timespan": {
     "message": "დროითი დიაპაზონი"
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
-    "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
+    "message": "დროითი დიაპაზონის რეჟიმი აანალიზებს დროის არბიტრარულ პერიოდს, რომელიც, როგორც წესი, მოიცავს მომხმარებელთა ინტერაქციებს."
   },
   "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
     "message": "ნავიგაციის რეჟიმში გვერდის ანალიზი კლასიკური Lighthouse-ის მეშვეობით."
@@ -6075,7 +6084,7 @@
     "message": "მოხსენებები"
   },
   "panels/lighthouse/LighthouseStartView.ts | categories": {
-    "message": "Categories"
+    "message": "კატეგორიები"
   },
   "panels/lighthouse/LighthouseStartView.ts | communityPluginsBeta": {
     "message": "საზოგადოებრივი დანამატები (ბეტა)"
@@ -6093,22 +6102,22 @@
     "message": "შეიტყვეთ მეტი"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeNavigation": {
-    "message": "Analyze page load"
+    "message": "გვერდის ჩატვირთვის ანალიზი"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | analyzeSnapshot": {
-    "message": "Analyze page state"
+    "message": "გვერდის მდგომარეობის გაანალიზება"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | categories": {
-    "message": "Categories"
+    "message": "კატეგორიები"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | generateLighthouseReport": {
-    "message": "Generate a Lighthouse report"
+    "message": "Lighthouse ანგარიშის შექმნა"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | mode": {
     "message": "რეჟიმი"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | plugins": {
-    "message": "Plugins"
+    "message": "დანამატები"
   },
   "panels/lighthouse/LighthouseStartViewFR.ts | startTimespan": {
     "message": "დროითი დიაპაზონის დასაწყისი"
@@ -6434,14 +6443,29 @@
   "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
     "message": "{PH1}-მაგი შენელება"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
+    "message": "ნაგულისხმევი მნიშვნელობის გადაჭარბებამ შეიძლება გააუარესოს სისტემის წარმადობა."
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "იძულებით გათიშულია ქსელიდან"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
+    "message": "აპარატურის პარალელიზმი"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
+    "message": "აპარატურის პარალელიზმის უგულებელყოფა ჩართულია"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
+    "message": "navigator.hardwareConcurrency-ს მნიშვნელობა"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "რეგულირების გარეშე"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "ხაზგარეშე"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
+    "message": "ნაგულისხმევ მნიშვნელობაზე გადაყენება"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | sS": {
     "message": "{PH1}: {PH2}"
@@ -6898,6 +6922,9 @@
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
     "message": "სტეკის ტრასირების კოპირება"
+  },
+  "panels/network/NetworkLogView.ts | createResponseHeaderOverride": {
+    "message": "პასუხის ჰედერის უგულებელყოფის შექმნა"
   },
   "panels/network/NetworkLogView.ts | domcontentloadedS": {
     "message": "DOMContentLoaded: {PH1}"
@@ -7506,7 +7533,7 @@
     "message": "უცნობი"
   },
   "panels/network/RequestTimingView.ts | waitingTtfb": {
-    "message": "Waiting for server response"
+    "message": "სერვერის პასუხის მოლოდინში"
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "ჩანჩქერი"
@@ -7642,6 +7669,54 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "სერტიფიკატის ნახვა"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
+    "message": "(დისკის ქეშიდან)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
+    "message": "(მეხსიერების ქეშიდან)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
+    "message": "(წინასწარი ჩატვირთვის ქეშიდან)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromServiceWorker": {
+    "message": "(წყარო: service worker)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromSignedexchange": {
+    "message": "(ხელმოწერილი გაცვლიდან)"
+  },
+  "panels/network/components/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(ვებნაკრებიდან)"
+  },
+  "panels/network/components/RequestHeadersView.ts | general": {
+    "message": "ზოგადი"
+  },
+  "panels/network/components/RequestHeadersView.ts | raw": {
+    "message": "ნედლი"
+  },
+  "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
+    "message": "რეკომენდატორთა წესები"
+  },
+  "panels/network/components/RequestHeadersView.ts | remoteAddress": {
+    "message": "დისტანციური მისამართი"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestHeaders": {
+    "message": "მოთხოვნების ჰედერები"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestMethod": {
+    "message": "მოთხოვნის მეთოდი"
+  },
+  "panels/network/components/RequestHeadersView.ts | requestUrl": {
+    "message": "მოთხოვნის URL"
+  },
+  "panels/network/components/RequestHeadersView.ts | responseHeaders": {
+    "message": "პასუხების ჰედერები"
+  },
+  "panels/network/components/RequestHeadersView.ts | showMore": {
+    "message": "მეტის ჩვენება"
+  },
+  "panels/network/components/RequestHeadersView.ts | statusCode": {
+    "message": "სტატუსის კოდი"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "კლიენტის მიერ მოწოდებული არგუმენტი არასწორად ფორმირებული ან სხვაგვარად არასწორი იყო."
@@ -8069,6 +8144,9 @@
   "panels/profiler/HeapSnapshotView.ts | containment": {
     "message": "შემცველობა"
   },
+  "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
+    "message": "შიდა მონაცემები გამოაშკარავება (მოიცავს დამატებით, რეალიზაციის მიხედვით სპეციფიკურ მონაცემებს)"
+  },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "გაფილტვრა"
   },
@@ -8155,9 +8233,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | takeHeapSnapshot": {
     "message": "გროვის სნეპშოტის გადაღება"
-  },
-  "panels/profiler/HeapSnapshotView.ts | treatGlobalObjectsAsRoots": {
-    "message": "გლობალური ობიექტების ძირეულად განხილვა (რეკომენდებულია, მონიშვნის მოხსნის შემთხვევაში გამოჩნდება შიდა კვანძები და ზედმეტი დეტალები, თუმცა აღნიშნული ხელს უწყობს შეცდომების გამართვის ციკლებს მდებარეობების შენარჩუნებაში)"
   },
   "panels/profiler/HeapSnapshotView.ts | typedArrays": {
     "message": "აკრეფილი მასივები"
@@ -8622,10 +8697,10 @@
     "message": "სრული დეტალების დამალვა"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "თუ თვლით, რომ ეს შეცდომაა, ეწვიეთ ვებგვერდს https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "თუ თვლით, რომ ეს შეცდომაა, ეწვიეთ ვებგვერდს https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "ინფორმაცია"
@@ -9446,6 +9521,9 @@
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
     "message": "სტეკის ტრასირების კოპირება"
   },
+  "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
+    "message": "გამართვის ფაილი „{PH1}“ ვერ ჩაიტვირთა."
+  },
   "panels/sources/CallStackSidebarPane.ts | notPaused": {
     "message": "დაუპაუზებელი"
   },
@@ -9457,6 +9535,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | removeFromIgnoreList": {
     "message": "იგნორირებულთა სიიდან ამოშლა"
+  },
+  "panels/sources/CallStackSidebarPane.ts | restartFrame": {
+    "message": "ფრეიმის ხელახლა გაშვება"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
     "message": "იგნორირებულთა სიაში არსებული ყველა ფრეიმის ჩვენება"
@@ -9553,6 +9634,12 @@
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "კონფიგურაცია"
+  },
+  "panels/sources/DebuggerPlugin.ts | debugFileNotFound": {
+    "message": "გამართვის ფაილი „{PH1}“ ვერ ჩაიტვირთა."
+  },
+  "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
+    "message": "{PH1}-ისთვის გამართვის ინფორმაცია ვერ ჩაიტვირთა."
   },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{წყვეტის წერტილის გათიშვა}other{სტრიქონში წყვეტის ყველა წერტილის გათიშვა}}"
@@ -9686,11 +9773,17 @@
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "ნამდვილად გსურთ ამ საქაღალდის ამოშლა?"
   },
+  "panels/sources/NavigatorView.ts | authored": {
+    "message": "ავტორული"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "წაშლა"
   },
   "panels/sources/NavigatorView.ts | deleteAllOverrides": {
     "message": "ყველა უგულებელყოფის წაშლა"
+  },
+  "panels/sources/NavigatorView.ts | deployed": {
+    "message": "დანერგილი"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "საქაღალდის გამორიცხვა"
@@ -9853,6 +9946,9 @@
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "ჩავლებით გადმოიტანეთ სამუშაო სივრცის საქაღალდე აქ"
+  },
+  "panels/sources/SourcesPanel.ts | groupByAuthored": {
+    "message": "ავტორულის/დანერგილის მიხედვით დაჯგუფება (ექსპერიმენტული)"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "დაჯგუფება საქაღალდის მიხედვით"
@@ -10224,10 +10320,10 @@
     "message": "წყვეტის წერტილების შეყვანის ფანჯრის გადართვა"
   },
   "panels/sources/sources-meta.ts | toggleDebuggerSidebar": {
-    "message": "Toggle debugger sidebar"
+    "message": "შეცდომების გამმართველის გვერდითი ზოლის გადართვა"
   },
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
-    "message": "Toggle navigator sidebar"
+    "message": "ნავიგაციის გვერდითი ზოლის გადართვა"
   },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "დამაბოლოებელი"
@@ -10346,9 +10442,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "უმოქმედო ფრეიმი"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | interactions": {
-    "message": "ინტერაქციები"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
     "message": "გრძელი ფრეიმი"
   },
@@ -10435,6 +10528,9 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "— CPU-ს რეგულირება ჩართულია"
+  },
+  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
+    "message": "— აპარატურის პარალელიზმის უგულებელყოფა ჩართულია"
   },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "— JavaScript სემპლინგი გათიშულია"
@@ -11670,7 +11766,7 @@
     "message": "ხელმოწერების რაოდენობა"
   },
   "panels/webauthn/WebauthnPane.ts | supportsLargeBlob": {
-    "message": "Supports large blob"
+    "message": "მხარდაჭერილია დიდი blob-ობიექტი"
   },
   "panels/webauthn/WebauthnPane.ts | supportsResidentKeys": {
     "message": "მხარდაჭერილია რეზიდენტი გასაღებები"
@@ -11856,7 +11952,7 @@
     "message": "ყველა"
   },
   "ui/legacy/FilterBar.ts | clearFilter": {
-    "message": "Clear input"
+    "message": "შენატანის გასუფთავება"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "მაგ. /small[d]+/ url:a.com/b"
@@ -11908,6 +12004,12 @@
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "DevTools-ის გადატვირთვა"
+  },
+  "ui/legacy/InspectorView.ts | selectFolder": {
+    "message": "საქაღალდის არჩევა"
+  },
+  "ui/legacy/InspectorView.ts | selectOverrideFolder": {
+    "message": "აირჩიეთ საქაღალდე, რომელშიც უნდა შეინახოს უგულებელყოფის ფაილები."
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "ყოველთვის დაემთხვეს Chrome-ის ენას"
@@ -12027,7 +12129,7 @@
     "message": "გვერდის გადატვირთვის შემდეგ DevTools ავტომატურად დაკავშირდება."
   },
   "ui/legacy/Toolbar.ts | clearInput": {
-    "message": "Clear input"
+    "message": "შენატანის გასუფთავება"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "არ დაეჭირა"

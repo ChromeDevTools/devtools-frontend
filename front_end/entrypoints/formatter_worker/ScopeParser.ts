@@ -312,8 +312,9 @@ export class ScopeVariableAnalysis {
         break;
       case 'Property':
         if (node.shorthand) {
-          console.assert(node.value === node.key);
           console.assert(node.value.type === 'Identifier');
+          console.assert(node.key.type === 'Identifier');
+          console.assert((node.value as Acorn.ESTree.Identifier).name === (node.key as Acorn.ESTree.Identifier).name);
           this.#addVariable((node.value as Acorn.ESTree.Identifier).name, node.value.start, DefinitionKind.None, true);
         } else {
           if (node.computed) {
@@ -469,8 +470,9 @@ export class ScopeVariableAnalysis {
       case 'Property':
         // This is AssignmentProperty inside an object pattern.
         if (node.shorthand) {
-          console.assert(node.value === node.key);
           console.assert(node.value.type === 'Identifier');
+          console.assert(node.key.type === 'Identifier');
+          console.assert((node.value as Acorn.ESTree.Identifier).name === (node.key as Acorn.ESTree.Identifier).name);
           this.#addVariable((node.value as Acorn.ESTree.Identifier).name, node.value.start, definitionKind, true);
         } else {
           if (node.computed) {

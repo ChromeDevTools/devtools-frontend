@@ -30,6 +30,7 @@ ts_library("sdk") {
     "ServerTiming_test.ts",
     "SourceMapManager_test.ts",
     "SourceMap_test.ts",
+    "StorageKeyManager_test.ts",
     "TracingModel_test.ts",
   ]
 

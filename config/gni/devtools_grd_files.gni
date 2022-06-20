@@ -654,6 +654,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/ServiceWorkerManager.js",
   "front_end/core/sdk/SourceMap.js",
   "front_end/core/sdk/SourceMapManager.js",
+  "front_end/core/sdk/StorageKeyManager.js",
   "front_end/core/sdk/Target.js",
   "front_end/core/sdk/TargetManager.js",
   "front_end/core/sdk/TracingManager.js",

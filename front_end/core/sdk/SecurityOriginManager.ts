@@ -81,5 +81,5 @@ export type EventTypes = {
   [Events.MainSecurityOriginChanged]: MainSecurityOriginChangedEvent,
 };
 
-// TODO(jarhar): this is the only usage of Capability.None. Do something about it!
+// TODO(jarhar): this is the one of the two usages of Capability.None. Do something about it!
 SDKModel.register(SecurityOriginManager, {capabilities: Capability.None, autostart: false});

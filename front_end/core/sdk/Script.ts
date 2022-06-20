@@ -268,7 +268,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       return {status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
     }
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
-        {scriptId: this.scriptId, scriptSource: newSource});
+        {scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true});
     if (response.getError()) {
       // Something went seriously wrong, like the V8 inspector no longer knowing about this script without
       // shutting down the Debugger agent etc.

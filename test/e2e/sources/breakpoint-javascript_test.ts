@@ -6,6 +6,7 @@ import {assert} from 'chai';
 
 import {
   $,
+  assertNotNullOrUndefined,
   click,
   enableExperiment,
   getBrowserAndPages,
@@ -18,10 +19,14 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
+  getLineNumberElement,
+  isBreakpointSet,
   isEqualOrAbbreviation,
+  navigateToLine,
   openSourceCodeEditorForFile,
   PAUSE_INDICATOR_SELECTOR,
   refreshDevToolsAndRemoveBackendState,
+  removeBreakpointForLine,
   RESUME_BUTTON,
   retrieveTopCallFrameWithoutResuming,
 } from '../helpers/sources-helpers.js';
@@ -210,4 +215,34 @@ describe('The Sources Tab', async function() {
          await click(RESUME_BUTTON);
        });
      });
+
+  it('can correctly handle breakpoints mapping to the same location', async () => {
+    const {frontend, target} = getBrowserAndPages();
+
+    await openSourceCodeEditorForFile('breakpoint-same-location.js', 'breakpoint-same-location.html');
+
+    // Set a breakpoint on line 3, this should successfully resolve to line 3.
+    await addBreakpointForLine(frontend, 3);
+
+    // Set a breakpoint on line 4, this should resolve to the same location as the previous one and disappear.
+    await navigateToLine(frontend, 4);
+    const breakpointLine = await getLineNumberElement(4);
+    assertNotNullOrUndefined(breakpointLine);
+    await breakpointLine?.click();
+    await waitForFunction(async () => !(await isBreakpointSet(4)));
+
+    // Reload the page and make sure that we stop on line 3.
+    target.reload();
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await assertScriptLocation('breakpoint-same-location.js:3');
+
+    // We expect the breakpoint on line 3 to still exist, while the one on line 4 should still be removed.
+    await waitForFunction(async () => (await isBreakpointSet(3)));
+    await waitForFunction(async () => !(await isBreakpointSet(4)));
+
+    // Removing the breakpoint on line 3 and reloading doesn't stop execution.
+    await removeBreakpointForLine(frontend, 3);
+    // If a breakpoint still exists (e.g. breakpoint on line 4), awaiting the reload will time out.
+    await target.reload();
+  });
 });

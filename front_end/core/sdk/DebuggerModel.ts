@@ -314,7 +314,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     await this.agent.invoke_disable();
     this.#isPausingInternal = false;
     this.globalObjectCleared();
-    this.dispatchEventToListeners(Events.DebuggerWasDisabled);
+    this.dispatchEventToListeners(Events.DebuggerWasDisabled, this);
     if (typeof this.#debuggerId === 'string') {
       _debuggerIdToModel.delete(this.#debuggerId);
     }
@@ -973,7 +973,7 @@ export enum Events {
 
 export type EventTypes = {
   [Events.DebuggerWasEnabled]: DebuggerModel,
-  [Events.DebuggerWasDisabled]: void,
+  [Events.DebuggerWasDisabled]: DebuggerModel,
   [Events.DebuggerPaused]: DebuggerModel,
   [Events.DebuggerResumed]: DebuggerModel,
   [Events.ParsedScriptSource]: Script,

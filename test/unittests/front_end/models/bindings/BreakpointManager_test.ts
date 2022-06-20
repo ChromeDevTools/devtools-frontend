@@ -246,7 +246,9 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.isNull(breakpoint.currentState);
     const update = modelBreakpoint.scheduleUpdateInDebugger();
     assert.isNull(breakpoint.currentState);
-    await update;
+    const result = await update;
+    // Make sure that no error occurred.
+    assert.isTrue(result);
     assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     breakpointManager.removeBreakpoint(breakpoint, true);

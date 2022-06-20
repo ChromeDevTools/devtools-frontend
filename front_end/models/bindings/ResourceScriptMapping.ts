@@ -33,7 +33,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {Breakpoint} from './BreakpointManager.js';
 import {BreakpointManager} from './BreakpointManager.js';
@@ -320,34 +320,48 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
                             .breakpointLocationsForUISourceCode(this.#uiSourceCodeInternal)
                             .map(breakpointLocation => breakpointLocation.breakpoint);
     const source = this.#uiSourceCodeInternal.workingCopy();
-    void this.scriptInternal.editSource(source).then(({error, exceptionDetails}) => {
-      void this.scriptSourceWasSet(source, breakpoints, error, exceptionDetails);
+    void this.scriptInternal.editSource(source).then(({status, exceptionDetails}) => {
+      void this.scriptSourceWasSet(source, breakpoints, status, exceptionDetails);
     });
   }
 
   async scriptSourceWasSet(
-      source: string, breakpoints: Breakpoint[], error: string|null,
+      source: string, breakpoints: Breakpoint[], status: Protocol.Debugger.SetScriptSourceResponseStatus,
       exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<void> {
-    if (!error && !exceptionDetails) {
+    if (status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
       this.#scriptSource = source;
     }
     await this.update();
 
-    if (!error && !exceptionDetails) {
+    if (status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
       // Live edit can cause #breakpoints to be in the wrong position, or to be lost altogether.
       // If any #breakpoints were in the pre-live edit script, they need to be re-added.
       await Promise.all(breakpoints.map(breakpoint => breakpoint.refreshInDebugger()));
       return;
     }
     if (!exceptionDetails) {
+      // TODO(crbug.com/1334484): Instead of to the console, report these errors in an "info bar" at the bottom
+      //                          of the text editor, similar to e.g. source mapping errors.
       Common.Console.Console.instance().addMessage(
-          i18nString(UIStrings.liveEditFailed, {PH1: String(error)}), Common.Console.MessageLevel.Warning);
+          i18nString(UIStrings.liveEditFailed, {PH1: getErrorText(status)}), Common.Console.MessageLevel.Warning);
       return;
     }
     const messageText = i18nString(UIStrings.liveEditCompileFailed, {PH1: exceptionDetails.text});
     this.#uiSourceCodeInternal.addLineMessage(
         Workspace.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber,
         exceptionDetails.columnNumber);
+
+    function getErrorText(status: Protocol.Debugger.SetScriptSourceResponseStatus): string {
+      switch (status) {
+        case Protocol.Debugger.SetScriptSourceResponseStatus.BlockedByActiveFunction:
+          return 'Functions that are on the stack (currently being executed) can not be edited';
+        case Protocol.Debugger.SetScriptSourceResponseStatus.BlockedByActiveGenerator:
+          return 'Async functions/generators that are active can not be edited';
+        case Protocol.Debugger.SetScriptSourceResponseStatus.CompileError:
+        case Protocol.Debugger.SetScriptSourceResponseStatus.Ok:
+          throw new Error('Compile errors and Ok status must not be reported on the console');
+      }
+    }
   }
 
   private async update(): Promise<void> {

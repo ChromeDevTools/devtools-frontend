@@ -257,28 +257,29 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return source + '\n //# sourceURL=' + this.sourceURL;
   }
 
-  async editSource(newSource: string):
-      Promise<{error: string | null, exceptionDetails?: Protocol.Runtime.ExceptionDetails}> {
+  async editSource(newSource: string): Promise<
+      {status: Protocol.Debugger.SetScriptSourceResponseStatus, exceptionDetails?: Protocol.Runtime.ExceptionDetails}> {
     newSource = Script.trimSourceURLComment(newSource);
     // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
 
-    if (!this.scriptId) {
-      return {error: 'Script failed to parse'};
-    }
-
     const {content: oldSource} = await this.requestContent();
     if (oldSource === newSource) {
-      return {error: null};
+      return {status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok};
     }
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
+    if (response.getError()) {
+      // Something went seriously wrong, like the V8 inspector no longer knowing about this script without
+      // shutting down the Debugger agent etc.
+      throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
+    }
 
-    if (!response.getError() && !response.exceptionDetails) {
+    if (!response.getError() && response.status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
       this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
-    return {error: response.getError() || null, exceptionDetails: response.exceptionDetails};
+    return {status: response.status, exceptionDetails: response.exceptionDetails};
   }
 
   rawLocation(lineNumber: number, columnNumber: number): Location|null {

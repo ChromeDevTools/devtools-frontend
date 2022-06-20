@@ -38,7 +38,8 @@ describe('Source Panel Quick Open', async () => {
     return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
   }
 
-  it('sorts authored above deployed', async () => {
+  // Flaky on Mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1337781] sorts authored above deployed', async () => {
     await goToResource(targetPage);
     await openSourcesPanel();
 

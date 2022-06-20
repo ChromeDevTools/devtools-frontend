@@ -187,8 +187,6 @@ describeWithMockConnection('NameResolver', () => {
 
   function parseScopeChain(scopeDescriptor: string):
       {type: Protocol.Debugger.ScopeType, startColumn: number, endColumn: number}[] {
-    const scopeChain = [];
-
     // Identify function scope.
     const functionStart = scopeDescriptor.indexOf('{');
     if (functionStart < 0) {
@@ -199,7 +197,8 @@ describeWithMockConnection('NameResolver', () => {
       throw new Error('Test descriptor must contain "}"');
     }
 
-    scopeChain.push({type: Protocol.Debugger.ScopeType.Local, startColumn: functionStart, endColumn: functionEnd + 1});
+    const scopeChain =
+        [{type: Protocol.Debugger.ScopeType.Local, startColumn: functionStart, endColumn: functionEnd + 1}];
 
     // Find the block scope.
     const blockScopeStart = scopeDescriptor.indexOf('<');
@@ -208,7 +207,7 @@ describeWithMockConnection('NameResolver', () => {
       if (blockScopeEnd < 0) {
         throw new Error('Test descriptor must contain matching "." for "<"');
       }
-      scopeChain.push(
+      scopeChain.unshift(
           {type: Protocol.Debugger.ScopeType.Block, startColumn: blockScopeStart, endColumn: blockScopeEnd + 1});
     }
 
@@ -228,7 +227,7 @@ describeWithMockConnection('NameResolver', () => {
             s.type, {type: Protocol.Runtime.RemoteObjectType.Object}, scriptObject.scriptId, s.startColumn,
             s.endColumn));
 
-    const innerScope = scopeChain[scopeChain.length - 1];
+    const innerScope = scopeChain[0];
     if (scopeObject) {
       innerScope.object = scopeObject;
     }
@@ -246,7 +245,7 @@ describeWithMockConnection('NameResolver', () => {
     };
 
     const callFrame = new SDK.DebuggerModel.CallFrame(debuggerModel, scriptObject, payload, 0);
-    return {functionScope: callFrame.scopeChain()[0], scope: callFrame.scopeChain()[callFrame.scopeChain().length - 1]};
+    return {functionScope: callFrame.scopeChain()[callFrame.scopeChain().length - 1], scope: callFrame.scopeChain()[0]};
   }
 
   function getIdentifiersFromScopeDescriptor(source: string, scopeDescriptor: string): {
@@ -343,7 +342,7 @@ describeWithMockConnection('NameResolver', () => {
   it('test helper parses scopes from test descriptor', () => {
     //    source = 'function f(x) { g(x); {let a = x, return a} }';
     const scopes = '          {           <    B             B> }';
-    const [functionScope, scope] = parseScopeChain(scopes);
+    const [scope, functionScope] = parseScopeChain(scopes);
     assert.strictEqual(functionScope.startColumn, 10);
     assert.strictEqual(functionScope.endColumn, 45);
     assert.strictEqual(scope.startColumn, 22);
@@ -469,7 +468,7 @@ describeWithMockConnection('NameResolver', () => {
     });
   }
 
-  it('resolves name tokens with punctuation', async () => {
+  it('resolves name tokens merged with commas (without source map names)', async () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
     const sourceMapContent = JSON.stringify({
@@ -492,6 +491,31 @@ describeWithMockConnection('NameResolver', () => {
     const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
 
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 1}, {name: 'par2', value: 2}]);
+  });
+
+  it('resolves name tokens merged with equals (without source map names)', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'sources': ['index.js'],
+      'sourcesContent': ['function f(n) {\n  for (let i = 0; i < n; i++) {\n    console.log("hi");\n  }\n}\nf(10);\n'],
+      'mappings': 'AAAA,WAAW,EAAG,CACZ,OAAS,GAAI,EAAG,EAAI,EAAG,IACrB,QAAQ,IAAI,IAAI,CAEpB,CACA,EAAE,EAAE',
+      'names': [],
+    });
+
+    const source = `function f(i){for(let o=0;o<i;o++)console.log("hi")}f(10);\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '          {      <                                >}';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 4}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.sameDeepMembers(namesAndValues, [{name: 'i', value: 4}]);
   });
 
   it('resolves name tokens with source map names', async () => {

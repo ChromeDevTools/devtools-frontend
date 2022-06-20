@@ -181,13 +181,14 @@ export const scopeIdentifiers = async function(
   }
 };
 
-const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,]?)\s*$/;
+const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
 
 const enum Punctuation {
-  None = 0,
-  Comma = 1,
-  Dot = 2,
-  Semicolon = 3,
+  None = 'none',
+  Comma = 'comma',
+  Dot = 'dot',
+  Semicolon = 'semicolon',
+  Equals = 'equals',
 }
 
 const resolveScope =
@@ -340,6 +341,9 @@ const resolveScope =
           break;
         case ';':
           punctuation = Punctuation.Semicolon;
+          break;
+        case '=':
+          punctuation = Punctuation.Equals;
           break;
         case '':
           punctuation = Punctuation.None;

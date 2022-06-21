@@ -81,7 +81,15 @@ export class LighthousePanel extends UI.Panel.Panel {
   private rightToolbar!: UI.Toolbar.Toolbar;
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
   private stateBefore?: {
-    emulation: {enabled: boolean, outlineEnabled: boolean, toolbarControlsEnabled: boolean},
+    emulation: {
+      type: EmulationModel.DeviceModeModel.Type,
+      enabled: boolean,
+      outlineEnabled: boolean,
+      toolbarControlsEnabled: boolean,
+      scale: number,
+      device: EmulationModel.EmulatedDevices.EmulatedDevice|null,
+      mode: EmulationModel.EmulatedDevices.Mode|null,
+    },
     network: {conditions: SDK.NetworkManager.Conditions},
   };
   private isLHAttached?: boolean;
@@ -385,7 +393,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       }
 
     } catch (err) {
-      await this.resetEmulationAndProtocolConnection();
+      await this.restoreEmulationAndProtocolConnection();
       if (err instanceof Error) {
         this.statusView.renderBugReport(err);
       }
@@ -413,12 +421,12 @@ export class LighthousePanel extends UI.Panel.Panel {
 
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
 
-      await this.resetEmulationAndProtocolConnection();
+      await this.restoreEmulationAndProtocolConnection();
       this.buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
       // Give focus to the new audit button when completed
       this.newButton.element.focus();
     } catch (err) {
-      await this.resetEmulationAndProtocolConnection();
+      await this.restoreEmulationAndProtocolConnection();
       if (err instanceof Error) {
         this.statusView.renderBugReport(err);
       }
@@ -430,7 +438,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private async cancelLighthouse(): Promise<void> {
     this.currentLighthouseRun = undefined;
     this.statusView.updateStatus(i18nString(UIStrings.cancelling));
-    await this.resetEmulationAndProtocolConnection();
+    await this.restoreEmulationAndProtocolConnection();
     this.renderStartView();
   }
 
@@ -447,9 +455,13 @@ export class LighthousePanel extends UI.Panel.Panel {
     const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.stateBefore = {
       emulation: {
+        type: emulationModel.type(),
         enabled: emulationModel.enabledSetting().get(),
         outlineEnabled: emulationModel.deviceOutlineSetting().get(),
         toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
+        scale: emulationModel.scaleSetting().get(),
+        device: emulationModel.device(),
+        mode: emulationModel.mode(),
       },
       network: {conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()},
     };
@@ -473,7 +485,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.isLHAttached = true;
   }
 
-  private async resetEmulationAndProtocolConnection(): Promise<void> {
+  private async restoreEmulationAndProtocolConnection(): Promise<void> {
     if (!this.isLHAttached) {
       return;
     }
@@ -483,9 +495,25 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     if (this.stateBefore) {
       const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-      emulationModel.enabledSetting().set(this.stateBefore.emulation.enabled);
-      emulationModel.deviceOutlineSetting().set(this.stateBefore.emulation.outlineEnabled);
-      emulationModel.toolbarControlsEnabledSetting().set(this.stateBefore.emulation.toolbarControlsEnabled);
+
+      // Detaching a session after overriding device metrics will prevent other sessions from overriding device metrics in the future.
+      // A workaround is to call "Emulation.clearDeviceMetricOverride" which is the result of the next line.
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=1337089
+      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+
+      const {type, enabled, outlineEnabled, toolbarControlsEnabled, scale, device, mode} = this.stateBefore.emulation;
+      emulationModel.enabledSetting().set(enabled);
+      emulationModel.deviceOutlineSetting().set(outlineEnabled);
+      emulationModel.toolbarControlsEnabledSetting().set(toolbarControlsEnabled);
+
+      // `emulate` will ignore the `scale` parameter for responsive emulation.
+      // In this case we can just set it here.
+      if (type === EmulationModel.DeviceModeModel.Type.Responsive) {
+        emulationModel.scaleSetting().set(scale);
+      }
+
+      emulationModel.emulate(type, device, mode, scale);
+
       SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(this.stateBefore.network.conditions);
       delete this.stateBefore;
     }

@@ -319,6 +319,6 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
   private async openMemoryInspector(obj: SDK.RemoteObject.RemoteObject): Promise<void> {
     const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
     Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
-    void controller.openInspectorView(obj, 0);
+    void controller.openInspectorView(obj);
   }
 }

@@ -388,11 +388,13 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static appendMemoryIcon(element: Element, obj: SDK.RemoteObject.RemoteObject): void {
-    // We show the memory icon only on ArrayBuffer and WebAssembly.Memory instances.
+    // We show the memory icon only on ArrayBuffer, WebAssembly.Memory and DWARF memory instances.
     // TypedArrays DataViews are also supported, but showing the icon next to their
     // previews is quite a significant visual overhead, and users can easily get to
     // their buffers and open the memory inspector from there.
-    if (!LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(obj)) {
+    const arrayBufferOrWasmMemory =
+        (obj.type === 'object' && (obj.subtype === 'arraybuffer' || obj.subtype === 'webassemblymemory'));
+    if (!arrayBufferOrWasmMemory && !LinearMemoryInspector.LinearMemoryInspectorController.isDWARFMemoryObject(obj)) {
       return;
     }
     const memoryIcon = new IconButton.Icon.Icon();
@@ -408,7 +410,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       const controller =
           LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
       Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
-      void controller.openInspectorView(obj, 0);
+      void controller.openInspectorView(obj);
     };
 
     UI.Tooltip.Tooltip.install(memoryIcon, 'Reveal in Memory Inspector panel');

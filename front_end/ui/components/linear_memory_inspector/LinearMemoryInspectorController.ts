@@ -77,15 +77,14 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
+export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean {
+  return obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode && obj.inspectableAddress !== undefined;
+}
+
 export function isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
   const isWasmOrBuffer = obj.type === 'object' && obj.subtype && ACCEPTED_MEMORY_TYPES.includes(obj.subtype);
-  if (isWasmOrBuffer) {
+  if (isWasmOrBuffer || isDWARFMemoryObject(obj)) {
     return true;
-  }
-
-  const isWasmDWARF = obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode;
-  if (isWasmDWARF) {
-    return obj.inspectableAddress !== undefined;
   }
 
   return false;

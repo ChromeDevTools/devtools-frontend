@@ -181,7 +181,7 @@ export class TimelineModelImpl {
       case RecordType.MarkLoad:
       case RecordType.MarkLCPCandidate:
       case RecordType.MarkLCPInvalidate:
-        return Boolean(event.args['data']['isMainFrame']);
+        return Boolean(event.args['data']['isOutermostMainFrame'] ?? event.args['data']['isMainFrame']);
       default:
         return false;
     }
@@ -203,11 +203,13 @@ export class TimelineModelImpl {
   }
 
   isLCPCandidateEvent(event: SDK.TracingModel.Event): boolean {
-    return event.name === RecordType.MarkLCPCandidate && Boolean(event.args['data']['isMainFrame']);
+    return event.name === RecordType.MarkLCPCandidate &&
+        Boolean(event.args['data']['isOutermostMainFrame'] ?? event.args['data']['isMainFrame']);
   }
 
   isLCPInvalidateEvent(event: SDK.TracingModel.Event): boolean {
-    return event.name === RecordType.MarkLCPInvalidate && Boolean(event.args['data']['isMainFrame']);
+    return event.name === RecordType.MarkLCPInvalidate &&
+        Boolean(event.args['data']['isOutermostMainFrame'] ?? event.args['data']['isMainFrame']);
   }
 
   isFCPEvent(event: SDK.TracingModel.Event): boolean {
@@ -1133,7 +1135,7 @@ export class TimelineModelImpl {
           break;
         }
         const frameId = TimelineModelImpl.eventFrameId(event);
-        const isMainFrame = Boolean(eventData['isMainFrame']);
+        const isOutermostMainFrame = Boolean(eventData['isOutermostMainFrame'] ?? eventData['isMainFrame']);
         const pageFrame = frameId ? this.pageFrames.get(frameId) : null;
         if (pageFrame) {
           pageFrame.update(event.startTime, eventData);
@@ -1144,13 +1146,13 @@ export class TimelineModelImpl {
             if (eventData['page'] && eventData['page'] !== this.legacyCurrentPage) {
               return false;
             }
-          } else if (isMainFrame) {
+          } else if (isOutermostMainFrame) {
             return false;
           } else if (!this.addPageFrame(event, eventData)) {
             return false;
           }
         }
-        if (isMainFrame && frameId) {
+        if (isOutermostMainFrame && frameId) {
           const frame = this.pageFrames.get(frameId);
           if (frame) {
             this.mainFrame = frame;

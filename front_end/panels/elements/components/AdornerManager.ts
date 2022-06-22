@@ -30,6 +30,7 @@ export enum RegisteredAdorners {
   SCROLL_SNAP = 'scroll-snap',
   CONTAINER = 'container',
   SLOT = 'slot',
+  TOP_LAYER = 'top-layer',
 }
 
 // This enum-like const object serves as the authoritative registry for all the
@@ -69,6 +70,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
     case RegisteredAdorners.SLOT:
       return {
         name: 'slot',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.TOP_LAYER:
+      return {
+        name: 'top-layer',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

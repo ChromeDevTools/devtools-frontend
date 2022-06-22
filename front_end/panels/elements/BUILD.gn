@@ -60,6 +60,7 @@ devtools_module("elements") {
     "StylePropertyTreeElement.ts",
     "StylePropertyUtils.ts",
     "StylesSidebarPane.ts",
+    "TopLayerContainer.ts",
   ]
 
   deps = [

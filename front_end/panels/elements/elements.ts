@@ -9,6 +9,7 @@ import './DOMLinkifier.js';
 import './DOMPath.js';
 import './ElementsSidebarPane.js';
 import './ElementsTreeElement.js';
+import './TopLayerContainer.js';
 import './ElementsTreeOutline.js';
 import './EventListenersWidget.js';
 import './MarkerDecorator.js';
@@ -25,6 +26,7 @@ import './ElementsPanel.js';
 import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
 import './ElementsTreeElementHighlighter.js';
+import './TopLayerContainer.js';
 
 import * as ClassesPaneWidget from './ClassesPaneWidget.js';
 import * as ColorSwatchPopoverIcon from './ColorSwatchPopoverIcon.js';
@@ -53,6 +55,7 @@ import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
 import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
 import * as StylePropertyUtils from './StylePropertyUtils.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
+import * as TopLayerContainer from './TopLayerContainer.js';
 
 export {
   ClassesPaneWidget,
@@ -82,4 +85,5 @@ export {
   StylePropertyTreeElement,
   StylePropertyUtils,
   StylesSidebarPane,
+  TopLayerContainer,
 };

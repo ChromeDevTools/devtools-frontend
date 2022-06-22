@@ -43,6 +43,7 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
+import {TopLayerContainer} from './TopLayerContainer.js';
 
 import type {MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
@@ -100,6 +101,7 @@ export class ElementsTreeOutline extends
   private treeElementBeingDragged?: ElementsTreeElement;
   private dragOverTreeElement?: ElementsTreeElement;
   private updateModifiedNodesTimeout?: number;
+  private topLayerContainer?: TopLayerContainer;
 
   constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
     super();
@@ -1001,6 +1003,7 @@ export class ElementsTreeOutline extends
     domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
   }
 
   unwireFromDOMModel(domModel: SDK.DOMModel.DOMModel): void {
@@ -1013,6 +1016,7 @@ export class ElementsTreeOutline extends
     domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
 
@@ -1164,13 +1168,41 @@ export class ElementsTreeOutline extends
       return Promise.resolve();
     }
 
-    return new Promise(resolve => {
-      treeElement.node().getChildNodes(() => {
-        populatedTreeElements.add(treeElement);
-        this.updateModifiedParentNode(treeElement.node());
-        resolve();
-      });
-    });
+    return new Promise<void>(resolve => {
+             treeElement.node().getChildNodes(() => {
+               populatedTreeElements.add(treeElement);
+               this.updateModifiedParentNode(treeElement.node());
+               resolve();
+             });
+           })
+        .then(() => {
+          if (treeElement.node().nodeName() === 'BODY') {
+            void this.createTopLayerContainer(treeElement);
+          }
+        });
+  }
+
+  async createTopLayerContainer(bodyElement: ElementsTreeElement): Promise<void> {
+    if (!this.topLayerContainer) {
+      this.topLayerContainer = new TopLayerContainer(bodyElement);
+    }
+    this.topLayerContainer.updateBody(bodyElement);
+    await this.updateTopLayerContainer();
+  }
+
+  async updateTopLayerContainer(): Promise<void> {
+    if (this.topLayerContainer) {
+      const bodyElement = this.topLayerContainer.bodyElement;
+      if (!bodyElement.children().includes(this.topLayerContainer) && !this.topLayerContainer.parent &&
+          !this.topLayerContainer.treeOutline) {
+        bodyElement.insertChild(this.topLayerContainer, bodyElement.childCount() - 1);
+      }
+      this.topLayerContainer.removeChildren();
+      const topLayerElementsExists = await this.topLayerContainer.addTopLayerElementsAsChildren();
+      if (!topLayerElementsExists) {
+        bodyElement.removeChild(this.topLayerContainer);
+      }
+    }
   }
 
   private createElementTreeElement(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean): ElementsTreeElement {
@@ -1318,7 +1350,7 @@ export class ElementsTreeOutline extends
   }
 
   insertChildElement(
-      treeElement: ElementsTreeElement, child: SDK.DOMModel.DOMNode, index: number,
+      treeElement: ElementsTreeElement|TopLayerContainer, child: SDK.DOMModel.DOMNode, index: number,
       isClosingTag?: boolean): ElementsTreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
@@ -1425,6 +1457,10 @@ export class ElementsTreeOutline extends
     if (treeElement) {
       treeElement.updateDecorations();
     }
+  }
+
+  private async topLayerElementsChanged(): Promise<void> {
+    await this.updateTopLayerContainer();
   }
 
   private static treeOutlineSymbol = Symbol('treeOutline');

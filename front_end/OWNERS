@@ -1,4 +1,1 @@
-file://config/owner/INFRA_OWNERS
-
-bmeurer@chromium.org
-dsv@chromium.org
+file://config/owner/COMMON_OWNERS

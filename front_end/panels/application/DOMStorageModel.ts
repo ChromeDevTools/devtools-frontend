@@ -166,6 +166,10 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.agent = target.domstorageAgent();
   }
 
+  get storageKeyManagerForTest(): SDK.StorageKeyManager.StorageKeyManager|null {
+    return this.storageKeyManagerInternal;
+  }
+
   enable(): void {
     if (this.enabled) {
       return;
@@ -247,6 +251,9 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     for (const isLocal of [true, false]) {
       const key = this.keyForSecurityOrigin(securityOrigin, isLocal);
       console.assert(!this.storagesInternal[key]);
+      if (this.duplicateExists(key)) {
+        continue;
+      }
       const storage = new DOMStorage(this, securityOrigin, '', isLocal);
       this.storagesInternal[key] = storage;
       this.dispatchEventToListeners(Events.DOMStorageAdded, storage);
@@ -257,10 +264,27 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     for (const isLocal of [true, false]) {
       const key = this.keyForStorageKey(storageKey, isLocal);
       console.assert(!this.storagesInternal[key]);
+      if (this.duplicateExists(key)) {
+        continue;
+      }
       const storage = new DOMStorage(this, '', storageKey, isLocal);
       this.storagesInternal[key] = storage;
       this.dispatchEventToListeners(Events.DOMStorageAdded, storage);
     }
+  }
+
+  private duplicateExists(key: string): boolean {
+    const parsedKey = JSON.parse(key);
+    for (const storageInternal in this.storagesInternal) {
+      const parsedStorageInternalKey = JSON.parse(storageInternal);
+      if (parsedKey.isLocalStorage === parsedStorageInternalKey.isLocalStorage) {
+        if (parsedKey.storageKey?.slice(0, -1) === parsedStorageInternalKey.securityOrigin ||
+            parsedKey.securityOrigin === parsedStorageInternalKey.storageKey?.slice(0, -1)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private securityOriginRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {

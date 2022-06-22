@@ -147,6 +147,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private reportView: UI.ReportView.ReportView;
   private target: SDK.Target.Target|null;
   private securityOrigin: string|null;
+  private storageKey: string|null;
   private settings: Map<Protocol.Storage.StorageType, Common.Settings.Setting<boolean>>;
   private includeThirdPartyCookiesSetting: Common.Settings.Setting<boolean>;
   private quotaRow: HTMLElement;
@@ -180,6 +181,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.reportView.show(this.contentElement);
     this.target = null;
     this.securityOrigin = null;
+    this.storageKey = null;
 
     this.settings = new Map();
     for (const type of AllStorageTypes) {
@@ -277,6 +279,11 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         securityOriginManager.mainSecurityOrigin(), securityOriginManager.unreachableMainSecurityOrigin());
     securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
+    const storageKeyManager =
+        target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
+    this.updateStorageKey(storageKeyManager.mainStorageKey());
+    storageKeyManager.addEventListener(
+        SDK.StorageKeyManager.Events.MainStorageKeyChanged, this.storageKeyChanged, this);
   }
 
   targetRemoved(target: SDK.Target.Target): void {
@@ -287,12 +294,22 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         SDK.SecurityOriginManager.SecurityOriginManager;
     securityOriginManager.removeEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
+    const storageKeyManager =
+        target.model(SDK.StorageKeyManager.StorageKeyManager) as SDK.StorageKeyManager.StorageKeyManager;
+    storageKeyManager.removeEventListener(
+        SDK.StorageKeyManager.Events.MainStorageKeyChanged, this.storageKeyChanged, this);
   }
 
   private originChanged(
       event: Common.EventTarget.EventTargetEvent<SDK.SecurityOriginManager.MainSecurityOriginChangedEvent>): void {
     const {mainSecurityOrigin, unreachableMainSecurityOrigin} = event.data;
     this.updateOrigin(mainSecurityOrigin, unreachableMainSecurityOrigin);
+  }
+
+  private storageKeyChanged(
+      event: Common.EventTarget.EventTargetEvent<SDK.StorageKeyManager.MainStorageKeyChangedEvent>): void {
+    const {mainStorageKey} = event.data;
+    this.updateStorageKey(mainStorageKey);
   }
 
   private updateOrigin(mainOrigin: string, unreachableMainOrigin: string|null): void {
@@ -306,6 +323,20 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     if (oldOrigin !== this.securityOrigin) {
+      this.quotaOverrideControlRow.classList.add('hidden');
+      this.quotaOverrideCheckbox.checkboxElement.checked = false;
+      this.quotaOverrideErrorMessage.textContent = '';
+    }
+    void this.doUpdate();
+  }
+
+  private updateStorageKey(mainStorageKey: string): void {
+    const oldStorageKey = this.storageKey;
+
+    this.storageKey = mainStorageKey;
+    this.reportView.setSubtitle(mainStorageKey);
+
+    if (oldStorageKey !== this.storageKey) {
       this.quotaOverrideControlRow.classList.add('hidden');
       this.quotaOverrideCheckbox.checkboxElement.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
@@ -375,7 +406,12 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (this.target) {
       const includeThirdPartyCookies = this.includeThirdPartyCookiesSetting.get();
-      StorageView.clear(this.target, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
+      // TODO(crbug.com/1313434) Prioritize storageKey once everything is ready
+      if (this.securityOrigin) {
+        StorageView.clear(this.target, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
+      } else if (this.storageKey) {
+        StorageView.clearByStorageKey(this.target, this.storageKey, selectedStorageTypes);
+      }
     }
 
     this.clearButton.disabled = true;
@@ -432,6 +468,20 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForOrigin(securityOrigin);
+      }
+    }
+  }
+
+  static clearByStorageKey(target: SDK.Target.Target, storageKey: string, selectedStorageTypes: string[]): void {
+    // TODO(crbug.com/1313434) Invoke protocol `clear` once it ready for storageKey
+
+    const set = new Set(selectedStorageTypes);
+    const hasAll = set.has(Protocol.Storage.StorageType.All);
+
+    if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
+      const storageModel = target.model(DOMStorageModel);
+      if (storageModel) {
+        storageModel.clearForStorageKey(storageKey);
       }
     }
   }
@@ -556,6 +606,14 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return false;
   }
 
+  private async clear(target: SDK.Target.Target, resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel):
+      Promise<void> {
+    const storageKey = await resourceTreeModel.getMainStorageKey();
+    if (storageKey) {
+      StorageView.clearByStorageKey(target, storageKey, AllStorageTypes);
+    }
+  }
+
   private handleClear(includeThirdPartyCookies: boolean): boolean {
     const target = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!target) {
@@ -566,11 +624,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       return false;
     }
     const securityOrigin = resourceTreeModel.getMainSecurityOrigin();
-    if (!securityOrigin) {
-      return false;
+    // TODO(crbug.com/1313434) Prioritize storageKey functionality once everything is ready
+    if (securityOrigin) {
+      StorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
+      return true;
     }
-
-    StorageView.clear(target, securityOrigin, AllStorageTypes, includeThirdPartyCookies);
+    void this.clear(target, resourceTreeModel);
     return true;
   }
 }

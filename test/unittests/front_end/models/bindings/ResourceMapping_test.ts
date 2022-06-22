@@ -65,7 +65,7 @@ describeWithMockConnection('ResourceMapping', () => {
   ];
   const OTHER_SCRIPT_ID = '3' as Protocol.Runtime.ScriptId;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const target = createTarget();
     const targetManager = target.targetManager();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -80,8 +80,8 @@ describeWithMockConnection('ResourceMapping', () => {
     const mimeType = 'text/html';
     const resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDKModule.ResourceTreeModel.ResourceTreeModel;
-    const frame = resourceTreeModel.frameAttached(frameId, null) as SDKModule.ResourceTreeModel.ResourceTreeFrame;
-    frame.addResource(new SDK.Resource.Resource(
+    const frame = resourceTreeModel.frameAttached(frameId, null);
+    frame?.addResource(new SDK.Resource.Resource(
         resourceTreeModel, null, url, url, frameId, null, Common.ResourceType.ResourceType.fromMimeType(mimeType),
         mimeType, null, null));
     uiSourceCode = workspace.uiSourceCodeForURL(url) as Workspace.UISourceCode.UISourceCode;

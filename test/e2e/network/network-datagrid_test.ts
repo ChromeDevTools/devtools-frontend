@@ -412,7 +412,8 @@ describe('The Network Tab', async function() {
     await waitFor('.network-item-view');
   });
 
-  it('shows the main service worker request as complete', async () => {
+  // Flaky on Mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1338385] shows the main service worker request as complete', async () => {
     await navigateToNetworkTab('service-worker.html');
     const {target, frontend} = getBrowserAndPages();
     await target.waitForXPath('//div[@id="content" and text()="pong"]');

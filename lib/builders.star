@@ -1,3 +1,9 @@
+# Copyright 2022 the V8 project authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+AUTOROLLER_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
+
 defaults = struct(
     cipd_package = "infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build",
     cipd_version = "refs/heads/main",
@@ -66,10 +72,11 @@ def builder(
         swarming_tags = defaults.swarming_tags,
         **kwargs):
     """Create builder with dtf defaults"""
-    builder_group = kwargs.pop("builder_group")
+    builder_group = kwargs.pop("builder_group", None)
 
     properties = dict(kwargs.pop("properties", {}))
-    properties.update(builder_group = builder_group)
+    if builder_group:
+        properties.update(builder_group = builder_group)
     properties.update(goma_rbe_prod_default)
     properties["$recipe_engine/isolated"] = {
         "server": "https://isolateserver.appspot.com",
@@ -91,7 +98,7 @@ def builder(
 
 def highly_privileged_builder(**kwargs):
     dimensions = dict(kwargs.pop("dimensions", {}))
-    dimensions.update(pool = "luci.v8.highly-privileged")
+    dimensions["pool"] = "luci.v8.highly-privileged"
     kwargs["dimensions"] = dimensions
 
     return builder(**kwargs)
@@ -230,6 +237,53 @@ def generate_ci_configs(configurations, builders):
             refs = [c.branch],
             triggers = [name for name, _ in builders_refs],
         )
+
+target_config = {
+    "solution_name": "devtools-frontend",
+    "project_name": "devtools/devtools-frontend",
+    "account": AUTOROLLER_ACCOUNT,
+    "log_template": "Rolling %s: %s/+log/%s..%s",
+    "cipd_log_template": "Rolling %s: %s..%s",
+}
+
+def get_roller_names(builder_group_definitions):
+    names = []
+    for builder_group in builder_group_definitions:
+        for builder_definition in builder_group.get("builders"):
+            names.append(builder_definition["name"])
+    return names
+
+def generate_devtools_frontend_rollers(builder_group_definitions):
+    for builder_group in builder_group_definitions:
+        for builder_definition in builder_group.get("builders"):
+            builder_properties = {
+                "autoroller_config": {
+                    "target_config": target_config,
+                    "subject": builder_definition["subject"],
+                    "includes": builder_definition.get("includes"),
+                    "excludes": builder_definition.get("excludes"),
+                    "reviewers": [
+                        "machenbach@chromium.org",
+                        "liviurau@chromium.org",
+                    ],
+                    "show_commit_log": builder_definition.get("show_commit_log", False),
+                },
+                "skip_untrusted_origins": builder_group.get("skip_untrusted_origins", False),
+                "skip_chromium_deps": builder_group.get("skip_chromium_deps", False),
+                "disable_bot_commit": builder_group.get("disable_bot_commit", False),
+            }
+
+            highly_privileged_builder(
+                name = builder_definition["name"],
+                bucket = "ci",
+                service_account = AUTOROLLER_ACCOUNT,
+                schedule = "0 3,12 * * *",
+                recipe_name = "v8/auto_roll_v8_deps",
+                dimensions = dimensions.default_ubuntu,
+                execution_timeout = default_timeout,
+                properties = builder_properties,
+                notifies = ["autoroll sheriff notifier"],
+            )
 
 cq_acls = [
     acl.entry(

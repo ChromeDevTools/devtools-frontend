@@ -1,5 +1,6 @@
 load(
     "//lib/builders.star",
+    "AUTOROLLER_ACCOUNT",
     "builder",
     "builder_descriptor",
     "config_section",
@@ -7,9 +8,13 @@ load(
     "defaults",
     "dimensions",
     "generate_ci_configs",
+    "generate_devtools_frontend_rollers",
+    "get_roller_names",
     "highly_privileged_builder",
+    "target_config",
 )
 load("//definitions.star", "versions")
+load("//configs/incoming_rollers.star", "incoming_roller_definitions")
 
 defaults.build_numbers.set(True)
 
@@ -112,46 +117,13 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
     ],
 )
 
-target_config = {
-    "solution_name": "devtools-frontend",
-    "project_name": "devtools/devtools-frontend",
-    "account": "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com",
-    "log_template": "Rolling %s: %s/+log/%s..%s",
-    "cipd_log_template": "Rolling %s: %s..%s",
-}
-
-highly_privileged_builder(
-    name = "Auto-roll - devtools deps",
-    bucket = "ci",
-    builder_group = "client.devtools-frontend.integration",
-    service_account = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com",
-    schedule = "0 3,12 * * *",
-    recipe_name = "v8/auto_roll_v8_deps",
-    dimensions = dimensions.default_ubuntu,
-    execution_timeout = default_timeout,
-    properties = {
-        "autoroller_config": {
-            "target_config": target_config,
-            "subject": "Update DevTools DEPS.",
-            "reviewers": [
-                "machenbach@chromium.org",
-                "liviurau@chromium.org",
-            ],
-            "excludes": [
-                "third_party/esbuild:infra/3pp/tools/esbuild/${platform}",
-            ],
-            "show_commit_log": False,
-            "bugs": "none",
-        },
-    },
-    notifies = ["autoroll sheriff notifier"],
-)
+generate_devtools_frontend_rollers(incoming_roller_definitions)
 
 highly_privileged_builder(
     name = "Auto-roll - devtools chromium",
     bucket = "ci",
     builder_group = "client.devtools-frontend.integration",
-    service_account = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com",
+    service_account = AUTOROLLER_ACCOUNT,
     schedule = "0 6 * * *",
     recipe_name = "v8/auto_roll_v8_deps",
     dimensions = dimensions.default_ubuntu,
@@ -179,7 +151,7 @@ luci.list_view(
     title = "Infra",
     favicon = defaults.favicon,
     entries = [
-        luci.list_view_entry(builder = "Auto-roll - devtools chromium"),
-        luci.list_view_entry(builder = "Auto-roll - devtools deps"),
+        luci.list_view_entry(builder = name)
+        for name in get_roller_names(incoming_roller_definitions) + ["Auto-roll - devtools chromium"]
     ],
 )

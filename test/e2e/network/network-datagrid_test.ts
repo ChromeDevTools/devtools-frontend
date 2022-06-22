@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 import type {BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
 import {
@@ -412,20 +412,18 @@ describe('The Network Tab', async function() {
     await waitFor('.network-item-view');
   });
 
-  // Flaky on Mac.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1338385] shows the main service worker request as complete', async () => {
+  it('shows the main service worker request as complete', async () => {
     await navigateToNetworkTab('service-worker.html');
     const {target, frontend} = getBrowserAndPages();
     await target.waitForXPath('//div[@id="content" and text()="pong"]');
-    const html = await getRequestRowInfo(frontend, 'service-worker.html/test/e2e/resources/network');
-    expect(html).to.contain({
-      status: '200OK',
-      type: 'document',
+    await waitForFunction(async () => {
+      const {status, type} = await getRequestRowInfo(frontend, 'service-worker.html/test/e2e/resources/network');
+      return status === '200OK' && type === 'document';
     });
-    const sw = await getRequestRowInfo(frontend, '⚙ service-worker.jslocalhost/test/e2e/resources/network');
-    expect(sw).to.contain({
-      status: '200OK',
-      type: 'script',
+    await waitForFunction(async () => {
+      const {status, type} =
+          await getRequestRowInfo(frontend, '⚙ service-worker.jslocalhost/test/e2e/resources/network');
+      return status === '200OK' && type === 'script';
     });
   });
 });

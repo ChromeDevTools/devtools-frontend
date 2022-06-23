@@ -140,6 +140,7 @@ highly_privileged_builder(
             ],
             "show_commit_log": False,
             "roll_chromium_pin": True,
+            # "Bug: none" is required for presubmit
             "bugs": "none",
         },
     },

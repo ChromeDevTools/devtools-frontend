@@ -88,14 +88,6 @@ const UIStrings = {
   */
   scrollIntoView: 'Scroll into view',
   /**
-  *@description Text to enter Isolation Mode, a mode with focus on a single element and interactive resizing
-  */
-  enterIsolationMode: 'Enter Isolation Mode',
-  /**
-  *@description Text to exit Isolation Mode, a mode with focus on a single element and interactive resizing
-  */
-  exitIsolationMode: 'Exit Isolation Mode',
-  /**
   *@description A context menu item in the Elements Tree Element of the Elements panel
   */
   editText: 'Edit text',
@@ -682,17 +674,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.viewSection().appendItem(i18nString(UIStrings.focus), async () => {
       await this.nodeInternal.focus();
     });
-
-    const overlayModel = this.nodeInternal.domModel().overlayModel();
-    if (overlayModel.isHighlightedIsolatedElementInPersistentOverlay(this.nodeInternal.id)) {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.exitIsolationMode), () => {
-        overlayModel.hideIsolatedElementInPersistentOverlay(this.nodeInternal.id);
-      });
-    } else {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.enterIsolationMode), () => {
-        overlayModel.highlightIsolatedElementInPersistentOverlay(this.nodeInternal.id);
-      });
-    }
   }
 
   populateScrollIntoView(contextMenu: UI.ContextMenu.ContextMenu): void {

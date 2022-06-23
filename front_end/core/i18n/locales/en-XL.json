@@ -4892,12 +4892,6 @@
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Êńâb́l̂é ŝćr̂ól̂ĺ-ŝńâṕ ôv́êŕl̂áŷ"
   },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Êńt̂ér̂ Íŝól̂át̂íôń M̂ód̂é"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Êx́ît́ Îśôĺât́îón̂ Ḿôd́ê"
-  },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Êx́p̂án̂d́ r̂éĉúr̂śîv́êĺŷ"
   },

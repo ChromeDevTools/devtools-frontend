@@ -116,6 +116,13 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
     this.registerCSSFiles([performanceMonitorStyles]);
     this.controlPane.instantiateMetricData();
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
+    themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      // instantiateMetricData sets the colors for the metrics, which we need
+      // to re-evaluate when the theme changes before re-drawing the canvas.
+      this.controlPane.instantiateMetricData();
+      this.draw();
+    });
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
     void this.model.enable();

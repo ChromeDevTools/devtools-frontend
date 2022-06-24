@@ -10,7 +10,7 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -248,6 +248,10 @@ const UIStrings = {
   *@description Label for subtitle of frame details view
   */
   prerenderingStatus: 'Prerendering Status',
+  /**
+  *@description Label for a link to an ad script, which created the current iframe.
+  */
+  creatorAdScript: 'Creator Ad Script',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -266,7 +270,10 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   async doUpdate(): Promise<void> {
-    this.#reportView.data = {frame: this.#frame};
+    const debuggerId = this.#frame?.getDebuggerId();
+    const debuggerModel = debuggerId ? await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(debuggerId) : null;
+    const target = debuggerModel?.target();
+    this.#reportView.data = {frame: this.#frame, target};
   }
 }
 
@@ -274,16 +281,19 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  target?: SDK.Target.Target;
 }
 
 export class FrameDetailsReportView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-frame-details-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
+  #target?: SDK.Target.Target;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null = null;
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
   #originTrialTreeView: OriginTrialTreeView = new OriginTrialTreeView();
+  #linkifier = new Components.Linkifier.Linkifier();
 
   connectedCallback(): void {
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
@@ -292,6 +302,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
   set data(data: FrameDetailsReportViewData) {
     this.#frame = data.frame;
+    this.#target = data.target;
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
@@ -573,14 +584,29 @@ export class FrameDetailsReportView extends HTMLElement {
     for (const explanation of this.#frame.adFrameStatus()?.explanations || []) {
       rows.push(LitHtml.html`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
     }
+
+    const adScriptLinkElement = this.#target ?
+        this.#linkifier.linkifyScriptLocation(
+            this.#target, this.#frame.getAdScriptId(), Platform.DevToolsPath.EmptyUrlString, undefined, undefined) :
+        null;
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return LitHtml.html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.adStatus)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
-         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
-        {rows} as ExpandableList.ExpandableList.ExpandableListData}></${
+        <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
+          {rows} as ExpandableList.ExpandableList.ExpandableListData}></${
         ExpandableList.ExpandableList.ExpandableList.litTagName}></${ReportView.ReportView.ReportValue.litTagName}>
-      `;
+      ${this.#target ? LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creatorAdScript)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName} class="ad-script-link">${adScriptLinkElement}</${
+          ReportView.ReportView.ReportValue.litTagName}>
+      ` : LitHtml.nothing}
+    `;
+    // clang-format on
   }
 
   #renderIsolationSection(): LitHtml.LitTemplate {

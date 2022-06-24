@@ -2,20 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
-import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import {
   assertShadowRoot,
   getCleanTextContentFromElements,
-  getElementWithinComponent,
   getElementsWithinComponent,
+  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithRealConnection} from '../../../helpers/RealConnection.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -28,6 +29,8 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
     displayName: () => 'TestTitle',
     unreachableUrl: () => '',
     adFrameType: () => Protocol.Page.AdFrameType.None,
+    adFrameStatus: () => undefined,
+    getAdScriptId: () => '1' as Protocol.Runtime.ScriptId,
     resourceForURL: () => null,
     isSecureContext: () => true,
     isCrossOriginIsolated: () => true,
@@ -94,7 +97,7 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
   return newFrame;
 };
 
-describeWithEnvironment('FrameDetailsView', () => {
+describeWithRealConnection('FrameDetailsView', () => {
   it('renders with a title', async () => {
     const frame = makeFrame();
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
@@ -113,12 +116,20 @@ describeWithEnvironment('FrameDetailsView', () => {
   });
 
   it('renders report keys and values', async () => {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const target = targetManager.mainTarget();
+    assertNotNullOrUndefined(target);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+    const debuggerId = debuggerModel.debuggerId();
+
     const frame = makeFrame();
+    frame.adFrameType = () => Protocol.Page.AdFrameType.Root,
+    frame.getDebuggerId = () => debuggerId as Protocol.Runtime.UniqueDebuggerId;
+
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView();
     renderElementIntoDOM(component);
-    component.data = {
-      frame: frame,
-    };
+    component.data = {frame, target};
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();
@@ -130,6 +141,8 @@ describeWithEnvironment('FrameDetailsView', () => {
       'Origin',
       'Owner Element',
       'Frame Creation Stack Trace',
+      'Ad Status',
+      'Creator Ad Script',
       'Secure Context',
       'Cross-Origin Isolated',
       'Cross-Origin Embedder Policy (COEP)',
@@ -145,6 +158,8 @@ describeWithEnvironment('FrameDetailsView', () => {
       'https://www.example.com',
       '<iframe>',
       '',
+      '',
+      '\u200b',
       'Yes\xA0Localhost is always a secure context',
       'Yes',
       'None',
@@ -170,6 +185,10 @@ describeWithEnvironment('FrameDetailsView', () => {
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 
-    assert.deepEqual(stackTraceText, ['function1\xA0@\xA0www.example.com/script.js:16']);
+    assert.deepEqual(stackTraceText[0], 'function1\xA0@\xA0http://www.example.com/script.js:16');
+
+    const adScriptLink = component.shadowRoot.querySelector('devtools-report-value.ad-script-link');
+    assertNotNullOrUndefined(adScriptLink);
+    assert.strictEqual(adScriptLink.textContent, '\u200b');
   });
 });

@@ -230,6 +230,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return Boolean(this.#debuggerEnabledInternal);
   }
 
+  debuggerId(): string|null {
+    return this.#debuggerId;
+  }
+
   private async enableDebugger(): Promise<void> {
     if (this.#debuggerEnabledInternal) {
       return;

@@ -3035,6 +3035,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "T̂h́îś f̂ŕâḿê ẃâś ĉŕêát̂éd̂ ṕr̂óĝŕâḿm̂át̂íĉál̂ĺŷ. T́ĥé stack trace ŝh́ôẃŝ ẃĥér̂é t̂h́îś ĥáp̂ṕêńêd́."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Ĉŕêát̂ór̂ Ád̂ Śĉŕîṕt̂"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Íŝól̂át̂éd̂"
   },

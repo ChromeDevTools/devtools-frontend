@@ -3035,6 +3035,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "This frame was created programmatically. The stack trace shows where this happened."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Creator Ad Script"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Cross-Origin Isolated"
   },

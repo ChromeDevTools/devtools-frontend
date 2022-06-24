@@ -216,7 +216,8 @@ describe('The Sources Tab', async function() {
        });
      });
 
-  it('can correctly handle breakpoints mapping to the same location', async () => {
+  // Flakily fails and causing the whole bot to timeout for some reason.
+  it.skip('[crbug.com/1339179] can correctly handle breakpoints mapping to the same location', async () => {
     const {frontend, target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('breakpoint-same-location.js', 'breakpoint-same-location.html');

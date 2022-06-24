@@ -253,7 +253,8 @@ const UIStrings = {
    */
   rtcpMuxPolicyNegotiate: 'The `rtcpMuxPolicy` option is deprecated and will be removed.',
   /**
-   * @description TODO(crbug.com/1318878): Description needed for translation
+   * @description A deprecation warning shown in the DevTools Issues tab. The placeholder is always the noun
+   * "SharedArrayBuffer" which refers to a JavaScript construct.
    */
   sharedArrayBufferConstructedWithoutIsolation:
       '`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.',
@@ -265,7 +266,9 @@ const UIStrings = {
   textToSpeech_DisallowedByAutoplay:
       '`speechSynthesis.speak()` without user activation is deprecated and will be removed.',
   /**
-   * @description TODO(crbug.com/1318879): Description needed for translation
+   * @description A deprecation warning shown in the DevTools Issues tab. The placeholder is always the noun
+   * "SharedArrayBuffer" which refers to a JavaScript construct. "Extensions" refers to Chrome extensions. The warning is shown
+   * when Chrome Extensions attempt to use "SharedArrayBuffer"s under insecure circumstances.
    */
   v8SharedArrayBufferConstructedInExtensionWithoutIsolation:
       'Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.',

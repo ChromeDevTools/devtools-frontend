@@ -37,7 +37,8 @@ const mappingRE = new RegExp('^(\\d+):(\\d+)(?:\\s*=>\\s*([^:]+):(\\d+):(\\d+)(?
 
 // Encode array mappings of the form "compiledLine:compiledColumn => srcFile:srcLine:srcColumn@name"
 // as a source map.
-export function encodeSourceMap(textMap: string[]): SDK.SourceMap.SourceMapV3 {
+export function encodeSourceMap(
+    textMap: string[], sourceRoot: string|undefined = undefined): SDK.SourceMap.SourceMapV3 {
   let mappings = '';
   const sources: Platform.DevToolsPath.UrlString[] = [];
   const names: string[] = [];
@@ -109,7 +110,7 @@ export function encodeSourceMap(textMap: string[]): SDK.SourceMap.SourceMapV3 {
     version: 3,
     file: undefined,
     sections: undefined,
-    sourceRoot: undefined,
+    sourceRoot: sourceRoot as Platform.DevToolsPath.UrlString,
     sourcesContent: undefined,
   };
 

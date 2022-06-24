@@ -451,11 +451,10 @@ export class TextSourceMap implements SourceMap {
       if (url === this.#compiledURLInternal && source) {
         url = Common.ParsedURL.ParsedURL.concatenate(url, '? [sm]');
       }
-      if (this.#sourceInfos.has(url)) {
-        continue;
-      }
-      this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source ?? null));
       sourcesList.push(url);
+      if (!this.#sourceInfos.has(url)) {
+        this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source ?? null));
+      }
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
   }

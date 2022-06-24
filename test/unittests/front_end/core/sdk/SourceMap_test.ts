@@ -338,6 +338,28 @@ describe('TextSourceMap', () => {
     assertMapping(sourceMap.findEntry(2, 11), 'source3.js', 2, 1);
   });
 
+  it('resolves duplicate canonical urls', () => {
+    const mappingPayload = encodeSourceMap(
+        [
+          // clang-format off
+          '0:0 => example.js:1:0',
+          '1:0 => ./example.js:3:0',
+          '2:0 => example.js:1:0',
+          '4:0 => other.js:5:0',
+          '5:0 => example.js:3:0',
+          '7:2 => example.js:1:0',
+          '10:5 => other.js:5:0',
+          // clang-format on
+        ],
+        'wp:///' /* sourceRoot */);
+
+    const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
+    const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+
+    assertMapping(sourceMap.findEntry(1, 0), 'wp:///example.js', 3, 0);
+    assertMapping(sourceMap.findEntry(4, 0), 'wp:///other.js', 5, 0);
+  });
+
   describe('source URL resolution', () => {
     const noSourceRoot = Platform.DevToolsPath.EmptyUrlString;
     const absoluteSourceRootExample = 'http://example.com/src' as Platform.DevToolsPath.UrlString;

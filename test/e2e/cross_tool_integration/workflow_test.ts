@@ -2,7 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, reloadDevTools, waitFor} from '../../shared/helper.js';
+import {
+  assertNotNullOrUndefined,
+  click,
+  reloadDevTools,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   navigateToConsoleTab,
@@ -25,13 +31,14 @@ import {
   navigateToPerformanceTab,
   startRecording,
   stopRecording,
-  waitForSourceLinkAndFollowIt,
 } from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('A user can navigate across', async function() {
   // These tests move between panels, which takes time.
-  this.timeout(10000);
+  if (this.timeout() !== 0) {
+    this.timeout(10000);
+  }
 
   beforeEach(async function() {
     await prepareForCrossToolScenario();
@@ -62,15 +69,25 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  // Flakes in multiple ways, with timeouts or assertion failures
-  it.skip('[crbug.com/1100337]: Performance -> Sources', async () => {
+  it('Performance -> Sources', async () => {
     await navigateToPerformanceTab();
 
     await startRecording();
     await stopRecording();
 
     await navigateToPerformanceSidebarTab('Bottom-Up');
-    await waitForSourceLinkAndFollowIt();
+
+    // Find the link pointing to default.html.
+    let link;
+    await waitForFunction(async () => {
+      link = await waitFor('.devtools-link');
+      const linkText = await link.evaluate(x => x.textContent);
+      return linkText?.startsWith('default.html');
+    });
+
+    assertNotNullOrUndefined(link);
+    await click(link);
+    await waitFor('.panel[aria-label="sources"]');
   });
 });
 

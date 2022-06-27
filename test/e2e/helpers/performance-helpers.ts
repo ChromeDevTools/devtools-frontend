@@ -89,12 +89,6 @@ export async function navigateToPerformanceSidebarTab(tabName: string) {
   await click(`[aria-label="${tabName}"]`);
 }
 
-export async function waitForSourceLinkAndFollowIt() {
-  const link = await waitFor('.devtools-link');
-  await click(link);
-  await waitFor('.panel[aria-label="sources"]');
-}
-
 export async function clickOnFunctionLink() {
   const link = await waitFor('.timeline-details.devtools-link');
   await click(link);

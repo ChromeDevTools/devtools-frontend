@@ -16,3 +16,7 @@
 .data-grid .event-display-table-basic-text-table-entry {
   line-height: 26px;
 }
+
+.event-display-table-contents-json-wrapper > .json-view {
+  overflow: visible;
+}

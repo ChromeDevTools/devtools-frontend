@@ -78,6 +78,16 @@ export async function clearStorageItems() {
   await click('#storage-items-delete-all');
 }
 
+export async function selectStorageItemAtIndex(index: number) {
+  const dataGridNodes = await $$('.storage-view .data-grid-data-grid-node:not(.creation-node)');
+  dataGridNodes[index].click();
+}
+
+export async function deleteSelectedStorageItem() {
+  await waitFor('[aria-label="Delete Selected"]');
+  await click('[aria-label="Delete Selected"]');
+}
+
 export async function selectCookieByName(name: string) {
   const {frontend} = getBrowserAndPages();
   await waitFor('.cookies-table');

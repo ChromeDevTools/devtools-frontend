@@ -6,9 +6,11 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
 import {
+  deleteSelectedStorageItem,
   doubleClickSourceTreeItem,
   getStorageItemsData,
   navigateToApplicationTab,
+  selectStorageItemAtIndex,
 } from '../helpers/application-helpers.js';
 
 const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"].parent';
@@ -44,5 +46,25 @@ describe('The Application Tab', async () => {
         },
       ]);
     });
+  });
+
+  it('can delete selected items', async () => {
+    const {target} = getBrowserAndPages();
+
+    await navigateToApplicationTab(target, 'session-storage');
+
+    await doubleClickSourceTreeItem(SESSION_STORAGE_SELECTOR);
+    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+
+    await selectStorageItemAtIndex(0);
+    await deleteSelectedStorageItem();
+
+    const dataGridRowValues = await getStorageItemsData(['key', 'value']);
+    assert.deepEqual(dataGridRowValues, [
+      {
+        key: 'secondKey',
+        value: '{"field":"complexValue","primitive":2}',
+      },
+    ]);
   });
 });

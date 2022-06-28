@@ -121,6 +121,8 @@ export class StylePropertiesSection {
   protected parentPane: StylesSidebarPane;
   styleInternal: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  private computedStyles: Map<string, string>|null;
+  private parentsComputedStyles: Map<string, string>|null;
   editable: boolean;
   private hoverTimer: number|null;
   private willCauseCancelEditing: boolean;
@@ -152,11 +154,14 @@ export class StylePropertiesSection {
 
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string>|null,
+      parentsComputedStyles: Map<string, string>|null) {
     this.parentPane = parentPane;
     this.sectionIdx = sectionIdx;
     this.styleInternal = style;
     this.matchedStyles = matchedStyles;
+    this.computedStyles = computedStyles;
+    this.parentsComputedStyles = parentsComputedStyles;
     this.editable = Boolean(style.styleSheetId && style.range);
     this.hoverTimer = null;
     this.willCauseCancelEditing = false;
@@ -932,6 +937,8 @@ export class StylePropertiesSection {
       }
       const item = new StylePropertyTreeElement(
           this.parentPane, this.matchedStyles, property, isShorthand, inherited, overloaded, false);
+      item.setComputedStyles(this.computedStyles);
+      item.setParentsComputedStyles(this.parentsComputedStyles);
       this.propertiesTreeOutline.appendChild(item);
     }
 
@@ -1449,7 +1456,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
       insertAfterStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
     const cssModel = (stylesPane.cssModel() as SDK.CSSModel.CSSModel);
     const rule = SDK.CSSRule.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
-    super(stylesPane, matchedStyles, rule.style, sectionIdx);
+    super(stylesPane, matchedStyles, rule.style, sectionIdx, null, null);
     this.normal = false;
     this.ruleLocation = ruleLocation;
     this.styleSheetId = styleSheetId;
@@ -1553,7 +1560,7 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
-    super(stylesPane, matchedStyles, style, sectionIdx);
+    super(stylesPane, matchedStyles, style, sectionIdx, null, null);
     this.selectorElement.className = 'keyframe-key';
   }
 

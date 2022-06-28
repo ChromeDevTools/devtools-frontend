@@ -933,6 +933,7 @@ grd_files_debug_sources = [
   "front_end/panels/developer_resources/developerResourcesView.css.js",
   "front_end/panels/elements/AccessibilityTreeUtils.js",
   "front_end/panels/elements/AccessibilityTreeView.js",
+  "front_end/panels/elements/CSSRuleValidator.js",
   "front_end/panels/elements/ClassesPaneWidget.js",
   "front_end/panels/elements/ColorSwatchPopoverIcon.js",
   "front_end/panels/elements/ComputedStyleModel.js",

@@ -1,0 +1,36 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<style>
+  #wrapper {
+    width: 100px;
+    height: 240px;
+    border: 1px solid black;
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: center;
+    gap: 15px;
+  }
+
+  #wrapper > div {
+    width: 100px;
+    height: 75px;
+    background-color: #4285F4;
+  }
+
+  code {
+      color: red;
+  }
+</style>
+
+<h1>Inactive CSS</h1>
+
+<p><code>wrapper</code> class here is using <code>flex-wrap</code>: nowrap rule, therefore <code>'align-content'</code> has no effect. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/align-content">Learn More</a> </p>
+
+<div id="wrapper">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>

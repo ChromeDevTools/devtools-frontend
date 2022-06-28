@@ -4688,6 +4688,12 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Ŝh́ôẃ âĺl̂"
   },
+  "panels/elements/CSSRuleValidator.ts | alignContentRuleOnNoWrapFlex": {
+    "message": "T̂h́îś êĺêḿêńt̂ h́âś f̂ĺêx́-ŵŕâṕ: n̂óŵŕâṕ r̂úl̂é, t̂h́êŕêf́ôŕê 'ál̂íĝń-ĉón̂t́êńt̂' h́âś n̂ó êf́f̂éĉt́."
+  },
+  "panels/elements/CSSRuleValidator.ts | notFlexItemHint": {
+    "message": "P̂ár̂én̂t́ ôf́ t̂h́îś êĺêḿêńt̂ íŝ ńôt́ f̂ĺêx́ ĉón̂t́âín̂ér̂, t́ĥér̂éf̂ór̂é {PH1} p̂ŕôṕêŕt̂ý ĥáŝ ńô éf̂f́êćt̂."
+  },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"
   },

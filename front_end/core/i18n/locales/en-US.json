@@ -4688,6 +4688,12 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Show all"
   },
+  "panels/elements/CSSRuleValidator.ts | alignContentRuleOnNoWrapFlex": {
+    "message": "This element has flex-wrap: nowrap rule, therefore 'align-content' has no effect."
+  },
+  "panels/elements/CSSRuleValidator.ts | notFlexItemHint": {
+    "message": "Parent of this element is not flex container, therefore {PH1} property has no effect."
+  },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
   },

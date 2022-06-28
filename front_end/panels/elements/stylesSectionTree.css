@@ -155,6 +155,16 @@ ol.expanded {
   transform: scale(0.9);
 }
 
+.hint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: inline-block;
+  cursor: pointer;
+  transform: scale(0.9);
+}
+
 .has-ignorable-error {
   color: var(--color-text-disabled);
 }

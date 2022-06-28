@@ -43,6 +43,7 @@ export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
 const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]';
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
+const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
@@ -737,4 +738,28 @@ export const toggleAccessibilityPane = async () => {
 export const toggleAccessibilityTree = async () => {
   const treeToggleButton = await waitForAria('Switch to Accessibility Tree view');
   await click(treeToggleButton);
+};
+
+export const getPropertiesWithHints = async () => {
+  const allRuleSelectors = await $$(CSS_STYLE_RULE_SELECTOR);
+
+  const propertiesWithHints = [];
+  for (const propertiesSection of allRuleSelectors) {
+    const cssRuleNodes = await $$('li ', propertiesSection);
+
+    for (const cssRuleNode of cssRuleNodes) {
+      const propertyNode = await $(CSS_PROPERTY_NAME_SELECTOR, cssRuleNode);
+      const propertyName = propertyNode !== null ? await propertyNode.evaluate(n => n.textContent) : null;
+      if (propertyName === null) {
+        continue;
+      }
+
+      const authoringHintsIcon = await $(CSS_AUTHORING_HINTS_ICON_SELECTOR, cssRuleNode);
+      if (authoringHintsIcon) {
+        propertiesWithHints.push(propertyName);
+      }
+    }
+  }
+
+  return propertiesWithHints;
 };

@@ -37,6 +37,7 @@ copy_to_gen("elements") {
     "grid-editor.html",
     "highlight-pseudo-inheritance.html",
     "hover.html",
+    "inactive-css-page.html",
     "limited-quirks-mode.html",
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",

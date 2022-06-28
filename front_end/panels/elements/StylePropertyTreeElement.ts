@@ -21,6 +21,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import type {StylePropertiesSection} from './StylePropertiesSection.js';
 import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
+import {cssRuleValidatorsMap} from './CSSRuleValidator.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -120,6 +121,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private hasBeenEditedIncrementally: boolean;
   private prompt: CSSPropertyPrompt|null;
   private lastComputedValue: string|null;
+  private computedStyles: Map<string, string>|null = null;
+  private parentsComputedStyles: Map<string, string>|null = null;
   private contextForTest!: Context|undefined;
   #propertyTextFromSource: string;
 
@@ -177,6 +180,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.overloadedInternal = x;
     this.updateState();
+  }
+
+  setComputedStyles(computedStyles: Map<string, string>|null): void {
+    this.computedStyles = computedStyles;
+  }
+
+  setParentsComputedStyles(parentsComputedStyles: Map<string, string>|null): void {
+    this.parentsComputedStyles = parentsComputedStyles;
   }
 
   get name(): string {
@@ -568,6 +579,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const item = new StylePropertyTreeElement(
           this.parentPaneInternal, this.matchedStylesInternal, longhandProperties[i], false, inherited, overloaded,
           false);
+      item.setComputedStyles(this.computedStyles);
+      item.setParentsComputedStyles(this.parentsComputedStyles);
       this.appendChild(item);
     }
   }
@@ -702,6 +715,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
+    const hintMessage = this.getHintMessage(this.computedStyles, this.parentsComputedStyles);
+    if (hintMessage !== null) {
+      const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
+      const hintPopover =
+          new UI.PopoverHelper.PopoverHelper(hintIcon, event => this.handleHintPopoverRequest(hintMessage, event));
+      hintPopover.setHasPadding(true);
+      hintPopover.setTimeout(0, 100);
+
+      this.listItemElement.append(hintIcon);
+    }
+
     if (!this.property.parsedOk) {
       // Avoid having longhands under an invalid shorthand.
       this.listItemElement.classList.add('not-parsed-ok');
@@ -791,6 +815,41 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.classList.add('has-warning');
     this.listItemElement.insertBefore(
         StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
+  }
+
+  private getHintMessage(computedStyles: Map<string, string>|null, parentComputedStyles: Map<string, string>|null):
+      string|null {
+    const propertyName = this.property.name;
+
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS) ||
+        !cssRuleValidatorsMap.has(propertyName)) {
+      return null;
+    }
+
+    for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
+      if (!validator.isRuleValid(computedStyles, parentComputedStyles)) {
+        return validator.getHintMessage(propertyName);
+      }
+    }
+
+    return null;
+  }
+
+  private handleHintPopoverRequest(hintMessageContent: string, event: Event): UI.PopoverHelper.PopoverRequest|null {
+    const link = event.composedPath()[0];
+    Platform.DCHECK(() => link instanceof Element, 'Link is not an instance of Element');
+
+    return {
+      box: (link as Element).boxInWindow(),
+      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+        const node = this.node();
+        if (!node) {
+          return false;
+        }
+        popover.contentElement.insertAdjacentHTML('beforeend', hintMessageContent);
+        return true;
+      },
+    };
   }
 
   private mouseUp(event: MouseEvent): void {

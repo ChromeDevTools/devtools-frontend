@@ -22,6 +22,7 @@ import './StylePropertyHighlighter.js';
 import './StylesSidebarPane.js';
 import './StylePropertyTreeElement.js';
 import './ComputedStyleWidget.js';
+import './CSSRuleValidator.js';
 import './ElementsPanel.js';
 import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
@@ -32,6 +33,7 @@ import * as ClassesPaneWidget from './ClassesPaneWidget.js';
 import * as ColorSwatchPopoverIcon from './ColorSwatchPopoverIcon.js';
 import * as ComputedStyleModel from './ComputedStyleModel.js';
 import * as ComputedStyleWidget from './ComputedStyleWidget.js';
+import * as CSSRuleValidator from './CSSRuleValidator.js';
 import * as DOMLinkifier from './DOMLinkifier.js';
 import * as DOMPath from './DOMPath.js';
 import * as ElementsPanel from './ElementsPanel.js';
@@ -62,6 +64,7 @@ export {
   ColorSwatchPopoverIcon,
   ComputedStyleModel,
   ComputedStyleWidget,
+  CSSRuleValidator,
   DOMLinkifier,
   DOMPath,
   ElementsPanel,

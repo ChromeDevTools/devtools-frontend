@@ -13,6 +13,7 @@ import {
   goToResource,
   waitFor,
   waitForFunction,
+  enableExperiment,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -30,6 +31,7 @@ import {
   waitForStyleRule,
   expandSelectedNodeRecursively,
   waitForAndClickTreeElementWithPartialText,
+  getPropertiesWithHints,
 } from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
@@ -1038,5 +1040,17 @@ describe('The Styles pane', async () => {
       },
     ];
     assert.deepEqual(inspectedRules, expectedInspectedRules);
+  });
+
+  it('can detect inactive CSS', async () => {
+    await enableExperiment('cssAuthoringHints');
+
+    await goToResourceAndWaitForStyleSection('elements/inactive-css-page.html');
+    await waitForStyleRule('body');
+    await waitForAndClickTreeElementWithPartialText('wrapper');
+    await waitForStyleRule('#wrapper');
+
+    const propertiesWithHints = await getPropertiesWithHints();
+    assert.deepEqual(propertiesWithHints, ['align-content']);
   });
 });

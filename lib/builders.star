@@ -100,6 +100,7 @@ def highly_privileged_builder(**kwargs):
     dimensions = dict(kwargs.pop("dimensions", {}))
     dimensions["pool"] = "luci.v8.highly-privileged"
     kwargs["dimensions"] = dimensions
+    kwargs["bucket"] = "ci-hp"
 
     return builder(**kwargs)
 
@@ -238,14 +239,6 @@ def generate_ci_configs(configurations, builders):
             triggers = [name for name, _ in builders_refs],
         )
 
-target_config = {
-    "solution_name": "devtools-frontend",
-    "project_name": "devtools/devtools-frontend",
-    "account": AUTOROLLER_ACCOUNT,
-    "log_template": "Rolling %s: %s/+log/%s..%s",
-    "cipd_log_template": "Rolling %s: %s..%s",
-}
-
 def get_roller_names(builder_group_definitions):
     names = []
     for builder_group in builder_group_definitions:
@@ -258,7 +251,13 @@ def generate_devtools_frontend_rollers(builder_group_definitions):
         for builder_definition in builder_group.get("builders"):
             builder_properties = {
                 "autoroller_config": {
-                    "target_config": target_config,
+                    "target_config": {
+                        "solution_name": "devtools-frontend",
+                        "project_name": "devtools/devtools-frontend",
+                        "account": AUTOROLLER_ACCOUNT,
+                        "log_template": "Rolling %s: %s/+log/%s..%s",
+                        "cipd_log_template": "Rolling %s: %s..%s",
+                    },
                     "subject": builder_definition["subject"],
                     "includes": builder_definition.get("includes"),
                     "excludes": builder_definition.get("excludes"),
@@ -270,6 +269,7 @@ def generate_devtools_frontend_rollers(builder_group_definitions):
                     "skip_untrusted_origins": builder_group.get("skip_untrusted_origins", False),
                     "skip_chromium_deps": builder_group.get("skip_chromium_deps", False),
                     "disable_bot_commit": builder_group.get("disable_bot_commit", False),
+                    "roll_chromium_pin": builder_group.get("roll_chromium_pin", False),
                     # "Bug: none" is required for presubmit
                     "bugs": "none",
                 },
@@ -277,9 +277,8 @@ def generate_devtools_frontend_rollers(builder_group_definitions):
 
             highly_privileged_builder(
                 name = builder_definition["name"],
-                bucket = "ci",
                 service_account = AUTOROLLER_ACCOUNT,
-                schedule = "0 3,12 * * *",
+                schedule = builder_definition["schedule"],
                 recipe_name = "v8/auto_roll_v8_deps",
                 dimensions = dimensions.default_ubuntu,
                 execution_timeout = default_timeout,

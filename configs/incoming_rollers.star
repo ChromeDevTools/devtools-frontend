@@ -16,6 +16,19 @@ excluded_deps = trusted_origin_deps + [
 ]
 
 incoming_roller_definitions = [
+    # Chromium's pinned version
+    {
+        "roll_chromium_pin": True,
+        "builders": [
+            {
+                "name": "Auto-roll - devtools chromium",
+                "subject": "Update DevTools Chromium DEPS.",
+                "includes": [],
+                "schedule": "0 6 * * *",
+            },
+        ],
+    },
+
     # Trusted versions (from chromium/src)
     # ...the rolled version is trusted by chromium/src and therefore trusted
     #    by devtools-frontend
@@ -28,6 +41,7 @@ incoming_roller_definitions = [
                 "name": "Auto-roll - trusted-versions highly-privileged",
                 "subject": "Update DevTools DEPS (trusted-versions)",
                 "excludes": excluded_deps,
+                "schedule": "0 3,12 * * *",
             },
         ],
     },
@@ -44,6 +58,7 @@ incoming_roller_definitions = [
             #     "name": "Auto-roll - trusted-origins highly-privileged",
             #     "subject": "Update DevTools DEPS (trusted-origins)",
             #     "includes": trusted_origin_deps,
+            # "schedule": "0 3,12 * * *",
             # },
         ],
     },
@@ -58,6 +73,7 @@ incoming_roller_definitions = [
                 "name": "Roll - untrusted",
                 "subject": "Update DevTools DEPS (untrusted)",
                 "excludes": excluded_deps,
+                "schedule": "0 3,12 * * *",
             },
         ],
     },

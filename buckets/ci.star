@@ -1,6 +1,5 @@
 load(
     "//lib/builders.star",
-    "AUTOROLLER_ACCOUNT",
     "builder",
     "builder_descriptor",
     "config_section",
@@ -8,13 +7,8 @@ load(
     "defaults",
     "dimensions",
     "generate_ci_configs",
-    "generate_devtools_frontend_rollers",
-    "get_roller_names",
-    "highly_privileged_builder",
-    "target_config",
 )
 load("//definitions.star", "versions")
-load("//configs/incoming_rollers.star", "incoming_roller_definitions")
 
 defaults.build_numbers.set(True)
 
@@ -114,45 +108,5 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             properties = {"is_official_build": True},
             notification_muted = True,
         ),
-    ],
-)
-
-generate_devtools_frontend_rollers(incoming_roller_definitions)
-
-highly_privileged_builder(
-    name = "Auto-roll - devtools chromium",
-    bucket = "ci",
-    builder_group = "client.devtools-frontend.integration",
-    service_account = AUTOROLLER_ACCOUNT,
-    schedule = "0 6 * * *",
-    recipe_name = "v8/auto_roll_v8_deps",
-    dimensions = dimensions.default_ubuntu,
-    execution_timeout = default_timeout,
-    properties = {
-        "autoroller_config": {
-            "target_config": target_config,
-            "subject": "Update DevTools Chromium DEPS.",
-            # Don't roll any of the other dependencies.
-            "includes": [],
-            "reviewers": [
-                "machenbach@chromium.org",
-                "liviurau@chromium.org",
-            ],
-            "show_commit_log": False,
-            "roll_chromium_pin": True,
-            # "Bug: none" is required for presubmit
-            "bugs": "none",
-        },
-    },
-    notifies = ["autoroll sheriff notifier"],
-)
-
-luci.list_view(
-    name = "infra",
-    title = "Infra",
-    favicon = defaults.favicon,
-    entries = [
-        luci.list_view_entry(builder = name)
-        for name in get_roller_names(incoming_roller_definitions) + ["Auto-roll - devtools chromium"]
     ],
 )

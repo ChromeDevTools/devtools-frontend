@@ -80,27 +80,16 @@ luci.project(
     ],
 )
 
-## Swarming permissions
+## Swarming permissions (enable LED runs and "Debug" button)
 
-# Allow admins to use LED and "Debug" button on every V8 builder and bot.
-luci.binding(
-    realm = "@root",
-    roles = "role/swarming.poolUser",
-    groups = "mdb/v8-infra",
-)
-luci.binding(
-    realm = "@root",
-    roles = "role/swarming.taskTriggerer",
-    groups = "mdb/v8-infra",
-)
+# project-devtools-admins:            ci, try
+# v8-infra:                           ci, try
+# v8-infra-users-highly-privileged:   [all buckets]
 
-# Allow cria/project-v8-led-users to use LED and "Debug" button on
-# try and ci builders
 def led_users(*, pool_realm, builder_realms, groups):
     luci.realm(
         name = pool_realm,
         bindings = [luci.binding(
-            realm = pool_realm,
             roles = "role/swarming.poolUser",
             groups = groups,
         )],
@@ -112,17 +101,30 @@ def led_users(*, pool_realm, builder_realms, groups):
             groups = groups,
         )
 
+non_privileged_groups = [
+    "project-devtools-admins",
+    "mdb/v8-infra",
+]
+
 led_users(
     pool_realm = "pools/ci",
     builder_realms = ["ci"],
-    groups = "project-devtools-admins",
+    groups = non_privileged_groups,
 )
 
 led_users(
     pool_realm = "pools/try",
     builder_realms = ["try"],
-    groups = "project-devtools-admins",
+    groups = non_privileged_groups,
 )
+
+led_users(
+    pool_realm = "@root",
+    builder_realms = ["@root"],
+    groups = "google/v8-infra-users-highly-privileged@twosync.google.com",
+)
+
+## Notifications
 
 luci.notify(tree_closing_enabled = True)
 
@@ -192,5 +194,6 @@ luci.cq(
 )
 
 exec("//buckets/ci.star")
+exec("//buckets/ci-hp.star")
 exec("//buckets/try.star")
 exec("//buckets/serving_app.star")

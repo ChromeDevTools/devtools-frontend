@@ -52,11 +52,13 @@ describeWithRealConnection('BreakpointManager', () => {
     }
   }
 
-  function createFakeScriptMapping(debuggerModel: TestDebuggerModel, SCRIPT_ID: Protocol.Runtime.ScriptId):
-      Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
+  function createFakeScriptMapping(
+      debuggerModel: TestDebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      SCRIPT_ID: Protocol.Runtime.ScriptId): Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
     const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, SCRIPT_ID as Protocol.Runtime.ScriptId, 13);
-    const mapping = {
-      rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => null,
+    const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, 42);
+    const mapping: Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping = {
+      rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => uiLocation,
       uiLocationToRawLocations:
           (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
            _columnNumber?: number) => [sdkLocation],
@@ -102,8 +104,8 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.lengthOf(uiLocations, 1);
 
     // We need to remove the breakpoint on the file system and on the network project.
-    breakpointManager.removeBreakpoint(breakpoint, true);
-    breakpointManager.removeBreakpoint(uiLocations[0].breakpoint, true);
+    await breakpoint.remove(false);
+    await uiLocations[0].breakpoint.remove(false);
 
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(network.project);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(fileSystem.project);
@@ -140,7 +142,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.isNull(modelBreakpoint.currentState);
 
     // Create a fake mapping that can be used to set a breakpoint.
-    const mapping = createFakeScriptMapping(debuggerModel, SCRIPT_ID);
+    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
 
     // Now await restoring the breakpoint.
@@ -155,7 +157,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.strictEqual(modelBreakpoint.currentState.positions[0].scriptId, SCRIPT_ID);
 
     // Clean up.
-    breakpointManager.removeBreakpoint(breakpoint, true);
+    await breakpoint.remove(false);
     breakpointManager.modelRemoved(debuggerModel);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
@@ -225,7 +227,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.strictEqual(modelBreakpoint.currentState.positions[0].scriptId, SCRIPT_ID);
 
     // Clean up.
-    breakpointManager.removeBreakpoint(breakpoint, true);
+    await breakpoint.remove(false);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
@@ -241,7 +243,7 @@ describeWithRealConnection('BreakpointManager', () => {
 
     const modelBreakpoint = new Bindings.BreakpointManager.ModelBreakpoint(
         debuggerModel, breakpoint, breakpointManager.debuggerWorkspaceBinding);
-    const mapping = createFakeScriptMapping(debuggerModel, SCRIPT_ID);
+    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
     assert.isNull(breakpoint.currentState);
     const update = modelBreakpoint.scheduleUpdateInDebugger();
@@ -251,7 +253,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.isTrue(result);
     assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    breakpointManager.removeBreakpoint(breakpoint, true);
+    await breakpoint.remove(false);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
 
@@ -271,7 +273,7 @@ describeWithRealConnection('BreakpointManager', () => {
         .callsFake(() => Promise.resolve({breakpointId: BREAKPOINT_ID, locations: []}));
     sinon.stub(realDebugger, 'removeBreakpoint').callsFake(() => Promise.resolve());
 
-    const mapping = createFakeScriptMapping(debuggerModel, SCRIPT_ID);
+    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
 
     const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
@@ -290,7 +292,6 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.isTrue(removeSpy.calledOnce);
 
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
-    breakpointManager.removeBreakpoint(breakpoint, true);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
 
@@ -339,6 +340,41 @@ describeWithRealConnection('BreakpointManager', () => {
       await Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().setProject(fileSystem.project);
       await runBreakpointMovedTest(fileSystem);
       assert.isTrue(spy.calledOnce);
+    });
+  });
+
+  describe('Breakpoints', () => {
+    it('are removed after a location clash', async () => {
+      const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+      // Use TestDebuggerModel, which always returns the same location to create a location crash.
+      const debuggerModel = new TestDebuggerModel(target);
+
+      // Create first breakpoint that resolves to that location.
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+      breakpoint.modelAdded(debuggerModel);
+      assert.isUndefined(breakpoint.getIsRemoved());
+
+      // Create second breakpoint that will resolve to the same location.
+      const slidingBreakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 43, 0, '', true);
+      const removedSpy = sinon.spy(slidingBreakpoint, 'remove');
+      slidingBreakpoint.modelAdded(debuggerModel);
+
+      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
+
+      await breakpoint.updateBreakpoint();
+      await slidingBreakpoint.updateBreakpoint();
+
+      // First breakpoint is kept, while second is removed.
+      assert.isUndefined(breakpoint.getIsRemoved());
+      assert.isTrue(slidingBreakpoint.getIsRemoved());
+
+      // Breakpoint was removed and is not kept in storage.
+      assert.isTrue(removedSpy.calledOnceWith(false));
+
+      await breakpoint.remove(false);
+      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
   });
 });

@@ -270,9 +270,9 @@ def generate_devtools_frontend_rollers(builder_group_definitions):
                     "skip_untrusted_origins": builder_group.get("skip_untrusted_origins", False),
                     "skip_chromium_deps": builder_group.get("skip_chromium_deps", False),
                     "disable_bot_commit": builder_group.get("disable_bot_commit", False),
+                    # "Bug: none" is required for presubmit
+                    "bugs": "none",
                 },
-                # "Bug: none" is required for presubmit
-                "bugs": "none",
             }
 
             highly_privileged_builder(

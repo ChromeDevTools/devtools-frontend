@@ -38,6 +38,7 @@ li {
   height: 12px;
   width: 13px;
   overflow: hidden;
+  flex: none;
 }
 
 ul {

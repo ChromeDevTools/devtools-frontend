@@ -983,11 +983,6 @@ export const NativeFunctions = [
   },
   {
     name: 'close',
-    signatures: [['?options']],
-    receivers: ['TCPSocket','UDPSocket']
-  },
-  {
-    name: 'close',
     signatures: [['?closeInfo']],
     receivers: ['WebSocketStream','WebTransport']
   },
@@ -6781,20 +6776,6 @@ export const NativeFunctions = [
     signatures: [['data']]
   },
   {
-    name: 'login',
-    signatures: [['?request']]
-  },
-  {
-    name: 'revoke',
-    signatures: [['hint']],
-    receivers: ['FederatedCredential']
-  },
-  {
-    name: 'revoke',
-    signatures: [['permission']],
-    receivers: ['Permissions']
-  },
-  {
     name: 'logoutRps',
     signatures: [['?logout_requests']]
   },
@@ -7383,6 +7364,10 @@ export const NativeFunctions = [
   {
     name: 'RTCSessionDescription',
     signatures: [['?descriptionInitDict']]
+  },
+  {
+    name: 'revoke',
+    signatures: [['permission']]
   },
   {
     name: 'requestAll',

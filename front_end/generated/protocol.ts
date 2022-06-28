@@ -1985,6 +1985,11 @@ export namespace CSS {
      * with the innermost layer and going outwards.
      */
     layers?: CSSLayer[];
+    /**
+     * @scope CSS at-rule array.
+     * The array enumerates @scope at-rules starting with the innermost one, going outwards.
+     */
+    scopes?: CSSScope[];
   }
 
   /**
@@ -2239,6 +2244,25 @@ export namespace CSS {
      * Whether the supports condition is satisfied.
      */
     active: boolean;
+    /**
+     * The associated rule header range in the enclosing stylesheet (if
+     * available).
+     */
+    range?: SourceRange;
+    /**
+     * Identifier of the stylesheet containing this object (if exists).
+     */
+    styleSheetId?: StyleSheetId;
+  }
+
+  /**
+   * CSS Scope at-rule descriptor.
+   */
+  export interface CSSScope {
+    /**
+     * Scope rule text.
+     */
+    text: string;
     /**
      * The associated rule header range in the enclosing stylesheet (if
      * available).
@@ -2684,6 +2708,19 @@ export namespace CSS {
      * The resulting CSS Supports rule after modification.
      */
     supports: CSSSupports;
+  }
+
+  export interface SetScopeTextRequest {
+    styleSheetId: StyleSheetId;
+    range: SourceRange;
+    text: string;
+  }
+
+  export interface SetScopeTextResponse extends ProtocolResponseWithError {
+    /**
+     * The resulting CSS Scope rule after modification.
+     */
+    scope: CSSScope;
   }
 
   export interface SetRuleSelectorRequest {
@@ -10291,6 +10328,7 @@ export namespace Page {
     Header = 'Header',
     IframeAttribute = 'IframeAttribute',
     InFencedFrameTree = 'InFencedFrameTree',
+    InIsolatedApp = 'InIsolatedApp',
   }
 
   export interface PermissionsPolicyBlockLocator {
@@ -13640,6 +13678,11 @@ export namespace Tracing {
      * Controls how the trace buffer stores data.
      */
     recordMode?: TraceConfigRecordMode;
+    /**
+     * Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
+     * of 200 MB would be used.
+     */
+    traceBufferSizeInKb?: number;
     /**
      * Turns on JavaScript stack sampling.
      */

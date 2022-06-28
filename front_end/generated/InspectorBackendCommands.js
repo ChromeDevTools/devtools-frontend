@@ -616,6 +616,13 @@ export function registerCommands(inspectorBackend) {
       ],
       ['supports']);
   inspectorBackend.registerCommand(
+      'CSS.setScopeText',
+      [
+        {'name': 'styleSheetId', 'type': 'string', 'optional': false},
+        {'name': 'range', 'type': 'object', 'optional': false}, {'name': 'text', 'type': 'string', 'optional': false}
+      ],
+      ['scope']);
+  inspectorBackend.registerCommand(
       'CSS.setRuleSelector',
       [
         {'name': 'styleSheetId', 'type': 'string', 'optional': false},
@@ -2149,9 +2156,12 @@ export function registerCommands(inspectorBackend) {
     WindowPlacement: 'window-placement',
     XrSpatialTracking: 'xr-spatial-tracking'
   });
-  inspectorBackend.registerEnum(
-      'Page.PermissionsPolicyBlockReason',
-      {Header: 'Header', IframeAttribute: 'IframeAttribute', InFencedFrameTree: 'InFencedFrameTree'});
+  inspectorBackend.registerEnum('Page.PermissionsPolicyBlockReason', {
+    Header: 'Header',
+    IframeAttribute: 'IframeAttribute',
+    InFencedFrameTree: 'InFencedFrameTree',
+    InIsolatedApp: 'InIsolatedApp'
+  });
   inspectorBackend.registerEnum('Page.OriginTrialTokenStatus', {
     Success: 'Success',
     NotSupported: 'NotSupported',

@@ -2351,9 +2351,9 @@
     {
       name: "container-type",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      keywords: ["none", "inline-size", "size"],
+      keywords: ["none", "inline-size", "size", "style"],
       field_group: "*",
-      field_size: 2,
+      field_size: 3,
       field_template: "primitive",
       default_value: "kContainerTypeNone",
       type_name: "unsigned",
@@ -2759,6 +2759,7 @@
       field_group: "*->grid",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/computed_grid_track_list.h"],
+      interpolable: true,
       default_value: "ComputedGridTrackList()",
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
@@ -2775,6 +2776,7 @@
       field_group: "*->grid",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/computed_grid_track_list.h"],
+      interpolable: true,
       default_value: "ComputedGridTrackList()",
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
@@ -4752,7 +4754,7 @@
       name: "touch-action",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
-      field_size: 7, // FIXME: Make this use "kTouchActionBits".
+      field_size: 8, // FIXME: Make this use "kTouchActionBits".
       field_template: "primitive",
       include_paths: ["third_party/blink/renderer/platform/graphics/touch_action.h"],
       default_value: "TouchAction::kAuto",

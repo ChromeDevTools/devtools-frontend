@@ -1033,6 +1033,11 @@ export namespace ProtocolMapping {
     'CSS.setSupportsText':
         {paramsType: [Protocol.CSS.SetSupportsTextRequest]; returnType: Protocol.CSS.SetSupportsTextResponse;};
     /**
+     * Modifies the expression of a scope at-rule.
+     */
+    'CSS.setScopeText':
+        {paramsType: [Protocol.CSS.SetScopeTextRequest]; returnType: Protocol.CSS.SetScopeTextResponse;};
+    /**
      * Modifies the rule selector.
      */
     'CSS.setRuleSelector':

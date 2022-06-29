@@ -415,6 +415,7 @@ export class DeviceModeToolbar {
     boundAppendScaleItem('100%', 1);
     boundAppendScaleItem('125%', 1.25);
     boundAppendScaleItem('150%', 1.5);
+    boundAppendScaleItem('200%', 2);
 
     function appendScaleItem(this: DeviceModeToolbar, title: string, value: number): void {
       contextMenu.defaultSection().appendCheckboxItem(

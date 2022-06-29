@@ -28,7 +28,7 @@ vars = {
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': 'e435ad79c17b1888b34df88d6a30a094936e3836',
 
-  'emscripten_tag': '6ab7fc5622a67e6111d07c4ba61c8d3c8fc33ed2',
+  'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
   'gn_version': 'git_revision:29accf5ac2eadfc53e687081583b7bc1592a8839',

@@ -20,7 +20,15 @@ const UIStrings = {
   /**
   *@description Text in Request Headers View of the Network panel
   */
+  fromDiskCache: '(from disk cache)',
+  /**
+  *@description Text in Request Headers View of the Network panel
+  */
   fromMemoryCache: '(from memory cache)',
+  /**
+  *@description Text in Request Headers View of the Network panel
+  */
+  fromPrefetchCache: '(from prefetch cache)',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -29,14 +37,6 @@ const UIStrings = {
   *@description Text in Request Headers View of the Network panel
   */
   fromSignedexchange: '(from signed-exchange)',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  fromPrefetchCache: '(from prefetch cache)',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  fromDiskCache: '(from disk cache)',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -52,15 +52,23 @@ const UIStrings = {
   /**
   *@description Text in Request Headers View of the Network panel
   */
-  requestHeaders: 'Request Headers',
+  referrerPolicy: 'Referrer Policy',
   /**
-  *@description The URL of a request
+  *@description Text in Network Log View Columns of the Network panel
   */
-  requestUrl: 'Request URL',
+  remoteAddress: 'Remote Address',
+  /**
+  *@description Text in Request Headers View of the Network panel
+  */
+  requestHeaders: 'Request Headers',
   /**
   *@description The HTTP method of a request
   */
   requestMethod: 'Request Method',
+  /**
+  *@description The URL of a request
+  */
+  requestUrl: 'Request URL',
   /**
   *@description A context menu item in the Network Log View Columns of the Network panel
   */
@@ -73,14 +81,6 @@ const UIStrings = {
   *@description HTTP response code
   */
   statusCode: 'Status Code',
-  /**
-  *@description Text in Network Log View Columns of the Network panel
-  */
-  remoteAddress: 'Remote Address',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  referrerPolicy: 'Referrer Policy',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

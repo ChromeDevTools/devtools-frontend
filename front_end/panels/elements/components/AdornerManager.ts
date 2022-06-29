@@ -31,6 +31,7 @@ export enum RegisteredAdorners {
   CONTAINER = 'container',
   SLOT = 'slot',
   TOP_LAYER = 'top-layer',
+  REVEAL = 'reveal',
 }
 
 // This enum-like const object serves as the authoritative registry for all the
@@ -77,6 +78,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
       return {
         name: 'top-layer',
         category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.REVEAL:
+      return {
+        name: 'reveal',
+        category: AdornerCategories.DEFAULT,
         enabledByDefault: true,
       };
   }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
@@ -79,7 +80,14 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
         ElementsComponents.AdornerManager.RegisteredAdorners.TOP_LAYER);
     const adornerContent = document.createElement('span');
-    adornerContent.textContent = ` top-layer (${topLayerElementIndex}) `;
+    adornerContent.classList.add('adorner-with-icon');
+    const linkIcon = new IconButton.Icon.Icon();
+    linkIcon
+        .data = {iconName: 'ic_show_node_16x16', color: 'var(--color-text-disabled)', width: '12px', height: '12px'};
+    const adornerText = document.createElement('span');
+    adornerText.textContent = ` top-layer (${topLayerElementIndex}) `;
+    adornerContent.append(linkIcon);
+    adornerContent.append(adornerText);
     const adorner = element?.adorn(config, adornerContent);
     if (adorner) {
       const onClick = (((): void => {

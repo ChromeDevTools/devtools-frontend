@@ -41,6 +41,7 @@ copy_to_gen("elements") {
     "limited-quirks-mode.html",
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",
+    "page-error.html",
     "quirks-mode-iframes.html",
     "quirks-mode.html",
     "selection-after-delete.html",

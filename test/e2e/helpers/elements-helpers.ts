@@ -181,16 +181,29 @@ export const waitForChildrenOfSelectedElementNode = async () => {
 export const waitForAndClickTreeElementWithPartialText = async (text: string) =>
     waitForFunction(async () => clickTreeElementWithPartialText(text));
 
-export const clickTreeElementWithPartialText = async (text: string) => {
+export const waitForElementWithPartialText = async (text: string) => {
+  return waitForFunction(async () => elementWithPartialText(text));
+};
+
+const elementWithPartialText = async (text: string) => {
   const tree = await waitFor('Page DOM[role="tree"]', undefined, undefined, 'aria');
   const elements = await $$('[role="treeitem"]', tree, 'aria');
   for (const handle of elements) {
     const match = await handle.evaluate((element, text) => element.textContent?.includes(text), text);
     if (match) {
-      await click(handle);
-      return true;
+      return handle;
     }
   }
+  return null;
+};
+
+export const clickTreeElementWithPartialText = async (text: string) => {
+  const handle = await elementWithPartialText(text);
+  if (handle) {
+    await click(handle);
+    return true;
+  }
+
   throw false;
 };
 

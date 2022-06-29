@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForMany, waitForNone} from '../../shared/helper.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
@@ -39,4 +39,13 @@ export async function clearCoverageContent() {
 export async function getMessageContents() {
   const messageElement = await waitFor('.coverage-results .landing-page .message');
   return messageElement.evaluate(node => (node as HTMLElement).innerText);
+}
+
+export async function getCoverageData(expectedCount: number) {
+  const rows = await waitForMany('.data-grid-data-grid-node', expectedCount, await waitFor('.coverage-results'));
+  return Promise.all(rows.map(r => r.evaluate((r: Element) => ({
+                                                url: r.querySelector('.url-column')?.textContent,
+                                                total: r.querySelector('.size-column')?.textContent,
+                                                unused: r.querySelector('.unusedSize-column span')?.textContent,
+                                              }))));
 }

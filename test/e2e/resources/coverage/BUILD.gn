@@ -7,6 +7,12 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("coverage") {
   sources = [
     "default.html",
+    "empty.css",
+    "lazily-loaded.css",
+    "not-initially-used.css",
     "script.js",
+    "unused-css-coverage.html",
+    "unused.css",
+    "used.css",
   ]
 }

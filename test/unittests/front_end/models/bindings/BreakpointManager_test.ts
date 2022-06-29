@@ -50,6 +50,10 @@ describeWithRealConnection('BreakpointManager', () => {
       }
       return null;
     }
+
+    isReadyToPause(): boolean {
+      return true;
+    }
   }
 
   function createFakeScriptMapping(
@@ -250,7 +254,7 @@ describeWithRealConnection('BreakpointManager', () => {
     assert.isNull(breakpoint.currentState);
     const result = await update;
     // Make sure that no error occurred.
-    assert.isTrue(result);
+    assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
     assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     await breakpoint.remove(false);
@@ -352,7 +356,7 @@ describeWithRealConnection('BreakpointManager', () => {
       // Create first breakpoint that resolves to that location.
       const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
       breakpoint.modelAdded(debuggerModel);
-      assert.isUndefined(breakpoint.getIsRemoved());
+      assert.isFalse(breakpoint.getIsRemoved());
 
       // Create second breakpoint that will resolve to the same location.
       const slidingBreakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 43, 0, '', true);
@@ -366,15 +370,41 @@ describeWithRealConnection('BreakpointManager', () => {
       await slidingBreakpoint.updateBreakpoint();
 
       // First breakpoint is kept, while second is removed.
-      assert.isUndefined(breakpoint.getIsRemoved());
+      assert.isFalse(breakpoint.getIsRemoved());
       assert.isTrue(slidingBreakpoint.getIsRemoved());
 
       // Breakpoint was removed and is not kept in storage.
-      assert.isTrue(removedSpy.calledOnceWith(false));
+      assert.isTrue(removedSpy.calledOnceWith(true));
 
       await breakpoint.remove(false);
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+    });
+
+    it('are removed and kept in storage after a back-end error', async () => {
+      const {uiSourceCode, project} = createContentProviderUISourceCode({url: URL, mimeType: JS_MIME_TYPE});
+
+      // Use TestDebuggerModel, which always returns the same location to create a location crash.
+      const debuggerModel = new TestDebuggerModel(target);
+
+      // Simulates a back-end error.
+      sinon.stub(debuggerModel, 'setBreakpointByURL').callsFake(() => {
+        return Promise.resolve({locations: [], breakpointId: null} as SDK.DebuggerModel.SetBreakpointResult);
+      });
+      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, SCRIPT_ID);
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
+
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 42, 0, '', true);
+      breakpoint.modelAdded(debuggerModel);
+      const removedSpy = sinon.spy(breakpoint, 'remove');
+      await breakpoint.updateBreakpoint();
+
+      // Breakpoint was removed and is kept in storage.
+      assert.isTrue(breakpoint.getIsRemoved());
+      assert.isTrue(removedSpy.calledWith(true));
+
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     });
   });
 });

@@ -409,12 +409,17 @@ export type EventTypes = {
   [Events.BreakpointRemoved]: BreakpointLocation,
 };
 
-const enum DebuggerUpdateResult {
+export const enum DebuggerUpdateResult {
   OK = 'OK',
-  ERROR = 'ERROR',
+  ERROR_BREAKPOINT_CLASH = 'ERROR_BREAKPOINT_CLASH',
+  ERROR_BACKEND = 'ERROR_BACKEND',
+
   // PENDING implies that the current update requires another re-run.
   PENDING = 'PENDING',
 }
+
+export type ScheduleUpdateResult =
+    DebuggerUpdateResult.OK|DebuggerUpdateResult.ERROR_BACKEND|DebuggerUpdateResult.ERROR_BREAKPOINT_CLASH;
 
 const enum ResolveLocationResult {
   OK = 'OK',
@@ -430,7 +435,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   uiSourceCodes: Set<Workspace.UISourceCode.UISourceCode>;
   #conditionInternal!: string;
   #enabledInternal!: boolean;
-  isRemoved!: boolean;
+  isRemoved = false;
   currentState: Breakpoint.State|null;
   readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
 
@@ -629,6 +634,9 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   async remove(keepInStorage: boolean): Promise<void> {
+    if (this.getIsRemoved()) {
+      return;
+    }
     this.isRemoved = true;
     const removeFromStorage = !keepInStorage;
 
@@ -676,9 +684,11 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 
   async #updateModel(model: ModelBreakpoint): Promise<void> {
-    const success = await model.scheduleUpdateInDebugger();
-    if (!success) {
-      await this.remove(false);
+    const result = await model.scheduleUpdateInDebugger();
+    if (result === DebuggerUpdateResult.ERROR_BACKEND) {
+      await this.remove(true /* keepInStorage */);
+    } else if (result === DebuggerUpdateResult.ERROR_BREAKPOINT_CLASH) {
+      await this.remove(false /* keepInStorage */);
     }
   }
 }
@@ -722,11 +732,9 @@ export class ModelBreakpoint {
     this.#liveLocations.disposeAll();
   }
 
-  // Returns true, if scheduling ran as expected.
-  // Returns false, if an error occurred.
-  async scheduleUpdateInDebugger(): Promise<boolean> {
+  async scheduleUpdateInDebugger(): Promise<ScheduleUpdateResult> {
     if (!this.#debuggerModel.debuggerEnabled()) {
-      return true;
+      return DebuggerUpdateResult.OK;
     }
 
     const release = await this.#updateMutex.acquire();
@@ -735,7 +743,7 @@ export class ModelBreakpoint {
       result = await this.#updateInDebugger();
     }
     release();
-    return result === DebuggerUpdateResult.OK;
+    return result;
   }
 
   private scriptDiverged(): boolean {
@@ -849,7 +857,7 @@ export class ModelBreakpoint {
     // Something went wrong: we expect to have a non-null state, but have not received any
     // breakpointIds from the back-end.
     if (!breakpointIds.length) {
-      return DebuggerUpdateResult.ERROR;
+      return DebuggerUpdateResult.ERROR_BACKEND;
     }
 
     this.#breakpointIds = breakpointIds;
@@ -859,7 +867,7 @@ export class ModelBreakpoint {
 
     // Breakpoint clash: the resolved location resolves to a different breakpoint, report an error.
     if (resolvedResults.includes(ResolveLocationResult.ERROR)) {
-      return DebuggerUpdateResult.ERROR;
+      return DebuggerUpdateResult.ERROR_BREAKPOINT_CLASH;
     }
     return DebuggerUpdateResult.OK;
   }
@@ -917,7 +925,7 @@ export class ModelBreakpoint {
       Promise<void> {
     const result = await this.addResolvedLocation(location);
     if (result === ResolveLocationResult.ERROR) {
-      await this.#breakpoint.remove(false);
+      await this.#breakpoint.remove(false /* keepInStorage */);
     }
   }
 

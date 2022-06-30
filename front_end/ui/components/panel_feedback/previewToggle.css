@@ -36,7 +36,7 @@
 .x-link {
   color: var(--color-primary);
   text-decoration-line: underline;
-  padding: 4px;
+  margin: 4px;
 }
 
 .feedback .x-link {

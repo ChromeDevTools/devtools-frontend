@@ -25,7 +25,8 @@ describe('Flexbox Editor', async function() {
     await waitForCSSPropertyValue('#target', 'display', 'flex');
   });
 
-  it('can be opened and flexbox styles can be edited', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['win32'], '[crbug.com/1340492] can be opened and flexbox styles can be edited', async () => {
     await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
 
     // Clicking once sets the value.

@@ -9,6 +9,7 @@ import * as Platform from '../platform/platform.js';
 import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSLayer} from './CSSLayer.js';
 import {CSSMedia} from './CSSMedia.js';
+import {CSSScope} from './CSSScope.js';
 import {CSSSupports} from './CSSSupports.js';
 
 import type {CSSModel, Edit} from './CSSModel.js';
@@ -103,6 +104,7 @@ export class CSSStyleRule extends CSSRule {
   media: CSSMedia[];
   containerQueries: CSSContainerQuery[];
   supports: CSSSupports[];
+  scopes: CSSScope[];
   layers: CSSLayer[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
@@ -113,6 +115,7 @@ export class CSSStyleRule extends CSSRule {
     this.containerQueries = payload.containerQueries ?
         CSSContainerQuery.parseContainerQueriesPayload(cssModel, payload.containerQueries) :
         [];
+    this.scopes = payload.scopes ? CSSScope.parseScopesPayload(cssModel, payload.scopes) : [];
     this.supports = payload.supports ? CSSSupports.parseSupportsPayload(cssModel, payload.supports) : [];
     this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
     this.wasUsed = wasUsed || false;
@@ -200,6 +203,7 @@ export class CSSStyleRule extends CSSRule {
     }
     this.media.forEach(media => media.rebase(edit));
     this.containerQueries.forEach(cq => cq.rebase(edit));
+    this.scopes.forEach(scope => scope.rebase(edit));
     this.supports.forEach(supports => supports.rebase(edit));
 
     super.rebase(edit);

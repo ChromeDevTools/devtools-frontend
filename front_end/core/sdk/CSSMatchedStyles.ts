@@ -491,7 +491,7 @@ export class CSSMatchedStyles {
       return true;
     }
     const parentRule = style.parentRule as CSSStyleRule;
-    const queries = [...parentRule.media, ...parentRule.containerQueries, ...parentRule.supports];
+    const queries = [...parentRule.media, ...parentRule.containerQueries, ...parentRule.supports, ...parentRule.scopes];
     for (const query of queries) {
       if (!query.active()) {
         return false;

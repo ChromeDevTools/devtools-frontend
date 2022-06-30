@@ -1053,4 +1053,17 @@ describe('The Styles pane', async () => {
     const propertiesWithHints = await getPropertiesWithHints();
     assert.deepEqual(propertiesWithHints, ['align-content']);
   });
+
+  it('can display @scope at-rules', async () => {
+    await goToResourceAndWaitForStyleSection('elements/css-scope.html');
+
+    // Select the child that has @scope rules.
+    await waitForAndClickTreeElementWithPartialText('<div class=\u200B"rule1">\u200B</div>\u200B');
+    await waitForContentOfSelectedElementsNode('<div class=\u200B"rule1">\u200B</div>\u200B');
+
+    const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
+    const scopeQuery = await waitFor('.query.editable', rule1PropertiesSection);
+    const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText as string);
+    assert.deepEqual(scopeQueryText, '@scope (body)', 'incorrectly displayed @supports rule');
+  });
 });

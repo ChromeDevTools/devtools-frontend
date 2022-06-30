@@ -22,6 +22,7 @@ copy_to_gen("elements") {
     "css-mixed-case.html",
     "css-module.css",
     "css-override.html",
+    "css-scopes.html",
     "css-shorthand-override.html",
     "css-styles-variables.html",
     "css-supports.html",

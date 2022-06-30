@@ -33,6 +33,7 @@ import * as CSSProperty from './CSSProperty.js';
 import * as CSSPropertyParser from './CSSPropertyParser.js';
 import * as CSSQuery from './CSSQuery.js';
 import * as CSSRule from './CSSRule.js';
+import * as CSSScope from './CSSScope.js';
 import * as CSSStyleDeclaration from './CSSStyleDeclaration.js';
 import * as CSSStyleSheetHeader from './CSSStyleSheetHeader.js';
 import * as CSSSupports from './CSSSupports.js';
@@ -103,6 +104,7 @@ export {
   CSSPropertyParser,
   CSSQuery,
   CSSRule,
+  CSSScope,
   CSSStyleDeclaration,
   CSSStyleSheetHeader,
   CSSSupports,

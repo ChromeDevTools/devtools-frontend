@@ -11,6 +11,10 @@
   padding: 2px 0; /* adjust focus ring size */
 }
 
+.devtools-link:focus-visible {
+  outline-width: unset;
+}
+
 input.devtools-text-input[type="text"] {
   padding: 3px 6px;
   margin-left: 4px;

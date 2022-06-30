@@ -27,6 +27,7 @@ import {
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {LinearMemoryViewer} from './LinearMemoryViewer.js';
+import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
@@ -51,6 +52,7 @@ export interface LinearMemoryInspectorData {
   valueTypes?: Set<ValueType>;
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
   endianness?: Endianness;
+  highlightInfo?: HighlightInfo;
 }
 
 export type Settings = {
@@ -120,6 +122,10 @@ export class LinearMemoryInspector extends HTMLElement {
   #outerMemoryLength = 0;
 
   #address = -1;
+  #highlightInfo: HighlightInfo = {
+    size: 0,
+    startAddress: 0,
+  };
 
   #currentNavigatorMode = Mode.Submitted;
   #currentNavigatorAddressLine = `${this.#address}`;
@@ -143,12 +149,23 @@ export class LinearMemoryInspector extends HTMLElement {
       throw new Error('Memory offset has to be greater or equal to zero.');
     }
 
+    if (data.highlightInfo !== undefined) {
+      if (data.highlightInfo.size < 0) {
+        throw new Error('Object size has to be greater than or equal to zero');
+      }
+      if (data.highlightInfo.startAddress > data.memoryOffset + data.memory.length ||
+          data.highlightInfo.startAddress < 0) {
+        throw new Error('Object start address is out of bounds.');
+      }
+    }
+
     this.#memory = data.memory;
     this.#memoryOffset = data.memoryOffset;
     this.#outerMemoryLength = data.outerMemoryLength;
     this.#valueTypeModes = data.valueTypeModes || this.#valueTypeModes;
     this.#valueTypes = data.valueTypes || this.#valueTypes;
     this.#endianness = data.endianness || this.#endianness;
+    this.#highlightInfo = data.highlightInfo || this.#highlightInfo;
     this.#setAddress(data.address);
     this.#render();
   }
@@ -179,7 +196,12 @@ export class LinearMemoryInspector extends HTMLElement {
           @pagenavigation=${this.#navigatePage}
           @historynavigation=${this.#navigateHistory}></${LinearMemoryNavigator.litTagName}>
         <${LinearMemoryViewer.litTagName}
-          .data=${{memory: this.#memory.slice(start - this.#memoryOffset, end - this.#memoryOffset), address: this.#address, memoryOffset: start, focus: this.#currentNavigatorMode === Mode.Submitted} as LinearMemoryViewerData}
+          .data=${{
+            memory: this.#memory.slice(start - this.#memoryOffset,
+            end - this.#memoryOffset),
+            address: this.#address, memoryOffset: start,
+            focus: this.#currentNavigatorMode === Mode.Submitted,
+            highlightInfo: this.#highlightInfo } as LinearMemoryViewerData}
           @byteselected=${this.#onByteSelected}
           @resize=${this.#resize}>
         </${LinearMemoryViewer.litTagName}>

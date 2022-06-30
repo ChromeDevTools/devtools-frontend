@@ -36,6 +36,10 @@
   background-color: var(--legacy-item-selection-bg-color);
 }
 
+.highlight-area {
+  background-color: var(--legacy-item-selection-bg-color);
+}
+
 .byte-cell {
   min-width: 21px;
   color: var(--color-text-primary);

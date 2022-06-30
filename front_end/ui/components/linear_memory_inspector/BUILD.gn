@@ -27,6 +27,7 @@ devtools_module("linear_memory_inspector") {
     "LinearMemoryNavigator.ts",
     "LinearMemoryValueInterpreter.ts",
     "LinearMemoryViewer.ts",
+    "LinearMemoryViewerUtils.ts",
     "ValueInterpreterDisplay.ts",
     "ValueInterpreterDisplayUtils.ts",
     "ValueInterpreterSettings.ts",

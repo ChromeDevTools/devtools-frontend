@@ -4,6 +4,7 @@
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
+import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {toHexString} from './LinearMemoryInspectorUtils.js';
 import linearMemoryViewerStyles from './linearMemoryViewer.css.js';
 
@@ -14,6 +15,7 @@ export interface LinearMemoryViewerData {
   address: number;
   memoryOffset: number;
   focus: boolean;
+  highlightInfo?: HighlightInfo;
 }
 
 export class ByteSelectedEvent extends Event {
@@ -50,6 +52,10 @@ export class LinearMemoryViewer extends HTMLElement {
   #memory = new Uint8Array();
   #address = 0;
   #memoryOffset = 0;
+  #highlightInfo: HighlightInfo = {
+    size: 0,
+    startAddress: 0,
+  };
 
   #numRows = 1;
   #numBytesInRow = BYTE_GROUP_SIZE;
@@ -69,6 +75,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
     this.#memory = data.memory;
     this.#address = data.address;
+    this.#highlightInfo = data.highlightInfo || this.#highlightInfo;
     this.#memoryOffset = data.memoryOffset;
     this.#focusOnByte = data.focus;
     this.#update();
@@ -230,18 +237,20 @@ export class LinearMemoryViewer extends HTMLElement {
   #renderByteValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
+      const actualIndex = i + this.#memoryOffset;
       // Add margin after each group of bytes of size byteGroupSize.
       const addMargin = i !== startIndex && (i - startIndex) % BYTE_GROUP_SIZE === 0;
       const selected = i === this.#address - this.#memoryOffset;
+      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
       const classMap = {
         'cell': true,
         'byte-cell': true,
         'byte-group-margin': addMargin,
         selected,
+        'highlight-area': shouldBeHighlighted,
       };
       const isSelectableCell = i < this.#memory.length;
       const byteValue = isSelectableCell ? html`${toHexString({number: this.#memory[i], pad: 2, prefix: false})}` : '';
-      const actualIndex = i + this.#memoryOffset;
       const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, actualIndex) : '';
       cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte}>${byteValue}</span>`);
     }
@@ -251,10 +260,13 @@ export class LinearMemoryViewer extends HTMLElement {
   #renderCharacterValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
+      const actualIndex = i + this.#memoryOffset;
+      const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
       const classMap = {
         'cell': true,
         'text-cell': true,
         selected: this.#address - this.#memoryOffset === i,
+        'highlight-area': shouldBeHighlighted,
       };
       const isSelectableCell = i < this.#memory.length;
       const value = isSelectableCell ? html`${this.#toAscii(this.#memory[i])}` : '';
@@ -273,6 +285,11 @@ export class LinearMemoryViewer extends HTMLElement {
 
   #onSelectedByte(index: number): void {
     this.dispatchEvent(new ByteSelectedEvent(index));
+  }
+
+  #shouldBeHighlighted(index: number): boolean {
+    return this.#highlightInfo.startAddress <= index
+    && index < this.#highlightInfo.startAddress + this.#highlightInfo.size;
   }
 }
 

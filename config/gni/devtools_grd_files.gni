@@ -1462,6 +1462,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/linear_memory_inspector/LinearMemoryNavigator.js",
   "front_end/ui/components/linear_memory_inspector/LinearMemoryValueInterpreter.js",
   "front_end/ui/components/linear_memory_inspector/LinearMemoryViewer.js",
+  "front_end/ui/components/linear_memory_inspector/LinearMemoryViewerUtils.js",
   "front_end/ui/components/linear_memory_inspector/ValueInterpreterDisplay.js",
   "front_end/ui/components/linear_memory_inspector/ValueInterpreterDisplayUtils.js",
   "front_end/ui/components/linear_memory_inspector/ValueInterpreterSettings.js",

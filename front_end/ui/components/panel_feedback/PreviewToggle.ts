@@ -67,18 +67,11 @@ export class PreviewToggle extends HTMLElement {
 
   #render(): void {
     const checked = Root.Runtime.experiments.isEnabled(this.#experiment);
-    const hasLink = Boolean(this.#feedbackURL) || Boolean(this.#learnMoreURL);
-
-    const containerClasses = LitHtml.Directives.classMap({
-      'container': true,
-      'has-link': hasLink,
-    });
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
       html`
-      <div class=${containerClasses}>
+      <div class="container">
         <div class="checkbox-line">
           <label class="experiment-preview">
             <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name}/>

@@ -33,12 +33,6 @@
   padding: 4px;
 }
 
-.container.has-link {
-  /* For x-link outline not to paint over the helper text
-  we need to have 2 * <padding>px additional line height */
-  line-height: calc(1em + 8px);
-}
-
 .x-link {
   color: var(--color-primary);
   text-decoration-line: underline;

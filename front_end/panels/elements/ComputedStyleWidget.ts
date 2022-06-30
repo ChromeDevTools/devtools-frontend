@@ -206,6 +206,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
 
+    this.contentElement.classList.add('styles-sidebar-computed-style-widget');
+
     this.computedStyleModel = new ComputedStyleModel();
     this.computedStyleModel.addEventListener(Events.ComputedStyleChanged, this.update, this);
 

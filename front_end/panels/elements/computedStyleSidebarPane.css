@@ -37,3 +37,7 @@
     border: 1px solid ButtonText;
   }
 }
+
+.styles-sidebar-computed-style-widget {
+  min-height: auto;
+}

@@ -555,7 +555,9 @@ export class ElementsTreeOutline extends
     // items extend at least to the right edge of the outer <ol> container.
     // In the no-word-wrap mode the outer <ol> may be wider than the tree container
     // (and partially hidden), in which case we are left to use only its right boundary.
-    const x = scrollContainer.totalOffsetLeft() + scrollContainer.offsetWidth - 18;
+    // We use .clientWidth to account for possible scrollbar, and subtract 6px
+    // for the width of the split widget (see splitWidget.css).
+    const x = scrollContainer.totalOffsetLeft() + scrollContainer.clientWidth - 6;
 
     const y = event.pageY;
 

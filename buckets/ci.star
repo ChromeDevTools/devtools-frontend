@@ -108,10 +108,5 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             properties = {"is_official_build": True},
             notification_muted = True,
         ),
-        builder_descriptor(
-            name = "Presubmit",
-            recipe_name = "run_presubmit",
-            excluded_from = ["chromium"],
-        ),
     ],
 )

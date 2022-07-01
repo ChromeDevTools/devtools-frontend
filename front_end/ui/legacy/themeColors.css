@@ -231,7 +231,7 @@
   --color-syntax-3: rgb(242 151 102);
   --color-syntax-4: rgb(155 187 220);
   --color-syntax-5: rgb(132 240 255);
-  --color-syntax-6: rgb(137 137 137);
+  --color-syntax-6: rgb(171 171 171);
   --color-syntax-7: rgb(207 208 208);
   --color-syntax-8: rgb(93 176 215);
   --drop-shadow:
@@ -301,7 +301,7 @@
   --color-token-string-special: var(--color-token-string);
   --color-token-atom: rgb(161 247 181);
   --color-token-number: var(--color-token-atom);
-  --color-token-comment: rgb(137 137 137);
+  --color-token-comment: var(--color-syntax-6);
   --color-token-tag: rgb(93 176 215);
   --color-token-attribute: rgb(155 187 220);
   --color-token-attribute-value: rgb(242 151 102);

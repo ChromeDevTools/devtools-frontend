@@ -179,7 +179,7 @@ export class DebuggerPlugin extends Plugin {
   private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   // Manages pop-overs shown when the debugger is active and the user
   // hovers over an expression
-  private readonly popoverHelper: UI.PopoverHelper.PopoverHelper;
+  private popoverHelper: UI.PopoverHelper.PopoverHelper|null = null;
   private scriptFileForDebuggerModel:
       Map<SDK.DebuggerModel.DebuggerModel, Bindings.ResourceScriptMapping.ResourceScriptFile>;
   // The current set of breakpoints for this file. The locations in
@@ -213,12 +213,6 @@ export class DebuggerPlugin extends Plugin {
 
     this.scriptsPanel = SourcesPanel.instance();
     this.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
-
-    this.popoverHelper =
-        new UI.PopoverHelper.PopoverHelper(this.scriptsPanel.element, this.getPopoverRequest.bind(this));
-    this.popoverHelper.setDisableOnClick(true);
-    this.popoverHelper.setTimeout(250, 250);
-    this.popoverHelper.setHasPadding(true);
 
     this.breakpointManager.addEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
@@ -349,6 +343,12 @@ export class DebuggerPlugin extends Plugin {
       void this.refreshBreakpoints();
     }
     void this.callFrameChanged();
+
+    this.popoverHelper?.dispose();
+    this.popoverHelper = new UI.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this));
+    this.popoverHelper.setDisableOnClick(true);
+    this.popoverHelper.setTimeout(250, 250);
+    this.popoverHelper.setHasPadding(true);
   }
 
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -422,7 +422,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   willHide(): void {
-    this.popoverHelper.hidePopover();
+    this.popoverHelper?.hidePopover();
   }
 
   populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number): void {
@@ -739,7 +739,7 @@ export class DebuggerPlugin extends Plugin {
       this.setControlDown(false);
     }
     if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-      if (this.popoverHelper.isPopoverVisible()) {
+      if (this.popoverHelper && this.popoverHelper.isPopoverVisible()) {
         this.popoverHelper.hidePopover();
         event.consume();
         return true;
@@ -1000,7 +1000,7 @@ export class DebuggerPlugin extends Plugin {
   // Highlight the locations the debugger can continue to (when
   // Control is held)
   private async showContinueToLocations(): Promise<void> {
-    this.popoverHelper.hidePopover();
+    this.popoverHelper?.hidePopover();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext || !this.editor) {
       return;
@@ -1581,8 +1581,8 @@ export class DebuggerPlugin extends Plugin {
     }
     this.scriptFileForDebuggerModel.clear();
 
-    this.popoverHelper.hidePopover();
-    this.popoverHelper.dispose();
+    this.popoverHelper?.hidePopover();
+    this.popoverHelper?.dispose();
 
     this.breakpointManager.removeEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);

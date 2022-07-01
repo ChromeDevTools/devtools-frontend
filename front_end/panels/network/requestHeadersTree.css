@@ -112,19 +112,11 @@
 .tree-outline .header-badge {
   display: inline;
   margin-right: 0.75em;
+  background-color: var(--override-error-background-color);
   color: var(--override-error-text-color);
   border-radius: 100vh;
   padding-left: 6px;
   padding-right: 6px;
-}
-
-.tree-outline .header-badge-error {
-  background-color: var(--override-error-background-color);
-}
-
-.tree-outline .header-badge-success {
-  background-color: var(--color-accent-green);
-  text-transform: uppercase;
 }
 
 .tree-outline .header-value {

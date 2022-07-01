@@ -7511,9 +7511,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Recorded attribution with trigger-data: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Referrer Policy"
   },

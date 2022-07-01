@@ -7511,9 +7511,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "P̂ŕôv́îśîón̂ál̂ h́êád̂ér̂ś âŕê śĥóŵń. D̂íŝáb̂ĺê ćâćĥé t̂ó ŝéê f́ûĺl̂ h́êád̂ér̂ś."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "R̂éĉór̂d́êd́ ât́t̂ŕîb́ût́îón̂ ẃît́ĥ trigger-data: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "R̂éf̂ér̂ŕêŕ P̂ól̂íĉý"
   },

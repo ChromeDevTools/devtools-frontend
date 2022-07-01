@@ -48,7 +48,7 @@ describe('The Elements panel', async () => {
   it('has link from a slot to assigned elements', async () => {
     await goToResource('elements/slot-element.html');
     await expandSelectedNodeRecursively();
-    const revealElementLink = await waitFor('[aria-label="reveal"]', undefined, undefined);
+    const revealElementLink = await waitFor('reveal[role="link"]', undefined, undefined, 'aria');
     await click(revealElementLink);
     await waitForPartialContentOfSelectedElementsNode('<h1>​headline​</h1>');
   });

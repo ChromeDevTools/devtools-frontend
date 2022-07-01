@@ -27,10 +27,6 @@
   display: none;
 }
 
-.adorner-reveal {
-  margin: 3px;
-}
-
 .adorner-with-icon {
   display: flex;
   justify-content: center;

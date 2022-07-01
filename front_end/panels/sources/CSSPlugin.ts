@@ -121,11 +121,11 @@ function findColorsAndCurves(
       if (content) {
         const parsedColor = Common.Color.Color.parse(content);
         if (parsedColor) {
-          onColor(from, parsedColor, content);
+          onColor(node.from, parsedColor, content);
         } else {
           const parsedCurve = UI.Geometry.CubicBezier.parse(content);
           if (parsedCurve) {
-            onCurve(from, parsedCurve, content);
+            onCurve(node.from, parsedCurve, content);
           }
         }
       }

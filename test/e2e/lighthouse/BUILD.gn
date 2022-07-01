@@ -8,6 +8,7 @@ node_ts_library("lighthouse") {
   sources = [
     "generate-report_test.ts",
     "indexeddb-warning_test.ts",
+    "request_blocking_test.ts",
   ]
 
   deps = [

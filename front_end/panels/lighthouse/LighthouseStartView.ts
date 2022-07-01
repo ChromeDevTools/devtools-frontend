@@ -143,6 +143,7 @@ export class StartView extends UI.Widget.Widget {
       const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description());
       const row = formElements.createChild('div', 'vbox lighthouse-launcher-row');
       row.appendChild(checkbox.element);
+      checkbox.element.setAttribute('data-lh-category', preset.configID);
       this.checkboxes.push({preset, checkbox});
       if (mode && !preset.supportedModes.includes(mode)) {
         checkbox.setEnabled(false);

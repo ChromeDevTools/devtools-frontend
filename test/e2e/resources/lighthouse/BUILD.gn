@@ -5,5 +5,9 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("lighthouse") {
-  sources = [ "lighthouse-storage.html" ]
+  sources = [
+    "basic.css",
+    "hello.html",
+    "lighthouse-storage.html",
+  ]
 }

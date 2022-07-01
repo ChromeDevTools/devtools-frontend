@@ -17,7 +17,6 @@ import {describe, it} from '../../../shared/mocha-extensions.js';
 import {
   BOTTOM_UP_SELECTOR,
   CALL_TREE_SELECTOR,
-  clickOnFunctionLink,
   getTotalTimeFromSummary,
   navigateToBottomUpTab,
   navigateToCallTreeTab,
@@ -90,13 +89,26 @@ describe('The Performance panel', async function() {
   });
 });
 
+async function searchForWasmCall() {
+  const {frontend} = getBrowserAndPages();
+  await waitForFunction(async () => {
+    await searchForComponent(frontend, 'mainWasm');
+    const title = await $('.timeline-details-chip-title');
+    if (!title) {
+      return false;
+    }
+    const titleText = await title.evaluate(x => x.textContent);
+    return titleText === 'mainWasm';
+  });
+}
+
 describe('The Performance panel', async function() {
   // These tests have lots of waiting which might take more time to execute
-  this.timeout(20000);
+  if (this.timeout() !== 0) {
+    this.timeout(20000);
+  }
 
   beforeEach(async () => {
-    const {frontend} = getBrowserAndPages();
-
     await step('navigate to the Performance tab and uplaod performance profile', async () => {
       await navigateToPerformanceTab('wasm/profiling');
 
@@ -106,30 +118,11 @@ describe('The Performance panel', async function() {
     });
 
     await step('search for "mainWasm"', async () => {
-      await searchForComponent(frontend, 'mainWasm');
+      await searchForWasmCall();
     });
   });
 
-  // Link to wasm function is broken in profiling tab
-  it.skip('[crbug.com/1125986] is able to inspect how long a wasm function takes to execute', async () => {
-    await step('check that the total time is more than zero', async () => {
-      const totalTime = await getTotalTimeFromSummary();
-      assert.isAbove(totalTime, 0, 'total time for "mainWasm" is not above zero');
-    });
-
-    await step('click on the function link', async () => {
-      await clickOnFunctionLink();
-    });
-
-    // TODO(almuthanna): this step will be added once the bug crbug.com/1125986 is solved
-    await step(
-        'check that the system has navigated to the Sources tab with the "mainWasm" function highlighted',
-        async () => {
-            // step pending
-        });
-  });
-
-  it(' is able to display the execution time for a wasm function', async () => {
+  it('is able to display the execution time for a wasm function', async () => {
     await step('check that the Summary tab shows more than zero total time for "mainWasm"', async () => {
       const totalTime = await getTotalTimeFromSummary();
       assert.isAbove(totalTime, 0, 'mainWasm function execution time is displayed incorrectly');

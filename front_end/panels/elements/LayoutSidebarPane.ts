@@ -61,8 +61,6 @@ const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsComponents.
   });
 };
 
-let layoutSidebarPaneInstance: LayoutSidebarPane;
-
 const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsComponents.LayoutPane.LayoutElement[] => {
   return nodes.map(node => {
     const layoutElement = nodeToLayoutElement(node);
@@ -86,6 +84,7 @@ const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): ElementsCo
   });
 };
 
+let layoutSidebarPaneInstance: LayoutSidebarPane;
 export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
   private layoutPane: ElementsComponents.LayoutPane.LayoutPane;
   private readonly settings: string[];

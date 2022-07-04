@@ -56,6 +56,7 @@ import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.j
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import type {MarkerDecorator} from './MarkerDecorator.js';
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
+import {LayoutSidebarPane} from './LayoutSidebarPane.js';
 import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
 import type {StylesUpdateCompletedEvent} from './StylesSidebarPane.js';
 
@@ -1143,6 +1144,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (treeElement) {
         void treeElement.updateStyleAdorners();
       }
+
+      LayoutSidebarPane.instance().update();
     }
   }
 

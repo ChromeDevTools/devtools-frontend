@@ -143,7 +143,7 @@ export class PopoverHelper {
     }
 
     this.hidePopoverTimer = window.setTimeout(() => {
-      this.hidePopover();
+      this.hidePopoverInternal();
       this.hidePopoverTimer = null;
     }, timeout);
   }

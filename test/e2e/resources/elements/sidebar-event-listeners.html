@@ -22,6 +22,8 @@
         document.body.addEventListener("custom event", () => console.log('test'), { capture: true, once: true });
       }
       setupEventListeners();
+
+      document.body.classList.add('test-js-loaded');
     </script>
   </body>
 </html>

@@ -122,10 +122,7 @@ export class LinearMemoryInspector extends HTMLElement {
   #outerMemoryLength = 0;
 
   #address = -1;
-  #highlightInfo: HighlightInfo = {
-    size: 0,
-    startAddress: 0,
-  };
+  #highlightInfo?: HighlightInfo;
 
   #currentNavigatorMode = Mode.Submitted;
   #currentNavigatorAddressLine = `${this.#address}`;
@@ -165,7 +162,7 @@ export class LinearMemoryInspector extends HTMLElement {
     this.#valueTypeModes = data.valueTypeModes || this.#valueTypeModes;
     this.#valueTypes = data.valueTypes || this.#valueTypes;
     this.#endianness = data.endianness || this.#endianness;
-    this.#highlightInfo = data.highlightInfo || this.#highlightInfo;
+    this.#highlightInfo = data.highlightInfo;
     this.#setAddress(data.address);
     this.#render();
   }

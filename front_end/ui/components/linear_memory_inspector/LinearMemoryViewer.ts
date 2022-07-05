@@ -52,10 +52,7 @@ export class LinearMemoryViewer extends HTMLElement {
   #memory = new Uint8Array();
   #address = 0;
   #memoryOffset = 0;
-  #highlightInfo: HighlightInfo = {
-    size: 0,
-    startAddress: 0,
-  };
+  #highlightInfo?: HighlightInfo;
 
   #numRows = 1;
   #numBytesInRow = BYTE_GROUP_SIZE;
@@ -75,7 +72,7 @@ export class LinearMemoryViewer extends HTMLElement {
 
     this.#memory = data.memory;
     this.#address = data.address;
-    this.#highlightInfo = data.highlightInfo || this.#highlightInfo;
+    this.#highlightInfo = data.highlightInfo;
     this.#memoryOffset = data.memoryOffset;
     this.#focusOnByte = data.focus;
     this.#update();
@@ -288,6 +285,9 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   #shouldBeHighlighted(index: number): boolean {
+    if (this.#highlightInfo === undefined) {
+      return false;
+    }
     return this.#highlightInfo.startAddress <= index
     && index < this.#highlightInfo.startAddress + this.#highlightInfo.size;
   }

@@ -168,6 +168,10 @@ export class ValueNode extends SDK.RemoteObject.RemoteObjectImpl {
     this.inspectableAddress = inspectableAddress;
     this.callFrame = callFrame;
   }
+
+  get sourceType(): SourceType {
+    throw new Error('Not Implemented');
+  }
 }
 
 // Debugger language #plugins present source-language values as trees with mixed dynamic and static structural
@@ -498,6 +502,10 @@ class StaticallyTypedValueNode extends ValueNode {
 
   get type(): string {
     return this.#variableType;
+  }
+
+  get sourceType(): SourceType {
+    return this.#sourceType;
   }
 
   private async expandMember(sourceType: SourceType, fieldInfo: Chrome.DevTools.FieldInfo):

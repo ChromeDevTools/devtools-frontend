@@ -52,4 +52,43 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
         'devtools-linear-memory-inspector-inspector');
     assertElement(inspector, LinearMemoryInspector.LinearMemoryInspector.LinearMemoryInspector);
   });
+
+  it('triggers view.updateHighlightInfo() when resetHighlightInfo() called', () => {
+    const instance = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPaneImpl.instance();
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    const tabId = 'tabId';
+    const title = 'Test Title';
+
+    const highlightInfo = {
+      startAddress: 2,
+      size: 10,
+    };
+    instance.create(tabId, title, arrayWrapper, 10, highlightInfo);
+    const view = instance.getViewForTabId(tabId);
+    const spy = sinon.spy(view, 'updateHighlightInfo');
+    instance.resetHighlightInfo(tabId);
+    assert.isTrue(spy.calledOnce);
+  });
+
+  it('triggers view.refreshData() when reveal() called with highlightInfo set', () => {
+    const instance = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPaneImpl.instance();
+    const arrayWrapper = new Uint8Wrapper(createArray());
+    const tabId = 'tabId';
+    const title = 'Test Title';
+
+    const oldHighlightInfo = {
+      startAddress: 2,
+      size: 10,
+    };
+    const newHighlightInfo = {
+      startAddress: 4,
+      size: 4,
+    };
+
+    instance.create(tabId, title, arrayWrapper, 10, oldHighlightInfo);
+    const view = instance.getViewForTabId(tabId);
+    const spy = sinon.spy(view, 'refreshData');
+    instance.reveal(tabId, 4, newHighlightInfo);
+    assert.isTrue(spy.calledOnce);
+  });
 });

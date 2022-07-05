@@ -73,7 +73,7 @@ DEPS = {
     "eslint-plugin-rulesdir": "0.2.1",
     "istanbul-lib-instrument": "5.1.0",
     "istanbul-lib-report": "3.0.0",
-    "karma": "6.3.9",
+    "karma": "6.4.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",
     "karma-coverage": "2.1.0",

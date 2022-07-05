@@ -50,16 +50,18 @@ Issues in the untriaged queue should receive a meaningful response within a busi
 - Put proper `Platform>DevTools>XXX` component(s) on the issue and do an initial check-in regarding the priority.
 - Put one of the following labels on it and set the status to `Available`:
   - `Hotlist-DevTools-ProductReview` if it's controversial or clear that consensus needs to be built first.
-  - `Hotlist-DevTools-BrowserAutomation-Backlog` if it's an issue related to ChromeDriver or puppeteer.
-  - `Hotlist-DevTools-Debugging-Backlog` if it's a debugging issue.
-  - `Hotlist-DevTools-DesignAccessibility-Backlog` if it's a design or accessibility issue.
-  - `Hotlist-DevTools-Performance-Backlog` if the issue is related to our performance tooling (i.e. Performance panel, Lighthouse).
-  - `Hotlist-DevTools-Backlog` if it's a general DevTools issue that is not specific to one of the core areas.
+  - `Team-DevTools-BrowserAutomation` if it's an issue related to ChromeDriver or puppeteer.
+  - `Team-DevTools-RuntimeDebugging` if it's a JavaScript or WebAssembly debugging issue.
+  - `Team-DevTools-WebDebugging` if it's a Web specific debugging issue (i.e. Network or Application panel).
+  - `Team-DevTools-DesignAccessibility` if it's a design or accessibility issue.
+  - `Team-DevTools-Performance` if the issue is related to our performance tooling (i.e. Performance panel, Lighthouse).
+  - `Team-DevTools-RecordReplay` if it's an issue with the recorder or puppeteer.
+  - No specific `Team` or `Hotlist` if it doesn't fit any specific team otherwise. Make sure to have the `Platform>DevTools` component (or a subcomponent) on it though.
 - Also remember to put the `Needs-UX` label on it, if help from a designer is likely to be required.
 
 ### Setting Assigned or Available
 
-Set issues to Available if they don’t need immediate action and nobody right now and in the short-term future (an iteration) needs to work on it.
+Set issues to `Available` if they don’t need immediate action and nobody right now and in the short-term future (an iteration) needs to work on it.
 
 Issues that are handled by Microsoft have the label “Hotlist-DevTools-MS-Backlog” and “Hotlist-DevTools-MS-CurrentSprint” respectively and can be considered triaged.
 
@@ -107,7 +109,7 @@ The combination of the label “M-<milestone>” and “Release-Block-<channel>�
 
 ### Managing the backlog
 
-[[Query]](https://bugs.chromium.org/p/chromium/issues/list?q=Hotlist%3DDevTools-Backlog)
+[[Query]](https://bugs.chromium.org/p/chromium/issues/list?q=component%3APlatform%3EDevTools%20status%3AAvailable)
 
 Managing the backlog is out of scope for the triage rotation. The backlog will be groomed continuously by hablich@ for now. The SLA is that there should be a maximum of 50 issues in there.
 

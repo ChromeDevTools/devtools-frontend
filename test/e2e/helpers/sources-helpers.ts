@@ -400,9 +400,9 @@ export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
   return frontend.evaluate(() => {
     window.__sourceFilesAddedEvents = [];
     window.addEventListener('source-tree-file-added', (event: Event) => {
-      const customEvent = event as CustomEvent<string>;
-      if (customEvent.detail !== '/__puppeteer_evaluation_script__') {
-        window.__sourceFilesAddedEvents.push(customEvent.detail);
+      const {detail} = event as CustomEvent<string>;
+      if (!detail.endsWith('/__puppeteer_evaluation_script__')) {
+        window.__sourceFilesAddedEvents.push(detail);
       }
     });
   });
@@ -431,8 +431,7 @@ export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
 export type NestedFileSelector = {
   rootSelector: string,
   domainSelector: string,
-  folderSelector: string,
-  fileSelector: string,
+  folderSelector?: string, fileSelector: string,
 };
 
 export function createSelectorsForWorkerFile(
@@ -470,7 +469,9 @@ export async function expandSourceTreeItem(selector: string) {
 export async function expandFileTree(selectors: NestedFileSelector) {
   await expandSourceTreeItem(selectors.rootSelector);
   await expandSourceTreeItem(selectors.domainSelector);
-  await expandSourceTreeItem(selectors.folderSelector);
+  if (selectors.folderSelector) {
+    await expandSourceTreeItem(selectors.folderSelector);
+  }
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
   await timeout(50);
   return await waitFor(selectors.fileSelector);

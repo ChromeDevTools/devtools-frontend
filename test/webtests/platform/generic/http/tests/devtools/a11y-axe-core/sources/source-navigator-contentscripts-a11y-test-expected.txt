@@ -1,6 +1,6 @@
 Tests accessibility in the Sources panel Navigator pane Contentscripts tab using axe-core.
 top
-  (no domain)
+  content-script-context
     contentScript1.js
 aXe violations: []
 

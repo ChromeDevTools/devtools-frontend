@@ -1,0 +1,30 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Handling of sourceURL annotations</title>
+<script>
+console.log('Inline <script> with absolute webpack:/// sourceURL annotation');
+//# sourceURL=webpack:///src/index.js
+</script>
+<script>
+console.log('Inline <script> with relative sourceURL annotation');
+//# sourceURL=inline.js
+</script>
+<script>
+eval(`
+console.log('Eval script with absolute webpack-internal:/// sourceURL annotation');
+//# sourceURL=webpack-internal:///(webpack-dev-server)/generated.js
+`);
+eval(`
+console.log('Eval script with relative sourceURL annotation');
+//# sourceURL=eval.js
+`);
+eval(`
+console.log('Eval script injected by browser automation software');
+//# sourceURL=__puppeteer_evaluation_script__
+`);
+</script>

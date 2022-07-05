@@ -30,10 +30,10 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import type {Breakpoint} from './BreakpointManager.js';
 import {BreakpointManager} from './BreakpointManager.js';
@@ -65,7 +65,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
   readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   readonly #uiSourceCodeToScriptFile: Map<Workspace.UISourceCode.UISourceCode, ResourceScriptFile>;
   readonly #projects: Map<string, ContentProviderBasedProject>;
-  #acceptedScripts: Set<SDK.Script.Script>;
+  readonly #scriptToUISourceCode: Map<SDK.Script.Script, Workspace.UISourceCode.UISourceCode>;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
 
   constructor(
@@ -78,19 +78,28 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
 
     this.#projects = new Map();
 
-    this.#acceptedScripts = new Set();
+    this.#scriptToUISourceCode = new Map();
     const runtimeModel = debuggerModel.runtimeModel();
     this.#eventListeners = [
       this.debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.ParsedScriptSource,
-          event => {
-            void this.parsedScriptSource(event);
-          },
-          this),
+          SDK.DebuggerModel.Events.ParsedScriptSource, event => this.addScript(event.data), this),
       this.debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.executionContextDestroyed, this),
+      runtimeModel.target().targetManager().addEventListener(
+          SDK.TargetManager.Events.InspectedURLChanged, this.inspectedURLChanged, this),
     ];
+  }
+
+  static resolveRelativeSourceURL(script: SDK.Script.Script, url: Platform.DevToolsPath.UrlString):
+      Platform.DevToolsPath.UrlString {
+    let target: SDK.Target.Target|null = script.debuggerModel.target();
+    while (target && target.type() !== SDK.Target.Type.Frame) {
+      target = target.parentTarget();
+    }
+    const baseURL = target?.inspectedURL() ?? Platform.DevToolsPath.EmptyUrlString;
+    url = Common.ParsedURL.ParsedURL.completeURL(baseURL, url) ?? url;
+    return url;
   }
 
   private project(script: SDK.Script.Script): ContentProviderBasedProject {
@@ -113,8 +122,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     if (!script) {
       return null;
     }
-    const project = this.project(script);
-    const uiSourceCode = project.uiSourceCodeForURL(script.sourceURL);
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
     if (!uiSourceCode) {
       return null;
     }
@@ -147,41 +155,63 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     return [this.debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 
-  private acceptsScript(script: SDK.Script.Script): boolean {
-    if (!script.sourceURL || script.isLiveEdit() || (script.isInlineScript() && !script.hasSourceURL)) {
-      return false;
-    }
-    // Filter out embedder injected content scripts.
-    if (script.isContentScript() && !script.hasSourceURL) {
-      const parsedURL = new Common.ParsedURL.ParsedURL(script.sourceURL);
-      if (!parsedURL.isValid) {
-        return false;
+  private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
+    for (let target: SDK.Target.Target|null = this.debuggerModel.target(); target !== event.data;
+         target = target.parentTarget()) {
+      if (target === null) {
+        return;
       }
     }
-    return true;
+
+    // Just remove and readd all scripts to ensure their URLs are reflected correctly.
+    for (const script of Array.from(this.#scriptToUISourceCode.keys())) {
+      this.removeScript(script);
+      this.addScript(script);
+    }
   }
 
-  private async parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): Promise<void> {
-    const script = event.data;
-    if (!this.acceptsScript(script)) {
+  private addScript(script: SDK.Script.Script): void {
+    // Ignore live edit scripts here.
+    if (script.isLiveEdit()) {
       return;
     }
-    this.#acceptedScripts.add(script);
-    const originalContentProvider = script.originalContentProvider();
 
-    const url = script.sourceURL;
-    const project = this.project(script);
+    let url = script.sourceURL;
+    if (!url) {
+      return;
+    }
+
+    if (script.hasSourceURL) {
+      // Try to resolve `//# sourceURL=` annotations relative to
+      // the base URL, according to the sourcemap specification.
+      url = ResourceScriptMapping.resolveRelativeSourceURL(script, url);
+    } else {
+      // Ignore inline <script>s without `//# sourceURL` annotation here.
+      if (script.isInlineScript()) {
+        return;
+      }
+
+      // Filter out embedder injected content scripts.
+      if (script.isContentScript()) {
+        const parsedURL = new Common.ParsedURL.ParsedURL(url);
+        if (!parsedURL.isValid) {
+          return;
+        }
+      }
+    }
 
     // Remove previous UISourceCode, if any
+    const project = this.project(script);
     const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
-      const scriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
-      if (scriptFile && scriptFile.script) {
-        await this.removeScript(scriptFile.script);
+      const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
+      if (oldScriptFile && oldScriptFile.script) {
+        this.removeScript(oldScriptFile.script);
       }
     }
 
     // Create UISourceCode.
+    const originalContentProvider = script.originalContentProvider();
     const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
     NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
     const metadata = metadataForURL(this.debuggerModel.target(), script.frameId, url);
@@ -189,61 +219,54 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     // Bind UISourceCode to scripts.
     const scriptFile = new ResourceScriptFile(this, uiSourceCode, [script]);
     this.#uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
+    this.#scriptToUISourceCode.set(script, uiSourceCode);
 
     const mimeType = script.isWasm() ? 'application/wasm' : 'text/javascript';
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, mimeType);
-    await this.debuggerWorkspaceBinding.updateLocations(script);
+    void this.debuggerWorkspaceBinding.updateLocations(script);
   }
 
   scriptFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): ResourceScriptFile|null {
     return this.#uiSourceCodeToScriptFile.get(uiSourceCode) || null;
   }
 
-  private async removeScript(script: SDK.Script.Script): Promise<void> {
-    if (!this.#acceptedScripts.has(script)) {
+  private removeScript(script: SDK.Script.Script): void {
+    const uiSourceCode = this.#scriptToUISourceCode.get(script);
+    if (!uiSourceCode) {
       return;
     }
-    this.#acceptedScripts.delete(script);
-    const project = this.project(script);
-    const uiSourceCode = (project.uiSourceCodeForURL(script.sourceURL) as Workspace.UISourceCode.UISourceCode);
     const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
     if (scriptFile) {
       scriptFile.dispose();
     }
     this.#uiSourceCodeToScriptFile.delete(uiSourceCode);
-    project.removeFile(script.sourceURL);
-    await this.debuggerWorkspaceBinding.updateLocations(script);
+    this.#scriptToUISourceCode.delete(script);
+    const project = uiSourceCode.project() as ContentProviderBasedProject;
+    project.removeFile(uiSourceCode.url());
+    void this.debuggerWorkspaceBinding.updateLocations(script);
   }
 
   private executionContextDestroyed(event: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext>):
       void {
     const executionContext = event.data;
-    const scripts = this.debuggerModel.scriptsForExecutionContext(executionContext);
-    for (const script of scripts) {
-      void this.removeScript(script);
+    for (const script of this.debuggerModel.scriptsForExecutionContext(executionContext)) {
+      this.removeScript(script);
     }
   }
 
   private globalObjectCleared(): void {
-    const scripts = Array.from(this.#acceptedScripts);
-    for (const script of scripts) {
-      void this.removeScript(script);
+    for (const script of this.#scriptToUISourceCode.keys()) {
+      this.removeScript(script);
     }
   }
 
   resetForTest(): void {
-    const scripts = Array.from(this.#acceptedScripts);
-    for (const script of scripts) {
-      void this.removeScript(script);
-    }
+    this.globalObjectCleared();
   }
 
   dispose(): void {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
-    const scripts = Array.from(this.#acceptedScripts);
-    for (const script of scripts) {
-      void this.removeScript(script);
-    }
+    this.globalObjectCleared();
     for (const project of this.#projects.values()) {
       project.removeProject();
     }

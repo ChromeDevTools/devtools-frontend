@@ -40,6 +40,7 @@ import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import type {LiveLocation} from './LiveLocation.js';
 import {LiveLocationPool} from './LiveLocation.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
+import {ResourceScriptMapping} from './ResourceScriptMapping.js';
 
 let breakpointManagerInstance: BreakpointManager;
 
@@ -170,12 +171,22 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     const isSnippet = script.sourceURL.startsWith('snippet://');
     const projectType = isSnippet ? Workspace.Workspace.projectTypes.Network : undefined;
 
-    // Handle inline scripts without sourceURL comment separately:
+    // Some temporary workarounds that will probably be replaced by live locations.
+    // 1. Handle inline scripts without sourceURL comment separately:
     // The UISourceCode of inline scripts without sourceURLs will not be availabe
     // until a later point. Use the v8 script for setting the breakpoint.
+    // 2. Handle resources that have scripts differently: nowadays they don't use the
+    // sourceURL directly anymore, but are resolved relatively to the parents document's
+    // base URL; so resolve it before awaiting its uiSourceCode.
     const isInlineScriptWithoutSourceURL = script.isInlineScript() && !script.hasSourceURL;
-    const sourceURL =
-        isInlineScriptWithoutSourceURL ? DefaultScriptMapping.createV8ScriptURL(script) : script.sourceURL;
+    const hasResourceScriptMapping = !script.isLiveEdit() && script.sourceURL && script.hasSourceURL;
+    let sourceURL = script.sourceURL;
+    if (isInlineScriptWithoutSourceURL) {
+      sourceURL = DefaultScriptMapping.createV8ScriptURL(script);
+    } else if (hasResourceScriptMapping) {
+      sourceURL = ResourceScriptMapping.resolveRelativeSourceURL(script, script.sourceURL);
+    }
+
     const uiSourceCode =
         await Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURLPromise(sourceURL, projectType);
 

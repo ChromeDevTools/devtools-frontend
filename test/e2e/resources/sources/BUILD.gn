@@ -80,6 +80,7 @@ copy_to_gen("sources") {
     "sourcemap-stepping.html",
     "sourcemap-stepping.map",
     "sourcemap-without-mappings.map",
+    "sourceurl.html",
     "wasm/add.wasm",
     "wasm/call-to-add-wasm.html",
     "wasm/callstack-wasm-to-js.html",

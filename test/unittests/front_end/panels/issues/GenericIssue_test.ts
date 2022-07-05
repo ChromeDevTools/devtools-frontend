@@ -28,6 +28,12 @@ describeWithLocale('GenericIssue', async () => {
     };
   }
 
+  beforeEach(() => {
+    // The component warns if not provided with an issue that has details, but
+    // we don't need that noise in the test output.
+    sinon.stub(console, 'warn');
+  });
+
   it('adds a cross origin portal post message issue with valid details', () => {
     const issueDetails = {
       errorType: Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError,

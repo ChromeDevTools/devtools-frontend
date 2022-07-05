@@ -2207,6 +2207,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: Îńv̂ók̂é t̂ó ŝćr̂ól̂ĺ t̂ó t̂h́îś ŝéĉt́îón̂ ín̂ ḿâńîf́êśt̂"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Ĉáĉh́ê"
   },
@@ -2239,6 +2242,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "M̂án̂íf̂éŝt́"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Ŝćr̂ól̂ĺêd́ t̂ó {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "M̂án̂íf̂éŝt́: Îńv̂ók̂é t̂ó ŝćr̂ól̂ĺ t̂ó t̂h́ê t́ôṕ ôf́ m̂án̂íf̂éŝt́"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Ôṕêńêd́ Ŵín̂d́ôẃŝ"

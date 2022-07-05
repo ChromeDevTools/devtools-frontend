@@ -408,6 +408,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   private readonly identitySection: UI.ReportView.Section;
   private readonly presentationSection: UI.ReportView.Section;
   private readonly iconsSection: UI.ReportView.Section;
+  private readonly protocolHandlersSection: UI.ReportView.Section;
   private readonly shortcutSections: UI.ReportView.Section[];
   private readonly screenshotsSections: UI.ReportView.Section[];
   private nameField: HTMLElement;
@@ -455,9 +456,9 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.installabilitySection = this.reportView.appendSection(i18nString(UIStrings.installability));
     this.identitySection = this.reportView.appendSection(i18nString(UIStrings.identity));
     this.presentationSection = this.reportView.appendSection(i18nString(UIStrings.presentation));
-    const protocolHandlersSection = this.reportView.appendSection(i18nString(UIStrings.protocolHandlers));
+    this.protocolHandlersSection = this.reportView.appendSection(i18nString(UIStrings.protocolHandlers));
     this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
-    protocolHandlersSection.contentElement.append(this.protocolHandlersView);
+    this.protocolHandlersSection.contentElement.append(this.protocolHandlersView);
     this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons');
     this.shortcutSections = [];
     this.screenshotsSections = [];
@@ -492,6 +493,14 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.throttler = new Common.Throttler.Throttler(1000);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
     this.registeredListeners = [];
+  }
+
+  getStaticSections(): UI.ReportView.Section[] {
+    return [this.identitySection, this.presentationSection, this.protocolHandlersSection, this.iconsSection];
+  }
+
+  getManifestElement(): Element {
+    return this.reportView.getHeaderElement();
   }
 
   targetAdded(target: SDK.Target.Target): void {
@@ -559,10 +568,12 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     if (!data && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
+      this.contentElement.dispatchEvent(new CustomEvent('manifestDetection', {detail: false}));
       return;
     }
     this.emptyView.hideWidget();
     this.reportView.showWidget();
+    this.contentElement.dispatchEvent(new CustomEvent('manifestDetection', {detail: true}));
 
     const link = Components.Linkifier.Linkifier.linkifyURL(url);
     link.tabIndex = 0;

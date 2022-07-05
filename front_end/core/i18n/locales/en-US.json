@@ -2207,6 +2207,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: Invoke to scroll to this section in manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Cache"
   },
@@ -2239,6 +2242,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Scrolled to {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Manifest: Invoke to scroll to the top of manifest"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Opened Windows"

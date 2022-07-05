@@ -421,6 +421,7 @@
     RecordingToggled: 'DevTools.RecordingToggled',
     SyncSetting: 'DevTools.SyncSetting',
     StyleTextCopied: 'DevTools.StyleTextCopied',
+    ManifestSectionSelected: 'DevTools.ManifestSectionSelected',
   };
 
   /**

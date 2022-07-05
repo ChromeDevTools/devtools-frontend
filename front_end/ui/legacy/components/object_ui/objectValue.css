@@ -65,6 +65,10 @@
   color: var(--color-text-disabled);
 }
 
+.object-value-unavailable {
+  color: var(--color-syntax-2);
+}
+
 .object-value-calculate-value-button:hover {
   text-decoration: underline;
 }

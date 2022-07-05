@@ -83,15 +83,18 @@ const UIStrings = {
   */
   showAllD: 'Show all {PH1}',
   /**
-  *@description Value element text content in Object Properties Section. Shown when the developer is
-  *viewing a JavaScript object, but one of the properties is not readable and therefore can't be
-  *displayed. This string should be translated.
+  * @description Value element text content in Object Properties Section. Shown when the developer is
+  * viewing a variable in the Scope view, whose value is not available (i.e. because it was optimized
+  * out) by the JavaScript engine, or inspecting a JavaScript object accessor property, which has no
+  * getter. This string should be translated.
   */
-  unreadable: '<unreadable>',
+  valueUnavailable: '<value unavailable>',
   /**
-  *@description Value element title in Object Properties Section
-  */
-  noPropertyGetter: 'No property getter',
+   * @description Tooltip for value elements in the Scope view that refer to variables whose values
+   * aren't accessible to the debugger (potentially due to being optimized out by the JavaScript
+   * engine), or for JavaScript object accessor properties which have no getter.
+   */
+  valueNotAccessibleToTheDebugger: 'Value is not accessible to the debugger',
   /**
   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
   */
@@ -1105,9 +1108,9 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       }, false);
     } else {
       this.valueElement = document.createElement('span');
-      this.valueElement.classList.add('object-value-undefined');
-      this.valueElement.textContent = i18nString(UIStrings.unreadable);
-      UI.Tooltip.Tooltip.install(this.valueElement, i18nString(UIStrings.noPropertyGetter));
+      this.valueElement.classList.add('object-value-unavailable');
+      this.valueElement.textContent = i18nString(UIStrings.valueUnavailable);
+      UI.Tooltip.Tooltip.install(this.valueElement, i18nString(UIStrings.valueNotAccessibleToTheDebugger));
     }
 
     const valueText = this.valueElement.textContent;

@@ -12278,9 +12278,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "No properties"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "No property getter"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Show all {PH1}"
   },
@@ -12293,8 +12290,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "unknown"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Value is not accessible to the debugger"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<value unavailable>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "empty"

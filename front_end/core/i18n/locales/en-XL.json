@@ -12278,9 +12278,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "N̂ó p̂ŕôṕêŕt̂íêś"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "N̂ó p̂ŕôṕêŕt̂ý ĝét̂t́êŕ"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Ŝh́ôẃ âĺl̂ {PH1}"
   },
@@ -12293,8 +12290,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "ûńk̂ńôẃn̂"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<ûńr̂éâd́âb́l̂é>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "V̂ál̂úê íŝ ńôt́ âćĉéŝśîb́l̂é t̂ó t̂h́ê d́êb́ûǵĝér̂"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<v̂ál̂úê ún̂áv̂áîĺâb́l̂é>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "êḿp̂t́ŷ"

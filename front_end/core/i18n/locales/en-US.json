@@ -3209,6 +3209,105 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Show details"
   },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Activated."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Prerendering has not supported the AudioContext API yet."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Resource load is blocked by the client."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "The page is requesting client cert, which is not suitable for a hidden page like prerendering."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "The prerendered page navigated to a cross-origin URL after loading. Currently prerendering cross-origin pages is disallowed."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Attempted to prerender a URL which redirected to a cross-origin URL. Currently prerendering cross-origin pages is disallowed."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "A prerendered page was abandoned for unknown reasons."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "DidFailLoadWithError happened during prerendering."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Download is disallowed in Prerender."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is is canceled because the navigation is redirected to another cross-origin page."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is is destroyed in the destructor."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is canceled because the navigation is redirected to another same-origin page."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Only HTTP(S) navigation allowed for Prerender."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Attempted to prerender a URL that redirected to a non-HTTP(S) URL. Only HTTP(S) pages can be prerendered."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Prerender does not support auth requests from UI."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Prerendering is not supported for low-memory devices."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Navigations after the initial prerendering navigation are disallowed"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Max number of prerendering exceeded."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Prerendering is canceled by a mixed content frame."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "A disallowed API was used by the prerendered page"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "The initial prerendering navigation was not successful due to the server returning a non-200/204/205 status code."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "The prerendering page is not committed in the end."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Navigation request is blocked by CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Encountered a network error during prerendering."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "The prerendered page crashed."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "The renderer process for the prerendering page was killed."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL certificate error."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "The tab is stopped."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "The tab is in the background"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Prerender is not activated and destroyed with the trigger."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "Reload is needed after UserAgentOverride."
+  },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Select protocol handler"
   },

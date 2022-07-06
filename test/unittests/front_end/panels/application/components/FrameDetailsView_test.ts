@@ -166,7 +166,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       'SameOrigin',
       'available, transferable',
       'available\xA0Learn more',
-      'TriggerDestroyed',
+      'Prerender is not activated and destroyed with the trigger.',
     ]);
 
     const stackTrace = getElementWithinComponent(

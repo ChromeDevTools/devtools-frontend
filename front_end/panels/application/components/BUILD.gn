@@ -34,6 +34,7 @@ devtools_module("components") {
     "InterestGroupAccessGrid.ts",
     "OriginTrialTreeView.ts",
     "PermissionsPolicySection.ts",
+    "Prerender2.ts",
     "ProtocolHandlersView.ts",
     "ReportsGrid.ts",
     "StackTrace.ts",

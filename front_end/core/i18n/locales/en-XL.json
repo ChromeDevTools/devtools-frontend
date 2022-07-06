@@ -3209,6 +3209,105 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
   },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Âćt̂ív̂át̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ ĥáŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ t́ĥé Âúd̂íôĆôńt̂éx̂t́ ÂṔÎ ýêt́."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "R̂éŝóûŕĉé l̂óâd́ îś b̂ĺôćk̂éd̂ b́ŷ t́ĥé ĉĺîén̂t́."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "Ĉán̂ćêĺÂĺl̂H́ôśt̂śF̂ór̂T́êśt̂ín̂ǵ."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "T̂h́ê ṕâǵê íŝ ŕêq́ûéŝt́îńĝ ćl̂íêńt̂ ćêŕt̂, ẃĥíĉh́ îś n̂ót̂ śûít̂áb̂ĺê f́ôŕ â h́îd́d̂én̂ ṕâǵê ĺîḱê ṕr̂ér̂én̂d́êŕîńĝ."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé n̂áv̂íĝát̂éd̂ t́ô á ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ âf́t̂ér̂ ĺôád̂ín̂ǵ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ ŵh́îćĥ ŕêd́îŕêćt̂éd̂ t́ô á ĉŕôśŝ-ór̂íĝín̂ ÚR̂Ĺ. Ĉúr̂ŕêńt̂ĺŷ ṕr̂ér̂én̂d́êŕîńĝ ćr̂óŝś-ôŕîǵîń p̂áĝéŝ íŝ d́îśâĺl̂óŵéd̂."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Â ṕr̂ér̂én̂d́êŕêd́ p̂áĝé ŵáŝ áb̂án̂d́ôńêd́ f̂ór̂ ún̂ḱn̂óŵń r̂éâśôńŝ."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "D̂íd̂F́âíl̂Ĺôád̂Ẃît́ĥÉr̂ŕôŕ ĥáp̂ṕêńêd́ d̂úr̂ín̂ǵ p̂ŕêŕêńd̂ér̂ín̂ǵ."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "D̂óŵńl̂óâd́ îś d̂íŝál̂ĺôẃêd́ îń P̂ŕêŕêńd̂ér̂."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ t̂ŕîǵĝér̂éd̂ b́ŷ Ćĥŕôḿê ín̂t́êŕn̂ál̂ (é.ĝ., Óm̂ńîb́ôx́ p̂ŕêŕêńd̂ér̂ín̂ǵ) îś îś ĉán̂ćêĺêd́ b̂éĉáûśê t́ĥé n̂áv̂íĝát̂íôń îś r̂éd̂ír̂éĉt́êd́ t̂ó âńôt́ĥér̂ ćr̂óŝś-ôŕîǵîń p̂áĝé."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ t̂ŕîǵĝér̂éd̂ b́ŷ Ćĥŕôḿê ín̂t́êŕn̂ál̂ (é.ĝ., Óm̂ńîb́ôx́ p̂ŕêŕêńd̂ér̂ín̂ǵ) îś îś d̂éŝt́r̂óŷéd̂ ín̂ t́ĥé d̂éŝt́r̂úĉt́ôŕ."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ t̂ŕîǵĝér̂éd̂ b́ŷ Ćĥŕôḿê ín̂t́êŕn̂ál̂ (é.ĝ., Óm̂ńîb́ôx́ p̂ŕêŕêńd̂ér̂ín̂ǵ) îś ĉán̂ćêĺêd́ b̂éĉáûśê t́ĥé n̂áv̂íĝát̂íôń îś r̂éd̂ír̂éĉt́êd́ t̂ó âńôt́ĥér̂ śâḿê-ór̂íĝín̂ ṕâǵê."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "ÎńP̂ŕôǵr̂éŝśN̂áv̂íĝát̂íôń."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Ôńl̂ý ĤT́T̂Ṕ(Ŝ) ńâv́îǵât́îón̂ ál̂ĺôẃêd́ f̂ór̂ Ṕr̂ér̂én̂d́êŕ."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Ât́t̂ém̂ṕt̂éd̂ t́ô ṕr̂ér̂én̂d́êŕ â ÚR̂Ĺ t̂h́ât́ r̂éd̂ír̂éĉt́êd́ t̂ó â ńôń-ĤT́T̂Ṕ(Ŝ) ÚR̂Ĺ. Ôńl̂ý ĤT́T̂Ṕ(Ŝ) ṕâǵêś ĉán̂ b́ê ṕr̂ér̂én̂d́êŕêd́."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "P̂ŕêŕêńd̂ér̂ d́ôéŝ ńôt́ ŝúp̂ṕôŕt̂ áût́ĥ ŕêq́ûéŝt́ŝ f́r̂óm̂ ÚÎ."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ îś n̂ót̂ śûṕp̂ór̂t́êd́ f̂ór̂ ĺôẃ-m̂ém̂ór̂ý d̂év̂íĉéŝ."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "N̂áv̂íĝát̂íôńŝ áf̂t́êŕ t̂h́ê ín̂ít̂íâĺ p̂ŕêŕêńd̂ér̂ín̂ǵ n̂áv̂íĝát̂íôń âŕê d́îśâĺl̂óŵéd̂"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "M̂áx̂ ńûḿb̂ér̂ óf̂ ṕr̂ér̂én̂d́êŕîńĝ éx̂ćêéd̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ îś ĉán̂ćêĺêd́ b̂ý â ḿîx́êd́ ĉón̂t́êńt̂ f́r̂ám̂é."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "Â d́îśâĺl̂óŵéd̂ ÁP̂Í ŵáŝ úŝéd̂ b́ŷ t́ĥé p̂ŕêŕêńd̂ér̂éd̂ ṕâǵê"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "T̂h́ê ín̂ít̂íâĺ p̂ŕêŕêńd̂ér̂ín̂ǵ n̂áv̂íĝát̂íôń ŵáŝ ńôt́ ŝúĉćêśŝf́ûĺ d̂úê t́ô t́ĥé ŝér̂v́êŕ r̂ét̂úr̂ńîńĝ á n̂ón̂-200/204/205 śt̂át̂úŝ ćôd́ê."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕîńĝ ṕâǵê íŝ ńôt́ ĉóm̂ḿît́t̂éd̂ ín̂ t́ĥé êńd̂."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "N̂áv̂íĝát̂íôń r̂éq̂úêśt̂ íŝ b́l̂óĉḱêd́ b̂ý ĈŚP̂."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Êńĉóûńt̂ér̂éd̂ á n̂ét̂ẃôŕk̂ ér̂ŕôŕ d̂úr̂ín̂ǵ p̂ŕêŕêńd̂ér̂ín̂ǵ."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "T̂h́ê ṕr̂ér̂én̂d́êŕêd́ p̂áĝé ĉŕâśĥéd̂."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "T̂h́ê ŕêńd̂ér̂ér̂ ṕr̂óĉéŝś f̂ór̂ t́ĥé p̂ŕêŕêńd̂ér̂ín̂ǵ p̂áĝé ŵáŝ ḱîĺl̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "ŜŚL̂ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "T̂h́ê t́âb́ îś ŝt́ôṕp̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "T̂h́ê t́âb́ îś îń t̂h́ê b́âćk̂ǵr̂óûńd̂"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "P̂ŕêŕêńd̂ér̂ íŝ ńôt́ âćt̂ív̂át̂éd̂ án̂d́ d̂éŝt́r̂óŷéd̂ ẃît́ĥ t́ĥé t̂ŕîǵĝér̂."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "R̂él̂óâd́ îś n̂éêd́êd́ âf́t̂ér̂ Úŝér̂Áĝén̂t́Ôv́êŕr̂íd̂é."
+  },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Ŝél̂éĉt́ p̂ŕôt́ôćôĺ ĥán̂d́l̂ér̂"
   },

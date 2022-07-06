@@ -10,6 +10,8 @@ copy_to_gen("console") {
     "big-int.html",
     "built-ins.html",
     "console-filter.html",
+    "context-selector-inner.html",
+    "context-selector.html",
     "cors-issue.html",
     "data-url-exceptions.html",
     "document-write.html",
@@ -33,5 +35,6 @@ copy_to_gen("console") {
     "stack-trace.html",
     "structured-objects.html",
     "uncaught-promise.html",
+    "worker-pause.js",
   ]
 }

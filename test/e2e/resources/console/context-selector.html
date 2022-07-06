@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script>
+  function setup() {
+    window.worker = new Worker('./worker-pause.js');
+    window.iframe = document.createElement('iframe');
+    window.iframe.src = 'context-selector-inner.html';
+    window.iframe.name = 'myframe';
+    document.body.appendChild(window.iframe);
+    return new Promise(f => window.iframe.onload = f);
+  }
+
+  function pauseInWorker() {
+    window.worker.postMessage('pause');
+  }
+
+  function pauseInIframe() {
+    window.iframe.contentWindow.eval('debugger;');
+  }
+
+  function pauseInMain() {
+    debugger;
+  }
+</script>
+</body>

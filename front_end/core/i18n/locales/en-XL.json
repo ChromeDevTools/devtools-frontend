@@ -1679,11 +1679,29 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "T̂h́r̂éâd́ {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "B̂íd̂d́êŕ Ŵór̂ḱl̂ét̂"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "B̂íd̂d́êŕ Ŵór̂ḱl̂ét̂ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "D̂éd̂íĉát̂éd̂ Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Ŝél̂ĺêŕ Ŵór̂ḱl̂ét̂"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Ŝél̂ĺêŕ Ŵór̂ḱl̂ét̂ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "T̂h́r̂éâd́ {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Âúĉt́îón̂ Ẃôŕk̂ĺêt́"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Âúĉt́îón̂ Ẃôŕk̂ĺêt́ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"

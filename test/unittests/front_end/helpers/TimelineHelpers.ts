@@ -6,7 +6,6 @@ import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 
 export class FakeStorage extends SDK.TracingModel.BackingStorage {
   appendString() {
-    throw new Error('Not implemented yet');
   }
 
   appendAccessibleString(): () => Promise<string|null> {
@@ -14,10 +13,8 @@ export class FakeStorage extends SDK.TracingModel.BackingStorage {
   }
 
   finishWriting() {
-    throw new Error('Not implemented yet');
   }
 
   reset() {
-    throw new Error('Not implemented yet');
   }
 }

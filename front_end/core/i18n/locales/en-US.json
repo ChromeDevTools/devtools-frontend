@@ -1679,11 +1679,29 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Bidder Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Bidder Worklet — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Dedicated Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Seller Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Seller Worklet — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Auction Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Auction Worklet — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"

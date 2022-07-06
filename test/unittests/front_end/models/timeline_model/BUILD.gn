@@ -9,6 +9,7 @@ ts_library("timeline_model") {
   sources = [
     "TimelineFrameBeginFrameQueue_test.ts",
     "TimelineJSProfile_test.ts",
+    "TimelineModel_test.ts",
   ]
 
   deps = [

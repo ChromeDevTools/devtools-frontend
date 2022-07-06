@@ -4625,6 +4625,9 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Show badges"
   },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Learn More"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM tree breadcrumbs"
   },
@@ -4688,11 +4691,23 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Show all"
   },
-  "panels/elements/CSSRuleValidator.ts | alignContentRuleOnNoWrapFlex": {
-    "message": "This element has flex-wrap: nowrap rule, therefore 'align-content' has no effect."
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Deprecated Property"
   },
-  "panels/elements/CSSRuleValidator.ts | notFlexItemHint": {
-    "message": "Parent of this element is not flex container, therefore {PH1} property has no effect."
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Inactive rule"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Please change parent elements {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Parent element has {REASON_RULE_CODE} rule, therefore this elements {AFFECTED_RULE_CODE} has no effect"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "For this property to work, please remove or change the value of {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "This element has {REASON_RULE_CODE} rule, therefore {AFFECTED_RULE_CODE} has no effect."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"

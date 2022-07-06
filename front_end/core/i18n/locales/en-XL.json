@@ -4625,6 +4625,9 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Ŝh́ôẃ b̂ád̂ǵêś"
   },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "L̂éâŕn̂ Ḿôŕê"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "D̂ÓM̂ t́r̂éê b́r̂éâd́ĉŕûḿb̂ś"
   },
@@ -4688,11 +4691,23 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Ŝh́ôẃ âĺl̂"
   },
-  "panels/elements/CSSRuleValidator.ts | alignContentRuleOnNoWrapFlex": {
-    "message": "T̂h́îś êĺêḿêńt̂ h́âś f̂ĺêx́-ŵŕâṕ: n̂óŵŕâṕ r̂úl̂é, t̂h́êŕêf́ôŕê 'ál̂íĝń-ĉón̂t́êńt̂' h́âś n̂ó êf́f̂éĉt́."
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "D̂ép̂ŕêćât́êd́ P̂ŕôṕêŕt̂ý"
   },
-  "panels/elements/CSSRuleValidator.ts | notFlexItemHint": {
-    "message": "P̂ár̂én̂t́ ôf́ t̂h́îś êĺêḿêńt̂ íŝ ńôt́ f̂ĺêx́ ĉón̂t́âín̂ér̂, t́ĥér̂éf̂ór̂é {PH1} p̂ŕôṕêŕt̂ý ĥáŝ ńô éf̂f́êćt̂."
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Îńâćt̂ív̂é r̂úl̂é"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "P̂ĺêáŝé ĉh́âńĝé p̂ár̂én̂t́ êĺêḿêńt̂ś {EXISTING_PARENT_ELEMENT_RULE} t̂ó {TARGET_PARENT_ELEMENT_RULE} t̂ó f̂íx̂ t́ĥíŝ íŝśûé."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "P̂ár̂én̂t́ êĺêḿêńt̂ h́âś {REASON_RULE_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê t́ĥíŝ él̂ém̂én̂t́ŝ {AFFECTED_RULE_CODE} h́âś n̂ó êf́f̂éĉt́"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ŕêḿôv́ê ór̂ ćĥán̂ǵê t́ĥé v̂ál̂úê óf̂ {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "T̂h́îś êĺêḿêńt̂ h́âś {REASON_RULE_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê {AFFECTED_RULE_CODE} h́âś n̂ó êf́f̂éĉt́."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"

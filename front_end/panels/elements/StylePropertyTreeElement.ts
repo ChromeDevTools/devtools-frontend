@@ -22,6 +22,7 @@ import type {StylePropertiesSection} from './StylePropertiesSection.js';
 import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
 import {cssRuleValidatorsMap} from './CSSRuleValidator.js';
+import type {AuthoringHint} from './CSSRuleValidator.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -715,11 +716,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    const hintMessage = this.getHintMessage(this.computedStyles, this.parentsComputedStyles);
-    if (hintMessage !== null) {
+    const authoringHint = this.getAuthoringHint(this.computedStyles, this.parentsComputedStyles);
+    if (authoringHint !== null) {
       const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
       const hintPopover =
-          new UI.PopoverHelper.PopoverHelper(hintIcon, event => this.handleHintPopoverRequest(hintMessage, event));
+          new UI.PopoverHelper.PopoverHelper(hintIcon, event => this.handleHintPopoverRequest(authoringHint, event));
       hintPopover.setHasPadding(true);
       hintPopover.setTimeout(0, 100);
 
@@ -817,8 +818,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
   }
 
-  private getHintMessage(computedStyles: Map<string, string>|null, parentComputedStyles: Map<string, string>|null):
-      string|null {
+  private getAuthoringHint(computedStyles: Map<string, string>|null, parentComputedStyles: Map<string, string>|null):
+      AuthoringHint|null {
     const propertyName = this.property.name;
 
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS) ||
@@ -828,14 +829,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
       if (!validator.isRuleValid(computedStyles, parentComputedStyles)) {
-        return validator.getHintMessage(propertyName);
+        return validator.getAuthoringHint(propertyName, this.parentsComputedStyles);
       }
     }
 
     return null;
   }
 
-  private handleHintPopoverRequest(hintMessageContent: string, event: Event): UI.PopoverHelper.PopoverRequest|null {
+  private handleHintPopoverRequest(authoringHint: AuthoringHint, event: Event): UI.PopoverHelper.PopoverRequest|null {
     const link = event.composedPath()[0];
     Platform.DCHECK(() => link instanceof Element, 'Link is not an instance of Element');
 
@@ -846,7 +847,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (!node) {
           return false;
         }
-        popover.contentElement.insertAdjacentHTML('beforeend', hintMessageContent);
+        const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(authoringHint);
+        popover.contentElement.insertAdjacentElement('beforeend', popupElement);
         return true;
       },
     };

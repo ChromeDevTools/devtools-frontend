@@ -9,6 +9,7 @@ ts_library("components") {
   sources = [
     "AccessibilityTreeNode_test.ts",
     "AdornerManager_test.ts",
+    "CSSHintDetailsView_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "CSSQuery_test.ts",
     "ComputedStyleProperty_test.ts",

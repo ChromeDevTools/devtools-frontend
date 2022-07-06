@@ -8,6 +8,7 @@
     "package/directive.js",
     "package/directives/class-map.js",
     "package/directives/if-defined.js",
+    "package/directives/unsafe-html.js",
     "package/directives/style-map.js",
     "package/directives/repeat.js",
     "package/directives/until.js",

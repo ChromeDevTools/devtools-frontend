@@ -8,3 +8,4 @@ export * from './package/directives/style-map.js';
 export * from './package/directives/live.js';
 export * from './package/directives/repeat.js';
 export * from './package/directives/until.js';
+export * from './package/directives/unsafe-html.js';

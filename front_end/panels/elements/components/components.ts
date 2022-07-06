@@ -5,6 +5,7 @@
 import * as AccessibilityTreeNode from './AccessibilityTreeNode.js';
 import * as AdornerManager from './AdornerManager.js';
 import * as AdornerSettingsPane from './AdornerSettingsPane.js';
+import * as CSSHintDetailsView from './CSSHintDetailsView.js';
 import * as ComputedStyleProperty from './ComputedStyleProperty.js';
 import * as ComputedStyleTrace from './ComputedStyleTrace.js';
 import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
@@ -22,6 +23,7 @@ export {
   AccessibilityTreeNode,
   AdornerManager,
   AdornerSettingsPane,
+  CSSHintDetailsView,
   ComputedStyleProperty,
   ComputedStyleTrace,
   CSSPropertyIconResolver,

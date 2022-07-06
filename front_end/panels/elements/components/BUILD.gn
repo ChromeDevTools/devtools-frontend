@@ -10,6 +10,7 @@ generate_css("css_files") {
   sources = [
     "accessibilityTreeNode.css",
     "adornerSettingsPane.css",
+    "cssHintDetailsView.css",
     "computedStyleProperty.css",
     "computedStyleTrace.css",
     "cssQuery.css",
@@ -25,6 +26,7 @@ devtools_module("components") {
     "AccessibilityTreeNode.ts",
     "AdornerManager.ts",
     "AdornerSettingsPane.ts",
+    "CSSHintDetailsView.ts",
     "CSSPropertyIconResolver.ts",
     "CSSQuery.ts",
     "ComputedStyleProperty.ts",

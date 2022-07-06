@@ -4,7 +4,7 @@
 
 import type * as puppeteer from 'puppeteer';
 
-import {click, goToResource, waitFor, waitForAria} from '../../shared/helper.js';
+import {click, goToResource, platform, waitFor, waitForAria} from '../../shared/helper.js';
 
 export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 export const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
@@ -34,11 +34,11 @@ export async function openCaptureSettings(sectionClassName: string) {
 }
 
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
-  await frontend.keyboard.down('Control');
+  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
+  await frontend.keyboard.down(modifierKey);
   await frontend.keyboard.press('KeyF');
-  await frontend.keyboard.up('Control');
+  await frontend.keyboard.up(modifierKey);
   await frontend.keyboard.type(searchEntry);
-  await frontend.keyboard.press('Enter');
 }
 
 export async function navigateToSummaryTab() {

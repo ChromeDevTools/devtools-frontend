@@ -3,11 +3,30 @@
 // found in the LICENSE file.
 
 import type {Chrome} from '../../../../extension-api/ExtensionAPI.js';
-import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
+import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import type * as Bindings from '../../../../front_end/models/bindings/bindings.js';
 
-export class TestPlugin extends Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
+export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   constructor(name: string) {
-    super(name);
+    this.name = name;
+  }
+
+  name: string;
+  handleScript(_script: SDK.Script.Script): boolean {
+    return false;
+  }
+
+  async evaluate(
+      _expression: string, _context: Chrome.DevTools.RawLocation,
+      _stopId: Bindings.DebuggerLanguagePlugins.StopId): Promise<Chrome.DevTools.RemoteObject|null> {
+    return null;
+  }
+
+  async getProperties(_objectId: string): Promise<Chrome.DevTools.PropertyDescriptor[]> {
+    return [];
+  }
+
+  async releaseObject(_objectId: string): Promise<void> {
   }
 
   async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):

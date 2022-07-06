@@ -86,6 +86,10 @@ export namespace PrivateAPI {
     Unsubscribe = 'unsubscribe',
     UpdateButton = 'updateButton',
     RegisterLanguageExtensionPlugin = 'registerLanguageExtensionPlugin',
+    GetWasmLinearMemory = 'getWasmLinearMemory',
+    GetWasmLocal = 'getWasmLocal',
+    GetWasmGlobal = 'getWasmGlobal',
+    GetWasmOp = 'getWasmOp',
     RegisterRecorderExtensionPlugin = 'registerRecorderExtensionPlugin',
   }
 
@@ -103,6 +107,9 @@ export namespace PrivateAPI {
     GetInlinedFunctionRanges = 'getInlinedFunctionRanges',
     GetInlinedCalleesRanges = 'getInlinedCalleesRanges',
     GetMappedLines = 'getMappedLines',
+    FormatValue = 'formatValue',
+    GetProperties = 'getProperties',
+    ReleaseObject = 'releaseObject',
   }
 
   export const enum LanguageExtensionPluginEvents {
@@ -197,6 +204,23 @@ export namespace PrivateAPI {
   };
   type GetHARRequest = {command: Commands.GetHAR};
   type GetPageResourcesRequest = {command: Commands.GetPageResources};
+  type GetWasmLinearMemoryRequest = {
+    command: Commands.GetWasmLinearMemory,
+    offset: number,
+    length: number,
+    stopId: unknown,
+  };
+  type GetWasmLocalRequest = {
+    command: Commands.GetWasmLocal,
+    local: number,
+    stopId: unknown,
+  };
+  type GetWasmGlobalRequest = {
+    command: Commands.GetWasmGlobal,
+    global: number,
+    stopId: unknown,
+  };
+  type GetWasmOpRequest = {command: Commands.GetWasmOp, op: number, stopId: unknown};
 
   export type ServerRequests = RegisterRecorderExtensionPluginRequest|RegisterLanguageExtensionPluginRequest|
       SubscribeRequest|UnsubscribeRequest|AddRequestHeadersRequest|ApplyStyleSheetRequest|CreatePanelRequest|
@@ -204,7 +228,8 @@ export namespace PrivateAPI {
       CreateSidebarPaneRequest|SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|
       OpenResourceRequest|SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|
       EvaluateOnInspectedPageRequest|GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|
-      AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest;
+      AddTraceProviderRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|
+      GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|GetWasmOpRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   type AddRawModuleRequest = {
@@ -267,11 +292,24 @@ export namespace PrivateAPI {
     method: LanguageExtensionPluginCommands.GetMappedLines,
     parameters: {rawModuleId: string, sourceFileURL: string},
   };
+  type FormatValueRequest = {
+    method: LanguageExtensionPluginCommands.FormatValue,
+    parameters: {expression: string, context: PublicAPI.Chrome.DevTools.RawLocation, stopId: number},
+  };
+  type GetPropertiesRequest = {
+    method: LanguageExtensionPluginCommands.GetProperties,
+    parameters: {objectId: PublicAPI.Chrome.DevTools.RemoteObjectId},
+  };
+  type ReleaseObjectRequest = {
+    method: LanguageExtensionPluginCommands.ReleaseObject,
+    parameters: {objectId: PublicAPI.Chrome.DevTools.RemoteObjectId},
+  };
 
-  export type LanguageExtensionRequests = AddRawModuleRequest|SourceLocationToRawLocationRequest|
-      RawLocationToSourceLocationRequest|GetScopeInfoRequest|ListVariablesInScopeRequest|RemoveRawModuleRequest|
-      GetTypeInfoRequest|GetFormatterRequest|GetInspectableAddressRequest|GetFunctionInfoRequest|
-      GetInlinedFunctionRangesRequest|GetInlinedCalleesRangesRequest|GetMappedLinesRequest;
+  export type LanguageExtensionRequests =
+      AddRawModuleRequest|SourceLocationToRawLocationRequest|RawLocationToSourceLocationRequest|GetScopeInfoRequest|
+      ListVariablesInScopeRequest|RemoveRawModuleRequest|GetTypeInfoRequest|GetFormatterRequest|
+      GetInspectableAddressRequest|GetFunctionInfoRequest|GetInlinedFunctionRangesRequest|
+      GetInlinedCalleesRangesRequest|GetMappedLinesRequest|FormatValueRequest|GetPropertiesRequest|ReleaseObjectRequest;
 
   type StringifyRequest = {
     method: RecorderExtensionPluginCommands.Stringify,
@@ -331,8 +369,8 @@ namespace APIImpl {
     registerHandler(command: string, handler: (request: {arguments: unknown[]}) => unknown): void;
     unregisterHandler(command: string): void;
     hasHandler(command: string): boolean;
-    sendRequest(request: PrivateAPI.ServerRequests, callback?: ((response: unknown) => unknown), transfers?: unknown[]):
-        void;
+    sendRequest<ResponseT>(
+        request: PrivateAPI.ServerRequests, callback?: ((response: ResponseT) => unknown), transfers?: unknown[]): void;
     nextObjectId(): string;
   }
 
@@ -767,8 +805,7 @@ self.injectedExtensionAPI = function(
     this._plugins = new Map();
   }
 
-  (LanguageServicesAPIImpl.prototype as
-   Pick<APIImpl.LanguageExtensions, 'registerLanguageExtensionPlugin'|'unregisterLanguageExtensionPlugin'>) = {
+  (LanguageServicesAPIImpl.prototype as PublicAPI.Chrome.DevTools.LanguageExtensions) = {
     registerLanguageExtensionPlugin: async function(
         this: APIImpl.LanguageExtensions, plugin: PublicAPI.Chrome.DevTools.LanguageExtensionPlugin, pluginName: string,
         supportedScriptTypes: PublicAPI.Chrome.DevTools.SupportedScriptTypes): Promise<void> {
@@ -822,8 +859,29 @@ self.injectedExtensionAPI = function(
               return plugin.getMappedLines(request.parameters.rawModuleId, request.parameters.sourceFileURL);
             }
             return Promise.resolve(undefined);
+          case PrivateAPI.LanguageExtensionPluginCommands.FormatValue:
+            if ('evaluate' in plugin) {
+              return plugin.evaluate(
+                  request.parameters.expression, request.parameters.context, request.parameters.stopId);
+            }
+            return Promise.resolve(undefined);
+          case PrivateAPI.LanguageExtensionPluginCommands.GetProperties:
+            if ('getProperties' in plugin) {
+              return plugin.getProperties(request.parameters.objectId);
+            }
+            if (!('evaluate' in plugin)) {  // If evalute is defined but the remote objects methods aren't, that's a bug
+              return Promise.resolve(undefined);
+            }
+            break;
+          case PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject:
+            if ('releaseObject' in plugin) {
+              return plugin.releaseObject(request.parameters.objectId);
+            }
+            if (!('evaluate' in plugin)) {  // If evalute is defined but the remote objects methods aren't, that's a bug
+              return Promise.resolve(undefined);
+            }
+            break;
         }
-        // @ts-expect-error
         throw new Error(`Unknown language plugin method ${request.method}`);
       }
 
@@ -849,6 +907,33 @@ self.injectedExtensionAPI = function(
       port.postMessage({event: PrivateAPI.LanguageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin});
       port.close();
     },
+
+    getWasmLinearMemory: async function(
+        this: APIImpl.LanguageExtensions, offset: number, length: number, stopId: number): Promise<ArrayBuffer> {
+      const result = await new Promise(
+          resolve => extensionServer.sendRequest(
+              {command: PrivateAPI.Commands.GetWasmLinearMemory, offset, length, stopId}, resolve));
+      if (Array.isArray(result)) {
+        return new Uint8Array(result).buffer;
+      }
+      return new ArrayBuffer(0);
+    },
+    getWasmLocal: async function(
+        this: APIImpl.LanguageExtensions, local: number, stopId: number): Promise<PublicAPI.Chrome.DevTools.WasmValue> {
+      return new Promise(
+          resolve => extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmLocal, local, stopId}, resolve));
+    },
+    getWasmGlobal: async function(this: APIImpl.LanguageExtensions, global: number, stopId: number):
+        Promise<PublicAPI.Chrome.DevTools.WasmValue> {
+          return new Promise(
+              resolve =>
+                  extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmGlobal, global, stopId}, resolve));
+        },
+    getWasmOp: async function(this: APIImpl.LanguageExtensions, op: number, stopId: number):
+        Promise<PublicAPI.Chrome.DevTools.WasmValue> {
+          return new Promise(
+              resolve => extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmOp, op, stopId}, resolve));
+        },
   };
 
   function declareInterfaceClass<ImplT extends APIImpl.Callable>(implConstructor: ImplT): (
@@ -1241,11 +1326,12 @@ self.injectedExtensionAPI = function(
        APIImpl.ExtensionServerClient,
        'sendRequest'|'hasHandler'|'registerHandler'|'unregisterHandler'|'nextObjectId'|'_registerCallback'|
        '_onCallback'|'_onMessage'>) = {
-    sendRequest: function(
+    sendRequest: function<ResponseT>(
         this: APIImpl.ExtensionServerClient, message: PrivateAPI.ServerRequests,
-        callback?: (response: unknown) => unknown, transfers?: Transferable[]): void {
+        callback?: (response: ResponseT) => unknown, transfers?: Transferable[]): void {
       if (typeof callback === 'function') {
-        (message as PrivateAPI.ExtensionServerRequestMessage).requestId = this._registerCallback(callback);
+        (message as PrivateAPI.ExtensionServerRequestMessage).requestId =
+            this._registerCallback(callback as (response: unknown) => unknown);
       }
       // @ts-expect-error
       this._port.postMessage(message, transfers);

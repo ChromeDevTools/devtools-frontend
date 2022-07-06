@@ -176,6 +176,25 @@ export namespace Chrome {
       stringifyStep(step: Record<string, any>): Promise<string>;
     }
 
+    export type RemoteObjectId = string;
+    export type RemoteObjectType = 'object'|'undefined'|'string'|'number'|'boolean'|'bigint'|'array'|'null';
+
+
+    export interface RemoteObject {
+      type: RemoteObjectType;
+      className?: string;
+      value?: any;
+      description?: string;
+      objectId?: RemoteObjectId;
+      linearMemoryAddress?: number;
+      hasChildren: boolean;
+    }
+
+    export interface PropertyDescriptor {
+      name: string;
+      value: RemoteObject;
+    }
+
     export interface LanguageExtensionPlugin {
       /**
        * A new raw module has been loaded. If the raw wasm module references an external debug info module, its URL will be
@@ -231,6 +250,11 @@ export namespace Chrome {
       }|null>;
 
       /**
+       * Evaluate a source language expression in the context of a given raw location and a given stopId. stopId is an opaque key that should be passed to the APIs accessing wasm state, e.g., getWasmLinearMemory. A stopId is invalidated once the debugger resumes.
+       */
+      evaluate(expression: string, context: RawLocation, stopId: unknown): Promise<RemoteObject|null>;
+
+      /**
        * Returns a piece of JavaScript code that, if evaluated, produces the address of the given field in the wasm memory.
        */
       getInspectableAddress(field: {
@@ -263,6 +287,15 @@ export namespace Chrome {
        * Retrieve a list of line numbers in a file for which line-to-raw-location mappings exist.
        */
       getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined>;
+
+      /**
+       * Retrieve properties of the remote object identified by the object id.
+       */
+      getProperties(objectId: RemoteObjectId): Promise<PropertyDescriptor[]>;
+      /**
+       * Permanently release the remote object identified by the object id.
+       */
+      releaseObject(objectId: RemoteObjectId): Promise<void>;
     }
 
 
@@ -271,11 +304,19 @@ export namespace Chrome {
       symbol_types: string[];
     }
 
+    export type WasmValue = {type: 'i32'|'f32'|'f64', value: number}|{type: 'i64', value: bigint}|
+        {type: 'v128', value: string};
+
     export interface LanguageExtensions {
       registerLanguageExtensionPlugin(
           plugin: LanguageExtensionPlugin, pluginName: string,
           supportedScriptTypes: SupportedScriptTypes): Promise<void>;
       unregisterLanguageExtensionPlugin(plugin: LanguageExtensionPlugin): Promise<void>;
+
+      getWasmLinearMemory(offset: number, length: number, stopId: unknown): Promise<ArrayBuffer>;
+      getWasmLocal(local: number, stopId: unknown): Promise<WasmValue>;
+      getWasmGlobal(global: number, stopId: unknown): Promise<WasmValue>;
+      getWasmOp(op: number, stopId: unknown): Promise<WasmValue>;
     }
 
     export interface RecorderExtensions {

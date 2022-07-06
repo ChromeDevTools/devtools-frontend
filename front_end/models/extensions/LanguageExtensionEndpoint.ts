@@ -29,7 +29,7 @@ class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
   }
 }
 
-export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
+export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   private readonly supportedScriptTypes: {
     language: string,
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -37,6 +37,8 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
     symbol_types: Array<string>,
   };
   private endpoint: LanguageExtensionEndpointImpl;
+  name: string;
+
   constructor(
       name: string, supportedScriptTypes: {
         language: string,
@@ -45,7 +47,7 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
         symbol_types: Array<string>,
       },
       port: MessagePort) {
-    super(name);
+    this.name = name;
     this.supportedScriptTypes = supportedScriptTypes;
     this.endpoint = new LanguageExtensionEndpointImpl(this, port);
   }
@@ -172,6 +174,17 @@ export class LanguageExtensionEndpoint extends Bindings.DebuggerLanguagePlugins.
         PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL});
   }
 
-  dispose(): void {
+  evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number):
+      Promise<Chrome.DevTools.RemoteObject> {
+    return this.endpoint.sendRequest(
+        PrivateAPI.LanguageExtensionPluginCommands.FormatValue, {expression, context, stopId});
+  }
+
+  getProperties(objectId: Chrome.DevTools.RemoteObjectId): Promise<Chrome.DevTools.PropertyDescriptor[]> {
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetProperties, {objectId});
+  }
+
+  releaseObject(objectId: Chrome.DevTools.RemoteObjectId): Promise<void> {
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject, {objectId});
   }
 }

@@ -4,10 +4,11 @@
 
 import {assert} from 'chai';
 
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 import {
   $,
   $$,
+  assertNotNullOrUndefined,
   click,
   enableExperiment,
   getBrowserAndPages,
@@ -44,6 +45,15 @@ import {
   waitForAdditionalSourceFiles,
   WasmLocationLabels,
 } from '../helpers/sources-helpers.js';
+import {expectError} from '../../conductor/events.js';
+
+declare global {
+  let chrome: Chrome.DevTools.Chrome;
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Module: {instance: WebAssembly.Instance};
+  }
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function RegisterExtension(
@@ -959,5 +969,74 @@ describe('The Debugger Language Plugins', async () => {
 
     const messages = await getCurrentConsoleMessages();
     assert.deepStrictEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);
+  });
+
+  it('can access wasm data directly', async () => {
+    const {target} = getBrowserAndPages();
+    const extension = await loadExtension(
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+    await extension.evaluate(() => {
+      class WasmDataExtension {
+        constructor() {
+        }
+
+        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
+          const sourceFileURL = new URL('can_access_wasm_data.wat', rawModule.url || symbols).href;
+          return [sourceFileURL];
+        }
+      }
+
+      RegisterExtension(new WasmDataExtension(), 'Wasm Data', {language: 'WebAssembly', symbol_types: ['None']});
+    });
+
+    await goToResource('extensions/wasm_module.html?module=can_access_wasm_data.wasm');
+    await openSourcesPanel();
+
+    await target.evaluate(
+        () => new Uint8Array((window.Module.instance.exports.memory as WebAssembly.Memory).buffer)
+                  .set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 0));
+
+    const locationLabels =
+        WasmLocationLabels.load('extensions/can_access_wasm_data.wat', 'extensions/can_access_wasm_data.wasm');
+    await locationLabels.setBreakpointInWasmAndRun(
+        'BREAK(can_access_wasm_data)', 'window.Module.instance.exports.exported_func(4)');
+
+    const mem = await extension.evaluate(async(): Promise<number[]> => {
+      const buffer = await chrome.devtools.languageServices.getWasmLinearMemory(0, 10, 0n);
+      if (buffer instanceof ArrayBuffer) {
+        return Array.from(new Uint8Array(buffer));
+      }
+      throw new Error('Expected an ArrayBuffer');
+    });
+    assert.deepEqual(mem, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+    const global = await extension.evaluate(() => chrome.devtools.languageServices.getWasmGlobal(0, 0n));
+    assert.deepEqual(global, {type: 'i32', value: 0xdad});
+
+    const local = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(0, 0n));
+    assert.deepEqual(local, {type: 'i32', value: 4});
+
+    const local2 = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 0n));
+    assert.deepEqual(local2, {type: 'i32', value: 0});
+
+    await locationLabels.continueAndCheckForLabel('BREAK(can_access_wasm_data)');
+
+    const expectedError = expectError('Extension server error: Invalid argument stopId: Unknown stop id');
+    // The stop id is invalid now:
+    const fail = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 0n));
+    // FIXME is this the error reporting experience we want?
+    assert.deepEqual(fail as unknown, {
+      code: 'E_BADARG',
+      description: 'Invalid argument %s: %s',
+      details: [
+        'stopId',
+        'Unknown stop id',
+      ],
+      isError: true,
+    });
+    assertNotNullOrUndefined(expectedError.caught);
+
+    const local2Set = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 1n));
+    assert.deepEqual(local2Set, {type: 'i32', value: 4});
   });
 });

@@ -55,6 +55,7 @@ import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 import {RecorderPluginManager} from './RecorderPluginManager.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
 const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
 
@@ -140,6 +141,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.UpdateButton, this.onUpdateButton.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterLanguageExtensionPlugin, this.registerLanguageExtensionEndpoint.bind(this));
+    this.registerHandler(PrivateAPI.Commands.GetWasmLinearMemory, this.onGetWasmLinearMemory.bind(this));
+    this.registerHandler(PrivateAPI.Commands.GetWasmGlobal, this.onGetWasmGlobal.bind(this));
+    this.registerHandler(PrivateAPI.Commands.GetWasmLocal, this.onGetWasmLocal.bind(this));
+    this.registerHandler(PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
     window.addEventListener('message', this.onWindowMessage.bind(this), false);  // Only for main window.
@@ -204,7 +209,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private registerLanguageExtensionEndpoint(
       message: PrivateAPI.ExtensionServerRequestMessage, _shared_port: MessagePort): Record {
     if (message.command !== PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.Subscribe}`);
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.RegisterLanguageExtensionPlugin}`);
     }
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     if (!pluginManager) {
@@ -217,6 +222,63 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const endpoint = new LanguageExtensionEndpoint(pluginName, {language, symbol_types: symbol_types_array}, port);
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
+  }
+
+  private async loadWasmValue<T>(expression: string, stopId: unknown): Promise<Record|T> {
+    const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    if (!pluginManager) {
+      return this.status.E_FAILED('WebAssembly DWARF support needs to be enabled to use this extension');
+    }
+
+    const callFrame = pluginManager.callFrameForStopId(stopId as Bindings.DebuggerLanguagePlugins.StopId);
+    if (!callFrame) {
+      return this.status.E_BADARG('stopId', 'Unknown stop id');
+    }
+    const result = await callFrame.debuggerModel.agent.invoke_evaluateOnCallFrame({
+      callFrameId: callFrame.id,
+      expression,
+      silent: true,
+      returnByValue: true,
+      throwOnSideEffect: true,
+    });
+
+    if (!result.exceptionDetails && !result.getError()) {
+      return result.result.value;
+    }
+
+    return this.status.E_FAILED('Failed');
+  }
+
+  private async onGetWasmLinearMemory(message: PrivateAPI.ExtensionServerRequestMessage): Promise<Record|number[]> {
+    if (message.command !== PrivateAPI.Commands.GetWasmLinearMemory) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmLinearMemory}`);
+    }
+    return await this.loadWasmValue<number[]>(
+        `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`,
+        message.stopId);
+  }
+
+  private async onGetWasmGlobal(message: PrivateAPI.ExtensionServerRequestMessage):
+      Promise<Record|Chrome.DevTools.WasmValue> {
+    if (message.command !== PrivateAPI.Commands.GetWasmGlobal) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmGlobal}`);
+    }
+    return this.loadWasmValue(`globals[${Number(message.global)}]`, message.stopId);
+  }
+
+  private async onGetWasmLocal(message: PrivateAPI.ExtensionServerRequestMessage):
+      Promise<Record|Chrome.DevTools.WasmValue> {
+    if (message.command !== PrivateAPI.Commands.GetWasmLocal) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmLocal}`);
+    }
+    return this.loadWasmValue(`locals[${Number(message.local)}]`, message.stopId);
+  }
+  private async onGetWasmOp(message: PrivateAPI.ExtensionServerRequestMessage):
+      Promise<Record|Chrome.DevTools.WasmValue> {
+    if (message.command !== PrivateAPI.Commands.GetWasmOp) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetWasmOp}`);
+    }
+    return this.loadWasmValue(`stack[${Number(message.op)}]`, message.stopId);
   }
 
   private registerRecorderExtensionEndpoint(

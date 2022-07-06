@@ -79,7 +79,13 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
 }
 
 export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean {
-  return obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode && obj.inspectableAddress !== undefined;
+  if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
+    return obj.inspectableAddress !== undefined;
+  }
+  if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
+    return obj.linearMemoryAddress !== undefined;
+  }
+  return false;
 }
 
 export function isMemoryObjectProperty(obj: SDK.RemoteObject.RemoteObject): boolean {
@@ -169,6 +175,22 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
 
   static async retrieveDWARFMemoryObjectAndAddress(obj: SDK.RemoteObject.RemoteObject):
       Promise<{obj: SDK.RemoteObject.RemoteObject, address: number}|undefined> {
+    if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
+      const valueNode = obj;
+      const address = valueNode.linearMemoryAddress || 0;
+      const callFrame = valueNode.callFrame;
+      const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
+        callFrameId: callFrame.id,
+        expression: 'memories[0]',
+      });
+      const error = response.getError();
+      if (error) {
+        console.error(error);
+        Common.Console.Console.instance().error(i18nString(UIStrings.couldNotOpenLinearMemory));
+      }
+      const runtimeModel = obj.debuggerModel().runtimeModel();
+      return {obj: runtimeModel.createRemoteObject(response.result), address};
+    }
     if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
       return;
     }

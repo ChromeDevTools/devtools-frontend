@@ -15,15 +15,14 @@
  */
 /**
  * Asserts that the given value is truthy.
- * @param value
+ * @param value - some conditional statement
  * @param message - the error message to throw if the value is not truthy.
+ *
+ * @internal
  */
 export const assert = (value, message) => {
-    if (!value)
+    if (!value) {
         throw new Error(message);
-};
-export const assertNever = (value, message) => {
-    if (value)
-        throw new Error(message);
+    }
 };
 //# sourceMappingURL=assert.js.map

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './JSHandle.js';
+import { ElementHandle } from './ElementHandle.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public
@@ -100,7 +100,7 @@ export interface SnapshotOptions {
      * Root node to get the accessibility tree for
      * @defaultValue The root node of the entire page.
      */
-    root?: ElementHandle;
+    root?: ElementHandle<Node>;
 }
 /**
  * The Accessibility class provides methods for inspecting Chromium's
@@ -125,7 +125,7 @@ export interface SnapshotOptions {
  * @public
  */
 export declare class Accessibility {
-    private _client;
+    #private;
     /**
      * @internal
      */
@@ -143,14 +143,14 @@ export declare class Accessibility {
      *
      * @example
      * An example of dumping the entire accessibility tree:
-     * ```js
+     * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * console.log(snapshot);
      * ```
      *
      * @example
      * An example of logging the focused node's name:
-     * ```js
+     * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * const node = findFocusedNode(snapshot);
      * console.log(node && node.name);
@@ -169,7 +169,7 @@ export declare class Accessibility {
      * @returns An AXNode object representing the snapshot.
      *
      */
-    snapshot(options?: SnapshotOptions): Promise<SerializedAXNode>;
+    snapshot(options?: SnapshotOptions): Promise<SerializedAXNode | null>;
     private serializeTree;
     private collectInterestingNodes;
 }

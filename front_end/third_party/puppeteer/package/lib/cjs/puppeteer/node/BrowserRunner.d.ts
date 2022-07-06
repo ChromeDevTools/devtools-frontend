@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LaunchOptions } from './LaunchOptions.js';
+/// <reference types="node" />
+import * as childProcess from 'child_process';
 import { Connection } from '../common/Connection.js';
 import { Product } from '../common/Product.js';
+import { LaunchOptions } from './LaunchOptions.js';
+/**
+ * @internal
+ */
 export declare class BrowserRunner {
-    private _product;
-    private _executablePath;
-    private _processArguments;
-    private _userDataDir;
-    private _isTempUserDataDir?;
-    proc: any;
-    connection: any;
-    private _closed;
-    private _listeners;
-    private _processClosing;
+    #private;
+    proc?: childProcess.ChildProcess;
+    connection?: Connection;
     constructor(product: Product, executablePath: string, processArguments: string[], userDataDir: string, isTempUserDataDir?: boolean);
     start(options: LaunchOptions): void;
     close(): Promise<void>;

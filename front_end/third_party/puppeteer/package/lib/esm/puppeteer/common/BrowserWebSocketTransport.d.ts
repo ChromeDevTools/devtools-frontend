@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 import { ConnectionTransport } from './ConnectionTransport.js';
+/**
+ * @internal
+ */
 export declare class BrowserWebSocketTransport implements ConnectionTransport {
+    #private;
     static create(url: string): Promise<BrowserWebSocketTransport>;
-    private _ws;
     onmessage?: (message: string) => void;
     onclose?: () => void;
     constructor(ws: WebSocket);

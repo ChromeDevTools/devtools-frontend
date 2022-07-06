@@ -41,10 +41,7 @@ export declare type ConsoleMessageType = 'log' | 'debug' | 'info' | 'error' | 'w
  * @public
  */
 export declare class ConsoleMessage {
-    private _type;
-    private _text;
-    private _args;
-    private _stackTraceLocations;
+    #private;
     /**
      * @public
      */

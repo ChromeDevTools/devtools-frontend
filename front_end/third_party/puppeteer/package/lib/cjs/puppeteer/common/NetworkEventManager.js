@@ -1,10 +1,16 @@
 "use strict";
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _NetworkEventManager_requestWillBeSentMap, _NetworkEventManager_requestPausedMap, _NetworkEventManager_httpRequestsMap, _NetworkEventManager_responseReceivedExtraInfoMap, _NetworkEventManager_queuedRedirectInfoMap, _NetworkEventManager_queuedEventGroupMap;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkEventManager = void 0;
 /**
- * @internal
- *
  * Helper class to track network events by request ID
+ *
+ * @internal
  */
 class NetworkEventManager {
     constructor() {
@@ -40,9 +46,9 @@ class NetworkEventManager {
          *     `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
          *     (see crbug.com/1196004)
          */
-        this._requestWillBeSentMap = new Map();
-        this._requestPausedMap = new Map();
-        this._httpRequestsMap = new Map();
+        _NetworkEventManager_requestWillBeSentMap.set(this, new Map());
+        _NetworkEventManager_requestPausedMap.set(this, new Map());
+        _NetworkEventManager_httpRequestsMap.set(this, new Map());
         /*
          * The below maps are used to reconcile Network.responseReceivedExtraInfo
          * events with their corresponding request. Each response and redirect
@@ -52,28 +58,28 @@ class NetworkEventManager {
          * handle redirects, we have to make them Arrays to represent the chain of
          * events.
          */
-        this._responseReceivedExtraInfoMap = new Map();
-        this._queuedRedirectInfoMap = new Map();
-        this._queuedEventGroupMap = new Map();
+        _NetworkEventManager_responseReceivedExtraInfoMap.set(this, new Map());
+        _NetworkEventManager_queuedRedirectInfoMap.set(this, new Map());
+        _NetworkEventManager_queuedEventGroupMap.set(this, new Map());
     }
     forget(networkRequestId) {
-        this._requestWillBeSentMap.delete(networkRequestId);
-        this._requestPausedMap.delete(networkRequestId);
-        this._queuedEventGroupMap.delete(networkRequestId);
-        this._queuedRedirectInfoMap.delete(networkRequestId);
-        this._responseReceivedExtraInfoMap.delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").delete(networkRequestId);
     }
     responseExtraInfo(networkRequestId) {
-        if (!this._responseReceivedExtraInfoMap.has(networkRequestId)) {
-            this._responseReceivedExtraInfoMap.set(networkRequestId, []);
+        if (!__classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").has(networkRequestId)) {
+            __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").set(networkRequestId, []);
         }
-        return this._responseReceivedExtraInfoMap.get(networkRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").get(networkRequestId);
     }
     queuedRedirectInfo(fetchRequestId) {
-        if (!this._queuedRedirectInfoMap.has(fetchRequestId)) {
-            this._queuedRedirectInfoMap.set(fetchRequestId, []);
+        if (!__classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").has(fetchRequestId)) {
+            __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").set(fetchRequestId, []);
         }
-        return this._queuedRedirectInfoMap.get(fetchRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").get(fetchRequestId);
     }
     queueRedirectInfo(fetchRequestId, redirectInfo) {
         this.queuedRedirectInfo(fetchRequestId).push(redirectInfo);
@@ -82,46 +88,47 @@ class NetworkEventManager {
         return this.queuedRedirectInfo(fetchRequestId).shift();
     }
     numRequestsInProgress() {
-        return [...this._httpRequestsMap].filter(([, request]) => {
+        return [...__classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f")].filter(([, request]) => {
             return !request.response();
         }).length;
     }
     storeRequestWillBeSent(networkRequestId, event) {
-        this._requestWillBeSentMap.set(networkRequestId, event);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").set(networkRequestId, event);
     }
     getRequestWillBeSent(networkRequestId) {
-        return this._requestWillBeSentMap.get(networkRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").get(networkRequestId);
     }
     forgetRequestWillBeSent(networkRequestId) {
-        this._requestWillBeSentMap.delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").delete(networkRequestId);
     }
     getRequestPaused(networkRequestId) {
-        return this._requestPausedMap.get(networkRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").get(networkRequestId);
     }
     forgetRequestPaused(networkRequestId) {
-        this._requestPausedMap.delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").delete(networkRequestId);
     }
     storeRequestPaused(networkRequestId, event) {
-        this._requestPausedMap.set(networkRequestId, event);
+        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").set(networkRequestId, event);
     }
     getRequest(networkRequestId) {
-        return this._httpRequestsMap.get(networkRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").get(networkRequestId);
     }
     storeRequest(networkRequestId, request) {
-        this._httpRequestsMap.set(networkRequestId, request);
+        __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").set(networkRequestId, request);
     }
     forgetRequest(networkRequestId) {
-        this._httpRequestsMap.delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").delete(networkRequestId);
     }
     getQueuedEventGroup(networkRequestId) {
-        return this._queuedEventGroupMap.get(networkRequestId);
+        return __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").get(networkRequestId);
     }
     queueEventGroup(networkRequestId, event) {
-        this._queuedEventGroupMap.set(networkRequestId, event);
+        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").set(networkRequestId, event);
     }
     forgetQueuedEventGroup(networkRequestId) {
-        this._queuedEventGroupMap.delete(networkRequestId);
+        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").delete(networkRequestId);
     }
 }
 exports.NetworkEventManager = NetworkEventManager;
+_NetworkEventManager_requestWillBeSentMap = new WeakMap(), _NetworkEventManager_requestPausedMap = new WeakMap(), _NetworkEventManager_httpRequestsMap = new WeakMap(), _NetworkEventManager_responseReceivedExtraInfoMap = new WeakMap(), _NetworkEventManager_queuedRedirectInfoMap = new WeakMap(), _NetworkEventManager_queuedEventGroupMap = new WeakMap();
 //# sourceMappingURL=NetworkEventManager.js.map

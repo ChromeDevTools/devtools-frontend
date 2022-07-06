@@ -13,50 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/// <reference types="node" />
-import { ExecutionContext } from './ExecutionContext.js';
-import { Page, ScreenshotOptions } from './Page.js';
-import { CDPSession } from './Connection.js';
-import { KeyInput } from './USKeyboardLayout.js';
-import { FrameManager, Frame } from './FrameManager.js';
 import { Protocol } from 'devtools-protocol';
-import { EvaluateFn, SerializableOrJSHandle, EvaluateFnReturnType, EvaluateHandleFn, WrapElementHandle, UnwrapPromiseLike } from './EvalTypes.js';
+import { CDPSession } from './Connection.js';
+import { EvaluateFunc, HandleFor, HandleOr } from './types.js';
+import { ExecutionContext } from './ExecutionContext.js';
 import { MouseButton } from './Input.js';
+import type { ElementHandle } from './ElementHandle.js';
+declare const __JSHandleSymbol: unique symbol;
 /**
  * @public
  */
 export interface BoxModel {
-    content: Array<{
-        x: number;
-        y: number;
-    }>;
-    padding: Array<{
-        x: number;
-        y: number;
-    }>;
-    border: Array<{
-        x: number;
-        y: number;
-    }>;
-    margin: Array<{
-        x: number;
-        y: number;
-    }>;
+    content: Point[];
+    padding: Point[];
+    border: Point[];
+    margin: Point[];
     width: number;
     height: number;
 }
 /**
  * @public
  */
-export interface BoundingBox {
-    /**
-     * the x coordinate of the element in pixels.
-     */
-    x: number;
-    /**
-     * the y coordinate of the element in pixels.
-     */
-    y: number;
+export interface BoundingBox extends Point {
     /**
      * the width of the element in pixels.
      */
@@ -67,15 +45,11 @@ export interface BoundingBox {
     height: number;
 }
 /**
- * @internal
- */
-export declare function createJSHandle(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject): JSHandle;
-/**
  * Represents an in-page JavaScript object. JSHandles can be created with the
  * {@link Page.evaluateHandle | page.evaluateHandle} method.
  *
  * @example
- * ```js
+ * ```ts
  * const windowHandle = await page.evaluateHandle(() => window);
  * ```
  *
@@ -88,23 +62,28 @@ export declare function createJSHandle(context: ExecutionContext, remoteObject: 
  *
  * @public
  */
-export declare class JSHandle<HandleObjectType = unknown> {
+export declare class JSHandle<T = unknown> {
+    #private;
+    /**
+     * Used for nominally typing {@link JSHandle}.
+     */
+    [__JSHandleSymbol]?: T;
     /**
      * @internal
      */
-    _context: ExecutionContext;
+    get _client(): CDPSession;
     /**
      * @internal
      */
-    _client: CDPSession;
+    get _disposed(): boolean;
     /**
      * @internal
      */
-    _remoteObject: Protocol.Runtime.RemoteObject;
+    get _remoteObject(): Protocol.Runtime.RemoteObject;
     /**
      * @internal
      */
-    _disposed: boolean;
+    get _context(): ExecutionContext;
     /**
      * @internal
      */
@@ -113,42 +92,50 @@ export declare class JSHandle<HandleObjectType = unknown> {
      */
     executionContext(): ExecutionContext;
     /**
-     * This method passes this handle as the first argument to `pageFunction`.
-     * If `pageFunction` returns a Promise, then `handle.evaluate` would wait
-     * for the promise to resolve and return its value.
+     * This method passes this handle as the first argument to `pageFunction`. If
+     * `pageFunction` returns a Promise, then `handle.evaluate` would wait for the
+     * promise to resolve and return its value.
      *
      * @example
-     * ```js
+     * ```ts
      * const tweetHandle = await page.$('.tweet .retweets');
      * expect(await tweetHandle.evaluate(node => node.innerText)).toBe('10');
      * ```
      */
-    evaluate<T extends EvaluateFn<HandleObjectType>>(pageFunction: T | string, ...args: SerializableOrJSHandle[]): Promise<UnwrapPromiseLike<EvaluateFnReturnType<T>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
+        this,
+        ...Params
+    ]>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * This method passes this handle as the first argument to `pageFunction`.
      *
      * @remarks
      *
      * The only difference between `jsHandle.evaluate` and
-     * `jsHandle.evaluateHandle` is that `jsHandle.evaluateHandle`
-     * returns an in-page object (JSHandle).
+     * `jsHandle.evaluateHandle` is that `jsHandle.evaluateHandle` returns an
+     * in-page object (JSHandle).
      *
-     * If the function passed to `jsHandle.evaluateHandle` returns a Promise,
-     * then `evaluateHandle.evaluateHandle` waits for the promise to resolve and
+     * If the function passed to `jsHandle.evaluateHandle` returns a Promise, then
+     * `evaluateHandle.evaluateHandle` waits for the promise to resolve and
      * returns its value.
      *
      * See {@link Page.evaluateHandle} for more details.
      */
-    evaluateHandle<HandleType extends JSHandle = JSHandle>(pageFunction: EvaluateHandleFn, ...args: SerializableOrJSHandle[]): Promise<HandleType>;
-    /** Fetches a single property from the referenced object.
-     */
-    getProperty(propertyName: string): Promise<JSHandle>;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
+        this,
+        ...Params
+    ]>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
-     * The method returns a map with property names as keys and JSHandle
-     * instances for the property values.
+     * Fetches a single property from the referenced object.
+     */
+    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
+    /**
+     * The method returns a map with property names as keys and JSHandle instances
+     * for the property values.
      *
      * @example
-     * ```js
+     * ```ts
      * const listHandle = await page.evaluateHandle(() => document.body.children);
      * const properties = await listHandle.getProperties();
      * const children = [];
@@ -175,7 +162,7 @@ export declare class JSHandle<HandleObjectType = unknown> {
      * @returns Either `null` or the object handle itself, if the object
      * handle is an instance of {@link ElementHandle}.
      */
-    asElement(): ElementHandle | null;
+    asElement(): ElementHandle<Node> | null;
     /**
      * Stops referencing the element handle, and resolves when the object handle is
      * successfully disposed of.
@@ -187,343 +174,6 @@ export declare class JSHandle<HandleObjectType = unknown> {
      * @remarks Useful during debugging.
      */
     toString(): string;
-}
-/**
- * ElementHandle represents an in-page DOM element.
- *
- * @remarks
- *
- * ElementHandles can be created with the {@link Page.$} method.
- *
- * ```js
- * const puppeteer = require('puppeteer');
- *
- * (async () => {
- *  const browser = await puppeteer.launch();
- *  const page = await browser.newPage();
- *  await page.goto('https://example.com');
- *  const hrefElement = await page.$('a');
- *  await hrefElement.click();
- *  // ...
- * })();
- * ```
- *
- * ElementHandle prevents the DOM element from being garbage-collected unless the
- * handle is {@link JSHandle.dispose | disposed}. ElementHandles are auto-disposed
- * when their origin frame gets navigated.
- *
- * ElementHandle instances can be used as arguments in {@link Page.$eval} and
- * {@link Page.evaluate} methods.
- *
- * If you're using TypeScript, ElementHandle takes a generic argument that
- * denotes the type of element the handle is holding within. For example, if you
- * have a handle to a `<select>` element, you can type it as
- * `ElementHandle<HTMLSelectElement>` and you get some nicer type checks.
- *
- * @public
- */
-export declare class ElementHandle<ElementType extends Element = Element> extends JSHandle<ElementType> {
-    private _frame;
-    private _page;
-    private _frameManager;
-    /**
-     * @internal
-     */
-    constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, frame: Frame, page: Page, frameManager: FrameManager);
-    /**
-     * Wait for the `selector` to appear within the element. If at the moment of calling the
-     * method the `selector` already exists, the method will return immediately. If
-     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
-     *
-     * This method does not work across navigations or if the element is detached from DOM.
-     *
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-     * of an element to wait for
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when element specified by selector string
-     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
-     * selector is not found in DOM.
-     * @remarks
-     * The optional parameters in `options` are:
-     *
-     * - `visible`: wait for the selected element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
-     *
-     * - `hidden`: wait for the selected element to not be found in the DOM or to be hidden,
-     * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
-     * `false`.
-     *
-     * - `timeout`: maximum time to wait in milliseconds. Defaults to `30000`
-     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
-     * by using the {@link Page.setDefaultTimeout} method.
-     */
-    waitForSelector(selector: string, options?: {
-        visible?: boolean;
-        hidden?: boolean;
-        timeout?: number;
-    }): Promise<ElementHandle | null>;
-    /**
-     * Wait for the `xpath` within the element. If at the moment of calling the
-     * method the `xpath` already exists, the method will return immediately. If
-     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
-     *
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended automatically.
-     *
-     * This method works across navigation
-     * ```js
-     * const puppeteer = require('puppeteer');
-     * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * let currentURL;
-     * page
-     * .waitForXPath('//img')
-     * .then(() => console.log('First URL with image: ' + currentURL));
-     * for (currentURL of [
-     * 'https://example.com',
-     * 'https://google.com',
-     * 'https://bbc.com',
-     * ]) {
-     * await page.goto(currentURL);
-     * }
-     * await browser.close();
-     * })();
-     * ```
-     * @param xpath - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
-     * element to wait for
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when element specified by xpath string is
-     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
-     * not found in DOM.
-     * @remarks
-     * The optional Argument `options` have properties:
-     *
-     * - `visible`: A boolean to wait for element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
-     *
-     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-     * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-     * Defaults to `false`.
-     *
-     * - `timeout`: A number which is maximum time to wait for in milliseconds.
-     * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-     * value can be changed by using the {@link Page.setDefaultTimeout} method.
-     */
-    waitForXPath(xpath: string, options?: {
-        visible?: boolean;
-        hidden?: boolean;
-        timeout?: number;
-    }): Promise<ElementHandle | null>;
-    asElement(): ElementHandle<ElementType> | null;
-    /**
-     * Resolves to the content frame for element handles referencing
-     * iframe nodes, or null otherwise
-     */
-    contentFrame(): Promise<Frame | null>;
-    private _scrollIntoViewIfNeeded;
-    private _getOOPIFOffsets;
-    /**
-     * Returns the middle point within an element unless a specific offset is provided.
-     */
-    clickablePoint(offset?: Offset): Promise<Point>;
-    private _getBoxModel;
-    private _fromProtocolQuad;
-    private _intersectQuadWithViewport;
-    /**
-     * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to hover over the center of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    hover(): Promise<void>;
-    /**
-     * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to click in the center of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    click(options?: ClickOptions): Promise<void>;
-    /**
-     * This method creates and captures a dragevent from the element.
-     */
-    drag(target: Point): Promise<Protocol.Input.DragData>;
-    /**
-     * This method creates a `dragenter` event on the element.
-     */
-    dragEnter(data?: Protocol.Input.DragData): Promise<void>;
-    /**
-     * This method creates a `dragover` event on the element.
-     */
-    dragOver(data?: Protocol.Input.DragData): Promise<void>;
-    /**
-     * This method triggers a drop on the element.
-     */
-    drop(data?: Protocol.Input.DragData): Promise<void>;
-    /**
-     * This method triggers a dragenter, dragover, and drop on the element.
-     */
-    dragAndDrop(target: ElementHandle, options?: {
-        delay: number;
-    }): Promise<void>;
-    /**
-     * Triggers a `change` and `input` event once all the provided options have been
-     * selected. If there's no `<select>` element matching `selector`, the method
-     * throws an error.
-     *
-     * @example
-     * ```js
-     * handle.select('blue'); // single selection
-     * handle.select('red', 'green', 'blue'); // multiple selections
-     * ```
-     * @param values - Values of options to select. If the `<select>` has the
-     *    `multiple` attribute, all values are considered, otherwise only the first
-     *    one is taken into account.
-     */
-    select(...values: string[]): Promise<string[]>;
-    /**
-     * This method expects `elementHandle` to point to an
-     * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input | input element}.
-     * @param filePaths - Sets the value of the file input to these paths.
-     *    If some of the  `filePaths` are relative paths, then they are resolved
-     *    relative to the {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}
-     */
-    uploadFile(...filePaths: string[]): Promise<void>;
-    /**
-     * This method scrolls element into view if needed, and then uses
-     * {@link Touchscreen.tap} to tap in the center of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    tap(): Promise<void>;
-    /**
-     * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
-     */
-    focus(): Promise<void>;
-    /**
-     * Focuses the element, and then sends a `keydown`, `keypress`/`input`, and
-     * `keyup` event for each character in the text.
-     *
-     * To press a special key, like `Control` or `ArrowDown`,
-     * use {@link ElementHandle.press}.
-     *
-     * @example
-     * ```js
-     * await elementHandle.type('Hello'); // Types instantly
-     * await elementHandle.type('World', {delay: 100}); // Types slower, like a user
-     * ```
-     *
-     * @example
-     * An example of typing into a text field and then submitting the form:
-     *
-     * ```js
-     * const elementHandle = await page.$('input');
-     * await elementHandle.type('some text');
-     * await elementHandle.press('Enter');
-     * ```
-     */
-    type(text: string, options?: {
-        delay: number;
-    }): Promise<void>;
-    /**
-     * Focuses the element, and then uses {@link Keyboard.down} and {@link Keyboard.up}.
-     *
-     * @remarks
-     * If `key` is a single character and no modifier keys besides `Shift`
-     * are being held down, a `keypress`/`input` event will also be generated.
-     * The `text` option can be specified to force an input event to be generated.
-     *
-     * **NOTE** Modifier keys DO affect `elementHandle.press`. Holding down `Shift`
-     * will type the text in upper case.
-     *
-     * @param key - Name of key to press, such as `ArrowLeft`.
-     *    See {@link KeyInput} for a list of all key names.
-     */
-    press(key: KeyInput, options?: PressOptions): Promise<void>;
-    /**
-     * This method returns the bounding box of the element (relative to the main frame),
-     * or `null` if the element is not visible.
-     */
-    boundingBox(): Promise<BoundingBox | null>;
-    /**
-     * This method returns boxes of the element, or `null` if the element is not visible.
-     *
-     * @remarks
-     *
-     * Boxes are represented as an array of points;
-     * Each Point is an object `{x, y}`. Box points are sorted clock-wise.
-     */
-    boxModel(): Promise<BoxModel | null>;
-    /**
-     * This method scrolls element into view if needed, and then uses
-     * {@link Page.screenshot} to take a screenshot of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    screenshot(options?: ScreenshotOptions): Promise<string | Buffer>;
-    /**
-     * Runs `element.querySelector` within the page. If no element matches the selector,
-     * the return value resolves to `null`.
-     */
-    $<T extends Element = Element>(selector: string): Promise<ElementHandle<T> | null>;
-    /**
-     * Runs `element.querySelectorAll` within the page. If no elements match the selector,
-     * the return value resolves to `[]`.
-     */
-    $$<T extends Element = Element>(selector: string): Promise<Array<ElementHandle<T>>>;
-    /**
-     * This method runs `document.querySelector` within the element and passes it as
-     * the first argument to `pageFunction`. If there's no element matching `selector`,
-     * the method throws an error.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$eval` would wait for the promise
-     * to resolve and return its value.
-     *
-     * @example
-     * ```js
-     * const tweetHandle = await page.$('.tweet');
-     * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe('100');
-     * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe('10');
-     * ```
-     */
-    $eval<ReturnType>(selector: string, pageFunction: (element: Element, ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
-    /**
-     * This method runs `document.querySelectorAll` within the element and passes it as
-     * the first argument to `pageFunction`. If there's no element matching `selector`,
-     * the method throws an error.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$$eval` would wait for the
-     * promise to resolve and return its value.
-     *
-     * @example
-     * ```html
-     * <div class="feed">
-     *   <div class="tweet">Hello!</div>
-     *   <div class="tweet">Hi!</div>
-     * </div>
-     * ```
-     *
-     * @example
-     * ```js
-     * const feedHandle = await page.$('.feed');
-     * expect(await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)))
-     *  .toEqual(['Hello!', 'Hi!']);
-     * ```
-     */
-    $$eval<ReturnType>(selector: string, pageFunction: (elements: Element[], ...args: unknown[]) => ReturnType | Promise<ReturnType>, ...args: SerializableOrJSHandle[]): Promise<WrapElementHandle<ReturnType>>;
-    /**
-     * The method evaluates the XPath expression relative to the elementHandle.
-     * If there are no such elements, the method will resolve to an empty array.
-     * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
-     */
-    $x(expression: string): Promise<ElementHandle[]>;
-    /**
-     * Resolves to true if the element is visible in the current viewport.
-     */
-    isIntersectingViewport(options?: {
-        threshold?: number;
-    }): Promise<boolean>;
 }
 /**
  * @public
@@ -581,4 +231,5 @@ export interface Point {
     x: number;
     y: number;
 }
+export {};
 //# sourceMappingURL=JSHandle.d.ts.map

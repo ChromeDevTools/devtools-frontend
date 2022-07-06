@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from './JSHandle.js';
 import { Protocol } from 'devtools-protocol';
+import { ElementHandle } from './ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
  * @remarks
  * `FileChooser` objects are returned via the `page.waitForFileChooser` method.
  * @example
  * An example of using `FileChooser`:
- * ```js
+ * ```ts
  * const [fileChooser] = await Promise.all([
  *   page.waitForFileChooser(),
  *   page.click('#upload-file-button'), // some button that triggers file selection
@@ -34,13 +34,11 @@ import { Protocol } from 'devtools-protocol';
  * @public
  */
 export declare class FileChooser {
-    private _element;
-    private _multiple;
-    private _handled;
+    #private;
     /**
      * @internal
      */
-    constructor(element: ElementHandle, event: Protocol.Page.FileChooserOpenedEvent);
+    constructor(element: ElementHandle<HTMLInputElement>, event: Protocol.Page.FileChooserOpenedEvent);
     /**
      * Whether file chooser allow for {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple} file selection.
      */

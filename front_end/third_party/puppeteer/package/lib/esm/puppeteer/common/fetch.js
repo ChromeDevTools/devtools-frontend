@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isNode } from '../environment.js';
-/* Use the global version if we're in the browser, else load the node-fetch module. */
+/**
+ * Gets the global version if we're in the browser, else loads the node-fetch module.
+ *
+ * @internal
+ */
 export const getFetch = async () => {
-    return isNode ? (await import('cross-fetch')).fetch : globalThis.fetch;
+    return globalThis.fetch || (await import('cross-fetch')).fetch;
 };
 //# sourceMappingURL=fetch.js.map

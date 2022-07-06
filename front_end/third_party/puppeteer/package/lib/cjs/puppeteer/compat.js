@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.puppeteerDirname = void 0;
 const path_1 = require("path");
+/**
+ * @internal
+ */
 let puppeteerDirname;
 exports.puppeteerDirname = puppeteerDirname;
 try {

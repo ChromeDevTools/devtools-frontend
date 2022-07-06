@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { JSHandle, ElementHandle } from './JSHandle.js';
+import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { DOMWorld } from './DOMWorld.js';
+import { ElementHandle } from './ElementHandle.js';
 import { Frame } from './FrameManager.js';
-import { Protocol } from 'devtools-protocol';
-import { EvaluateHandleFn, SerializableOrJSHandle } from './EvalTypes.js';
+import { JSHandle } from './JSHandle.js';
+import { EvaluateFunc, HandleFor } from './types.js';
 /**
  * @public
  */
-export declare const EVALUATION_SCRIPT_URL = "__puppeteer_evaluation_script__";
+export declare const EVALUATION_SCRIPT_URL = "pptr://__puppeteer_evaluation_script__";
 /**
  * This class represents a context for JavaScript execution. A [Page] might have
  * many execution contexts:
@@ -41,6 +42,7 @@ export declare const EVALUATION_SCRIPT_URL = "__puppeteer_evaluation_script__";
  * @public
  */
 export declare class ExecutionContext {
+    #private;
     /**
      * @internal
      */
@@ -48,7 +50,7 @@ export declare class ExecutionContext {
     /**
      * @internal
      */
-    _world: DOMWorld;
+    _world?: DOMWorld;
     /**
      * @internal
      */
@@ -60,7 +62,7 @@ export declare class ExecutionContext {
     /**
      * @internal
      */
-    constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world: DOMWorld);
+    constructor(client: CDPSession, contextPayload: Protocol.Runtime.ExecutionContextDescription, world?: DOMWorld);
     /**
      * @remarks
      *
@@ -83,7 +85,7 @@ export declare class ExecutionContext {
      *
      *
      * @example
-     * ```js
+     * ```ts
      * const executionContext = await page.mainFrame().executionContext();
      * const result = await executionContext.evaluate(() => Promise.resolve(8 * 7))* ;
      * console.log(result); // prints "56"
@@ -92,14 +94,14 @@ export declare class ExecutionContext {
      * @example
      * A string can also be passed in instead of a function.
      *
-     * ```js
+     * ```ts
      * console.log(await executionContext.evaluate('1 + 2')); // prints "3"
      * ```
      *
      * @example
      * {@link JSHandle} instances can be passed as arguments to the
      * `executionContext.* evaluate`:
-     * ```js
+     * ```ts
      * const oneHandle = await executionContext.evaluateHandle(() => 1);
      * const twoHandle = await executionContext.evaluateHandle(() => 2);
      * const result = await executionContext.evaluate(
@@ -114,7 +116,7 @@ export declare class ExecutionContext {
      *
      * @returns A promise that resolves to the return value of the given function.
      */
-    evaluate<ReturnType>(pageFunction: Function | string, ...args: unknown[]): Promise<ReturnType>;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @remarks
      * The only difference between `executionContext.evaluate` and
@@ -125,7 +127,7 @@ export declare class ExecutionContext {
      * promise to resolve and return its value.
      *
      * @example
-     * ```js
+     * ```ts
      * const context = await page.mainFrame().executionContext();
      * const aHandle = await context.evaluateHandle(() => Promise.resolve(self));
      * aHandle; // Handle for the global object.
@@ -134,7 +136,7 @@ export declare class ExecutionContext {
      * @example
      * A string can also be passed in instead of a function.
      *
-     * ```js
+     * ```ts
      * // Handle for the '3' * object.
      * const aHandle = await context.evaluateHandle('1 + 2');
      * ```
@@ -143,7 +145,7 @@ export declare class ExecutionContext {
      * JSHandle instances can be passed as arguments
      * to the `executionContext.* evaluateHandle`:
      *
-     * ```js
+     * ```ts
      * const aHandle = await context.evaluateHandle(() => document.body);
      * const resultHandle = await context.evaluateHandle(body => body.innerHTML, * aHandle);
      * console.log(await resultHandle.jsonValue()); // prints body's innerHTML
@@ -157,14 +159,13 @@ export declare class ExecutionContext {
      * @returns A promise that resolves to the return value of the given function
      * as an in-page object (a {@link JSHandle}).
      */
-    evaluateHandle<HandleType extends JSHandle | ElementHandle = JSHandle>(pageFunction: EvaluateHandleFn, ...args: SerializableOrJSHandle[]): Promise<HandleType>;
-    private _evaluateInternal;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * This method iterates the JavaScript heap and finds all the objects with the
      * given prototype.
      * @remarks
      * @example
-     * ```js
+     * ```ts
      * // Create a Map object
      * await page.evaluate(() => window.map = new Map());
      * // Get a handle to the Map object prototype
@@ -181,14 +182,14 @@ export declare class ExecutionContext {
      *
      * @returns A handle to an array of objects with the given prototype.
      */
-    queryObjects(prototypeHandle: JSHandle): Promise<JSHandle>;
+    queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<HandleFor<Prototype[]>>;
     /**
      * @internal
      */
-    _adoptBackendNodeId(backendNodeId: Protocol.DOM.BackendNodeId): Promise<ElementHandle>;
+    _adoptBackendNodeId(backendNodeId?: Protocol.DOM.BackendNodeId): Promise<ElementHandle<Node>>;
     /**
      * @internal
      */
-    _adoptElementHandle(elementHandle: ElementHandle): Promise<ElementHandle>;
+    _adoptElementHandle<T extends ElementHandle<Node>>(elementHandle: T): Promise<T>;
 }
 //# sourceMappingURL=ExecutionContext.d.ts.map

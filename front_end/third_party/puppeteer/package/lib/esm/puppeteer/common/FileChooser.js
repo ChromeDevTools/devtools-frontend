@@ -13,6 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _FileChooser_element, _FileChooser_multiple, _FileChooser_handled;
 import { assert } from './assert.js';
 /**
  * File choosers let you react to the page requesting for a file.
@@ -20,7 +32,7 @@ import { assert } from './assert.js';
  * `FileChooser` objects are returned via the `page.waitForFileChooser` method.
  * @example
  * An example of using `FileChooser`:
- * ```js
+ * ```ts
  * const [fileChooser] = await Promise.all([
  *   page.waitForFileChooser(),
  *   page.click('#upload-file-button'), // some button that triggers file selection
@@ -37,15 +49,17 @@ export class FileChooser {
      * @internal
      */
     constructor(element, event) {
-        this._handled = false;
-        this._element = element;
-        this._multiple = event.mode !== 'selectSingle';
+        _FileChooser_element.set(this, void 0);
+        _FileChooser_multiple.set(this, void 0);
+        _FileChooser_handled.set(this, false);
+        __classPrivateFieldSet(this, _FileChooser_element, element, "f");
+        __classPrivateFieldSet(this, _FileChooser_multiple, event.mode !== 'selectSingle', "f");
     }
     /**
      * Whether file chooser allow for {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple} file selection.
      */
     isMultiple() {
-        return this._multiple;
+        return __classPrivateFieldGet(this, _FileChooser_multiple, "f");
     }
     /**
      * Accept the file chooser request with given paths.
@@ -53,16 +67,17 @@ export class FileChooser {
      * then they are resolved relative to the {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
      */
     async accept(filePaths) {
-        assert(!this._handled, 'Cannot accept FileChooser which is already handled!');
-        this._handled = true;
-        await this._element.uploadFile(...filePaths);
+        assert(!__classPrivateFieldGet(this, _FileChooser_handled, "f"), 'Cannot accept FileChooser which is already handled!');
+        __classPrivateFieldSet(this, _FileChooser_handled, true, "f");
+        await __classPrivateFieldGet(this, _FileChooser_element, "f").uploadFile(...filePaths);
     }
     /**
      * Closes the file chooser without selecting any files.
      */
     cancel() {
-        assert(!this._handled, 'Cannot cancel FileChooser which is already handled!');
-        this._handled = true;
+        assert(!__classPrivateFieldGet(this, _FileChooser_handled, "f"), 'Cannot cancel FileChooser which is already handled!');
+        __classPrivateFieldSet(this, _FileChooser_handled, true, "f");
     }
 }
+_FileChooser_element = new WeakMap(), _FileChooser_multiple = new WeakMap(), _FileChooser_handled = new WeakMap();
 //# sourceMappingURL=FileChooser.js.map

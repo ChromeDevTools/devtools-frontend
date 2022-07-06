@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/// <reference types="node" />
-import { PuppeteerEventListener } from './helper.js';
 import { TimeoutError } from './Errors.js';
 import { FrameManager, Frame } from './FrameManager.js';
-import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 /**
  * @public
@@ -31,38 +28,13 @@ export declare type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'netw
  * @internal
  */
 export declare class LifecycleWatcher {
-    _expectedLifecycle: ProtocolLifeCycleEvent[];
-    _frameManager: FrameManager;
-    _frame: Frame;
-    _timeout: number;
-    _navigationRequest?: HTTPRequest;
-    _eventListeners: PuppeteerEventListener[];
-    _initialLoaderId: string;
-    _sameDocumentNavigationPromise: Promise<Error | null>;
-    _sameDocumentNavigationCompleteCallback: (x?: Error) => void;
-    _lifecyclePromise: Promise<void>;
-    _lifecycleCallback: () => void;
-    _newDocumentNavigationPromise: Promise<Error | null>;
-    _newDocumentNavigationCompleteCallback: (x?: Error) => void;
-    _terminationPromise: Promise<Error | null>;
-    _terminationCallback: (x?: Error) => void;
-    _timeoutPromise: Promise<TimeoutError | null>;
-    _maximumTimer?: NodeJS.Timeout;
-    _hasSameDocumentNavigation?: boolean;
-    _swapped?: boolean;
+    #private;
     constructor(frameManager: FrameManager, frame: Frame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number);
-    _onRequest(request: HTTPRequest): void;
-    _onFrameDetached(frame: Frame): void;
     navigationResponse(): Promise<HTTPResponse | null>;
-    _terminate(error: Error): void;
-    sameDocumentNavigationPromise(): Promise<Error | null>;
-    newDocumentNavigationPromise(): Promise<Error | null>;
+    sameDocumentNavigationPromise(): Promise<Error | undefined>;
+    newDocumentNavigationPromise(): Promise<Error | undefined>;
     lifecyclePromise(): Promise<void>;
-    timeoutOrTerminationPromise(): Promise<Error | TimeoutError | null>;
-    _createTimeoutPromise(): Promise<TimeoutError | null>;
-    _navigatedWithinDocument(frame: Frame): void;
-    _frameSwapped(frame: Frame): void;
-    _checkLifecycleComplete(): void;
+    timeoutOrTerminationPromise(): Promise<Error | TimeoutError | undefined>;
     dispose(): void;
 }
 //# sourceMappingURL=LifecycleWatcher.d.ts.map

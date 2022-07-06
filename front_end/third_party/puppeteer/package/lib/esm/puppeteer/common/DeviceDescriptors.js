@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const devices = [
+const deviceArray = [
     {
         name: 'Blackberry PlayBook',
         userAgent: 'Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+',
@@ -1396,9 +1396,29 @@ const devices = [
     },
 ];
 /**
- * @internal
+ * A list of devices to be used with `page.emulate(options)`. Actual list of devices can be found in {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
+ *
+ * @example
+ *
+ * ```ts
+ * const puppeteer = require('puppeteer');
+ * const iPhone = puppeteer.devices['iPhone 6'];
+ *
+ * (async () => {
+ *   const browser = await puppeteer.launch();
+ *   const page = await browser.newPage();
+ *   await page.emulate(iPhone);
+ *   await page.goto('https://www.google.com');
+ *   // other actions...
+ *   await browser.close();
+ * })();
+ * ```
+ *
+ * @public
  */
-export const devicesMap = {};
-for (const device of devices)
-    devicesMap[device.name] = device;
+const devices = {};
+for (const device of deviceArray) {
+    devices[device.name] = device;
+}
+export { devices };
 //# sourceMappingURL=DeviceDescriptors.js.map

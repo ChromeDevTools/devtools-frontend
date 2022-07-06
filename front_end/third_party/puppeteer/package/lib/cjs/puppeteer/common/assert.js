@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.assertNever = exports.assert = void 0;
+exports.assert = void 0;
 /**
  * Asserts that the given value is truthy.
- * @param value
+ * @param value - some conditional statement
  * @param message - the error message to throw if the value is not truthy.
+ *
+ * @internal
  */
 const assert = (value, message) => {
-    if (!value)
+    if (!value) {
         throw new Error(message);
+    }
 };
 exports.assert = assert;
-const assertNever = (value, message) => {
-    if (value)
-        throw new Error(message);
-};
-exports.assertNever = assertNever;
 //# sourceMappingURL=assert.js.map

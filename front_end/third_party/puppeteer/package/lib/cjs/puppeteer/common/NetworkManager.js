@@ -14,14 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkManager = exports.NetworkManagerEmittedEvents = void 0;
-const EventEmitter_js_1 = require("./EventEmitter.js");
 const assert_js_1 = require("./assert.js");
-const helper_js_1 = require("./helper.js");
+const EventEmitter_js_1 = require("./EventEmitter.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
+const util_js_1 = require("./util.js");
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -41,383 +53,370 @@ exports.NetworkManagerEmittedEvents = {
 class NetworkManager extends EventEmitter_js_1.EventEmitter {
     constructor(client, ignoreHTTPSErrors, frameManager) {
         super();
-        this._networkEventManager = new NetworkEventManager_js_1.NetworkEventManager();
-        this._extraHTTPHeaders = {};
-        this._credentials = null;
-        this._attemptedAuthentications = new Set();
-        this._userRequestInterceptionEnabled = false;
-        this._protocolRequestInterceptionEnabled = false;
-        this._userCacheDisabled = false;
-        this._emulatedNetworkConditions = {
+        _NetworkManager_instances.add(this);
+        _NetworkManager_client.set(this, void 0);
+        _NetworkManager_ignoreHTTPSErrors.set(this, void 0);
+        _NetworkManager_frameManager.set(this, void 0);
+        _NetworkManager_networkEventManager.set(this, new NetworkEventManager_js_1.NetworkEventManager());
+        _NetworkManager_extraHTTPHeaders.set(this, {});
+        _NetworkManager_credentials.set(this, void 0);
+        _NetworkManager_attemptedAuthentications.set(this, new Set());
+        _NetworkManager_userRequestInterceptionEnabled.set(this, false);
+        _NetworkManager_protocolRequestInterceptionEnabled.set(this, false);
+        _NetworkManager_userCacheDisabled.set(this, false);
+        _NetworkManager_emulatedNetworkConditions.set(this, {
             offline: false,
             upload: -1,
             download: -1,
             latency: 0,
-        };
-        this._client = client;
-        this._ignoreHTTPSErrors = ignoreHTTPSErrors;
-        this._frameManager = frameManager;
-        this._client.on('Fetch.requestPaused', this._onRequestPaused.bind(this));
-        this._client.on('Fetch.authRequired', this._onAuthRequired.bind(this));
-        this._client.on('Network.requestWillBeSent', this._onRequestWillBeSent.bind(this));
-        this._client.on('Network.requestServedFromCache', this._onRequestServedFromCache.bind(this));
-        this._client.on('Network.responseReceived', this._onResponseReceived.bind(this));
-        this._client.on('Network.loadingFinished', this._onLoadingFinished.bind(this));
-        this._client.on('Network.loadingFailed', this._onLoadingFailed.bind(this));
-        this._client.on('Network.responseReceivedExtraInfo', this._onResponseReceivedExtraInfo.bind(this));
+        });
+        __classPrivateFieldSet(this, _NetworkManager_client, client, "f");
+        __classPrivateFieldSet(this, _NetworkManager_ignoreHTTPSErrors, ignoreHTTPSErrors, "f");
+        __classPrivateFieldSet(this, _NetworkManager_frameManager, frameManager, "f");
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Fetch.requestPaused', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequestPaused).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Fetch.authRequired', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onAuthRequired).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.requestWillBeSent', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequestWillBeSent).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.requestServedFromCache', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequestServedFromCache).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.responseReceived', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onResponseReceived).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.loadingFinished', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onLoadingFinished).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.loadingFailed', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onLoadingFailed).bind(this));
+        __classPrivateFieldGet(this, _NetworkManager_client, "f").on('Network.responseReceivedExtraInfo', __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onResponseReceivedExtraInfo).bind(this));
     }
     async initialize() {
-        await this._client.send('Network.enable');
-        if (this._ignoreHTTPSErrors)
-            await this._client.send('Security.setIgnoreCertificateErrors', {
+        await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.enable');
+        if (__classPrivateFieldGet(this, _NetworkManager_ignoreHTTPSErrors, "f")) {
+            await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
             });
+        }
     }
     async authenticate(credentials) {
-        this._credentials = credentials;
-        await this._updateProtocolRequestInterception();
+        __classPrivateFieldSet(this, _NetworkManager_credentials, credentials, "f");
+        await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolRequestInterception).call(this);
     }
     async setExtraHTTPHeaders(extraHTTPHeaders) {
-        this._extraHTTPHeaders = {};
+        __classPrivateFieldSet(this, _NetworkManager_extraHTTPHeaders, {}, "f");
         for (const key of Object.keys(extraHTTPHeaders)) {
             const value = extraHTTPHeaders[key];
-            (0, assert_js_1.assert)(helper_js_1.helper.isString(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
-            this._extraHTTPHeaders[key.toLowerCase()] = value;
+            (0, assert_js_1.assert)((0, util_js_1.isString)(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+            __classPrivateFieldGet(this, _NetworkManager_extraHTTPHeaders, "f")[key.toLowerCase()] = value;
         }
-        await this._client.send('Network.setExtraHTTPHeaders', {
-            headers: this._extraHTTPHeaders,
+        await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.setExtraHTTPHeaders', {
+            headers: __classPrivateFieldGet(this, _NetworkManager_extraHTTPHeaders, "f"),
         });
     }
     extraHTTPHeaders() {
-        return Object.assign({}, this._extraHTTPHeaders);
+        return Object.assign({}, __classPrivateFieldGet(this, _NetworkManager_extraHTTPHeaders, "f"));
     }
     numRequestsInProgress() {
-        return this._networkEventManager.numRequestsInProgress();
+        return __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").numRequestsInProgress();
     }
     async setOfflineMode(value) {
-        this._emulatedNetworkConditions.offline = value;
-        await this._updateNetworkConditions();
+        __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").offline = value;
+        await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateNetworkConditions).call(this);
     }
     async emulateNetworkConditions(networkConditions) {
-        this._emulatedNetworkConditions.upload = networkConditions
+        __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").upload = networkConditions
             ? networkConditions.upload
             : -1;
-        this._emulatedNetworkConditions.download = networkConditions
+        __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").download = networkConditions
             ? networkConditions.download
             : -1;
-        this._emulatedNetworkConditions.latency = networkConditions
+        __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").latency = networkConditions
             ? networkConditions.latency
             : 0;
-        await this._updateNetworkConditions();
-    }
-    async _updateNetworkConditions() {
-        await this._client.send('Network.emulateNetworkConditions', {
-            offline: this._emulatedNetworkConditions.offline,
-            latency: this._emulatedNetworkConditions.latency,
-            uploadThroughput: this._emulatedNetworkConditions.upload,
-            downloadThroughput: this._emulatedNetworkConditions.download,
-        });
+        await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateNetworkConditions).call(this);
     }
     async setUserAgent(userAgent, userAgentMetadata) {
-        await this._client.send('Network.setUserAgentOverride', {
+        await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.setUserAgentOverride', {
             userAgent: userAgent,
             userAgentMetadata: userAgentMetadata,
         });
     }
     async setCacheEnabled(enabled) {
-        this._userCacheDisabled = !enabled;
-        await this._updateProtocolCacheDisabled();
+        __classPrivateFieldSet(this, _NetworkManager_userCacheDisabled, !enabled, "f");
+        await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolCacheDisabled).call(this);
     }
     async setRequestInterception(value) {
-        this._userRequestInterceptionEnabled = value;
-        await this._updateProtocolRequestInterception();
+        __classPrivateFieldSet(this, _NetworkManager_userRequestInterceptionEnabled, value, "f");
+        await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolRequestInterception).call(this);
     }
-    async _updateProtocolRequestInterception() {
-        const enabled = this._userRequestInterceptionEnabled || !!this._credentials;
-        if (enabled === this._protocolRequestInterceptionEnabled)
-            return;
-        this._protocolRequestInterceptionEnabled = enabled;
-        if (enabled) {
-            await Promise.all([
-                this._updateProtocolCacheDisabled(),
-                this._client.send('Fetch.enable', {
-                    handleAuthRequests: true,
-                    patterns: [{ urlPattern: '*' }],
-                }),
-            ]);
-        }
-        else {
-            await Promise.all([
-                this._updateProtocolCacheDisabled(),
-                this._client.send('Fetch.disable'),
-            ]);
-        }
+}
+exports.NetworkManager = NetworkManager;
+_NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new WeakMap(), _NetworkManager_frameManager = new WeakMap(), _NetworkManager_networkEventManager = new WeakMap(), _NetworkManager_extraHTTPHeaders = new WeakMap(), _NetworkManager_credentials = new WeakMap(), _NetworkManager_attemptedAuthentications = new WeakMap(), _NetworkManager_userRequestInterceptionEnabled = new WeakMap(), _NetworkManager_protocolRequestInterceptionEnabled = new WeakMap(), _NetworkManager_userCacheDisabled = new WeakMap(), _NetworkManager_emulatedNetworkConditions = new WeakMap(), _NetworkManager_instances = new WeakSet(), _NetworkManager_updateNetworkConditions = async function _NetworkManager_updateNetworkConditions() {
+    await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.emulateNetworkConditions', {
+        offline: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").offline,
+        latency: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").latency,
+        uploadThroughput: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").upload,
+        downloadThroughput: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").download,
+    });
+}, _NetworkManager_updateProtocolRequestInterception = async function _NetworkManager_updateProtocolRequestInterception() {
+    const enabled = __classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f") || !!__classPrivateFieldGet(this, _NetworkManager_credentials, "f");
+    if (enabled === __classPrivateFieldGet(this, _NetworkManager_protocolRequestInterceptionEnabled, "f")) {
+        return;
     }
-    _cacheDisabled() {
-        return this._userCacheDisabled;
+    __classPrivateFieldSet(this, _NetworkManager_protocolRequestInterceptionEnabled, enabled, "f");
+    if (enabled) {
+        await Promise.all([
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolCacheDisabled).call(this),
+            __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Fetch.enable', {
+                handleAuthRequests: true,
+                patterns: [{ urlPattern: '*' }],
+            }),
+        ]);
     }
-    async _updateProtocolCacheDisabled() {
-        await this._client.send('Network.setCacheDisabled', {
-            cacheDisabled: this._cacheDisabled(),
-        });
+    else {
+        await Promise.all([
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolCacheDisabled).call(this),
+            __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Fetch.disable'),
+        ]);
     }
-    _onRequestWillBeSent(event) {
-        // Request interception doesn't happen for data URLs with Network Service.
-        if (this._userRequestInterceptionEnabled &&
-            !event.request.url.startsWith('data:')) {
-            const { requestId: networkRequestId } = event;
-            this._networkEventManager.storeRequestWillBeSent(networkRequestId, event);
-            /**
-             * CDP may have sent a Fetch.requestPaused event already. Check for it.
-             */
-            const requestPausedEvent = this._networkEventManager.getRequestPaused(networkRequestId);
-            if (requestPausedEvent) {
-                const { requestId: fetchRequestId } = requestPausedEvent;
-                this._patchRequestEventHeaders(event, requestPausedEvent);
-                this._onRequest(event, fetchRequestId);
-                this._networkEventManager.forgetRequestPaused(networkRequestId);
-            }
-            return;
+}, _NetworkManager_cacheDisabled = function _NetworkManager_cacheDisabled() {
+    return __classPrivateFieldGet(this, _NetworkManager_userCacheDisabled, "f");
+}, _NetworkManager_updateProtocolCacheDisabled = async function _NetworkManager_updateProtocolCacheDisabled() {
+    await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.setCacheDisabled', {
+        cacheDisabled: __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_cacheDisabled).call(this),
+    });
+}, _NetworkManager_onRequestWillBeSent = function _NetworkManager_onRequestWillBeSent(event) {
+    // Request interception doesn't happen for data URLs with Network Service.
+    if (__classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f") &&
+        !event.request.url.startsWith('data:')) {
+        const { requestId: networkRequestId } = event;
+        __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").storeRequestWillBeSent(networkRequestId, event);
+        /**
+         * CDP may have sent a Fetch.requestPaused event already. Check for it.
+         */
+        const requestPausedEvent = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequestPaused(networkRequestId);
+        if (requestPausedEvent) {
+            const { requestId: fetchRequestId } = requestPausedEvent;
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_patchRequestEventHeaders).call(this, event, requestPausedEvent);
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequest).call(this, event, fetchRequestId);
+            __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").forgetRequestPaused(networkRequestId);
         }
-        this._onRequest(event, null);
+        return;
     }
-    _onAuthRequired(event) {
-        let response = 'Default';
-        if (this._attemptedAuthentications.has(event.requestId)) {
-            response = 'CancelAuth';
-        }
-        else if (this._credentials) {
-            response = 'ProvideCredentials';
-            this._attemptedAuthentications.add(event.requestId);
-        }
-        const { username, password } = this._credentials || {
-            username: undefined,
-            password: undefined,
-        };
-        this._client
-            .send('Fetch.continueWithAuth', {
+    __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequest).call(this, event, undefined);
+}, _NetworkManager_onAuthRequired = function _NetworkManager_onAuthRequired(event) {
+    let response = 'Default';
+    if (__classPrivateFieldGet(this, _NetworkManager_attemptedAuthentications, "f").has(event.requestId)) {
+        response = 'CancelAuth';
+    }
+    else if (__classPrivateFieldGet(this, _NetworkManager_credentials, "f")) {
+        response = 'ProvideCredentials';
+        __classPrivateFieldGet(this, _NetworkManager_attemptedAuthentications, "f").add(event.requestId);
+    }
+    const { username, password } = __classPrivateFieldGet(this, _NetworkManager_credentials, "f") || {
+        username: undefined,
+        password: undefined,
+    };
+    __classPrivateFieldGet(this, _NetworkManager_client, "f")
+        .send('Fetch.continueWithAuth', {
+        requestId: event.requestId,
+        authChallengeResponse: { response, username, password },
+    })
+        .catch(util_js_1.debugError);
+}, _NetworkManager_onRequestPaused = function _NetworkManager_onRequestPaused(event) {
+    if (!__classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f") &&
+        __classPrivateFieldGet(this, _NetworkManager_protocolRequestInterceptionEnabled, "f")) {
+        __classPrivateFieldGet(this, _NetworkManager_client, "f")
+            .send('Fetch.continueRequest', {
             requestId: event.requestId,
-            authChallengeResponse: { response, username, password },
         })
-            .catch(helper_js_1.debugError);
+            .catch(util_js_1.debugError);
     }
-    /**
-     * CDP may send a Fetch.requestPaused without or before a
-     * Network.requestWillBeSent
-     *
-     * CDP may send multiple Fetch.requestPaused
-     * for the same Network.requestWillBeSent.
-     *
-     *
-     */
-    _onRequestPaused(event) {
-        if (!this._userRequestInterceptionEnabled &&
-            this._protocolRequestInterceptionEnabled) {
-            this._client
-                .send('Fetch.continueRequest', {
-                requestId: event.requestId,
-            })
-                .catch(helper_js_1.debugError);
-        }
-        const { networkId: networkRequestId, requestId: fetchRequestId } = event;
-        if (!networkRequestId) {
+    const { networkId: networkRequestId, requestId: fetchRequestId } = event;
+    if (!networkRequestId) {
+        return;
+    }
+    const requestWillBeSentEvent = (() => {
+        const requestWillBeSentEvent = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequestWillBeSent(networkRequestId);
+        // redirect requests have the same `requestId`,
+        if (requestWillBeSentEvent &&
+            (requestWillBeSentEvent.request.url !== event.request.url ||
+                requestWillBeSentEvent.request.method !== event.request.method)) {
+            __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").forgetRequestWillBeSent(networkRequestId);
             return;
         }
-        const requestWillBeSentEvent = (() => {
-            const requestWillBeSentEvent = this._networkEventManager.getRequestWillBeSent(networkRequestId);
-            // redirect requests have the same `requestId`,
-            if (requestWillBeSentEvent &&
-                (requestWillBeSentEvent.request.url !== event.request.url ||
-                    requestWillBeSentEvent.request.method !== event.request.method)) {
-                this._networkEventManager.forgetRequestWillBeSent(networkRequestId);
-                return;
-            }
-            return requestWillBeSentEvent;
-        })();
-        if (requestWillBeSentEvent) {
-            this._patchRequestEventHeaders(requestWillBeSentEvent, event);
-            this._onRequest(requestWillBeSentEvent, fetchRequestId);
-        }
-        else {
-            this._networkEventManager.storeRequestPaused(networkRequestId, event);
-        }
+        return requestWillBeSentEvent;
+    })();
+    if (requestWillBeSentEvent) {
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_patchRequestEventHeaders).call(this, requestWillBeSentEvent, event);
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequest).call(this, requestWillBeSentEvent, fetchRequestId);
     }
-    _patchRequestEventHeaders(requestWillBeSentEvent, requestPausedEvent) {
-        requestWillBeSentEvent.request.headers = {
-            ...requestWillBeSentEvent.request.headers,
-            // includes extra headers, like: Accept, Origin
-            ...requestPausedEvent.request.headers,
-        };
+    else {
+        __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").storeRequestPaused(networkRequestId, event);
     }
-    _onRequest(event, fetchRequestId) {
-        let redirectChain = [];
-        if (event.redirectResponse) {
-            // We want to emit a response and requestfinished for the
-            // redirectResponse, but we can't do so unless we have a
-            // responseExtraInfo ready to pair it up with. If we don't have any
-            // responseExtraInfos saved in our queue, they we have to wait until
-            // the next one to emit response and requestfinished, *and* we should
-            // also wait to emit this Request too because it should come after the
-            // response/requestfinished.
-            let redirectResponseExtraInfo = null;
-            if (event.redirectHasExtraInfo) {
-                redirectResponseExtraInfo = this._networkEventManager
-                    .responseExtraInfo(event.requestId)
-                    .shift();
-                if (!redirectResponseExtraInfo) {
-                    this._networkEventManager.queueRedirectInfo(event.requestId, {
-                        event,
-                        fetchRequestId,
-                    });
-                    return;
-                }
-            }
-            const request = this._networkEventManager.getRequest(event.requestId);
-            // If we connect late to the target, we could have missed the
-            // requestWillBeSent event.
-            if (request) {
-                this._handleRequestRedirect(request, event.redirectResponse, redirectResponseExtraInfo);
-                redirectChain = request._redirectChain;
-            }
-        }
-        const frame = event.frameId
-            ? this._frameManager.frame(event.frameId)
-            : null;
-        const request = new HTTPRequest_js_1.HTTPRequest(this._client, frame, fetchRequestId, this._userRequestInterceptionEnabled, event, redirectChain);
-        this._networkEventManager.storeRequest(event.requestId, request);
-        this.emit(exports.NetworkManagerEmittedEvents.Request, request);
-        request.finalizeInterceptions();
-    }
-    _onRequestServedFromCache(event) {
-        const request = this._networkEventManager.getRequest(event.requestId);
-        if (request)
-            request._fromMemoryCache = true;
-        this.emit(exports.NetworkManagerEmittedEvents.RequestServedFromCache, request);
-    }
-    _handleRequestRedirect(request, responsePayload, extraInfo) {
-        const response = new HTTPResponse_js_1.HTTPResponse(this._client, request, responsePayload, extraInfo);
-        request._response = response;
-        request._redirectChain.push(request);
-        response._resolveBody(new Error('Response body is unavailable for redirect responses'));
-        this._forgetRequest(request, false);
-        this.emit(exports.NetworkManagerEmittedEvents.Response, response);
-        this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
-    }
-    _emitResponseEvent(responseReceived, extraInfo) {
-        const request = this._networkEventManager.getRequest(responseReceived.requestId);
-        // FileUpload sends a response without a matching request.
-        if (!request)
-            return;
-        const extraInfos = this._networkEventManager.responseExtraInfo(responseReceived.requestId);
-        if (extraInfos.length) {
-            (0, helper_js_1.debugError)(new Error('Unexpected extraInfo events for request ' +
-                responseReceived.requestId));
-        }
-        const response = new HTTPResponse_js_1.HTTPResponse(this._client, request, responseReceived.response, extraInfo);
-        request._response = response;
-        this.emit(exports.NetworkManagerEmittedEvents.Response, response);
-    }
-    _onResponseReceived(event) {
-        const request = this._networkEventManager.getRequest(event.requestId);
-        let extraInfo = null;
-        if (request && !request._fromMemoryCache && event.hasExtraInfo) {
-            extraInfo = this._networkEventManager
+}, _NetworkManager_patchRequestEventHeaders = function _NetworkManager_patchRequestEventHeaders(requestWillBeSentEvent, requestPausedEvent) {
+    requestWillBeSentEvent.request.headers = {
+        ...requestWillBeSentEvent.request.headers,
+        // includes extra headers, like: Accept, Origin
+        ...requestPausedEvent.request.headers,
+    };
+}, _NetworkManager_onRequest = function _NetworkManager_onRequest(event, fetchRequestId) {
+    let redirectChain = [];
+    if (event.redirectResponse) {
+        // We want to emit a response and requestfinished for the
+        // redirectResponse, but we can't do so unless we have a
+        // responseExtraInfo ready to pair it up with. If we don't have any
+        // responseExtraInfos saved in our queue, they we have to wait until
+        // the next one to emit response and requestfinished, *and* we should
+        // also wait to emit this Request too because it should come after the
+        // response/requestfinished.
+        let redirectResponseExtraInfo = null;
+        if (event.redirectHasExtraInfo) {
+            redirectResponseExtraInfo = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f")
                 .responseExtraInfo(event.requestId)
                 .shift();
-            if (!extraInfo) {
-                // Wait until we get the corresponding ExtraInfo event.
-                this._networkEventManager.queueEventGroup(event.requestId, {
-                    responseReceivedEvent: event,
+            if (!redirectResponseExtraInfo) {
+                __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").queueRedirectInfo(event.requestId, {
+                    event,
+                    fetchRequestId,
                 });
                 return;
             }
         }
-        this._emitResponseEvent(event, extraInfo);
+        const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
+        // If we connect late to the target, we could have missed the
+        // requestWillBeSent event.
+        if (request) {
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_handleRequestRedirect).call(this, request, event.redirectResponse, redirectResponseExtraInfo);
+            redirectChain = request._redirectChain;
+        }
     }
-    _onResponseReceivedExtraInfo(event) {
-        // We may have skipped a redirect response/request pair due to waiting for
-        // this ExtraInfo event. If so, continue that work now that we have the
-        // request.
-        const redirectInfo = this._networkEventManager.takeQueuedRedirectInfo(event.requestId);
-        if (redirectInfo) {
-            this._networkEventManager.responseExtraInfo(event.requestId).push(event);
-            this._onRequest(redirectInfo.event, redirectInfo.fetchRequestId);
+    const frame = event.frameId
+        ? __classPrivateFieldGet(this, _NetworkManager_frameManager, "f").frame(event.frameId)
+        : null;
+    const request = new HTTPRequest_js_1.HTTPRequest(__classPrivateFieldGet(this, _NetworkManager_client, "f"), frame, fetchRequestId, __classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f"), event, redirectChain);
+    __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").storeRequest(event.requestId, request);
+    this.emit(exports.NetworkManagerEmittedEvents.Request, request);
+    request.finalizeInterceptions();
+}, _NetworkManager_onRequestServedFromCache = function _NetworkManager_onRequestServedFromCache(event) {
+    const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
+    if (request) {
+        request._fromMemoryCache = true;
+    }
+    this.emit(exports.NetworkManagerEmittedEvents.RequestServedFromCache, request);
+}, _NetworkManager_handleRequestRedirect = function _NetworkManager_handleRequestRedirect(request, responsePayload, extraInfo) {
+    const response = new HTTPResponse_js_1.HTTPResponse(__classPrivateFieldGet(this, _NetworkManager_client, "f"), request, responsePayload, extraInfo);
+    request._response = response;
+    request._redirectChain.push(request);
+    response._resolveBody(new Error('Response body is unavailable for redirect responses'));
+    __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_forgetRequest).call(this, request, false);
+    this.emit(exports.NetworkManagerEmittedEvents.Response, response);
+    this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
+}, _NetworkManager_emitResponseEvent = function _NetworkManager_emitResponseEvent(responseReceived, extraInfo) {
+    const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(responseReceived.requestId);
+    // FileUpload sends a response without a matching request.
+    if (!request) {
+        return;
+    }
+    const extraInfos = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").responseExtraInfo(responseReceived.requestId);
+    if (extraInfos.length) {
+        (0, util_js_1.debugError)(new Error('Unexpected extraInfo events for request ' +
+            responseReceived.requestId));
+    }
+    const response = new HTTPResponse_js_1.HTTPResponse(__classPrivateFieldGet(this, _NetworkManager_client, "f"), request, responseReceived.response, extraInfo);
+    request._response = response;
+    this.emit(exports.NetworkManagerEmittedEvents.Response, response);
+}, _NetworkManager_onResponseReceived = function _NetworkManager_onResponseReceived(event) {
+    const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
+    let extraInfo = null;
+    if (request && !request._fromMemoryCache && event.hasExtraInfo) {
+        extraInfo = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f")
+            .responseExtraInfo(event.requestId)
+            .shift();
+        if (!extraInfo) {
+            // Wait until we get the corresponding ExtraInfo event.
+            __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").queueEventGroup(event.requestId, {
+                responseReceivedEvent: event,
+            });
             return;
         }
-        // We may have skipped response and loading events because we didn't have
-        // this ExtraInfo event yet. If so, emit those events now.
-        const queuedEvents = this._networkEventManager.getQueuedEventGroup(event.requestId);
-        if (queuedEvents) {
-            this._networkEventManager.forgetQueuedEventGroup(event.requestId);
-            this._emitResponseEvent(queuedEvents.responseReceivedEvent, event);
-            if (queuedEvents.loadingFinishedEvent) {
-                this._emitLoadingFinished(queuedEvents.loadingFinishedEvent);
-            }
-            if (queuedEvents.loadingFailedEvent) {
-                this._emitLoadingFailed(queuedEvents.loadingFailedEvent);
-            }
-            return;
-        }
-        // Wait until we get another event that can use this ExtraInfo event.
-        this._networkEventManager.responseExtraInfo(event.requestId).push(event);
     }
-    _forgetRequest(request, events) {
-        const requestId = request._requestId;
-        const interceptionId = request._interceptionId;
-        this._networkEventManager.forgetRequest(requestId);
-        this._attemptedAuthentications.delete(interceptionId);
-        if (events) {
-            this._networkEventManager.forget(requestId);
-        }
+    __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitResponseEvent).call(this, event, extraInfo);
+}, _NetworkManager_onResponseReceivedExtraInfo = function _NetworkManager_onResponseReceivedExtraInfo(event) {
+    // We may have skipped a redirect response/request pair due to waiting for
+    // this ExtraInfo event. If so, continue that work now that we have the
+    // request.
+    const redirectInfo = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").takeQueuedRedirectInfo(event.requestId);
+    if (redirectInfo) {
+        __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").responseExtraInfo(event.requestId).push(event);
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequest).call(this, redirectInfo.event, redirectInfo.fetchRequestId);
+        return;
     }
-    _onLoadingFinished(event) {
-        // If the response event for this request is still waiting on a
-        // corresponding ExtraInfo event, then wait to emit this event too.
-        const queuedEvents = this._networkEventManager.getQueuedEventGroup(event.requestId);
-        if (queuedEvents) {
-            queuedEvents.loadingFinishedEvent = event;
+    // We may have skipped response and loading events because we didn't have
+    // this ExtraInfo event yet. If so, emit those events now.
+    const queuedEvents = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getQueuedEventGroup(event.requestId);
+    if (queuedEvents) {
+        __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").forgetQueuedEventGroup(event.requestId);
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitResponseEvent).call(this, queuedEvents.responseReceivedEvent, event);
+        if (queuedEvents.loadingFinishedEvent) {
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitLoadingFinished).call(this, queuedEvents.loadingFinishedEvent);
         }
-        else {
-            this._emitLoadingFinished(event);
+        if (queuedEvents.loadingFailedEvent) {
+            __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitLoadingFailed).call(this, queuedEvents.loadingFailedEvent);
         }
+        return;
     }
-    _emitLoadingFinished(event) {
-        const request = this._networkEventManager.getRequest(event.requestId);
-        // For certain requestIds we never receive requestWillBeSent event.
-        // @see https://crbug.com/750469
-        if (!request)
-            return;
-        // Under certain conditions we never get the Network.responseReceived
-        // event from protocol. @see https://crbug.com/883475
-        if (request.response())
-            request.response()._resolveBody(null);
-        this._forgetRequest(request, true);
-        this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
+    // Wait until we get another event that can use this ExtraInfo event.
+    __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").responseExtraInfo(event.requestId).push(event);
+}, _NetworkManager_forgetRequest = function _NetworkManager_forgetRequest(request, events) {
+    const requestId = request._requestId;
+    const interceptionId = request._interceptionId;
+    __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").forgetRequest(requestId);
+    interceptionId !== undefined &&
+        __classPrivateFieldGet(this, _NetworkManager_attemptedAuthentications, "f").delete(interceptionId);
+    if (events) {
+        __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").forget(requestId);
     }
-    _onLoadingFailed(event) {
-        // If the response event for this request is still waiting on a
-        // corresponding ExtraInfo event, then wait to emit this event too.
-        const queuedEvents = this._networkEventManager.getQueuedEventGroup(event.requestId);
-        if (queuedEvents) {
-            queuedEvents.loadingFailedEvent = event;
-        }
-        else {
-            this._emitLoadingFailed(event);
-        }
+}, _NetworkManager_onLoadingFinished = function _NetworkManager_onLoadingFinished(event) {
+    // If the response event for this request is still waiting on a
+    // corresponding ExtraInfo event, then wait to emit this event too.
+    const queuedEvents = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getQueuedEventGroup(event.requestId);
+    if (queuedEvents) {
+        queuedEvents.loadingFinishedEvent = event;
     }
-    _emitLoadingFailed(event) {
-        const request = this._networkEventManager.getRequest(event.requestId);
-        // For certain requestIds we never receive requestWillBeSent event.
-        // @see https://crbug.com/750469
-        if (!request)
-            return;
-        request._failureText = event.errorText;
-        const response = request.response();
-        if (response)
-            response._resolveBody(null);
-        this._forgetRequest(request, true);
-        this.emit(exports.NetworkManagerEmittedEvents.RequestFailed, request);
+    else {
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitLoadingFinished).call(this, event);
     }
-}
-exports.NetworkManager = NetworkManager;
+}, _NetworkManager_emitLoadingFinished = function _NetworkManager_emitLoadingFinished(event) {
+    var _a;
+    const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
+    // For certain requestIds we never receive requestWillBeSent event.
+    // @see https://crbug.com/750469
+    if (!request) {
+        return;
+    }
+    // Under certain conditions we never get the Network.responseReceived
+    // event from protocol. @see https://crbug.com/883475
+    if (request.response()) {
+        (_a = request.response()) === null || _a === void 0 ? void 0 : _a._resolveBody(null);
+    }
+    __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_forgetRequest).call(this, request, true);
+    this.emit(exports.NetworkManagerEmittedEvents.RequestFinished, request);
+}, _NetworkManager_onLoadingFailed = function _NetworkManager_onLoadingFailed(event) {
+    // If the response event for this request is still waiting on a
+    // corresponding ExtraInfo event, then wait to emit this event too.
+    const queuedEvents = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getQueuedEventGroup(event.requestId);
+    if (queuedEvents) {
+        queuedEvents.loadingFailedEvent = event;
+    }
+    else {
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitLoadingFailed).call(this, event);
+    }
+}, _NetworkManager_emitLoadingFailed = function _NetworkManager_emitLoadingFailed(event) {
+    const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
+    // For certain requestIds we never receive requestWillBeSent event.
+    // @see https://crbug.com/750469
+    if (!request) {
+        return;
+    }
+    request._failureText = event.errorText;
+    const response = request.response();
+    if (response) {
+        response._resolveBody(null);
+    }
+    __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_forgetRequest).call(this, request, true);
+    this.emit(exports.NetworkManagerEmittedEvents.RequestFailed, request);
+};
 //# sourceMappingURL=NetworkManager.js.map

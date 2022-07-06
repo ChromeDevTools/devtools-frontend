@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @internal
+ */
 export declare class TaskQueue {
-    private _chain;
+    #private;
     constructor();
     postTask<T>(task: () => Promise<T>): Promise<T>;
 }

@@ -24,14 +24,7 @@ import { TaskQueue } from './TaskQueue.js';
  * @public
  */
 export declare class Target {
-    private _targetInfo;
-    private _browserContext;
-    private _sessionFactory;
-    private _ignoreHTTPSErrors;
-    private _defaultViewport?;
-    private _pagePromise?;
-    private _workerPromise?;
-    private _screenshotTaskQueue;
+    #private;
     /**
      * @internal
      */
@@ -69,6 +62,10 @@ export declare class Target {
      */
     createCDPSession(): Promise<CDPSession>;
     /**
+     * @internal
+     */
+    _getTargetInfo(): Protocol.Target.TargetInfo;
+    /**
      * If the target is not of type `"page"` or `"background_page"`, returns `null`.
      */
     page(): Promise<Page | null>;
@@ -96,7 +93,7 @@ export declare class Target {
     /**
      * Get the target that opened this target. Top-level targets return `null`.
      */
-    opener(): Target | null;
+    opener(): Target | undefined;
     /**
      * @internal
      */

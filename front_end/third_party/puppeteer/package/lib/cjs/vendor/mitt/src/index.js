@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 /**
  * Mitt: Tiny (~200b) functional event emitter / pubsub.
  * @name mitt
@@ -11,16 +11,16 @@ function mitt(all) {
         /**
          * A Map of event names to registered handler functions.
          */
-        all,
+        all: all,
         /**
          * Register an event handler for the given type.
          * @param {string|symbol} type Type of event to listen for, or `"*"` for all events
          * @param {Function} handler Function to call in response to given event
          * @memberOf mitt
          */
-        on(type, handler) {
-            const handlers = all.get(type);
-            const added = handlers && handlers.push(handler);
+        on: function (type, handler) {
+            var handlers = all.get(type);
+            var added = handlers && handlers.push(handler);
             if (!added) {
                 all.set(type, [handler]);
             }
@@ -31,8 +31,8 @@ function mitt(all) {
          * @param {Function} handler Handler function to remove
          * @memberOf mitt
          */
-        off(type, handler) {
-            const handlers = all.get(type);
+        off: function (type, handler) {
+            var handlers = all.get(type);
             if (handlers) {
                 handlers.splice(handlers.indexOf(handler) >>> 0, 1);
             }
@@ -47,11 +47,10 @@ function mitt(all) {
          * @param {Any} [evt] Any value (object is recommended and powerful), passed to each handler
          * @memberOf mitt
          */
-        emit(type, evt) {
-            (all.get(type) || []).slice().map((handler) => { handler(evt); });
-            (all.get('*') || []).slice().map((handler) => { handler(type, evt); });
+        emit: function (type, evt) {
+            (all.get(type) || []).slice().map(function (handler) { handler(evt); });
+            (all.get('*') || []).slice().map(function (handler) { handler(type, evt); });
         }
     };
 }
-exports.default = mitt;
-//# sourceMappingURL=index.js.map
+exports["default"] = mitt;

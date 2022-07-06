@@ -17,45 +17,65 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = exports.clearCustomQueryHandlers = exports.customQueryHandlerNames = exports.unregisterCustomQueryHandler = exports.registerCustomQueryHandler = void 0;
 const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
-function makeQueryHandler(handler) {
+function createInternalQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
+        const queryOne = handler.queryOne;
         internalHandler.queryOne = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(handler.queryOne, selector);
+            const jsHandle = await element.evaluateHandle(queryOne, selector);
             const elementHandle = jsHandle.asElement();
-            if (elementHandle)
+            if (elementHandle) {
                 return elementHandle;
+            }
             await jsHandle.dispose();
             return null;
         };
-        internalHandler.waitFor = (domWorld, selector, options) => domWorld.waitForSelectorInPage(handler.queryOne, selector, options);
+        internalHandler.waitFor = (domWorld, selector, options) => {
+            return domWorld._waitForSelectorInPage(queryOne, selector, options);
+        };
     }
     if (handler.queryAll) {
+        const queryAll = handler.queryAll;
         internalHandler.queryAll = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(handler.queryAll, selector);
+            const jsHandle = await element.evaluateHandle(queryAll, selector);
             const properties = await jsHandle.getProperties();
             await jsHandle.dispose();
             const result = [];
             for (const property of properties.values()) {
                 const elementHandle = property.asElement();
-                if (elementHandle)
+                if (elementHandle) {
                     result.push(elementHandle);
+                }
             }
             return result;
         };
         internalHandler.queryAllArray = async (element, selector) => {
-            const resultHandle = await element.evaluateHandle(handler.queryAll, selector);
-            const arrayHandle = await resultHandle.evaluateHandle((res) => Array.from(res));
+            const resultHandle = (await element.evaluateHandle(queryAll, selector));
+            const arrayHandle = await resultHandle.evaluateHandle(res => {
+                return Array.from(res);
+            });
             return arrayHandle;
         };
     }
     return internalHandler;
 }
-const _defaultHandler = makeQueryHandler({
-    queryOne: (element, selector) => element.querySelector(selector),
-    queryAll: (element, selector) => element.querySelectorAll(selector),
+const defaultHandler = createInternalQueryHandler({
+    queryOne: (element, selector) => {
+        if (!('querySelector' in element)) {
+            throw new Error(`Could not invoke \`querySelector\` on node of type ${element.nodeName}.`);
+        }
+        return element.querySelector(selector);
+    },
+    queryAll: (element, selector) => {
+        if (!('querySelectorAll' in element)) {
+            throw new Error(`Could not invoke \`querySelectorAll\` on node of type ${element.nodeName}.`);
+        }
+        return [
+            ...element.querySelectorAll(selector),
+        ];
+    },
 });
-const pierceHandler = makeQueryHandler({
+const pierceHandler = createInternalQueryHandler({
     queryOne: (element, selector) => {
         let found = null;
         const search = (root) => {
@@ -103,42 +123,70 @@ const pierceHandler = makeQueryHandler({
         return result;
     },
 });
-const _builtInHandlers = new Map([
+const builtInHandlers = new Map([
     ['aria', AriaQueryHandler_js_1.ariaHandler],
     ['pierce', pierceHandler],
 ]);
-const _queryHandlers = new Map(_builtInHandlers);
+const queryHandlers = new Map(builtInHandlers);
 /**
- * @internal
+ * Registers a {@link CustomQueryHandler | custom query handler}.
+ *
+ * @remarks
+ * After registration, the handler can be used everywhere where a selector is
+ * expected by prepending the selection string with `<name>/`. The name is only
+ * allowed to consist of lower- and upper case latin letters.
+ *
+ * @example
+ * ```
+ * puppeteer.registerCustomQueryHandler('text', { … });
+ * const aHandle = await page.$('text/…');
+ * ```
+ *
+ * @param name - The name that the custom query handler will be registered
+ * under.
+ * @param queryHandler - The {@link CustomQueryHandler | custom query handler}
+ * to register.
+ *
+ * @public
  */
 function registerCustomQueryHandler(name, handler) {
-    if (_queryHandlers.get(name))
+    if (queryHandlers.get(name)) {
         throw new Error(`A custom query handler named "${name}" already exists`);
+    }
     const isValidName = /^[a-zA-Z]+$/.test(name);
-    if (!isValidName)
+    if (!isValidName) {
         throw new Error(`Custom query handler names may only contain [a-zA-Z]`);
-    const internalHandler = makeQueryHandler(handler);
-    _queryHandlers.set(name, internalHandler);
+    }
+    const internalHandler = createInternalQueryHandler(handler);
+    queryHandlers.set(name, internalHandler);
 }
 exports.registerCustomQueryHandler = registerCustomQueryHandler;
 /**
- * @internal
+ * @param name - The name of the query handler to unregistered.
+ *
+ * @public
  */
 function unregisterCustomQueryHandler(name) {
-    if (_queryHandlers.has(name) && !_builtInHandlers.has(name)) {
-        _queryHandlers.delete(name);
+    if (queryHandlers.has(name) && !builtInHandlers.has(name)) {
+        queryHandlers.delete(name);
     }
 }
 exports.unregisterCustomQueryHandler = unregisterCustomQueryHandler;
 /**
- * @internal
+ * @returns a list with the names of all registered custom query handlers.
+ *
+ * @public
  */
 function customQueryHandlerNames() {
-    return [..._queryHandlers.keys()].filter((name) => !_builtInHandlers.has(name));
+    return [...queryHandlers.keys()].filter(name => {
+        return !builtInHandlers.has(name);
+    });
 }
 exports.customQueryHandlerNames = customQueryHandlerNames;
 /**
- * @internal
+ * Clears all registered handlers.
+ *
+ * @public
  */
 function clearCustomQueryHandlers() {
     customQueryHandlerNames().forEach(unregisterCustomQueryHandler);
@@ -149,14 +197,16 @@ exports.clearCustomQueryHandlers = clearCustomQueryHandlers;
  */
 function getQueryHandlerAndSelector(selector) {
     const hasCustomQueryHandler = /^[a-zA-Z]+\//.test(selector);
-    if (!hasCustomQueryHandler)
-        return { updatedSelector: selector, queryHandler: _defaultHandler };
+    if (!hasCustomQueryHandler) {
+        return { updatedSelector: selector, queryHandler: defaultHandler };
+    }
     const index = selector.indexOf('/');
     const name = selector.slice(0, index);
     const updatedSelector = selector.slice(index + 1);
-    const queryHandler = _queryHandlers.get(name);
-    if (!queryHandler)
+    const queryHandler = queryHandlers.get(name);
+    if (!queryHandler) {
         throw new Error(`Query set to use "${name}", but no query handler of that name was found`);
+    }
     return {
         updatedSelector,
         queryHandler,

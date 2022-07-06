@@ -13,6 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Dialog_client, _Dialog_type, _Dialog_message, _Dialog_defaultValue, _Dialog_handled;
 import { assert } from './assert.js';
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
@@ -20,7 +32,7 @@ import { assert } from './assert.js';
  * @remarks
  *
  * @example
- * ```js
+ * ```ts
  * const puppeteer = require('puppeteer');
  *
  * (async () => {
@@ -41,30 +53,34 @@ export class Dialog {
      * @internal
      */
     constructor(client, type, message, defaultValue = '') {
-        this._handled = false;
-        this._client = client;
-        this._type = type;
-        this._message = message;
-        this._defaultValue = defaultValue;
+        _Dialog_client.set(this, void 0);
+        _Dialog_type.set(this, void 0);
+        _Dialog_message.set(this, void 0);
+        _Dialog_defaultValue.set(this, void 0);
+        _Dialog_handled.set(this, false);
+        __classPrivateFieldSet(this, _Dialog_client, client, "f");
+        __classPrivateFieldSet(this, _Dialog_type, type, "f");
+        __classPrivateFieldSet(this, _Dialog_message, message, "f");
+        __classPrivateFieldSet(this, _Dialog_defaultValue, defaultValue, "f");
     }
     /**
      * @returns The type of the dialog.
      */
     type() {
-        return this._type;
+        return __classPrivateFieldGet(this, _Dialog_type, "f");
     }
     /**
      * @returns The message displayed in the dialog.
      */
     message() {
-        return this._message;
+        return __classPrivateFieldGet(this, _Dialog_message, "f");
     }
     /**
      * @returns The default value of the prompt, or an empty string if the dialog
      * is not a `prompt`.
      */
     defaultValue() {
-        return this._defaultValue;
+        return __classPrivateFieldGet(this, _Dialog_defaultValue, "f");
     }
     /**
      * @param promptText - optional text that will be entered in the dialog
@@ -73,9 +89,9 @@ export class Dialog {
      * @returns A promise that resolves when the dialog has been accepted.
      */
     async accept(promptText) {
-        assert(!this._handled, 'Cannot accept dialog which is already handled!');
-        this._handled = true;
-        await this._client.send('Page.handleJavaScriptDialog', {
+        assert(!__classPrivateFieldGet(this, _Dialog_handled, "f"), 'Cannot accept dialog which is already handled!');
+        __classPrivateFieldSet(this, _Dialog_handled, true, "f");
+        await __classPrivateFieldGet(this, _Dialog_client, "f").send('Page.handleJavaScriptDialog', {
             accept: true,
             promptText: promptText,
         });
@@ -84,11 +100,12 @@ export class Dialog {
      * @returns A promise which will resolve once the dialog has been dismissed
      */
     async dismiss() {
-        assert(!this._handled, 'Cannot dismiss dialog which is already handled!');
-        this._handled = true;
-        await this._client.send('Page.handleJavaScriptDialog', {
+        assert(!__classPrivateFieldGet(this, _Dialog_handled, "f"), 'Cannot dismiss dialog which is already handled!');
+        __classPrivateFieldSet(this, _Dialog_handled, true, "f");
+        await __classPrivateFieldGet(this, _Dialog_client, "f").send('Page.handleJavaScriptDialog', {
             accept: false,
         });
     }
 }
+_Dialog_client = new WeakMap(), _Dialog_type = new WeakMap(), _Dialog_message = new WeakMap(), _Dialog_defaultValue = new WeakMap(), _Dialog_handled = new WeakMap();
 //# sourceMappingURL=Dialog.js.map

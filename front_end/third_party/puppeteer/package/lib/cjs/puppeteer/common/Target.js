@@ -14,6 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Target_browserContext, _Target_targetInfo, _Target_sessionFactory, _Target_ignoreHTTPSErrors, _Target_defaultViewport, _Target_pagePromise, _Target_workerPromise, _Target_screenshotTaskQueue;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Target = void 0;
 const Page_js_1 = require("./Page.js");
@@ -26,68 +38,93 @@ class Target {
      * @internal
      */
     constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue, isPageTargetCallback) {
-        this._targetInfo = targetInfo;
-        this._browserContext = browserContext;
+        _Target_browserContext.set(this, void 0);
+        _Target_targetInfo.set(this, void 0);
+        _Target_sessionFactory.set(this, void 0);
+        _Target_ignoreHTTPSErrors.set(this, void 0);
+        _Target_defaultViewport.set(this, void 0);
+        _Target_pagePromise.set(this, void 0);
+        _Target_workerPromise.set(this, void 0);
+        _Target_screenshotTaskQueue.set(this, void 0);
+        __classPrivateFieldSet(this, _Target_targetInfo, targetInfo, "f");
+        __classPrivateFieldSet(this, _Target_browserContext, browserContext, "f");
         this._targetId = targetInfo.targetId;
-        this._sessionFactory = sessionFactory;
-        this._ignoreHTTPSErrors = ignoreHTTPSErrors;
-        this._defaultViewport = defaultViewport;
-        this._screenshotTaskQueue = screenshotTaskQueue;
+        __classPrivateFieldSet(this, _Target_sessionFactory, sessionFactory, "f");
+        __classPrivateFieldSet(this, _Target_ignoreHTTPSErrors, ignoreHTTPSErrors, "f");
+        __classPrivateFieldSet(this, _Target_defaultViewport, defaultViewport !== null && defaultViewport !== void 0 ? defaultViewport : undefined, "f");
+        __classPrivateFieldSet(this, _Target_screenshotTaskQueue, screenshotTaskQueue, "f");
         this._isPageTargetCallback = isPageTargetCallback;
-        /** @type {?Promise<!Puppeteer.Page>} */
-        this._pagePromise = null;
-        /** @type {?Promise<!WebWorker>} */
-        this._workerPromise = null;
-        this._initializedPromise = new Promise((fulfill) => (this._initializedCallback = fulfill)).then(async (success) => {
-            if (!success)
+        this._initializedPromise = new Promise(fulfill => {
+            return (this._initializedCallback = fulfill);
+        }).then(async (success) => {
+            if (!success) {
                 return false;
+            }
             const opener = this.opener();
-            if (!opener || !opener._pagePromise || this.type() !== 'page')
+            if (!opener || !__classPrivateFieldGet(opener, _Target_pagePromise, "f") || this.type() !== 'page') {
                 return true;
-            const openerPage = await opener._pagePromise;
-            if (!openerPage.listenerCount("popup" /* Popup */))
+            }
+            const openerPage = await __classPrivateFieldGet(opener, _Target_pagePromise, "f");
+            if (!openerPage.listenerCount("popup" /* PageEmittedEvents.Popup */)) {
                 return true;
+            }
             const popupPage = await this.page();
-            openerPage.emit("popup" /* Popup */, popupPage);
+            openerPage.emit("popup" /* PageEmittedEvents.Popup */, popupPage);
             return true;
         });
-        this._isClosedPromise = new Promise((fulfill) => (this._closedCallback = fulfill));
+        this._isClosedPromise = new Promise(fulfill => {
+            return (this._closedCallback = fulfill);
+        });
         this._isInitialized =
-            !this._isPageTargetCallback(this._targetInfo) ||
-                this._targetInfo.url !== '';
-        if (this._isInitialized)
+            !this._isPageTargetCallback(__classPrivateFieldGet(this, _Target_targetInfo, "f")) ||
+                __classPrivateFieldGet(this, _Target_targetInfo, "f").url !== '';
+        if (this._isInitialized) {
             this._initializedCallback(true);
+        }
     }
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */
     createCDPSession() {
-        return this._sessionFactory();
+        return __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this);
+    }
+    /**
+     * @internal
+     */
+    _getTargetInfo() {
+        return __classPrivateFieldGet(this, _Target_targetInfo, "f");
     }
     /**
      * If the target is not of type `"page"` or `"background_page"`, returns `null`.
      */
     async page() {
-        if (this._isPageTargetCallback(this._targetInfo) && !this._pagePromise) {
-            this._pagePromise = this._sessionFactory().then((client) => Page_js_1.Page.create(client, this, this._ignoreHTTPSErrors, this._defaultViewport, this._screenshotTaskQueue));
+        var _a;
+        if (this._isPageTargetCallback(__classPrivateFieldGet(this, _Target_targetInfo, "f")) && !__classPrivateFieldGet(this, _Target_pagePromise, "f")) {
+            __classPrivateFieldSet(this, _Target_pagePromise, __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this).then(client => {
+                var _a;
+                return Page_js_1.Page._create(client, this, __classPrivateFieldGet(this, _Target_ignoreHTTPSErrors, "f"), (_a = __classPrivateFieldGet(this, _Target_defaultViewport, "f")) !== null && _a !== void 0 ? _a : null, __classPrivateFieldGet(this, _Target_screenshotTaskQueue, "f"));
+            }), "f");
         }
-        return this._pagePromise;
+        return (_a = (await __classPrivateFieldGet(this, _Target_pagePromise, "f"))) !== null && _a !== void 0 ? _a : null;
     }
     /**
      * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
      */
     async worker() {
-        if (this._targetInfo.type !== 'service_worker' &&
-            this._targetInfo.type !== 'shared_worker')
+        if (__classPrivateFieldGet(this, _Target_targetInfo, "f").type !== 'service_worker' &&
+            __classPrivateFieldGet(this, _Target_targetInfo, "f").type !== 'shared_worker') {
             return null;
-        if (!this._workerPromise) {
-            // TODO(einbinder): Make workers send their console logs.
-            this._workerPromise = this._sessionFactory().then((client) => new WebWorker_js_1.WebWorker(client, this._targetInfo.url, () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */));
         }
-        return this._workerPromise;
+        if (!__classPrivateFieldGet(this, _Target_workerPromise, "f")) {
+            // TODO(einbinder): Make workers send their console logs.
+            __classPrivateFieldSet(this, _Target_workerPromise, __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this).then(client => {
+                return new WebWorker_js_1.WebWorker(client, __classPrivateFieldGet(this, _Target_targetInfo, "f").url, () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */);
+            }), "f");
+        }
+        return __classPrivateFieldGet(this, _Target_workerPromise, "f");
     }
     url() {
-        return this._targetInfo.url;
+        return __classPrivateFieldGet(this, _Target_targetInfo, "f").url;
     }
     /**
      * Identifies what kind of target this is.
@@ -97,45 +134,47 @@ class Target {
      * See {@link https://developer.chrome.com/extensions/background_pages | docs} for more info about background pages.
      */
     type() {
-        const type = this._targetInfo.type;
+        const type = __classPrivateFieldGet(this, _Target_targetInfo, "f").type;
         if (type === 'page' ||
             type === 'background_page' ||
             type === 'service_worker' ||
             type === 'shared_worker' ||
             type === 'browser' ||
-            type === 'webview')
+            type === 'webview') {
             return type;
+        }
         return 'other';
     }
     /**
      * Get the browser the target belongs to.
      */
     browser() {
-        return this._browserContext.browser();
+        return __classPrivateFieldGet(this, _Target_browserContext, "f").browser();
     }
     /**
      * Get the browser context the target belongs to.
      */
     browserContext() {
-        return this._browserContext;
+        return __classPrivateFieldGet(this, _Target_browserContext, "f");
     }
     /**
      * Get the target that opened this target. Top-level targets return `null`.
      */
     opener() {
-        const { openerId } = this._targetInfo;
-        if (!openerId)
-            return null;
+        const { openerId } = __classPrivateFieldGet(this, _Target_targetInfo, "f");
+        if (!openerId) {
+            return;
+        }
         return this.browser()._targets.get(openerId);
     }
     /**
      * @internal
      */
     _targetInfoChanged(targetInfo) {
-        this._targetInfo = targetInfo;
+        __classPrivateFieldSet(this, _Target_targetInfo, targetInfo, "f");
         if (!this._isInitialized &&
-            (!this._isPageTargetCallback(this._targetInfo) ||
-                this._targetInfo.url !== '')) {
+            (!this._isPageTargetCallback(__classPrivateFieldGet(this, _Target_targetInfo, "f")) ||
+                __classPrivateFieldGet(this, _Target_targetInfo, "f").url !== '')) {
             this._isInitialized = true;
             this._initializedCallback(true);
             return;
@@ -143,4 +182,5 @@ class Target {
     }
 }
 exports.Target = Target;
+_Target_browserContext = new WeakMap(), _Target_targetInfo = new WeakMap(), _Target_sessionFactory = new WeakMap(), _Target_ignoreHTTPSErrors = new WeakMap(), _Target_defaultViewport = new WeakMap(), _Target_pagePromise = new WeakMap(), _Target_workerPromise = new WeakMap(), _Target_screenshotTaskQueue = new WeakMap();
 //# sourceMappingURL=Target.js.map

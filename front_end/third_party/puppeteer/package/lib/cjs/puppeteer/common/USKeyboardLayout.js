@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.keyDefinitions = void 0;
+exports._keyDefinitions = void 0;
 /**
  * @internal
  */
-exports.keyDefinitions = {
+exports._keyDefinitions = {
     '0': { keyCode: 48, key: '0', code: 'Digit0' },
     '1': { keyCode: 49, key: '1', code: 'Digit1' },
     '2': { keyCode: 50, key: '2', code: 'Digit2' },

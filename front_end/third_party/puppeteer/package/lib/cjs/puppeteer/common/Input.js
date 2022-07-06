@@ -14,6 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Keyboard_instances, _Keyboard_client, _Keyboard_pressedKeys, _Keyboard_modifierBit, _Keyboard_keyDescriptionForString, _Mouse_client, _Mouse_keyboard, _Mouse_x, _Mouse_y, _Mouse_button, _Touchscreen_client, _Touchscreen_keyboard;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Touchscreen = exports.Mouse = exports.Keyboard = void 0;
 const assert_js_1 = require("./assert.js");
@@ -34,7 +46,7 @@ const USKeyboardLayout_js_1 = require("./USKeyboardLayout.js");
  *
  * @example
  * An example of holding down `Shift` in order to select and delete some text:
- * ```js
+ * ```ts
  * await page.keyboard.type('Hello World!');
  * await page.keyboard.press('ArrowLeft');
  *
@@ -49,7 +61,7 @@ const USKeyboardLayout_js_1 = require("./USKeyboardLayout.js");
  *
  * @example
  * An example of pressing `A`
- * ```js
+ * ```ts
  * await page.keyboard.down('Shift');
  * await page.keyboard.press('KeyA');
  * await page.keyboard.up('Shift');
@@ -58,12 +70,18 @@ const USKeyboardLayout_js_1 = require("./USKeyboardLayout.js");
  * @public
  */
 class Keyboard {
-    /** @internal */
+    /**
+     * @internal
+     */
     constructor(client) {
-        /** @internal */
+        _Keyboard_instances.add(this);
+        _Keyboard_client.set(this, void 0);
+        _Keyboard_pressedKeys.set(this, new Set());
+        /**
+         * @internal
+         */
         this._modifiers = 0;
-        this._pressedKeys = new Set();
-        this._client = client;
+        __classPrivateFieldSet(this, _Keyboard_client, client, "f");
     }
     /**
      * Dispatches a `keydown` event.
@@ -91,12 +109,12 @@ class Keyboard {
      * generates an input event with this text.
      */
     async down(key, options = { text: undefined }) {
-        const description = this._keyDescriptionForString(key);
-        const autoRepeat = this._pressedKeys.has(description.code);
-        this._pressedKeys.add(description.code);
-        this._modifiers |= this._modifierBit(description.key);
+        const description = __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_keyDescriptionForString).call(this, key);
+        const autoRepeat = __classPrivateFieldGet(this, _Keyboard_pressedKeys, "f").has(description.code);
+        __classPrivateFieldGet(this, _Keyboard_pressedKeys, "f").add(description.code);
+        this._modifiers |= __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_modifierBit).call(this, description.key);
         const text = options.text === undefined ? description.text : options.text;
-        await this._client.send('Input.dispatchKeyEvent', {
+        await __classPrivateFieldGet(this, _Keyboard_client, "f").send('Input.dispatchKeyEvent', {
             type: text ? 'keyDown' : 'rawKeyDown',
             modifiers: this._modifiers,
             windowsVirtualKeyCode: description.keyCode,
@@ -109,51 +127,6 @@ class Keyboard {
             isKeypad: description.location === 3,
         });
     }
-    _modifierBit(key) {
-        if (key === 'Alt')
-            return 1;
-        if (key === 'Control')
-            return 2;
-        if (key === 'Meta')
-            return 4;
-        if (key === 'Shift')
-            return 8;
-        return 0;
-    }
-    _keyDescriptionForString(keyString) {
-        const shift = this._modifiers & 8;
-        const description = {
-            key: '',
-            keyCode: 0,
-            code: '',
-            text: '',
-            location: 0,
-        };
-        const definition = USKeyboardLayout_js_1.keyDefinitions[keyString];
-        (0, assert_js_1.assert)(definition, `Unknown key: "${keyString}"`);
-        if (definition.key)
-            description.key = definition.key;
-        if (shift && definition.shiftKey)
-            description.key = definition.shiftKey;
-        if (definition.keyCode)
-            description.keyCode = definition.keyCode;
-        if (shift && definition.shiftKeyCode)
-            description.keyCode = definition.shiftKeyCode;
-        if (definition.code)
-            description.code = definition.code;
-        if (definition.location)
-            description.location = definition.location;
-        if (description.key.length === 1)
-            description.text = description.key;
-        if (definition.text)
-            description.text = definition.text;
-        if (shift && definition.shiftText)
-            description.text = definition.shiftText;
-        // if any modifiers besides shift are pressed, no text should be sent
-        if (this._modifiers & ~8)
-            description.text = '';
-        return description;
-    }
     /**
      * Dispatches a `keyup` event.
      *
@@ -162,10 +135,10 @@ class Keyboard {
      * for a list of all key names.
      */
     async up(key) {
-        const description = this._keyDescriptionForString(key);
-        this._modifiers &= ~this._modifierBit(description.key);
-        this._pressedKeys.delete(description.code);
-        await this._client.send('Input.dispatchKeyEvent', {
+        const description = __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_keyDescriptionForString).call(this, key);
+        this._modifiers &= ~__classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_modifierBit).call(this, description.key);
+        __classPrivateFieldGet(this, _Keyboard_pressedKeys, "f").delete(description.code);
+        await __classPrivateFieldGet(this, _Keyboard_client, "f").send('Input.dispatchKeyEvent', {
             type: 'keyUp',
             modifiers: this._modifiers,
             key: description.key,
@@ -183,17 +156,17 @@ class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
-     * ```js
+     * ```ts
      * page.keyboard.sendCharacter('嗨');
      * ```
      *
      * @param char - Character to send into the page.
      */
     async sendCharacter(char) {
-        await this._client.send('Input.insertText', { text: char });
+        await __classPrivateFieldGet(this, _Keyboard_client, "f").send('Input.insertText', { text: char });
     }
     charIsKey(char) {
-        return !!USKeyboardLayout_js_1.keyDefinitions[char];
+        return !!USKeyboardLayout_js_1._keyDefinitions[char];
     }
     /**
      * Sends a `keydown`, `keypress`/`input`,
@@ -207,7 +180,7 @@ class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
-     * ```js
+     * ```ts
      * await page.keyboard.type('Hello'); // Types instantly
      * await page.keyboard.type('World', {delay: 100}); // Types slower, like a user
      * ```
@@ -218,14 +191,17 @@ class Keyboard {
      * Defaults to 0.
      */
     async type(text, options = {}) {
-        const delay = options.delay || null;
+        const delay = options.delay || undefined;
         for (const char of text) {
             if (this.charIsKey(char)) {
                 await this.press(char, { delay });
             }
             else {
-                if (delay)
-                    await new Promise((f) => setTimeout(f, delay));
+                if (delay) {
+                    await new Promise(f => {
+                        return setTimeout(f, delay);
+                    });
+                }
                 await this.sendCharacter(char);
             }
         }
@@ -253,12 +229,73 @@ class Keyboard {
     async press(key, options = {}) {
         const { delay = null } = options;
         await this.down(key, options);
-        if (delay)
-            await new Promise((f) => setTimeout(f, options.delay));
+        if (delay) {
+            await new Promise(f => {
+                return setTimeout(f, options.delay);
+            });
+        }
         await this.up(key);
     }
 }
 exports.Keyboard = Keyboard;
+_Keyboard_client = new WeakMap(), _Keyboard_pressedKeys = new WeakMap(), _Keyboard_instances = new WeakSet(), _Keyboard_modifierBit = function _Keyboard_modifierBit(key) {
+    if (key === 'Alt') {
+        return 1;
+    }
+    if (key === 'Control') {
+        return 2;
+    }
+    if (key === 'Meta') {
+        return 4;
+    }
+    if (key === 'Shift') {
+        return 8;
+    }
+    return 0;
+}, _Keyboard_keyDescriptionForString = function _Keyboard_keyDescriptionForString(keyString) {
+    const shift = this._modifiers & 8;
+    const description = {
+        key: '',
+        keyCode: 0,
+        code: '',
+        text: '',
+        location: 0,
+    };
+    const definition = USKeyboardLayout_js_1._keyDefinitions[keyString];
+    (0, assert_js_1.assert)(definition, `Unknown key: "${keyString}"`);
+    if (definition.key) {
+        description.key = definition.key;
+    }
+    if (shift && definition.shiftKey) {
+        description.key = definition.shiftKey;
+    }
+    if (definition.keyCode) {
+        description.keyCode = definition.keyCode;
+    }
+    if (shift && definition.shiftKeyCode) {
+        description.keyCode = definition.shiftKeyCode;
+    }
+    if (definition.code) {
+        description.code = definition.code;
+    }
+    if (definition.location) {
+        description.location = definition.location;
+    }
+    if (description.key.length === 1) {
+        description.text = description.key;
+    }
+    if (definition.text) {
+        description.text = definition.text;
+    }
+    if (shift && definition.shiftText) {
+        description.text = definition.shiftText;
+    }
+    // if any modifiers besides shift are pressed, no text should be sent
+    if (this._modifiers & ~8) {
+        description.text = '';
+    }
+    return description;
+};
 /**
  * The Mouse class operates in main-frame CSS pixels
  * relative to the top-left corner of the viewport.
@@ -266,7 +303,7 @@ exports.Keyboard = Keyboard;
  * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
  *
  * @example
- * ```js
+ * ```ts
  * // Using ‘page.mouse’ to trace a 100x100 square.
  * await page.mouse.move(0, 0);
  * await page.mouse.down();
@@ -286,7 +323,7 @@ exports.Keyboard = Keyboard;
  *
  * @example
  * For example, if you want to select all content between nodes:
- * ```js
+ * ```ts
  * await page.evaluate((from, to) => {
  *   const selection = from.getRootNode().getSelection();
  *   const range = document.createRange();
@@ -297,7 +334,7 @@ exports.Keyboard = Keyboard;
  * }, fromJSHandle, toJSHandle);
  * ```
  * If you then would want to copy-paste your selection, you can use the clipboard api:
- * ```js
+ * ```ts
  * // The clipboard api does not allow you to copy, unless the tab is focused.
  * await page.bringToFront();
  * await page.evaluate(() => {
@@ -309,7 +346,7 @@ exports.Keyboard = Keyboard;
  * ```
  * **Note**: If you want access to the clipboard API,
  * you have to give it permission to do so:
- * ```js
+ * ```ts
  * await browser.defaultBrowserContext().overridePermissions(
  *   '<your origin>', ['clipboard-read', 'clipboard-write']
  * );
@@ -321,11 +358,13 @@ class Mouse {
      * @internal
      */
     constructor(client, keyboard) {
-        this._x = 0;
-        this._y = 0;
-        this._button = 'none';
-        this._client = client;
-        this._keyboard = keyboard;
+        _Mouse_client.set(this, void 0);
+        _Mouse_keyboard.set(this, void 0);
+        _Mouse_x.set(this, 0);
+        _Mouse_y.set(this, 0);
+        _Mouse_button.set(this, 'none');
+        __classPrivateFieldSet(this, _Mouse_client, client, "f");
+        __classPrivateFieldSet(this, _Mouse_keyboard, keyboard, "f");
     }
     /**
      * Dispatches a `mousemove` event.
@@ -336,16 +375,16 @@ class Mouse {
      */
     async move(x, y, options = {}) {
         const { steps = 1 } = options;
-        const fromX = this._x, fromY = this._y;
-        this._x = x;
-        this._y = y;
+        const fromX = __classPrivateFieldGet(this, _Mouse_x, "f"), fromY = __classPrivateFieldGet(this, _Mouse_y, "f");
+        __classPrivateFieldSet(this, _Mouse_x, x, "f");
+        __classPrivateFieldSet(this, _Mouse_y, y, "f");
         for (let i = 1; i <= steps; i++) {
-            await this._client.send('Input.dispatchMouseEvent', {
+            await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchMouseEvent', {
                 type: 'mouseMoved',
-                button: this._button,
-                x: fromX + (this._x - fromX) * (i / steps),
-                y: fromY + (this._y - fromY) * (i / steps),
-                modifiers: this._keyboard._modifiers,
+                button: __classPrivateFieldGet(this, _Mouse_button, "f"),
+                x: fromX + (__classPrivateFieldGet(this, _Mouse_x, "f") - fromX) * (i / steps),
+                y: fromY + (__classPrivateFieldGet(this, _Mouse_y, "f") - fromY) * (i / steps),
+                modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             });
         }
     }
@@ -360,7 +399,9 @@ class Mouse {
         if (delay !== null) {
             await this.move(x, y);
             await this.down(options);
-            await new Promise((f) => setTimeout(f, delay));
+            await new Promise(f => {
+                return setTimeout(f, delay);
+            });
             await this.up(options);
         }
         else {
@@ -375,13 +416,13 @@ class Mouse {
      */
     async down(options = {}) {
         const { button = 'left', clickCount = 1 } = options;
-        this._button = button;
-        await this._client.send('Input.dispatchMouseEvent', {
+        __classPrivateFieldSet(this, _Mouse_button, button, "f");
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchMouseEvent', {
             type: 'mousePressed',
             button,
-            x: this._x,
-            y: this._y,
-            modifiers: this._keyboard._modifiers,
+            x: __classPrivateFieldGet(this, _Mouse_x, "f"),
+            y: __classPrivateFieldGet(this, _Mouse_y, "f"),
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             clickCount,
         });
     }
@@ -391,13 +432,13 @@ class Mouse {
      */
     async up(options = {}) {
         const { button = 'left', clickCount = 1 } = options;
-        this._button = 'none';
-        await this._client.send('Input.dispatchMouseEvent', {
+        __classPrivateFieldSet(this, _Mouse_button, 'none', "f");
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchMouseEvent', {
             type: 'mouseReleased',
             button,
-            x: this._x,
-            y: this._y,
-            modifiers: this._keyboard._modifiers,
+            x: __classPrivateFieldGet(this, _Mouse_x, "f"),
+            y: __classPrivateFieldGet(this, _Mouse_y, "f"),
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             clickCount,
         });
     }
@@ -407,7 +448,7 @@ class Mouse {
      *
      * @example
      * An example of zooming into an element:
-     * ```js
+     * ```ts
      * await page.goto('https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366');
      *
      * const elem = await page.$('div');
@@ -422,13 +463,13 @@ class Mouse {
      */
     async wheel(options = {}) {
         const { deltaX = 0, deltaY = 0 } = options;
-        await this._client.send('Input.dispatchMouseEvent', {
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchMouseEvent', {
             type: 'mouseWheel',
-            x: this._x,
-            y: this._y,
+            x: __classPrivateFieldGet(this, _Mouse_x, "f"),
+            y: __classPrivateFieldGet(this, _Mouse_y, "f"),
             deltaX,
             deltaY,
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             pointerType: 'mouse',
         });
     }
@@ -438,8 +479,10 @@ class Mouse {
      * @param target - point to drag to
      */
     async drag(start, target) {
-        const promise = new Promise((resolve) => {
-            this._client.once('Input.dragIntercepted', (event) => resolve(event.data));
+        const promise = new Promise(resolve => {
+            __classPrivateFieldGet(this, _Mouse_client, "f").once('Input.dragIntercepted', event => {
+                return resolve(event.data);
+            });
         });
         await this.move(start.x, start.y);
         await this.down();
@@ -452,11 +495,11 @@ class Mouse {
      * @param data - drag data containing items and operations mask
      */
     async dragEnter(target, data) {
-        await this._client.send('Input.dispatchDragEvent', {
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchDragEvent', {
             type: 'dragEnter',
             x: target.x,
             y: target.y,
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             data,
         });
     }
@@ -466,11 +509,11 @@ class Mouse {
      * @param data - drag data containing items and operations mask
      */
     async dragOver(target, data) {
-        await this._client.send('Input.dispatchDragEvent', {
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchDragEvent', {
             type: 'dragOver',
             x: target.x,
             y: target.y,
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             data,
         });
     }
@@ -480,11 +523,11 @@ class Mouse {
      * @param data - drag data containing items and operations mask
      */
     async drop(target, data) {
-        await this._client.send('Input.dispatchDragEvent', {
+        await __classPrivateFieldGet(this, _Mouse_client, "f").send('Input.dispatchDragEvent', {
             type: 'drop',
             x: target.x,
             y: target.y,
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Mouse_keyboard, "f")._modifiers,
             data,
         });
     }
@@ -502,13 +545,16 @@ class Mouse {
         await this.dragEnter(target, data);
         await this.dragOver(target, data);
         if (delay) {
-            await new Promise((resolve) => setTimeout(resolve, delay));
+            await new Promise(resolve => {
+                return setTimeout(resolve, delay);
+            });
         }
         await this.drop(target, data);
         await this.up();
     }
 }
 exports.Mouse = Mouse;
+_Mouse_client = new WeakMap(), _Mouse_keyboard = new WeakMap(), _Mouse_x = new WeakMap(), _Mouse_y = new WeakMap(), _Mouse_button = new WeakMap();
 /**
  * The Touchscreen class exposes touchscreen events.
  * @public
@@ -518,8 +564,10 @@ class Touchscreen {
      * @internal
      */
     constructor(client, keyboard) {
-        this._client = client;
-        this._keyboard = keyboard;
+        _Touchscreen_client.set(this, void 0);
+        _Touchscreen_keyboard.set(this, void 0);
+        __classPrivateFieldSet(this, _Touchscreen_client, client, "f");
+        __classPrivateFieldSet(this, _Touchscreen_keyboard, keyboard, "f");
     }
     /**
      * Dispatches a `touchstart` and `touchend` event.
@@ -528,17 +576,18 @@ class Touchscreen {
      */
     async tap(x, y) {
         const touchPoints = [{ x: Math.round(x), y: Math.round(y) }];
-        await this._client.send('Input.dispatchTouchEvent', {
+        await __classPrivateFieldGet(this, _Touchscreen_client, "f").send('Input.dispatchTouchEvent', {
             type: 'touchStart',
             touchPoints,
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Touchscreen_keyboard, "f")._modifiers,
         });
-        await this._client.send('Input.dispatchTouchEvent', {
+        await __classPrivateFieldGet(this, _Touchscreen_client, "f").send('Input.dispatchTouchEvent', {
             type: 'touchEnd',
             touchPoints: [],
-            modifiers: this._keyboard._modifiers,
+            modifiers: __classPrivateFieldGet(this, _Touchscreen_keyboard, "f")._modifiers,
         });
     }
 }
 exports.Touchscreen = Touchscreen;
+_Touchscreen_client = new WeakMap(), _Touchscreen_keyboard = new WeakMap();
 //# sourceMappingURL=Input.js.map

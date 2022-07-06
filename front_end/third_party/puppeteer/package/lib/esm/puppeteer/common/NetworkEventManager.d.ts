@@ -1,29 +1,35 @@
 import { Protocol } from 'devtools-protocol';
 import { HTTPRequest } from './HTTPRequest.js';
+/**
+ * @internal
+ */
 export declare type QueuedEventGroup = {
     responseReceivedEvent: Protocol.Network.ResponseReceivedEvent;
     loadingFinishedEvent?: Protocol.Network.LoadingFinishedEvent;
     loadingFailedEvent?: Protocol.Network.LoadingFailedEvent;
 };
+/**
+ * @internal
+ */
 export declare type FetchRequestId = string;
-export declare type NetworkRequestId = string;
-declare type RedirectInfo = {
+/**
+ * @internal
+ */
+export declare type RedirectInfo = {
     event: Protocol.Network.RequestWillBeSentEvent;
     fetchRequestId?: FetchRequestId;
 };
-export declare type RedirectInfoList = RedirectInfo[];
 /**
  * @internal
- *
+ */
+export declare type NetworkRequestId = string;
+/**
  * Helper class to track network events by request ID
+ *
+ * @internal
  */
 export declare class NetworkEventManager {
-    private _requestWillBeSentMap;
-    private _requestPausedMap;
-    private _httpRequestsMap;
-    private _responseReceivedExtraInfoMap;
-    private _queuedRedirectInfoMap;
-    private _queuedEventGroupMap;
+    #private;
     forget(networkRequestId: NetworkRequestId): void;
     responseExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.ResponseReceivedExtraInfoEvent[];
     private queuedRedirectInfo;
@@ -43,5 +49,4 @@ export declare class NetworkEventManager {
     queueEventGroup(networkRequestId: NetworkRequestId, event: QueuedEventGroup): void;
     forgetQueuedEventGroup(networkRequestId: NetworkRequestId): void;
 }
-export {};
 //# sourceMappingURL=NetworkEventManager.d.ts.map

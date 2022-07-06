@@ -11,8 +11,8 @@ export { ConnectionTransport, ProtocolMapping };
  * @public
  */
 export interface ConnectionCallback {
-    resolve: Function;
-    reject: Function;
+    resolve(args: unknown): void;
+    reject(args: unknown): void;
     error: ProtocolError;
     method: string;
 }
@@ -28,15 +28,17 @@ export declare const ConnectionEmittedEvents: {
  * @public
  */
 export declare class Connection extends EventEmitter {
-    _url: string;
-    _transport: ConnectionTransport;
-    _delay: number;
-    _lastId: number;
-    _sessions: Map<string, CDPSession>;
-    _closed: boolean;
-    _callbacks: Map<number, ConnectionCallback>;
+    #private;
     constructor(url: string, transport: ConnectionTransport, delay?: number);
     static fromSession(session: CDPSession): Connection | undefined;
+    /**
+     * @internal
+     */
+    get _closed(): boolean;
+    /**
+     * @internal
+     */
+    get _sessions(): Map<string, CDPSession>;
     /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
@@ -44,9 +46,14 @@ export declare class Connection extends EventEmitter {
     session(sessionId: string): CDPSession | null;
     url(): string;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    /**
+     * @internal
+     */
     _rawSend(message: Record<string, unknown>): number;
-    _onMessage(message: string): Promise<void>;
-    _onClose(): void;
+    /**
+     * @internal
+     */
+    protected onMessage(message: string): Promise<void>;
     dispose(): void;
     /**
      * @param targetInfo - The target info
@@ -88,7 +95,7 @@ export declare const CDPSessionEmittedEvents: {
  * and {@link https://github.com/aslushnikov/getting-started-with-cdp/blob/HEAD/README.md | Getting Started with DevTools Protocol}.
  *
  * @example
- * ```js
+ * ```ts
  * const client = await page.target().createCDPSession();
  * await client.send('Animation.enable');
  * client.on('Animation.animationCreated', () => console.log('Animation created!'));
@@ -102,13 +109,7 @@ export declare const CDPSessionEmittedEvents: {
  * @public
  */
 export declare class CDPSession extends EventEmitter {
-    /**
-     * @internal
-     */
-    _connection?: Connection;
-    private _sessionId;
-    private _targetType;
-    private _callbacks;
+    #private;
     /**
      * @internal
      */
@@ -129,7 +130,7 @@ export declare class CDPSession extends EventEmitter {
      */
     _onClosed(): void;
     /**
-     * @internal
+     * Returns the session's id.
      */
     id(): string;
 }

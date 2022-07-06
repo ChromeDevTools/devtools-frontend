@@ -60,14 +60,12 @@ export class Transport implements puppeteer.ConnectionTransport {
 }
 
 export class PuppeteerConnection extends puppeteer.Connection {
-  // Overriding Puppeteer's API here.
-  // eslint-disable-next-line rulesdir/no_underscored_properties
-  async _onMessage(message: string): Promise<void> {
+  override async onMessage(message: string): Promise<void> {
     const msgObj = JSON.parse(message) as {id: number, method: string, params: unknown, sessionId?: string};
     if (msgObj.sessionId && !this._sessions.has(msgObj.sessionId)) {
       return;
     }
-    void super._onMessage(message);
+    void super.onMessage(message);
   }
 }
 
@@ -90,7 +88,7 @@ export async function getPuppeteerConnection(
     return targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId || targetInfo.type === 'iframe';
   };
 
-  const browser = await puppeteer.Browser.create(
+  const browser = await puppeteer.Browser._create(
       connection,
       [] /* contextIds */,
       false /* ignoreHTTPSErrors */,

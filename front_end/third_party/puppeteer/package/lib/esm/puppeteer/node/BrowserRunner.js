@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { debug } from '../common/Debug.js';
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _BrowserRunner_product, _BrowserRunner_executablePath, _BrowserRunner_processArguments, _BrowserRunner_userDataDir, _BrowserRunner_isTempUserDataDir, _BrowserRunner_closed, _BrowserRunner_listeners, _BrowserRunner_processClosing;
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -21,11 +32,12 @@ import * as readline from 'readline';
 import removeFolder from 'rimraf';
 import { promisify } from 'util';
 import { assert } from '../common/assert.js';
-import { helper, debugError } from '../common/helper.js';
 import { Connection } from '../common/Connection.js';
+import { debug } from '../common/Debug.js';
+import { TimeoutError } from '../common/Errors.js';
+import { debugError, addEventListener, isErrnoException, isErrorLike, removeEventListeners, } from '../common/util.js';
 import { NodeWebSocketTransport as WebSocketTransport } from '../node/NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
-import { TimeoutError } from '../common/Errors.js';
 const removeFolderAsync = promisify(removeFolder);
 const renameAsync = promisify(fs.rename);
 const unlinkAsync = promisify(fs.unlink);
@@ -34,36 +46,48 @@ const PROCESS_ERROR_EXPLANATION = `Puppeteer was unable to kill the process whic
 This means that, on future Puppeteer launches, Puppeteer might not be able to launch the browser.
 Please check your open processes and ensure that the browser processes that Puppeteer launched have been killed.
 If you think this is a bug, please report it on the Puppeteer issue tracker.`;
+/**
+ * @internal
+ */
 export class BrowserRunner {
     constructor(product, executablePath, processArguments, userDataDir, isTempUserDataDir) {
-        this.proc = null;
-        this.connection = null;
-        this._closed = true;
-        this._listeners = [];
-        this._product = product;
-        this._executablePath = executablePath;
-        this._processArguments = processArguments;
-        this._userDataDir = userDataDir;
-        this._isTempUserDataDir = isTempUserDataDir;
+        _BrowserRunner_product.set(this, void 0);
+        _BrowserRunner_executablePath.set(this, void 0);
+        _BrowserRunner_processArguments.set(this, void 0);
+        _BrowserRunner_userDataDir.set(this, void 0);
+        _BrowserRunner_isTempUserDataDir.set(this, void 0);
+        _BrowserRunner_closed.set(this, true);
+        _BrowserRunner_listeners.set(this, []);
+        _BrowserRunner_processClosing.set(this, void 0);
+        __classPrivateFieldSet(this, _BrowserRunner_product, product, "f");
+        __classPrivateFieldSet(this, _BrowserRunner_executablePath, executablePath, "f");
+        __classPrivateFieldSet(this, _BrowserRunner_processArguments, processArguments, "f");
+        __classPrivateFieldSet(this, _BrowserRunner_userDataDir, userDataDir, "f");
+        __classPrivateFieldSet(this, _BrowserRunner_isTempUserDataDir, isTempUserDataDir, "f");
     }
     start(options) {
+        var _a, _b;
         const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe } = options;
         let stdio;
         if (pipe) {
-            if (dumpio)
+            if (dumpio) {
                 stdio = ['ignore', 'pipe', 'pipe', 'pipe', 'pipe'];
-            else
+            }
+            else {
                 stdio = ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'];
+            }
         }
         else {
-            if (dumpio)
+            if (dumpio) {
                 stdio = ['pipe', 'pipe', 'pipe'];
-            else
+            }
+            else {
                 stdio = ['pipe', 'ignore', 'pipe'];
+            }
         }
         assert(!this.proc, 'This process has previously been started.');
-        debugLauncher(`Calling ${this._executablePath} ${this._processArguments.join(' ')}`);
-        this.proc = childProcess.spawn(this._executablePath, this._processArguments, {
+        debugLauncher(`Calling ${__classPrivateFieldGet(this, _BrowserRunner_executablePath, "f")} ${__classPrivateFieldGet(this, _BrowserRunner_processArguments, "f").join(' ')}`);
+        this.proc = childProcess.spawn(__classPrivateFieldGet(this, _BrowserRunner_executablePath, "f"), __classPrivateFieldGet(this, _BrowserRunner_processArguments, "f"), {
             // On non-windows platforms, `detached: true` makes child process a
             // leader of a new process group, making it possible to kill child
             // process tree with `.kill(-pid)` command. @see
@@ -73,17 +97,17 @@ export class BrowserRunner {
             stdio,
         });
         if (dumpio) {
-            this.proc.stderr.pipe(process.stderr);
-            this.proc.stdout.pipe(process.stdout);
+            (_a = this.proc.stderr) === null || _a === void 0 ? void 0 : _a.pipe(process.stderr);
+            (_b = this.proc.stdout) === null || _b === void 0 ? void 0 : _b.pipe(process.stdout);
         }
-        this._closed = false;
-        this._processClosing = new Promise((fulfill, reject) => {
+        __classPrivateFieldSet(this, _BrowserRunner_closed, false, "f");
+        __classPrivateFieldSet(this, _BrowserRunner_processClosing, new Promise((fulfill, reject) => {
             this.proc.once('exit', async () => {
-                this._closed = true;
+                __classPrivateFieldSet(this, _BrowserRunner_closed, true, "f");
                 // Cleanup as processes exit.
-                if (this._isTempUserDataDir) {
+                if (__classPrivateFieldGet(this, _BrowserRunner_isTempUserDataDir, "f")) {
                     try {
-                        await removeFolderAsync(this._userDataDir);
+                        await removeFolderAsync(__classPrivateFieldGet(this, _BrowserRunner_userDataDir, "f"));
                         fulfill();
                     }
                     catch (error) {
@@ -92,14 +116,14 @@ export class BrowserRunner {
                     }
                 }
                 else {
-                    if (this._product === 'firefox') {
+                    if (__classPrivateFieldGet(this, _BrowserRunner_product, "f") === 'firefox') {
                         try {
                             // When an existing user profile has been used remove the user
                             // preferences file and restore possibly backuped preferences.
-                            await unlinkAsync(path.join(this._userDataDir, 'user.js'));
-                            const prefsBackupPath = path.join(this._userDataDir, 'prefs.js.puppeteer');
+                            await unlinkAsync(path.join(__classPrivateFieldGet(this, _BrowserRunner_userDataDir, "f"), 'user.js'));
+                            const prefsBackupPath = path.join(__classPrivateFieldGet(this, _BrowserRunner_userDataDir, "f"), 'prefs.js.puppeteer');
                             if (fs.existsSync(prefsBackupPath)) {
-                                const prefsPath = path.join(this._userDataDir, 'prefs.js');
+                                const prefsPath = path.join(__classPrivateFieldGet(this, _BrowserRunner_userDataDir, "f"), 'prefs.js');
                                 await unlinkAsync(prefsPath);
                                 await renameAsync(prefsBackupPath, prefsPath);
                             }
@@ -112,51 +136,54 @@ export class BrowserRunner {
                     fulfill();
                 }
             });
-        });
-        this._listeners = [
-            helper.addEventListener(process, 'exit', this.kill.bind(this)),
-        ];
-        if (handleSIGINT)
-            this._listeners.push(helper.addEventListener(process, 'SIGINT', () => {
+        }), "f");
+        __classPrivateFieldSet(this, _BrowserRunner_listeners, [addEventListener(process, 'exit', this.kill.bind(this))], "f");
+        if (handleSIGINT) {
+            __classPrivateFieldGet(this, _BrowserRunner_listeners, "f").push(addEventListener(process, 'SIGINT', () => {
                 this.kill();
                 process.exit(130);
             }));
-        if (handleSIGTERM)
-            this._listeners.push(helper.addEventListener(process, 'SIGTERM', this.close.bind(this)));
-        if (handleSIGHUP)
-            this._listeners.push(helper.addEventListener(process, 'SIGHUP', this.close.bind(this)));
+        }
+        if (handleSIGTERM) {
+            __classPrivateFieldGet(this, _BrowserRunner_listeners, "f").push(addEventListener(process, 'SIGTERM', this.close.bind(this)));
+        }
+        if (handleSIGHUP) {
+            __classPrivateFieldGet(this, _BrowserRunner_listeners, "f").push(addEventListener(process, 'SIGHUP', this.close.bind(this)));
+        }
     }
     close() {
-        if (this._closed)
+        if (__classPrivateFieldGet(this, _BrowserRunner_closed, "f")) {
             return Promise.resolve();
-        if (this._isTempUserDataDir) {
+        }
+        if (__classPrivateFieldGet(this, _BrowserRunner_isTempUserDataDir, "f")) {
             this.kill();
         }
         else if (this.connection) {
             // Attempt to close the browser gracefully
-            this.connection.send('Browser.close').catch((error) => {
+            this.connection.send('Browser.close').catch(error => {
                 debugError(error);
                 this.kill();
             });
         }
         // Cleanup this listener last, as that makes sure the full callback runs. If we
         // perform this earlier, then the previous function calls would not happen.
-        helper.removeEventListeners(this._listeners);
-        return this._processClosing;
+        removeEventListeners(__classPrivateFieldGet(this, _BrowserRunner_listeners, "f"));
+        return __classPrivateFieldGet(this, _BrowserRunner_processClosing, "f");
     }
     kill() {
         // If the process failed to launch (for example if the browser executable path
         // is invalid), then the process does not get a pid assigned. A call to
         // `proc.kill` would error, as the `pid` to-be-killed can not be found.
         if (this.proc && this.proc.pid && pidExists(this.proc.pid)) {
+            const proc = this.proc;
             try {
                 if (process.platform === 'win32') {
-                    childProcess.exec(`taskkill /pid ${this.proc.pid} /T /F`, (error) => {
+                    childProcess.exec(`taskkill /pid ${this.proc.pid} /T /F`, error => {
                         if (error) {
                             // taskkill can fail to kill the process e.g. due to missing permissions.
                             // Let's kill the process via Node API. This delays killing of all child
-                            // proccesses of `this.proc` until the main Node.js process dies.
-                            this.proc.kill();
+                            // processes of `this.proc` until the main Node.js process dies.
+                            proc.kill();
                         }
                     });
                 }
@@ -164,25 +191,34 @@ export class BrowserRunner {
                     // on linux the process group can be killed with the group id prefixed with
                     // a minus sign. The process group id is the group leader's pid.
                     const processGroupId = -this.proc.pid;
-                    process.kill(processGroupId, 'SIGKILL');
+                    try {
+                        process.kill(processGroupId, 'SIGKILL');
+                    }
+                    catch (error) {
+                        // Killing the process group can fail due e.g. to missing permissions.
+                        // Let's kill the process via Node API. This delays killing of all child
+                        // processes of `this.proc` until the main Node.js process dies.
+                        proc.kill('SIGKILL');
+                    }
                 }
             }
             catch (error) {
-                throw new Error(`${PROCESS_ERROR_EXPLANATION}\nError cause: ${error.stack}`);
+                throw new Error(`${PROCESS_ERROR_EXPLANATION}\nError cause: ${isErrorLike(error) ? error.stack : error}`);
             }
         }
         // Attempt to remove temporary profile directory to avoid littering.
         try {
-            if (this._isTempUserDataDir) {
-                removeFolder.sync(this._userDataDir);
+            if (__classPrivateFieldGet(this, _BrowserRunner_isTempUserDataDir, "f")) {
+                removeFolder.sync(__classPrivateFieldGet(this, _BrowserRunner_userDataDir, "f"));
             }
         }
         catch (error) { }
         // Cleanup this listener last, as that makes sure the full callback runs. If we
         // perform this earlier, then the previous function calls would not happen.
-        helper.removeEventListeners(this._listeners);
+        removeEventListeners(__classPrivateFieldGet(this, _BrowserRunner_listeners, "f"));
     }
     async setupConnection(options) {
+        assert(this.proc, 'BrowserRunner not started.');
         const { usePipe, timeout, slowMo, preferredRevision } = options;
         if (!usePipe) {
             const browserWSEndpoint = await waitForWSEndpoint(this.proc, timeout, preferredRevision);
@@ -199,20 +235,25 @@ export class BrowserRunner {
         return this.connection;
     }
 }
+_BrowserRunner_product = new WeakMap(), _BrowserRunner_executablePath = new WeakMap(), _BrowserRunner_processArguments = new WeakMap(), _BrowserRunner_userDataDir = new WeakMap(), _BrowserRunner_isTempUserDataDir = new WeakMap(), _BrowserRunner_closed = new WeakMap(), _BrowserRunner_listeners = new WeakMap(), _BrowserRunner_processClosing = new WeakMap();
 function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
+    assert(browserProcess.stderr, '`browserProcess` does not have stderr.');
+    const rl = readline.createInterface(browserProcess.stderr);
+    let stderr = '';
     return new Promise((resolve, reject) => {
-        const rl = readline.createInterface({ input: browserProcess.stderr });
-        let stderr = '';
         const listeners = [
-            helper.addEventListener(rl, 'line', onLine),
-            helper.addEventListener(rl, 'close', () => onClose()),
-            helper.addEventListener(browserProcess, 'exit', () => onClose()),
-            helper.addEventListener(browserProcess, 'error', (error) => onClose(error)),
+            addEventListener(rl, 'line', onLine),
+            addEventListener(rl, 'close', () => {
+                return onClose();
+            }),
+            addEventListener(browserProcess, 'exit', () => {
+                return onClose();
+            }),
+            addEventListener(browserProcess, 'error', error => {
+                return onClose(error);
+            }),
         ];
         const timeoutId = timeout ? setTimeout(onTimeout, timeout) : 0;
-        /**
-         * @param {!Error=} error
-         */
         function onClose(error) {
             cleanup();
             reject(new Error([
@@ -231,15 +272,18 @@ function waitForWSEndpoint(browserProcess, timeout, preferredRevision) {
         function onLine(line) {
             stderr += line + '\n';
             const match = line.match(/^DevTools listening on (ws:\/\/.*)$/);
-            if (!match)
+            if (!match) {
                 return;
+            }
             cleanup();
+            // The RegExp matches, so this will obviously exist.
             resolve(match[1]);
         }
         function cleanup() {
-            if (timeoutId)
+            if (timeoutId) {
                 clearTimeout(timeoutId);
-            helper.removeEventListeners(listeners);
+            }
+            removeEventListeners(listeners);
         }
     });
 }
@@ -248,12 +292,12 @@ function pidExists(pid) {
         return process.kill(pid, 0);
     }
     catch (error) {
-        if (error && error.code && error.code === 'ESRCH') {
-            return false;
+        if (isErrnoException(error)) {
+            if (error.code && error.code === 'ESRCH') {
+                return false;
+            }
         }
-        else {
-            throw error;
-        }
+        throw error;
     }
 }
 //# sourceMappingURL=BrowserRunner.js.map

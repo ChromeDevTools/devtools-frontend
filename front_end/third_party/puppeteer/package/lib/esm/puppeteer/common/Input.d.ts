@@ -33,7 +33,7 @@ import { Point } from './JSHandle.js';
  *
  * @example
  * An example of holding down `Shift` in order to select and delete some text:
- * ```js
+ * ```ts
  * await page.keyboard.type('Hello World!');
  * await page.keyboard.press('ArrowLeft');
  *
@@ -48,7 +48,7 @@ import { Point } from './JSHandle.js';
  *
  * @example
  * An example of pressing `A`
- * ```js
+ * ```ts
  * await page.keyboard.down('Shift');
  * await page.keyboard.press('KeyA');
  * await page.keyboard.up('Shift');
@@ -57,11 +57,14 @@ import { Point } from './JSHandle.js';
  * @public
  */
 export declare class Keyboard {
-    private _client;
-    /** @internal */
+    #private;
+    /**
+     * @internal
+     */
     _modifiers: number;
-    private _pressedKeys;
-    /** @internal */
+    /**
+     * @internal
+     */
     constructor(client: CDPSession);
     /**
      * Dispatches a `keydown` event.
@@ -91,8 +94,6 @@ export declare class Keyboard {
     down(key: KeyInput, options?: {
         text?: string;
     }): Promise<void>;
-    private _modifierBit;
-    private _keyDescriptionForString;
     /**
      * Dispatches a `keyup` event.
      *
@@ -110,7 +111,7 @@ export declare class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
-     * ```js
+     * ```ts
      * page.keyboard.sendCharacter('嗨');
      * ```
      *
@@ -130,7 +131,7 @@ export declare class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
-     * ```js
+     * ```ts
      * await page.keyboard.type('Hello'); // Types instantly
      * await page.keyboard.type('World', {delay: 100}); // Types slower, like a user
      * ```
@@ -193,7 +194,7 @@ export interface MouseWheelOptions {
  * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
  *
  * @example
- * ```js
+ * ```ts
  * // Using ‘page.mouse’ to trace a 100x100 square.
  * await page.mouse.move(0, 0);
  * await page.mouse.down();
@@ -213,7 +214,7 @@ export interface MouseWheelOptions {
  *
  * @example
  * For example, if you want to select all content between nodes:
- * ```js
+ * ```ts
  * await page.evaluate((from, to) => {
  *   const selection = from.getRootNode().getSelection();
  *   const range = document.createRange();
@@ -224,7 +225,7 @@ export interface MouseWheelOptions {
  * }, fromJSHandle, toJSHandle);
  * ```
  * If you then would want to copy-paste your selection, you can use the clipboard api:
- * ```js
+ * ```ts
  * // The clipboard api does not allow you to copy, unless the tab is focused.
  * await page.bringToFront();
  * await page.evaluate(() => {
@@ -236,7 +237,7 @@ export interface MouseWheelOptions {
  * ```
  * **Note**: If you want access to the clipboard API,
  * you have to give it permission to do so:
- * ```js
+ * ```ts
  * await browser.defaultBrowserContext().overridePermissions(
  *   '<your origin>', ['clipboard-read', 'clipboard-write']
  * );
@@ -244,11 +245,7 @@ export interface MouseWheelOptions {
  * @public
  */
 export declare class Mouse {
-    private _client;
-    private _keyboard;
-    private _x;
-    private _y;
-    private _button;
+    #private;
     /**
      * @internal
      */
@@ -288,7 +285,7 @@ export declare class Mouse {
      *
      * @example
      * An example of zooming into an element:
-     * ```js
+     * ```ts
      * await page.goto('https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366');
      *
      * const elem = await page.$('div');
@@ -343,8 +340,7 @@ export declare class Mouse {
  * @public
  */
 export declare class Touchscreen {
-    private _client;
-    private _keyboard;
+    #private;
     /**
      * @internal
      */

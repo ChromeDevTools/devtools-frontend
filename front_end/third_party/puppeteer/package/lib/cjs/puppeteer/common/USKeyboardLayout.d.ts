@@ -36,5 +36,5 @@ export declare type KeyInput = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '
 /**
  * @internal
  */
-export declare const keyDefinitions: Readonly<Record<KeyInput, KeyDefinition>>;
+export declare const _keyDefinitions: Readonly<Record<KeyInput, KeyDefinition>>;
 //# sourceMappingURL=USKeyboardLayout.d.ts.map

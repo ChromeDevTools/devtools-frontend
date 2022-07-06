@@ -39,10 +39,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFetch = void 0;
-const environment_js_1 = require("../environment.js");
-/* Use the global version if we're in the browser, else load the node-fetch module. */
+/**
+ * Gets the global version if we're in the browser, else loads the node-fetch module.
+ *
+ * @internal
+ */
 const getFetch = async () => {
-    return environment_js_1.isNode ? (await Promise.resolve().then(() => __importStar(require('cross-fetch')))).fetch : globalThis.fetch;
+    return globalThis.fetch || (await Promise.resolve().then(() => __importStar(require('cross-fetch')))).fetch;
 };
 exports.getFetch = getFetch;
 //# sourceMappingURL=fetch.js.map

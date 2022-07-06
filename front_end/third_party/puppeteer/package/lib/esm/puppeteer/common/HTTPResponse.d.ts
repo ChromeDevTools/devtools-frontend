@@ -37,28 +37,11 @@ interface CDPSession extends EventEmitter {
  * @public
  */
 export declare class HTTPResponse {
-    private _client;
-    private _request;
-    private _contentPromise;
-    private _bodyLoadedPromise;
-    private _bodyLoadedPromiseFulfill;
-    private _remoteAddress;
-    private _status;
-    private _statusText;
-    private _url;
-    private _fromDiskCache;
-    private _fromServiceWorker;
-    private _headers;
-    private _securityDetails;
-    private _timing;
+    #private;
     /**
      * @internal
      */
     constructor(client: CDPSession, request: HTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null);
-    /**
-     * @internal
-     */
-    _parseStatusTextFromExtrInfo(extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null): string | undefined;
     /**
      * @internal
      */

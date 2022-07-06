@@ -30,14 +30,12 @@ parser.add_argument("-cb",
                     "--create-branch",
                     dest="create_branch",
                     help="Creates a new branch for each dependency",
-                    default=False,
-                    type=bool)
+                    action='store_true')
 parser.add_argument("-u",
                     "--upload-cl",
                     dest="upload_cl",
                     help="Uploads a CL for each dependency",
-                    default=False,
-                    type=bool)
+                    action='store_true')
 
 args = parser.parse_args()
 
@@ -157,10 +155,9 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
         subprocess.check_call(
             ['git', 'commit', '-m', f'Update {package_name} to {version}'],
             cwd=devtools_paths.root_path())
-        subprocess.check_call([
-            'git', 'cl', 'upload', '-b', 'none', '-f', '-d', '--r-owners', '-s'
-        ],
-                              cwd=devtools_paths.root_path())
+        subprocess.check_call(
+            ['git', 'cl', 'upload', '-b', 'none', '-f', '-d', '-s'],
+            cwd=devtools_paths.root_path())
 
 if args.create_branch:
     subprocess.check_call(['git', 'checkout', 'main'],

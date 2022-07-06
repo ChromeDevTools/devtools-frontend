@@ -22,32 +22,41 @@ exports.logPolitely = exports.downloadBrowser = void 0;
 const https_1 = __importDefault(require("https"));
 const progress_1 = __importDefault(require("progress"));
 const url_1 = __importDefault(require("url"));
-const node_js_1 = __importDefault(require("../node.js"));
+const puppeteer_js_1 = __importDefault(require("../puppeteer.js"));
 const revisions_js_1 = require("../revisions.js");
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
 const proxy_from_env_1 = require("proxy-from-env");
+/**
+ * @internal
+ */
 const supportedProducts = {
     chrome: 'Chromium',
     firefox: 'Firefox Nightly',
 };
+/**
+ * @internal
+ */
 function getProduct(input) {
     if (input !== 'chrome' && input !== 'firefox') {
         throw new Error(`Unsupported product ${input}`);
     }
     return input;
 }
+/**
+ * @internal
+ */
 async function downloadBrowser() {
-    const downloadHost = process.env.PUPPETEER_DOWNLOAD_HOST ||
-        process.env.npm_config_puppeteer_download_host ||
-        process.env.npm_package_config_puppeteer_download_host;
-    const product = getProduct(process.env.PUPPETEER_PRODUCT ||
-        process.env.npm_config_puppeteer_product ||
-        process.env.npm_package_config_puppeteer_product ||
+    const downloadHost = process.env['PUPPETEER_DOWNLOAD_HOST'] ||
+        process.env['npm_config_puppeteer_download_host'] ||
+        process.env['npm_package_config_puppeteer_download_host'];
+    const product = getProduct(process.env['PUPPETEER_PRODUCT'] ||
+        process.env['npm_config_puppeteer_product'] ||
+        process.env['npm_package_config_puppeteer_product'] ||
         'chrome');
-    const downloadPath = process.env.PUPPETEER_DOWNLOAD_PATH ||
-        process.env.npm_config_puppeteer_download_path ||
-        process.env.npm_package_config_puppeteer_download_path;
-    const browserFetcher = node_js_1.default.createBrowserFetcher({
+    const downloadPath = process.env['PUPPETEER_DOWNLOAD_PATH'] ||
+        process.env['npm_config_puppeteer_download_path'] ||
+        process.env['npm_package_config_puppeteer_download_path'];
+    const browserFetcher = puppeteer_js_1.default.createBrowserFetcher({
         product,
         host: downloadHost,
         path: downloadPath,
@@ -56,14 +65,14 @@ async function downloadBrowser() {
     await fetchBinary(revision);
     async function getRevision() {
         if (product === 'chrome') {
-            return (process.env.PUPPETEER_CHROMIUM_REVISION ||
-                process.env.npm_config_puppeteer_chromium_revision ||
+            return (process.env['PUPPETEER_CHROMIUM_REVISION'] ||
+                process.env['npm_config_puppeteer_chromium_revision'] ||
                 revisions_js_1.PUPPETEER_REVISIONS.chromium);
         }
         else if (product === 'firefox') {
-            node_js_1.default._preferredRevision =
+            puppeteer_js_1.default._preferredRevision =
                 revisions_js_1.PUPPETEER_REVISIONS.firefox;
-            return getFirefoxNightlyVersion().catch((error) => {
+            return getFirefoxNightlyVersion().catch(error => {
                 console.error(error);
                 process.exit(1);
             });
@@ -80,19 +89,26 @@ async function downloadBrowser() {
             return;
         }
         // Override current environment proxy settings with npm configuration, if any.
-        const NPM_HTTPS_PROXY = process.env.npm_config_https_proxy || process.env.npm_config_proxy;
-        const NPM_HTTP_PROXY = process.env.npm_config_http_proxy || process.env.npm_config_proxy;
-        const NPM_NO_PROXY = process.env.npm_config_no_proxy;
-        if (NPM_HTTPS_PROXY)
-            process.env.HTTPS_PROXY = NPM_HTTPS_PROXY;
-        if (NPM_HTTP_PROXY)
-            process.env.HTTP_PROXY = NPM_HTTP_PROXY;
-        if (NPM_NO_PROXY)
-            process.env.NO_PROXY = NPM_NO_PROXY;
+        const NPM_HTTPS_PROXY = process.env['npm_config_https_proxy'] || process.env['npm_config_proxy'];
+        const NPM_HTTP_PROXY = process.env['npm_config_http_proxy'] || process.env['npm_config_proxy'];
+        const NPM_NO_PROXY = process.env['npm_config_no_proxy'];
+        if (NPM_HTTPS_PROXY) {
+            process.env['HTTPS_PROXY'] = NPM_HTTPS_PROXY;
+        }
+        if (NPM_HTTP_PROXY) {
+            process.env['HTTP_PROXY'] = NPM_HTTP_PROXY;
+        }
+        if (NPM_NO_PROXY) {
+            process.env['NO_PROXY'] = NPM_NO_PROXY;
+        }
         function onSuccess(localRevisions) {
             logPolitely(`${supportedProducts[product]} (${revisionInfo.revision}) downloaded to ${revisionInfo.folderPath}`);
-            localRevisions = localRevisions.filter((revision) => revision !== revisionInfo.revision);
-            const cleanupOldVersions = localRevisions.map((revision) => browserFetcher.remove(revision));
+            localRevisions = localRevisions.filter(revision => {
+                return revision !== revisionInfo.revision;
+            });
+            const cleanupOldVersions = localRevisions.map(revision => {
+                return browserFetcher.remove(revision);
+            });
             Promise.all([...cleanupOldVersions]);
         }
         function onError(error) {
@@ -117,7 +133,9 @@ async function downloadBrowser() {
         }
         return browserFetcher
             .download(revisionInfo.revision, onProgress)
-            .then(() => browserFetcher.localRevisions())
+            .then(() => {
+            return browserFetcher.localRevisions();
+        })
             .then(onSuccess)
             .catch(onError);
     }
@@ -142,10 +160,11 @@ async function downloadBrowser() {
             let data = '';
             logPolitely(`Requesting latest Firefox Nightly version from ${firefoxVersionsUrl}`);
             https_1.default
-                .get(firefoxVersionsUrl, requestOptions, (r) => {
-                if (r.statusCode && r.statusCode >= 400)
+                .get(firefoxVersionsUrl, requestOptions, r => {
+                if (r.statusCode && r.statusCode >= 400) {
                     return reject(new Error(`Got status code ${r.statusCode}`));
-                r.on('data', (chunk) => {
+                }
+                r.on('data', chunk => {
                     data += chunk;
                 });
                 r.on('end', () => {
@@ -164,12 +183,16 @@ async function downloadBrowser() {
     }
 }
 exports.downloadBrowser = downloadBrowser;
+/**
+ * @internal
+ */
 function logPolitely(toBeLogged) {
-    const logLevel = process.env.npm_config_loglevel || '';
+    const logLevel = process.env['npm_config_loglevel'] || '';
     const logLevelDisplay = ['silent', 'error', 'warn'].indexOf(logLevel) > -1;
     // eslint-disable-next-line no-console
-    if (!logLevelDisplay)
+    if (!logLevelDisplay) {
         console.log(toBeLogged);
+    }
 }
 exports.logPolitely = logPolitely;
 //# sourceMappingURL=install.js.map

@@ -13,5 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Gets the global version if we're in the browser, else loads the node-fetch module.
+ *
+ * @internal
+ */
 export declare const getFetch: () => Promise<typeof fetch>;
 //# sourceMappingURL=fetch.d.ts.map

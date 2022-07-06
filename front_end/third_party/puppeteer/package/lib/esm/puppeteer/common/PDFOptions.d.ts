@@ -22,7 +22,10 @@ export interface PDFMargin {
     left?: string | number;
     right?: string | number;
 }
-declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
+/**
+ * @public
+ */
+export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 /**
  * All the valid paper format types when printing a PDF.
  *
@@ -159,6 +162,5 @@ export interface PaperFormatDimensions {
 /**
  * @internal
  */
-export declare const paperFormats: Record<LowerCasePaperFormat, PaperFormatDimensions>;
-export {};
+export declare const _paperFormats: Record<LowerCasePaperFormat, PaperFormatDimensions>;
 //# sourceMappingURL=PDFOptions.d.ts.map

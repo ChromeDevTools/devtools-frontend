@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser, } from './Browser.js';
-import { assert } from './assert.js';
-import { debugError } from '../common/helper.js';
-import { Connection } from './Connection.js';
+import { debugError, isErrorLike } from './util.js';
 import { isNode } from '../environment.js';
+import { assert } from './assert.js';
+import { Browser, } from './Browser.js';
+import { Connection } from './Connection.js';
 import { getFetch } from './fetch.js';
 const getWebSocketTransportClass = async () => {
     return isNode
@@ -28,13 +28,14 @@ const getWebSocketTransportClass = async () => {
 /**
  * Users should never call this directly; it's called when calling
  * `puppeteer.connect`.
+ *
  * @internal
  */
-export const connectToBrowser = async (options) => {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, isPageTarget, } = options;
+export async function _connectToBrowser(options) {
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
-    let connection = null;
+    let connection;
     if (transport) {
         connection = new Connection('', transport, slowMo);
     }
@@ -50,8 +51,10 @@ export const connectToBrowser = async (options) => {
         connection = new Connection(connectionURL, connectionTransport, slowMo);
     }
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser.create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, null, () => connection.send('Browser.close').catch(debugError), targetFilter, isPageTarget);
-};
+    return Browser._create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
+        return connection.send('Browser.close').catch(debugError);
+    }, targetFilter, isPageTarget);
+}
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);
     const fetch = await getFetch();
@@ -66,9 +69,11 @@ async function getWSEndpoint(browserURL) {
         return data.webSocketDebuggerUrl;
     }
     catch (error) {
-        error.message =
-            `Failed to fetch browser webSocket URL from ${endpointURL}: ` +
-                error.message;
+        if (isErrorLike(error)) {
+            error.message =
+                `Failed to fetch browser webSocket URL from ${endpointURL}: ` +
+                    error.message;
+        }
         throw error;
     }
 }

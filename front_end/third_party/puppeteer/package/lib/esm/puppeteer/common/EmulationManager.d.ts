@@ -15,10 +15,11 @@
  */
 import { CDPSession } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
+/**
+ * @internal
+ */
 export declare class EmulationManager {
-    _client: CDPSession;
-    _emulatingMobile: boolean;
-    _hasTouch: boolean;
+    #private;
     constructor(client: CDPSession);
     emulateViewport(viewport: Viewport): Promise<boolean>;
 }

@@ -15,10 +15,13 @@
  */
 import NodeWebSocket from 'ws';
 import { ConnectionTransport } from '../common/ConnectionTransport.js';
+/**
+ * @internal
+ */
 export declare class NodeWebSocketTransport implements ConnectionTransport {
-    static create(url: string): Promise<NodeWebSocketTransport>;
-    private _ws;
-    onmessage?: (message: string) => void;
+    #private;
+    static create(urlString: string): Promise<NodeWebSocketTransport>;
+    onmessage?: (message: NodeWebSocket.Data) => void;
     onclose?: () => void;
     constructor(ws: NodeWebSocket);
     send(message: string): void;

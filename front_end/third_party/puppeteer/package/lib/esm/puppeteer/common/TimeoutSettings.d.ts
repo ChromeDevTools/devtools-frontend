@@ -17,8 +17,7 @@
  * @internal
  */
 export declare class TimeoutSettings {
-    _defaultTimeout: number | null;
-    _defaultNavigationTimeout: number | null;
+    #private;
     constructor();
     setDefaultTimeout(timeout: number): void;
     setDefaultNavigationTimeout(timeout: number): void;

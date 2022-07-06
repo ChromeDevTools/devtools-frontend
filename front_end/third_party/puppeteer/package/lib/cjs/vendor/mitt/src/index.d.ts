@@ -25,4 +25,3 @@ export interface Emitter {
  * @returns {Mitt}
  */
 export default function mitt(all?: EventHandlerMap): Emitter;
-//# sourceMappingURL=index.d.ts.map

@@ -2,6 +2,9 @@ import { createRequire } from 'module';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 const require = createRequire(import.meta.url);
+/**
+ * @internal
+ */
 let puppeteerDirname;
 try {
     // In some environments, like esbuild, this will throw an error.

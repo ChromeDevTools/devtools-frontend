@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paperFormats = void 0;
+exports._paperFormats = void 0;
 /**
  * @internal
  */
-exports.paperFormats = {
+exports._paperFormats = {
     letter: { width: 8.5, height: 11 },
     legal: { width: 8.5, height: 14 },
     tabloid: { width: 11, height: 17 },

@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @internal
+ */
 export declare function downloadBrowser(): Promise<void>;
+/**
+ * @internal
+ */
 export declare function logPolitely(toBeLogged: unknown): void;
 //# sourceMappingURL=install.d.ts.map

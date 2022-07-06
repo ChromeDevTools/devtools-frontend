@@ -16,6 +16,7 @@
 import { Product } from '../common/Product.js';
 /**
  * Supported platforms.
+ *
  * @public
  */
 export declare type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
@@ -51,7 +52,7 @@ export interface BrowserFetcherRevisionInfo {
  * An example of using BrowserFetcher to download a specific version of Chromium
  * and running Puppeteer against it:
  *
- * ```js
+ * ```ts
  * const browserFetcher = puppeteer.createBrowserFetcher();
  * const revisionInfo = await browserFetcher.download('533271');
  * const browser = await puppeteer.launch({executablePath: revisionInfo.executablePath})
@@ -63,15 +64,11 @@ export interface BrowserFetcherRevisionInfo {
  * @public
  */
 export declare class BrowserFetcher {
-    private _product;
-    private _downloadsFolder;
-    private _downloadHost;
-    private _platform;
+    #private;
     /**
      * @internal
      */
     constructor(projectRoot: string, options?: BrowserFetcherOptions);
-    private setPlatform;
     /**
      * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
      * `win32` or `win64`.
@@ -105,7 +102,7 @@ export declare class BrowserFetcher {
      * @returns A promise with revision information when the revision is downloaded
      * and extracted.
      */
-    download(revision: string, progressCallback?: (x: number, y: number) => void): Promise<BrowserFetcherRevisionInfo>;
+    download(revision: string, progressCallback?: (x: number, y: number) => void): Promise<BrowserFetcherRevisionInfo | undefined>;
     /**
      * @remarks
      * This method is affected by the current `product`.
@@ -126,9 +123,5 @@ export declare class BrowserFetcher {
      * @returns The revision info for the given revision.
      */
     revisionInfo(revision: string): BrowserFetcherRevisionInfo;
-    /**
-     * @internal
-     */
-    _getFolderPath(revision: string): string;
 }
 //# sourceMappingURL=BrowserFetcher.d.ts.map

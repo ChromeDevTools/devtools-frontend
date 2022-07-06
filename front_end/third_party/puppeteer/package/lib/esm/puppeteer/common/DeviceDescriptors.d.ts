@@ -35,7 +35,26 @@ export declare type DevicesMap = {
     [name: string]: Device;
 };
 /**
- * @internal
+ * A list of devices to be used with `page.emulate(options)`. Actual list of devices can be found in {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
+ *
+ * @example
+ *
+ * ```ts
+ * const puppeteer = require('puppeteer');
+ * const iPhone = puppeteer.devices['iPhone 6'];
+ *
+ * (async () => {
+ *   const browser = await puppeteer.launch();
+ *   const page = await browser.newPage();
+ *   await page.emulate(iPhone);
+ *   await page.goto('https://www.google.com');
+ *   // other actions...
+ *   await browser.close();
+ * })();
+ * ```
+ *
+ * @public
  */
-export declare const devicesMap: DevicesMap;
+declare const devices: DevicesMap;
+export { devices };
 //# sourceMappingURL=DeviceDescriptors.d.ts.map

@@ -12,12 +12,52 @@ const ruleTester = new (require('eslint').RuleTester)({
 ruleTester.run('inject_checkbox_styles', rule, {
   valid: [
     {
-      code: `import * as Input from '../../input/input.js';
+      code: `import * as Input from '../input/input.js';
+      export class Test extends HTMLElement {
+        readonly #shadow = this.attachShadow({mode: 'open'});
+
+        connectedCallback() {
+          this.#shadow.adoptedStyleSheets = [Input.checkboxStyles];
+        }
+
+        render() {
+          LitHtml.render(LitHtml.html\`<input type="checkbox" />\`, this.#shadow, {host:this});
+        }
+      }`,
+      filename: 'front_end/ui/components/datagrid/datagrid.ts',
+    },
+    {
+      code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Input from '../input/input.js';
+import settingCheckboxStyles from './settingCheckbox.css.js';
+
+export class SettingCheckbox extends HTMLElement {
+  static readonly litTagName = LitHtml.literal\`setting-checkbox\`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+
+  connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, settingCheckboxStyles];
+  }
+
+  #render(): void {
+    LitHtml.render(
+        LitHtml.html\`<p>
+        <label>
+          <input type="checkbox" />
+        </label>
+      </p>\`, this.#shadow, {host: this});
+  }
+}`,
+      filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
+    },
+    {
+      code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
 
         connectedCallback() {
-          this.shadow.adoptedStyleSheets = [Input.checkboxStyles];
+          this.shadow.adoptedStyleSheets = [Input.checkboxStyles, someOtherStyles];
         }
 
         render() {
@@ -28,7 +68,7 @@ ruleTester.run('inject_checkbox_styles', rule, {
     },
     // Nothing to do with checkboxes, so this rule should not apply.
     {
-      code: `import * as Input from '../../input/input.js';
+      code: `import * as Input from '../input/input.js';
       import {Foo} from './bar.js';
 
       export class Test extends HTMLElement {
@@ -92,7 +132,7 @@ ruleTester.run('inject_checkbox_styles', rule, {
 
     // No adopting of the styles.
     {
-      code: `import * as Input from '../../input/input.js';
+      code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
 
@@ -106,7 +146,7 @@ ruleTester.run('inject_checkbox_styles', rule, {
 
     // Adopting the wrong styles
     {
-      code: `import * as Input from '../../input/input.js';
+      code: `import * as Input from '../input/input.js';
       import {fooStyles} from './who-knows.js';
 
       export class Test extends HTMLElement {

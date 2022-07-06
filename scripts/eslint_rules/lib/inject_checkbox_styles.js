@@ -54,8 +54,10 @@ module.exports = {
           return;
         }
 
-        // Get the absolute path , so we can compare it to COMMON_INPUT_STYLES;
-        const fullImportPath = path.resolve(context.getFilename(), node.source.value);
+        // Get the absolute path of the current file's directory, so we can
+        // compare it to COMMON_INPUT_STYLES and see if the file does import the common styles.
+        const absoluteDirectory = path.dirname(path.resolve(context.getFilename()));
+        const fullImportPath = path.resolve(absoluteDirectory, node.source.value);
         foundInputStylesImport = fullImportPath === COMMON_INPUT_STYLES;
         if (foundInputStylesImport) {
           inputStylesImportedName = node.specifiers[0].local.name;

@@ -47,6 +47,7 @@ module.exports = {
         'rulesdir/lit_html_host_this': 2,
         'rulesdir/lit_html_no_attribute_quotes': 2,
         'rulesdir/lit_template_result_or_nothing': 2,
+        'rulesdir/inject_checkbox_styles': 2,
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': ['property', 'parameterProperty'],

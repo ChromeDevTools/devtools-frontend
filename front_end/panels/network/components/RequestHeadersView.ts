@@ -8,6 +8,7 @@ import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -357,7 +358,7 @@ export class Category extends HTMLElement {
   #checked: boolean|undefined = undefined;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles];
+    this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles, Input.checkboxStyles];
   }
 
   set data(data: CategoryData) {

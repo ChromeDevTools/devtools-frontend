@@ -485,6 +485,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       showColumnNumber: false,
       inlineFrameIndex: 0,
     };
+
     const text = options.text;
     const className = options.className || '';
     const lineNumber = options.lineNumber;
@@ -498,6 +499,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       if (className) {
         element.className = className;
       }
+
       element.textContent = text || url || i18nString(UIStrings.unknown);
       return element;
     }
@@ -510,7 +512,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       }
     }
     const title = linkText !== url ? url : '';
-    const linkOptions = {maxLength, title, href: (url), preventClick, tabStop: options.tabStop, bypassURLTrimming};
+    const linkOptions = {maxLength, title, href: url, preventClick, tabStop: options.tabStop, bypassURLTrimming};
     const {link, linkInfo} = Linkifier.createLink(linkText, className, linkOptions);
     if (lineNumber) {
       linkInfo.lineNumber = lineNumber;

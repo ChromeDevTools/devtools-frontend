@@ -46,6 +46,38 @@ describeWithMockConnection('Linkifier', async () => {
     return {target, linkifier};
   }
 
+  describe('Linkifier.linkifyURL', () => {
+    it('prefers text over the URL if it is present', async () => {
+      const url = 'http://www.example.com' as Platform.DevToolsPath.UrlString;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {
+        text: 'foo',
+        showColumnNumber: false,
+        inlineFrameIndex: 1,
+      });
+      assert.strictEqual(link.innerText, 'foo');
+    });
+
+    it('falls back to the URL if given an empty text value', async () => {
+      const url = 'http://www.example.com' as Platform.DevToolsPath.UrlString;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {
+        text: '',
+        showColumnNumber: false,
+        inlineFrameIndex: 1,
+      });
+      assert.strictEqual(link.innerText, 'www.example.com');
+    });
+
+    it('falls back to unknown if the URL and text are empty', async () => {
+      const url = '' as Platform.DevToolsPath.UrlString;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {
+        text: '',
+        showColumnNumber: false,
+        inlineFrameIndex: 1,
+      });
+      assert.strictEqual(link.innerText, '(unknown)');
+    });
+  });
+
   it('creates an empty placeholder anchor if the debugger is disabled and no url exists', () => {
     const {target, linkifier} = setUpEnvironment();
 

@@ -319,7 +319,8 @@ describe('The Styles pane', async () => {
     assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });
 
-  it('can display and edit container queries', async () => {
+  // Flaky on mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1342145] can display and edit container queries', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-container-queries.html');
 
     // Select the child that has container queries.

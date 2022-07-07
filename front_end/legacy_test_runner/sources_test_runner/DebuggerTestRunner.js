@@ -355,10 +355,11 @@ SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, async
 
 SourcesTestRunner.dumpSourceFrameContents = function(sourceFrame) {
   TestRunner.addResult('==Source frame contents start==');
-  const textEditor = sourceFrame.textEditor;
+  const {baseDoc} = sourceFrame;
 
-  for (let i = 0; i < textEditor.linesCount; ++i) {
-    TestRunner.addResult(textEditor.line(i));
+  for (let i = 1; i <= baseDoc.lines; ++i) {
+    const {text} = baseDoc.line(i);
+    TestRunner.addResult(text);
   }
 
   TestRunner.addResult('==Source frame contents end==');

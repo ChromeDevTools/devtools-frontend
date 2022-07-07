@@ -1,1 +1,1 @@
-# Error retrieving an id token.
+# Error retrieving a token.

@@ -1,1 +1,1 @@
-# The response body is empty when fetching the provider's id token.
+# The response body is empty when fetching the provider's token.

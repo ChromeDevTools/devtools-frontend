@@ -42,9 +42,11 @@ describe('Flexbox Editor', async function() {
     assert.isUndefined(property);
   });
 
-  it('can be opened for flexbox styles with !important', async () => {
-    await editCSSProperty('#target', 'display', 'flex !important');
-    await waitForCSSPropertyValue('#target', 'display', 'flex !important');
-    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
-  });
+  // Flaky on Windows and Linux bots
+  it.skipOnPlatforms(
+      ['win32', 'linux'], '[crbug.com/1342534] can be opened for flexbox styles with !important', async () => {
+        await editCSSProperty('#target', 'display', 'flex !important');
+        await waitForCSSPropertyValue('#target', 'display', 'flex !important');
+        await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
+      });
 });

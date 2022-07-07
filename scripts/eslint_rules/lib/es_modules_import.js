@@ -11,6 +11,7 @@
 const path = require('path');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
+const THIRD_PARTY_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'third_party');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'docs');
 
@@ -164,7 +165,10 @@ module.exports = {
           });
         }
 
-        if (importingFileName.startsWith(INSPECTOR_OVERLAY_DIRECTORY)) {
+        // the Module import rules do not apply within:
+        // 1. inspector_overlay
+        // 2. front_end/third_party
+        if (importingFileName.startsWith(INSPECTOR_OVERLAY_DIRECTORY) || importingFileName.startsWith(THIRD_PARTY_DIRECTORY)) {
           return;
         }
 

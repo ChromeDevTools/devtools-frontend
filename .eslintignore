@@ -8,7 +8,20 @@ front_end/diff/diff_match_patch.js
 front_end/generated/protocol.ts
 front_end/javascript_metadata/NativeFunctions.js
 front_end/javascript_metadata/DOMPinnedProperties.ts
-front_end/third_party/
+
+// Any third_party addition has its source code checked out into
+// third_party/X/package, so we ignore that code as it's not code we author or
+// own.
+front_end/third_party/*/package/
+// Any JS files are also not authored by devtools-frontend, so we ignore those.
+front_end/third_party/**/*.js
+// Lighthouse doesn't have a package/ folder but has other nested folders, so
+// we ignore any folders within the lighthouse directory.
+front_end/third_party/lighthouse/*/
+// The CodeMirror bundle file is auto-generated and rolled-up as part of the
+// install script, so we don't need to lint it.
+front_end/third_party/codemirror.next/bundle.ts
+
 node_modules
 scripts/migration/**/*.js
 scripts/protocol_typescript/*.js

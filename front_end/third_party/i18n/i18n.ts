@@ -8,4 +8,4 @@ import * as LocalizedStringSet from './localized-string-set.js';
 export {
   I18n,
   LocalizedStringSet,
-}
+};

@@ -15,8 +15,12 @@ export class I18n {
   readonly supportedLocales: ReadonlySet<Intl.UnicodeBCP47LocaleIdentifier>;
 
   private localeData = new Map<Intl.UnicodeBCP47LocaleIdentifier, LocalizedMessages>();
+  readonly defaultLocale;
 
-  constructor(supportedLocales: ReadonlyArray<Intl.UnicodeBCP47LocaleIdentifier> = LOCALES, public readonly defaultLocale = DEFAULT_LOCALE) {
+  constructor(
+    supportedLocales: readonly Intl.UnicodeBCP47LocaleIdentifier[] = LOCALES, defaultLocale = DEFAULT_LOCALE) {
+    this.defaultLocale = defaultLocale;
+
     this.supportedLocales = new Set(supportedLocales);
   }
 

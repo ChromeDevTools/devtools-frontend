@@ -127,6 +127,11 @@ ruleTester.run('es_modules_import', rule, {
     {
       code: 'import checkboxStyles from \'./checkbox.css.js\';',
       filename: 'front_end/ui/components/input/input.ts',
+    },
+    {
+      // Valid even though it breaks the rules, because it's in front_end/third_party.
+      code: 'import { Browser } from "./package/lib/esm/puppeteer/common/Browser.js";',
+      filename: 'front_end/third_party/puppeteer/puppeteer.ts',
     }
   ],
 

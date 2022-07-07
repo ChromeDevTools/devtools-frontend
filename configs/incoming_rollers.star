@@ -5,8 +5,10 @@
 # The following dependencies are trusted - if new deps are added, their projects
 # need to be BCID L3 (http://go/bcid-ladder#level-3) compliant.
 trusted_origin_deps = [
-    # SKELETON: If new dependencies are added, uncomment the builder below as
-    #           well.
+    # https://chromium.googlesource.com/chromium/src/build.git
+    "build",
+    # https://chromium.googlesource.com/chromium/src/buildtools.git
+    "buildtools",
 ]
 
 # The following dependencies are not rolled automatically, but only if
@@ -54,12 +56,12 @@ incoming_roller_definitions = [
         "skip_untrusted_origins": False,
         "disable_bot_commit": False,
         "builders": [
-            # {
-            #     "name": "Auto-roll - trusted-origins highly-privileged",
-            #     "subject": "Update DevTools DEPS (trusted-origins)",
-            #     "includes": trusted_origin_deps,
-            # "schedule": "0 3,12 * * *",
-            # },
+            {
+                "name": "Auto-roll - trusted-origins highly-privileged",
+                "subject": "Update DevTools DEPS (trusted-origins)",
+                "includes": trusted_origin_deps,
+                "schedule": "0 3,12 * * *",
+            },
         ],
     },
 

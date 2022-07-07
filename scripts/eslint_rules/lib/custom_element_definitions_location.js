@@ -5,18 +5,6 @@
 
 const path = require('path');
 
-const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
-const PANELS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'panels');
-
-const ALLOWED_CUSTOM_ELEMENT_LOCATIONS = new Set([
-  path.join(FRONT_END_DIRECTORY, 'ui', 'components'),
-
-  // These should be moved to `ui/components` at some point
-  path.join(FRONT_END_DIRECTORY, 'ui', 'legacy', 'components', 'inline_editor'),
-  path.join(FRONT_END_DIRECTORY, 'ui', 'legacy', 'components', 'perf_ui', 'PieChart.ts'),
-  path.join(FRONT_END_DIRECTORY, 'ui', 'legacy', 'XElement.ts'),
-]);
-
 module.exports = {
   meta: {
     type: 'problem',
@@ -32,10 +20,37 @@ module.exports = {
           'either place it in `ui/components/` or in a `components` sub-folder of a panel. ' +
           'E.g. `panels/elements/components/`.'
     },
-    schema: []  // no options
+    schema: [{
+      'type': 'object',
+      'properties': {
+        'rootFrontendDirectory': {
+          'type': 'string',
+        },
+      },
+      additionalProperties: false,
+    }]
   },
   create: function(context) {
     const classDefiningFileName = path.resolve(context.getFilename());
+
+    let frontEndDirectory = '';
+    if (context.options?.[0]?.rootFrontendDirectory) {
+      frontEndDirectory = context.options[0].rootFrontendDirectory;
+    }
+    if (!frontEndDirectory) {
+      throw new Error('rootFrontEndDirectory must be provided to custom_elements_definitions_location.');
+    }
+
+    const PANELS_DIRECTORY = path.join(frontEndDirectory, 'panels');
+
+    const ALLOWED_CUSTOM_ELEMENT_LOCATIONS = new Set([
+      path.join(frontEndDirectory, 'ui', 'components'),
+
+      // These should be moved to `ui/components` at some point
+      path.join(frontEndDirectory, 'ui', 'legacy', 'components', 'inline_editor'),
+      path.join(frontEndDirectory, 'ui', 'legacy', 'components', 'perf_ui', 'PieChart.ts'),
+      path.join(frontEndDirectory, 'ui', 'legacy', 'XElement.ts'),
+    ]);
 
     return {
       ['ClassDeclaration[superClass.name=\'HTMLElement\']'](node) {

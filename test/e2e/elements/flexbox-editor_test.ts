@@ -26,21 +26,22 @@ describe('Flexbox Editor', async function() {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['win32'], '[crbug.com/1340492] can be opened and flexbox styles can be edited', async () => {
-    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
+  it.skipOnPlatforms(
+      ['win32', 'linux'], '[crbug.com/1340492] can be opened and flexbox styles can be edited', async () => {
+        await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
 
-    // Clicking once sets the value.
-    await clickPropertyButton('[title="Add flex-direction: column"]');
-    await waitForCSSPropertyValue('#target', 'flex-direction', 'column');
+        // Clicking once sets the value.
+        await clickPropertyButton('[title="Add flex-direction: column"]');
+        await waitForCSSPropertyValue('#target', 'flex-direction', 'column');
 
-    // Clicking again removes the value.
-    await clickPropertyButton('[title="Remove flex-direction: column"]');
-    // Wait for the button's title to be updated so that we know the change
-    // was made.
-    await waitFor('[title="Add flex-direction: column"]');
-    const property = await getCSSPropertyInRule('#target', 'flex-direction');
-    assert.isUndefined(property);
-  });
+        // Clicking again removes the value.
+        await clickPropertyButton('[title="Remove flex-direction: column"]');
+        // Wait for the button's title to be updated so that we know the change
+        // was made.
+        await waitFor('[title="Add flex-direction: column"]');
+        const property = await getCSSPropertyInRule('#target', 'flex-direction');
+        assert.isUndefined(property);
+      });
 
   // Flaky on Windows and Linux bots
   it.skipOnPlatforms(

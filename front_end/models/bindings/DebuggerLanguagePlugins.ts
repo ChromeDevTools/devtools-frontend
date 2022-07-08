@@ -847,6 +847,7 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
       _nonIndexedPropertiesOnly?: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
     const {objectId} = this.extensionObject;
     if (objectId) {
+      assertNotNullOrUndefined(this.plugin.getProperties);
       const extensionObjectProperties = await this.plugin.getProperties(objectId);
       const properties = extensionObjectProperties.map(
           p => new SDK.RemoteObject.RemoteObjectProperty(
@@ -860,6 +861,7 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
   release(): void {
     const {objectId} = this.extensionObject;
     if (objectId) {
+      assertNotNullOrUndefined(this.plugin.releaseObject);
       void this.plugin.releaseObject(objectId);
     }
   }

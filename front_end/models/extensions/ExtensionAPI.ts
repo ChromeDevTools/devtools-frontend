@@ -860,24 +860,26 @@ self.injectedExtensionAPI = function(
             }
             return Promise.resolve(undefined);
           case PrivateAPI.LanguageExtensionPluginCommands.FormatValue:
-            if ('evaluate' in plugin) {
+            if ('evaluate' in plugin && plugin.evaluate) {
               return plugin.evaluate(
                   request.parameters.expression, request.parameters.context, request.parameters.stopId);
             }
             return Promise.resolve(undefined);
           case PrivateAPI.LanguageExtensionPluginCommands.GetProperties:
-            if ('getProperties' in plugin) {
+            if ('getProperties' in plugin && plugin.getProperties) {
               return plugin.getProperties(request.parameters.objectId);
             }
-            if (!('evaluate' in plugin)) {  // If evalute is defined but the remote objects methods aren't, that's a bug
+            if (!('evaluate' in plugin &&
+                  plugin.evaluate)) {  // If evalute is defined but the remote objects methods aren't, that's a bug
               return Promise.resolve(undefined);
             }
             break;
           case PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject:
-            if ('releaseObject' in plugin) {
+            if ('releaseObject' in plugin && plugin.releaseObject) {
               return plugin.releaseObject(request.parameters.objectId);
             }
-            if (!('evaluate' in plugin)) {  // If evalute is defined but the remote objects methods aren't, that's a bug
+            if (!('evaluate' in plugin) &&
+                plugin.evaluate) {  // If evalute is defined but the remote objects methods aren't, that's a bug
               return Promise.resolve(undefined);
             }
             break;

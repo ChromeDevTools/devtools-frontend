@@ -229,8 +229,9 @@ export namespace Chrome {
       removeRawModule(rawModuleId: string): Promise<void>;
 
       /**
-       * Return type information for an expression. The result describes the type (and recursively its member types) of the
-       * result of the expression if it were evaluated in the given context.
+       * DEPRECATED. Return type information for an expression. The result describes the type (and recursively its
+       * member types) of the result of the expression if it were evaluated in the given context.
+       * TODO(crbug.com/1342848) Remove.
        */
       getTypeInfo(expression: string, context: RawLocation): Promise<{
         typeInfos: Array<TypeInfo>,
@@ -238,7 +239,9 @@ export namespace Chrome {
       }|null>;
 
       /**
-       * Returns a piece of JavaScript code that, if evaluated, produces a representation of the given expression or field.
+       * DEPRECATED. Returns a piece of JavaScript code that, if evaluated, produces a representation of the given
+       * expression or field.
+       * TODO(crbug.com/1342848) Remove.
        */
       getFormatter(
           expressionOrField: string|{
@@ -250,12 +253,16 @@ export namespace Chrome {
       }|null>;
 
       /**
-       * Evaluate a source language expression in the context of a given raw location and a given stopId. stopId is an opaque key that should be passed to the APIs accessing wasm state, e.g., getWasmLinearMemory. A stopId is invalidated once the debugger resumes.
+       * Evaluate a source language expression in the context of a given raw location and a given stopId. stopId is an
+       * opaque key that should be passed to the APIs accessing wasm state, e.g., getWasmLinearMemory. A stopId is
+       * invalidated once the debugger resumes.
+       * TODO(crbug.com/1342848) Make non-optional.
        */
-      evaluate(expression: string, context: RawLocation, stopId: unknown): Promise<RemoteObject|null>;
+      evaluate?(expression: string, context: RawLocation, stopId: unknown): Promise<RemoteObject|null>;
 
       /**
-       * Returns a piece of JavaScript code that, if evaluated, produces the address of the given field in the wasm memory.
+       * DEPRECATED. Returns a piece of JavaScript code that, if evaluated, produces the address of the given field in the wasm memory.
+       * TODO(crbug.com/1342848) Remove.
        */
       getInspectableAddress(field: {
         base: EvalBase,
@@ -290,12 +297,14 @@ export namespace Chrome {
 
       /**
        * Retrieve properties of the remote object identified by the object id.
+       * TODO(crbug.com/1342848) Make non-optional.
        */
-      getProperties(objectId: RemoteObjectId): Promise<PropertyDescriptor[]>;
+      getProperties?(objectId: RemoteObjectId): Promise<PropertyDescriptor[]>;
       /**
        * Permanently release the remote object identified by the object id.
+       * TODO(crbug.com/1342848) Make non-optional.
        */
-      releaseObject(objectId: RemoteObjectId): Promise<void>;
+      releaseObject?(objectId: RemoteObjectId): Promise<void>;
     }
 
 

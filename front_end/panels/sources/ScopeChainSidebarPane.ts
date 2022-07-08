@@ -99,6 +99,8 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     this.infoElement = document.createElement('div');
     this.infoElement.className = 'gray-info-message';
     this.infoElement.tabIndex = -1;
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
     void this.update();
   }
 
@@ -148,6 +150,12 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     if (this.#scopesScript) {
       this.#scopesScript.debuggerModel.sourceMapManager().addEventListener(
           SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    }
+  }
+
+  private debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    if (event.data === this.#scopesScript) {
+      void this.update();
     }
   }
 

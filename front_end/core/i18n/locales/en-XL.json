@@ -9650,6 +9650,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Âd́d̂"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "D̂ẂÂŔF̂ śŷḿb̂ól̂ś ÛŔL̂: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Ŝóûŕĉé m̂áp̂ ÚR̂Ĺ: "
   },
@@ -9820,6 +9823,9 @@
   },
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Âd́d̂ śôúr̂ćê ḿâṕ…"
+  },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Âd́d̂ D́ŴÁR̂F́ d̂éb̂úĝ ín̂f́ô…"
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Âśŝóĉíât́êd́ f̂íl̂éŝ ár̂é âv́âíl̂áb̂ĺê v́îá f̂íl̂é t̂ŕêé ôŕ {PH1}."

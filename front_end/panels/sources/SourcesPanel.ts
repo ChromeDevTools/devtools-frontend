@@ -315,6 +315,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.debuggerPaused, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed,
         event => this.debuggerResumed(event.data));
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -471,6 +473,18 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       this.showDebuggerPausedDetails((details as SDK.DebuggerModel.DebuggerPausedDetails));
     } else if (!this.pausedInternal) {
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
+    }
+  }
+
+  private debugInfoAttached(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
+    const {debuggerModel} = event.data;
+    if (!debuggerModel.isPaused()) {
+      return;
+    }
+
+    const details = debuggerModel.debuggerPausedDetails();
+    if (details && UI.Context.Context.instance().flavor(SDK.Target.Target) === debuggerModel.target()) {
+      this.showDebuggerPausedDetails(details);
     }
   }
 

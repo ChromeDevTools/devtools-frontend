@@ -160,6 +160,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
     this.updateItemThrottler = new Common.Throttler.Throttler(100);
     this.scheduledForUpdateItems = new Set();
+
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
   }
 
   static instance(opts: {
@@ -176,6 +179,10 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   flavorChanged(_object: Object|null): void {
     this.showIgnoreListed = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
+    this.update();
+  }
+
+  private debugInfoAttached(): void {
     this.update();
   }
 

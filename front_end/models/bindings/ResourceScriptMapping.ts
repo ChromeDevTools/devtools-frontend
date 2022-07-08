@@ -38,7 +38,8 @@ import * as Workspace from '../workspace/workspace.js';
 import type {Breakpoint} from './BreakpointManager.js';
 import {BreakpointManager} from './BreakpointManager.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import type {DebuggerSourceMapping, DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import type {DebuggerSourceMapping} from './DebuggerWorkspaceBinding.js';
+import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
 
@@ -453,6 +454,16 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
       return;
     }
     this.scriptInternal.debuggerModel.setSourceMapURL(this.scriptInternal, sourceMapURL);
+  }
+
+  addDebugInfoURL(debugInfoURL: Platform.DevToolsPath.UrlString): void {
+    if (!this.scriptInternal) {
+      return;
+    }
+    const {pluginManager} = DebuggerWorkspaceBinding.instance();
+    if (pluginManager) {
+      pluginManager.setDebugInfoURL(this.scriptInternal, debugInfoURL);
+    }
   }
 
   hasSourceMapURL(): boolean {

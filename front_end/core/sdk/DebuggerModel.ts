@@ -737,6 +737,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#sourceMapManagerInternal.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
   }
 
+  async setDebugInfoURL(script: Script, _externalURL: Platform.DevToolsPath.UrlString): Promise<void> {
+    if (this.#expandCallFramesCallback && this.#debuggerPausedDetailsInternal) {
+      this.#debuggerPausedDetailsInternal.callFrames =
+          await this.#expandCallFramesCallback.call(null, this.#debuggerPausedDetailsInternal.callFrames);
+    }
+    this.dispatchEventToListeners(Events.DebugInfoAttached, script);
+  }
+
   executionContextDestroyed(executionContext: ExecutionContext): void {
     const sourceMapIds = Array.from(this.#sourceMapIdToScript.keys());
     for (const sourceMapId of sourceMapIds) {
@@ -968,6 +976,7 @@ export enum Events {
   DebuggerWasDisabled = 'DebuggerWasDisabled',
   DebuggerPaused = 'DebuggerPaused',
   DebuggerResumed = 'DebuggerResumed',
+  DebugInfoAttached = 'DebugInfoAttached',
   ParsedScriptSource = 'ParsedScriptSource',
   DiscardedAnonymousScriptSource = 'DiscardedAnonymousScriptSource',
   GlobalObjectCleared = 'GlobalObjectCleared',
@@ -985,6 +994,7 @@ export type EventTypes = {
   [Events.GlobalObjectCleared]: DebuggerModel,
   [Events.CallFrameSelected]: DebuggerModel,
   [Events.DebuggerIsReadyToPause]: DebuggerModel,
+  [Events.DebugInfoAttached]: Script,
 };
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {

@@ -1200,6 +1200,15 @@ export class DebuggerLanguagePluginManager implements
     return [];
   }
 
+  setDebugInfoURL(script: SDK.Script.Script, externalURL: Platform.DevToolsPath.UrlString): void {
+    if (this.hasPluginForScript(script)) {
+      return;
+    }
+    script.debugSymbols = {type: Protocol.Debugger.DebugSymbolsType.ExternalDWARF, externalURL};
+    this.parsedScriptSource({data: script});
+    void script.debuggerModel.setDebugInfoURL(script, externalURL);
+  }
+
   private parsedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {
     const script = event.data;
     if (!script.sourceURL) {

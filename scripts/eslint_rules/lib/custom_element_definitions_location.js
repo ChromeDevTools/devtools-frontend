@@ -64,7 +64,7 @@ module.exports = {
           const filePathWithPanelName = classDefiningFileName.substring(PANELS_DIRECTORY.length + 1);
           const filePathWithoutPanelName = filePathWithPanelName.substring(filePathWithPanelName.indexOf(path.sep) + 1);
 
-          if (filePathWithoutPanelName.startsWith('components' + path.sep)) {
+          if (filePathWithoutPanelName.includes(`components${path.sep}`)) {
             return;
           }
         }

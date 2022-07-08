@@ -28,6 +28,11 @@ ruleTester.run('custom_element_definitions_location', rule, {
       options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
     },
     {
+      code: 'class Foo extends HTMLElement {}',
+      filename: 'front_end/panels/performance/library/components/metrics/Metric.ts',
+      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
+    },
+    {
       code: 'class Foo extends OtherClass {}',
       filename: 'front_end/models/some/Model.ts',
       options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]

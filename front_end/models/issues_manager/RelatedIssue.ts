@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type {Issue, IssueCategory} from './Issue.js';
 import {IssuesManager} from './IssuesManager.js';
 
-export type IssuesAssociatable = SDK.NetworkRequest.NetworkRequest|SDK.Cookie.Cookie|string;
+export type IssuesAssociatable = Readonly<SDK.NetworkRequest.NetworkRequest>|SDK.Cookie.Cookie|string;
 
 function issuesAssociatedWithNetworkRequest(issues: Issue[], request: SDK.NetworkRequest.NetworkRequest): Issue[] {
   return issues.filter(issue => {

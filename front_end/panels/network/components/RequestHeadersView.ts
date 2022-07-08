@@ -3,11 +3,16 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Protocol from '../../../generated/protocol.js';
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -18,6 +23,11 @@ const RAW_HEADER_CUTOFF = 3000;
 const {render, html} = LitHtml;
 
 const UIStrings = {
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  chooseThisOptionIfTheResourceAnd:
+      'Choose this option if the resource and the document are served from the same site.',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -47,9 +57,22 @@ const UIStrings = {
   */
   general: 'General',
   /**
+  *@description Text that is usually a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
+  *@description Text for a link to the issues panel
+  */
+  learnMoreInTheIssuesTab: 'Learn more in the issues tab',
+  /**
   *@description Label for a checkbox to switch between raw and parsed headers
   */
   raw: 'Raw',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  onlyChooseThisOptionIfAn:
+      'Only choose this option if an arbitrary website including this resource does not impose a security risk.',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -82,9 +105,35 @@ const UIStrings = {
   *@description HTTP response code
   */
   statusCode: 'Status Code',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  thisDocumentWasBlockedFrom:
+      'This document was blocked from loading in an `iframe` with a `sandbox` attribute because this document specified a cross-origin opener policy.',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  toEmbedThisFrameInYourDocument:
+      'To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  toUseThisResourceFromADifferent:
+      'To use this resource from a different origin, the server needs to specify a cross-origin resource policy in the response headers:',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  toUseThisResourceFromADifferentOrigin:
+      'To use this resource from a different origin, the server may relax the cross-origin resource policy response header:',
+  /**
+  *@description Text in Headers View of the Network panel
+  */
+  toUseThisResourceFromADifferentSite:
+      'To use this resource from a different site, the server may relax the cross-origin resource policy response header:',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class RequestHeadersView extends UI.Widget.VBox {
   readonly #headersView = new RequestHeadersComponent();
@@ -152,6 +201,39 @@ export class RequestHeadersComponent extends HTMLElement {
   #renderResponseHeaders(): LitHtml.TemplateResult {
     assertNotNullOrUndefined(this.#request);
 
+    const headersWithIssues = [];
+    if (this.#request.wasBlocked()) {
+      const headerWithIssues =
+          BlockedReasonDetails.get((this.#request.blockedReason() as Protocol.Network.BlockedReason));
+      if (headerWithIssues) {
+        headersWithIssues.push(headerWithIssues);
+      }
+    }
+
+    function mergeHeadersWithIssues(
+        headers: SDK.NetworkRequest.NameValue[], headersWithIssues: HeaderDescriptor[]): HeaderDescriptor[] {
+      let i = 0, j = 0;
+      const result: HeaderDescriptor[] = [];
+      while (i < headers.length && j < headersWithIssues.length) {
+        if (headers[i].name < headersWithIssues[j].name) {
+          result.push({...headers[i++], headerNotSet: false});
+        } else if (headers[i].name > headersWithIssues[j].name) {
+          result.push({...headersWithIssues[j++], headerNotSet: true});
+        } else {
+          result.push({...headersWithIssues[j++], ...headers[i++], headerNotSet: false});
+        }
+      }
+      while (i < headers.length) {
+        result.push({...headers[i++], headerNotSet: false});
+      }
+      while (j < headersWithIssues.length) {
+        result.push({...headersWithIssues[j++], headerNotSet: true});
+      }
+      return result;
+    }
+
+    const mergedHeaders = mergeHeadersWithIssues(this.#request.sortedResponseHeaders.slice(), headersWithIssues);
+
     const toggleShowRaw = (): void => {
       this.#showResponseHeadersText = !this.#showResponseHeadersText;
       this.#render();
@@ -172,12 +254,7 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         ${this.#showResponseHeadersText ?
             this.#renderRawHeaders(this.#request.responseHeadersText, true) : html`
-          ${this.#request.sortedResponseHeaders.map(header => html`
-            <div class="row">
-              <div class="header-name">${header.name}:</div>
-              <div class="header-value">${header.value}</div>
-            </div>
-          `)}
+          ${mergedHeaders.map(header => this.#renderHeader(header))}
         `}
       </${Category.litTagName}>
     `;
@@ -186,12 +263,16 @@ export class RequestHeadersComponent extends HTMLElement {
   #renderRequestHeaders(): LitHtml.TemplateResult {
     assertNotNullOrUndefined(this.#request);
 
+    const headers = this.#request.requestHeaders().slice();
+    headers.sort(function(a, b) {
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
+    });
+    const requestHeadersText = this.#request.requestHeadersText();
+
     const toggleShowRaw = (): void => {
       this.#showRequestHeadersText = !this.#showRequestHeadersText;
       this.#render();
     };
-
-    const requestHeadersText = this.#request.requestHeadersText();
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -208,15 +289,83 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html`
-          ${this.#request.requestHeaders().map(header => html`
-            <div class="row">
-              <div class="header-name">${header.name}:</div>
-              <div class="header-value">${header.value}</div>
-            </div>
-          `)}
+          ${headers.map(header => this.#renderHeader({...header, headerNotSet: false}))}
         `}
       </${Category.litTagName}>
     `;
+  }
+
+  #renderHeader(header: HeaderDescriptor): LitHtml.TemplateResult {
+    return html`
+      <div class="row">
+        <div class="header-name">${header.headerNotSet ? html`<div class="header-badge header-badge-text">not-set</div>` : ''}${header.name}:</div>
+        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">${header.value?.toString()||''}</div>
+      </div>
+      ${this.#maybeRenderHeaderDetails(header.details)}
+    `;
+  }
+
+  #maybeRenderHeaderDetails(headerDetails?: HeaderDetailsDescriptor): LitHtml.LitTemplate {
+    if (!headerDetails) {
+      return LitHtml.nothing;
+    }
+    return html`
+      <div class="header-details">
+        <div class="call-to-action">
+          <div class="call-to-action-body">
+            <div class="explanation">${headerDetails.explanation()}</div>
+            ${headerDetails.examples.map(example => html`
+              <div class="example">
+                <code>${example.codeSnippet}</code>
+                ${example.comment ? html`
+                  <span class="comment">${example.comment()}</span>
+                ` : ''}
+              </div>
+            `)}
+            ${this.#maybeRenderHeaderDetailsLink(headerDetails)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  #maybeRenderHeaderDetailsLink(headerDetails?: HeaderDetailsDescriptor): LitHtml.LitTemplate {
+    if (this.#request && IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
+      const followLink = (): void => {
+        Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
+        if (this.#request) {
+          void IssuesManager.RelatedIssue.reveal(
+              this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy);
+        }
+      };
+      return html`
+        <div class="devtools-link" @click=${followLink}>
+          <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+            iconName: 'issue-exclamation-icon',
+            color: 'var(--issue-color-yellow)',
+            width: '16px',
+            height: '16px',
+            } as IconButton.Icon.IconData}>
+          </${IconButton.Icon.Icon.litTagName}>
+          ${i18nString(UIStrings.learnMoreInTheIssuesTab)}
+        </div>
+      `;
+    }
+    if (headerDetails?.link) {
+      return html`
+        <x-link href=${headerDetails.link.url} class="link">
+          <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+            iconName: 'link_icon',
+            color: 'var(--color-link)',
+            width: '16px',
+            height: '16px',
+          } as IconButton.Icon.IconData}>
+          </${IconButton.Icon.Icon.litTagName}
+          >${i18nString(UIStrings.learnMore)}
+        </x-link>
+      `;
+    }
+    return LitHtml.nothing;
   }
 
   #renderRawHeaders(rawHeadersText: string, forResponseHeaders: boolean): LitHtml.TemplateResult {
@@ -434,3 +583,118 @@ declare global {
     'devtools-request-headers-category': Category;
   }
 }
+
+interface HeaderDetailsDescriptor {
+  explanation: () => string;
+  examples: Array<{
+    codeSnippet: string,
+    comment?: (() => string),
+  }>;
+  link: {
+    url: string,
+  }|null;
+}
+
+interface HeaderDescriptor {
+  name: string;
+  value: Object|null;
+  headerValueIncorrect?: boolean|null;
+  details?: HeaderDetailsDescriptor;
+  headerNotSet: boolean|null;
+}
+
+const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescriptor>([
+  [
+    Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader,
+    {
+      name: 'cross-origin-embedder-policy',
+      value: null,
+      headerValueIncorrect: null,
+      details: {
+        explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
+        examples: [{codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined}],
+        link: {url: 'https://web.dev/coop-coep/'},
+      },
+      headerNotSet: null,
+    },
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep,
+    {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      headerValueIncorrect: null,
+      details: {
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferent),
+        examples: [
+          {
+            codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd),
+          },
+          {
+            codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
+          },
+        ],
+        link: {url: 'https://web.dev/coop-coep/'},
+      },
+      headerNotSet: null,
+    },
+  ],
+  [
+    Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage,
+    {
+      name: 'cross-origin-opener-policy',
+      value: null,
+      headerValueIncorrect: false,
+      details: {
+        explanation: i18nLazyString(UIStrings.thisDocumentWasBlockedFrom),
+        examples: [],
+        link: {url: 'https://web.dev/coop-coep/'},
+      },
+      headerNotSet: null,
+    },
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameSite,
+    {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      headerValueIncorrect: true,
+      details: {
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentSite),
+        examples: [
+          {
+            codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
+          },
+        ],
+        link: null,
+      },
+      headerNotSet: null,
+    },
+  ],
+  [
+    Protocol.Network.BlockedReason.CorpNotSameOrigin,
+    {
+      name: 'cross-origin-resource-policy',
+      value: null,
+      headerValueIncorrect: true,
+      details: {
+        explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentOrigin),
+        examples: [
+          {
+            codeSnippet: 'Cross-Origin-Resource-Policy: same-site',
+            comment: i18nLazyString(UIStrings.chooseThisOptionIfTheResourceAnd),
+          },
+          {
+            codeSnippet: 'Cross-Origin-Resource-Policy: cross-origin',
+            comment: i18nLazyString(UIStrings.onlyChooseThisOptionIfAn),
+          },
+        ],
+        link: null,
+      },
+      headerNotSet: null,
+    },
+  ],
+]);

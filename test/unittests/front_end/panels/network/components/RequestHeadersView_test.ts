@@ -6,7 +6,7 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Common from '../../../../../../front_end/core/common/common.js';
-import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -22,45 +22,47 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function renderHeadersComponent(responseHeadersText?: string) {
+const defaultRequest = {
+  statusCode: 200,
+  statusText: 'OK',
+  requestMethod: 'GET',
+  url: () => 'https://www.example.com/index.html',
+  cachedInMemory: () => true,
+  remoteAddress: () => '199.36.158.100:443',
+  referrerPolicy: () => Protocol.Network.RequestReferrerPolicy.StrictOriginWhenCrossOrigin,
+  sortedResponseHeaders: [
+    {name: 'age', value: '0'},
+    {name: 'cache-control', value: 'max-age=600'},
+    {name: 'content-encoding', value: 'gzip'},
+    {name: 'content-length', value: '661'},
+  ],
+  requestHeadersText: () => undefined,
+  requestHeaders: () =>
+      [{name: ':method', value: 'GET'},
+       {name: 'accept-encoding', value: 'gzip, deflate, br'},
+       {name: 'cache-control', value: 'no-cache'},
+],
+  responseHeadersText: `HTTP/1.1 200 OK
+  age: 0
+  cache-control: max-age=600
+  content-encoding: gzip
+  content-length: 661
+  `,
+  wasBlocked: () => false,
+} as unknown as SDK.NetworkRequest.NetworkRequest;
+
+async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest) {
   const component = new NetworkComponents.RequestHeadersView.RequestHeadersComponent();
   renderElementIntoDOM(component);
-  component.data = {
-    request: {
-      statusCode: 200,
-      statusText: 'OK',
-      requestMethod: 'GET',
-      url: () => 'https://www.example.com/index.html',
-      cachedInMemory: () => true,
-      remoteAddress: () => '199.36.158.100:443',
-      referrerPolicy: () => Protocol.Network.RequestReferrerPolicy.StrictOriginWhenCrossOrigin,
-      sortedResponseHeaders: [
-        {name: 'age', value: '0'},
-        {name: 'cache-control', value: 'max-age=600'},
-        {name: 'content-encoding', value: 'gzip'},
-        {name: 'content-length', value: '661'},
-      ],
-      requestHeadersText: () => undefined,
-      requestHeaders: () =>
-          [{name: ':method', value: 'GET'},
-           {name: 'accept-encoding', value: 'gzip, deflate, br'},
-           {name: 'cache-control', value: 'no-cache'},
-  ],
-      responseHeadersText: responseHeadersText || `HTTP/1.1 200 OK
-      age: 0
-      cache-control: max-age=600
-      content-encoding: gzip
-      content-length: 661
-      `,
-    } as unknown as SDK.NetworkRequest.NetworkRequest,
-  } as NetworkComponents.RequestHeadersView.RequestHeadersComponentData;
+  Object.setPrototypeOf(request, SDK.NetworkRequest.NetworkRequest.prototype);
+  component.data = {request} as NetworkComponents.RequestHeadersView.RequestHeadersComponentData;
   await coordinator.done();
   return component;
 }
 
 describeWithEnvironment('RequestHeadersView', () => {
   it('renders the General section', async () => {
-    const component = await renderHeadersComponent();
+    const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const generalCategory = component.shadowRoot.querySelector('[aria-label="General"]');
@@ -86,7 +88,7 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('renders request and response headers', async () => {
-    const component = await renderHeadersComponent();
+    const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -118,8 +120,33 @@ describeWithEnvironment('RequestHeadersView', () => {
     ]);
   });
 
+  it('renders detailed reason for blocked requests', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      wasBlocked: () => true,
+      blockedReason: () => Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep,
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+    assert.strictEqual(
+        getCleanTextContentFromElements(responseHeadersCategory, '.header-name')[4],
+        'not-setcross-origin-resource-policy:',
+    );
+    assert.strictEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value')[4], '');
+    assert.strictEqual(
+        getCleanTextContentFromElements(responseHeadersCategory, '.header-details')[0],
+        'To use this resource from a different origin, the server needs to specify a cross-origin ' +
+            'resource policy in the response headers:Cross-Origin-Resource-Policy: same-siteChoose ' +
+            'this option if the resource and the document are served from the same site.' +
+            'Cross-Origin-Resource-Policy: cross-originOnly choose this option if an arbitrary website ' +
+            'including this resource does not impose a security risk.Learn more',
+    );
+  });
+
   it('can switch between source and parsed view', async () => {
-    const component = await renderHeadersComponent();
+    const component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
@@ -159,7 +186,10 @@ describeWithEnvironment('RequestHeadersView', () => {
     in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
     cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
 
-    const component = await renderHeadersComponent(loremIpsum.repeat(10));
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      responseHeadersText: loremIpsum.repeat(10),
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
     assertShadowRoot(component.shadowRoot);
 
     const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');

@@ -23,9 +23,13 @@ devtools_module("components") {
   ]
 
   deps = [
+    "../../../core/common:bundle",
+    "../../../core/host:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated:protocol",
+    "../../../models/issues_manager:bundle",
     "../../../panels/utils:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/data_grid:bundle",

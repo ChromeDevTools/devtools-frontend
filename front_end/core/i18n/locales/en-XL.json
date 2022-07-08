@@ -6797,6 +6797,9 @@
   "panels/network/BlockedURLsPane.ts | textPatternToBlockMatching": {
     "message": "T̂éx̂t́ p̂át̂t́êŕn̂ t́ô b́l̂óĉḱ m̂át̂ćĥín̂ǵ r̂éq̂úêśt̂ś; ûśê * f́ôŕ ŵíl̂d́ĉár̂d́"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ t̂h́ê ŕêśôúr̂ćê án̂d́ t̂h́ê d́ôćûḿêńt̂ ár̂é ŝér̂v́êd́ f̂ŕôḿ t̂h́ê śâḿê śît́ê."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(f̂ŕôḿ d̂íŝḱ ĉáĉh́ê)"
   },
@@ -6817,6 +6820,15 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Ĝén̂ér̂ál̂"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "L̂éâŕn̂ ḿôŕê ín̂ t́ĥé îśŝúêś t̂áb̂"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Ôńl̂ý ĉh́ôóŝé t̂h́îś ôṕt̂íôń îf́ âń âŕb̂ít̂ŕâŕŷ ẃêb́ŝít̂é îńĉĺûd́îńĝ t́ĥíŝ ŕêśôúr̂ćê d́ôéŝ ńôt́ îḿp̂óŝé â śêćûŕît́ŷ ŕîśk̂."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "R̂áŵ"
@@ -6844,6 +6856,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Ŝt́ât́ûś Ĉód̂é"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "T̂h́îś d̂óĉúm̂én̂t́ ŵáŝ b́l̂óĉḱêd́ f̂ŕôḿ l̂óâd́îńĝ ín̂ án̂ iframe ẃît́ĥ á sandbox ât́t̂ŕîb́ût́ê b́êćâúŝé t̂h́îś d̂óĉúm̂én̂t́ ŝṕêćîf́îéd̂ á ĉŕôśŝ-ór̂íĝín̂ óp̂én̂ér̂ ṕôĺîćŷ."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "T̂ó êḿb̂éd̂ t́ĥíŝ f́r̂ám̂é îń ŷóûŕ d̂óĉúm̂én̂t́, t̂h́ê ŕêśp̂ón̂śê ńêéd̂ś t̂ó êńâb́l̂é t̂h́ê ćr̂óŝś-ôŕîǵîń êḿb̂éd̂d́êŕ p̂ól̂íĉý b̂ý ŝṕêćîf́ŷín̂ǵ t̂h́ê f́ôĺl̂óŵín̂ǵ r̂éŝṕôńŝé ĥéâd́êŕ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ ór̂íĝín̂, t́ĥé ŝér̂v́êŕ n̂éêd́ŝ t́ô śp̂éĉíf̂ý â ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý îń t̂h́ê ŕêśp̂ón̂śê h́êád̂ér̂ś:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ ór̂íĝín̂, t́ĥé ŝér̂v́êŕ m̂áŷ ŕêĺâx́ t̂h́ê ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý r̂éŝṕôńŝé ĥéâd́êŕ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ śît́ê, t́ĥé ŝér̂v́êŕ m̂áŷ ŕêĺâx́ t̂h́ê ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý r̂éŝṕôńŝé ĥéâd́êŕ:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Â ćl̂íêńt̂-ṕr̂óv̂íd̂éd̂ ár̂ǵûḿêńt̂ ẃâś m̂ál̂f́ôŕm̂éd̂ ór̂ ót̂h́êŕŵíŝé îńv̂ál̂íd̂."

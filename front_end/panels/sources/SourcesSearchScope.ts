@@ -262,6 +262,9 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
               content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
           matches = Platform.ArrayUtilities.mergeOrdered(matches, nextMatches, matchesComparator);
         }
+        if (!searchConfig.queries().length) {
+          matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0))];
+        }
       }
       if (matches && this.searchResultCallback) {
         const searchResult = new FileBasedSearchResult(uiSourceCode, matches);

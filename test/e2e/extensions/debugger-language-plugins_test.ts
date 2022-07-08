@@ -105,45 +105,43 @@ describe('The Debugger Language Plugins', async () => {
   it('use correct code offsets to interpret raw locations', async () => {
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
-    await extension.evaluate(() => {
+    const locationLabels = WasmLocationLabels.load('extensions/unreachable.wat', 'extensions/unreachable.wasm');
+    await extension.evaluate((mappings: LabelMapping[]) => {
       class LocationMappingPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private module: undefined|{rawModuleId: string, sourceFileURL: string} = undefined;
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
-          const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-          this.modules.set(rawModuleId, {
-            rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
-            sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
-          });
+          if (this.module) {
+            throw new Error('Expected only one module');
+          }
+          const sourceFileURL = new URL('unreachable.wat', rawModule.url || symbols).href;
+          this.module = {rawModuleId, sourceFileURL};
           return [sourceFileURL];
         }
 
         async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
-          const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
-          if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
-              rawLocation.codeOffset < rawLocationRange.endOffset) {
-            return [sourceLocation];
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === rawLocation.rawModuleId) {
+              const mapping = mappings.find(m => rawLocation.codeOffset === m.bytecode);
+              if (mapping) {
+                return [{rawModuleId, sourceFileURL, lineNumber: mapping.sourceLine - 1, columnNumber: -1}];
+              }
+            }
           }
           return [];
         }
       }
       RegisterExtension(
           new LocationMappingPlugin(), 'Location Mapping', {language: 'WebAssembly', symbol_types: ['None']});
-    });
+    }, locationLabels.getMappingsForPlugin());
 
     await openSourcesPanel();
     await click(PAUSE_ON_EXCEPTION_BUTTON);
-    await goToResource('sources/wasm/unreachable.html');
+    await goToResource('extensions/wasm_module.html?module=unreachable.wasm&autorun=Main');
     await waitFor('.paused-status');
 
-    const callFrameLoc = await waitFor('.call-frame-location');
-    const scriptLocation = await callFrameLoc.evaluate(location => location.textContent);
-    assert.deepEqual(scriptLocation, 'unreachable.ll:6');
+    const pauseLocation = await locationLabels.checkLocationForLabel('PAUSED(unreachable)');
 
     await click(RESUME_BUTTON);
     const error = await waitForFunction(async () => {
@@ -151,7 +149,10 @@ describe('The Debugger Language Plugins', async () => {
       return messages.find(message => message.message.startsWith('Uncaught (in promise) RuntimeError: unreachable'));
     });
     const callframes = error.message.split('\n').slice(1);
-    assert.deepEqual(callframes, ['    at Main (unreachable.ll:6:3)', '    at go (unreachable.html:27:29)']);
+    assert.deepEqual(callframes, [
+      `    at Main (unreachable.wat:${pauseLocation.sourceLine})`,
+      '    at window.loadModule (wasm_module.html?mod…&autorun=Main:24:46)',
+    ]);
   });
 
   // Resolve the location for a breakpoint.

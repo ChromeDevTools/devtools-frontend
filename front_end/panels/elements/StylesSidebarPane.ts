@@ -216,6 +216,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
   #copyChangesButton?: UI.Toolbar.ToolbarButton;
+  #updateAbortController?: AbortController;
 
   static instance(): StylesSidebarPane {
     if (!stylesSidebarPaneInstance) {
@@ -422,6 +423,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   forceUpdate(): void {
     this.needsForceUpdate = true;
     this.swatchPopoverHelperInternal.hide();
+    this.#updateAbortController?.abort();
     this.resetCache();
     this.update();
   }
@@ -574,8 +576,17 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   async doUpdate(): Promise<void> {
+    this.#updateAbortController?.abort();
+    this.#updateAbortController = new AbortController();
+    await this.#innerDoUpdate(this.#updateAbortController.signal);
+  }
+
+  async #innerDoUpdate(signal: AbortSignal): Promise<void> {
     if (!this.initialUpdateCompleted) {
       window.setTimeout(() => {
+        if (signal.aborted) {
+          return;
+        }
         if (!this.initialUpdateCompleted) {
           // the spinner will get automatically removed when innerRebuildUpdate is called
           this.sectionsContainer.createChild('span', 'spinner');
@@ -590,9 +601,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const [computedStyles, parentsComputedStyles] =
         await Promise.all([this.fetchComputedStylesFor(node), this.fetchComputedStylesFor(parentNode)]);
 
+    if (signal.aborted) {
+      return;
+    }
+
     const matchedStyles = await this.fetchMatchedCascade();
 
-    await this.innerRebuildUpdate(matchedStyles, computedStyles, parentsComputedStyles);
+    if (signal.aborted) {
+      return;
+    }
+
+    await this.innerRebuildUpdate(signal, matchedStyles, computedStyles, parentsComputedStyles);
+
+    if (signal.aborted) {
+      return;
+    }
+
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
@@ -603,6 +627,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
       this.dispatchEventToListeners(Events.InitialUpdateCompleted);
     }
+
+    this.nodeStylesUpdatedForTest((this.node() as SDK.DOMModel.DOMNode), true);
 
     this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasMatchedStyles: this.hasMatchedStyles});
   }
@@ -734,8 +760,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private async innerRebuildUpdate(
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null, computedStyles: Map<string, string>|null,
-      parentsComputedStyles: Map<string, string>|null): Promise<void> {
+      signal: AbortSignal, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null,
+      computedStyles: Map<string, string>|null, parentsComputedStyles: Map<string, string>|null): Promise<void> {
     // ElementsSidebarPane's throttler schedules this method. Usually,
     // rebuild is suppressed while editing (see onCSSModelChanged()), but we need a
     // 'force' flag since the currently running throttler process cannot be canceled.
@@ -759,8 +785,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       return;
     }
 
-    this.sectionBlocks = await this.rebuildSectionsForMatchedStyleRules(
+    const blocks = await this.rebuildSectionsForMatchedStyleRules(
         (matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), computedStyles, parentsComputedStyles);
+
+    if (signal.aborted) {
+      return;
+    }
+
+    this.sectionBlocks = blocks;
 
     // Style sections maybe re-created when flexbox editor is activated.
     // With the following code we re-bind the flexbox editor to the new
@@ -813,7 +845,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     } else {
       this.noMatchesElement.classList.toggle('hidden', this.sectionBlocks.length > 0);
     }
-    this.nodeStylesUpdatedForTest((node as SDK.DOMModel.DOMNode), true);
     if (this.lastRevealedProperty) {
       this.decorator.highlightProperty(this.lastRevealedProperty);
       this.lastRevealedProperty = null;

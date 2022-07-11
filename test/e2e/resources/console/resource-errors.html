@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script>
+  function performActions()
+  {
+      var image = document.createElement('img');
+      image.onerror = step2;
+      image.src = "unknown-scheme://foo";
+  }
+
+  function step2() {
+    loadXHR();
+    loadIframe();
+  }
+
+  function loadXHR()
+  {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET","non-existent-xhr", false);
+      xhr.send(null);
+  }
+
+  function loadIframe()
+  {
+      var iframe = document.createElement("iframe");
+      iframe.src = "resource-errors-iframe.html";
+      document.body.appendChild(iframe);
+  }
+
+  performActions();
+</script>

@@ -11,7 +11,7 @@ node_ts_library("console") {
     "console-clear_test.ts",
     "console-context-menu_test.ts",
     "console-context-selector_test.ts",
-    "console-error-stack_test.ts",
+    "console-errors_test.ts",
     "console-eval-blocked-by-CSP_test.ts",
     "console-eval-fake_test.ts",
     "console-eval-global_test.ts",

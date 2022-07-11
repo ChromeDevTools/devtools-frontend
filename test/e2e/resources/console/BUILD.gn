@@ -29,6 +29,8 @@ copy_to_gen("console") {
     "onunhandledrejection.html",
     "primitives.html",
     "prototypes.html",
+    "resource-errors-iframe.html",
+    "resource-errors.html",
     "showMe.js",
     "source-url-exceptions.html",
     "stack-overflow.html",

@@ -1105,6 +1105,11 @@ export const NativeFunctions = [
     signatures: [['frequencyHz','magResponse','phaseResponse']]
   },
   {
+    name: 'json',
+    signatures: [['data','?init']],
+    receivers: ['Response']
+  },
+  {
     name: 'postMessage',
     signatures: [['message']],
     receivers: ['BroadcastChannel']
@@ -3703,18 +3708,7 @@ export const NativeFunctions = [
   },
   {
     name: 'encode',
-    signatures: [['?input']],
-    receivers: ['TextEncoder']
-  },
-  {
-    name: 'encode',
-    signatures: [['data']],
-    receivers: ['AudioEncoder']
-  },
-  {
-    name: 'encode',
-    signatures: [['frame','?options']],
-    receivers: ['VideoEncoder']
+    signatures: [['?input']]
   },
   {
     name: 'encodeInto',
@@ -5913,7 +5907,7 @@ export const NativeFunctions = [
     signatures: [['?options']]
   },
   {
-    name: 'isVisible',
+    name: 'checkVisibility',
     signatures: [['?options']]
   },
   {
@@ -6800,6 +6794,16 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
+    name: 'requestPermission',
+    signatures: [['?descriptor']],
+    receivers: ['FileSystemHandle']
+  },
+  {
+    name: 'requestPermission',
+    signatures: [['?deprecatedCallback']],
+    receivers: ['Notification']
+  },
+  {
     name: 'DeviceOrientationEvent',
     signatures: [['type','?eventInitDict']]
   },
@@ -6846,16 +6850,6 @@ export const NativeFunctions = [
   {
     name: 'queryPermission',
     signatures: [['?descriptor']]
-  },
-  {
-    name: 'requestPermission',
-    signatures: [['?descriptor']],
-    receivers: ['FileSystemHandle']
-  },
-  {
-    name: 'requestPermission',
-    signatures: [['?deprecatedCallback']],
-    receivers: ['Notification']
   },
   {
     name: 'truncate',
@@ -6968,6 +6962,10 @@ export const NativeFunctions = [
   {
     name: 'GamepadEvent',
     signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'canPlay',
+    signatures: [['type']]
   },
   {
     name: 'playEffect',
@@ -7726,7 +7724,7 @@ export const NativeFunctions = [
   {
     name: 'configure',
     signatures: [['config']],
-    receivers: ['AudioDecoder','AudioEncoder','VideoDecoder','VideoEncoder']
+    receivers: ['AudioDecoder','VideoDecoder']
   },
   {
     name: 'configure',
@@ -7736,10 +7734,6 @@ export const NativeFunctions = [
   {
     name: 'isConfigSupported',
     signatures: [['config']]
-  },
-  {
-    name: 'AudioEncoder',
-    signatures: [['init']]
   },
   {
     name: 'EncodedAudioChunk',
@@ -7759,10 +7753,6 @@ export const NativeFunctions = [
   },
   {
     name: 'VideoDecoder',
-    signatures: [['init']]
-  },
-  {
-    name: 'VideoEncoder',
     signatures: [['init']]
   },
   {

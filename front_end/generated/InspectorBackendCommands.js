@@ -567,7 +567,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand(
       'CSS.getMatchedStylesForNode', [{'name': 'nodeId', 'type': 'number', 'optional': false}], [
         'inlineStyle', 'attributesStyle', 'matchedCSSRules', 'pseudoElements', 'inherited', 'inheritedPseudoElements',
-        'cssKeyframesRules'
+        'cssKeyframesRules', 'parentLayoutNodeId'
       ]);
   inspectorBackend.registerCommand('CSS.getMediaQueries', [], ['medias']);
   inspectorBackend.registerCommand(

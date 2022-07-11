@@ -1,4 +1,4 @@
-# Ensure the origin of an attribution trigger redirect is trustworthy
+# Ensure the origin of an attribution-registration request is trustworthy
 
-An attribution was not recorded because the origin of the attribution trigger redirect was
-not trustworthy. For a redirect of the form `https://<attributionreportto>/.well-known/attribution-reporting/trigger-attribution[?data=<data>]`, the `<attributionreportto>` origin must be trustworthy.
+An attribution source or trigger was not registered because the origin of the
+request was not trustworthy.

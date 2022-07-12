@@ -24,7 +24,8 @@ describe('Grid Editor', async function() {
     await waitForCSSPropertyValue('#target', 'display', 'grid');
   });
 
-  it('can be opened and grid styles can be edited', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['win32'], '[crbug.com/1343760] can be opened and grid styles can be edited', async () => {
     await clickStylePropertyEditorButton('Open grid editor', 'devtools-grid-editor');
 
     // Clicking once sets the value.

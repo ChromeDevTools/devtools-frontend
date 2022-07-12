@@ -161,6 +161,10 @@ div.raw-headers-row {
   padding: 2px 0; /* adjust focus ring size */
 }
 
+.explanation .link {
+  font-weight: normal;
+}
+
 .inline-icon {
   vertical-align: middle;
 }

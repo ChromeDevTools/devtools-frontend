@@ -74,6 +74,19 @@ const UIStrings = {
   onlyChooseThisOptionIfAn:
       'Only choose this option if an arbitrary website including this resource does not impose a security risk.',
   /**
+  *@description Message to explain lack of raw headers for a particular network request
+  */
+  provisionalHeadersAreShownDisableCache: 'Provisional headers are shown. Disable cache to see full headers.',
+  /**
+  *@description Tooltip to explain lack of raw headers for a particular network request
+  */
+  onlyProvisionalHeadersAre:
+      'Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers.',
+  /**
+  *@description Message to explain lack of raw headers for a particular network request
+  */
+  provisionalHeadersAreShown: 'Provisional headers are shown.',
+  /**
   *@description Text in Request Headers View of the Network panel
   */
   referrerPolicy: 'Referrer Policy',
@@ -289,9 +302,41 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html`
+          ${this.#maybeRenderProvisionalHeadersWarning()}
           ${headers.map(header => this.#renderHeader({...header, headerNotSet: false}))}
         `}
       </${Category.litTagName}>
+    `;
+  }
+
+  #maybeRenderProvisionalHeadersWarning(): LitHtml.LitTemplate {
+    assertNotNullOrUndefined(this.#request);
+    if (this.#request.requestHeadersText() !== undefined) {
+      return LitHtml.nothing;
+    }
+
+    let cautionText;
+    let cautionTitle = '';
+    if (this.#request.cachedInMemory() || this.#request.cached()) {
+      cautionText = i18nString(UIStrings.provisionalHeadersAreShownDisableCache);
+      cautionTitle = i18nString(UIStrings.onlyProvisionalHeadersAre);
+    } else {
+      cautionText = i18nString(UIStrings.provisionalHeadersAreShown);
+    }
+    return html`
+      <div class="call-to-action">
+        <div class="call-to-action-body">
+          <div class="explanation" title=${cautionTitle}>
+            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+              iconName: 'warning_icon',
+              width: '12px',
+              height: '12px',
+              } as IconButton.Icon.IconData}>
+            </${IconButton.Icon.Icon.litTagName}>
+            ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -310,20 +355,18 @@ export class RequestHeadersComponent extends HTMLElement {
       return LitHtml.nothing;
     }
     return html`
-      <div class="header-details">
-        <div class="call-to-action">
-          <div class="call-to-action-body">
-            <div class="explanation">${headerDetails.explanation()}</div>
-            ${headerDetails.examples.map(example => html`
-              <div class="example">
-                <code>${example.codeSnippet}</code>
-                ${example.comment ? html`
-                  <span class="comment">${example.comment()}</span>
-                ` : ''}
-              </div>
-            `)}
-            ${this.#maybeRenderHeaderDetailsLink(headerDetails)}
-          </div>
+      <div class="call-to-action">
+        <div class="call-to-action-body">
+          <div class="explanation">${headerDetails.explanation()}</div>
+          ${headerDetails.examples.map(example => html`
+            <div class="example">
+              <code>${example.codeSnippet}</code>
+              ${example.comment ? html`
+                <span class="comment">${example.comment()}</span>
+              ` : ''}
+            </div>
+          `)}
+          ${this.#maybeRenderHeaderDetailsLink(headerDetails)}
         </div>
       </div>
     `;

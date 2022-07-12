@@ -6830,6 +6830,15 @@
   "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
   },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Only provisional headers are available because this request was not sent over the network and instead was served from a local cache, which doesn’t store the original request headers. Disable cache to see full request headers."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Provisional headers are shown."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Provisional headers are shown. Disable cache to see full headers."
+  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
   },

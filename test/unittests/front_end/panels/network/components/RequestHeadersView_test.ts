@@ -36,7 +36,7 @@ const defaultRequest = {
     {name: 'content-encoding', value: 'gzip'},
     {name: 'content-length', value: '661'},
   ],
-  requestHeadersText: () => undefined,
+  requestHeadersText: () => '',
   requestHeaders: () =>
       [{name: ':method', value: 'GET'},
        {name: 'accept-encoding', value: 'gzip, deflate, br'},
@@ -136,12 +136,27 @@ describeWithEnvironment('RequestHeadersView', () => {
     );
     assert.strictEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value')[4], '');
     assert.strictEqual(
-        getCleanTextContentFromElements(responseHeadersCategory, '.header-details')[0],
+        getCleanTextContentFromElements(responseHeadersCategory, '.call-to-action')[0],
         'To use this resource from a different origin, the server needs to specify a cross-origin ' +
             'resource policy in the response headers:Cross-Origin-Resource-Policy: same-siteChoose ' +
             'this option if the resource and the document are served from the same site.' +
             'Cross-Origin-Resource-Policy: cross-originOnly choose this option if an arbitrary website ' +
             'including this resource does not impose a security risk.Learn more',
+    );
+  });
+
+  it('renders provisional headers warning', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      requestHeadersText: () => undefined,
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
+    assertElement(requestHeadersCategory, HTMLElement);
+    assert.strictEqual(
+        getCleanTextContentFromElements(requestHeadersCategory, '.call-to-action')[0],
+        'Provisional headers are shown. Disable cache to see full headers. Learn more',
     );
   });
 

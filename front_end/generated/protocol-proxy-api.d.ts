@@ -14,6 +14,7 @@ import type * as Protocol from './protocol.js'
  * API generated from Protocol commands and events.
  */
 declare namespace ProtocolProxyApi {
+
   export type ProtocolDomainName = keyof ProtocolApi;
 
   export interface ProtocolApi {
@@ -106,6 +107,7 @@ declare namespace ProtocolProxyApi {
     Runtime: RuntimeApi;
 
     Schema: SchemaApi;
+
   }
 
   export interface ProtocolDispatchers {
@@ -198,6 +200,7 @@ declare namespace ProtocolProxyApi {
     Runtime: RuntimeDispatcher;
 
     Schema: SchemaDispatcher;
+
   }
 
 
@@ -216,35 +219,30 @@ declare namespace ProtocolProxyApi {
     /**
      * Fetches the accessibility node and partial accessibility tree for this DOM node, if it exists.
      */
-    invoke_getPartialAXTree(params: Protocol.Accessibility.GetPartialAXTreeRequest):
-        Promise<Protocol.Accessibility.GetPartialAXTreeResponse>;
+    invoke_getPartialAXTree(params: Protocol.Accessibility.GetPartialAXTreeRequest): Promise<Protocol.Accessibility.GetPartialAXTreeResponse>;
 
     /**
      * Fetches the entire accessibility tree for the root Document
      */
-    invoke_getFullAXTree(params: Protocol.Accessibility.GetFullAXTreeRequest):
-        Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
+    invoke_getFullAXTree(params: Protocol.Accessibility.GetFullAXTreeRequest): Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
 
     /**
      * Fetches the root node.
      * Requires `enable()` to have been called previously.
      */
-    invoke_getRootAXNode(params: Protocol.Accessibility.GetRootAXNodeRequest):
-        Promise<Protocol.Accessibility.GetRootAXNodeResponse>;
+    invoke_getRootAXNode(params: Protocol.Accessibility.GetRootAXNodeRequest): Promise<Protocol.Accessibility.GetRootAXNodeResponse>;
 
     /**
      * Fetches a node and all ancestors up to and including the root.
      * Requires `enable()` to have been called previously.
      */
-    invoke_getAXNodeAndAncestors(params: Protocol.Accessibility.GetAXNodeAndAncestorsRequest):
-        Promise<Protocol.Accessibility.GetAXNodeAndAncestorsResponse>;
+    invoke_getAXNodeAndAncestors(params: Protocol.Accessibility.GetAXNodeAndAncestorsRequest): Promise<Protocol.Accessibility.GetAXNodeAndAncestorsResponse>;
 
     /**
      * Fetches a particular accessibility node by AXNodeId.
      * Requires `enable()` to have been called previously.
      */
-    invoke_getChildAXNodes(params: Protocol.Accessibility.GetChildAXNodesRequest):
-        Promise<Protocol.Accessibility.GetChildAXNodesResponse>;
+    invoke_getChildAXNodes(params: Protocol.Accessibility.GetChildAXNodesRequest): Promise<Protocol.Accessibility.GetChildAXNodesResponse>;
 
     /**
      * Query a DOM node's accessibility subtree for accessible name and role.
@@ -253,8 +251,8 @@ declare namespace ProtocolProxyApi {
      * node is specified, or the DOM node does not exist, the command returns an error. If neither
      * `accessibleName` or `role` is specified, it returns all the accessibility nodes in the subtree.
      */
-    invoke_queryAXTree(params: Protocol.Accessibility.QueryAXTreeRequest):
-        Promise<Protocol.Accessibility.QueryAXTreeResponse>;
+    invoke_queryAXTree(params: Protocol.Accessibility.QueryAXTreeRequest): Promise<Protocol.Accessibility.QueryAXTreeResponse>;
+
   }
   export interface AccessibilityDispatcher {
     /**
@@ -267,6 +265,7 @@ declare namespace ProtocolProxyApi {
      * The nodesUpdated event is sent every time a previously requested node has changed the in tree.
      */
     nodesUpdated(params: Protocol.Accessibility.NodesUpdatedEvent): void;
+
   }
 
   export interface AnimationApi {
@@ -283,8 +282,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns the current time of the an animation.
      */
-    invoke_getCurrentTime(params: Protocol.Animation.GetCurrentTimeRequest):
-        Promise<Protocol.Animation.GetCurrentTimeResponse>;
+    invoke_getCurrentTime(params: Protocol.Animation.GetCurrentTimeRequest): Promise<Protocol.Animation.GetCurrentTimeResponse>;
 
     /**
      * Gets the playback rate of the document timeline.
@@ -294,20 +292,17 @@ declare namespace ProtocolProxyApi {
     /**
      * Releases a set of animations to no longer be manipulated.
      */
-    invoke_releaseAnimations(params: Protocol.Animation.ReleaseAnimationsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_releaseAnimations(params: Protocol.Animation.ReleaseAnimationsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Gets the remote object of the Animation.
      */
-    invoke_resolveAnimation(params: Protocol.Animation.ResolveAnimationRequest):
-        Promise<Protocol.Animation.ResolveAnimationResponse>;
+    invoke_resolveAnimation(params: Protocol.Animation.ResolveAnimationRequest): Promise<Protocol.Animation.ResolveAnimationResponse>;
 
     /**
      * Seek a set of animations to a particular time within each animation.
      */
-    invoke_seekAnimations(params: Protocol.Animation.SeekAnimationsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_seekAnimations(params: Protocol.Animation.SeekAnimationsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets the paused state of a set of animations.
@@ -317,13 +312,13 @@ declare namespace ProtocolProxyApi {
     /**
      * Sets the playback rate of the document timeline.
      */
-    invoke_setPlaybackRate(params: Protocol.Animation.SetPlaybackRateRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setPlaybackRate(params: Protocol.Animation.SetPlaybackRateRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets the timing of an animation node.
      */
     invoke_setTiming(params: Protocol.Animation.SetTimingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface AnimationDispatcher {
     /**
@@ -340,6 +335,7 @@ declare namespace ProtocolProxyApi {
      * Event for animation that has been started.
      */
     animationStarted(params: Protocol.Animation.AnimationStartedEvent): void;
+
   }
 
   export interface AuditsApi {
@@ -347,8 +343,7 @@ declare namespace ProtocolProxyApi {
      * Returns the response body and size if it were re-encoded with the specified settings. Only
      * applies to images.
      */
-    invoke_getEncodedResponse(params: Protocol.Audits.GetEncodedResponseRequest):
-        Promise<Protocol.Audits.GetEncodedResponseResponse>;
+    invoke_getEncodedResponse(params: Protocol.Audits.GetEncodedResponseRequest): Promise<Protocol.Audits.GetEncodedResponseResponse>;
 
     /**
      * Disables issues domain, prevents further issues from being reported to the client.
@@ -366,35 +361,34 @@ declare namespace ProtocolProxyApi {
      * using Audits.issueAdded event.
      */
     invoke_checkContrast(params: Protocol.Audits.CheckContrastRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface AuditsDispatcher {
     issueAdded(params: Protocol.Audits.IssueAddedEvent): void;
+
   }
 
   export interface BackgroundServiceApi {
     /**
      * Enables event updates for the service.
      */
-    invoke_startObserving(params: Protocol.BackgroundService.StartObservingRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startObserving(params: Protocol.BackgroundService.StartObservingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Disables event updates for the service.
      */
-    invoke_stopObserving(params: Protocol.BackgroundService.StopObservingRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_stopObserving(params: Protocol.BackgroundService.StopObservingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Set the recording state for the service.
      */
-    invoke_setRecording(params: Protocol.BackgroundService.SetRecordingRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setRecording(params: Protocol.BackgroundService.SetRecordingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears all stored data for the service.
      */
-    invoke_clearEvents(params: Protocol.BackgroundService.ClearEventsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_clearEvents(params: Protocol.BackgroundService.ClearEventsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface BackgroundServiceDispatcher {
     /**
@@ -407,6 +401,7 @@ declare namespace ProtocolProxyApi {
      * events afterwards if enabled and recording.
      */
     backgroundServiceEventReceived(params: Protocol.BackgroundService.BackgroundServiceEventReceivedEvent): void;
+
   }
 
   export interface BrowserApi {
@@ -418,20 +413,17 @@ declare namespace ProtocolProxyApi {
     /**
      * Grant specific permissions to the given origin and reject all others.
      */
-    invoke_grantPermissions(params: Protocol.Browser.GrantPermissionsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_grantPermissions(params: Protocol.Browser.GrantPermissionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Reset all permission management for all origins.
      */
-    invoke_resetPermissions(params: Protocol.Browser.ResetPermissionsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_resetPermissions(params: Protocol.Browser.ResetPermissionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Set the behavior when downloading a file.
      */
-    invoke_setDownloadBehavior(params: Protocol.Browser.SetDownloadBehaviorRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDownloadBehavior(params: Protocol.Browser.SetDownloadBehaviorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Cancel a download if in progress
@@ -467,8 +459,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Get Chrome histograms.
      */
-    invoke_getHistograms(params: Protocol.Browser.GetHistogramsRequest):
-        Promise<Protocol.Browser.GetHistogramsResponse>;
+    invoke_getHistograms(params: Protocol.Browser.GetHistogramsRequest): Promise<Protocol.Browser.GetHistogramsResponse>;
 
     /**
      * Get a Chrome histogram by name.
@@ -478,20 +469,17 @@ declare namespace ProtocolProxyApi {
     /**
      * Get position and size of the browser window.
      */
-    invoke_getWindowBounds(params: Protocol.Browser.GetWindowBoundsRequest):
-        Promise<Protocol.Browser.GetWindowBoundsResponse>;
+    invoke_getWindowBounds(params: Protocol.Browser.GetWindowBoundsRequest): Promise<Protocol.Browser.GetWindowBoundsResponse>;
 
     /**
      * Get the browser window that contains the devtools target.
      */
-    invoke_getWindowForTarget(params: Protocol.Browser.GetWindowForTargetRequest):
-        Promise<Protocol.Browser.GetWindowForTargetResponse>;
+    invoke_getWindowForTarget(params: Protocol.Browser.GetWindowForTargetRequest): Promise<Protocol.Browser.GetWindowForTargetResponse>;
 
     /**
      * Set position and/or size of the browser window.
      */
-    invoke_setWindowBounds(params: Protocol.Browser.SetWindowBoundsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setWindowBounds(params: Protocol.Browser.SetWindowBoundsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Set dock tile details, platform-specific.
@@ -501,8 +489,8 @@ declare namespace ProtocolProxyApi {
     /**
      * Invoke custom browser commands used by telemetry.
      */
-    invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface BrowserDispatcher {
     /**
@@ -514,6 +502,7 @@ declare namespace ProtocolProxyApi {
      * Fired when download makes progress. Last call has |done| == true.
      */
     downloadProgress(params: Protocol.Browser.DownloadProgressEvent): void;
+
   }
 
   export interface CSSApi {
@@ -526,14 +515,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns all class names from specified stylesheet.
      */
-    invoke_collectClassNames(params: Protocol.CSS.CollectClassNamesRequest):
-        Promise<Protocol.CSS.CollectClassNamesResponse>;
+    invoke_collectClassNames(params: Protocol.CSS.CollectClassNamesRequest): Promise<Protocol.CSS.CollectClassNamesResponse>;
 
     /**
      * Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
      */
-    invoke_createStyleSheet(params: Protocol.CSS.CreateStyleSheetRequest):
-        Promise<Protocol.CSS.CreateStyleSheetResponse>;
+    invoke_createStyleSheet(params: Protocol.CSS.CreateStyleSheetRequest): Promise<Protocol.CSS.CreateStyleSheetResponse>;
 
     /**
      * Disables the CSS agent for the given page.
@@ -552,27 +539,23 @@ declare namespace ProtocolProxyApi {
      */
     invoke_forcePseudoState(params: Protocol.CSS.ForcePseudoStateRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_getBackgroundColors(params: Protocol.CSS.GetBackgroundColorsRequest):
-        Promise<Protocol.CSS.GetBackgroundColorsResponse>;
+    invoke_getBackgroundColors(params: Protocol.CSS.GetBackgroundColorsRequest): Promise<Protocol.CSS.GetBackgroundColorsResponse>;
 
     /**
      * Returns the computed style for a DOM node identified by `nodeId`.
      */
-    invoke_getComputedStyleForNode(params: Protocol.CSS.GetComputedStyleForNodeRequest):
-        Promise<Protocol.CSS.GetComputedStyleForNodeResponse>;
+    invoke_getComputedStyleForNode(params: Protocol.CSS.GetComputedStyleForNodeRequest): Promise<Protocol.CSS.GetComputedStyleForNodeResponse>;
 
     /**
      * Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
      * attributes) for a DOM node identified by `nodeId`.
      */
-    invoke_getInlineStylesForNode(params: Protocol.CSS.GetInlineStylesForNodeRequest):
-        Promise<Protocol.CSS.GetInlineStylesForNodeResponse>;
+    invoke_getInlineStylesForNode(params: Protocol.CSS.GetInlineStylesForNodeRequest): Promise<Protocol.CSS.GetInlineStylesForNodeResponse>;
 
     /**
      * Returns requested styles for a DOM node identified by `nodeId`.
      */
-    invoke_getMatchedStylesForNode(params: Protocol.CSS.GetMatchedStylesForNodeRequest):
-        Promise<Protocol.CSS.GetMatchedStylesForNodeResponse>;
+    invoke_getMatchedStylesForNode(params: Protocol.CSS.GetMatchedStylesForNodeRequest): Promise<Protocol.CSS.GetMatchedStylesForNodeResponse>;
 
     /**
      * Returns all media queries parsed by the rendering engine.
@@ -583,14 +566,12 @@ declare namespace ProtocolProxyApi {
      * Requests information about platform fonts which we used to render child TextNodes in the given
      * node.
      */
-    invoke_getPlatformFontsForNode(params: Protocol.CSS.GetPlatformFontsForNodeRequest):
-        Promise<Protocol.CSS.GetPlatformFontsForNodeResponse>;
+    invoke_getPlatformFontsForNode(params: Protocol.CSS.GetPlatformFontsForNodeRequest): Promise<Protocol.CSS.GetPlatformFontsForNodeResponse>;
 
     /**
      * Returns the current textual content for a stylesheet.
      */
-    invoke_getStyleSheetText(params: Protocol.CSS.GetStyleSheetTextRequest):
-        Promise<Protocol.CSS.GetStyleSheetTextResponse>;
+    invoke_getStyleSheetText(params: Protocol.CSS.GetStyleSheetTextRequest): Promise<Protocol.CSS.GetStyleSheetTextResponse>;
 
     /**
      * Returns all layers parsed by the rendering engine for the tree scope of a node.
@@ -598,8 +579,7 @@ declare namespace ProtocolProxyApi {
      * layer for the nearest ancestor document or shadow root. The layer root contains
      * the full layer tree for the tree scope and their ordering.
      */
-    invoke_getLayersForNode(params: Protocol.CSS.GetLayersForNodeRequest):
-        Promise<Protocol.CSS.GetLayersForNodeResponse>;
+    invoke_getLayersForNode(params: Protocol.CSS.GetLayersForNodeRequest): Promise<Protocol.CSS.GetLayersForNodeResponse>;
 
     /**
      * Starts tracking the given computed styles for updates. The specified array of properties
@@ -609,8 +589,7 @@ declare namespace ProtocolProxyApi {
      * by the DOM agent. If no changes to the tracked properties occur after the node has been pushed
      * to the front-end, no updates will be issued for the node.
      */
-    invoke_trackComputedStyleUpdates(params: Protocol.CSS.TrackComputedStyleUpdatesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_trackComputedStyleUpdates(params: Protocol.CSS.TrackComputedStyleUpdatesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Polls the next batch of computed style updates.
@@ -621,8 +600,7 @@ declare namespace ProtocolProxyApi {
      * Find a rule with the given active property for the given node and set the new value for this
      * property
      */
-    invoke_setEffectivePropertyValueForNode(params: Protocol.CSS.SetEffectivePropertyValueForNodeRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setEffectivePropertyValueForNode(params: Protocol.CSS.SetEffectivePropertyValueForNodeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Modifies the keyframe rule key text.
@@ -637,8 +615,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Modifies the expression of a container query.
      */
-    invoke_setContainerQueryText(params: Protocol.CSS.SetContainerQueryTextRequest):
-        Promise<Protocol.CSS.SetContainerQueryTextResponse>;
+    invoke_setContainerQueryText(params: Protocol.CSS.SetContainerQueryTextRequest): Promise<Protocol.CSS.SetContainerQueryTextResponse>;
 
     /**
      * Modifies the expression of a supports at-rule.
@@ -658,8 +635,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Sets the new stylesheet text.
      */
-    invoke_setStyleSheetText(params: Protocol.CSS.SetStyleSheetTextRequest):
-        Promise<Protocol.CSS.SetStyleSheetTextResponse>;
+    invoke_setStyleSheetText(params: Protocol.CSS.SetStyleSheetTextRequest): Promise<Protocol.CSS.SetStyleSheetTextResponse>;
 
     /**
      * Applies specified style edits one after another in the given order.
@@ -686,8 +662,8 @@ declare namespace ProtocolProxyApi {
     /**
      * Enables/disables rendering of local CSS fonts (enabled by default).
      */
-    invoke_setLocalFontsEnabled(params: Protocol.CSS.SetLocalFontsEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setLocalFontsEnabled(params: Protocol.CSS.SetLocalFontsEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface CSSDispatcher {
     /**
@@ -716,6 +692,7 @@ declare namespace ProtocolProxyApi {
      * Fired whenever an active document stylesheet is removed.
      */
     styleSheetRemoved(params: Protocol.CSS.StyleSheetRemovedEvent): void;
+
   }
 
   export interface CacheStorageApi {
@@ -732,22 +709,21 @@ declare namespace ProtocolProxyApi {
     /**
      * Requests cache names.
      */
-    invoke_requestCacheNames(params: Protocol.CacheStorage.RequestCacheNamesRequest):
-        Promise<Protocol.CacheStorage.RequestCacheNamesResponse>;
+    invoke_requestCacheNames(params: Protocol.CacheStorage.RequestCacheNamesRequest): Promise<Protocol.CacheStorage.RequestCacheNamesResponse>;
 
     /**
      * Fetches cache entry.
      */
-    invoke_requestCachedResponse(params: Protocol.CacheStorage.RequestCachedResponseRequest):
-        Promise<Protocol.CacheStorage.RequestCachedResponseResponse>;
+    invoke_requestCachedResponse(params: Protocol.CacheStorage.RequestCachedResponseRequest): Promise<Protocol.CacheStorage.RequestCachedResponseResponse>;
 
     /**
      * Requests data from cache.
      */
-    invoke_requestEntries(params: Protocol.CacheStorage.RequestEntriesRequest):
-        Promise<Protocol.CacheStorage.RequestEntriesResponse>;
+    invoke_requestEntries(params: Protocol.CacheStorage.RequestEntriesRequest): Promise<Protocol.CacheStorage.RequestEntriesResponse>;
+
   }
-  export interface CacheStorageDispatcher {}
+  export interface CacheStorageDispatcher {
+  }
 
   export interface CastApi {
     /**
@@ -773,19 +749,18 @@ declare namespace ProtocolProxyApi {
     /**
      * Starts mirroring the desktop to the sink.
      */
-    invoke_startDesktopMirroring(params: Protocol.Cast.StartDesktopMirroringRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startDesktopMirroring(params: Protocol.Cast.StartDesktopMirroringRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Starts mirroring the tab to the sink.
      */
-    invoke_startTabMirroring(params: Protocol.Cast.StartTabMirroringRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startTabMirroring(params: Protocol.Cast.StartTabMirroringRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Stops the active Cast session on the sink.
      */
     invoke_stopCasting(params: Protocol.Cast.StopCastingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface CastDispatcher {
     /**
@@ -799,14 +774,14 @@ declare namespace ProtocolProxyApi {
      * |issueMessage| is empty if there is no issue.
      */
     issueUpdated(params: Protocol.Cast.IssueUpdatedEvent): void;
+
   }
 
   export interface DOMApi {
     /**
      * Collects class names for the node with given id and all of it's child nodes.
      */
-    invoke_collectClassNamesFromSubtree(params: Protocol.DOM.CollectClassNamesFromSubtreeRequest):
-        Promise<Protocol.DOM.CollectClassNamesFromSubtreeResponse>;
+    invoke_collectClassNamesFromSubtree(params: Protocol.DOM.CollectClassNamesFromSubtreeRequest): Promise<Protocol.DOM.CollectClassNamesFromSubtreeResponse>;
 
     /**
      * Creates a deep copy of the specified node and places it into the target container before the
@@ -825,8 +800,7 @@ declare namespace ProtocolProxyApi {
      * Note: exactly one between nodeId, backendNodeId and objectId should be passed
      * to identify the node.
      */
-    invoke_scrollIntoViewIfNeeded(params: Protocol.DOM.ScrollIntoViewIfNeededRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_scrollIntoViewIfNeeded(params: Protocol.DOM.ScrollIntoViewIfNeededRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Disables DOM agent for the given page.
@@ -837,8 +811,7 @@ declare namespace ProtocolProxyApi {
      * Discards search results from the session with the given id. `getSearchResults` should no longer
      * be called for that search.
      */
-    invoke_discardSearchResults(params: Protocol.DOM.DiscardSearchResultsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_discardSearchResults(params: Protocol.DOM.DiscardSearchResultsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables DOM agent for the given page.
@@ -876,21 +849,18 @@ declare namespace ProtocolProxyApi {
      * Deprecated, as it is not designed to work well with the rest of the DOM agent.
      * Use DOMSnapshot.captureSnapshot instead.
      */
-    invoke_getFlattenedDocument(params: Protocol.DOM.GetFlattenedDocumentRequest):
-        Promise<Protocol.DOM.GetFlattenedDocumentResponse>;
+    invoke_getFlattenedDocument(params: Protocol.DOM.GetFlattenedDocumentRequest): Promise<Protocol.DOM.GetFlattenedDocumentResponse>;
 
     /**
      * Finds nodes with a given computed style in a subtree.
      */
-    invoke_getNodesForSubtreeByStyle(params: Protocol.DOM.GetNodesForSubtreeByStyleRequest):
-        Promise<Protocol.DOM.GetNodesForSubtreeByStyleResponse>;
+    invoke_getNodesForSubtreeByStyle(params: Protocol.DOM.GetNodesForSubtreeByStyleRequest): Promise<Protocol.DOM.GetNodesForSubtreeByStyleResponse>;
 
     /**
      * Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
      * either returned or not.
      */
-    invoke_getNodeForLocation(params: Protocol.DOM.GetNodeForLocationRequest):
-        Promise<Protocol.DOM.GetNodeForLocationResponse>;
+    invoke_getNodeForLocation(params: Protocol.DOM.GetNodeForLocationRequest): Promise<Protocol.DOM.GetNodeForLocationResponse>;
 
     /**
      * Returns node's HTML markup.
@@ -900,15 +870,13 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns the id of the nearest ancestor that is a relayout boundary.
      */
-    invoke_getRelayoutBoundary(params: Protocol.DOM.GetRelayoutBoundaryRequest):
-        Promise<Protocol.DOM.GetRelayoutBoundaryResponse>;
+    invoke_getRelayoutBoundary(params: Protocol.DOM.GetRelayoutBoundaryRequest): Promise<Protocol.DOM.GetRelayoutBoundaryResponse>;
 
     /**
      * Returns search results from given `fromIndex` to given `toIndex` from the search with the given
      * identifier.
      */
-    invoke_getSearchResults(params: Protocol.DOM.GetSearchResultsRequest):
-        Promise<Protocol.DOM.GetSearchResultsResponse>;
+    invoke_getSearchResults(params: Protocol.DOM.GetSearchResultsRequest): Promise<Protocol.DOM.GetSearchResultsResponse>;
 
     /**
      * Hides any highlight.
@@ -944,14 +912,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Requests that the node is sent to the caller given its path. // FIXME, use XPath
      */
-    invoke_pushNodeByPathToFrontend(params: Protocol.DOM.PushNodeByPathToFrontendRequest):
-        Promise<Protocol.DOM.PushNodeByPathToFrontendResponse>;
+    invoke_pushNodeByPathToFrontend(params: Protocol.DOM.PushNodeByPathToFrontendRequest): Promise<Protocol.DOM.PushNodeByPathToFrontendResponse>;
 
     /**
      * Requests that a batch of nodes is sent to the caller given their backend node ids.
      */
-    invoke_pushNodesByBackendIdsToFrontend(params: Protocol.DOM.PushNodesByBackendIdsToFrontendRequest):
-        Promise<Protocol.DOM.PushNodesByBackendIdsToFrontendResponse>;
+    invoke_pushNodesByBackendIdsToFrontend(params: Protocol.DOM.PushNodesByBackendIdsToFrontendRequest): Promise<Protocol.DOM.PushNodesByBackendIdsToFrontendResponse>;
 
     /**
      * Executes `querySelector` on a given node.
@@ -961,8 +927,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Executes `querySelectorAll` on a given node.
      */
-    invoke_querySelectorAll(params: Protocol.DOM.QuerySelectorAllRequest):
-        Promise<Protocol.DOM.QuerySelectorAllResponse>;
+    invoke_querySelectorAll(params: Protocol.DOM.QuerySelectorAllRequest): Promise<Protocol.DOM.QuerySelectorAllResponse>;
 
     /**
      * Returns NodeIds of current top layer elements.
@@ -991,8 +956,7 @@ declare namespace ProtocolProxyApi {
      * `setChildNodes` events where not only immediate children are retrieved, but all children down to
      * the specified depth.
      */
-    invoke_requestChildNodes(params: Protocol.DOM.RequestChildNodesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_requestChildNodes(params: Protocol.DOM.RequestChildNodesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that the node is sent to the caller given the JavaScript node object reference. All
@@ -1009,33 +973,28 @@ declare namespace ProtocolProxyApi {
     /**
      * Sets attribute for an element with given id.
      */
-    invoke_setAttributeValue(params: Protocol.DOM.SetAttributeValueRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAttributeValue(params: Protocol.DOM.SetAttributeValueRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets attributes on element with given id. This method is useful when user edits some existing
      * attribute value and types in several attribute name/value pairs.
      */
-    invoke_setAttributesAsText(params: Protocol.DOM.SetAttributesAsTextRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAttributesAsText(params: Protocol.DOM.SetAttributesAsTextRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets files for the given file input element.
      */
-    invoke_setFileInputFiles(params: Protocol.DOM.SetFileInputFilesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setFileInputFiles(params: Protocol.DOM.SetFileInputFilesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled.
      */
-    invoke_setNodeStackTracesEnabled(params: Protocol.DOM.SetNodeStackTracesEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setNodeStackTracesEnabled(params: Protocol.DOM.SetNodeStackTracesEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation.
      */
-    invoke_getNodeStackTraces(params: Protocol.DOM.GetNodeStackTracesRequest):
-        Promise<Protocol.DOM.GetNodeStackTracesResponse>;
+    invoke_getNodeStackTraces(params: Protocol.DOM.GetNodeStackTracesRequest): Promise<Protocol.DOM.GetNodeStackTracesResponse>;
 
     /**
      * Returns file information for the given
@@ -1079,15 +1038,14 @@ declare namespace ProtocolProxyApi {
      * If containerName is given, it will find the nearest container with a matching name;
      * otherwise it will find the nearest container regardless of its container name.
      */
-    invoke_getContainerForNode(params: Protocol.DOM.GetContainerForNodeRequest):
-        Promise<Protocol.DOM.GetContainerForNodeResponse>;
+    invoke_getContainerForNode(params: Protocol.DOM.GetContainerForNodeRequest): Promise<Protocol.DOM.GetContainerForNodeResponse>;
 
     /**
      * Returns the descendants of a container query container that have
      * container queries against this container.
      */
-    invoke_getQueryingDescendantsForContainer(params: Protocol.DOM.GetQueryingDescendantsForContainerRequest):
-        Promise<Protocol.DOM.GetQueryingDescendantsForContainerResponse>;
+    invoke_getQueryingDescendantsForContainer(params: Protocol.DOM.GetQueryingDescendantsForContainerRequest): Promise<Protocol.DOM.GetQueryingDescendantsForContainerResponse>;
+
   }
   export interface DOMDispatcher {
     /**
@@ -1165,85 +1123,78 @@ declare namespace ProtocolProxyApi {
      * Called when shadow root is pushed into the element.
      */
     shadowRootPushed(params: Protocol.DOM.ShadowRootPushedEvent): void;
+
   }
 
   export interface DOMDebuggerApi {
     /**
      * Returns event listeners of the given object.
      */
-    invoke_getEventListeners(params: Protocol.DOMDebugger.GetEventListenersRequest):
-        Promise<Protocol.DOMDebugger.GetEventListenersResponse>;
+    invoke_getEventListeners(params: Protocol.DOMDebugger.GetEventListenersRequest): Promise<Protocol.DOMDebugger.GetEventListenersResponse>;
 
     /**
      * Removes DOM breakpoint that was set using `setDOMBreakpoint`.
      */
-    invoke_removeDOMBreakpoint(params: Protocol.DOMDebugger.RemoveDOMBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeDOMBreakpoint(params: Protocol.DOMDebugger.RemoveDOMBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes breakpoint on particular DOM event.
      */
-    invoke_removeEventListenerBreakpoint(params: Protocol.DOMDebugger.RemoveEventListenerBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeEventListenerBreakpoint(params: Protocol.DOMDebugger.RemoveEventListenerBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes breakpoint on particular native event.
      */
-    invoke_removeInstrumentationBreakpoint(params: Protocol.DOMDebugger.RemoveInstrumentationBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeInstrumentationBreakpoint(params: Protocol.DOMDebugger.RemoveInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes breakpoint from XMLHttpRequest.
      */
-    invoke_removeXHRBreakpoint(params: Protocol.DOMDebugger.RemoveXHRBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeXHRBreakpoint(params: Protocol.DOMDebugger.RemoveXHRBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets breakpoint on particular CSP violations.
      */
-    invoke_setBreakOnCSPViolation(params: Protocol.DOMDebugger.SetBreakOnCSPViolationRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setBreakOnCSPViolation(params: Protocol.DOMDebugger.SetBreakOnCSPViolationRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets breakpoint on particular operation with DOM.
      */
-    invoke_setDOMBreakpoint(params: Protocol.DOMDebugger.SetDOMBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDOMBreakpoint(params: Protocol.DOMDebugger.SetDOMBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets breakpoint on particular DOM event.
      */
-    invoke_setEventListenerBreakpoint(params: Protocol.DOMDebugger.SetEventListenerBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setEventListenerBreakpoint(params: Protocol.DOMDebugger.SetEventListenerBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets breakpoint on particular native event.
      */
-    invoke_setInstrumentationBreakpoint(params: Protocol.DOMDebugger.SetInstrumentationBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setInstrumentationBreakpoint(params: Protocol.DOMDebugger.SetInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets breakpoint on XMLHttpRequest.
      */
-    invoke_setXHRBreakpoint(params: Protocol.DOMDebugger.SetXHRBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setXHRBreakpoint(params: Protocol.DOMDebugger.SetXHRBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
-  export interface DOMDebuggerDispatcher {}
+  export interface DOMDebuggerDispatcher {
+  }
 
   export interface EventBreakpointsApi {
     /**
      * Sets breakpoint on particular native event.
      */
-    invoke_setInstrumentationBreakpoint(params: Protocol.EventBreakpoints.SetInstrumentationBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setInstrumentationBreakpoint(params: Protocol.EventBreakpoints.SetInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes breakpoint on particular native event.
      */
-    invoke_removeInstrumentationBreakpoint(params: Protocol.EventBreakpoints.RemoveInstrumentationBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeInstrumentationBreakpoint(params: Protocol.EventBreakpoints.RemoveInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
-  export interface EventBreakpointsDispatcher {}
+  export interface EventBreakpointsDispatcher {
+  }
 
   export interface DOMSnapshotApi {
     /**
@@ -1262,8 +1213,7 @@ declare namespace ProtocolProxyApi {
      * white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
      * flattened.
      */
-    invoke_getSnapshot(params: Protocol.DOMSnapshot.GetSnapshotRequest):
-        Promise<Protocol.DOMSnapshot.GetSnapshotResponse>;
+    invoke_getSnapshot(params: Protocol.DOMSnapshot.GetSnapshotRequest): Promise<Protocol.DOMSnapshot.GetSnapshotResponse>;
 
     /**
      * Returns a document snapshot, including the full DOM tree of the root node (including iframes,
@@ -1271,10 +1221,11 @@ declare namespace ProtocolProxyApi {
      * white-listed computed style information for the nodes. Shadow DOM in the returned DOM tree is
      * flattened.
      */
-    invoke_captureSnapshot(params: Protocol.DOMSnapshot.CaptureSnapshotRequest):
-        Promise<Protocol.DOMSnapshot.CaptureSnapshotResponse>;
+    invoke_captureSnapshot(params: Protocol.DOMSnapshot.CaptureSnapshotRequest): Promise<Protocol.DOMSnapshot.CaptureSnapshotResponse>;
+
   }
-  export interface DOMSnapshotDispatcher {}
+  export interface DOMSnapshotDispatcher {
+  }
 
   export interface DOMStorageApi {
     invoke_clear(params: Protocol.DOMStorage.ClearRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -1289,14 +1240,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_getDOMStorageItems(params: Protocol.DOMStorage.GetDOMStorageItemsRequest):
-        Promise<Protocol.DOMStorage.GetDOMStorageItemsResponse>;
+    invoke_getDOMStorageItems(params: Protocol.DOMStorage.GetDOMStorageItemsRequest): Promise<Protocol.DOMStorage.GetDOMStorageItemsResponse>;
 
-    invoke_removeDOMStorageItem(params: Protocol.DOMStorage.RemoveDOMStorageItemRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeDOMStorageItem(params: Protocol.DOMStorage.RemoveDOMStorageItemRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setDOMStorageItem(params: Protocol.DOMStorage.SetDOMStorageItemRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDOMStorageItem(params: Protocol.DOMStorage.SetDOMStorageItemRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface DOMStorageDispatcher {
     domStorageItemAdded(params: Protocol.DOMStorage.DomStorageItemAddedEvent): void;
@@ -1306,6 +1255,7 @@ declare namespace ProtocolProxyApi {
     domStorageItemUpdated(params: Protocol.DOMStorage.DomStorageItemUpdatedEvent): void;
 
     domStorageItemsCleared(params: Protocol.DOMStorage.DomStorageItemsClearedEvent): void;
+
   }
 
   export interface DatabaseApi {
@@ -1321,11 +1271,12 @@ declare namespace ProtocolProxyApi {
 
     invoke_executeSQL(params: Protocol.Database.ExecuteSQLRequest): Promise<Protocol.Database.ExecuteSQLResponse>;
 
-    invoke_getDatabaseTableNames(params: Protocol.Database.GetDatabaseTableNamesRequest):
-        Promise<Protocol.Database.GetDatabaseTableNamesResponse>;
+    invoke_getDatabaseTableNames(params: Protocol.Database.GetDatabaseTableNamesRequest): Promise<Protocol.Database.GetDatabaseTableNamesResponse>;
+
   }
   export interface DatabaseDispatcher {
     addDatabase(params: Protocol.Database.AddDatabaseEvent): void;
+
   }
 
   export interface DeviceOrientationApi {
@@ -1337,10 +1288,11 @@ declare namespace ProtocolProxyApi {
     /**
      * Overrides the Device Orientation.
      */
-    invoke_setDeviceOrientationOverride(params: Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDeviceOrientationOverride(params: Protocol.DeviceOrientation.SetDeviceOrientationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
-  export interface DeviceOrientationDispatcher {}
+  export interface DeviceOrientationDispatcher {
+  }
 
   export interface EmulationApi {
     /**
@@ -1366,69 +1318,57 @@ declare namespace ProtocolProxyApi {
     /**
      * Enables or disables simulating a focused and active page.
      */
-    invoke_setFocusEmulationEnabled(params: Protocol.Emulation.SetFocusEmulationEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setFocusEmulationEnabled(params: Protocol.Emulation.SetFocusEmulationEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Automatically render all web contents using a dark theme.
      */
-    invoke_setAutoDarkModeOverride(params: Protocol.Emulation.SetAutoDarkModeOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAutoDarkModeOverride(params: Protocol.Emulation.SetAutoDarkModeOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables CPU throttling to emulate slow CPUs.
      */
-    invoke_setCPUThrottlingRate(params: Protocol.Emulation.SetCPUThrottlingRateRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setCPUThrottlingRate(params: Protocol.Emulation.SetCPUThrottlingRateRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets or clears an override of the default background color of the frame. This override is used
      * if the content does not specify one.
      */
-    invoke_setDefaultBackgroundColorOverride(params: Protocol.Emulation.SetDefaultBackgroundColorOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDefaultBackgroundColorOverride(params: Protocol.Emulation.SetDefaultBackgroundColorOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
      */
-    invoke_setDeviceMetricsOverride(params: Protocol.Emulation.SetDeviceMetricsOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDeviceMetricsOverride(params: Protocol.Emulation.SetDeviceMetricsOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setScrollbarsHidden(params: Protocol.Emulation.SetScrollbarsHiddenRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setScrollbarsHidden(params: Protocol.Emulation.SetScrollbarsHiddenRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setDocumentCookieDisabled(params: Protocol.Emulation.SetDocumentCookieDisabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDocumentCookieDisabled(params: Protocol.Emulation.SetDocumentCookieDisabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setEmitTouchEventsForMouse(params: Protocol.Emulation.SetEmitTouchEventsForMouseRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setEmitTouchEventsForMouse(params: Protocol.Emulation.SetEmitTouchEventsForMouseRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Emulates the given media type or media feature for CSS media queries.
      */
-    invoke_setEmulatedMedia(params: Protocol.Emulation.SetEmulatedMediaRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setEmulatedMedia(params: Protocol.Emulation.SetEmulatedMediaRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Emulates the given vision deficiency.
      */
-    invoke_setEmulatedVisionDeficiency(params: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setEmulatedVisionDeficiency(params: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
      * unavailable.
      */
-    invoke_setGeolocationOverride(params: Protocol.Emulation.SetGeolocationOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setGeolocationOverride(params: Protocol.Emulation.SetGeolocationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Idle state.
      */
-    invoke_setIdleOverride(params: Protocol.Emulation.SetIdleOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setIdleOverride(params: Protocol.Emulation.SetIdleOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears Idle state overrides.
@@ -1438,77 +1378,67 @@ declare namespace ProtocolProxyApi {
     /**
      * Overrides value returned by the javascript navigator object.
      */
-    invoke_setNavigatorOverrides(params: Protocol.Emulation.SetNavigatorOverridesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setNavigatorOverrides(params: Protocol.Emulation.SetNavigatorOverridesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets a specified page scale factor.
      */
-    invoke_setPageScaleFactor(params: Protocol.Emulation.SetPageScaleFactorRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setPageScaleFactor(params: Protocol.Emulation.SetPageScaleFactorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Switches script execution in the page.
      */
-    invoke_setScriptExecutionDisabled(params: Protocol.Emulation.SetScriptExecutionDisabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setScriptExecutionDisabled(params: Protocol.Emulation.SetScriptExecutionDisabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables touch on platforms which do not support them.
      */
-    invoke_setTouchEmulationEnabled(params: Protocol.Emulation.SetTouchEmulationEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setTouchEmulationEnabled(params: Protocol.Emulation.SetTouchEmulationEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Turns on virtual time for all frames (replacing real-time with a synthetic time source) and sets
      * the current virtual time policy.  Note this supersedes any previous time budget.
      */
-    invoke_setVirtualTimePolicy(params: Protocol.Emulation.SetVirtualTimePolicyRequest):
-        Promise<Protocol.Emulation.SetVirtualTimePolicyResponse>;
+    invoke_setVirtualTimePolicy(params: Protocol.Emulation.SetVirtualTimePolicyRequest): Promise<Protocol.Emulation.SetVirtualTimePolicyResponse>;
 
     /**
      * Overrides default host system locale with the specified one.
      */
-    invoke_setLocaleOverride(params: Protocol.Emulation.SetLocaleOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setLocaleOverride(params: Protocol.Emulation.SetLocaleOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides default host system timezone with the specified one.
      */
-    invoke_setTimezoneOverride(params: Protocol.Emulation.SetTimezoneOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setTimezoneOverride(params: Protocol.Emulation.SetTimezoneOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Resizes the frame/viewport of the page. Note that this does not affect the frame's container
      * (e.g. browser window). Can be used to produce screenshots of the specified size. Not supported
      * on Android.
      */
-    invoke_setVisibleSize(params: Protocol.Emulation.SetVisibleSizeRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setVisibleSize(params: Protocol.Emulation.SetVisibleSizeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setDisabledImageTypes(params: Protocol.Emulation.SetDisabledImageTypesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDisabledImageTypes(params: Protocol.Emulation.SetDisabledImageTypesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setHardwareConcurrencyOverride(params: Protocol.Emulation.SetHardwareConcurrencyOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setHardwareConcurrencyOverride(params: Protocol.Emulation.SetHardwareConcurrencyOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Allows overriding user agent with the given string.
      */
-    invoke_setUserAgentOverride(params: Protocol.Emulation.SetUserAgentOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setUserAgentOverride(params: Protocol.Emulation.SetUserAgentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Allows overriding the automation flag.
      */
-    invoke_setAutomationOverride(params: Protocol.Emulation.SetAutomationOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAutomationOverride(params: Protocol.Emulation.SetAutomationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface EmulationDispatcher {
     /**
      * Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
      */
     virtualTimeBudgetExpired(): void;
+
   }
 
   export interface HeadlessExperimentalApi {
@@ -1518,8 +1448,7 @@ declare namespace ProtocolProxyApi {
      * BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
      * https://goo.gle/chrome-headless-rendering for more background.
      */
-    invoke_beginFrame(params: Protocol.HeadlessExperimental.BeginFrameRequest):
-        Promise<Protocol.HeadlessExperimental.BeginFrameResponse>;
+    invoke_beginFrame(params: Protocol.HeadlessExperimental.BeginFrameRequest): Promise<Protocol.HeadlessExperimental.BeginFrameResponse>;
 
     /**
      * Disables headless events for the target.
@@ -1530,6 +1459,7 @@ declare namespace ProtocolProxyApi {
      * Enables headless events for the target.
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface HeadlessExperimentalDispatcher {
     /**
@@ -1538,6 +1468,7 @@ declare namespace ProtocolProxyApi {
      * beginFrame to detect whether the frames were suppressed.
      */
     needsBeginFramesChanged(params: Protocol.HeadlessExperimental.NeedsBeginFramesChangedEvent): void;
+
   }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
@@ -1557,8 +1488,10 @@ declare namespace ProtocolProxyApi {
      * Return UUID of Blob object specified by a remote object id.
      */
     invoke_resolveBlob(params: Protocol.IO.ResolveBlobRequest): Promise<Protocol.IO.ResolveBlobResponse>;
+
   }
-  export interface IODispatcher {}
+  export interface IODispatcher {
+  }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -1566,20 +1499,17 @@ declare namespace ProtocolProxyApi {
     /**
      * Clears all entries from an object store.
      */
-    invoke_clearObjectStore(params: Protocol.IndexedDB.ClearObjectStoreRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_clearObjectStore(params: Protocol.IndexedDB.ClearObjectStoreRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Deletes a database.
      */
-    invoke_deleteDatabase(params: Protocol.IndexedDB.DeleteDatabaseRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_deleteDatabase(params: Protocol.IndexedDB.DeleteDatabaseRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Delete a range of entries from an object store
      */
-    invoke_deleteObjectStoreEntries(params: Protocol.IndexedDB.DeleteObjectStoreEntriesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_deleteObjectStoreEntries(params: Protocol.IndexedDB.DeleteObjectStoreEntriesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Disables events from backend.
@@ -1604,16 +1534,16 @@ declare namespace ProtocolProxyApi {
     /**
      * Requests database with given name in given frame.
      */
-    invoke_requestDatabase(params: Protocol.IndexedDB.RequestDatabaseRequest):
-        Promise<Protocol.IndexedDB.RequestDatabaseResponse>;
+    invoke_requestDatabase(params: Protocol.IndexedDB.RequestDatabaseRequest): Promise<Protocol.IndexedDB.RequestDatabaseResponse>;
 
     /**
      * Requests database names for given security origin.
      */
-    invoke_requestDatabaseNames(params: Protocol.IndexedDB.RequestDatabaseNamesRequest):
-        Promise<Protocol.IndexedDB.RequestDatabaseNamesResponse>;
+    invoke_requestDatabaseNames(params: Protocol.IndexedDB.RequestDatabaseNamesRequest): Promise<Protocol.IndexedDB.RequestDatabaseNamesResponse>;
+
   }
-  export interface IndexedDBDispatcher {}
+  export interface IndexedDBDispatcher {
+  }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
   // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -1621,14 +1551,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Dispatches a drag event into the page.
      */
-    invoke_dispatchDragEvent(params: Protocol.Input.DispatchDragEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchDragEvent(params: Protocol.Input.DispatchDragEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Dispatches a key event to the page.
      */
-    invoke_dispatchKeyEvent(params: Protocol.Input.DispatchKeyEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchKeyEvent(params: Protocol.Input.DispatchKeyEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * This method emulates inserting text that doesn't come from a key press,
@@ -1641,57 +1569,49 @@ declare namespace ProtocolProxyApi {
      * Use imeCommitComposition to commit the final text.
      * Use imeSetComposition with empty string as text to cancel composition.
      */
-    invoke_imeSetComposition(params: Protocol.Input.ImeSetCompositionRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_imeSetComposition(params: Protocol.Input.ImeSetCompositionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Dispatches a mouse event to the page.
      */
-    invoke_dispatchMouseEvent(params: Protocol.Input.DispatchMouseEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchMouseEvent(params: Protocol.Input.DispatchMouseEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Dispatches a touch event to the page.
      */
-    invoke_dispatchTouchEvent(params: Protocol.Input.DispatchTouchEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchTouchEvent(params: Protocol.Input.DispatchTouchEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Emulates touch event from the mouse event parameters.
      */
-    invoke_emulateTouchFromMouseEvent(params: Protocol.Input.EmulateTouchFromMouseEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_emulateTouchFromMouseEvent(params: Protocol.Input.EmulateTouchFromMouseEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Ignores input events (useful while auditing page).
      */
-    invoke_setIgnoreInputEvents(params: Protocol.Input.SetIgnoreInputEventsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setIgnoreInputEvents(params: Protocol.Input.SetIgnoreInputEventsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
      * Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`.
      */
-    invoke_setInterceptDrags(params: Protocol.Input.SetInterceptDragsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setInterceptDrags(params: Protocol.Input.SetInterceptDragsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Synthesizes a pinch gesture over a time period by issuing appropriate touch events.
      */
-    invoke_synthesizePinchGesture(params: Protocol.Input.SynthesizePinchGestureRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_synthesizePinchGesture(params: Protocol.Input.SynthesizePinchGestureRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Synthesizes a scroll gesture over a time period by issuing appropriate touch events.
      */
-    invoke_synthesizeScrollGesture(params: Protocol.Input.SynthesizeScrollGestureRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_synthesizeScrollGesture(params: Protocol.Input.SynthesizeScrollGestureRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Synthesizes a tap gesture over a time period by issuing appropriate touch events.
      */
-    invoke_synthesizeTapGesture(params: Protocol.Input.SynthesizeTapGestureRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_synthesizeTapGesture(params: Protocol.Input.SynthesizeTapGestureRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface InputDispatcher {
     /**
@@ -1699,6 +1619,7 @@ declare namespace ProtocolProxyApi {
      * restore normal drag and drop behavior.
      */
     dragIntercepted(params: Protocol.Input.DragInterceptedEvent): void;
+
   }
 
   // eslint thinks this is us prefixing our interfaces but it's not!
@@ -1713,6 +1634,7 @@ declare namespace ProtocolProxyApi {
      * Enables inspector domain notifications.
      */
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface InspectorDispatcher {
     /**
@@ -1729,14 +1651,14 @@ declare namespace ProtocolProxyApi {
      * Fired when debugging target has reloaded after crash
      */
     targetReloadedAfterCrash(): void;
+
   }
 
   export interface LayerTreeApi {
     /**
      * Provides the reasons why the given layer was composited.
      */
-    invoke_compositingReasons(params: Protocol.LayerTree.CompositingReasonsRequest):
-        Promise<Protocol.LayerTree.CompositingReasonsResponse>;
+    invoke_compositingReasons(params: Protocol.LayerTree.CompositingReasonsRequest): Promise<Protocol.LayerTree.CompositingReasonsResponse>;
 
     /**
      * Disables compositing tree inspection.
@@ -1751,40 +1673,36 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns the snapshot identifier.
      */
-    invoke_loadSnapshot(params: Protocol.LayerTree.LoadSnapshotRequest):
-        Promise<Protocol.LayerTree.LoadSnapshotResponse>;
+    invoke_loadSnapshot(params: Protocol.LayerTree.LoadSnapshotRequest): Promise<Protocol.LayerTree.LoadSnapshotResponse>;
 
     /**
      * Returns the layer snapshot identifier.
      */
-    invoke_makeSnapshot(params: Protocol.LayerTree.MakeSnapshotRequest):
-        Promise<Protocol.LayerTree.MakeSnapshotResponse>;
+    invoke_makeSnapshot(params: Protocol.LayerTree.MakeSnapshotRequest): Promise<Protocol.LayerTree.MakeSnapshotResponse>;
 
-    invoke_profileSnapshot(params: Protocol.LayerTree.ProfileSnapshotRequest):
-        Promise<Protocol.LayerTree.ProfileSnapshotResponse>;
+    invoke_profileSnapshot(params: Protocol.LayerTree.ProfileSnapshotRequest): Promise<Protocol.LayerTree.ProfileSnapshotResponse>;
 
     /**
      * Releases layer snapshot captured by the back-end.
      */
-    invoke_releaseSnapshot(params: Protocol.LayerTree.ReleaseSnapshotRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_releaseSnapshot(params: Protocol.LayerTree.ReleaseSnapshotRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Replays the layer snapshot and returns the resulting bitmap.
      */
-    invoke_replaySnapshot(params: Protocol.LayerTree.ReplaySnapshotRequest):
-        Promise<Protocol.LayerTree.ReplaySnapshotResponse>;
+    invoke_replaySnapshot(params: Protocol.LayerTree.ReplaySnapshotRequest): Promise<Protocol.LayerTree.ReplaySnapshotResponse>;
 
     /**
      * Replays the layer snapshot and returns canvas log.
      */
-    invoke_snapshotCommandLog(params: Protocol.LayerTree.SnapshotCommandLogRequest):
-        Promise<Protocol.LayerTree.SnapshotCommandLogResponse>;
+    invoke_snapshotCommandLog(params: Protocol.LayerTree.SnapshotCommandLogRequest): Promise<Protocol.LayerTree.SnapshotCommandLogResponse>;
+
   }
   export interface LayerTreeDispatcher {
     layerPainted(params: Protocol.LayerTree.LayerPaintedEvent): void;
 
     layerTreeDidChange(params: Protocol.LayerTree.LayerTreeDidChangeEvent): void;
+
   }
 
   export interface LogApi {
@@ -1807,19 +1725,20 @@ declare namespace ProtocolProxyApi {
     /**
      * start violation reporting.
      */
-    invoke_startViolationsReport(params: Protocol.Log.StartViolationsReportRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startViolationsReport(params: Protocol.Log.StartViolationsReportRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Stop violation reporting.
      */
     invoke_stopViolationsReport(): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface LogDispatcher {
     /**
      * Issued when new message was logged.
      */
     entryAdded(params: Protocol.Log.EntryAddedEvent): void;
+
   }
 
   export interface MemoryApi {
@@ -1835,14 +1754,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Enable/disable suppressing memory pressure notifications in all processes.
      */
-    invoke_setPressureNotificationsSuppressed(params: Protocol.Memory.SetPressureNotificationsSuppressedRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setPressureNotificationsSuppressed(params: Protocol.Memory.SetPressureNotificationsSuppressedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Simulate a memory pressure notification in all processes.
      */
-    invoke_simulatePressureNotification(params: Protocol.Memory.SimulatePressureNotificationRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_simulatePressureNotification(params: Protocol.Memory.SimulatePressureNotificationRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Start collecting native memory profile.
@@ -1871,15 +1788,16 @@ declare namespace ProtocolProxyApi {
      * `startSampling` call.
      */
     invoke_getSamplingProfile(): Promise<Protocol.Memory.GetSamplingProfileResponse>;
+
   }
-  export interface MemoryDispatcher {}
+  export interface MemoryDispatcher {
+  }
 
   export interface NetworkApi {
     /**
      * Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted.
      */
-    invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAcceptedEncodings(params: Protocol.Network.SetAcceptedEncodingsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears accepted encodings set by setAcceptedEncodings
@@ -1918,8 +1836,7 @@ declare namespace ProtocolProxyApi {
      * event will be sent with the same InterceptionId.
      * Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead.
      */
-    invoke_continueInterceptedRequest(params: Protocol.Network.ContinueInterceptedRequestRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_continueInterceptedRequest(params: Protocol.Network.ContinueInterceptedRequestRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Deletes browser cookies with matching name and url or domain/path pair.
@@ -1934,8 +1851,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Activates emulation of network conditions.
      */
-    invoke_emulateNetworkConditions(params: Protocol.Network.EmulateNetworkConditionsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_emulateNetworkConditions(params: Protocol.Network.EmulateNetworkConditionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables network tracking, network events will now be delivered to the client.
@@ -1951,8 +1867,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns the DER-encoded certificate.
      */
-    invoke_getCertificate(params: Protocol.Network.GetCertificateRequest):
-        Promise<Protocol.Network.GetCertificateResponse>;
+    invoke_getCertificate(params: Protocol.Network.GetCertificateRequest): Promise<Protocol.Network.GetCertificateResponse>;
 
     /**
      * Returns all browser cookies for the current URL. Depending on the backend support, will return
@@ -1963,20 +1878,17 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns content served for the given request.
      */
-    invoke_getResponseBody(params: Protocol.Network.GetResponseBodyRequest):
-        Promise<Protocol.Network.GetResponseBodyResponse>;
+    invoke_getResponseBody(params: Protocol.Network.GetResponseBodyRequest): Promise<Protocol.Network.GetResponseBodyResponse>;
 
     /**
      * Returns post data sent with the request. Returns an error when no data was sent with the request.
      */
-    invoke_getRequestPostData(params: Protocol.Network.GetRequestPostDataRequest):
-        Promise<Protocol.Network.GetRequestPostDataResponse>;
+    invoke_getRequestPostData(params: Protocol.Network.GetRequestPostDataRequest): Promise<Protocol.Network.GetRequestPostDataResponse>;
 
     /**
      * Returns content served for the given currently intercepted request.
      */
-    invoke_getResponseBodyForInterception(params: Protocol.Network.GetResponseBodyForInterceptionRequest):
-        Promise<Protocol.Network.GetResponseBodyForInterceptionResponse>;
+    invoke_getResponseBodyForInterception(params: Protocol.Network.GetResponseBodyForInterceptionRequest): Promise<Protocol.Network.GetResponseBodyForInterceptionResponse>;
 
     /**
      * Returns a handle to the stream representing the response body. Note that after this command,
@@ -1984,9 +1896,7 @@ declare namespace ProtocolProxyApi {
      * the response body. The stream only supports sequential read, IO.read will fail if the position
      * is specified.
      */
-    invoke_takeResponseBodyForInterceptionAsStream(params:
-                                                       Protocol.Network.TakeResponseBodyForInterceptionAsStreamRequest):
-        Promise<Protocol.Network.TakeResponseBodyForInterceptionAsStreamResponse>;
+    invoke_takeResponseBodyForInterceptionAsStream(params: Protocol.Network.TakeResponseBodyForInterceptionAsStreamRequest): Promise<Protocol.Network.TakeResponseBodyForInterceptionAsStreamResponse>;
 
     /**
      * This method sends a new XMLHttpRequest which is identical to the original one. The following
@@ -1998,8 +1908,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Searches for given string in response content.
      */
-    invoke_searchInResponseBody(params: Protocol.Network.SearchInResponseBodyRequest):
-        Promise<Protocol.Network.SearchInResponseBodyResponse>;
+    invoke_searchInResponseBody(params: Protocol.Network.SearchInResponseBodyRequest): Promise<Protocol.Network.SearchInResponseBodyResponse>;
 
     /**
      * Blocks URLs from loading.
@@ -2009,14 +1918,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Toggles ignoring of service worker for each request.
      */
-    invoke_setBypassServiceWorker(params: Protocol.Network.SetBypassServiceWorkerRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setBypassServiceWorker(params: Protocol.Network.SetBypassServiceWorkerRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Toggles ignoring cache for each request. If `true`, cache will not be used.
      */
-    invoke_setCacheDisabled(params: Protocol.Network.SetCacheDisabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setCacheDisabled(params: Protocol.Network.SetCacheDisabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
@@ -2031,46 +1938,40 @@ declare namespace ProtocolProxyApi {
     /**
      * Specifies whether to always send extra HTTP headers with the requests from this page.
      */
-    invoke_setExtraHTTPHeaders(params: Protocol.Network.SetExtraHTTPHeadersRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setExtraHTTPHeaders(params: Protocol.Network.SetExtraHTTPHeadersRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Specifies whether to attach a page script stack id in requests
      */
-    invoke_setAttachDebugStack(params: Protocol.Network.SetAttachDebugStackRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAttachDebugStack(params: Protocol.Network.SetAttachDebugStackRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets the requests to intercept that match the provided patterns and optionally resource types.
      * Deprecated, please use Fetch.enable instead.
      */
-    invoke_setRequestInterception(params: Protocol.Network.SetRequestInterceptionRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setRequestInterception(params: Protocol.Network.SetRequestInterceptionRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Allows overriding user agent with the given string.
      */
-    invoke_setUserAgentOverride(params: Protocol.Network.SetUserAgentOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setUserAgentOverride(params: Protocol.Network.SetUserAgentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Returns information about the COEP/COOP isolation status.
      */
-    invoke_getSecurityIsolationStatus(params: Protocol.Network.GetSecurityIsolationStatusRequest):
-        Promise<Protocol.Network.GetSecurityIsolationStatusResponse>;
+    invoke_getSecurityIsolationStatus(params: Protocol.Network.GetSecurityIsolationStatusRequest): Promise<Protocol.Network.GetSecurityIsolationStatusResponse>;
 
     /**
      * Enables tracking for the Reporting API, events generated by the Reporting API will now be delivered to the client.
      * Enabling triggers 'reportingApiReportAdded' for all existing reports.
      */
-    invoke_enableReportingApi(params: Protocol.Network.EnableReportingApiRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_enableReportingApi(params: Protocol.Network.EnableReportingApiRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Fetches the resource and returns the content.
      */
-    invoke_loadNetworkResource(params: Protocol.Network.LoadNetworkResourceRequest):
-        Promise<Protocol.Network.LoadNetworkResourceResponse>;
+    invoke_loadNetworkResource(params: Protocol.Network.LoadNetworkResourceRequest): Promise<Protocol.Network.LoadNetworkResourceResponse>;
+
   }
   export interface NetworkDispatcher {
     /**
@@ -2213,8 +2114,7 @@ declare namespace ProtocolProxyApi {
      * Fired when handling requests for resources within a .wbn file.
      * Note: this will only be fired for resources that are requested by the webpage.
      */
-    subresourceWebBundleInnerResponseParsed(params: Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent):
-        void;
+    subresourceWebBundleInnerResponseParsed(params: Protocol.Network.SubresourceWebBundleInnerResponseParsedEvent): void;
 
     /**
      * Fired when request for resources within a .wbn file failed.
@@ -2230,6 +2130,7 @@ declare namespace ProtocolProxyApi {
     reportingApiReportUpdated(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
 
     reportingApiEndpointsChangedForOrigin(params: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
+
   }
 
   export interface OverlayApi {
@@ -2246,20 +2147,17 @@ declare namespace ProtocolProxyApi {
     /**
      * For testing.
      */
-    invoke_getHighlightObjectForTest(params: Protocol.Overlay.GetHighlightObjectForTestRequest):
-        Promise<Protocol.Overlay.GetHighlightObjectForTestResponse>;
+    invoke_getHighlightObjectForTest(params: Protocol.Overlay.GetHighlightObjectForTestRequest): Promise<Protocol.Overlay.GetHighlightObjectForTestResponse>;
 
     /**
      * For Persistent Grid testing.
      */
-    invoke_getGridHighlightObjectsForTest(params: Protocol.Overlay.GetGridHighlightObjectsForTestRequest):
-        Promise<Protocol.Overlay.GetGridHighlightObjectsForTestResponse>;
+    invoke_getGridHighlightObjectsForTest(params: Protocol.Overlay.GetGridHighlightObjectsForTestRequest): Promise<Protocol.Overlay.GetGridHighlightObjectsForTestResponse>;
 
     /**
      * For Source Order Viewer testing.
      */
-    invoke_getSourceOrderHighlightObjectForTest(params: Protocol.Overlay.GetSourceOrderHighlightObjectForTestRequest):
-        Promise<Protocol.Overlay.GetSourceOrderHighlightObjectForTestResponse>;
+    invoke_getSourceOrderHighlightObjectForTest(params: Protocol.Overlay.GetSourceOrderHighlightObjectForTestRequest): Promise<Protocol.Overlay.GetSourceOrderHighlightObjectForTestResponse>;
 
     /**
      * Hides any highlight.
@@ -2294,8 +2192,7 @@ declare namespace ProtocolProxyApi {
      * Highlights the source order of the children of the DOM node with given id or with the given
      * JavaScript object wrapper. Either nodeId or objectId must be specified.
      */
-    invoke_highlightSourceOrder(params: Protocol.Overlay.HighlightSourceOrderRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_highlightSourceOrder(params: Protocol.Overlay.HighlightSourceOrderRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
@@ -2306,74 +2203,60 @@ declare namespace ProtocolProxyApi {
     /**
      * Highlights owner element of all frames detected to be ads.
      */
-    invoke_setShowAdHighlights(params: Protocol.Overlay.SetShowAdHighlightsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowAdHighlights(params: Protocol.Overlay.SetShowAdHighlightsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setPausedInDebuggerMessage(params: Protocol.Overlay.SetPausedInDebuggerMessageRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setPausedInDebuggerMessage(params: Protocol.Overlay.SetPausedInDebuggerMessageRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that backend shows debug borders on layers
      */
-    invoke_setShowDebugBorders(params: Protocol.Overlay.SetShowDebugBordersRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowDebugBorders(params: Protocol.Overlay.SetShowDebugBordersRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that backend shows the FPS counter
      */
-    invoke_setShowFPSCounter(params: Protocol.Overlay.SetShowFPSCounterRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowFPSCounter(params: Protocol.Overlay.SetShowFPSCounterRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Highlight multiple elements with the CSS Grid overlay.
      */
-    invoke_setShowGridOverlays(params: Protocol.Overlay.SetShowGridOverlaysRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowGridOverlays(params: Protocol.Overlay.SetShowGridOverlaysRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setShowFlexOverlays(params: Protocol.Overlay.SetShowFlexOverlaysRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowFlexOverlays(params: Protocol.Overlay.SetShowFlexOverlaysRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setShowScrollSnapOverlays(params: Protocol.Overlay.SetShowScrollSnapOverlaysRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowScrollSnapOverlays(params: Protocol.Overlay.SetShowScrollSnapOverlaysRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setShowContainerQueryOverlays(params: Protocol.Overlay.SetShowContainerQueryOverlaysRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowContainerQueryOverlays(params: Protocol.Overlay.SetShowContainerQueryOverlaysRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that backend shows paint rectangles
      */
-    invoke_setShowPaintRects(params: Protocol.Overlay.SetShowPaintRectsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowPaintRects(params: Protocol.Overlay.SetShowPaintRectsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that backend shows layout shift regions
      */
-    invoke_setShowLayoutShiftRegions(params: Protocol.Overlay.SetShowLayoutShiftRegionsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowLayoutShiftRegions(params: Protocol.Overlay.SetShowLayoutShiftRegionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Requests that backend shows scroll bottleneck rects
      */
-    invoke_setShowScrollBottleneckRects(params: Protocol.Overlay.SetShowScrollBottleneckRectsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowScrollBottleneckRects(params: Protocol.Overlay.SetShowScrollBottleneckRectsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Deprecated, no longer has any effect.
      */
-    invoke_setShowHitTestBorders(params: Protocol.Overlay.SetShowHitTestBordersRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowHitTestBorders(params: Protocol.Overlay.SetShowHitTestBordersRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Request that backend shows an overlay with web vital metrics.
      */
-    invoke_setShowWebVitals(params: Protocol.Overlay.SetShowWebVitalsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowWebVitals(params: Protocol.Overlay.SetShowWebVitalsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Paints viewport size upon main frame resize.
      */
-    invoke_setShowViewportSizeOnResize(params: Protocol.Overlay.SetShowViewportSizeOnResizeRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowViewportSizeOnResize(params: Protocol.Overlay.SetShowViewportSizeOnResizeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Add a dual screen device hinge
@@ -2383,8 +2266,8 @@ declare namespace ProtocolProxyApi {
     /**
      * Show elements in isolation mode with overlays.
      */
-    invoke_setShowIsolatedElements(params: Protocol.Overlay.SetShowIsolatedElementsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setShowIsolatedElements(params: Protocol.Overlay.SetShowIsolatedElementsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface OverlayDispatcher {
     /**
@@ -2407,20 +2290,19 @@ declare namespace ProtocolProxyApi {
      * Fired when user cancels the inspect mode.
      */
     inspectModeCanceled(): void;
+
   }
 
   export interface PageApi {
     /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
      */
-    invoke_addScriptToEvaluateOnLoad(params: Protocol.Page.AddScriptToEvaluateOnLoadRequest):
-        Promise<Protocol.Page.AddScriptToEvaluateOnLoadResponse>;
+    invoke_addScriptToEvaluateOnLoad(params: Protocol.Page.AddScriptToEvaluateOnLoadRequest): Promise<Protocol.Page.AddScriptToEvaluateOnLoadResponse>;
 
     /**
      * Evaluates given script in every frame upon creation (before loading frame's scripts).
      */
-    invoke_addScriptToEvaluateOnNewDocument(params: Protocol.Page.AddScriptToEvaluateOnNewDocumentRequest):
-        Promise<Protocol.Page.AddScriptToEvaluateOnNewDocumentResponse>;
+    invoke_addScriptToEvaluateOnNewDocument(params: Protocol.Page.AddScriptToEvaluateOnNewDocumentRequest): Promise<Protocol.Page.AddScriptToEvaluateOnNewDocumentResponse>;
 
     /**
      * Brings page to front (activates tab).
@@ -2430,15 +2312,13 @@ declare namespace ProtocolProxyApi {
     /**
      * Capture page screenshot.
      */
-    invoke_captureScreenshot(params: Protocol.Page.CaptureScreenshotRequest):
-        Promise<Protocol.Page.CaptureScreenshotResponse>;
+    invoke_captureScreenshot(params: Protocol.Page.CaptureScreenshotRequest): Promise<Protocol.Page.CaptureScreenshotResponse>;
 
     /**
      * Returns a snapshot of the page as a string. For MHTML format, the serialization includes
      * iframes, shadow DOM, external resources, and element-inline styles.
      */
-    invoke_captureSnapshot(params: Protocol.Page.CaptureSnapshotRequest):
-        Promise<Protocol.Page.CaptureSnapshotResponse>;
+    invoke_captureSnapshot(params: Protocol.Page.CaptureSnapshotRequest): Promise<Protocol.Page.CaptureSnapshotResponse>;
 
     /**
      * Clears the overridden device metrics.
@@ -2458,8 +2338,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Creates an isolated world for the given frame.
      */
-    invoke_createIsolatedWorld(params: Protocol.Page.CreateIsolatedWorldRequest):
-        Promise<Protocol.Page.CreateIsolatedWorldResponse>;
+    invoke_createIsolatedWorld(params: Protocol.Page.CreateIsolatedWorldRequest): Promise<Protocol.Page.CreateIsolatedWorldResponse>;
 
     /**
      * Deletes browser cookie with given name, domain and path.
@@ -2517,8 +2396,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns content of the given resource.
      */
-    invoke_getResourceContent(params: Protocol.Page.GetResourceContentRequest):
-        Promise<Protocol.Page.GetResourceContentResponse>;
+    invoke_getResourceContent(params: Protocol.Page.GetResourceContentRequest): Promise<Protocol.Page.GetResourceContentResponse>;
 
     /**
      * Returns present frame / resource tree structure.
@@ -2528,8 +2406,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).
      */
-    invoke_handleJavaScriptDialog(params: Protocol.Page.HandleJavaScriptDialogRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_handleJavaScriptDialog(params: Protocol.Page.HandleJavaScriptDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Navigates current page to the given URL.
@@ -2539,8 +2416,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Navigates current page to the given history entry.
      */
-    invoke_navigateToHistoryEntry(params: Protocol.Page.NavigateToHistoryEntryRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_navigateToHistoryEntry(params: Protocol.Page.NavigateToHistoryEntryRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Print page as PDF.
@@ -2555,32 +2431,27 @@ declare namespace ProtocolProxyApi {
     /**
      * Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
      */
-    invoke_removeScriptToEvaluateOnLoad(params: Protocol.Page.RemoveScriptToEvaluateOnLoadRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeScriptToEvaluateOnLoad(params: Protocol.Page.RemoveScriptToEvaluateOnLoadRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes given script from the list.
      */
-    invoke_removeScriptToEvaluateOnNewDocument(params: Protocol.Page.RemoveScriptToEvaluateOnNewDocumentRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeScriptToEvaluateOnNewDocument(params: Protocol.Page.RemoveScriptToEvaluateOnNewDocumentRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Acknowledges that a screencast frame has been received by the frontend.
      */
-    invoke_screencastFrameAck(params: Protocol.Page.ScreencastFrameAckRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_screencastFrameAck(params: Protocol.Page.ScreencastFrameAckRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Searches for given string in resource content.
      */
-    invoke_searchInResource(params: Protocol.Page.SearchInResourceRequest):
-        Promise<Protocol.Page.SearchInResourceResponse>;
+    invoke_searchInResource(params: Protocol.Page.SearchInResourceRequest): Promise<Protocol.Page.SearchInResourceResponse>;
 
     /**
      * Enable Chrome's experimental ad filter on all sites.
      */
-    invoke_setAdBlockingEnabled(params: Protocol.Page.SetAdBlockingEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAdBlockingEnabled(params: Protocol.Page.SetAdBlockingEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enable page Content Security Policy by-passing.
@@ -2590,28 +2461,24 @@ declare namespace ProtocolProxyApi {
     /**
      * Get Permissions Policy state on given frame.
      */
-    invoke_getPermissionsPolicyState(params: Protocol.Page.GetPermissionsPolicyStateRequest):
-        Promise<Protocol.Page.GetPermissionsPolicyStateResponse>;
+    invoke_getPermissionsPolicyState(params: Protocol.Page.GetPermissionsPolicyStateRequest): Promise<Protocol.Page.GetPermissionsPolicyStateResponse>;
 
     /**
      * Get Origin Trials on given frame.
      */
-    invoke_getOriginTrials(params: Protocol.Page.GetOriginTrialsRequest):
-        Promise<Protocol.Page.GetOriginTrialsResponse>;
+    invoke_getOriginTrials(params: Protocol.Page.GetOriginTrialsRequest): Promise<Protocol.Page.GetOriginTrialsResponse>;
 
     /**
      * Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
      * window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
      * query results).
      */
-    invoke_setDeviceMetricsOverride(params: Protocol.Page.SetDeviceMetricsOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDeviceMetricsOverride(params: Protocol.Page.SetDeviceMetricsOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Device Orientation.
      */
-    invoke_setDeviceOrientationOverride(params: Protocol.Page.SetDeviceOrientationOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDeviceOrientationOverride(params: Protocol.Page.SetDeviceOrientationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Set generic font families.
@@ -2626,33 +2493,28 @@ declare namespace ProtocolProxyApi {
     /**
      * Sets given markup as the document's HTML.
      */
-    invoke_setDocumentContent(params: Protocol.Page.SetDocumentContentRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDocumentContent(params: Protocol.Page.SetDocumentContentRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Set the behavior when downloading a file.
      */
-    invoke_setDownloadBehavior(params: Protocol.Page.SetDownloadBehaviorRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDownloadBehavior(params: Protocol.Page.SetDownloadBehaviorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
      * unavailable.
      */
-    invoke_setGeolocationOverride(params: Protocol.Page.SetGeolocationOverrideRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setGeolocationOverride(params: Protocol.Page.SetGeolocationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Controls whether page will emit lifecycle events.
      */
-    invoke_setLifecycleEventsEnabled(params: Protocol.Page.SetLifecycleEventsEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setLifecycleEventsEnabled(params: Protocol.Page.SetLifecycleEventsEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Toggles mouse event-based touch event emulation.
      */
-    invoke_setTouchEmulationEnabled(params: Protocol.Page.SetTouchEmulationEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setTouchEmulationEnabled(params: Protocol.Page.SetTouchEmulationEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Starts sending each frame using the `screencastFrame` event.
@@ -2679,8 +2541,7 @@ declare namespace ProtocolProxyApi {
      * It will transition the page to the given state according to:
      * https://github.com/WICG/web-lifecycle/
      */
-    invoke_setWebLifecycleState(params: Protocol.Page.SetWebLifecycleStateRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setWebLifecycleState(params: Protocol.Page.SetWebLifecycleStateRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Stops sending each frame in the `screencastFrame`.
@@ -2695,15 +2556,13 @@ declare namespace ProtocolProxyApi {
      * produced upon backend discretion, based on internal heuristics.
      * See also: `Page.compilationCacheProduced`.
      */
-    invoke_produceCompilationCache(params: Protocol.Page.ProduceCompilationCacheRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_produceCompilationCache(params: Protocol.Page.ProduceCompilationCacheRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Seeds compilation cache for given url. Compilation cache does not survive
      * cross-process navigation.
      */
-    invoke_addCompilationCache(params: Protocol.Page.AddCompilationCacheRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_addCompilationCache(params: Protocol.Page.AddCompilationCacheRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears seeded compilation cache.
@@ -2714,14 +2573,12 @@ declare namespace ProtocolProxyApi {
      * Sets the Secure Payment Confirmation transaction mode.
      * https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
      */
-    invoke_setSPCTransactionMode(params: Protocol.Page.SetSPCTransactionModeRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setSPCTransactionMode(params: Protocol.Page.SetSPCTransactionModeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Generates a report for testing.
      */
-    invoke_generateTestReport(params: Protocol.Page.GenerateTestReportRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_generateTestReport(params: Protocol.Page.GenerateTestReportRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger.
@@ -2733,8 +2590,8 @@ declare namespace ProtocolProxyApi {
      * When file chooser interception is enabled, native file chooser dialog is not shown.
      * Instead, a protocol event `Page.fileChooserOpened` is emitted.
      */
-    invoke_setInterceptFileChooserDialog(params: Protocol.Page.SetInterceptFileChooserDialogRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setInterceptFileChooserDialog(params: Protocol.Page.SetInterceptFileChooserDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface PageDispatcher {
     domContentEventFired(params: Protocol.Page.DomContentEventFiredEvent): void;
@@ -2872,6 +2729,7 @@ declare namespace ProtocolProxyApi {
      * if Page.setGenerateCompilationCache is enabled.
      */
     compilationCacheProduced(params: Protocol.Page.CompilationCacheProducedEvent): void;
+
   }
 
   export interface PerformanceApi {
@@ -2890,19 +2748,20 @@ declare namespace ProtocolProxyApi {
      * Note that this must be called before enabling metrics collection. Calling
      * this method while metrics collection is enabled returns an error.
      */
-    invoke_setTimeDomain(params: Protocol.Performance.SetTimeDomainRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setTimeDomain(params: Protocol.Performance.SetTimeDomainRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Retrieve current values of run-time metrics.
      */
     invoke_getMetrics(): Promise<Protocol.Performance.GetMetricsResponse>;
+
   }
   export interface PerformanceDispatcher {
     /**
      * Current values of the metrics.
      */
     metrics(params: Protocol.Performance.MetricsEvent): void;
+
   }
 
   export interface PerformanceTimelineApi {
@@ -2911,12 +2770,14 @@ declare namespace ProtocolProxyApi {
      * See also: timelineEventAdded
      */
     invoke_enable(params: Protocol.PerformanceTimeline.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface PerformanceTimelineDispatcher {
     /**
      * Sent when a performance timeline event is added. See reportPerformanceTimeline method.
      */
     timelineEventAdded(params: Protocol.PerformanceTimeline.TimelineEventAddedEvent): void;
+
   }
 
   export interface SecurityApi {
@@ -2933,21 +2794,19 @@ declare namespace ProtocolProxyApi {
     /**
      * Enable/disable whether all certificate errors should be ignored.
      */
-    invoke_setIgnoreCertificateErrors(params: Protocol.Security.SetIgnoreCertificateErrorsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setIgnoreCertificateErrors(params: Protocol.Security.SetIgnoreCertificateErrorsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Handles a certificate error that fired a certificateError event.
      */
-    invoke_handleCertificateError(params: Protocol.Security.HandleCertificateErrorRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_handleCertificateError(params: Protocol.Security.HandleCertificateErrorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enable/disable overriding certificate errors. If enabled, all certificate error events need to
      * be handled by the DevTools client and should be answered with `handleCertificateError` commands.
      */
-    invoke_setOverrideCertificateErrors(params: Protocol.Security.SetOverrideCertificateErrorsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setOverrideCertificateErrors(params: Protocol.Security.SetOverrideCertificateErrorsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface SecurityDispatcher {
     /**
@@ -2967,27 +2826,23 @@ declare namespace ProtocolProxyApi {
      * The security state of the page changed. No longer being sent.
      */
     securityStateChanged(params: Protocol.Security.SecurityStateChangedEvent): void;
+
   }
 
   export interface ServiceWorkerApi {
-    invoke_deliverPushMessage(params: Protocol.ServiceWorker.DeliverPushMessageRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_deliverPushMessage(params: Protocol.ServiceWorker.DeliverPushMessageRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_dispatchSyncEvent(params: Protocol.ServiceWorker.DispatchSyncEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchSyncEvent(params: Protocol.ServiceWorker.DispatchSyncEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_dispatchPeriodicSyncEvent(params: Protocol.ServiceWorker.DispatchPeriodicSyncEventRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_dispatchPeriodicSyncEvent(params: Protocol.ServiceWorker.DispatchPeriodicSyncEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_inspectWorker(params: Protocol.ServiceWorker.InspectWorkerRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_inspectWorker(params: Protocol.ServiceWorker.InspectWorkerRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setForceUpdateOnPageLoad(params: Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setForceUpdateOnPageLoad(params: Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_skipWaiting(params: Protocol.ServiceWorker.SkipWaitingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -2999,8 +2854,8 @@ declare namespace ProtocolProxyApi {
 
     invoke_unregister(params: Protocol.ServiceWorker.UnregisterRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_updateRegistration(params: Protocol.ServiceWorker.UpdateRegistrationRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_updateRegistration(params: Protocol.ServiceWorker.UpdateRegistrationRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface ServiceWorkerDispatcher {
     workerErrorReported(params: Protocol.ServiceWorker.WorkerErrorReportedEvent): void;
@@ -3008,20 +2863,19 @@ declare namespace ProtocolProxyApi {
     workerRegistrationUpdated(params: Protocol.ServiceWorker.WorkerRegistrationUpdatedEvent): void;
 
     workerVersionUpdated(params: Protocol.ServiceWorker.WorkerVersionUpdatedEvent): void;
+
   }
 
   export interface StorageApi {
     /**
      * Returns a storage key given a frame id.
      */
-    invoke_getStorageKeyForFrame(params: Protocol.Storage.GetStorageKeyForFrameRequest):
-        Promise<Protocol.Storage.GetStorageKeyForFrameResponse>;
+    invoke_getStorageKeyForFrame(params: Protocol.Storage.GetStorageKeyForFrameRequest): Promise<Protocol.Storage.GetStorageKeyForFrameResponse>;
 
     /**
      * Clears storage for origin.
      */
-    invoke_clearDataForOrigin(params: Protocol.Storage.ClearDataForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_clearDataForOrigin(params: Protocol.Storage.ClearDataForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Returns all browser cookies.
@@ -3041,38 +2895,32 @@ declare namespace ProtocolProxyApi {
     /**
      * Returns usage and quota in bytes.
      */
-    invoke_getUsageAndQuota(params: Protocol.Storage.GetUsageAndQuotaRequest):
-        Promise<Protocol.Storage.GetUsageAndQuotaResponse>;
+    invoke_getUsageAndQuota(params: Protocol.Storage.GetUsageAndQuotaRequest): Promise<Protocol.Storage.GetUsageAndQuotaResponse>;
 
     /**
      * Override quota for the specified origin
      */
-    invoke_overrideQuotaForOrigin(params: Protocol.Storage.OverrideQuotaForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_overrideQuotaForOrigin(params: Protocol.Storage.OverrideQuotaForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Registers origin to be notified when an update occurs to its cache storage list.
      */
-    invoke_trackCacheStorageForOrigin(params: Protocol.Storage.TrackCacheStorageForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_trackCacheStorageForOrigin(params: Protocol.Storage.TrackCacheStorageForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Registers origin to be notified when an update occurs to its IndexedDB.
      */
-    invoke_trackIndexedDBForOrigin(params: Protocol.Storage.TrackIndexedDBForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_trackIndexedDBForOrigin(params: Protocol.Storage.TrackIndexedDBForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Unregisters origin from receiving notifications for cache storage.
      */
-    invoke_untrackCacheStorageForOrigin(params: Protocol.Storage.UntrackCacheStorageForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_untrackCacheStorageForOrigin(params: Protocol.Storage.UntrackCacheStorageForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Unregisters origin from receiving notifications for IndexedDB.
      */
-    invoke_untrackIndexedDBForOrigin(params: Protocol.Storage.UntrackIndexedDBForOriginRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_untrackIndexedDBForOrigin(params: Protocol.Storage.UntrackIndexedDBForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Returns the number of stored Trust Tokens per issuer for the
@@ -3084,20 +2932,18 @@ declare namespace ProtocolProxyApi {
      * Removes all Trust Tokens issued by the provided issuerOrigin.
      * Leaves other stored data, including the issuer's Redemption Records, intact.
      */
-    invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest):
-        Promise<Protocol.Storage.ClearTrustTokensResponse>;
+    invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest): Promise<Protocol.Storage.ClearTrustTokensResponse>;
 
     /**
      * Gets details for a named interest group.
      */
-    invoke_getInterestGroupDetails(params: Protocol.Storage.GetInterestGroupDetailsRequest):
-        Promise<Protocol.Storage.GetInterestGroupDetailsResponse>;
+    invoke_getInterestGroupDetails(params: Protocol.Storage.GetInterestGroupDetailsRequest): Promise<Protocol.Storage.GetInterestGroupDetailsResponse>;
 
     /**
      * Enables/Disables issuing of interestGroupAccessed events.
      */
-    invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface StorageDispatcher {
     /**
@@ -3124,6 +2970,7 @@ declare namespace ProtocolProxyApi {
      * One of the interest groups was accessed by the associated page.
      */
     interestGroupAccessed(params: Protocol.Storage.InterestGroupAccessedEvent): void;
+
   }
 
   export interface SystemInfoApi {
@@ -3136,8 +2983,10 @@ declare namespace ProtocolProxyApi {
      * Returns information about all running processes.
      */
     invoke_getProcessInfo(): Promise<Protocol.SystemInfo.GetProcessInfoResponse>;
+
   }
-  export interface SystemInfoDispatcher {}
+  export interface SystemInfoDispatcher {
+  }
 
   export interface TargetApi {
     /**
@@ -3148,8 +2997,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Attaches to the target with given id.
      */
-    invoke_attachToTarget(params: Protocol.Target.AttachToTargetRequest):
-        Promise<Protocol.Target.AttachToTargetResponse>;
+    invoke_attachToTarget(params: Protocol.Target.AttachToTargetRequest): Promise<Protocol.Target.AttachToTargetResponse>;
 
     /**
      * Attaches to the browser target, only uses flat sessionId mode.
@@ -3171,15 +3019,13 @@ declare namespace ProtocolProxyApi {
      * - `binding.send(json)` - a method to send messages over the remote debugging protocol
      * - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses.
      */
-    invoke_exposeDevToolsProtocol(params: Protocol.Target.ExposeDevToolsProtocolRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_exposeDevToolsProtocol(params: Protocol.Target.ExposeDevToolsProtocolRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
      * one.
      */
-    invoke_createBrowserContext(params: Protocol.Target.CreateBrowserContextRequest):
-        Promise<Protocol.Target.CreateBrowserContextResponse>;
+    invoke_createBrowserContext(params: Protocol.Target.CreateBrowserContextRequest): Promise<Protocol.Target.CreateBrowserContextResponse>;
 
     /**
      * Returns all browser contexts created with `Target.createBrowserContext` method.
@@ -3194,15 +3040,13 @@ declare namespace ProtocolProxyApi {
     /**
      * Detaches session with given id.
      */
-    invoke_detachFromTarget(params: Protocol.Target.DetachFromTargetRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_detachFromTarget(params: Protocol.Target.DetachFromTargetRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Deletes a BrowserContext. All the belonging pages will be closed without calling their
      * beforeunload hooks.
      */
-    invoke_disposeBrowserContext(params: Protocol.Target.DisposeBrowserContextRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_disposeBrowserContext(params: Protocol.Target.DisposeBrowserContextRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Returns information about a target.
@@ -3219,8 +3063,7 @@ declare namespace ProtocolProxyApi {
      * Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
      * and crbug.com/991325.
      */
-    invoke_sendMessageToTarget(params: Protocol.Target.SendMessageToTargetRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_sendMessageToTarget(params: Protocol.Target.SendMessageToTargetRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Controls whether to automatically attach to new targets which are considered to be related to
@@ -3238,22 +3081,20 @@ declare namespace ProtocolProxyApi {
      * This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
      * `setAutoAttach`. Only available at the Browser target.
      */
-    invoke_autoAttachRelated(params: Protocol.Target.AutoAttachRelatedRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_autoAttachRelated(params: Protocol.Target.AutoAttachRelatedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Controls whether to discover available targets and notify via
      * `targetCreated/targetInfoChanged/targetDestroyed` events.
      */
-    invoke_setDiscoverTargets(params: Protocol.Target.SetDiscoverTargetsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setDiscoverTargets(params: Protocol.Target.SetDiscoverTargetsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
      * `true`.
      */
-    invoke_setRemoteLocations(params: Protocol.Target.SetRemoteLocationsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setRemoteLocations(params: Protocol.Target.SetRemoteLocationsRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface TargetDispatcher {
     /**
@@ -3293,6 +3134,7 @@ declare namespace ProtocolProxyApi {
      * `targetCreated` and `targetDestroyed`.
      */
     targetInfoChanged(params: Protocol.Target.TargetInfoChangedEvent): void;
+
   }
 
   export interface TetheringApi {
@@ -3305,12 +3147,14 @@ declare namespace ProtocolProxyApi {
      * Request browser port unbinding.
      */
     invoke_unbind(params: Protocol.Tethering.UnbindRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface TetheringDispatcher {
     /**
      * Informs that port was successfully bound and got a specified connection id.
      */
     accepted(params: Protocol.Tethering.AcceptedEvent): void;
+
   }
 
   export interface TracingApi {
@@ -3327,19 +3171,18 @@ declare namespace ProtocolProxyApi {
     /**
      * Record a clock sync marker in the trace.
      */
-    invoke_recordClockSyncMarker(params: Protocol.Tracing.RecordClockSyncMarkerRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_recordClockSyncMarker(params: Protocol.Tracing.RecordClockSyncMarkerRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Request a global memory dump.
      */
-    invoke_requestMemoryDump(params: Protocol.Tracing.RequestMemoryDumpRequest):
-        Promise<Protocol.Tracing.RequestMemoryDumpResponse>;
+    invoke_requestMemoryDump(params: Protocol.Tracing.RequestMemoryDumpRequest): Promise<Protocol.Tracing.RequestMemoryDumpResponse>;
 
     /**
      * Start trace events collection.
      */
     invoke_start(params: Protocol.Tracing.StartRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface TracingDispatcher {
     bufferUsage(params: Protocol.Tracing.BufferUsageEvent): void;
@@ -3355,6 +3198,7 @@ declare namespace ProtocolProxyApi {
      * delivered via dataCollected events.
      */
     tracingComplete(params: Protocol.Tracing.TracingCompleteEvent): void;
+
   }
 
   export interface FetchApi {
@@ -3387,16 +3231,14 @@ declare namespace ProtocolProxyApi {
     /**
      * Continues a request supplying authChallengeResponse following authRequired event.
      */
-    invoke_continueWithAuth(params: Protocol.Fetch.ContinueWithAuthRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_continueWithAuth(params: Protocol.Fetch.ContinueWithAuthRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Continues loading of the paused response, optionally modifying the
      * response headers. If either responseCode or headers are modified, all of them
      * must be present.
      */
-    invoke_continueResponse(params: Protocol.Fetch.ContinueResponseRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_continueResponse(params: Protocol.Fetch.ContinueResponseRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Causes the body of the response to be received from the server and
@@ -3406,8 +3248,7 @@ declare namespace ProtocolProxyApi {
      * affect the request or disabling fetch domain before body is received
      * results in an undefined behavior.
      */
-    invoke_getResponseBody(params: Protocol.Fetch.GetResponseBodyRequest):
-        Promise<Protocol.Fetch.GetResponseBodyResponse>;
+    invoke_getResponseBody(params: Protocol.Fetch.GetResponseBodyRequest): Promise<Protocol.Fetch.GetResponseBodyResponse>;
 
     /**
      * Returns a handle to the stream representing the response body.
@@ -3421,8 +3262,8 @@ declare namespace ProtocolProxyApi {
      * Calling other methods that affect the request or disabling fetch
      * domain before body is received results in an undefined behavior.
      */
-    invoke_takeResponseBodyAsStream(params: Protocol.Fetch.TakeResponseBodyAsStreamRequest):
-        Promise<Protocol.Fetch.TakeResponseBodyAsStreamResponse>;
+    invoke_takeResponseBodyAsStream(params: Protocol.Fetch.TakeResponseBodyAsStreamRequest): Promise<Protocol.Fetch.TakeResponseBodyAsStreamResponse>;
+
   }
   export interface FetchDispatcher {
     /**
@@ -3440,6 +3281,7 @@ declare namespace ProtocolProxyApi {
      * The request is paused until client responds with continueWithAuth.
      */
     authRequired(params: Protocol.Fetch.AuthRequiredEvent): void;
+
   }
 
   export interface WebAudioApi {
@@ -3456,8 +3298,8 @@ declare namespace ProtocolProxyApi {
     /**
      * Fetch the realtime data from the registered contexts.
      */
-    invoke_getRealtimeData(params: Protocol.WebAudio.GetRealtimeDataRequest):
-        Promise<Protocol.WebAudio.GetRealtimeDataResponse>;
+    invoke_getRealtimeData(params: Protocol.WebAudio.GetRealtimeDataRequest): Promise<Protocol.WebAudio.GetRealtimeDataResponse>;
+
   }
   export interface WebAudioDispatcher {
     /**
@@ -3524,6 +3366,7 @@ declare namespace ProtocolProxyApi {
      * Notifies that an AudioNode is disconnected to an AudioParam.
      */
     nodeParamDisconnected(params: Protocol.WebAudio.NodeParamDisconnectedEvent): void;
+
   }
 
   export interface WebAuthnApi {
@@ -3541,14 +3384,12 @@ declare namespace ProtocolProxyApi {
     /**
      * Creates and adds a virtual authenticator.
      */
-    invoke_addVirtualAuthenticator(params: Protocol.WebAuthn.AddVirtualAuthenticatorRequest):
-        Promise<Protocol.WebAuthn.AddVirtualAuthenticatorResponse>;
+    invoke_addVirtualAuthenticator(params: Protocol.WebAuthn.AddVirtualAuthenticatorRequest): Promise<Protocol.WebAuthn.AddVirtualAuthenticatorResponse>;
 
     /**
      * Removes the given authenticator.
      */
-    invoke_removeVirtualAuthenticator(params: Protocol.WebAuthn.RemoveVirtualAuthenticatorRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeVirtualAuthenticator(params: Protocol.WebAuthn.RemoveVirtualAuthenticatorRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Adds the credential to the specified authenticator.
@@ -3559,42 +3400,38 @@ declare namespace ProtocolProxyApi {
      * Returns a single credential stored in the given virtual authenticator that
      * matches the credential ID.
      */
-    invoke_getCredential(params: Protocol.WebAuthn.GetCredentialRequest):
-        Promise<Protocol.WebAuthn.GetCredentialResponse>;
+    invoke_getCredential(params: Protocol.WebAuthn.GetCredentialRequest): Promise<Protocol.WebAuthn.GetCredentialResponse>;
 
     /**
      * Returns all the credentials stored in the given virtual authenticator.
      */
-    invoke_getCredentials(params: Protocol.WebAuthn.GetCredentialsRequest):
-        Promise<Protocol.WebAuthn.GetCredentialsResponse>;
+    invoke_getCredentials(params: Protocol.WebAuthn.GetCredentialsRequest): Promise<Protocol.WebAuthn.GetCredentialsResponse>;
 
     /**
      * Removes a credential from the authenticator.
      */
-    invoke_removeCredential(params: Protocol.WebAuthn.RemoveCredentialRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeCredential(params: Protocol.WebAuthn.RemoveCredentialRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Clears all the credentials from the specified device.
      */
-    invoke_clearCredentials(params: Protocol.WebAuthn.ClearCredentialsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_clearCredentials(params: Protocol.WebAuthn.ClearCredentialsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets whether User Verification succeeds or fails for an authenticator.
      * The default is true.
      */
-    invoke_setUserVerified(params: Protocol.WebAuthn.SetUserVerifiedRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setUserVerified(params: Protocol.WebAuthn.SetUserVerifiedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets whether tests of user presence will succeed immediately (if true) or fail to resolve (if false) for an authenticator.
      * The default is true.
      */
-    invoke_setAutomaticPresenceSimulation(params: Protocol.WebAuthn.SetAutomaticPresenceSimulationRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAutomaticPresenceSimulation(params: Protocol.WebAuthn.SetAutomaticPresenceSimulationRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
-  export interface WebAuthnDispatcher {}
+  export interface WebAuthnDispatcher {
+  }
 
   export interface MediaApi {
     /**
@@ -3606,6 +3443,7 @@ declare namespace ProtocolProxyApi {
      * Disables the Media domain.
      */
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface MediaDispatcher {
     /**
@@ -3643,8 +3481,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Continues execution until specific location is reached.
      */
-    invoke_continueToLocation(params: Protocol.Debugger.ContinueToLocationRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_continueToLocation(params: Protocol.Debugger.ContinueToLocationRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Disables debugger for given page.
@@ -3660,47 +3497,40 @@ declare namespace ProtocolProxyApi {
     /**
      * Evaluates expression on a given call frame.
      */
-    invoke_evaluateOnCallFrame(params: Protocol.Debugger.EvaluateOnCallFrameRequest):
-        Promise<Protocol.Debugger.EvaluateOnCallFrameResponse>;
+    invoke_evaluateOnCallFrame(params: Protocol.Debugger.EvaluateOnCallFrameRequest): Promise<Protocol.Debugger.EvaluateOnCallFrameResponse>;
 
     /**
      * Returns possible locations for breakpoint. scriptId in start and end range locations should be
      * the same.
      */
-    invoke_getPossibleBreakpoints(params: Protocol.Debugger.GetPossibleBreakpointsRequest):
-        Promise<Protocol.Debugger.GetPossibleBreakpointsResponse>;
+    invoke_getPossibleBreakpoints(params: Protocol.Debugger.GetPossibleBreakpointsRequest): Promise<Protocol.Debugger.GetPossibleBreakpointsResponse>;
 
     /**
      * Returns source for the script with given id.
      */
-    invoke_getScriptSource(params: Protocol.Debugger.GetScriptSourceRequest):
-        Promise<Protocol.Debugger.GetScriptSourceResponse>;
+    invoke_getScriptSource(params: Protocol.Debugger.GetScriptSourceRequest): Promise<Protocol.Debugger.GetScriptSourceResponse>;
 
     /**
      * This command is deprecated. Use getScriptSource instead.
      */
-    invoke_getWasmBytecode(params: Protocol.Debugger.GetWasmBytecodeRequest):
-        Promise<Protocol.Debugger.GetWasmBytecodeResponse>;
+    invoke_getWasmBytecode(params: Protocol.Debugger.GetWasmBytecodeRequest): Promise<Protocol.Debugger.GetWasmBytecodeResponse>;
 
     /**
      * Returns stack trace with given `stackTraceId`.
      */
-    invoke_getStackTrace(params: Protocol.Debugger.GetStackTraceRequest):
-        Promise<Protocol.Debugger.GetStackTraceResponse>;
+    invoke_getStackTrace(params: Protocol.Debugger.GetStackTraceRequest): Promise<Protocol.Debugger.GetStackTraceResponse>;
 
     /**
      * Stops on the next JavaScript statement.
      */
     invoke_pause(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_pauseOnAsyncCall(params: Protocol.Debugger.PauseOnAsyncCallRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_pauseOnAsyncCall(params: Protocol.Debugger.PauseOnAsyncCallRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Removes JavaScript breakpoint.
      */
-    invoke_removeBreakpoint(params: Protocol.Debugger.RemoveBreakpointRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_removeBreakpoint(params: Protocol.Debugger.RemoveBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Restarts particular call frame from the beginning. The old, deprecated
@@ -3727,22 +3557,19 @@ declare namespace ProtocolProxyApi {
     /**
      * Searches for given string in script content.
      */
-    invoke_searchInContent(params: Protocol.Debugger.SearchInContentRequest):
-        Promise<Protocol.Debugger.SearchInContentResponse>;
+    invoke_searchInContent(params: Protocol.Debugger.SearchInContentRequest): Promise<Protocol.Debugger.SearchInContentResponse>;
 
     /**
      * Enables or disables async call stacks tracking.
      */
-    invoke_setAsyncCallStackDepth(params: Protocol.Debugger.SetAsyncCallStackDepthRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAsyncCallStackDepth(params: Protocol.Debugger.SetAsyncCallStackDepthRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
      * scripts with url matching one of the patterns. VM will try to leave blackboxed script by
      * performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
      */
-    invoke_setBlackboxPatterns(params: Protocol.Debugger.SetBlackboxPatternsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setBlackboxPatterns(params: Protocol.Debugger.SetBlackboxPatternsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
@@ -3750,20 +3577,17 @@ declare namespace ProtocolProxyApi {
      * Positions array contains positions where blackbox state is changed. First interval isn't
      * blackboxed. Array should be sorted.
      */
-    invoke_setBlackboxedRanges(params: Protocol.Debugger.SetBlackboxedRangesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setBlackboxedRanges(params: Protocol.Debugger.SetBlackboxedRangesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Sets JavaScript breakpoint at a given location.
      */
-    invoke_setBreakpoint(params: Protocol.Debugger.SetBreakpointRequest):
-        Promise<Protocol.Debugger.SetBreakpointResponse>;
+    invoke_setBreakpoint(params: Protocol.Debugger.SetBreakpointRequest): Promise<Protocol.Debugger.SetBreakpointResponse>;
 
     /**
      * Sets instrumentation breakpoint.
      */
-    invoke_setInstrumentationBreakpoint(params: Protocol.Debugger.SetInstrumentationBreakpointRequest):
-        Promise<Protocol.Debugger.SetInstrumentationBreakpointResponse>;
+    invoke_setInstrumentationBreakpoint(params: Protocol.Debugger.SetInstrumentationBreakpointRequest): Promise<Protocol.Debugger.SetInstrumentationBreakpointResponse>;
 
     /**
      * Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
@@ -3771,29 +3595,25 @@ declare namespace ProtocolProxyApi {
      * `locations` property. Further matching script parsing will result in subsequent
      * `breakpointResolved` events issued. This logical breakpoint will survive page reloads.
      */
-    invoke_setBreakpointByUrl(params: Protocol.Debugger.SetBreakpointByUrlRequest):
-        Promise<Protocol.Debugger.SetBreakpointByUrlResponse>;
+    invoke_setBreakpointByUrl(params: Protocol.Debugger.SetBreakpointByUrlRequest): Promise<Protocol.Debugger.SetBreakpointByUrlResponse>;
 
     /**
      * Sets JavaScript breakpoint before each call to the given function.
      * If another function was created from the same source as a given one,
      * calling it will also trigger the breakpoint.
      */
-    invoke_setBreakpointOnFunctionCall(params: Protocol.Debugger.SetBreakpointOnFunctionCallRequest):
-        Promise<Protocol.Debugger.SetBreakpointOnFunctionCallResponse>;
+    invoke_setBreakpointOnFunctionCall(params: Protocol.Debugger.SetBreakpointOnFunctionCallRequest): Promise<Protocol.Debugger.SetBreakpointOnFunctionCallResponse>;
 
     /**
      * Activates / deactivates all breakpoints on the page.
      */
-    invoke_setBreakpointsActive(params: Protocol.Debugger.SetBreakpointsActiveRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setBreakpointsActive(params: Protocol.Debugger.SetBreakpointsActiveRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or
      * no exceptions. Initial pause on exceptions state is `none`.
      */
-    invoke_setPauseOnExceptions(params: Protocol.Debugger.SetPauseOnExceptionsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setPauseOnExceptions(params: Protocol.Debugger.SetPauseOnExceptionsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Changes return value in top frame. Available only at return break position.
@@ -3809,21 +3629,18 @@ declare namespace ProtocolProxyApi {
      * the live edit will be successful and a `Debugger.restartFrame` for the
      * top-most function is automatically triggered.
      */
-    invoke_setScriptSource(params: Protocol.Debugger.SetScriptSourceRequest):
-        Promise<Protocol.Debugger.SetScriptSourceResponse>;
+    invoke_setScriptSource(params: Protocol.Debugger.SetScriptSourceRequest): Promise<Protocol.Debugger.SetScriptSourceResponse>;
 
     /**
      * Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
      */
-    invoke_setSkipAllPauses(params: Protocol.Debugger.SetSkipAllPausesRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setSkipAllPauses(params: Protocol.Debugger.SetSkipAllPausesRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Changes value of variable in a callframe. Object-based scopes are not supported and must be
      * mutated manually.
      */
-    invoke_setVariableValue(params: Protocol.Debugger.SetVariableValueRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setVariableValue(params: Protocol.Debugger.SetVariableValueRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Steps into the function call.
@@ -3839,6 +3656,7 @@ declare namespace ProtocolProxyApi {
      * Steps over the statement.
      */
     invoke_stepOver(params: Protocol.Debugger.StepOverRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface DebuggerDispatcher {
     /**
@@ -3866,6 +3684,7 @@ declare namespace ProtocolProxyApi {
      * scripts upon enabling debugger.
      */
     scriptParsed(params: Protocol.Debugger.ScriptParsedEvent): void;
+
   }
 
   export interface HeapProfilerApi {
@@ -3873,8 +3692,7 @@ declare namespace ProtocolProxyApi {
      * Enables console to refer to the node with given id via $x (see Command Line API for more details
      * $x functions).
      */
-    invoke_addInspectedHeapObject(params: Protocol.HeapProfiler.AddInspectedHeapObjectRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_addInspectedHeapObject(params: Protocol.HeapProfiler.AddInspectedHeapObjectRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_collectGarbage(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3882,27 +3700,22 @@ declare namespace ProtocolProxyApi {
 
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_getHeapObjectId(params: Protocol.HeapProfiler.GetHeapObjectIdRequest):
-        Promise<Protocol.HeapProfiler.GetHeapObjectIdResponse>;
+    invoke_getHeapObjectId(params: Protocol.HeapProfiler.GetHeapObjectIdRequest): Promise<Protocol.HeapProfiler.GetHeapObjectIdResponse>;
 
-    invoke_getObjectByHeapObjectId(params: Protocol.HeapProfiler.GetObjectByHeapObjectIdRequest):
-        Promise<Protocol.HeapProfiler.GetObjectByHeapObjectIdResponse>;
+    invoke_getObjectByHeapObjectId(params: Protocol.HeapProfiler.GetObjectByHeapObjectIdRequest): Promise<Protocol.HeapProfiler.GetObjectByHeapObjectIdResponse>;
 
     invoke_getSamplingProfile(): Promise<Protocol.HeapProfiler.GetSamplingProfileResponse>;
 
-    invoke_startSampling(params: Protocol.HeapProfiler.StartSamplingRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startSampling(params: Protocol.HeapProfiler.StartSamplingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_startTrackingHeapObjects(params: Protocol.HeapProfiler.StartTrackingHeapObjectsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_startTrackingHeapObjects(params: Protocol.HeapProfiler.StartTrackingHeapObjectsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_stopSampling(): Promise<Protocol.HeapProfiler.StopSamplingResponse>;
 
-    invoke_stopTrackingHeapObjects(params: Protocol.HeapProfiler.StopTrackingHeapObjectsRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_stopTrackingHeapObjects(params: Protocol.HeapProfiler.StopTrackingHeapObjectsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_takeHeapSnapshot(params: Protocol.HeapProfiler.TakeHeapSnapshotRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_takeHeapSnapshot(params: Protocol.HeapProfiler.TakeHeapSnapshotRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface HeapProfilerDispatcher {
     addHeapSnapshotChunk(params: Protocol.HeapProfiler.AddHeapSnapshotChunkEvent): void;
@@ -3922,6 +3735,7 @@ declare namespace ProtocolProxyApi {
     reportHeapSnapshotProgress(params: Protocol.HeapProfiler.ReportHeapSnapshotProgressEvent): void;
 
     resetProfiles(): void;
+
   }
 
   export interface ProfilerApi {
@@ -3938,8 +3752,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
      */
-    invoke_setSamplingInterval(params: Protocol.Profiler.SetSamplingIntervalRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setSamplingInterval(params: Protocol.Profiler.SetSamplingIntervalRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_start(): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3948,8 +3761,7 @@ declare namespace ProtocolProxyApi {
      * coverage may be incomplete. Enabling prevents running optimized code and resets execution
      * counters.
      */
-    invoke_startPreciseCoverage(params: Protocol.Profiler.StartPreciseCoverageRequest):
-        Promise<Protocol.Profiler.StartPreciseCoverageResponse>;
+    invoke_startPreciseCoverage(params: Protocol.Profiler.StartPreciseCoverageRequest): Promise<Protocol.Profiler.StartPreciseCoverageResponse>;
 
     /**
      * Enable type profile.
@@ -3996,6 +3808,7 @@ declare namespace ProtocolProxyApi {
      * trigger collection of coverage data immediately at a certain point in time.
      */
     preciseCoverageDeltaUpdate(params: Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void;
+
   }
 
   export interface RuntimeApi {
@@ -4008,14 +3821,12 @@ declare namespace ProtocolProxyApi {
      * Calls function with given declaration on the given object. Object group of the result is
      * inherited from the target object.
      */
-    invoke_callFunctionOn(params: Protocol.Runtime.CallFunctionOnRequest):
-        Promise<Protocol.Runtime.CallFunctionOnResponse>;
+    invoke_callFunctionOn(params: Protocol.Runtime.CallFunctionOnRequest): Promise<Protocol.Runtime.CallFunctionOnResponse>;
 
     /**
      * Compiles expression.
      */
-    invoke_compileScript(params: Protocol.Runtime.CompileScriptRequest):
-        Promise<Protocol.Runtime.CompileScriptResponse>;
+    invoke_compileScript(params: Protocol.Runtime.CompileScriptRequest): Promise<Protocol.Runtime.CompileScriptResponse>;
 
     /**
      * Disables reporting of execution contexts creation.
@@ -4054,14 +3865,12 @@ declare namespace ProtocolProxyApi {
      * Returns properties of a given object. Object group of the result is inherited from the target
      * object.
      */
-    invoke_getProperties(params: Protocol.Runtime.GetPropertiesRequest):
-        Promise<Protocol.Runtime.GetPropertiesResponse>;
+    invoke_getProperties(params: Protocol.Runtime.GetPropertiesRequest): Promise<Protocol.Runtime.GetPropertiesResponse>;
 
     /**
      * Returns all let, const and class variables from global scope.
      */
-    invoke_globalLexicalScopeNames(params: Protocol.Runtime.GlobalLexicalScopeNamesRequest):
-        Promise<Protocol.Runtime.GlobalLexicalScopeNamesResponse>;
+    invoke_globalLexicalScopeNames(params: Protocol.Runtime.GlobalLexicalScopeNamesRequest): Promise<Protocol.Runtime.GlobalLexicalScopeNamesResponse>;
 
     invoke_queryObjects(params: Protocol.Runtime.QueryObjectsRequest): Promise<Protocol.Runtime.QueryObjectsResponse>;
 
@@ -4073,8 +3882,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Releases all remote objects that belong to a given group.
      */
-    invoke_releaseObjectGroup(params: Protocol.Runtime.ReleaseObjectGroupRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_releaseObjectGroup(params: Protocol.Runtime.ReleaseObjectGroupRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Tells inspected instance to run if it was waiting for debugger to attach.
@@ -4089,14 +3897,11 @@ declare namespace ProtocolProxyApi {
     /**
      * Enables or disables async call stacks tracking.
      */
-    invoke_setAsyncCallStackDepth(params: Protocol.Runtime.SetAsyncCallStackDepthRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setAsyncCallStackDepth(params: Protocol.Runtime.SetAsyncCallStackDepthRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setCustomObjectFormatterEnabled(params: Protocol.Runtime.SetCustomObjectFormatterEnabledRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setCustomObjectFormatterEnabled(params: Protocol.Runtime.SetCustomObjectFormatterEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    invoke_setMaxCallStackSizeToCapture(params: Protocol.Runtime.SetMaxCallStackSizeToCaptureRequest):
-        Promise<Protocol.ProtocolResponseWithError>;
+    invoke_setMaxCallStackSizeToCapture(params: Protocol.Runtime.SetMaxCallStackSizeToCaptureRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Terminate current or next JavaScript execution.
@@ -4127,8 +3932,8 @@ declare namespace ProtocolProxyApi {
      * only be populated if the Runtime domain was enabled at the time when the
      * Error was thrown.
      */
-    invoke_getExceptionDetails(params: Protocol.Runtime.GetExceptionDetailsRequest):
-        Promise<Protocol.Runtime.GetExceptionDetailsResponse>;
+    invoke_getExceptionDetails(params: Protocol.Runtime.GetExceptionDetailsRequest): Promise<Protocol.Runtime.GetExceptionDetailsResponse>;
+
   }
   export interface RuntimeDispatcher {
     /**
@@ -4171,6 +3976,7 @@ declare namespace ProtocolProxyApi {
      * call).
      */
     inspectRequested(params: Protocol.Runtime.InspectRequestedEvent): void;
+
   }
 
   export interface SchemaApi {
@@ -4178,8 +3984,10 @@ declare namespace ProtocolProxyApi {
      * Returns supported domains.
      */
     invoke_getDomains(): Promise<Protocol.Schema.GetDomainsResponse>;
+
   }
-  export interface SchemaDispatcher {}
+  export interface SchemaDispatcher {
+  }
 }
 
 export = ProtocolProxyApi;

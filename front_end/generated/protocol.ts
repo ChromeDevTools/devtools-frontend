@@ -10,16 +10,12 @@
 
 export type integer = number;
 export type binary = string;
-export type EnumerableEnum<T> = {
-  [K in keyof T]: T[K]
-};
+export type EnumerableEnum<T> = {[K in keyof T]: T[K]};
 export interface ProtocolResponseWithError {
   /** Returns an error message if the request failed. */
   getError(): string|undefined;
 }
-type OpaqueType<Tag extends string> = {
-  protocolOpaqueTypeTag: Tag
-};
+type OpaqueType<Tag extends string> = {protocolOpaqueTypeTag: Tag};
 type OpaqueIdentifier<RepresentationType, Tag extends string> = RepresentationType&OpaqueType<Tag>;
 
 export namespace Accessibility {
@@ -1059,14 +1055,12 @@ export namespace Audits {
     RequestedSubresourceWithEmbeddedCredentials = 'RequestedSubresourceWithEmbeddedCredentials',
     RTCConstraintEnableDtlsSrtpFalse = 'RTCConstraintEnableDtlsSrtpFalse',
     RTCConstraintEnableDtlsSrtpTrue = 'RTCConstraintEnableDtlsSrtpTrue',
-    RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics =
-        'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
+    RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics = 'RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics',
     RTCPeerConnectionSdpSemanticsPlanB = 'RTCPeerConnectionSdpSemanticsPlanB',
     RtcpMuxPolicyNegotiate = 'RtcpMuxPolicyNegotiate',
     SharedArrayBufferConstructedWithoutIsolation = 'SharedArrayBufferConstructedWithoutIsolation',
     TextToSpeech_DisallowedByAutoplay = 'TextToSpeech_DisallowedByAutoplay',
-    V8SharedArrayBufferConstructedInExtensionWithoutIsolation =
-        'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
+    V8SharedArrayBufferConstructedInExtensionWithoutIsolation = 'V8SharedArrayBufferConstructedInExtensionWithoutIsolation',
     XHRJSONEncodingDetection = 'XHRJSONEncodingDetection',
     XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload = 'XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload',
     XRSupportsSession = 'XRSupportsSession',
@@ -11009,8 +11003,7 @@ export namespace Page {
     EmbedderDomDistillerSelfDeletingRequestDelegate = 'EmbedderDomDistillerSelfDeletingRequestDelegate',
     EmbedderOomInterventionTabHelper = 'EmbedderOomInterventionTabHelper',
     EmbedderOfflinePage = 'EmbedderOfflinePage',
-    EmbedderChromePasswordManagerClientBindCredentialManager =
-        'EmbedderChromePasswordManagerClientBindCredentialManager',
+    EmbedderChromePasswordManagerClientBindCredentialManager = 'EmbedderChromePasswordManagerClientBindCredentialManager',
     EmbedderPermissionRequestManager = 'EmbedderPermissionRequestManager',
     EmbedderModalDialog = 'EmbedderModalDialog',
     EmbedderExtensions = 'EmbedderExtensions',

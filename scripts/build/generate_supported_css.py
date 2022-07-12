@@ -108,7 +108,10 @@ with open(GENERATED_LOCATION, "w+") as f:
     f.write('// Use of this source code is governed by a BSD-style license that can be\n')
     f.write('// found in the LICENSE file.\n')
     f.write('\n')
-    f.write("export const generatedProperties = %s;\n" % json.dumps(properties))
+    f.write("export const generatedProperties = %s;\n" %
+            json.dumps(properties, sort_keys=True, indent=1))
     # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
-    f.write("export const generatedPropertyValues = %s;\n" % json.dumps(property_values, sort_keys=True))
-    f.write("export const generatedAliasesFor = new Map(%s);\n" % json.dumps(aliases_for))
+    f.write("export const generatedPropertyValues = %s;\n" %
+            json.dumps(property_values, sort_keys=True, indent=1))
+    f.write("export const generatedAliasesFor = new Map(%s);\n" %
+            json.dumps(aliases_for, sort_keys=True, indent=1))

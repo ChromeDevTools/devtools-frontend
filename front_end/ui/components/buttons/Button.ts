@@ -63,7 +63,7 @@ export type ButtonData = {
 };
 
 interface ButtonElementInternals extends ElementInternals {
-  readonly form?: HTMLFormElement;
+  readonly form: HTMLFormElement|null;
   readonly validity: ValidityState;
   readonly willValidate: boolean;
   readonly validationMessage: string;
@@ -254,7 +254,7 @@ export class Button extends HTMLElement {
   // The following properties and methods aren't strictly required,
   // but browser-level form controls provide them. Providing them helps
   // ensure consistency with browser-provided controls.
-  get form(): HTMLFormElement|undefined {
+  get form(): HTMLFormElement|null {
     return this.#internals.form;
   }
   get name(): string|null {

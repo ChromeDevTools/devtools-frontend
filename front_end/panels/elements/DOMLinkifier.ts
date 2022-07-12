@@ -95,7 +95,11 @@ export const linkifyNodeReference = function(
   link.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
 
   if (!options.preventKeyboardFocus) {
-    link.addEventListener('keydown', event => event.key === 'Enter' && Common.Revealer.reveal(node, false) && false);
+    link.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        void Common.Revealer.reveal(node, false);
+      }
+    });
     link.tabIndex = 0;
     UI.ARIAUtils.markAsLink(link);
   }

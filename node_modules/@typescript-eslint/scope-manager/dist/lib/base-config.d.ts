@@ -1,16 +1,16 @@
 export declare const TYPE: Readonly<{
-    eslintImplicitGlobalSetting: string;
-    isTypeVariable: boolean;
-    isValueVariable: boolean;
+    eslintImplicitGlobalSetting: "readonly";
+    isTypeVariable: true;
+    isValueVariable: false;
 }>;
 export declare const VALUE: Readonly<{
-    eslintImplicitGlobalSetting: string;
-    isTypeVariable: boolean;
-    isValueVariable: boolean;
+    eslintImplicitGlobalSetting: "readonly";
+    isTypeVariable: false;
+    isValueVariable: true;
 }>;
 export declare const TYPE_VALUE: Readonly<{
-    eslintImplicitGlobalSetting: string;
-    isTypeVariable: boolean;
-    isValueVariable: boolean;
+    eslintImplicitGlobalSetting: "readonly";
+    isTypeVariable: true;
+    isValueVariable: true;
 }>;
 //# sourceMappingURL=base-config.d.ts.map

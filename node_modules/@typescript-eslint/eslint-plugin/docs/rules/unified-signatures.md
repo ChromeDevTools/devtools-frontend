@@ -1,6 +1,6 @@
 # `unified-signatures`
 
-Warns for any two overloads that could be unified into one by using a union or an optional/rest parameter.
+Disallows two overloads that could be unified into one with a union or an optional/rest parameter.
 
 ## Rule Details
 
@@ -75,13 +75,3 @@ function f(b: string): void;
 function f(...a: number[]): void;
 function f(...a: string[]): void;
 ```
-
-## Related To
-
-- TSLint: [`unified-signatures`](https://palantir.github.io/tslint/rules/unified-signatures/)
-
-## Attributes
-
-- [ ] ✅ Recommended
-- [ ] 🔧 Fixable
-- [ ] 💭 Requires type information

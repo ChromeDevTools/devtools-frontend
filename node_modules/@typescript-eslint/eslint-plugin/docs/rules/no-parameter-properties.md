@@ -1,6 +1,6 @@
 # `no-parameter-properties`
 
-Disallow the use of parameter properties in class constructors.
+Disallows the use of parameter properties in class constructors.
 
 Parameter properties can be confusing to those new to TypeScript as they are less explicit than other ways
 of declaring and initializing class members.
@@ -395,13 +395,3 @@ class Foo {
 ## When Not To Use It
 
 If you don't care about the using parameter properties in constructors, then you will not need this rule.
-
-## Related To
-
-- TSLint: [no-parameter-properties](https://palantir.github.io/tslint/rules/no-parameter-properties/)
-
-## Attributes
-
-- [ ] ✅ Recommended
-- [ ] 🔧 Fixable
-- [ ] 💭 Requires type information

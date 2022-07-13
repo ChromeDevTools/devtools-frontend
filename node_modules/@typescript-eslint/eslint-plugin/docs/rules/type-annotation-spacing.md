@@ -1,6 +1,6 @@
 # `type-annotation-spacing`
 
-Require consistent spacing around type annotations.
+Requires consistent spacing around type annotations.
 
 Spacing around type annotations improves readability of the code. Although the most commonly used style guideline for type annotations in TypeScript prescribes adding a space after the colon, but not before it, it is subjective to the preferences of a project. For example:
 
@@ -307,13 +307,3 @@ If you don't want to enforce spacing for your type annotations, you can safely t
 
 - [TypeScript Type System](https://basarat.gitbooks.io/typescript/docs/types/type-system.html)
 - [Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html)
-
-## Related To
-
-- TSLint: [`typedef-whitespace`](https://palantir.github.io/tslint/rules/typedef-whitespace/)
-
-## Attributes
-
-- [ ] ✅ Recommended
-- [x] 🔧 Fixable
-- [ ] 💭 Requires type information

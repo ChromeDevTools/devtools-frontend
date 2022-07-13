@@ -1,6 +1,6 @@
 # `adjacent-overload-signatures`
 
-Require that member overloads be consecutive.
+Requires that member overloads be consecutive.
 
 Grouping overloaded members together can improve readability of the code.
 
@@ -100,13 +100,3 @@ This rule is not configurable.
 ## When Not To Use It
 
 If you don't care about the general structure of the code, then you will not need this rule.
-
-## Related To
-
-- TSLint: [adjacent-overload-signatures](https://palantir.github.io/tslint/rules/adjacent-overload-signatures/)
-
-## Attributes
-
-- [x] ✅ Recommended
-- [ ] 🔧 Fixable
-- [ ] 💭 Requires type information

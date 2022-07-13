@@ -1,6 +1,6 @@
 [![npm version](https://img.shields.io/npm/v/espree.svg)](https://www.npmjs.com/package/espree)
-[![Build Status](https://travis-ci.org/eslint/espree.svg?branch=master)](https://travis-ci.org/eslint/espree)
 [![npm downloads](https://img.shields.io/npm/dm/espree.svg)](https://www.npmjs.com/package/espree)
+[![Build Status](https://github.com/eslint/espree/workflows/CI/badge.svg)](https://github.com/eslint/espree/actions)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=9348450)](https://www.bountysource.com/trackers/9348450-eslint?utm_source=9348450&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 
 # Espree

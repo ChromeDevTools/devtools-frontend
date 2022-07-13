@@ -1101,7 +1101,7 @@ function runRules(sourceCode, configuredRules, ruleMapper, parserName, languageO
             )
         );
 
-        const ruleListeners = createRuleListeners(rule, ruleContext);
+        const ruleListeners = timing.enabled ? timing.time(ruleId, createRuleListeners)(rule, ruleContext) : createRuleListeners(rule, ruleContext);
 
         /**
          * Include `ruleId` in error logs
@@ -1117,6 +1117,10 @@ function runRules(sourceCode, configuredRules, ruleMapper, parserName, languageO
                     throw e;
                 }
             };
+        }
+
+        if (typeof ruleListeners === "undefined" || ruleListeners === null) {
+            throw new Error(`The create() function for rule '${ruleId}' did not return an object.`);
         }
 
         // add all the selectors from the rule as listeners

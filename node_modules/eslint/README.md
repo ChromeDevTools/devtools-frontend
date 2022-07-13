@@ -235,14 +235,14 @@ Milos Djermanovic
 The people who review and implement new features.
 
 <table><tbody><tr><td align="center" valign="top" width="11%">
-<a href="https://github.com/mysticatea">
-<img src="https://github.com/mysticatea.png?s=75" width="75" height="75"><br />
-Toru Nagashima
-</a>
-</td><td align="center" valign="top" width="11%">
 <a href="https://github.com/aladdin-add">
 <img src="https://github.com/aladdin-add.png?s=75" width="75" height="75"><br />
 唯然
+</a>
+</td><td align="center" valign="top" width="11%">
+<a href="https://github.com/snitin315">
+<img src="https://github.com/snitin315.png?s=75" width="75" height="75"><br />
+Nitin Kumar
 </a>
 </td></tr></tbody></table>
 
@@ -261,6 +261,11 @@ Brett Zamir
 Bryan Mishkin
 </a>
 </td><td align="center" valign="top" width="11%">
+<a href="https://github.com/SaraSoueidan">
+<img src="https://github.com/SaraSoueidan.png?s=75" width="75" height="75"><br />
+Sara Soueidan
+</a>
+</td><td align="center" valign="top" width="11%">
 <a href="https://github.com/g-plane">
 <img src="https://github.com/g-plane.png?s=75" width="75" height="75"><br />
 Pig Fang
@@ -275,11 +280,6 @@ Anix
 <img src="https://github.com/yeonjuan.png?s=75" width="75" height="75"><br />
 YeonJuan
 </a>
-</td><td align="center" valign="top" width="11%">
-<a href="https://github.com/snitin315">
-<img src="https://github.com/snitin315.png?s=75" width="75" height="75"><br />
-Nitin Kumar
-</a>
 </td></tr></tbody></table>
 
 <!--teamend-->
@@ -292,9 +292,9 @@ The following companies, organizations, and individuals support ESLint's ongoing
 <!--sponsorsstart-->
 <h3>Platinum Sponsors</h3>
 <p><a href="https://automattic.com"><img src="https://images.opencollective.com/automattic/d0ef3e1/logo.png" alt="Automattic" height="undefined"></a></p><h3>Gold Sponsors</h3>
-<p><a href="https://contra.com"><img src="https://images.opencollective.com/contra1/c70f93f/logo.png" alt="Contra" height="96"></a> <a href="https://nx.dev"><img src="https://images.opencollective.com/nx/0efbe42/logo.png" alt="Nx (by Nrwl)" height="96"></a> <a href="https://www.salesforce.com"><img src="https://images.opencollective.com/salesforce/ca8f997/logo.png" alt="Salesforce" height="96"></a> <a href="https://www.airbnb.com/"><img src="https://images.opencollective.com/airbnb/d327d66/logo.png" alt="Airbnb" height="96"></a> <a href="https://americanexpress.io"><img src="https://avatars.githubusercontent.com/u/3853301?v=4" alt="American Express" height="96"></a> <a href="https://substack.com/"><img src="https://avatars.githubusercontent.com/u/53023767?v=4" alt="Substack" height="96"></a></p><h3>Silver Sponsors</h3>
+<p><a href="https://www.salesforce.com"><img src="https://images.opencollective.com/salesforce/ca8f997/logo.png" alt="Salesforce" height="96"></a> <a href="https://www.airbnb.com/"><img src="https://images.opencollective.com/airbnb/d327d66/logo.png" alt="Airbnb" height="96"></a> <a href="https://americanexpress.io"><img src="https://avatars.githubusercontent.com/u/3853301?v=4" alt="American Express" height="96"></a></p><h3>Silver Sponsors</h3>
 <p><a href="https://liftoff.io/"><img src="https://images.opencollective.com/liftoff/5c4fa84/logo.png" alt="Liftoff" height="64"></a></p><h3>Bronze Sponsors</h3>
-<p><a href="https://launchdarkly.com"><img src="https://images.opencollective.com/launchdarkly/574bb9e/logo.png" alt="launchdarkly" height="32"></a> <a href="https://www.crosswordsolver.org/anagram-solver/"><img src="https://images.opencollective.com/anagram-solver/2666271/logo.png" alt="Anagram Solver" height="32"></a> <a href="https://www.vpsserver.com"><img src="https://images.opencollective.com/vpsservercom/logo.png" alt="VPS" height="32"></a> <a href="https://icons8.com"><img src="https://images.opencollective.com/icons8/7fa1641/logo.png" alt="Icons8: free icons, photos, illustrations, and music" height="32"></a> <a href="https://discord.com"><img src="https://images.opencollective.com/discordapp/f9645d9/logo.png" alt="Discord" height="32"></a> <a href="https://themeisle.com"><img src="https://images.opencollective.com/themeisle/d5592fe/logo.png" alt="ThemeIsle" height="32"></a> <a href="https://www.ignitionapp.com"><img src="https://avatars.githubusercontent.com/u/5753491?v=4" alt="Ignition" height="32"></a></p>
+<p><a href="https://launchdarkly.com"><img src="https://images.opencollective.com/launchdarkly/574bb9e/logo.png" alt="launchdarkly" height="32"></a> <a href="https://nx.dev"><img src="https://images.opencollective.com/nx/0efbe42/logo.png" alt="Nx (by Nrwl)" height="32"></a> <a href="https://www.crosswordsolver.org/anagram-solver/"><img src="https://images.opencollective.com/anagram-solver/2666271/logo.png" alt="Anagram Solver" height="32"></a> <a href="https://www.vpsserver.com"><img src="https://images.opencollective.com/vpsservercom/logo.png" alt="VPS" height="32"></a> <a href="https://icons8.com"><img src="https://images.opencollective.com/icons8/7fa1641/logo.png" alt="Icons8: free icons, photos, illustrations, and music" height="32"></a> <a href="https://discord.com"><img src="https://images.opencollective.com/discordapp/f9645d9/logo.png" alt="Discord" height="32"></a> <a href="https://themeisle.com"><img src="https://images.opencollective.com/themeisle/d5592fe/logo.png" alt="ThemeIsle" height="32"></a> <a href="https://www.ignitionapp.com"><img src="https://avatars.githubusercontent.com/u/5753491?v=4" alt="Ignition" height="32"></a> <a href="https://herocoders.com"><img src="https://avatars.githubusercontent.com/u/37549774?v=4" alt="HeroCoders" height="32"></a></p>
 <!--sponsorsend-->
 
 ## <a name="technology-sponsors"></a>Technology Sponsors

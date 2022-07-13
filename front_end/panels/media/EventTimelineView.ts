@@ -4,9 +4,15 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 
-import type {PlayerEvent} from './MediaModel.js';
-import type {Event, EventProperties} from './TickingFlameChart.js';
-import {ColdColorScheme, HotColorScheme, TickingFlameChart} from './TickingFlameChart.js';
+import {type PlayerEvent} from './MediaModel.js';
+
+import {
+  ColdColorScheme,
+  HotColorScheme,
+  TickingFlameChart,
+  type Event,
+  type EventProperties,
+} from './TickingFlameChart.js';
 
 // Has to be a double, see https://v8.dev/blog/react-cliff
 const NO_NORMALIZED_TIMESTAMP = -1.5;

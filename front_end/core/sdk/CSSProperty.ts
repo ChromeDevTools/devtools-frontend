@@ -9,8 +9,8 @@ import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
-import type {Edit} from './CSSModel.js';
-import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
+import {type Edit} from './CSSModel.js';
+import {type CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
 export class CSSProperty {
   ownerStyle: CSSStyleDeclaration;

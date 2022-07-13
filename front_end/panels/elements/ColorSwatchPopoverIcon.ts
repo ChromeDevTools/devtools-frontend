@@ -9,9 +9,9 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {StylePropertiesSection} from './StylePropertiesSection.js';
-import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import type {StylesSidebarPane} from './StylesSidebarPane.js';
+import {type StylePropertiesSection} from './StylePropertiesSection.js';
+import {type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {type StylesSidebarPane} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**

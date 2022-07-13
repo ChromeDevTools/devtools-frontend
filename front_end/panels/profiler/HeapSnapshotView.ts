@@ -43,7 +43,6 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
 import {
   AllocationDataGrid,
   HeapSnapshotSortableDataGridEvents,
@@ -51,20 +50,26 @@ import {
   HeapSnapshotDiffDataGrid,
   HeapSnapshotRetainmentDataGrid,
   HeapSnapshotContainmentDataGrid,
+  type HeapSnapshotSortableDataGrid,
 } from './HeapSnapshotDataGrids.js';
-import type {AllocationGridNode, HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';
-import {HeapSnapshotGenericObjectNode} from './HeapSnapshotGridNodes.js';
-import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
-import {HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';
-import type {IdsRangeChangedEvent} from './HeapTimelineOverview.js';
-import {HeapTimelineOverview, Events, Samples} from './HeapTimelineOverview.js';
+
+import {
+  HeapSnapshotGenericObjectNode,
+  type AllocationGridNode,
+  type HeapSnapshotGridNode,
+} from './HeapSnapshotGridNodes.js';
+
+import {HeapSnapshotWorkerProxy, type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
+
+import {HeapTimelineOverview, Events, Samples, type IdsRangeChangedEvent} from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
-import type {DataDisplayDelegate} from './ProfileHeader.js';
+
 import {
   Events as ProfileHeaderEvents,
   ProfileEvents as ProfileTypeEvents,
   ProfileHeader,
   ProfileType,
+  type DataDisplayDelegate,
 } from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {instance} from './ProfileTypeRegistry.js';

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Chrome} from '../../../../extension-api/ExtensionAPI.js';
+import {type Chrome} from '../../../../extension-api/ExtensionAPI.js';
 import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Bindings from '../../../../front_end/models/bindings/bindings.js';
 

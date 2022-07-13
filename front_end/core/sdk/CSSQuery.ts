@@ -5,9 +5,8 @@
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {CSSModel, Edit} from './CSSModel.js';
-import {CSSLocation} from './CSSModel.js';
-import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
+import {CSSLocation, type CSSModel, type Edit} from './CSSModel.js';
+import {type CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 type CSSQueryPayload =
     Protocol.CSS.CSSMedia|Protocol.CSS.CSSContainerQuery|Protocol.CSS.CSSSupports|Protocol.CSS.CSSScope;

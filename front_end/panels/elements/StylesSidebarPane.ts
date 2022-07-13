@@ -51,8 +51,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
-import type {ComputedStyleChangedEvent} from './ComputedStyleModel.js';
-import {ComputedStyleModel} from './ComputedStyleModel.js';
+
+import {ComputedStyleModel, type ComputedStyleChangedEvent} from './ComputedStyleModel.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -60,7 +60,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 
-import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {
   StylePropertiesSection,
   BlankStylePropertiesSection,

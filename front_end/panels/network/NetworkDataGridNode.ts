@@ -51,7 +51,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
 import {imageNameForResourceType} from '../utils/utils.js';
 

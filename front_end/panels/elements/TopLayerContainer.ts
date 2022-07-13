@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
 
-import type {ElementsTreeElement} from './ElementsTreeElement.js';
+import {type ElementsTreeElement} from './ElementsTreeElement.js';
 
 const UIStrings = {
   /**

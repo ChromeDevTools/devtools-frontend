@@ -37,9 +37,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Coverage from '../coverage/coverage.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {PerformanceModel} from './PerformanceModel.js';
-import type {EventDispatchTypeDescriptor, TimelineCategory} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {type PerformanceModel} from './PerformanceModel.js';
+
+import {TimelineUIUtils, type EventDispatchTypeDescriptor, type TimelineCategory} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**

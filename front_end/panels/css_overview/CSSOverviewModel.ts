@@ -9,9 +9,9 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {ContrastIssue} from './CSSOverviewCompletedView.js';
-import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
-import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js';
+import {type ContrastIssue} from './CSSOverviewCompletedView.js';
+
+import {CSSOverviewUnusedDeclarations, type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 interface NodeStyleStats {
   elementCount: number;

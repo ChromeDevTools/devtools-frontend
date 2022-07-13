@@ -6,16 +6,16 @@ const {assert} = chai;
 
 import {renderElementIntoDOM, assertElements, assertElement} from './DOMHelpers.js';
 
-import type {
-  CanvasSize, GridPositionNormalizedDataWithNames, NormalizePositionDataConfig} from
-  '../../../../inspector_overlay/css_grid_label_helpers.js';
 import {
   normalizePositionData,
   drawGridAreaNames,
   drawGridLineNumbers,
   drawGridLineNames,
+  type CanvasSize,
+  type GridPositionNormalizedDataWithNames,
+  type NormalizePositionDataConfig,
 } from '../../../../inspector_overlay/css_grid_label_helpers.js';
-import type {AreaBounds, Bounds} from '../../../../inspector_overlay/common.js';
+import {type AreaBounds, type Bounds} from '../../../../inspector_overlay/common.js';
 import {gridStyle} from '../../../../inspector_overlay/highlight_grid_common.js';
 
 const GRID_LABEL_CONTAINER_ID = 'grid-label-container';

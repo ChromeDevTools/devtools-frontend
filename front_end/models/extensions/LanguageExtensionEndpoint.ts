@@ -4,7 +4,7 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
 import {ExtensionEndpoint} from './ExtensionEndpoint.js';
 
 import {PrivateAPI} from './ExtensionAPI.js';

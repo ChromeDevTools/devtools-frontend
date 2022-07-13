@@ -35,8 +35,8 @@ import * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-import type {LiveLocation} from './LiveLocation.js';
-import {LiveLocationPool} from './LiveLocation.js';
+
+import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
 
 const debuggerModelToMessageHelperMap =
     new WeakMap<SDK.DebuggerModel.DebuggerModel, PresentationConsoleMessageHelper>();

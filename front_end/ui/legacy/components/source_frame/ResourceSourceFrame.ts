@@ -35,8 +35,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import type {SourceFrameOptions} from './SourceFrame.js';
-import {SourceFrameImpl} from './SourceFrame.js';
+import {SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
 import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
 
 const UIStrings = {

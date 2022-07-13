@@ -7,7 +7,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch, FormatChangedEvent} from './ColorSwatch.js';
-import type {CSSShadowModel} from './CSSShadowModel.js';
+import {type CSSShadowModel} from './CSSShadowModel.js';
 import bezierSwatchStyles from './bezierSwatch.css.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 

@@ -35,11 +35,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type {Breakpoint} from './BreakpointManager.js';
-import {BreakpointManager} from './BreakpointManager.js';
+import {BreakpointManager, type Breakpoint} from './BreakpointManager.js';
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import type {DebuggerSourceMapping} from './DebuggerWorkspaceBinding.js';
-import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import {DebuggerWorkspaceBinding, type DebuggerSourceMapping} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {metadataForURL} from './ResourceUtils.js';
 

@@ -35,8 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
 
-import type {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {Events} from './IsolatedFileSystemManager.js';
+import {Events, type IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {

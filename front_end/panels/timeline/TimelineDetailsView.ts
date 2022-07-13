@@ -10,14 +10,14 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
-import type {PerformanceModel} from './PerformanceModel.js';
-import {Events} from './PerformanceModel.js';
+
+import {Events, type PerformanceModel} from './PerformanceModel.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
-import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelinePanel.js';
-import type {TimelineTreeView} from './TimelineTreeView.js';
-import {BottomUpTimelineTreeView, CallTreeTimelineTreeView} from './TimelineTreeView.js';
+
+import {TimelineSelection, type TimelineModeViewDelegate} from './TimelinePanel.js';
+
+import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {

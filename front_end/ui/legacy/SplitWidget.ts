@@ -33,8 +33,8 @@ import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Constraints} from './Geometry.js';
-import type {ResizeUpdatePositionEvent} from './ResizerWidget.js';
-import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidget.js';
+
+import {Events as ResizerWidgetEvents, SimpleResizerWidget, type ResizeUpdatePositionEvent} from './ResizerWidget.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';

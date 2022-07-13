@@ -48,16 +48,15 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
-import type {RequestActivatedEvent} from './NetworkDataGridNode.js';
-import {Events} from './NetworkDataGridNode.js';
+
+import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
 import networkPanelStyles from './networkPanel.css.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
 
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import {NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
+import {NetworkTransferTimeCalculator, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**

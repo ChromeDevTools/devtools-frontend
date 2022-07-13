@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import eventDisplayTableStyles from './eventDisplayTable.css.js';
 
-import type {PlayerEvent} from './MediaModel.js';
+import {type PlayerEvent} from './MediaModel.js';
 
 const UIStrings = {
   /**

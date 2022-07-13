@@ -51,8 +51,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {ConsoleContextSelector} from './ConsoleContextSelector.js';
 import consoleViewStyles from './consoleView.css.js';
 
-import type {LevelsMask} from './ConsoleFilter.js';
-import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
+import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
@@ -66,8 +65,7 @@ import {
   MaxLengthForLinks,
 } from './ConsoleViewMessage.js';
 
-import type {ConsoleViewportElement, ConsoleViewportProvider} from './ConsoleViewport.js';
-import {ConsoleViewport} from './ConsoleViewport.js';
+import {ConsoleViewport, type ConsoleViewportElement, type ConsoleViewportProvider} from './ConsoleViewport.js';
 
 const UIStrings = {
   /**

@@ -13,8 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import coverageListViewStyles from './coverageListView.css.js';
 
-import type {URLCoverageInfo} from './CoverageModel.js';
-import {CoverageType} from './CoverageModel.js';
+import {CoverageType, type URLCoverageInfo} from './CoverageModel.js';
 
 const UIStrings = {
   /**

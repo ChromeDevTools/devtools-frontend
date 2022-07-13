@@ -13,8 +13,8 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CountersGraph} from './CountersGraph.js';
-import type {PerformanceModel, WindowChangedEvent} from './PerformanceModel.js';
-import {Events as PerformanceModelEvents} from './PerformanceModel.js';
+
+import {Events as PerformanceModelEvents, type PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
@@ -22,11 +22,11 @@ import {
   TimelineFlameChartDataProvider,
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
-import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelinePanel.js';
+
+import {TimelineSelection, type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
-import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
+
+import {TimelineUIUtils, type TimelineMarkerStyle} from './TimelineUIUtils.js';
 import {WebVitalsIntegrator} from './WebVitalsTimelineUtils.js';
 
 const UIStrings = {

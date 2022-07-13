@@ -46,7 +46,7 @@ import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import sourcesPanelStyles from './sourcesPanel.css.js';
 
-import type {NavigatorView} from './NavigatorView.js';
+import {type NavigatorView} from './NavigatorView.js';
 import {
   ContentScriptsNavigatorView,
   FilesNavigatorView,

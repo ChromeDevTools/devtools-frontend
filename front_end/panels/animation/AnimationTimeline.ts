@@ -12,8 +12,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import animationTimelineStyles from './animationTimeline.css.js';
 
-import type {AnimationEffect, AnimationGroup, AnimationImpl} from './AnimationModel.js';
-import {AnimationModel, Events} from './AnimationModel.js';
+import {
+  AnimationModel,
+  Events,
+  type AnimationEffect,
+  type AnimationGroup,
+  type AnimationImpl,
+} from './AnimationModel.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
 import {AnimationUI} from './AnimationUI.js';
 

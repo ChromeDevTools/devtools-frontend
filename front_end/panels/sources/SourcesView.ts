@@ -16,8 +16,12 @@ import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
 
-import type {EditorSelectedEvent, TabbedEditorContainerDelegate} from './TabbedEditorContainer.js';
-import {Events as TabbedEditorContainerEvents, TabbedEditorContainer} from './TabbedEditorContainer.js';
+import {
+  Events as TabbedEditorContainerEvents,
+  TabbedEditorContainer,
+  type EditorSelectedEvent,
+  type TabbedEditorContainerDelegate,
+} from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {

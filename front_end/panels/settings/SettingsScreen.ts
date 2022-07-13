@@ -40,7 +40,7 @@ import * as PanelComponents from './components/components.js';
 
 import settingsScreenStyles from './settingsScreen.css.js';
 
-import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
+import {type KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 
 const UIStrings = {
   /**

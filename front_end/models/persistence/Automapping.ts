@@ -9,8 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type {FileSystem} from './FileSystemWorkspaceBinding.js';
-import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
+import {FileSystemWorkspaceBinding, type FileSystem} from './FileSystemWorkspaceBinding.js';
 import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
 
 export class Automapping {

@@ -6,8 +6,8 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {OverlayModel} from './OverlayModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyApi.PageDispatcher {

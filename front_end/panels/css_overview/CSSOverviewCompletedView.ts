@@ -14,12 +14,16 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-import type {
-  OverviewController, PopulateNodesEvent, PopulateNodesEventNodes, PopulateNodesEventNodeTypes} from
-  './CSSOverviewController.js';
-import {Events as CSSOverViewControllerEvents} from './CSSOverviewController.js';
+
+import {
+  Events as CSSOverViewControllerEvents,
+  type OverviewController,
+  type PopulateNodesEvent,
+  type PopulateNodesEventNodes,
+  type PopulateNodesEventNodeTypes,
+} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
-import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
   /**

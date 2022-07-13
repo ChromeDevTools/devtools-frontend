@@ -5,12 +5,12 @@
 import * as Common from '../common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {Resource} from './Resource.js';
-import type {ResourceTreeFrame} from './ResourceTreeModel.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {Target} from './Target.js';
-import type {SDKModelObserver} from './TargetManager.js';
-import {TargetManager} from './TargetManager.js';
+import {type Resource} from './Resource.js';
+
+import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+import {type Target} from './Target.js';
+
+import {TargetManager, type SDKModelObserver} from './TargetManager.js';
 
 let frameManagerInstance: FrameManager|null = null;
 

@@ -13,9 +13,9 @@ import {
   trustedTypesPolicyViolationCode,
   trustedTypesSinkViolationCode,
 } from './ContentSecurityPolicyIssue.js';
-import type {Issue, IssueKind} from './Issue.js';
-import {toZeroBasedLocation} from './Issue.js';
-import type {IssueAddedEvent, IssuesManager} from './IssuesManager.js';
+
+import {toZeroBasedLocation, type Issue, type IssueKind} from './Issue.js';
+import {type IssueAddedEvent, type IssuesManager} from './IssuesManager.js';
 import {Events} from './IssuesManagerEvents.js';
 import {getIssueTitleFromMarkdownDescription} from './MarkdownIssueDescription.js';
 

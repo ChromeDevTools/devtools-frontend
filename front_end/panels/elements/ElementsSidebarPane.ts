@@ -6,8 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {ComputedStyleChangedEvent} from './ComputedStyleModel.js';
-import {ComputedStyleModel, Events} from './ComputedStyleModel.js';
+import {ComputedStyleModel, Events, type ComputedStyleChangedEvent} from './ComputedStyleModel.js';
 
 export class ElementsSidebarPane extends UI.Widget.VBox {
   protected computedStyleModelInternal: ComputedStyleModel;

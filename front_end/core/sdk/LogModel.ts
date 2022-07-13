@@ -6,8 +6,7 @@ import * as Host from '../host/host.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.LogDispatcher {

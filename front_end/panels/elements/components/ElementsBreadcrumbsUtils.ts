@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 
-import type {DOMNode} from './Helper.js';
+import {type DOMNode} from './Helper.js';
 
 const UIStrings = {
   /**

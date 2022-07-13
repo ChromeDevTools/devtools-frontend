@@ -8,7 +8,7 @@ import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';
 import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
 
 async function getEditorContent(textEditor: ElementHandle): Promise<string> {

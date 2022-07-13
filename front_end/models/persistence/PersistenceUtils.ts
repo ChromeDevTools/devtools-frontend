@@ -12,8 +12,7 @@ import * as Workspace from '../workspace/workspace.js';
 import {FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 
-import type {PersistenceBinding} from './PersistenceImpl.js';
-import {Events, PersistenceImpl} from './PersistenceImpl.js';
+import {Events, PersistenceImpl, type PersistenceBinding} from './PersistenceImpl.js';
 
 const UIStrings = {
   /**

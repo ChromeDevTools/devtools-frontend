@@ -8,7 +8,7 @@ import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {Type as TargetType} from './Target.js';
 import {Target} from './Target.js';
-import type {SDKModel} from './SDKModel.js';
+import {type SDKModel} from './SDKModel.js';
 import * as Root from '../root/root.js';
 import * as Host from '../host/host.js';
 

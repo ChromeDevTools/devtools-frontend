@@ -4,8 +4,8 @@
 
 import {getTestServerPort} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import type {NestedFileSelector} from '../helpers/sources-helpers.js';
-import {expandFileTree, openFileInSourcesPanel} from '../helpers/sources-helpers.js';
+
+import {expandFileTree, openFileInSourcesPanel, type NestedFileSelector} from '../helpers/sources-helpers.js';
 
 function createSelectorsForFile(domainName: string, folderName: string, fileName: string): NestedFileSelector {
   const rootSelector = '.navigator-frame-tree-item[aria-label="top, frame"]';

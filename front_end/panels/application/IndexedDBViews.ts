@@ -37,8 +37,15 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {
-  Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
+import {
+  type Database,
+  type DatabaseId,
+  type Entry,
+  type Index,
+  type IndexedDBModel,
+  type ObjectStore,
+  type ObjectStoreMetadata,
+} from './IndexedDBModel.js';
 
 const UIStrings = {
   /**

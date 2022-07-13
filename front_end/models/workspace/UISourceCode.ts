@@ -35,8 +35,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import type {Project} from './WorkspaceImpl.js';
-import {Events as WorkspaceImplEvents} from './WorkspaceImpl.js';
+import {Events as WorkspaceImplEvents, type Project} from './WorkspaceImpl.js';
 
 const UIStrings = {
   /**

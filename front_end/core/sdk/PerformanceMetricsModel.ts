@@ -5,8 +5,7 @@
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class PerformanceMetricsModel extends SDKModel<void> {

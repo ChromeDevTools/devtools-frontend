@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 import {expectError} from '../../conductor/events.js';
 import {
   $,

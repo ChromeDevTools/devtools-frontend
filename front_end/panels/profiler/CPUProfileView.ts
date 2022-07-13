@@ -38,9 +38,9 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
-import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
-import type {ProfileHeader} from './ProfileHeader.js';
-import {ProfileEvents, ProfileType} from './ProfileHeader.js';
+import {type Formatter, type ProfileDataGridNode} from './ProfileDataGrid.js';
+
+import {ProfileEvents, ProfileType, type ProfileHeader} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 const UIStrings = {

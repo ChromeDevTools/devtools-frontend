@@ -8,8 +8,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
-import type {Bounds} from './InspectedPagePlaceholder.js';
-import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
+
+import {Events, InspectedPagePlaceholder, type Bounds} from './InspectedPagePlaceholder.js';
 
 let appInstance: AdvancedApp;
 

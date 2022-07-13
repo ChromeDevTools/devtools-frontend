@@ -16,7 +16,7 @@ import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
-import type {Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 
 describeWithRealConnection('BreakpointManager', () => {
   const URL = 'file:///tmp/example.html' as Platform.DevToolsPath.UrlString;

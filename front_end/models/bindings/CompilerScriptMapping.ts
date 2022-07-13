@@ -36,7 +36,11 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-import type {DebuggerSourceMapping, DebuggerWorkspaceBinding, RawLocationRange} from './DebuggerWorkspaceBinding.js';
+import {
+  type DebuggerSourceMapping,
+  type DebuggerWorkspaceBinding,
+  type RawLocationRange,
+} from './DebuggerWorkspaceBinding.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
 import {NetworkProject} from './NetworkProject.js';
 

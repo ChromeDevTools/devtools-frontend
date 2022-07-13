@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Point, Size} from './GraphStyle.js';
 import {
   AudioParamRadius,
   InputPortRadius,
@@ -10,6 +9,8 @@ import {
   TotalInputPortHeight,
   TotalOutputPortHeight,
   TotalParamPortHeight,
+  type Point,
+  type Size,
 } from './GraphStyle.js';
 
 /**

@@ -52,11 +52,10 @@ import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import type * as Coverage from '../coverage/coverage.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import type {WindowChangedEvent} from './PerformanceModel.js';
-import {Events, PerformanceModel} from './PerformanceModel.js';
-import type {Client} from './TimelineController.js';
-import {TimelineController} from './TimelineController.js';
-import type {TimelineEventOverview} from './TimelineEventOverview.js';
+import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
+
+import {TimelineController, type Client} from './TimelineController.js';
+
 import {
   TimelineEventOverviewCoverage,
   TimelineEventOverviewCPUActivity,
@@ -65,6 +64,7 @@ import {
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
   TimelineFilmStripOverview,
+  type TimelineEventOverview,
 } from './TimelineEventOverview.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';

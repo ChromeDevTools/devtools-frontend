@@ -41,16 +41,25 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Cookie} from './Cookie.js';
-import type {
-  BlockedCookieWithReason, ContentData, ExtraRequestInfo, ExtraResponseInfo, MIME_TYPE, NameValue, WebBundleInfo,
-  WebBundleInnerRequestInfo} from './NetworkRequest.js';
-import {Events as NetworkRequestEvents, NetworkRequest} from './NetworkRequest.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {
+  Events as NetworkRequestEvents,
+  NetworkRequest,
+  type BlockedCookieWithReason,
+  type ContentData,
+  type ExtraRequestInfo,
+  type ExtraResponseInfo,
+  type MIME_TYPE,
+  type NameValue,
+  type WebBundleInfo,
+  type WebBundleInnerRequestInfo,
+} from './NetworkRequest.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-import type {SDKModelObserver} from './TargetManager.js';
-import {TargetManager} from './TargetManager.js';
-import type {Serializer} from '../common/Settings.js';
+
+import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import {type Serializer} from '../common/Settings.js';
 
 const UIStrings = {
   /**

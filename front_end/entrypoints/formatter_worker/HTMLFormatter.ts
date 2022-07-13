@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
-import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
+import {type FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 

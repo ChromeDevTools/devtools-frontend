@@ -33,8 +33,7 @@ import type * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
 
-import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
-import {PageResourceLoader} from './PageResourceLoader.js';
+import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
 
 const UIStrings = {
   /**

@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import type {puppeteer} from '../../shared/helper.js';
-import {assertNotNullOrUndefined, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+
+import {assertNotNullOrUndefined, waitFor, waitForAria, waitForFunction, type puppeteer} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
 

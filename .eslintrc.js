@@ -176,6 +176,7 @@ module.exports = {
       'rulesdir/const_enum': 2,
       'rulesdir/no_underscored_properties': 2,
       'rulesdir/prefer_readonly_keyword': 2,
+      'rulesdir/inline_type_imports': 2,
     }
   }]
 };

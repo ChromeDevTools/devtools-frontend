@@ -47,7 +47,7 @@ import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {TopLayerContainer} from './TopLayerContainer.js';
 
-import type {MarkerDecoratorRegistration} from './MarkerDecorator.js';
+import {type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
 const UIStrings = {
   /**

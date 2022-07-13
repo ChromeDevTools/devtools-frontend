@@ -37,8 +37,8 @@ import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-import type {LiveLocation} from './LiveLocation.js';
-import {LiveLocationPool} from './LiveLocation.js';
+
+import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {ResourceScriptMapping} from './ResourceScriptMapping.js';
 

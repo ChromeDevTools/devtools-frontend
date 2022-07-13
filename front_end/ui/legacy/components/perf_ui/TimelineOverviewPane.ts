@@ -33,9 +33,8 @@ import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 
-import type {WindowChangedWithPositionEvent} from './OverviewGrid.js';
-import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
-import type {Calculator} from './TimelineGrid.js';
+import {Events as OverviewGridEvents, OverviewGrid, type WindowChangedWithPositionEvent} from './OverviewGrid.js';
+import {type Calculator} from './TimelineGrid.js';
 import timelineOverviewInfoStyles from './timelineOverviewInfo.css.js';
 
 export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(

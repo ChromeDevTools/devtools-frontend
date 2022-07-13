@@ -5,10 +5,9 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-import type {ObjectSnapshot} from './TracingModel.js';
+import {type ObjectSnapshot} from './TracingModel.js';
 
 export class TracingManager extends SDKModel<void> {
   readonly #tracingAgent: ProtocolProxyApi.TracingApi;

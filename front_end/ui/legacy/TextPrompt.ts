@@ -39,8 +39,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 
-import type {SuggestBoxDelegate, Suggestion} from './SuggestBox.js';
-import {SuggestBox} from './SuggestBox.js';
+import {SuggestBox, type SuggestBoxDelegate, type Suggestion} from './SuggestBox.js';
 import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
 import textPromptStyles from './textPrompt.css.legacy.js';

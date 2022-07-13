@@ -9,11 +9,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {EditFileSystemView} from './EditFileSystemView.js';
 import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
-import type {FileSystem} from './FileSystemWorkspaceBinding.js';
+import {type FileSystem} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import type {PlatformFileSystem} from './PlatformFileSystem.js';
+import {type PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**

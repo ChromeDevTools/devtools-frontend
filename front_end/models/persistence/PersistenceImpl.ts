@@ -10,8 +10,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type {AutomappingStatus} from './Automapping.js';
-import {Automapping} from './Automapping.js';
+import {Automapping, type AutomappingStatus} from './Automapping.js';
 import {LinkDecorator} from './PersistenceUtils.js';
 
 let persistenceInstance: PersistenceImpl;

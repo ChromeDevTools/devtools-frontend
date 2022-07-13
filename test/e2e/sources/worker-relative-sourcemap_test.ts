@@ -6,8 +6,8 @@ import {assert} from 'chai';
 
 import {click, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import type {NestedFileSelector} from '../helpers/sources-helpers.js';
-import {createSelectorsForWorkerFile, expandFileTree} from '../helpers/sources-helpers.js';
+
+import {createSelectorsForWorkerFile, expandFileTree, type NestedFileSelector} from '../helpers/sources-helpers.js';
 
 let WORKER_SELECTORS: NestedFileSelector;
 

@@ -49,13 +49,13 @@ import * as Workspace from '../workspace/workspace.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
-import type {TracingSession} from './ExtensionTraceProvider.js';
-import {ExtensionTraceProvider} from './ExtensionTraceProvider.js';
+
+import {ExtensionTraceProvider, type TracingSession} from './ExtensionTraceProvider.js';
 import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {PrivateAPI} from './ExtensionAPI.js';
 import {RecorderPluginManager} from './RecorderPluginManager.js';
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
 
 const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
 

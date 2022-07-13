@@ -38,15 +38,14 @@ import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {DeferredDOMNode, DOMNode} from './DOMModel.js';
-import {DOMModel} from './DOMModel.js';
-import type {RequestUpdateDroppedEventData} from './NetworkManager.js';
-import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
-import type {NetworkRequest} from './NetworkRequest.js';
+import {DOMModel, type DeferredDOMNode, type DOMNode} from './DOMModel.js';
+
+import {Events as NetworkManagerEvents, NetworkManager, type RequestUpdateDroppedEventData} from './NetworkManager.js';
+import {type NetworkRequest} from './NetworkRequest.js';
 import {Resource} from './Resource.js';
 import {ExecutionContext, RuntimeModel} from './RuntimeModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 import {SecurityOriginManager} from './SecurityOriginManager.js';

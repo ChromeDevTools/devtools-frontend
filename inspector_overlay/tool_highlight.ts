@@ -30,18 +30,32 @@
 
 import {contrastRatio, contrastRatioAPCA, getAPCAThreshold, getContrastThreshold} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
 
-import type {Bounds, PathCommands, ResetData} from './common.js';
-import {constrainNumber, createChild, createElement, createTextChild, ellipsify, Overlay} from './common.js';
-import type {PathBounds} from './highlight_common.js';
-import {drawPath, emptyBounds, formatColor, formatRgba, parseHexa} from './highlight_common.js';
-import type {FlexContainerHighlight, FlexItemHighlight} from './highlight_flex_common.js';
-import {drawLayoutFlexContainerHighlight, drawLayoutFlexItemHighlight} from './highlight_flex_common.js';
-import type {GridHighlight} from './highlight_grid_common.js';
-import {drawLayoutGridHighlight} from './highlight_grid_common.js';
-import type {ScrollSnapHighlight} from './highlight_scroll_snap.js';
-import type {ContainerQueryHighlight} from './highlight_container_query.js';
-import {drawContainerQueryHighlight} from './highlight_container_query.js';
-import type {IsolatedElementHighlight} from './highlight_isolated_element.js';
+import {
+  constrainNumber,
+  createChild,
+  createElement,
+  createTextChild,
+  ellipsify,
+  Overlay,
+  type Bounds,
+  type PathCommands,
+  type ResetData,
+} from './common.js';
+
+import {drawPath, emptyBounds, formatColor, formatRgba, parseHexa, type PathBounds} from './highlight_common.js';
+
+import {
+  drawLayoutFlexContainerHighlight,
+  drawLayoutFlexItemHighlight,
+  type FlexContainerHighlight,
+  type FlexItemHighlight,
+} from './highlight_flex_common.js';
+
+import {drawLayoutGridHighlight, type GridHighlight} from './highlight_grid_common.js';
+import {type ScrollSnapHighlight} from './highlight_scroll_snap.js';
+
+import {drawContainerQueryHighlight, type ContainerQueryHighlight} from './highlight_container_query.js';
+import {type IsolatedElementHighlight} from './highlight_isolated_element.js';
 import {PersistentOverlay} from './tool_persistent.js';
 
 interface Path {

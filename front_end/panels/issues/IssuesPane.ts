@@ -13,8 +13,12 @@ import {HiddenIssuesRow} from './HiddenIssuesRow.js';
 import issuesPaneStyles from './issuesPane.css.js';
 import issuesTreeStyles from './issuesTree.css.js';
 
-import type {AggregatedIssue, AggregationKey} from './IssueAggregator.js';
-import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
+import {
+  Events as IssueAggregatorEvents,
+  IssueAggregator,
+  type AggregatedIssue,
+  type AggregationKey,
+} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 import {IssueKindView, getGroupIssuesByKindSetting, issueKindViewSortPriority} from './IssueKindView.js';
 

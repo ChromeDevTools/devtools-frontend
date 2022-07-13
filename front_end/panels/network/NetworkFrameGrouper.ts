@@ -8,7 +8,7 @@ import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.j
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {NetworkGroupNode} from './NetworkDataGridNode.js';
-import type {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';
+import {type GroupLookupInterface, type NetworkLogView} from './NetworkLogView.js';
 
 export class NetworkFrameGrouper implements GroupLookupInterface {
   private parentView: NetworkLogView;

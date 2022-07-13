@@ -42,11 +42,11 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 
-import type {PerformanceModel} from './PerformanceModel.js';
+import {type PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
-import type {TimelineCategory} from './TimelineUIUtils.js';
-import {TimelineUIUtils, assignLayoutShiftsToClusters} from './TimelineUIUtils.js';
+
+import {TimelineUIUtils, assignLayoutShiftsToClusters, type TimelineCategory} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**

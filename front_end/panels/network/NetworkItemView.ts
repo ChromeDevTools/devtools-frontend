@@ -38,7 +38,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
 import {RequestPayloadView} from './RequestPayloadView.js';

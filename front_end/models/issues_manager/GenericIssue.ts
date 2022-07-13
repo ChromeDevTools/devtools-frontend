@@ -7,8 +7,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
-import type {LazyMarkdownIssueDescription, MarkdownIssueDescription} from './MarkdownIssueDescription.js';
-import {resolveLazyDescription} from './MarkdownIssueDescription.js';
+
+import {
+  resolveLazyDescription,
+  type LazyMarkdownIssueDescription,
+  type MarkdownIssueDescription,
+} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**

@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import {type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 
 let ignoreListManagerInstance: IgnoreListManager;
 

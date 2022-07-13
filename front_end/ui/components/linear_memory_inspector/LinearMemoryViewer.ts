@@ -4,7 +4,7 @@
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
-import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
+import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {toHexString} from './LinearMemoryInspectorUtils.js';
 import linearMemoryViewerStyles from './linearMemoryViewer.css.js';
 

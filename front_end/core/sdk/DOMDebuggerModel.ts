@@ -9,16 +9,16 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
-import type {Location} from './DebuggerModel.js';
-import type {DOMNode} from './DOMModel.js';
-import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';
+import {type Location} from './DebuggerModel.js';
+
+import {DOMModel, Events as DOMModelEvents, type DOMNode} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-import type {SDKModelObserver} from './TargetManager.js';
-import {TargetManager} from './TargetManager.js';
+
+import {TargetManager, type SDKModelObserver} from './TargetManager.js';
 
 const UIStrings = {
   /**

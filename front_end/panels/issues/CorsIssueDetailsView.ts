@@ -11,8 +11,8 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
+import {type AggregatedIssue} from './IssueAggregator.js';
+import {type IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**

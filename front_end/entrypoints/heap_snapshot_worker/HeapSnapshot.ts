@@ -36,7 +36,7 @@ import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapsh
 
 import {AllocationProfile} from './AllocationProfile.js';
 
-import type {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
+import {type HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export interface HeapSnapshotItem {
   itemIndex(): number;

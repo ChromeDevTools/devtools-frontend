@@ -14,14 +14,14 @@ import highlightStyle from './tool_highlight.css'; // eslint-disable-line rulesd
 import {HighlightOverlay} from './tool_highlight.js';
 // @ts-ignore Importing CSS is handled in Rollup.
 import pausedStyle from './tool_paused.css'; // eslint-disable-line rulesdir/es_modules_import
-import type {PausedToolMessage} from './tool_paused.js';
-import {PausedOverlay} from './tool_paused.js';
-import type {PersistentToolMessage} from './tool_persistent.js';
-import {PersistentOverlay} from './tool_persistent.js';
+
+import {PausedOverlay, type PausedToolMessage} from './tool_paused.js';
+
+import {PersistentOverlay, type PersistentToolMessage} from './tool_persistent.js';
 // @ts-ignore Importing CSS is handled in Rollup.
 import screenshotStyle from './tool_screenshot.css'; // eslint-disable-line rulesdir/es_modules_import
-import {ScreenshotOverlay} from './tool_screenshot.js';
-import type {ScreenshotToolMessage} from './tool_screenshot.js';
+import {ScreenshotOverlay, type ScreenshotToolMessage} from './tool_screenshot.js';
+
 // @ts-ignore Importing CSS is handled in Rollup.
 import sourceOrderStyle from './tool_source_order.css'; // eslint-disable-line rulesdir/es_modules_import
 import {SourceOrderOverlay} from './tool_source_order.js';

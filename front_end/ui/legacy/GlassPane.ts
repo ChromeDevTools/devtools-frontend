@@ -5,11 +5,11 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as Utils from './utils/utils.js';
 
-import type {Size} from './Geometry.js';
+import {type Size} from './Geometry.js';
 import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
-import type {WidgetElement} from './Widget.js';
-import {Widget} from './Widget.js';
+
+import {Widget, type WidgetElement} from './Widget.js';
 import glassPaneStyles from './glassPane.css.legacy.js';
 
 export class GlassPane {

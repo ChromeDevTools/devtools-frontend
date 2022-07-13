@@ -30,7 +30,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
+import {type FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {createTokenizer} from './FormatterWorker.js';
 
 const cssTrimEnd = (tokenValue: string): string => {

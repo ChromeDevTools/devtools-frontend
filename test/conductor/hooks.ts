@@ -8,7 +8,7 @@
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer');
 
-import type {CoverageMapData} from 'istanbul-lib-coverage';
+import {type CoverageMapData} from 'istanbul-lib-coverage';
 
 import {
   clearPuppeteerState,

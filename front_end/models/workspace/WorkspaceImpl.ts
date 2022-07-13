@@ -32,8 +32,7 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
-import type {UISourceCodeMetadata} from './UISourceCode.js';
-import {UISourceCode} from './UISourceCode.js';
+import {UISourceCode, type UISourceCodeMetadata} from './UISourceCode.js';
 
 export interface ProjectSearchConfig {
   query(): string;

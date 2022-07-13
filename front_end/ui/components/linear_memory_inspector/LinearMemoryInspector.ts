@@ -9,25 +9,39 @@ import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 
 const {render, html} = LitHtml;
 
-import type {
-  AddressInputChangedEvent, HistoryNavigationEvent, LinearMemoryNavigatorData, PageNavigationEvent} from
-  './LinearMemoryNavigator.js';
-import {Mode, Navigation, LinearMemoryNavigator} from './LinearMemoryNavigator.js';
-import type {
-  EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from
-  './LinearMemoryValueInterpreter.js';
-import {LinearMemoryValueInterpreter} from './LinearMemoryValueInterpreter.js';
-import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
-import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
+import {
+  Mode,
+  Navigation,
+  LinearMemoryNavigator,
+  type AddressInputChangedEvent,
+  type HistoryNavigationEvent,
+  type LinearMemoryNavigatorData,
+  type PageNavigationEvent,
+} from './LinearMemoryNavigator.js';
+
+import {
+  LinearMemoryValueInterpreter,
+  type EndiannessChangedEvent,
+  type LinearMemoryValueInterpreterData,
+  type ValueTypeToggledEvent,
+} from './LinearMemoryValueInterpreter.js';
+
 import {
   VALUE_INTEPRETER_MAX_NUM_BYTES,
   Endianness,
   getDefaultValueTypeMapping,
+  type ValueType,
+  type ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
-import {LinearMemoryViewer} from './LinearMemoryViewer.js';
-import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
+import {type JumpToPointerAddressEvent, type ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
+import {
+  LinearMemoryViewer,
+  type ByteSelectedEvent,
+  type LinearMemoryViewerData,
+  type ResizeEvent,
+} from './LinearMemoryViewer.js';
+import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {

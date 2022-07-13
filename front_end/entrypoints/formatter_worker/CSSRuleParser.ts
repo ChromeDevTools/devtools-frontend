@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Chunk, ChunkCallback} from './FormatterWorker.js';
-import {createTokenizer} from './FormatterWorker.js';
+import {createTokenizer, type Chunk, type ChunkCallback} from './FormatterWorker.js';
 
 export const CSSParserStates = {
   Initial: 'Initial',

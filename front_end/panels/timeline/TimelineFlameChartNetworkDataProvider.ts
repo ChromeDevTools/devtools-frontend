@@ -15,7 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {PerformanceModel} from './PerformanceModel.js';
+import {type PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';

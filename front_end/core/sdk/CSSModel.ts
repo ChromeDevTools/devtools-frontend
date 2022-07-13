@@ -45,12 +45,12 @@ import {CSSMedia} from './CSSMedia.js';
 import {CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
-import type {DOMNode} from './DOMModel.js';
-import {DOMModel} from './DOMModel.js';
-import type {ResourceTreeFrame} from './ResourceTreeModel.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {DOMModel, type DOMNode} from './DOMModel.js';
+
+import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {SourceMapManager} from './SourceMapManager.js';
 

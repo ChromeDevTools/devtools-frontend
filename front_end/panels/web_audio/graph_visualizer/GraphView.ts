@@ -6,9 +6,15 @@ import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 
 import {EdgeTypes, EdgeView, generateEdgePortIdsByData} from './EdgeView.js';
-import type {
-  NodeCreationData, NodeParamConnectionData, NodeParamDisconnectionData, NodesConnectionData, NodesDisconnectionData,
-  NodesDisconnectionDataWithDestination, ParamCreationData} from './GraphStyle.js';
+import {
+  type NodeCreationData,
+  type NodeParamConnectionData,
+  type NodeParamDisconnectionData,
+  type NodesConnectionData,
+  type NodesDisconnectionData,
+  type NodesDisconnectionDataWithDestination,
+  type ParamCreationData,
+} from './GraphStyle.js';
 import {NodeLabelGenerator, NodeView} from './NodeView.js';
 
 // A class that tracks all the nodes and edges of an audio graph.

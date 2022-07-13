@@ -6,8 +6,7 @@
 
 import * as Platform from '../../../../core/platform/platform.js';
 
-import type {ColumnDescriptor, DataGridData, Parameters} from './DataGrid.js';
-import {Events} from './DataGrid.js';
+import {Events, type ColumnDescriptor, type DataGridData, type Parameters} from './DataGrid.js';
 import {ViewportDataGrid, ViewportDataGridNode} from './ViewportDataGrid.js';
 
 export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T>> {

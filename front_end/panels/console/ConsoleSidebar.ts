@@ -10,9 +10,8 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {LevelsMask} from './ConsoleFilter.js';
-import {ConsoleFilter, FilterType} from './ConsoleFilter.js';
-import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
+import {type ConsoleViewMessage} from './ConsoleViewMessage.js';
 import consoleSidebarStyles from './consoleSidebar.css.js';
 
 const UIStrings = {

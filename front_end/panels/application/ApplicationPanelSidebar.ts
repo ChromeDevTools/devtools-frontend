@@ -50,19 +50,25 @@ import {BackgroundServiceView} from './BackgroundServiceView.js';
 import * as ApplicationComponents from './components/components.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
 
-import type {Database as DatabaseModelDatabase} from './DatabaseModel.js';
-import {DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';
+import {DatabaseModel, Events as DatabaseModelEvents, type Database as DatabaseModelDatabase} from './DatabaseModel.js';
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
-import type {DOMStorage} from './DOMStorageModel.js';
-import {DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
-import type {Database as IndexedDBModelDatabase, DatabaseId, Index, ObjectStore} from './IndexedDBModel.js';
-import {Events as IndexedDBModelEvents, IndexedDBModel} from './IndexedDBModel.js';
+
+import {DOMStorageModel, Events as DOMStorageModelEvents, type DOMStorage} from './DOMStorageModel.js';
+
+import {
+  Events as IndexedDBModelEvents,
+  IndexedDBModel,
+  type Database as IndexedDBModelDatabase,
+  type DatabaseId,
+  type Index,
+  type ObjectStore,
+} from './IndexedDBModel.js';
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
 import {InterestGroupStorageModel, Events as InterestGroupModelEvents} from './InterestGroupStorageModel.js';
 import {InterestGroupTreeElement} from './InterestGroupTreeElement.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
-import type {ResourcesPanel} from './ResourcesPanel.js';
+import {type ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';

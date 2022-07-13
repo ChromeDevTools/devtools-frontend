@@ -29,9 +29,9 @@
  */
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {HeapSnapshotProgress, JSHeapSnapshot} from './HeapSnapshot.js';
-import type {HeapSnapshotHeader, Profile} from './HeapSnapshot.js';
-import type {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
+import {HeapSnapshotProgress, JSHeapSnapshot, type HeapSnapshotHeader, type Profile} from './HeapSnapshot.js';
+
+import {type HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export class HeapSnapshotLoader {
   readonly #progress: HeapSnapshotProgress;

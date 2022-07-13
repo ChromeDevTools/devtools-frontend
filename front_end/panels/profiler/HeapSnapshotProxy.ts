@@ -31,7 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type {ChildrenProvider} from './ChildrenProvider.js';
+import {type ChildrenProvider} from './ChildrenProvider.js';
 
 const UIStrings = {
   /**

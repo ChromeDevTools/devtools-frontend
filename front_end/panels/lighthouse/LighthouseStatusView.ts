@@ -8,8 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
 
-import type {LighthouseController} from './LighthouseController.js';
-import {Events, RuntimeSettings} from './LighthouseController.js';
+import {Events, RuntimeSettings, type LighthouseController} from './LighthouseController.js';
 
 const UIStrings = {
   /**

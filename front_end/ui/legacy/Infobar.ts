@@ -9,7 +9,7 @@ import * as Utils from './utils/utils.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
-import type {Widget} from './Widget.js';
+import {type Widget} from './Widget.js';
 import infobarStyles from './infobar.css.legacy.js';
 
 const UIStrings = {

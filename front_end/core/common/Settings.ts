@@ -31,10 +31,9 @@
 import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import type {Color} from './Color.js';
-import {Format} from './Color.js';
+import {Format, type Color} from './Color.js';
 import {Console} from './Console.js';
-import type {GenericEvents, EventDescriptor, EventTargetEvent} from './EventTarget.js';
+import {type GenericEvents, type EventDescriptor, type EventTargetEvent} from './EventTarget.js';
 import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,

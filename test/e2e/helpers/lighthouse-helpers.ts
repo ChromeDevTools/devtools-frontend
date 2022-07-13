@@ -6,7 +6,7 @@ import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper
 
 import {waitForQuotaUsage} from './application-helpers.js';
 
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 
 export async function waitForLighthousePanelContentLoaded() {
   await waitFor('.view-container[aria-label="Lighthouse panel"]');

@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {ChildProcess} from 'child_process';
-import {spawn} from 'child_process';
+import {spawn, type ChildProcess} from 'child_process';
 import * as path from 'path';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');

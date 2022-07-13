@@ -11,7 +11,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {WebVitalsEventLane, WebVitalsTimeboxLane} from './WebVitalsLane.js';
-import type {WebVitalsTooltip} from './WebVitalsTooltip.js';
+import {type WebVitalsTooltip} from './WebVitalsTooltip.js';
 
 const UIStrings = {
   /**

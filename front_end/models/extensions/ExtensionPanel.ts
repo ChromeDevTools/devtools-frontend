@@ -34,7 +34,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ExtensionAPI from './ExtensionAPI.js';
-import type {ExtensionServer} from './ExtensionServer.js';
+import {type ExtensionServer} from './ExtensionServer.js';
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
 export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.Searchable {

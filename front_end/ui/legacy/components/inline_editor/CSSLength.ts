@@ -6,8 +6,7 @@ import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import cssLengthStyles from './cssLength.css.js';
 
-import type {Length} from './CSSLengthUtils.js';
-import {LengthUnit, LENGTH_UNITS, parseText} from './CSSLengthUtils.js';
+import {LengthUnit, LENGTH_UNITS, parseText, type Length} from './CSSLengthUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
 const {render, html} = LitHtml;

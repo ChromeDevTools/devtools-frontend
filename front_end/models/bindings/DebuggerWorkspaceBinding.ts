@@ -12,11 +12,11 @@ import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
 import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {IgnoreListManager} from './IgnoreListManager.js';
-import type {LiveLocation, LiveLocationPool} from './LiveLocation.js';
-import {LiveLocationWithPool} from './LiveLocation.js';
+
+import {LiveLocationWithPool, type LiveLocation, type LiveLocationPool} from './LiveLocation.js';
 import {ResourceMapping} from './ResourceMapping.js';
-import type {ResourceScriptFile} from './ResourceScriptMapping.js';
-import {ResourceScriptMapping} from './ResourceScriptMapping.js';
+
+import {ResourceScriptMapping, type ResourceScriptFile} from './ResourceScriptMapping.js';
 
 let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
 

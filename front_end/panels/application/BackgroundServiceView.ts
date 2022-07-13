@@ -15,8 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import backgroundServiceViewStyles from './backgroundServiceView.css.js';
 
-import type {BackgroundServiceModel} from './BackgroundServiceModel.js';
-import {Events} from './BackgroundServiceModel.js';
+import {Events, type BackgroundServiceModel} from './BackgroundServiceModel.js';
 
 const UIStrings = {
   /**

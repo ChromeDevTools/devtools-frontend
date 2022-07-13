@@ -7,9 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
-import type {Action} from './ActionRegistration.js';
-import {getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';
-import type {ActionRegistry} from './ActionRegistry.js';
+import {getRegisteredActionExtensions, KeybindSet, type Action} from './ActionRegistration.js';
+import {type ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
 import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';

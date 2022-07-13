@@ -9,10 +9,9 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 
-import type {UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
-import {crumbsToRender} from './ElementsBreadcrumbsUtils.js';
+import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type {DOMNode} from './Helper.js';
+import {type DOMNode} from './Helper.js';
 
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
 

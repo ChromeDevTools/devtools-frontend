@@ -4,7 +4,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import type {Suggestion} from './SuggestBox.js';
+import {type Suggestion} from './SuggestBox.js';
 
 export class FilterSuggestionBuilder {
   private readonly keys: string[];

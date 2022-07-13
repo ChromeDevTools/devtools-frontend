@@ -7,10 +7,8 @@ import type * as Marked from '../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import markdownViewStyles from './markdownView.css.js';
 
-import type {MarkdownImageData} from './MarkdownImage.js';
-import type {MarkdownLinkData} from './MarkdownLink.js';
-import {MarkdownLink} from './MarkdownLink.js';
-import {MarkdownImage} from './MarkdownImage.js';
+import {MarkdownLink, type MarkdownLinkData} from './MarkdownLink.js';
+import {MarkdownImage, type MarkdownImageData} from './MarkdownImage.js';
 
 const html = LitHtml.html;
 const render = LitHtml.render;

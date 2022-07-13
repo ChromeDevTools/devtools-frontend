@@ -34,8 +34,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
-import type {Calculator} from './TimelineGrid.js';
-import {TimelineGrid} from './TimelineGrid.js';
+import {TimelineGrid, type Calculator} from './TimelineGrid.js';
 import overviewGridStyles from './overviewGrid.css.legacy.js';
 
 const UIStrings = {

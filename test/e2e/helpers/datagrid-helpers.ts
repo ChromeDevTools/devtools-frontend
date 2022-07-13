@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {assert} from 'chai';
 

@@ -8,7 +8,7 @@ import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
-import type {Target} from './Target.js';
+import {type Target} from './Target.js';
 
 const UIStrings = {
   /**

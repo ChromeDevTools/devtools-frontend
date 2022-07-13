@@ -8,11 +8,11 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../workspace/workspace.js';
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
 
-import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
+import {type DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 

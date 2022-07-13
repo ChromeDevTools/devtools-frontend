@@ -51,11 +51,10 @@ import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
-import type {ElementsTreeOutline, UpdateRecord} from './ElementsTreeOutline.js';
-import {MappedCharToEntity} from './ElementsTreeOutline.js';
+import {MappedCharToEntity, type ElementsTreeOutline, type UpdateRecord} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import type {MarkerDecorator, MarkerDecoratorRegistration} from './MarkerDecorator.js';
-import {getRegisteredDecorators} from './MarkerDecorator.js';
+
+import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
 const UIStrings = {
   /**

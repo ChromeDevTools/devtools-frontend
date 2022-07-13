@@ -11,14 +11,18 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import type {
-  AuditProgressChangedEvent, PageAuditabilityChangedEvent, PageWarningsChangedEvent} from './LighthouseController.js';
-import {Events, LighthouseController} from './LighthouseController.js';
+import {
+  Events,
+  LighthouseController,
+  type AuditProgressChangedEvent,
+  type PageAuditabilityChangedEvent,
+  type PageWarningsChangedEvent,
+} from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
-import type {LighthouseRun} from './LighthouseProtocolService.js';
-import {ProtocolService} from './LighthouseProtocolService.js';
 
-import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
+import {ProtocolService, type LighthouseRun} from './LighthouseProtocolService.js';
+
+import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import * as LighthouseReport from '../../third_party/lighthouse/report/report.js';
 import {LighthouseReportRenderer, LighthouseReportUIFeatures} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';

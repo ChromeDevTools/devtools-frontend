@@ -5,8 +5,8 @@
 import * as Common from '../common/common.js';
 
 import {RemoteObject} from './RemoteObject.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import type * as Protocol from '../../generated/protocol.js';
 

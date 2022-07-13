@@ -11,8 +11,13 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {EditorAction, EditorClosedEvent, SourcesView} from './SourcesView.js';
-import {Events, registerEditorAction} from './SourcesView.js';
+import {
+  Events,
+  registerEditorAction,
+  type EditorAction,
+  type EditorClosedEvent,
+  type SourcesView,
+} from './SourcesView.js';
 
 const UIStrings = {
   /**

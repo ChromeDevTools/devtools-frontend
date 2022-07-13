@@ -34,10 +34,10 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
-import type {SplitWidget} from './SplitWidget.js';
-import type {DevToolsCloseButton} from './UIUtils.js';
-import type {WidgetElement} from './Widget.js';
-import {WidgetFocusRestorer} from './Widget.js';
+import {type SplitWidget} from './SplitWidget.js';
+import {type DevToolsCloseButton} from './UIUtils.js';
+
+import {WidgetFocusRestorer, type WidgetElement} from './Widget.js';
 
 import dialogStyles from './dialog.css.legacy.js';
 

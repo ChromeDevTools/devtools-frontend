@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
-import type {CoverageInfo, CoverageModel} from './CoverageModel.js';
+import {type CoverageInfo, type CoverageModel} from './CoverageModel.js';
 
 export const decoratorType = 'coverage';
 

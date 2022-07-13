@@ -33,9 +33,9 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {DebuggerModel, Location} from './DebuggerModel.js';
-import type {RuntimeModel} from './RuntimeModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {type RuntimeModel} from './RuntimeModel.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 const UIStrings = {

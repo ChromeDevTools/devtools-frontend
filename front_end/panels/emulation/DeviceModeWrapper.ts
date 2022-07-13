@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 
 import {DeviceModeView} from './DeviceModeView.js';
-import type {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
+import {type InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let deviceModeWrapperInstance: DeviceModeWrapper;
 

@@ -7,11 +7,11 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
 
-import type {CSSModel} from './CSSModel.js';
-import type {CSSProperty} from './CSSProperty.js';
+import {type CSSModel} from './CSSModel.js';
+import {type CSSProperty} from './CSSProperty.js';
 import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import type {DOMNode} from './DOMModel.js';
+import {type DOMNode} from './DOMModel.js';
 
 export class CSSMatchedStyles {
   readonly #cssModelInternal: CSSModel;

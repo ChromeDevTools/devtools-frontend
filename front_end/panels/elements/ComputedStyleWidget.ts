@@ -42,12 +42,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 
-import type {ComputedStyle} from './ComputedStyleModel.js';
-import {ComputedStyleModel, Events} from './ComputedStyleModel.js';
+import {ComputedStyleModel, Events, type ComputedStyle} from './ComputedStyleModel.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
-import type {Category} from './PropertyNameCategories.js';
-import {categorizePropertyName, DefaultCategoryOrder} from './PropertyNameCategories.js';
+
+import {categorizePropertyName, DefaultCategoryOrder, type Category} from './PropertyNameCategories.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 import {StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';

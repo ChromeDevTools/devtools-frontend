@@ -32,8 +32,8 @@ import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
+import {type AggregatedIssue} from './IssueAggregator.js';
+import {type HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
 
 const UIStrings = {
   /**

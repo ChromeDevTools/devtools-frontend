@@ -6,8 +6,8 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ItemsReplacedEvent, ListModel} from './ListModel.js';
-import {Events as ListModelEvents} from './ListModel.js';
+
+import {Events as ListModelEvents, type ItemsReplacedEvent, type ListModel} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
 
 export interface ListDelegate<T> {

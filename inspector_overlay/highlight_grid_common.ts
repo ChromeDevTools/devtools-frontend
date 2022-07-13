@@ -28,9 +28,9 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import type {AreaBounds, Bounds} from './common.js';
-import type {GridLabelState} from './css_grid_label_helpers.js';
-import {drawGridLabels} from './css_grid_label_helpers.js';
+import {type AreaBounds, type Bounds} from './common.js';
+
+import {drawGridLabels, type GridLabelState} from './css_grid_label_helpers.js';
 import {applyMatrixToPoint, buildPath, emptyBounds, hatchFillPath} from './highlight_common.js';
 
 // TODO(alexrudenko): Grid label unit tests depend on this style so it cannot be extracted yet.

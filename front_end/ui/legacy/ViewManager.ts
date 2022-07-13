@@ -7,14 +7,14 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ContextMenu} from './ContextMenu.js';
+import {type ContextMenu} from './ContextMenu.js';
 import {Icon} from './Icon.js';
-import type {EventData} from './TabbedPane.js';
-import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
-import type {ToolbarItem} from './Toolbar.js';
-import {Toolbar, ToolbarMenuButton} from './Toolbar.js';
+
+import {Events as TabbedPaneEvents, TabbedPane, type EventData} from './TabbedPane.js';
+
+import {Toolbar, ToolbarMenuButton, type ToolbarItem} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
-import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
+import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
 import {
   getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
@@ -27,8 +27,8 @@ import {
   type ViewRegistration,
   resetViewRegistration,
 } from './ViewRegistration.js';
-import type {Widget, WidgetElement} from './Widget.js';
-import {VBox} from './Widget.js';
+
+import {VBox, type Widget, type WidgetElement} from './Widget.js';
 import viewContainersStyles from './viewContainers.css.legacy.js';
 
 const UIStrings = {

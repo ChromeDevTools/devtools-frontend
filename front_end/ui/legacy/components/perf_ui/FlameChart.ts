@@ -38,10 +38,9 @@ import type * as TimelineModel from '../../../../models/timeline_model/timeline_
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
-import type {ChartViewportDelegate} from './ChartViewport.js';
-import {ChartViewport} from './ChartViewport.js';
-import type {Calculator} from './TimelineGrid.js';
-import {TimelineGrid} from './TimelineGrid.js';
+import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
+
+import {TimelineGrid, type Calculator} from './TimelineGrid.js';
 import flameChartStyles from './flameChart.css.legacy.js';
 
 const UIStrings = {

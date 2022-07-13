@@ -39,8 +39,15 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {LayerView, LayerViewHost} from './LayerViewHost.js';
-import {LayerSelection, Selection, SnapshotSelection, Type, ScrollRectSelection} from './LayerViewHost.js';
+import {
+  LayerSelection,
+  Selection,
+  SnapshotSelection,
+  Type,
+  ScrollRectSelection,
+  type LayerView,
+  type LayerViewHost,
+} from './LayerViewHost.js';
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
 
 const UIStrings = {

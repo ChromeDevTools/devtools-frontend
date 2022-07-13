@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
-import type {Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 
 const {assert} = chai;
 

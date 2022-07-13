@@ -32,8 +32,7 @@ import * as Common from '../../core/common/common.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 
-import type {ChunkedReader} from './FileUtils.js';
-import {ChunkedFileReader} from './FileUtils.js';
+import {ChunkedFileReader, type ChunkedReader} from './FileUtils.js';
 
 export class TempFile {
   #lastBlob: Blob|null;

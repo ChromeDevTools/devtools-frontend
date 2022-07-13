@@ -2,9 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {PathCommands, Position, Quad} from './common.js';
-import type {BoxStyle, LineStyle} from './highlight_common.js';
-import {buildPath, createPathForQuad, drawPathWithLineStyle, emptyBounds, fillPathWithBoxStyle, hatchFillPath} from './highlight_common.js';
+import {type PathCommands, type Position, type Quad} from './common.js';
+
+import {
+  buildPath,
+  createPathForQuad,
+  drawPathWithLineStyle,
+  emptyBounds,
+  fillPathWithBoxStyle,
+  hatchFillPath,
+  type BoxStyle,
+  type LineStyle,
+} from './highlight_common.js';
 
 type FlexLinesData = FlexItemData[][];
 

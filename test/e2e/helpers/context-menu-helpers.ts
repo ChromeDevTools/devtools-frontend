@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import type {puppeteer} from '../../shared/helper.js';
-import {$, $$, $textContent, platform, waitForFunction} from '../../shared/helper.js';
+
+import {$, $$, $textContent, platform, waitForFunction, type puppeteer} from '../../shared/helper.js';
 
 export function platformSpecificTextForSubMenuEntryItem(text: string): string {
   /**

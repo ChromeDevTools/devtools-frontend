@@ -8,8 +8,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
 
-import type {IconInfo} from './CSSPropertyIconResolver.js';
-import {findFlexContainerIcon, findGridContainerIcon} from './CSSPropertyIconResolver.js';
+import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSSPropertyIconResolver.js';
 
 const UIStrings = {
   /**

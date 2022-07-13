@@ -18,7 +18,7 @@ import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../
 import {it} from '../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
 
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 
 function assertNumberBetween(number: number, min: number, max: number) {
   assert.isAbove(number, min);

@@ -33,10 +33,10 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 
-import type {ActionDelegate} from './ActionRegistration.js';
-import type {Context} from './Context.js';
-import type {Provider, ToolbarItem} from './Toolbar.js';
-import {ToolbarButton} from './Toolbar.js';
+import {type ActionDelegate} from './ActionRegistration.js';
+import {type Context} from './Context.js';
+
+import {ToolbarButton, type Provider, type ToolbarItem} from './Toolbar.js';
 
 const UIStrings = {
   /**

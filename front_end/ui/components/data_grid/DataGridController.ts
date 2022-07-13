@@ -5,11 +5,18 @@
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
-import type {SortState, Column, Row} from './DataGridUtils.js';
-import {SortDirection, getRowEntryForColumnId, getStringifiedCellValues} from './DataGridUtils.js';
-import type {DataGridData, DataGridContextMenusConfiguration} from './DataGrid.js';
-import type {ContextMenuColumnSortClickEvent, ColumnHeaderClickEvent} from './DataGridEvents.js';
-import {DataGrid} from './DataGrid.js';
+
+import {
+  SortDirection,
+  getRowEntryForColumnId,
+  getStringifiedCellValues,
+  type SortState,
+  type Column,
+  type Row,
+} from './DataGridUtils.js';
+
+import {type ContextMenuColumnSortClickEvent, type ColumnHeaderClickEvent} from './DataGridEvents.js';
+import {DataGrid, type DataGridData, type DataGridContextMenusConfiguration} from './DataGrid.js';
 import dataGridControllerStyles from './dataGridController.css.js';
 
 export interface DataGridControllerData {

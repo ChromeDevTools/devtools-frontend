@@ -4,7 +4,7 @@
 
 import * as Common from '../common/common.js';
 
-import type {EventPayload} from './TracingManager.js';
+import {type EventPayload} from './TracingManager.js';
 
 type IgnoreListArgs = {
   [key: string]: string|number|ObjectSnapshot,

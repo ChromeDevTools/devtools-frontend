@@ -13,7 +13,11 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as Timeline from '../timeline/timeline.js';
-import type {RunnerResultArtifacts, NodeDetailsJSON, SourceLocationDetailsJSON} from './LighthouseReporterTypes.js';
+import {
+  type RunnerResultArtifacts,
+  type NodeDetailsJSON,
+  type SourceLocationDetailsJSON,
+} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**

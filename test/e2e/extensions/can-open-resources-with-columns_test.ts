@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 import {waitForHighlightedLine, getToolbarText} from '../helpers/sources-helpers.js';
 import {describe, it} from '../../shared/mocha-extensions.js';

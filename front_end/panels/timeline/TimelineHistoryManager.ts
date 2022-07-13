@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 
-import type {PerformanceModel} from './PerformanceModel.js';
+import {type PerformanceModel} from './PerformanceModel.js';
 import {
   TimelineEventOverviewCPUActivity,
   TimelineEventOverviewNetwork,

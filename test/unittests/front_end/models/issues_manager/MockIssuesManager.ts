@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import type {StubIssue} from './StubIssue.js';
+import {type StubIssue} from './StubIssue.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {MockIssuesModel} from './MockIssuesModel.js';
 

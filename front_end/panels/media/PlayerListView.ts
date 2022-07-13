@@ -9,8 +9,8 @@ import playerListViewStyles from './playerListView.css.js';
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {MainView, TriggerDispatcher} from './MainView.js';
-import type {PlayerEvent} from './MediaModel.js';
+import {type MainView, type TriggerDispatcher} from './MainView.js';
+import {type PlayerEvent} from './MediaModel.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 const UIStrings = {

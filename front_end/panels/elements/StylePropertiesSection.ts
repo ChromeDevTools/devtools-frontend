@@ -48,8 +48,7 @@ import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import stylesSectionTreeStyles from './stylesSectionTree.css.js';
 
-import type {Context} from './StylePropertyTreeElement.js';
-import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {StylePropertyTreeElement, type Context} from './StylePropertyTreeElement.js';
 import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 const UIStrings = {

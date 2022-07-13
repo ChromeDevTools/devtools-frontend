@@ -11,11 +11,11 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import type {NetworkNode} from './NetworkDataGridNode.js';
+import {type NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
-import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import type {RequestTimeRange} from './RequestTimingView.js';
-import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+import {type Label, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+
+import {RequestTimeRangeNames, RequestTimingView, type RequestTimeRange} from './RequestTimingView.js';
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const BAR_SPACING = 1;

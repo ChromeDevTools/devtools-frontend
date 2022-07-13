@@ -8,8 +8,17 @@
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 
-import type {Item, List, Parameters, ParamName, String as SHString} from './StructuredHeaders.js';
-import {parseList, ResultKind, serializeItem, serializeList} from './StructuredHeaders.js';
+import {
+  parseList,
+  ResultKind,
+  serializeItem,
+  serializeList,
+  type Item,
+  type List,
+  type Parameters,
+  type ParamName,
+  type String as SHString,
+} from './StructuredHeaders.js';
 
 /* Returned string is for error, either parseErrorString or structErrorString.
  */

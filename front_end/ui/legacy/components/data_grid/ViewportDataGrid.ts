@@ -7,8 +7,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
-import type {DataGridData, Parameters} from './DataGrid.js';
-import {DataGridImpl, DataGridNode} from './DataGrid.js';
+import {DataGridImpl, DataGridNode, type DataGridData, type Parameters} from './DataGrid.js';
 
 const UIStrings = {
   /**

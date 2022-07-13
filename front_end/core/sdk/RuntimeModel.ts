@@ -38,19 +38,19 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
-import type {FunctionDetails} from './DebuggerModel.js';
-import {DebuggerModel} from './DebuggerModel.js';
+import {DebuggerModel, type FunctionDetails} from './DebuggerModel.js';
 import {HeapProfilerModel} from './HeapProfilerModel.js';
-import type {ScopeRef} from './RemoteObject.js';
+
 import {
   RemoteFunction,
   RemoteObject,
   RemoteObjectImpl,
   RemoteObjectProperty,
   ScopeRemoteObject,
+  type ScopeRef,
 } from './RemoteObject.js';
-import type {Target} from './Target.js';
-import {Capability, Type} from './Target.js';
+
+import {Capability, Type, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class RuntimeModel extends SDKModel<EventTypes> {

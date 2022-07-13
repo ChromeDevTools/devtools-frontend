@@ -14,11 +14,10 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
-import type {Samples, IdsRangeChangedEvent} from './HeapTimelineOverview.js';
-import {Events, HeapTimelineOverview} from './HeapTimelineOverview.js';
-import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
-import type {ProfileHeader} from './ProfileHeader.js';
-import {ProfileType, ProfileEvents} from './ProfileHeader.js';
+import {Events, HeapTimelineOverview, type Samples, type IdsRangeChangedEvent} from './HeapTimelineOverview.js';
+import {type Formatter, type ProfileDataGridNode} from './ProfileDataGrid.js';
+
+import {ProfileType, ProfileEvents, type ProfileHeader} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 const UIStrings = {

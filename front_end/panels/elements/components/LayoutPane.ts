@@ -7,8 +7,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import type {BooleanSetting, EnumSetting, Setting} from './LayoutPaneUtils.js';
-import type {LayoutElement} from './LayoutPaneUtils.js';
+import {type LayoutElement, type BooleanSetting, type EnumSetting, type Setting} from './LayoutPaneUtils.js';
 
 import layoutPaneStyles from '../layoutPane.css.js';
 import * as Input from '../../../ui/components/input/input.js';

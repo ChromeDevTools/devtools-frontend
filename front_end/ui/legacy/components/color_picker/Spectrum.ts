@@ -41,7 +41,7 @@ import * as UI from '../../legacy.js';
 
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
 
-import type {ContrastInfo} from './ContrastInfo.js';
+import {type ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 import spectrumStyles from './spectrum.css.js';
 

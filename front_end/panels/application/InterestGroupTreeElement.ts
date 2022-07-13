@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
-import type {ResourcesPanel} from './ResourcesPanel.js';
+import {type ResourcesPanel} from './ResourcesPanel.js';
 import {InterestGroupStorageView} from './InterestGroupStorageView.js';
 
 const UIStrings = {

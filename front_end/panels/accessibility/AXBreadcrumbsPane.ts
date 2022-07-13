@@ -14,7 +14,7 @@ import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
+import {type AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
 const UIStrings = {

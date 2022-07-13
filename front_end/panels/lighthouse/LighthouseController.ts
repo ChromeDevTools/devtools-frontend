@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {ProtocolService} from './LighthouseProtocolService.js';
+import {type ProtocolService} from './LighthouseProtocolService.js';
 
 const UIStrings = {
   /**

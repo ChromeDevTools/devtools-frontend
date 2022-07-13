@@ -35,8 +35,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import profileLauncherViewStyles from './profileLauncherView.css.js';
 
-import type {ProfileType} from './ProfileHeader.js';
-import type {ProfilesPanel} from './ProfilesPanel.js';
+import {type ProfileType} from './ProfileHeader.js';
+import {type ProfilesPanel} from './ProfilesPanel.js';
 
 const UIStrings = {
   /**

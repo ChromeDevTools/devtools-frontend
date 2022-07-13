@@ -5,10 +5,9 @@
 import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import type {DOMNode} from './DOMModel.js';
-import {DeferredDOMNode} from './DOMModel.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {DeferredDOMNode, type DOMNode} from './DOMModel.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 // TODO(crbug.com/1167717): Make this a const enum again

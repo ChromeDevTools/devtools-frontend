@@ -9,12 +9,17 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../legacy/legacy.js';
 
-import type {Settings} from './LinearMemoryInspector.js';
+import {type Settings} from './LinearMemoryInspector.js';
 import {Events as LmiEvents, LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
-import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import {Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
+
+import {
+  Endianness,
+  getDefaultValueTypeMapping,
+  type ValueType,
+  type ValueTypeMode,
+} from './ValueInterpreterDisplayUtils.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
+import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {expect} from 'chai';
-import type {ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer';
 
 import {
   click,

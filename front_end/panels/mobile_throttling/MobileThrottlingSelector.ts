@@ -7,8 +7,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 
 import {throttlingManager} from './ThrottlingManager.js';
 
-import type {Conditions, ConditionsList, MobileThrottlingConditionsGroup} from './ThrottlingPresets.js';
-import {ThrottlingPresets} from './ThrottlingPresets.js';
+import {
+  ThrottlingPresets,
+  type Conditions,
+  type ConditionsList,
+  type MobileThrottlingConditionsGroup,
+} from './ThrottlingPresets.js';
 
 const UIStrings = {
   /**

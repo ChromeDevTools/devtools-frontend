@@ -9,8 +9,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
 
-import type {ContrastInfo} from './ContrastInfo.js';
-import {Events as ContrastInfoEvents} from './ContrastInfo.js';
+import {Events as ContrastInfoEvents, type ContrastInfo} from './ContrastInfo.js';
 
 const UIStrings = {
   /**

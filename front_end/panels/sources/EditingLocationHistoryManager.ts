@@ -33,8 +33,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 
-import type {SourcesView} from './SourcesView.js';
-import type {UISourceCodeFrame} from './UISourceCodeFrame.js';
+import {type SourcesView} from './SourcesView.js';
+import {type UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 export const HistoryDepth = 20;
 

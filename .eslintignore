@@ -4,7 +4,7 @@
 // glob into this file it willl not mean that the
 // clang-format check also ignores that file
 front_end/.eslintrc.js
-front_end/diff/diff_match_patch.js
+front_end/diff/diff_match_patch.jD
 front_end/javascript_metadata/NativeFunctions.js
 front_end/javascript_metadata/DOMPinnedProperties.ts
 

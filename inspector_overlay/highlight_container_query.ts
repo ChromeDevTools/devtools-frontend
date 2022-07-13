@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {PathCommands} from './common.js';
-import type {LineStyle} from './highlight_common.js';
-import {buildPath, drawPathWithLineStyle, emptyBounds} from './highlight_common.js';
+import {type PathCommands} from './common.js';
+
+import {buildPath, drawPathWithLineStyle, emptyBounds, type LineStyle} from './highlight_common.js';
 
 interface QueryingDescendantData {
   descendantBorder: PathCommands;

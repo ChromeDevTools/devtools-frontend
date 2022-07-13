@@ -36,11 +36,19 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import type {
-  CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventTypes, ExtensionDescriptor,
-  InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult,
-  SyncInformation} from './InspectorFrontendHostAPI.js';
-import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';
+import {
+  EventDescriptors,
+  Events,
+  type CanShowSurveyResult,
+  type ContextMenuDescriptor,
+  type EnumeratedHistogram,
+  type EventTypes,
+  type ExtensionDescriptor,
+  type InspectorFrontendHostAPI,
+  type LoadNetworkResourceResult,
+  type ShowSurveyResult,
+  type SyncInformation,
+} from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
 const UIStrings = {

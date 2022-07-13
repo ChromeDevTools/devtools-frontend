@@ -6,8 +6,15 @@ import * as Host from '../../../core/host/host.js';
 import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 
-import type {Event, Marker, Timebox, WebVitalsTimeline} from './WebVitalsTimeline.js';
-import {assertInstanceOf, LONG_TASK_THRESHOLD, MarkerType} from './WebVitalsTimeline.js';
+import {
+  assertInstanceOf,
+  LONG_TASK_THRESHOLD,
+  MarkerType,
+  type Event,
+  type Marker,
+  type Timebox,
+  type WebVitalsTimeline,
+} from './WebVitalsTimeline.js';
 
 type GetMarkerTypeCallback = (event: Event) => MarkerType;
 type GetMarkerOverlayCallback = (marker: Marker) => LitHtml.TemplateResult;

@@ -9,7 +9,7 @@ import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
-import type {ChunkCallback} from './FormatterWorker.js';
+import {type ChunkCallback} from './FormatterWorker.js';
 
 export interface Item {
   title: string;

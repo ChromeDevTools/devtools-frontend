@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as UI from '../../ui/legacy/legacy.js';
-import type {AnimationGroup} from './AnimationModel.js';
+import {type AnimationGroup} from './AnimationModel.js';
 import {AnimationUI} from './AnimationUI.js';
 
 export class AnimationGroupPreviewUI {

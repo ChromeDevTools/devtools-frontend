@@ -16,8 +16,13 @@ import mainViewStyles from './mainView.css.js';
 import originViewStyles from './originView.css.js';
 import sidebarStyles from './sidebar.css.js';
 
-import type {PageVisibleSecurityState} from './SecurityModel.js';
-import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
+import {
+  Events,
+  SecurityModel,
+  SecurityStyleExplanation,
+  SummaryMessages,
+  type PageVisibleSecurityState,
+} from './SecurityModel.js';
 
 const UIStrings = {
   /**

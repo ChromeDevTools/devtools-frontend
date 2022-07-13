@@ -9,12 +9,12 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
-import type {DOMNode} from './DOMModel.js';
-import {DeferredDOMNode, DOMModel, Events as DOMModelEvents} from './DOMModel.js';
+
+import {DeferredDOMNode, DOMModel, Events as DOMModelEvents, type DOMNode} from './DOMModel.js';
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
-import type {RemoteObject} from './RemoteObject.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+import {type RemoteObject} from './RemoteObject.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 

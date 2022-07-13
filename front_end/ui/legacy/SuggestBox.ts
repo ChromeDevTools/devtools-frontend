@@ -37,8 +37,8 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
 import {Icon} from './Icon.js';
-import type {ListDelegate} from './ListControl.js';
-import {ListControl, ListMode} from './ListControl.js';
+
+import {ListControl, ListMode, type ListDelegate} from './ListControl.js';
 import {ListModel} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
 import suggestBoxStyles from './suggestBox.css.legacy.js';

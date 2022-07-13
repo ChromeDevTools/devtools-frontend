@@ -7,13 +7,14 @@ import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
 
-import {ValueInterpreterDisplay} from './ValueInterpreterDisplay.js';
-import {ValueInterpreterSettings} from './ValueInterpreterSettings.js';
+import {ValueInterpreterDisplay, type ValueDisplayData} from './ValueInterpreterDisplay.js';
+import {
+  ValueInterpreterSettings,
+  type TypeToggleEvent,
+  type ValueInterpreterSettingsData,
+} from './ValueInterpreterSettings.js';
 
-import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
-import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import {Endianness} from './ValueInterpreterDisplayUtils.js';
-import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
+import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 

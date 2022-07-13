@@ -37,7 +37,6 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {HeapSnapshotGridNode} from './HeapSnapshotGridNodes.js';
 import {
   AllocationGridNode,
   HeapSnapshotConstructorNode,
@@ -45,10 +44,11 @@ import {
   HeapSnapshotRetainingObjectNode,
   HeapSnapshotObjectNode,
   HeapSnapshotDiffNode,
+  type HeapSnapshotGridNode,
 } from './HeapSnapshotGridNodes.js';
-import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
-import type {HeapProfileHeader} from './HeapSnapshotView.js';
-import type {DataDisplayDelegate} from './ProfileHeader.js';
+import {type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
+import {type HeapProfileHeader} from './HeapSnapshotView.js';
+import {type DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**

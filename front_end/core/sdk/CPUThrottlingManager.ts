@@ -5,8 +5,8 @@
 import * as Common from '../../core/common/common.js';
 
 import {EmulationModel} from './EmulationModel.js';
-import type {SDKModelObserver} from './TargetManager.js';
-import {TargetManager} from './TargetManager.js';
+
+import {TargetManager, type SDKModelObserver} from './TargetManager.js';
 
 let throttlingManagerInstance: CPUThrottlingManager;
 

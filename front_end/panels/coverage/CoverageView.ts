@@ -14,8 +14,7 @@ import {CoverageDecorationManager} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
 import coverageViewStyles from './coverageView.css.js';
 
-import type {CoverageInfo, URLCoverageInfo} from './CoverageModel.js';
-import {CoverageModel, Events, CoverageType} from './CoverageModel.js';
+import {CoverageModel, Events, CoverageType, type CoverageInfo, type URLCoverageInfo} from './CoverageModel.js';
 
 const UIStrings = {
   /**

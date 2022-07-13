@@ -36,10 +36,10 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
-import type {Suggestions} from './SuggestBox.js';
+import {type Suggestions} from './SuggestBox.js';
 import {Events, TextPrompt} from './TextPrompt.js';
-import type {ToolbarButton} from './Toolbar.js';
-import {ToolbarSettingToggle} from './Toolbar.js';
+
+import {ToolbarSettingToggle, type ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';

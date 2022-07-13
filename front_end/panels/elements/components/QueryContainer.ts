@@ -8,7 +8,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import type {DOMNode} from './Helper.js';
+import {type DOMNode} from './Helper.js';
 import queryContainerStyles from './queryContainer.css.js';
 
 const {render, html} = LitHtml;

@@ -4,7 +4,7 @@
 
 import type * as Platform from '../platform/platform.js';
 
-import type {NetworkRequest} from './NetworkRequest.js';
+import {type NetworkRequest} from './NetworkRequest.js';
 
 export class PageLoad {
   id: number;

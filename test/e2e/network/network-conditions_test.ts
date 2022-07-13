@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type {ElementHandle, Page} from 'puppeteer';
+import {type ElementHandle, type Page} from 'puppeteer';
 import {getBrowserAndPages, pressKey, typeText, waitFor, waitForAria, tabForward} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';

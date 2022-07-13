@@ -37,8 +37,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import {Events} from './NetworkTimeCalculator.js';
+import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 

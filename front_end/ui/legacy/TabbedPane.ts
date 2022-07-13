@@ -40,8 +40,8 @@ import {Icon} from './Icon.js';
 import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
-import type {Widget} from './Widget.js';
-import {VBox} from './Widget.js';
+
+import {VBox, type Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 

@@ -10,8 +10,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {EmulatedDevice, Mode} from './EmulatedDevices.js';
-import {Horizontal, HorizontalSpanned, Vertical, VerticalSpanned} from './EmulatedDevices.js';
+import {
+  Horizontal,
+  HorizontalSpanned,
+  Vertical,
+  VerticalSpanned,
+  type EmulatedDevice,
+  type Mode,
+} from './EmulatedDevices.js';
 
 const UIStrings = {
   /**

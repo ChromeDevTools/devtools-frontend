@@ -38,8 +38,14 @@ import layerDetailsViewStyles from './layerDetailsView.css.js';
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
-import {ScrollRectSelection, Type} from './LayerViewHost.js';
+import {
+  ScrollRectSelection,
+  Type,
+  type LayerView,
+  type LayerViewHost,
+  type Selection,
+  type SnapshotSelection,
+} from './LayerViewHost.js';
 
 const UIStrings = {
   /**

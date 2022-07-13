@@ -47,10 +47,9 @@ import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import * as Utils from './utils/utils.js';
 
-import type {ToolbarButton} from './Toolbar.js';
-import {Toolbar} from './Toolbar.js';
+import {Toolbar, type ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import type {TreeOutline} from './Treeoutline.js';
+import {type TreeOutline} from './Treeoutline.js';
 import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
 import closeButtonStyles from './closeButton.css.legacy.js';
 import confirmDialogStyles from './confirmDialog.css.legacy.js';

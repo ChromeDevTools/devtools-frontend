@@ -9,10 +9,10 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {CSSModel} from './CSSModel.js';
+import {type CSSModel} from './CSSModel.js';
 import {DeferredDOMNode} from './DOMModel.js';
-import type {FrameAssociated} from './FrameAssociated.js';
-import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
+import {type FrameAssociated} from './FrameAssociated.js';
+import {type PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 const UIStrings = {

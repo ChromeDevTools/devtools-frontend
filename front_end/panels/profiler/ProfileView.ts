@@ -16,12 +16,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
-import type {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
-import {CPUProfileFlameChart} from './CPUProfileFlameChart.js';
-import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
-import {ProfileDataGridTree} from './ProfileDataGrid.js';
-import type {DataDisplayDelegate, ProfileType} from './ProfileHeader.js';
-import {Events, ProfileHeader} from './ProfileHeader.js';
+
+import {CPUProfileFlameChart, type ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
+
+import {ProfileDataGridTree, type Formatter, type ProfileDataGridNode} from './ProfileDataGrid.js';
+
+import {Events, ProfileHeader, type DataDisplayDelegate, type ProfileType} from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 

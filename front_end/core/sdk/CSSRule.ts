@@ -12,9 +12,9 @@ import {CSSMedia} from './CSSMedia.js';
 import {CSSScope} from './CSSScope.js';
 import {CSSSupports} from './CSSSupports.js';
 
-import type {CSSModel, Edit} from './CSSModel.js';
+import {type CSSModel, type Edit} from './CSSModel.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
+import {type CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 export class CSSRule {
   readonly cssModelInternal: CSSModel;

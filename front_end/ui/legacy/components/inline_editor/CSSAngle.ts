@@ -6,7 +6,6 @@ import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import cssAngleStyles from './cssAngle.css.js';
 
-import type {Angle} from './CSSAngleUtils.js';
 import {
   AngleUnit,
   convertAngleUnit,
@@ -14,13 +13,13 @@ import {
   getNextUnit,
   parseText,
   roundAngleByUnit,
+  type Angle,
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
-import type {CSSAngleEditorData} from './CSSAngleEditor.js';
-import {CSSAngleEditor} from './CSSAngleEditor.js';
-import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';
-import {CSSAngleSwatch} from './CSSAngleSwatch.js';
+import {CSSAngleEditor, type CSSAngleEditorData} from './CSSAngleEditor.js';
+
+import {CSSAngleSwatch, type CSSAngleSwatchData} from './CSSAngleSwatch.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;

@@ -6,9 +6,9 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 
-import type {PerformanceModel} from './PerformanceModel.js';
-import type {Client} from './TimelineLoader.js';
-import {TimelineLoader} from './TimelineLoader.js';
+import {type PerformanceModel} from './PerformanceModel.js';
+
+import {TimelineLoader, type Client} from './TimelineLoader.js';
 
 export class ExtensionTracingSession implements Extensions.ExtensionTraceProvider.TracingSession, Client {
   private readonly provider: Extensions.ExtensionTraceProvider.ExtensionTraceProvider;

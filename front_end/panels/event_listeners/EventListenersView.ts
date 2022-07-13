@@ -15,8 +15,7 @@ import eventListenersViewStyles from './eventListenersView.css.js';
 
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {FrameworkEventListenersObject} from './EventListenersUtils.js';
-import {frameworkEventListeners} from './EventListenersUtils.js';
+import {frameworkEventListeners, type FrameworkEventListenersObject} from './EventListenersUtils.js';
 
 const UIStrings = {
   /**

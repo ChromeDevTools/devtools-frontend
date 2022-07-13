@@ -55,15 +55,22 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import networkLogViewStyles from './networkLogView.css.js';
 
-import type {NetworkLogViewInterface, NetworkNode, EventTypes} from './NetworkDataGridNode.js';
-import {Events, NetworkGroupNode, NetworkRequestNode} from './NetworkDataGridNode.js';
+import {
+  Events,
+  NetworkGroupNode,
+  NetworkRequestNode,
+  type NetworkLogViewInterface,
+  type NetworkNode,
+  type EventTypes,
+} from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
-import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+
 import {
   NetworkTimeBoundary,
   NetworkTransferDurationCalculator,
   NetworkTransferTimeCalculator,
+  type NetworkTimeCalculator,
 } from './NetworkTimeCalculator.js';
 
 const UIStrings = {

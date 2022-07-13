@@ -38,8 +38,8 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {CompilerSourceMappingContentProvider} from './CompilerSourceMappingContentProvider.js';
-import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
-import {PageResourceLoader} from './PageResourceLoader.js';
+
+import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
 
 const UIStrings = {
   /**

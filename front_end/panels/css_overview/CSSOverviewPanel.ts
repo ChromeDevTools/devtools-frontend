@@ -10,13 +10,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {ContrastIssue} from './CSSOverviewCompletedView.js';
-import {CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
+import {CSSOverviewCompletedView, type ContrastIssue} from './CSSOverviewCompletedView.js';
 import {Events, OverviewController} from './CSSOverviewController.js';
-import type {GlobalStyleStats} from './CSSOverviewModel.js';
-import {CSSOverviewModel} from './CSSOverviewModel.js';
+
+import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
-import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let CSSOverviewPanelInstance: CSSOverviewPanel;

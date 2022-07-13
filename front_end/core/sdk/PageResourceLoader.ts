@@ -12,9 +12,9 @@ import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {NetworkManager} from './NetworkManager.js';
-import type {ResourceTreeFrame} from './ResourceTreeModel.js';
-import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
-import type {Target} from './Target.js';
+
+import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
+import {type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {

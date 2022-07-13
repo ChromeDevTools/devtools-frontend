@@ -4,8 +4,7 @@
 
 import * as Platform from '../platform/platform.js';
 
-import type {Event, ObjectSnapshot} from './TracingModel.js';
-import {TracingModel} from './TracingModel.js';
+import {TracingModel, type Event, type ObjectSnapshot} from './TracingModel.js';
 
 export class FilmStripModel {
   #framesInternal: Frame[];

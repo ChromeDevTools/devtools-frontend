@@ -35,9 +35,8 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {PerformanceModel, WindowChangedEvent} from './PerformanceModel.js';
-import {Events} from './PerformanceModel.js';
-import type {TimelineModeViewDelegate} from './TimelinePanel.js';
+import {Events, type PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
+import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 
 const UIStrings = {
   /**

@@ -16,8 +16,8 @@ import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 
-import type {IssueView} from './IssueView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
+import {type IssueView} from './IssueView.js';
+import {type AggregatedIssue} from './IssueAggregator.js';
 
 const UIStrings = {
   /**

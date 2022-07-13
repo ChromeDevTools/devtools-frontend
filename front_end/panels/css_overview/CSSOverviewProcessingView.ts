@@ -7,8 +7,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
 
-import type {OverviewController} from './CSSOverviewController.js';
-import {Events} from './CSSOverviewController.js';
+import {Events, type OverviewController} from './CSSOverviewController.js';
 
 const UIStrings = {
   /**

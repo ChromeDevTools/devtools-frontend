@@ -7,11 +7,11 @@ import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
-import type {Target} from './Target.js';
-import {Capability} from './Target.js';
+
+import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-import type {SDKModelObserver} from './TargetManager.js';
-import {TargetManager} from './TargetManager.js';
+
+import {TargetManager, type SDKModelObserver} from './TargetManager.js';
 
 const UIStrings = {
   /**

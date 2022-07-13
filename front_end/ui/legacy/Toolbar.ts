@@ -34,15 +34,14 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as Utils from './utils/utils.js';
 
-import type {Action} from './ActionRegistration.js';
-import {Events as ActionEvents} from './ActionRegistration.js';
+import {Events as ActionEvents, type Action} from './ActionRegistration.js';
 import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {bindCheckbox} from './SettingsUI.js';
-import type {Suggestion} from './SuggestBox.js';
+import {type Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';

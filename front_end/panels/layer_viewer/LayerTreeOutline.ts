@@ -33,8 +33,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {LayerView, LayerViewHost, Selection, SnapshotSelection} from './LayerViewHost.js';
-import {LayerSelection} from './LayerViewHost.js';
+import {
+  LayerSelection,
+  type LayerView,
+  type LayerViewHost,
+  type Selection,
+  type SnapshotSelection,
+} from './LayerViewHost.js';
 
 const UIStrings = {
   /**

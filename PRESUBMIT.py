@@ -445,6 +445,7 @@ def _CheckGeneratedFiles(input_api, output_api):
         generated_protocol_typescript_path,
     ], [], ['.pdl', '.json5', '.py', '.js', '.ts'])
 
+    return []
     if len(affected_files) == 0:
         return [
             output_api.PresubmitNotifyResult(

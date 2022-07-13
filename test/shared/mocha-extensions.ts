@@ -9,8 +9,8 @@ import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 
 import {AsyncScope} from './async-scope.js';
 import {getEnvVar} from './config.js';
-import type {Platform} from './helper.js';
-import {platform} from './helper.js';
+
+import {platform, type Platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 

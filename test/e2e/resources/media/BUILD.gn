@@ -8,6 +8,7 @@ copy_to_gen("media") {
   sources = [
     "codec_worker.html",
     "codec_worker.js",
+    "corrupt.webm",
     "fisch.webm",
   ]
 }

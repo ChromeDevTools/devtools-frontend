@@ -66,3 +66,18 @@
 .media-messages-message-unselected {
   display: none;
 }
+
+.status-error-box {
+  font-family: monospace;
+  border: 1px solid var(--color-details-hairline);
+  padding: 4px;
+}
+
+.status-error-field-label {
+  padding-right: 10px;
+  color: var(--color-text-secondary);
+}
+
+.status-error-field-labeled {
+  display: flex;
+}

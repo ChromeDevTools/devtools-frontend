@@ -6482,6 +6482,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Êŕr̂ór̂"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Ĉáûśêd́ b̂ý:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Êŕr̂ór̂ Ćôd́ê:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "D̂át̂á:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Êŕr̂ór̂ Ǵr̂óûṕ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Ŝt́âćk̂t́r̂áĉé:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "F̂íl̂t́êŕ l̂óĝ ḿêśŝáĝéŝ"
   },

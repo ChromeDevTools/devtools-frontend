@@ -3,10 +3,15 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {goToResource} from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
 
-import {getPlayerButtonText, playMediaFile, waitForPlayerButtonTexts} from '../helpers/media-helpers.js';
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
+import {
+  getPlayerButtonText,
+  getPlayerErrors,
+  playMediaFile,
+  waitForPlayerButtonTexts,
+} from '../helpers/media-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Media Tab', () => {
@@ -21,5 +26,18 @@ describe('Media Tab', () => {
     await openPanelViaMoreTools('Media');
     await goToResource('media/codec_worker.html');
     await waitForPlayerButtonTexts(4);
+  });
+
+  it('ensures that errors are rendered nicely', async () => {
+    await openPanelViaMoreTools('Media');
+    await goToResource('media/corrupt.webm');
+    const {target} = getBrowserAndPages();
+    await target.evaluate(() => {
+      const videoElement = document.getElementsByName('media')[0] as HTMLVideoElement;
+      void videoElement.play();
+    });
+    const errors = await getPlayerErrors(2);
+    const errorContent = await errors[1].evaluate(el => el.textContent);
+    assert.include(errorContent, 'PipelineStatus');
   });
 });

@@ -88,7 +88,8 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements Trigge
     this.propertyView.onProperty(property);
   }
 
-  onError(_error: Protocol.Media.PlayerError): void {
+  onError(error: Protocol.Media.PlayerError): void {
+    this.messageView.addError(error);
   }
 
   onMessage(message: Protocol.Media.PlayerMessage): void {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import type * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
@@ -102,6 +103,143 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
 
     const actualSettings = instance.loadSettings();
     assert.deepEqual(actualSettings, settings);
+  });
+
+  it('retrieves size of non-pointer ValueNode', () => {
+    const expectedSize = 20;
+    const mockValueNode = {
+      sourceType: {
+        typeMap: new Map<number, object>([
+          [1, {}],
+        ]),
+        typeInfo: {
+          size: expectedSize,
+          members: [{name: 'not_a_pointer', typeId: 1}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.retrieveObjectSize(mockValueNode);
+    assert.strictEqual(size, expectedSize);
+  });
+
+  it('retrieves object size for a pointer ValueNode', () => {
+    const expectedSize = 8;
+    const pointerSize = 4;
+    const nestedValueNode = {
+      sourceType: {
+        typeInfo: {
+          size: expectedSize,
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const pointerValueNode = {
+      sourceType: {
+        typeMap: new Map<number, object>([
+          [1, nestedValueNode.sourceType],
+        ]),
+        typeInfo: {
+          size: pointerSize,
+          members: [{name: '*', typeId: 1}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.retrieveObjectSize(pointerValueNode);
+    assert.strictEqual(size, expectedSize);
+  });
+
+  it('retrieves pointer size for a pointer-to-pointer ValueNode', () => {
+    const expectedSize = 4;
+    const pointerSize = 4;
+    const nestedValueNode = {
+      sourceType: {
+        typeInfo: {
+          size: 8,
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const nestedPointerValueNode = {
+      sourceType: {
+        typeInfo: {
+          size: expectedSize,
+          members: [{name: '*', typeId: 2}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const pointerValueNode = {
+      sourceType: {
+        typeMap: new Map<number, object>([
+          [1, nestedPointerValueNode.sourceType],
+          [2, nestedValueNode.sourceType],
+        ]),
+        typeInfo: {
+          size: pointerSize,
+          members: [{name: '*', typeId: 1}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const size = LinearMemoryInspectorController.LinearMemoryInspectorController.retrieveObjectSize(pointerValueNode);
+    assert.strictEqual(size, expectedSize);
+  });
+
+  it('throws an error when retrieving size of non-conforming (multiple pointer members) ValueNode', () => {
+    const expectedSize = 8;
+    const pointerSize = 4;
+    const nestedValueNode = {
+      sourceType: {
+        typeInfo: {
+          size: expectedSize,
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    const pointerValueNode = {
+      sourceType: {
+        typeMap: new Map<number, object>([
+          [1, nestedValueNode.sourceType],
+          [2, nestedValueNode.sourceType],
+        ]),
+        typeInfo: {
+          size: pointerSize,
+          members: [{name: '*', typeId: 1}, {name: '*', typeId: 2}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    try {
+      LinearMemoryInspectorController.LinearMemoryInspectorController.retrieveObjectSize(pointerValueNode);
+      throw new Error('Function did now throw an error.');
+    } catch (e) {
+      const error = e as Error;
+      assert.strictEqual(error.message, 'The number of pointers in typeInfo.members should not be greater than one.');
+    }
+  });
+
+  it('throws an error when retrieving size of non-conforming (typedId not in typeMap) ValueNode', () => {
+    const pointerValueNode = {
+      sourceType: {
+        typeMap: new Map<number, object>([
+          [42, {}],
+        ]),
+        typeInfo: {
+          size: 4,
+          members: [{name: '*', typeId: 1}],
+        },
+      },
+    } as Bindings.DebuggerLanguagePlugins.ValueNode;
+
+    try {
+      LinearMemoryInspectorController.LinearMemoryInspectorController.retrieveObjectSize(pointerValueNode);
+      throw new Error('Function did now throw an error.');
+    } catch (e) {
+      const error = e as Error;
+      assert.strictEqual(error.message, 'Cannot find the source type information for typeId 1.');
+    }
   });
 });
 

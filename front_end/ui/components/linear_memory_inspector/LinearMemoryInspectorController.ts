@@ -217,6 +217,33 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return {obj, address};
   }
 
+  // This function returns the size of the source language value represented
+  // by the ValueNode. If the value is a pointer, the function returns the size of
+  // the pointed-to value. If the pointed-to value is also a pointer, it returns
+  // the size of the pointer (usually 4 bytes) to stay consistent with the DWARF extension.
+  // > double x = 42.0;
+  // > double *ptr = &x;
+  // > double **dblptr = &ptr;
+  //
+  // retrieveObjectSize(ptr_ValueNode) -> 8, the size of a double
+  // retrieveObjectSize(dblptr_ValueNode) -> 4, the size of a pointer
+  static retrieveObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode): number {
+    let typeInfo = obj.sourceType.typeInfo;
+    const pointerMembers = typeInfo.members.filter(member => member.name === '*');
+    if (pointerMembers.length === 1) {
+      const typeId = pointerMembers[0].typeId;
+      const newTypeInfo = obj.sourceType.typeMap.get(typeId)?.typeInfo;
+      if (newTypeInfo !== undefined) {
+        typeInfo = newTypeInfo;
+      } else {
+        throw new Error(`Cannot find the source type information for typeId ${typeId}.`);
+      }
+    } else if (pointerMembers.length > 1) {
+      throw new Error('The number of pointers in typeInfo.members should not be greater than one.');
+    }
+    return typeInfo.size;
+  }
+
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number): Promise<void> {
     const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(obj);
     let memoryObj = obj;
@@ -268,14 +295,13 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   #extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, memoryAddress?: number): HighlightInfo|undefined {
     let highlightInfo;
     if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
-      // Currently, only the StaticallyTypedValueNode subclass implements the sourceType getter.
-      // The other subclasses throw a 'Not Implemented' Error.
       try {
         highlightInfo = {
           startAddress: memoryAddress || 0,
-          size: obj.sourceType.typeInfo.size,
+          size: LinearMemoryInspectorController.retrieveObjectSize(obj),
         };
-      } catch (unusedError) {
+      } catch (err) {
+        highlightInfo = undefined;
       }
     }
     return highlightInfo;

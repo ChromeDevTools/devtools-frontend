@@ -351,6 +351,10 @@ class FormattedValueNode extends ValueNode {
     this.#evalOptions = evalOptions;
   }
 
+  get sourceType(): SourceType {
+    return this.#sourceType;
+  }
+
   async findProperties(...properties: string[]): Promise<{
     [x: string]: FormattedValueNode | undefined,
   }> {

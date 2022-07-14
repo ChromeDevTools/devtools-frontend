@@ -594,18 +594,17 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }, 200 /* only spin for loading time > 200ms to avoid unpleasant render flashes */);
     }
 
-    const node = this.node();
-    // TODO: Fetch the parent node id using CDP command
-    const parentNode = node ? node.parentNode : null;
-
-    const [computedStyles, parentsComputedStyles] =
-        await Promise.all([this.fetchComputedStylesFor(node), this.fetchComputedStylesFor(parentNode)]);
+    const matchedStyles = await this.fetchMatchedCascade();
 
     if (signal.aborted) {
       return;
     }
 
-    const matchedStyles = await this.fetchMatchedCascade();
+    const nodeId = this.node()?.id;
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+
+    const [computedStyles, parentsComputedStyles] =
+        await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
 
     if (signal.aborted) {
       return;
@@ -633,11 +632,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasMatchedStyles: this.hasMatchedStyles});
   }
 
-  private async fetchComputedStylesFor(node: SDK.DOMModel.DOMNode|null): Promise<Map<string, string>|null> {
-    if (!node) {
+  private async fetchComputedStylesFor(nodeId: Protocol.DOM.NodeId|undefined): Promise<Map<string, string>|null> {
+    const node = this.node();
+    if (node === null || nodeId === undefined) {
       return null;
     }
-    return await node.domModel().cssModel().getComputedStyle(node.id);
+    return await node.domModel().cssModel().getComputedStyle(nodeId);
   }
 
   onResize(): void {

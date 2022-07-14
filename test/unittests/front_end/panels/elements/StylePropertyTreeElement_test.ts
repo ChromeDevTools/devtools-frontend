@@ -28,7 +28,7 @@ describeWithRealConnection('Context menu', async () => {
 
     const cssMatchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles(
         stylesPane.cssModel() as SDK.CSSModel.CSSModel, stylesPane.node() as SDK.DOMModel.DOMNode, null, null, [], [],
-        [], [], []);
+        [], [], [], undefined);
     const cssProperty = new SDK.CSSProperty.CSSProperty(
         cssMatchedStyles.nodeStyles()[0], 0, '', '', true, false, true, false, '', undefined);
     const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(

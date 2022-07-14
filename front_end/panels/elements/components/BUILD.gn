@@ -10,9 +10,9 @@ generate_css("css_files") {
   sources = [
     "accessibilityTreeNode.css",
     "adornerSettingsPane.css",
-    "cssHintDetailsView.css",
     "computedStyleProperty.css",
     "computedStyleTrace.css",
+    "cssHintDetailsView.css",
     "cssQuery.css",
     "elementsBreadcrumbs.css",
     "elementsPanelLink.css",

@@ -25,13 +25,14 @@ export class CSSMatchedStyles {
   readonly #pseudoDOMCascades: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   readonly #customHighlightPseudoDOMCascades: Map<string, DOMInheritanceCascade>;
   readonly #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
+  readonly #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
 
   constructor(
       cssModel: CSSModel, node: DOMNode, inlinePayload: Protocol.CSS.CSSStyle|null,
       attributesPayload: Protocol.CSS.CSSStyle|null, matchedPayload: Protocol.CSS.RuleMatch[],
       pseudoPayload: Protocol.CSS.PseudoElementMatches[], inheritedPayload: Protocol.CSS.InheritedStyleEntry[],
       inheritedPseudoPayload: Protocol.CSS.InheritedPseudoElementMatches[],
-      animationsPayload: Protocol.CSS.CSSKeyframesRule[]) {
+      animationsPayload: Protocol.CSS.CSSKeyframesRule[], parentLayoutNodeId: Protocol.DOM.NodeId|undefined) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
     this.#addedStyles = new Map();
@@ -40,6 +41,7 @@ export class CSSMatchedStyles {
     if (animationsPayload) {
       this.#keyframesInternal = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
     }
+    this.#parentLayoutNodeId = parentLayoutNodeId;
 
     this.#nodeForStyleInternal = new Map();
     this.#inheritedStyles = new Set();
@@ -409,6 +411,10 @@ export class CSSMatchedStyles {
   hasMatchingSelectors(rule: CSSStyleRule): boolean {
     const matchingSelectors = this.getMatchingSelectors(rule);
     return matchingSelectors.length > 0 && this.queryMatches(rule.style);
+  }
+
+  getParentLayoutNodeId(): Protocol.DOM.NodeId|undefined {
+    return this.#parentLayoutNodeId;
   }
 
   getMatchingSelectors(rule: CSSStyleRule): number[] {

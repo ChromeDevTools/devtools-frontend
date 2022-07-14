@@ -47,7 +47,7 @@ vars = {
 
 # Only these hosts are allowed for dependencies in this DEPS file.
 # If you need to add a new host, contact chrome infrastracture team.
-allowed_hosts = [ 'chromium.googlesource.com' ]
+allowed_hosts = [ 'chromium.googlesource.com', 'chrome-infra-packages.appspot.com' ]
 
 deps = {
   'buildtools/clang_format/script': {

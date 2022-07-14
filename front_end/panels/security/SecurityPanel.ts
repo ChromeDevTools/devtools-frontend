@@ -1645,14 +1645,14 @@ export class SecurityDetailsTable {
   }
 
   addRow(key: string, value: string|Node): void {
-    const row = this.elementInternal.createChild('div', 'details-table-row');
-    row.createChild('div').textContent = key;
+    const row = this.elementInternal.createChild('tr', 'details-table-row');
+    row.createChild('td').textContent = key;
 
-    const valueDiv = row.createChild('div');
+    const valueCell = row.createChild('td');
     if (typeof value === 'string') {
-      valueDiv.textContent = value;
+      valueCell.textContent = value;
     } else {
-      valueDiv.appendChild(value);
+      valueCell.appendChild(value);
     }
   }
 }

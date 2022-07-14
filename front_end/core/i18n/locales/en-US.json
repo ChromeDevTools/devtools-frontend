@@ -8951,9 +8951,6 @@
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Key exchange"
   },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Key exchange group"
-  },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "Log ID"
   },

@@ -319,15 +319,13 @@ const UIStrings = {
   */
   protocol: 'Protocol',
   /**
-  *@description Text in Security Panel of the Security panel
+  *@description Text in the Security panel that refers to how the TLS handshake
+  *established encryption keys.
   */
   keyExchange: 'Key exchange',
   /**
-  *@description Text in Security Panel of the Security panel
-  */
-  keyExchangeGroup: 'Key exchange group',
-  /**
-  *@description Text in Security Panel of the Security panel
+  *@description Text in Security Panel that refers to how the TLS handshake
+  *encrypted data.
   */
   cipher: 'Cipher',
   /**
@@ -1439,12 +1437,35 @@ export class SecurityOriginView extends UI.Widget.VBox {
       let table: SecurityDetailsTable = new SecurityDetailsTable();
       connectionSection.appendChild(table.element());
       table.addRow(i18nString(UIStrings.protocol), originState.securityDetails.protocol);
-      if (originState.securityDetails.keyExchange) {
+
+      // A TLS connection negotiates a cipher suite and, when doing an ephemeral
+      // ECDH key exchange, a "named group". In TLS 1.2, the cipher suite is
+      // named like TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256. The DevTools protocol
+      // tried to decompose this name and calls the "ECDHE_RSA" portion the
+      // "keyExchange", because it determined the rough shape of the key
+      // exchange portion of the handshake. (A keyExchange of "RSA" meant a very
+      // different handshake set.) But ECDHE_RSA was still parameterized by a
+      // named group (e.g. X25519), which the DevTools protocol exposes as
+      // "keyExchangeGroup".
+      //
+      // Then, starting TLS 1.3, the cipher suites are named like
+      // TLS_AES_128_GCM_SHA256. The handshake shape is implicit in the
+      // protocol. keyExchange is empty and we only have keyExchangeGroup.
+      //
+      // "Key exchange group" isn't common terminology and, in TLS 1.3,
+      // something like "X25519" is better labelled as "key exchange" than "key
+      // exchange group" anyway. So combine the two fields when displaying in
+      // the UI.
+      if (originState.securityDetails.keyExchange && originState.securityDetails.keyExchangeGroup) {
+        table.addRow(
+            i18nString(UIStrings.keyExchange),
+            originState.securityDetails.keyExchange + ' with ' + originState.securityDetails.keyExchangeGroup);
+      } else if (originState.securityDetails.keyExchange) {
         table.addRow(i18nString(UIStrings.keyExchange), originState.securityDetails.keyExchange);
+      } else if (originState.securityDetails.keyExchangeGroup) {
+        table.addRow(i18nString(UIStrings.keyExchange), originState.securityDetails.keyExchangeGroup);
       }
-      if (originState.securityDetails.keyExchangeGroup) {
-        table.addRow(i18nString(UIStrings.keyExchangeGroup), originState.securityDetails.keyExchangeGroup);
-      }
+
       table.addRow(
           i18nString(UIStrings.cipher),
           originState.securityDetails.cipher +

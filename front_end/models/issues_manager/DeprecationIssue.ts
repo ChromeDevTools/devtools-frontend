@@ -348,7 +348,7 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginAccessBasedOnDocumentDomain:
         messageFunction = i18nLazyString(UIStrings.crossOriginAccessBasedOnDocumentDomain);
-        milestone = 106;
+        milestone = 109;
         break;
       case Protocol.Audits.DeprecationIssueType.CrossOriginWindowAlert:
         messageFunction = i18nLazyString(UIStrings.crossOriginWindowApi, {PH1: 'window.alert'});
@@ -367,7 +367,7 @@ export class DeprecationIssue extends Issue {
         break;
       case Protocol.Audits.DeprecationIssueType.DocumentDomainSettingWithoutOriginAgentClusterHeader:
         messageFunction = i18nLazyString(UIStrings.documentDomainSettingWithoutOriginAgentClusterHeader);
-        milestone = 106;
+        milestone = 109;
         break;
       case Protocol.Audits.DeprecationIssueType.EventPath:
         messageFunction = i18nLazyString(UIStrings.eventPath);

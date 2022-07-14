@@ -238,6 +238,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         address: address,
         memoryOffset: start,
         outerMemoryLength: this.#memoryWrapper.length(),
+        highlightInfo: this.#highlightInfo,
       };
     });
   }

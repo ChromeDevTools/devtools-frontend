@@ -83,10 +83,7 @@
   width: 210px;
 }
 
-.perfmon-indicator:hover {
-  background-color: var(--color-background-elevation-0);
-}
-
+.perfmon-indicator:hover,
 .perfmon-indicator:focus-visible {
   background-color: var(--color-background-elevation-1);
 }

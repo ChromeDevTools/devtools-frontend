@@ -65,6 +65,7 @@ def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
 def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     if input_api.change.DISABLE_THIRD_PARTY_CHECK != None:
         return []
+
     results = [output_api.PresubmitNotifyResult('Directory Exclusivity Check:')]
 
     def IsParentDir(file, dir):
@@ -84,6 +85,8 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
     EXCLUSIVE_CHANGE_DIRECTORIES = [
         [
             'third_party', 'v8',
+            input_api.os_path.join('front_end', 'models',
+                                   'javascript_metadata'),
             input_api.os_path.join('front_end', 'generated')
         ],
         [

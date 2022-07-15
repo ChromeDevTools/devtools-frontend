@@ -41,6 +41,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0']));
 
@@ -54,6 +55,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0']));
 
@@ -67,6 +69,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:0 => a.js:0:0@b']));
   });
@@ -104,6 +107,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(['0:1 => a.js:1:1', '1:1 => b.js:3:2', '2:1 => c.js:1:3', '3:1 => b.js:1:0']));
   });
@@ -119,6 +123,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap(
             ['0:0 => a.js:0:0@a', '1:0 => a.js:1:0@b', '2:0 => a.js:2:0@c', '3:0 => a.js:3:0@a']));
@@ -135,6 +140,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap([
           // clang-format off
@@ -169,6 +175,7 @@ describe('SourceMapEncoder', () => {
           sections: undefined,
           sourceRoot: undefined,
           sourcesContent: undefined,
+          x_google_ignoreList: undefined,
         },
         SourceMapEncoder.encodeSourceMap([
           // clang-format off

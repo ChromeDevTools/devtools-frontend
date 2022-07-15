@@ -30,6 +30,8 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
+const MAX_SAFE_INT32 = 2 ** 31 - 1;
+
 export interface SerializedTextRange {
   startLine: number;
   startColumn: number;
@@ -43,6 +45,10 @@ export class TextRange {
 
   static createFromLocation(line: number, column: number): TextRange {
     return new TextRange(line, column, line, column);
+  }
+
+  static createUnboundedFromLocation(line: number, column: number): TextRange {
+    return new TextRange(line, column, MAX_SAFE_INT32, MAX_SAFE_INT32);
   }
 
   static fromObject(serializedTextRange: SerializedTextRange): TextRange {

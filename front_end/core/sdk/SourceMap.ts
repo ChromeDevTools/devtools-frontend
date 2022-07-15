@@ -88,6 +88,8 @@ export class SourceMapV3 {
   sourceRoot!: Platform.DevToolsPath.UrlString|undefined;
   names!: string[]|undefined;
   sourcesContent!: string|undefined;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  x_google_ignoreList!: number[]|undefined;
   constructor() {
   }
 }
@@ -432,6 +434,7 @@ export class TextSourceMap implements SourceMap {
   private parseSources(sourceMap: SourceMapV3): void {
     const sourcesList = [];
     const sourceRoot = sourceMap.sourceRoot || Platform.DevToolsPath.EmptyUrlString;
+    const ignoreList = new Set(sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
       // The source map v3 proposal says to prepend the sourceRoot to the source URL
@@ -453,7 +456,9 @@ export class TextSourceMap implements SourceMap {
       }
       sourcesList.push(url);
       if (!this.#sourceInfos.has(url)) {
-        this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source ?? null));
+        const content = source ?? null;
+        const ignoreListHint = ignoreList.has(i);
+        this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(content, ignoreListHint));
       }
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
@@ -584,6 +589,40 @@ export class TextSourceMap implements SourceMap {
     }
     return false;
   }
+
+  hasIgnoreListHint(sourceURL: Platform.DevToolsPath.UrlString): boolean {
+    return this.#sourceInfos.get(sourceURL)?.ignoreListHint ?? false;
+  }
+
+  /**
+   * Returns a list of ranges in the generated script, which are known to be
+   * third-party code that should be ignore-listed. Each range is a [begin, end)
+   * pair, meaning that code at the beginning location, up to but not including
+   * the end location, is known to be third-party code.
+   */
+  ignoreListRanges(): TextUtils.TextRange.TextRange[] {
+    const mappings = this.mappings();
+    const ranges = [];
+
+    let current: TextUtils.TextRange.TextRange|null = null;
+
+    for (const {sourceURL, lineNumber, columnNumber} of mappings) {
+      const ignoreListHint = sourceURL && this.hasIgnoreListHint(sourceURL);
+
+      if (!current && ignoreListHint) {
+        current = TextUtils.TextRange.TextRange.createUnboundedFromLocation(lineNumber, columnNumber);
+        ranges.push(current);
+        continue;
+      }
+      if (current && !ignoreListHint) {
+        current.endLine = lineNumber;
+        current.endColumn = columnNumber;
+        current = null;
+      }
+    }
+
+    return ranges;
+  }
 }
 
 export namespace TextSourceMap {
@@ -620,11 +659,9 @@ export namespace TextSourceMap {
   }
 
   export class SourceInfo {
-    content: string|null;
     reverseMappings: number[]|null = null;
 
-    constructor(content: string|null) {
-      this.content = content;
+    constructor(public content: string|null, public ignoreListHint: boolean) {
     }
   }
 }

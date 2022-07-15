@@ -112,6 +112,7 @@ export function encodeSourceMap(
     sections: undefined,
     sourceRoot: sourceRoot as Platform.DevToolsPath.UrlString,
     sourcesContent: undefined,
+    x_google_ignoreList: undefined,
   };
 
   function getOrAddString(array: string[], s: string) {

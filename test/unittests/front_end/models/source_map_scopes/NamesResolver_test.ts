@@ -566,4 +566,48 @@ describeWithMockConnection('NameResolver', () => {
 
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 42}]);
   });
+
+  it('resolves function names at scope start', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['unminified', 'par1', 'par2', 'console', 'log'],
+      'sources': ['index.js'],
+      'sourcesContent': ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
+      'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+    });
+
+    const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '          {                     }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 's', value: 42}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    const functionName = await SourceMapScopes.NamesResolver.resolveFrameFunctionName(scope.callFrame());
+
+    assert.strictEqual(functionName, 'unminified');
+  });
+
+  it('ignores the argument name during arrow function name resolution', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['unminified', 'par1', 'console', 'log'],
+      'sources': ['index.js'],
+      'sourcesContent': ['const unminified = par1 => {\n  console.log(par1);\n}\n'],
+      'mappings': 'AAAA,MAAMA,EAAaC,IACjBC,QAAQC,IAAIF',
+    });
+
+    const source = `const o=o=>{console.log(o)};\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '        {                 }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'o', value: 42}]);
+    const {scope} = await initializeModelAndScopes(
+        {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, scopeObject);
+
+    assert.isNull(await SourceMapScopes.NamesResolver.resolveFrameFunctionName(scope.callFrame()));
+  });
 });

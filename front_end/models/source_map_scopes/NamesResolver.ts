@@ -641,6 +641,40 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   }
 }
 
+// Resolve the frame's function name using the name associated with the opening
+// paren that starts the scope. If there is no name associated with the scope
+// start or if the function scope does not start with a left paren (e.g., arrow
+// function with one parameter), the resolution returns null.
+export async function resolveFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
+  const script = frame.script;
+  const scope = frame.localScope();
+  if (!scope || !script) {
+    return null;
+  }
+  const startLocation = scope.startLocation();
+  if (!startLocation) {
+    return null;
+  }
+  const {content} = await script.requestContent();
+  if (!content) {
+    return null;
+  }
+
+  const text = new TextUtils.Text.Text(content);
+  const openRange = new TextUtils.TextRange.TextRange(
+      startLocation.lineNumber, startLocation.columnNumber, startLocation.lineNumber, startLocation.columnNumber + 1);
+  if (text.extract(openRange) !== '(') {
+    return null;
+  }
+
+  const sourceMap = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapForScript(script);
+  if (!sourceMap) {
+    return null;
+  }
+  const entry = sourceMap.findEntry(startLocation.lineNumber, startLocation.columnNumber);
+  return entry?.name ?? null;
+}
+
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
 let _scopeResolvedForTest: (...arg0: any[]) => void = function(): void {};

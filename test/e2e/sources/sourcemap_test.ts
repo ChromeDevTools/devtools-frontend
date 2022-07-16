@@ -324,6 +324,46 @@ describe('The Sources Tab', async function() {
     });
   });
 
+  it('shows unminified function name in stack trace', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile(
+        'sourcemap-minified-function-name-compiled.js', 'sourcemap-minified-function-name.html');
+
+    let scriptEvaluation: Promise<unknown>;
+    const breakLocationOuterRegExp = /sourcemap-.*-compiled\.js:1$/;
+
+    await step('Run to reakpoint', async () => {
+      scriptEvaluation = target.evaluate('o(1, 2)');
+
+      const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
+      assert.match(scriptLocation, breakLocationOuterRegExp);
+    });
+
+    await step('Add source map', async () => {
+      await clickOnContextMenu('.cm-line', 'Add source map…');
+
+      // Enter the source map URL into the appropriate input box.
+      await waitFor('.add-source-map');
+      await click('.add-source-map');
+      await typeText('sourcemap-minified-function-name-compiled.map');
+      await frontend.keyboard.press('Enter');
+    });
+
+    await step('Check function name is eventually un-minified', async () => {
+      const functionName = await waitForFunction(async () => {
+        const locationHandle = await waitFor('.call-frame-title-text');
+        const functionName = await locationHandle.evaluate(location => location.textContent);
+        return functionName && functionName === 'unminified' ? functionName : undefined;
+      });
+      assert.strictEqual(functionName, 'unminified');
+    });
+
+    await step('Resume execution', async () => {
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    });
+  });
+
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-disjoint.js', 'sourcemap-disjoint.html');

@@ -34,6 +34,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -118,6 +119,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private readonly updateItemThrottler: Common.Throttler.Throttler;
   private readonly scheduledForUpdateItems: Set<Item>;
   private muteActivateItem?: boolean;
+  private lastDebuggerModel: SDK.DebuggerModel.DebuggerModel|null = null;
 
   private constructor() {
     super(i18nString(UIStrings.callStack), true);
@@ -186,6 +188,24 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.update();
   }
 
+  private setSourceMapSubscription(debuggerModel: SDK.DebuggerModel.DebuggerModel|null): void {
+    // Shortcut for the case when we are listening to the same model.
+    if (this.lastDebuggerModel === debuggerModel) {
+      return;
+    }
+
+    if (this.lastDebuggerModel) {
+      this.lastDebuggerModel.sourceMapManager().removeEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.debugInfoAttached, this);
+    }
+
+    this.lastDebuggerModel = debuggerModel;
+    if (this.lastDebuggerModel) {
+      this.lastDebuggerModel.sourceMapManager().addEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.debugInfoAttached, this);
+    }
+  }
+
   private update(): void {
     void this.updateThrottler.schedule(() => this.doUpdate());
   }
@@ -202,6 +222,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       this.showMoreMessageElement.classList.add('hidden');
       this.items.replaceAll([]);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
+      this.setSourceMapSubscription(null);
       return;
     }
 
@@ -227,6 +248,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
 
     let debuggerModel = details.debuggerModel;
+    this.setSourceMapSubscription(debuggerModel);
     let asyncStackTraceId = details.asyncStackTraceId;
     let asyncStackTrace: Protocol.Runtime.StackTrace|undefined|null = details.asyncStackTrace;
     let previousStackTrace: Protocol.Runtime.CallFrame[]|SDK.DebuggerModel.CallFrame[] = details.callFrames;
@@ -572,7 +594,8 @@ export class Item {
   static async createForDebuggerCallFrame(
       frame: SDK.DebuggerModel.CallFrame, locationPool: Bindings.LiveLocation.LiveLocationPool,
       updateDelegate: (arg0: Item) => void): Promise<Item> {
-    const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), updateDelegate);
+    const name = await SourceMapScopes.NamesResolver.resolveFrameFunctionName(frame) ?? frame.functionName;
+    const item = new Item(UI.UIUtils.beautifyFunctionName(name), updateDelegate);
     await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
         frame.location(), item.update.bind(item), locationPool);
     return item;

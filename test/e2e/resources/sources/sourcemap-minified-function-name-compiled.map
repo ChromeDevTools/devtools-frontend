@@ -1,0 +1,1 @@
+{"version":3,"names":["unminified","par1","par2","console","log"],"sources":["sourcemap-minified-function-name.js"],"sourcesContent":["function unminified(par1, par2) {\n  console.log(par1, par2);\n  debugger;\n}\n"],"mappings":"AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC,GAClB"}

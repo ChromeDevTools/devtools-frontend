@@ -74,7 +74,12 @@
   overflow: hidden;
   line-height: 16px;
   display: flex;
-  white-space: break-spaces;
+  white-space: nowrap;
+}
+
+.name-and-value .separator {
+  white-space: pre;
+  flex-shrink: 0;
 }
 
 .editing-sub-part .name-and-value {

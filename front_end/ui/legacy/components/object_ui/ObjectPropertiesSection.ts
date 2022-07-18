@@ -1140,7 +1140,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       `;
     } else {
       container = UI.Fragment.html`
-        <span class='name-and-value'>${adorner}${this.nameElement}: ${this.valueElement}</span>
+        <span class='name-and-value'>${adorner}${this.nameElement}<span class='separator'>: </span>${
+          this.valueElement}</span>
       `;
     }
 

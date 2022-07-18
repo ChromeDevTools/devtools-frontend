@@ -141,6 +141,7 @@ devtools_svg_sources = [
   "settings_14x14_icon.svg",
   "smallIcons.svg",
   "sources_panel_icon.svg",
+  "star_outline.svg",
   "survey_feedback_icon.svg",
   "switcherIcon.svg",
   "three_dots_menu_icon.svg",

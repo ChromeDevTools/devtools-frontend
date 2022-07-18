@@ -1124,7 +1124,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.property.webIdl?.applicable) {
       const icon = new IconButton.Icon.Icon();
       icon.data = {
-        iconName: 'elements_panel_icon',
+        iconName: 'star_outline',
         color: 'var(--color-text-secondary)',
         width: '16px',
         height: '16px',

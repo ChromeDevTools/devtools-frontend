@@ -142,6 +142,7 @@ grd_files_release_sources = [
   "front_end/Images/smallIcons.svg",
   "front_end/Images/sources_panel_icon.svg",
   "front_end/Images/speech.png",
+  "front_end/Images/star_outline.svg",
   "front_end/Images/survey_feedback_icon.svg",
   "front_end/Images/switcherIcon.svg",
   "front_end/Images/three_dots_menu_icon.svg",

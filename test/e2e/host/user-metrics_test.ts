@@ -558,30 +558,6 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatches an event when a Client Hints are used with invalid origin for AcceptCH', async () => {
-    await goToResource('issues/client-hint-issue-AcceptCH-MetaTagAllowListInvalidOrigin.html');
-    await waitFor('.issue');
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.IssueCreated',
-        actionCode: 61,  // ClientHintIssue::MetaTagAllowListInvalidOrigin
-      },
-    ]);
-  });
-
-  it('dispatches an event when a Client Hints are modified by javascript for AcceptCH', async () => {
-    await goToResource('issues/client-hint-issue-AcceptCH-MetaTagModifiedHTML.html');
-    await waitFor('.issue');
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.IssueCreated',
-        actionCode: 62,  // ClientHintIssue::MetaTagModifiedHTML
-      },
-    ]);
-  });
-
   it('dispatches an event when a Client Hints are used with invalid origin for DelegateCH', async () => {
     await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
     await waitFor('.issue');

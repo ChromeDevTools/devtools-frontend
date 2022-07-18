@@ -8,8 +8,6 @@ copy_to_gen("issues") {
   sources = [
     "acac-invalid.rawresponse",
     "acao-mismatch.rawresponse",
-    "client-hint-issue-AcceptCH-MetaTagAllowListInvalidOrigin.html",
-    "client-hint-issue-AcceptCH-MetaTagModifiedHTML.html",
     "client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html",
     "client-hint-issue-DelegateCH-MetaTagModifiedHTML.html",
     "corp-frame.rawresponse",

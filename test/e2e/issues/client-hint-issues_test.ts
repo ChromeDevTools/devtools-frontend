@@ -14,8 +14,8 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('Client Hint issues test', async () => {
-  it('should display issue when Client Hints are used with invalid origin', async () => {
-    await goToResource('issues/client-hint-issue-MetaTagAllowListInvalidOrigin.html');
+  it('should display issue when Client Hints are used with invalid origin for AcceptCH', async () => {
+    await goToResource('issues/client-hint-issue-AcceptCH-MetaTagAllowListInvalidOrigin.html');
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Client Hint meta tag contained invalid origin');
@@ -23,14 +23,14 @@ describe('Client Hint issues test', async () => {
     const section = await getResourcesElement('2 sources', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [
-      ['client-hint-issue-MetaTagAllowListInvalidOrigin.html:1'],
-      ['client-hint-issue-MetaTagAllowListInvalidOrigin.html:4'],
+      ['client-hint-issue-AcceptCH-MetaTagAllowListInvalidOrigin.html:1'],
+      ['client-hint-issue-AcceptCH-MetaTagAllowListInvalidOrigin.html:4'],
     ];
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display issue when Client Hints are modified by javascript', async () => {
-    await goToResource('issues/client-hint-issue-MetaTagModifiedHTML.html');
+  it('should display issue when Client Hints are modified by javascript for AcceptCH', async () => {
+    await goToResource('issues/client-hint-issue-AcceptCH-MetaTagModifiedHTML.html');
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Client Hint meta tag modified by javascript');
@@ -38,7 +38,36 @@ describe('Client Hint issues test', async () => {
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [
-      ['client-hint-issue-MetaTagModifiedHTML.html:7'],
+      ['client-hint-issue-AcceptCH-MetaTagModifiedHTML.html:7'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+  });
+
+  it('should display issue when Client Hints are used with invalid origin for DelegateCH', async () => {
+    await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Client Hint meta tag contained invalid origin');
+    assertNotNullOrUndefined(issueElement);
+    const section = await getResourcesElement('2 sources', issueElement, '.affected-resource-label');
+    await ensureResourceSectionIsExpanded(section);
+    const expectedTableRows = [
+      ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:1'],
+      ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:4'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+  });
+
+  it('should display issue when Client Hints are modified by javascript for DelegateCH', async () => {
+    await goToResource('issues/client-hint-issue-DelegateCH-MetaTagModifiedHTML.html');
+    await navigateToIssuesTab();
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Client Hint meta tag modified by javascript');
+    assertNotNullOrUndefined(issueElement);
+    const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
+    await ensureResourceSectionIsExpanded(section);
+    const expectedTableRows = [
+      ['client-hint-issue-DelegateCH-MetaTagModifiedHTML.html:7'],
     ];
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });

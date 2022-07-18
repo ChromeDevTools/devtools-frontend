@@ -679,6 +679,7 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
   constructor() {
     const registry = instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
+    this.splitWidget().mainWidget()?.setMinimumSize(350, 0);
   }
 
   static instance(opts: {

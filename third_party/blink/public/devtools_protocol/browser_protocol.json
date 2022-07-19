@@ -278,6 +278,12 @@
                             "$ref": "AXValue"
                         },
                         {
+                            "name": "chromeRole",
+                            "description": "This `Node`'s Chrome raw role.",
+                            "optional": true,
+                            "$ref": "AXValue"
+                        },
+                        {
                             "name": "name",
                             "description": "The accessible name for this `Node`.",
                             "optional": true,

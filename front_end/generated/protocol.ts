@@ -237,6 +237,10 @@ export namespace Accessibility {
      */
     role?: AXValue;
     /**
+     * This `Node`'s Chrome raw role.
+     */
+    chromeRole?: AXValue;
+    /**
      * The accessible name for this `Node`.
      */
     name?: AXValue;

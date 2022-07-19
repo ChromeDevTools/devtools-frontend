@@ -499,7 +499,7 @@ describe('The Debugger Language Plugins', async () => {
     const text = await details.evaluate(e => e.textContent);
     assert.deepEqual(text, 'Failed to load debug file "test.wasm".');
 
-    const banners = await $$('.ignore-listed-message');
+    const banners = await $$('.call-frame-warnings-message');
     const bannerTexts = await Promise.all(banners.map(e => e.evaluate(e => e.textContent)));
     assert.include(bannerTexts, 'Some call frames have warnings');
 
@@ -569,7 +569,7 @@ describe('The Debugger Language Plugins', async () => {
     const text = await details.evaluate(e => e.textContent);
     assert.deepEqual(text, 'Failed to load debug file "test.dwo".');
 
-    const banners = await $$('.ignore-listed-message');
+    const banners = await $$('.call-frame-warnings-message');
     const bannerTexts = await Promise.all(banners.map(e => e.evaluate(e => e.textContent)));
     assert.include(bannerTexts, 'Some call frames have warnings');
 

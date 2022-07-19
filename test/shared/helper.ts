@@ -552,6 +552,30 @@ export const enableCDPLogging = async () => {
   });
 };
 
+export const enableCDPTracking = async () => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(() => {
+    globalThis.__messageMapForTest = new Map();
+    globalThis.ProtocolClient.test.onMessageSent = (message: {method: string, id: number}) => {
+      globalThis.__messageMapForTest.set(message.id, message.method);
+    };
+    globalThis.ProtocolClient.test.onMessageReceived = (message: {id?: number}) => {
+      if (message.id) {
+        globalThis.__messageMapForTest.delete(message.id);
+      }
+    };
+  });
+};
+
+export const logOutstandingCDP = async () => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(() => {
+    for (const entry of globalThis.__messageMapForTest) {
+      console.error(entry);
+    }
+  });
+};
+
 export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectElement>, value: string) => {
   await select.evaluate(async (node: HTMLSelectElement, _value: string) => {
     node.value = _value;

@@ -280,8 +280,9 @@ export async function executionLineHighlighted() {
 }
 
 export async function getCallFrameNames() {
-  await waitFor('.call-frame-item-title');
-  const items = await $$('.call-frame-item-title');
+  const selector = '.call-frame-item:not(.hidden) .call-frame-item-title';
+  await waitFor(selector);
+  const items = await $$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = [];
   for (const promise of promises) {
@@ -291,8 +292,9 @@ export async function getCallFrameNames() {
 }
 
 export async function getCallFrameLocations() {
-  await waitFor('.call-frame-location');
-  const items = await $$('.call-frame-location');
+  const selector = '.call-frame-item:not(.hidden) .call-frame-location';
+  await waitFor(selector);
+  const items = await $$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = [];
   for (const promise of promises) {
@@ -484,10 +486,35 @@ export async function readSourcesTreeView(): Promise<string[]> {
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
+async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
+  const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+  return Boolean(events && events.length);
+}
+
 export async function stepThroughTheCode() {
   const {frontend} = getBrowserAndPages();
+  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
   await frontend.keyboard.press('F9');
-  await waitForFunction(() => getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+  await waitForFunction(() => hasPausedEvents(frontend));
+  await waitFor(PAUSE_INDICATOR_SELECTOR);
+}
+
+export async function stepIn() {
+  const {frontend} = getBrowserAndPages();
+  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+  await frontend.keyboard.press('F11');
+  await waitForFunction(() => hasPausedEvents(frontend));
+  await waitFor(PAUSE_INDICATOR_SELECTOR);
+}
+
+export async function stepOut() {
+  const {frontend} = getBrowserAndPages();
+  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+  await frontend.keyboard.down('Shift');
+  await frontend.keyboard.press('F11');
+  await frontend.keyboard.up('Shift');
+  await waitForFunction(() => hasPausedEvents(frontend));
+
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 

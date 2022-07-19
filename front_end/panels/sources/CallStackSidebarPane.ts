@@ -107,6 +107,7 @@ let callstackSidebarPaneInstance: CallStackSidebarPane;
 export class CallStackSidebarPane extends UI.View.SimpleView implements UI.ContextFlavorListener.ContextFlavorListener,
                                                                         UI.ListControl.ListDelegate<Item> {
   private readonly ignoreListMessageElement: Element;
+  private readonly ignoreListCheckboxElement: HTMLInputElement;
   private readonly notPausedMessageElement: HTMLElement;
   private readonly callFrameWarningsElement: HTMLElement;
   private readonly items: UI.ListModel.ListModel<Item>;
@@ -124,14 +125,15 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private constructor() {
     super(i18nString(UIStrings.callStack), true);
 
-    this.ignoreListMessageElement = this.createIgnoreListMessageElement();
+    ({element: this.ignoreListMessageElement, checkbox: this.ignoreListCheckboxElement} =
+         this.createIgnoreListMessageElementAndCheckbox());
     this.contentElement.appendChild(this.ignoreListMessageElement);
 
     this.notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
     this.notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
     this.notPausedMessageElement.tabIndex = -1;
 
-    this.callFrameWarningsElement = this.contentElement.createChild('div', 'ignore-listed-message');
+    this.callFrameWarningsElement = this.contentElement.createChild('div', 'call-frame-warnings-message');
     const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
     this.callFrameWarningsElement.appendChild(icon);
     this.callFrameWarningsElement.appendChild(document.createTextNode(i18nString(UIStrings.callFrameWarnings)));
@@ -180,6 +182,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   flavorChanged(_object: Object|null): void {
     this.showIgnoreListed = false;
+    this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     this.update();
   }
@@ -278,6 +281,9 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
     this.showMoreMessageElement.classList.toggle('hidden', !asyncStackTrace);
     this.items.replaceAll(items);
+    for (const item of this.items) {
+      this.refreshItem(item);
+    }
     if (this.maxAsyncStackChainDepth === defaultMaxAsyncStackChainDepth) {
       this.list.selectNextItem(true /* canWrap */, false /* center */);
       const selectedItem = this.list.selectedItem();
@@ -305,6 +311,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
         }
         this.ignoreListMessageElement.classList.toggle('hidden', true);
       } else {
+        this.showIgnoreListed = this.ignoreListCheckboxElement.checked;
         const itemsSet = new Set<Item>(items);
         let hasIgnoreListed = false;
         for (let i = 0; i < this.items.length; ++i) {
@@ -314,7 +321,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
           }
           hasIgnoreListed = hasIgnoreListed || item.isIgnoreListed;
         }
-        this.ignoreListMessageElement.classList.toggle('hidden', this.showIgnoreListed || !hasIgnoreListed);
+        this.ignoreListMessageElement.classList.toggle('hidden', !hasIgnoreListed);
       }
       delete this.muteActivateItem;
     });
@@ -387,24 +394,24 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     return true;
   }
 
-  private createIgnoreListMessageElement(): Element {
+  private createIgnoreListMessageElementAndCheckbox(): {element: Element, checkbox: HTMLInputElement} {
     const element = document.createElement('div');
     element.classList.add('ignore-listed-message');
-    element.createChild('span');
-    const showAllLink = element.createChild('span', 'link');
-    showAllLink.textContent = i18nString(UIStrings.showIgnorelistedFrames);
-    UI.ARIAUtils.markAsLink(showAllLink);
-    showAllLink.tabIndex = 0;
+    const label = element.createChild('label');
+    label.classList.add('ignore-listed-message-label');
+    const checkbox = label.createChild('input') as HTMLInputElement;
+    checkbox.tabIndex = 0;
+    checkbox.type = 'checkbox';
+    checkbox.classList.add('ignore-listed-checkbox');
+    label.append(i18nString(UIStrings.showIgnorelistedFrames));
     const showAll = (): void => {
-      this.showIgnoreListed = true;
+      this.showIgnoreListed = checkbox.checked;
       for (const item of this.items) {
         this.refreshItem(item);
       }
-      this.ignoreListMessageElement.classList.toggle('hidden', true);
     };
-    showAllLink.addEventListener('click', showAll);
-    showAllLink.addEventListener('keydown', event => event.key === 'Enter' && showAll());
-    return element;
+    checkbox.addEventListener('click', showAll);
+    return {element, checkbox};
   }
 
   private createShowMoreMessageElement(): Element {

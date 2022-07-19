@@ -39,6 +39,10 @@ export const openSettingsTab = async (tabTitle: string) => {
   await waitFor(panelSelector);
 };
 
+export const closeSettings = async () => {
+  await click('.dialog-close-button');
+};
+
 export const togglePreferenceInSettingsTab = async (label: string) => {
   await openSettingsTab('Preferences');
 
@@ -55,5 +59,16 @@ export const togglePreferenceInSettingsTab = async (label: string) => {
     return newValue !== value;
   });
 
-  await click('.dialog-close-button');
+  await closeSettings();
+};
+
+export const setIgnoreListPattern = async (pattern: string) => {
+  await openSettingsTab('Ignore List');
+  await click('[aria-label="Add filename pattern"]');
+  const textBox = await waitFor('[aria-label="Pattern"]');
+  await click(textBox);
+  await textBox.type(pattern);
+  await textBox.type('\n');
+  await waitFor(`[title="Ignore scripts whose names match '${pattern}'"]`);
+  await closeSettings();
 };

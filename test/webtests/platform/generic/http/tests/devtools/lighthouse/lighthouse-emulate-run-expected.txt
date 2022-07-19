@@ -15,7 +15,7 @@ Analyze page load: enabled visible
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-emulate-pass.html
-Version: 9.6.1
+Version: 9.6.2
 formFactor: mobile
 screenEmulation: {
   "mobile": true,

@@ -9,12 +9,13 @@
   await TestRunner.loadTestModule('lighthouse_test_runner');
   await TestRunner.showPanel('lighthouse');
 
-  const dialogElement = LighthouseTestRunner.getContainerElement();
-  dialogElement.querySelector('input[name="lighthouse.device_type"][value="desktop"]').click();
-  // Turn off simulated throttling.
-  dialogElement.querySelector('.lighthouse-settings-pane .toolbar')
-      .shadowRoot.querySelector('option[value="devtools"]')
-      .selected = true;
+  // Turn off simulated throttling and use mobile.
+  const throttlingSetting =
+      self.Common.Settings.instance().createSetting('lighthouse.throttling', 'simulate', 'Synced');
+  throttlingSetting.set('devtools');
+
+  const deviceSetting = self.Common.Settings.instance().createSetting('lighthouse.device_type', 'mobile', 'Synced');
+  deviceSetting.set('desktop');
 
   LighthouseTestRunner.dumpStartAuditState();
   LighthouseTestRunner.getRunButton().click();

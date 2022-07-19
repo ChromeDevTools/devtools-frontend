@@ -1709,6 +1709,12 @@
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
   },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Auction Worklet Service"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Auction Worklet Service — {PH1}"
+  },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(index)"
   },

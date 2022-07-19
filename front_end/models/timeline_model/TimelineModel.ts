@@ -94,6 +94,18 @@ const UIStrings = {
    *@description Title of an auction worklet in the timeline flame chart of the Performance panel
    */
   unknownWorklet: 'Auction Worklet',
+
+  /**
+   *@description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel
+   */
+  workletService: 'Auction Worklet Service',
+
+  /**
+   *@description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @example {https://google.com} PH1
+   */
+  workletServiceS: 'Auction Worklet Service — {PH1}',
+
 };
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -535,7 +547,8 @@ export class TimelineModelImpl {
         } else {
           let urlForOther: Platform.DevToolsPath.UrlString|null = null;
           let workletTypeForOther: WorkletType = WorkletType.NotWorklet;
-          if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName) {
+          if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName ||
+              thread.name() === TimelineModelImpl.UtilityMainThreadName) {
             if (typeof workletUrl !== 'boolean') {
               urlForOther = workletUrl;
             }
@@ -822,6 +835,9 @@ export class TimelineModelImpl {
     } else if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName) {
       track.url = url || Platform.DevToolsPath.EmptyUrlString;
       track.name = TimelineModelImpl.nameAuctionWorklet(workletType, url);
+    } else if (workletType !== WorkletType.NotWorklet && thread.name() === TimelineModelImpl.UtilityMainThreadName) {
+      track.url = url || Platform.DevToolsPath.EmptyUrlString;
+      track.name = url ? i18nString(UIStrings.workletServiceS, {PH1: url}) : i18nString(UIStrings.workletService);
     }
     this.tracksInternal.push(track);
 
@@ -1700,6 +1716,7 @@ export namespace TimelineModelImpl {
   export const WorkerThreadNameLegacy = 'DedicatedWorker Thread';
   export const RendererMainThreadName = 'CrRendererMain';
   export const BrowserMainThreadName = 'CrBrowserMain';
+  export const UtilityMainThreadName = 'CrUtilityMain';
   export const AuctionWorkletThreadName = 'AuctionV8HelperThread';
 
   export const DevToolsMetadataEvent = {

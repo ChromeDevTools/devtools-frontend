@@ -1181,32 +1181,17 @@ export class ElementsTreeOutline extends
            })
         .then(() => {
           if (treeElement.node().nodeName() === 'BODY') {
-            void this.createTopLayerContainer(treeElement);
+            this.createTopLayerContainer(treeElement);
           }
         });
   }
 
-  async createTopLayerContainer(bodyElement: ElementsTreeElement): Promise<void> {
+  createTopLayerContainer(bodyElement: ElementsTreeElement): void {
     if (!this.topLayerContainer) {
       this.topLayerContainer = new TopLayerContainer(bodyElement);
     }
     this.topLayerContainer.updateBody(bodyElement);
-    await this.updateTopLayerContainer();
-  }
-
-  async updateTopLayerContainer(): Promise<void> {
-    if (this.topLayerContainer) {
-      const bodyElement = this.topLayerContainer.bodyElement;
-      if (!bodyElement.children().includes(this.topLayerContainer) && !this.topLayerContainer.parent &&
-          !this.topLayerContainer.treeOutline) {
-        bodyElement.insertChild(this.topLayerContainer, bodyElement.childCount() - 1);
-      }
-      this.topLayerContainer.removeChildren();
-      const topLayerElementsExists = await this.topLayerContainer.addTopLayerElementsAsChildren();
-      if (!topLayerElementsExists) {
-        bodyElement.removeChild(this.topLayerContainer);
-      }
-    }
+    void this.topLayerContainer.throttledUpdateTopLayerElements();
   }
 
   private createElementTreeElement(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean): ElementsTreeElement {
@@ -1278,6 +1263,11 @@ export class ElementsTreeOutline extends
     const afterPseudoElement = node.afterPseudoElement();
     if (afterPseudoElement) {
       visibleChildren.push(afterPseudoElement);
+    }
+
+    const backdropPseudoElement = node.backdropPseudoElement();
+    if (backdropPseudoElement) {
+      visibleChildren.push(backdropPseudoElement);
     }
 
     return visibleChildren;
@@ -1463,8 +1453,8 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private async topLayerElementsChanged(): Promise<void> {
-    await this.updateTopLayerContainer();
+  private topLayerElementsChanged(): void {
+    void this.topLayerContainer?.throttledUpdateTopLayerElements();
   }
 
   private static treeOutlineSymbol = Symbol('treeOutline');

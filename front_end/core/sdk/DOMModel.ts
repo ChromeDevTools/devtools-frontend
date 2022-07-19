@@ -344,6 +344,10 @@ export class DOMNode {
     return this.#pseudoElements.get(DOMNode.PseudoElementNames.Marker)?.at(-1);
   }
 
+  backdropPseudoElement(): DOMNode|undefined {
+    return this.#pseudoElements.get(DOMNode.PseudoElementNames.Backdrop)?.at(-1);
+  }
+
   pageTransitionPseudoElements(): DOMNode[] {
     return [
       ...this.#pseudoElements.get(DOMNode.PseudoElementNames.PageTransition) || [],
@@ -982,6 +986,7 @@ export namespace DOMNode {
     PageTransitionImageWrapper = 'page-transition-image-wrapper',
     PageTransitionOutgoingImage = 'page-transition-outgoing-image',
     PageTransitionIncomingImage = 'page-transition-incoming-image',
+    Backdrop = 'backdrop',
   }
 
   // TODO(crbug.com/1167717): Make this a const enum again

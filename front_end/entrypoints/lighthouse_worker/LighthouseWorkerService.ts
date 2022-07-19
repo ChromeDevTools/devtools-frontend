@@ -147,19 +147,22 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     };
 
     if (action === 'snapshot') {
+      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return await self.runLighthouseSnapshot({config, page, configContext});
+      return await self.runLighthouseSnapshot({config, page, configContext, flags});
     }
 
     if (action === 'startTimespan') {
+      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const timespan = await self.startLighthouseTimespan({config, page, configContext});
+      const timespan = await self.startLighthouseTimespan({config, page, configContext, flags});
       endTimespan = timespan.endTimespan;
       return;
     }
 
+    // TODO: Remove `configContext` once Lighthouse roll removes it
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouseNavigation(url, {config, page, configContext});
+    return await self.runLighthouseNavigation(url, {config, page, configContext, flags});
   } catch (err) {
     return ({
       fatal: true,

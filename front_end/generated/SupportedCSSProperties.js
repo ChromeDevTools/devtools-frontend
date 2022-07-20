@@ -345,6 +345,12 @@ export const generatedProperties = [
   "name": "anchor-name"
  }, 
  {
+  "keywords": [
+   "none"
+  ], 
+  "name": "anchor-scroll"
+ }, 
+ {
   "longhands": [
    "animation-duration", 
    "animation-timing-function", 
@@ -3563,6 +3569,11 @@ export const generatedPropertyValues = {
   ]
  }, 
  "anchor-name": {
+  "values": [
+   "none"
+  ]
+ }, 
+ "anchor-scroll": {
   "values": [
    "none"
   ]

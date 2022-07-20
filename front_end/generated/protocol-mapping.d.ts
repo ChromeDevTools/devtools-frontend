@@ -3952,6 +3952,20 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Debugger.GetScriptSourceRequest];
       returnType: Protocol.Debugger.GetScriptSourceResponse;
     };
+    'Debugger.disassembleWasmModule': {
+      paramsType: [Protocol.Debugger.DisassembleWasmModuleRequest];
+      returnType: Protocol.Debugger.DisassembleWasmModuleResponse;
+    };
+    /**
+     * Disassemble the next chunk of lines for the module corresponding to the
+     * stream. If disassembly is complete, this API will invalidate the streamId
+     * and return an empty chunk. Any subsequent calls for the now invalid stream
+     * will return errors.
+     */
+    'Debugger.nextWasmDisassemblyChunk': {
+      paramsType: [Protocol.Debugger.NextWasmDisassemblyChunkRequest];
+      returnType: Protocol.Debugger.NextWasmDisassemblyChunkResponse;
+    };
     /**
      * This command is deprecated. Use getScriptSource instead.
      */

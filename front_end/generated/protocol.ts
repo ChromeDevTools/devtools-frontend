@@ -1026,6 +1026,7 @@ export namespace Audits {
     DeprecationExample = 'DeprecationExample',
     DocumentDomainSettingWithoutOriginAgentClusterHeader = 'DocumentDomainSettingWithoutOriginAgentClusterHeader',
     EventPath = 'EventPath',
+    ExpectCTHeader = 'ExpectCTHeader',
     GeolocationInsecureOrigin = 'GeolocationInsecureOrigin',
     GeolocationInsecureOriginDeprecatedNotRemoved = 'GeolocationInsecureOriginDeprecatedNotRemoved',
     GetUserMediaInsecureOrigin = 'GetUserMediaInsecureOrigin',
@@ -7049,6 +7050,7 @@ export namespace Network {
     TextTrack = 'TextTrack',
     XHR = 'XHR',
     Fetch = 'Fetch',
+    Prefetch = 'Prefetch',
     EventSource = 'EventSource',
     WebSocket = 'WebSocket',
     Manifest = 'Manifest',
@@ -7420,6 +7422,16 @@ export namespace Network {
      * Whether the request complied with Certificate Transparency policy
      */
     certificateTransparencyCompliance: CertificateTransparencyCompliance;
+    /**
+     * The signature algorithm used by the server in the TLS server signature,
+     * represented as a TLS SignatureScheme code point. Omitted if not
+     * applicable or not known.
+     */
+    serverSignatureAlgorithm?: integer;
+    /**
+     * Whether the connection used Encrypted ClientHello
+     */
+    encryptedClientHello: boolean;
   }
 
   /**
@@ -10309,6 +10321,7 @@ export namespace Page {
     ScreenWakeLock = 'screen-wake-lock',
     Serial = 'serial',
     SharedAutofill = 'shared-autofill',
+    SharedStorage = 'shared-storage',
     StorageAccessAPI = 'storage-access-api',
     SyncXhr = 'sync-xhr',
     TrustTokenRedemption = 'trust-token-redemption',
@@ -14943,6 +14956,17 @@ export namespace Debugger {
     type?: BreakLocationType;
   }
 
+  export interface WasmDisassemblyChunk {
+    /**
+     * The next chunk of disassembled lines.
+     */
+    lines: string[];
+    /**
+     * The bytecode offsets describing the start of each line.
+     */
+    bytecodeOffsets: integer[];
+  }
+
   /**
    * Enum of possible script languages.
    */
@@ -15092,6 +15116,45 @@ export namespace Debugger {
      * Wasm bytecode.
      */
     bytecode?: binary;
+  }
+
+  export interface DisassembleWasmModuleRequest {
+    /**
+     * Id of the script to disassemble
+     */
+    scriptId: Runtime.ScriptId;
+  }
+
+  export interface DisassembleWasmModuleResponse extends ProtocolResponseWithError {
+    /**
+     * For large modules, return a stream from which additional chunks of
+     * disassembly can be read successively.
+     */
+    streamId?: string;
+    /**
+     * The total number of lines in the disassembly text.
+     */
+    totalNumberOfLines: integer;
+    /**
+     * The offsets of all function bodies plus one additional entry pointing
+     * one by past the end of the last function.
+     */
+    functionBodyOffsets: integer[];
+    /**
+     * The first chunk of disassembly.
+     */
+    chunk: WasmDisassemblyChunk;
+  }
+
+  export interface NextWasmDisassemblyChunkRequest {
+    streamId: string;
+  }
+
+  export interface NextWasmDisassemblyChunkResponse extends ProtocolResponseWithError {
+    /**
+     * The next chunk of disassembly.
+     */
+    chunk: WasmDisassemblyChunk;
   }
 
   export interface GetWasmBytecodeRequest {

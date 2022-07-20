@@ -1556,6 +1556,7 @@
                         "DeprecationExample",
                         "DocumentDomainSettingWithoutOriginAgentClusterHeader",
                         "EventPath",
+                        "ExpectCTHeader",
                         "GeolocationInsecureOrigin",
                         "GeolocationInsecureOriginDeprecatedNotRemoved",
                         "GetUserMediaInsecureOrigin",
@@ -10670,6 +10671,7 @@
                         "TextTrack",
                         "XHR",
                         "Fetch",
+                        "Prefetch",
                         "EventSource",
                         "WebSocket",
                         "Manifest",
@@ -11126,6 +11128,17 @@
                             "name": "certificateTransparencyCompliance",
                             "description": "Whether the request complied with Certificate Transparency policy",
                             "$ref": "CertificateTransparencyCompliance"
+                        },
+                        {
+                            "name": "serverSignatureAlgorithm",
+                            "description": "The signature algorithm used by the server in the TLS server signature,\nrepresented as a TLS SignatureScheme code point. Omitted if not\napplicable or not known.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "encryptedClientHello",
+                            "description": "Whether the connection used Encrypted ClientHello",
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -15190,6 +15203,7 @@
                         "screen-wake-lock",
                         "serial",
                         "shared-autofill",
+                        "shared-storage",
                         "storage-access-api",
                         "sync-xhr",
                         "trust-token-redemption",
@@ -22336,6 +22350,29 @@
                     ]
                 },
                 {
+                    "id": "WasmDisassemblyChunk",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "lines",
+                            "description": "The next chunk of disassembled lines.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "bytecodeOffsets",
+                            "description": "The bytecode offsets describing the start of each line.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "ScriptLanguage",
                     "description": "Enum of possible script languages.",
                     "type": "string",
@@ -22542,6 +22579,61 @@
                             "description": "Wasm bytecode.",
                             "optional": true,
                             "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "disassembleWasmModule",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "scriptId",
+                            "description": "Id of the script to disassemble",
+                            "$ref": "Runtime.ScriptId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "streamId",
+                            "description": "For large modules, return a stream from which additional chunks of\ndisassembly can be read successively.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "totalNumberOfLines",
+                            "description": "The total number of lines in the disassembly text.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "functionBodyOffsets",
+                            "description": "The offsets of all function bodies plus one additional entry pointing\none by past the end of the last function.",
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        {
+                            "name": "chunk",
+                            "description": "The first chunk of disassembly.",
+                            "$ref": "WasmDisassemblyChunk"
+                        }
+                    ]
+                },
+                {
+                    "name": "nextWasmDisassemblyChunk",
+                    "description": "Disassemble the next chunk of lines for the module corresponding to the\nstream. If disassembly is complete, this API will invalidate the streamId\nand return an empty chunk. Any subsequent calls for the now invalid stream\nwill return errors.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "streamId",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "chunk",
+                            "description": "The next chunk of disassembly.",
+                            "$ref": "WasmDisassemblyChunk"
                         }
                     ]
                 },

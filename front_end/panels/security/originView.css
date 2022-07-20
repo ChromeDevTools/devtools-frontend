@@ -79,7 +79,7 @@
 
 .security-origin-view .details-table-row > td:first-child {
   color: var(--color-text-secondary);
-  width: calc(110px + 1em);
+  width: calc(120px + 1em);
   text-align: right;
   padding-right: 1em;
 }

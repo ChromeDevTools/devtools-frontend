@@ -8927,6 +8927,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "ĉón̂t́êńt̂ ẃît́ĥ ćêŕt̂íf̂íĉát̂é êŕr̂ór̂ś"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "êńâb́l̂éd̂"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Êńĉŕŷṕt̂éd̂ Ćl̂íêńt̂H́êĺl̂ó"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "F̂ĺâǵĝéd̂ b́ŷ Ǵôóĝĺê Śâf́ê B́r̂óŵśîńĝ"
   },
@@ -9050,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Ŝéĉúr̂ít̂ý ôv́êŕv̂íêẃ"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Ŝér̂v́êŕ ŝíĝńât́ûŕê"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Ŝh́ôẃ f̂úl̂ĺ d̂ét̂áîĺŝ"
   },
@@ -9151,6 +9160,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Ûńk̂ńôẃn̂ / ćâńĉél̂éd̂"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "ûńk̂ńôẃn̂"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "v̂ál̂íd̂ án̂d́ t̂ŕûśt̂éd̂"

@@ -329,6 +329,16 @@ const UIStrings = {
   */
   cipher: 'Cipher',
   /**
+  *@description Text in Security Panel that refers to the signature algorithm
+  *used by the server for authenticate in the TLS handshake.
+  */
+  serverSignature: 'Server signature',
+  /**
+  *@description Text in Security Panel that refers to whether the ClientHello
+  *message in the TLS handshake was encrypted.
+  */
+  encryptedClientHello: 'Encrypted ClientHello',
+  /**
   *@description Sct div text content in Security Panel of the Security panel
   */
   certificateTransparency: 'Certificate Transparency',
@@ -442,11 +452,41 @@ const UIStrings = {
   *@example {2} PH1
   */
   showMoreSTotal: 'Show more ({PH1} total)',
+  /**
+  *@description Shown when a field refers to an option that is unknown to the frontend.
+  */
+  unknownField: 'unknown',
+  /**
+  *@description Shown when a field refers to a TLS feature which was enabled.
+  */
+  enabled: 'enabled',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let securityPanelInstance: SecurityPanel;
+
+// See https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-signaturescheme
+// This contains signature schemes supported by Chrome.
+const SignatureSchemeStrings = new Map([
+  // The full name for these schemes is RSASSA-PKCS1-v1_5, sometimes
+  // "PKCS#1 v1.5", but those are very long, so let "RSA" vs "RSA-PSS"
+  // disambiguate.
+  [0x0201, 'RSA with SHA-1'],
+  [0x0401, 'RSA with SHA-256'],
+  [0x0501, 'RSA with SHA-384'],
+  [0x0601, 'RSA with SHA-512'],
+
+  // We omit the curve from these names because in TLS 1.2 these code points
+  // were not specific to a curve. Saying "P-256" for a server that used a P-384
+  // key with SHA-256 in TLS 1.2 would be confusing.
+  [0x0403, 'ECDSA with SHA-256'],
+  [0x0503, 'ECDSA with SHA-384'],
+
+  [0x0804, 'RSA-PSS with SHA-256'],
+  [0x0805, 'RSA-PSS with SHA-384'],
+  [0x0806, 'RSA-PSS with SHA-512'],
+]);
 
 export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     SDK.TargetManager.SDKModelObserver<SecurityModel> {
@@ -1466,10 +1506,22 @@ export class SecurityOriginView extends UI.Widget.VBox {
         table.addRow(i18nString(UIStrings.keyExchange), originState.securityDetails.keyExchangeGroup);
       }
 
+      if (originState.securityDetails.serverSignatureAlgorithm) {
+        // See https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-signaturescheme
+        let sigString = SignatureSchemeStrings.get(originState.securityDetails.serverSignatureAlgorithm);
+        sigString ??=
+            i18nString(UIStrings.unknownField) + ' (' + originState.securityDetails.serverSignatureAlgorithm + ')';
+        table.addRow(i18nString(UIStrings.serverSignature), sigString);
+      }
+
       table.addRow(
           i18nString(UIStrings.cipher),
           originState.securityDetails.cipher +
               (originState.securityDetails.mac ? ' with ' + originState.securityDetails.mac : ''));
+
+      if (originState.securityDetails.encryptedClientHello) {
+        table.addRow(i18nString(UIStrings.encryptedClientHello), i18nString(UIStrings.enabled));
+      }
 
       // Create the certificate section outside the callback, so that it appears in the right place.
       const certificateSection = this.element.createChild('div', 'origin-view-section');

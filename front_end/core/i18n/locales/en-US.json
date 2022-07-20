@@ -8927,6 +8927,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "content with certificate errors"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "enabled"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Encrypted ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Flagged by Google Safe Browsing"
   },
@@ -9050,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Security overview"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Server signature"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Show full details"
   },
@@ -9151,6 +9160,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Unknown / canceled"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "unknown"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "valid and trusted"

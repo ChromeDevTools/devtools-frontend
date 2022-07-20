@@ -121,9 +121,9 @@
   background: var(--override-image-font-tree-item-color);
 }
 
-.navigator-sm-folder-tree-item .tree-element-title,
-.navigator-sm-script-tree-item .tree-element-title,
-.navigator-sm-stylesheet-tree-item .tree-element-title {
+.tree-outline:not(:has(.navigator-deployed-tree-item)) .navigator-sm-folder-tree-item .tree-element-title,
+.tree-outline:not(:has(.navigator-deployed-tree-item)) .navigator-sm-script-tree-item .tree-element-title,
+.tree-outline:not(:has(.navigator-deployed-tree-item)) .navigator-sm-stylesheet-tree-item .tree-element-title {
   font-style: italic;
 }
 

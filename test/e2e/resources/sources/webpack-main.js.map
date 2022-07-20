@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "main.js",
+  "mappings": ";;;;;;;;;;;;;;AAAO;AACP;AACA;;;;;;UCFA;UACA;;UAEA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;UACA;;UAEA;UACA;;UAEA;UACA;UACA;;;;;WCtBA;WACA;WACA;WACA;WACA,yCAAyC,wCAAwC;WACjF;WACA;WACA;;;;;WCPA;;;;;WCAA;WACA;WACA;WACA,uDAAuD,iBAAiB;WACxE;WACA,gDAAgD,aAAa;WAC7D;;;;;;;;;;;;ACNiC;;AAEjC;AACA;AACA;;AAEA;AACA,EAAE,+CAAM;AACR;;AAEA;AACA;AACA;;AAEA,iB",
+  "sources": [
+    "webpack://demo-webpack/./src/vendor.js",
+    "webpack://demo-webpack/webpack/bootstrap",
+    "webpack://demo-webpack/webpack/runtime/define property getters",
+    "webpack://demo-webpack/webpack/runtime/hasOwnProperty shorthand",
+    "webpack://demo-webpack/webpack/runtime/make namespace object",
+    "webpack://demo-webpack/./src/index.js"
+  ],
+  "sourcesContent": [
+    "export function vendor(cb) {\n  cb();\n}",
+    "// The module cache\nvar __webpack_module_cache__ = {};\n\n// The require function\nfunction __webpack_require__(moduleId) {\n\t// Check if module is in cache\n\tvar cachedModule = __webpack_module_cache__[moduleId];\n\tif (cachedModule !== undefined) {\n\t\treturn cachedModule.exports;\n\t}\n\t// Create a new module (and put it into the cache)\n\tvar module = __webpack_module_cache__[moduleId] = {\n\t\t// no module.id needed\n\t\t// no module.loaded needed\n\t\texports: {}\n\t};\n\n\t// Execute the module function\n\t__webpack_modules__[moduleId](module, module.exports, __webpack_require__);\n\n\t// Return the exports of the module\n\treturn module.exports;\n}\n\n",
+    "// define getter functions for harmony exports\n__webpack_require__.d = (exports, definition) => {\n\tfor(var key in definition) {\n\t\tif(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {\n\t\t\tObject.defineProperty(exports, key, { enumerable: true, get: definition[key] });\n\t\t}\n\t}\n};",
+    "__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))",
+    "// define __esModule on exports\n__webpack_require__.r = (exports) => {\n\tif(typeof Symbol !== 'undefined' && Symbol.toStringTag) {\n\t\tObject.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });\n\t}\n\tObject.defineProperty(exports, '__esModule', { value: true });\n};",
+    "import { vendor } from \"./vendor\"\n\nfunction foo() {\n  bar();\n}\n\nfunction bar() {\n  vendor(baz);\n}\n\nfunction baz() {\n  debugger;\n}\n\nwindow.foo = foo;"
+  ],
+  "names": [],
+  "sourceRoot": "",
+  "x_google_ignoreList": [0, 1, 2, 3, 4]
+}

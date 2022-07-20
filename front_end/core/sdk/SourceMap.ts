@@ -77,6 +77,9 @@ export interface SourceMap {
       SourceMapEntry|null;
   mappings(): SourceMapEntry[];
   mapsOrigin(): boolean;
+  hasIgnoreListHint(sourceURL: Platform.DevToolsPath.UrlString): boolean;
+  findRanges(predicate: (sourceURL: Platform.DevToolsPath.UrlString) => boolean, options: {isStartMatching: boolean}):
+      TextUtils.TextRange.TextRange[];
 }
 
 export class SourceMapV3 {
@@ -595,19 +598,32 @@ export class TextSourceMap implements SourceMap {
   }
 
   /**
-   * Returns a list of ranges in the generated script, which are known to be
-   * third-party code that should be ignore-listed. Each range is a [begin, end)
-   * pair, meaning that code at the beginning location, up to but not including
-   * the end location, is known to be third-party code.
+   * Returns a list of ranges in the generated script for original sources that
+   * match a predicate. Each range is a [begin, end) pair, meaning that code at
+   * the beginning location, up to but not including the end location, matches
+   * the predicate.
    */
-  ignoreListRanges(): TextUtils.TextRange.TextRange[] {
+  findRanges(predicate: (sourceURL: Platform.DevToolsPath.UrlString) => boolean, options?: {isStartMatching: boolean}):
+      TextUtils.TextRange.TextRange[] {
     const mappings = this.mappings();
     const ranges = [];
 
+    if (!mappings.length) {
+      return [];
+    }
+
     let current: TextUtils.TextRange.TextRange|null = null;
 
+    // If the first mapping isn't at the beginning of the original source, it's
+    // up to the caller to decide if it should be considered matching the
+    // predicate or not. By default, it's not.
+    if ((mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) && options?.isStartMatching) {
+      current = TextUtils.TextRange.TextRange.createUnboundedFromLocation(0, 0);
+      ranges.push(current);
+    }
+
     for (const {sourceURL, lineNumber, columnNumber} of mappings) {
-      const ignoreListHint = sourceURL && this.hasIgnoreListHint(sourceURL);
+      const ignoreListHint = sourceURL && predicate(sourceURL);
 
       if (!current && ignoreListHint) {
         current = TextUtils.TextRange.TextRange.createUnboundedFromLocation(lineNumber, columnNumber);

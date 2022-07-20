@@ -247,7 +247,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     const sourceMap = event.data.sourceMap;
     await this.removeStubUISourceCode(script);
 
-    if (IgnoreListManager.instance().isIgnoreListedURL(script.sourceURL, script.isContentScript())) {
+    if (IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, script.isContentScript())) {
       this.sourceMapAttachedForTest(sourceMap);
       return;
     }

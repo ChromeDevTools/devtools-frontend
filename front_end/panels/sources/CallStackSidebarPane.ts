@@ -493,7 +493,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     const canIgnoreList =
         Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiSourceCode);
     const isIgnoreListed =
-        Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiSourceCode);
+        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiSourceCode.url());
     const isContentScript = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
 
     const manager = Bindings.IgnoreListManager.IgnoreListManager.instance();

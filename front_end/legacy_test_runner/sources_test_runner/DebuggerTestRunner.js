@@ -291,7 +291,7 @@ SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, async
       const script = location.script();
       const uiLocation = await self.Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
       const isFramework =
-          uiLocation ? self.Bindings.ignoreListManager.isIgnoreListedUISourceCode(uiLocation.uiSourceCode) : false;
+          uiLocation ? self.Bindings.ignoreListManager.isUserIgnoreListedURL(uiLocation.uiSourceCode.url()) : false;
 
       if (options.dropFrameworkCallFrames && isFramework) {
         continue;

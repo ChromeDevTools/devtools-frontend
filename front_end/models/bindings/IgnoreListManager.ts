@@ -97,17 +97,25 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     return debuggerModel.setBlackboxPatterns(patterns);
   }
 
-  isIgnoreListedUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, sourceMap: SDK.SourceMap.SourceMap|null): boolean {
     const projectType = uiSourceCode.project().type();
     const isContentScript = projectType === Workspace.Workspace.projectTypes.ContentScripts;
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
       return true;
     }
     const url = this.uiSourceCodeURL(uiSourceCode);
-    return url ? this.isIgnoreListedURL(url) : false;
+    return url ? this.isUserOrSourceMapIgnoreListedURL(url, sourceMap) : false;
   }
 
-  isIgnoreListedURL(url: Platform.DevToolsPath.UrlString, isContentScript?: boolean): boolean {
+  isUserOrSourceMapIgnoreListedURL(url: Platform.DevToolsPath.UrlString, sourceMap: SDK.SourceMap.SourceMap|null):
+      boolean {
+    const userIgnoreListed = this.isUserIgnoreListedURL(url);
+    const sourceMapIgnoreListed = sourceMap?.hasIgnoreListHint(url) ?? false;
+    return userIgnoreListed || sourceMapIgnoreListed;
+  }
+
+  isUserIgnoreListedURL(url: Platform.DevToolsPath.UrlString, isContentScript?: boolean): boolean {
     if (this.#isIgnoreListedURLCache.has(url)) {
       return Boolean(this.#isIgnoreListedURLCache.get(url));
     }
@@ -137,8 +145,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
 
   private async updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|null): Promise<void> {
     let hasIgnoreListedMappings = false;
-    if (!IgnoreListManager.instance().isIgnoreListedURL(script.sourceURL, script.isContentScript())) {
-      hasIgnoreListedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isIgnoreListedURL(url)) : false;
+    if (!IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, script.isContentScript())) {
+      hasIgnoreListedMappings =
+          sourceMap?.sourceURLs().some(url => this.isUserOrSourceMapIgnoreListedURL(url, sourceMap)) ?? false;
     }
     if (!hasIgnoreListedMappings) {
       if (scriptToRange.get(script) && await script.setBlackboxedRanges([])) {
@@ -152,21 +161,10 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       return;
     }
 
-    const mappings = sourceMap.mappings();
-    const newRanges: SourceRange[] = [];
-    if (mappings.length > 0) {
-      let currentIgnoreListed = false;
-      if (mappings[0].lineNumber !== 0 || mappings[0].columnNumber !== 0) {
-        newRanges.push({lineNumber: 0, columnNumber: 0});
-        currentIgnoreListed = true;
-      }
-      for (const mapping of mappings) {
-        if (mapping.sourceURL && currentIgnoreListed !== this.isIgnoreListedURL(mapping.sourceURL)) {
-          newRanges.push({lineNumber: mapping.lineNumber, columnNumber: mapping.columnNumber});
-          currentIgnoreListed = !currentIgnoreListed;
-        }
-      }
-    }
+    const newRanges =
+        sourceMap
+            .findRanges(srcURL => this.isUserOrSourceMapIgnoreListedURL(srcURL, sourceMap), {isStartMatching: true})
+            .flatMap(range => [range.start, range.end]);
 
     const oldRanges = scriptToRange.get(script) || [];
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {

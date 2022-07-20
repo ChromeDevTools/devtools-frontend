@@ -70,7 +70,7 @@ function populateContextMenu(link: Element, event: Event): void {
   const uiLocation = Linkifier.uiLocation(link);
   if (uiLocation &&
       Bindings.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
-    if (Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiLocation.uiSourceCode)) {
+    if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.removeFromIgnore),
           () => Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
@@ -127,8 +127,8 @@ export function buildStackTraceRows(
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
         const uiLocation = Linkifier.uiLocation(link);
         if (uiLocation &&
-            Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(
-                uiLocation.uiSourceCode)) {
+            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
+                uiLocation.uiSourceCode.url())) {
           ignoreListHide = true;
         }
         // Linkifier is using a workaround with the 'zero width space' (\u200b).
@@ -175,7 +175,8 @@ function updateHiddenRows(
     if ('link' in row && row.link) {
       const uiLocation = Linkifier.uiLocation(row.link);
       if (uiLocation &&
-          Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedUISourceCode(uiLocation.uiSourceCode)) {
+          Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
+              uiLocation.uiSourceCode.url())) {
         row.ignoreListHide = true;
       }
       if (row.rowCountHide || row.ignoreListHide) {

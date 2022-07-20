@@ -230,6 +230,14 @@ export class TextRange {
     }
     return this.startLine < lineNumber && lineNumber < this.endLine;
   }
+
+  get start(): {lineNumber: number, columnNumber: number} {
+    return {lineNumber: this.startLine, columnNumber: this.startColumn};
+  }
+
+  get end(): {lineNumber: number, columnNumber: number} {
+    return {lineNumber: this.endLine, columnNumber: this.endColumn};
+  }
 }
 
 export class SourceRange {

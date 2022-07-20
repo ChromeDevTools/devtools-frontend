@@ -732,7 +732,7 @@ describe('TextSourceMap', () => {
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor2.js' as Platform.DevToolsPath.UrlString), true);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor3.js' as Platform.DevToolsPath.UrlString), true);
 
-      assert.deepEqual(sourceMap.ignoreListRanges() as [], [
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
           'startLine': 0,
           'startColumn': 0,
@@ -772,7 +772,7 @@ describe('TextSourceMap', () => {
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor2.js' as Platform.DevToolsPath.UrlString), true);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor3.js' as Platform.DevToolsPath.UrlString), true);
 
-      assert.deepEqual(sourceMap.ignoreListRanges() as [], [
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
           'startLine': 11,
           'startColumn': 8,
@@ -790,6 +790,95 @@ describe('TextSourceMap', () => {
           'startColumn': 0,
           'endLine': 2147483647,
           'endColumn': 2147483647,
+        },
+      ]);
+    });
+
+    it('computes ranges when the first mapping is for third-party code that is not on the first char', () => {
+      const mappingPayload = encodeSourceMap(
+          [
+            // clang-format off
+            '10:9 => vendor1.js:1:0', // initial mapping not at 0:0
+            '11:8 => vendor2.js:1:0',
+            '12:7 => vendor3.js:1:0',
+            '13:6 => foo.js:1:0', // known end
+            // clang-format on
+          ],
+          'wp:///' /* sourceRoot */);
+
+      mappingPayload.x_google_ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
+
+      const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
+      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor1.js' as Platform.DevToolsPath.UrlString), true);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor2.js' as Platform.DevToolsPath.UrlString), true);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor3.js' as Platform.DevToolsPath.UrlString), true);
+
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
+        {
+          'startLine': 10,   // By default, unmapped code (before 10:9) is not considered
+          'startColumn': 9,  // special, and will therefore not be included in the range.
+          'endLine': 13,
+          'endColumn': 6,
+        },
+      ]);
+
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url), {isStartMatching: true}) as [], [
+        {
+          'startLine': 0,    // Starting at 0:0 instead of 10:9 because all the code until
+          'startColumn': 0,  // the initial mapping is now assumed to match the predicate.
+          'endLine': 13,
+          'endColumn': 6,
+        },
+      ]);
+    });
+
+    it('computes ranges when the first mapping is for first-party code that is not on the first char', () => {
+      const mappingPayload = encodeSourceMap(
+          [
+            // clang-format off
+            '5:5 => foo.js:1:0', // initial mapping not at 0:0
+            '10:9 => vendor1.js:1:0',
+            '11:8 => vendor2.js:1:0',
+            '12:7 => vendor3.js:1:0',
+            '13:6 => foo.js:1:0', // known end
+            // clang-format on
+          ],
+          'wp:///' /* sourceRoot */);
+
+      mappingPayload.x_google_ignoreList = [1 /* vendor1.js */, 2 /* vendor2.js */, 3 /* vendor3.js */];
+
+      const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
+      const sourceMap = new SDK.SourceMap.TextSourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload, fakeInitiator);
+
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///foo.js' as Platform.DevToolsPath.UrlString), false);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor1.js' as Platform.DevToolsPath.UrlString), true);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor2.js' as Platform.DevToolsPath.UrlString), true);
+      assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor3.js' as Platform.DevToolsPath.UrlString), true);
+
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
+        {
+          'startLine': 10,   // By default, unmapped code (before 5:5) is not considered
+          'startColumn': 9,  // special, and will therefore not be included in the range.
+          'endLine': 13,
+          'endColumn': 6,
+        },
+      ]);
+
+      assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url), {isStartMatching: true}) as [], [
+        {
+          'startLine': 0,    // Starting at 0:0 instead of 10:9 because all the code until
+          'startColumn': 0,  // the initial mapping is now assumed to match the predicate.
+          'endLine': 5,      // And because the first source url is not hinted as being on
+          'endColumn': 5,    // the ignore-list, there's now an extra initial range.
+        },
+        {
+          'startLine': 10,
+          'startColumn': 9,
+          'endLine': 13,
+          'endColumn': 6,
         },
       ]);
     });

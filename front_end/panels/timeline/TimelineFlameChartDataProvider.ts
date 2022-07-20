@@ -701,7 +701,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private isIgnoreListedURL(url: Platform.DevToolsPath.UrlString): boolean {
-    return Bindings.IgnoreListManager.IgnoreListManager.instance().isIgnoreListedURL(url);
+    return Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url);
   }
 
   private appendAsyncEventsGroup(

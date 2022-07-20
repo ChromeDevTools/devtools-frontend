@@ -45,6 +45,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-elements-breadcrumbs`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #resizeObserver = new ResizeObserver(() => this.#checkForOverflowOnResize());
+  readonly #renderBound = this.#render.bind(this);
 
   #crumbsData: readonly DOMNode[] = [];
   #selectedDOMNode: Readonly<DOMNode>|null = null;
@@ -61,7 +62,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.#selectedDOMNode = data.selectedNode;
     this.#crumbsData = data.crumbs;
     this.#userHasManuallyScrolled = false;
-    void this.#update();
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   disconnectedCallback(): void {
@@ -102,12 +103,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
       this.#userScrollPosition = 'start';
       void this.#render();
     }
-  }
-
-  async #update(): Promise<void> {
-    await this.#render();
-    this.#engageResizeObserver();
-    void this.#ensureSelectedNodeIsVisible();
   }
 
   #onCrumbMouseMove(node: DOMNode): () => void {
@@ -267,53 +262,53 @@ export class ElementsBreadcrumbs extends HTMLElement {
       `;
   }
 
-  async #render(): Promise<void> {
+  #render(): void {
     const crumbs = crumbsToRender(this.#crumbsData, this.#selectedDOMNode);
 
-    await coordinator.write('Breadcrumbs render', () => {
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      LitHtml.render(LitHtml.html`
-        <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)}>
-          ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    LitHtml.render(LitHtml.html`
+      <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)}>
+        ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 
-          <div class="crumbs-window" @scroll=${this.#onCrumbsWindowScroll}>
-            <ul class="crumbs-scroll-container">
-              ${crumbs.map(crumb => {
-                const crumbClasses = {
-                  crumb: true,
-                  selected: crumb.selected,
-                };
-                // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-                return LitHtml.html`
-                  <li class=${LitHtml.Directives.classMap(crumbClasses)}
-                    data-node-id=${crumb.node.id}
-                    data-crumb="true"
-                  >
-                    <a href="#"
-                      draggable=false
-                      class="crumb-link"
-                      @click=${this.#onCrumbClick(crumb.node)}
-                      @mousemove=${this.#onCrumbMouseMove(crumb.node)}
-                      @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
-                      @focus=${this.#onCrumbFocus(crumb.node)}
-                      @blur=${this.#onCrumbBlur(crumb.node)}
-                    ><${NodeText.NodeText.NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
-                      nodeTitle: crumb.title.main,
-                      nodeId: crumb.title.extras.id,
-                      nodeClasses: crumb.title.extras.classes,
-                    } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}></a>
-                  </li>`;
-              })}
-            </ul>
-          </div>
-          ${this.#renderOverflowButton('right', this.#userScrollPosition === 'end')}
-        </nav>
-      `, this.#shadow, { host: this });
-      // clang-format on
-    });
+        <div class="crumbs-window" @scroll=${this.#onCrumbsWindowScroll}>
+          <ul class="crumbs-scroll-container">
+            ${crumbs.map(crumb => {
+              const crumbClasses = {
+                crumb: true,
+                selected: crumb.selected,
+              };
+              // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
+              return LitHtml.html`
+                <li class=${LitHtml.Directives.classMap(crumbClasses)}
+                  data-node-id=${crumb.node.id}
+                  data-crumb="true"
+                >
+                  <a href="#"
+                    draggable=false
+                    class="crumb-link"
+                    @click=${this.#onCrumbClick(crumb.node)}
+                    @mousemove=${this.#onCrumbMouseMove(crumb.node)}
+                    @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
+                    @focus=${this.#onCrumbFocus(crumb.node)}
+                    @blur=${this.#onCrumbBlur(crumb.node)}
+                  ><${NodeText.NodeText.NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
+                    nodeTitle: crumb.title.main,
+                    nodeId: crumb.title.extras.id,
+                    nodeClasses: crumb.title.extras.classes,
+                  } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}></a>
+                </li>`;
+            })}
+          </ul>
+        </div>
+        ${this.#renderOverflowButton('right', this.#userScrollPosition === 'end')}
+      </nav>
+    `, this.#shadow, { host: this });
+    // clang-format on
 
     void this.#checkForOverflow();
+    this.#engageResizeObserver();
+    void this.#ensureSelectedNodeIsVisible();
   }
 
   async #ensureSelectedNodeIsVisible(): Promise<void> {

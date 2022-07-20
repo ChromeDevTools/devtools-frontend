@@ -453,6 +453,8 @@ export class ElementsTreeOutline extends
       }
     }
 
+    this.createTopLayerContainer();
+
     if (selectedNode) {
       this.revealAndSelectNode(selectedNode, true);
     }
@@ -1173,24 +1175,16 @@ export class ElementsTreeOutline extends
     }
 
     return new Promise<void>(resolve => {
-             treeElement.node().getChildNodes(() => {
-               populatedTreeElements.add(treeElement);
-               this.updateModifiedParentNode(treeElement.node());
-               resolve();
-             });
-           })
-        .then(() => {
-          if (treeElement.node().nodeName() === 'BODY') {
-            this.createTopLayerContainer(treeElement);
-          }
-        });
+      treeElement.node().getChildNodes(() => {
+        populatedTreeElements.add(treeElement);
+        this.updateModifiedParentNode(treeElement.node());
+        resolve();
+      });
+    });
   }
 
-  createTopLayerContainer(bodyElement: ElementsTreeElement): void {
-    if (!this.topLayerContainer) {
-      this.topLayerContainer = new TopLayerContainer(bodyElement);
-    }
-    this.topLayerContainer.updateBody(bodyElement);
+  createTopLayerContainer(): void {
+    this.topLayerContainer = new TopLayerContainer(this);
     void this.topLayerContainer.throttledUpdateTopLayerElements();
   }
 

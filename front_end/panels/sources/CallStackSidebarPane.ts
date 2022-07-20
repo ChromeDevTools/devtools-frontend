@@ -219,13 +219,13 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.callFrameWarningsElement.classList.add('hidden');
 
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
+    this.setSourceMapSubscription(details?.debuggerModel ?? null);
     if (!details) {
       this.notPausedMessageElement.classList.remove('hidden');
       this.ignoreListMessageElement.classList.add('hidden');
       this.showMoreMessageElement.classList.add('hidden');
       this.items.replaceAll([]);
       UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.CallFrame, null);
-      this.setSourceMapSubscription(null);
       return;
     }
 
@@ -251,7 +251,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
 
     let debuggerModel = details.debuggerModel;
-    this.setSourceMapSubscription(debuggerModel);
     let asyncStackTraceId = details.asyncStackTraceId;
     let asyncStackTrace: Protocol.Runtime.StackTrace|undefined|null = details.asyncStackTrace;
     let previousStackTrace: Protocol.Runtime.CallFrame[]|SDK.DebuggerModel.CallFrame[] = details.callFrames;

@@ -105,6 +105,9 @@ export class TextEditor extends HTMLElement {
   connectedCallback(): void {
     if (!this.#activeEditor) {
       this.#createEditor();
+    } else {
+      this.#activeEditor.scrollDOM.scrollTop = this.#lastScrollPos.top;
+      this.#activeEditor.scrollDOM.scrollLeft = this.#lastScrollPos.left;
     }
   }
 

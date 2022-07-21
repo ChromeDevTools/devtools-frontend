@@ -123,6 +123,27 @@ class ExtensionPluginBase {
     }
     return Promise.resolve(undefined);
   }
+
+  evaluate(expression, context, stopId){
+    if (this._impl.evaluate) {
+      return this._impl.evaluate(expression, context, stopId);
+    }
+    return Promise.resolve(null);
+  }
+
+  getProperties(objectId) {
+    if (this._impl.getProperties) {
+      return this._impl.getProperties(objectId);
+    }
+    return Promise.resolve([]);
+  }
+
+  releaseObject(objectId) {
+    if (this._impl.releaseObject) {
+      return this._impl.releaseObject(objectId);
+    }
+    return Promise.resolve();
+  }
 }
 
 /**

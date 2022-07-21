@@ -656,15 +656,23 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     }
 
     for (const variable of this.variables) {
-      let sourceVar;
+      let sourceVar: SDK.RemoteObject.RemoteObject|undefined;
       try {
-        sourceVar = await getValueTreeForExpression(this.#callFrame, this.#plugin, variable.name, ({
-                                                      generatePreview: false,
-                                                      includeCommandLineAPI: true,
-                                                      objectGroup: 'backtrace',
-                                                      returnByValue: false,
-                                                      silent: false,
-                                                    } as SDK.RuntimeModel.EvaluationOptions));
+        const evalResult = await this.#plugin.evaluate(variable.name, getRawLocation(this.#callFrame), this.stopId);
+        if (evalResult) {
+          sourceVar = new ExtensionRemoteObject(this.#callFrame, evalResult, this.#plugin);
+        }
+        // For backwards compatibility, fall back to the legacy API if the plugin doesn't define the new one.
+        // TODO(crbug.com/1342848) Remove
+        if (!sourceVar) {
+          sourceVar = await getValueTreeForExpression(this.#callFrame, this.#plugin, variable.name, ({
+                                                        generatePreview: false,
+                                                        includeCommandLineAPI: true,
+                                                        objectGroup: 'backtrace',
+                                                        returnByValue: false,
+                                                        silent: false,
+                                                      } as SDK.RuntimeModel.EvaluationOptions));
+        }
       } catch (e) {
         console.warn(e);
         sourceVar = new SDK.RemoteObject.LocalJSONObject(undefined);
@@ -918,7 +926,7 @@ export class DebuggerLanguagePluginManager implements
     error: string,
   }|null> {
     const {script} = callFrame;
-    const {expression} = options;
+    const {expression, returnByValue, throwOnSideEffect} = options;
     const {plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
       return null;
@@ -929,9 +937,20 @@ export class DebuggerLanguagePluginManager implements
       return null;
     }
 
+    if (returnByValue) {
+      return {error: 'Cannot return by value'};
+    }
+    if (throwOnSideEffect) {
+      return {error: 'Cannot guarantee side-effect freedom'};
+    }
+
     try {
-      const object = await getValueTreeForExpression(callFrame, plugin, expression, options);
-      return {object, exceptionDetails: undefined};
+      const object = await plugin.evaluate(expression, location, this.stopIdForCallFrame(callFrame));
+      if (!object) {
+        const object = await getValueTreeForExpression(callFrame, plugin, expression, options);
+        return {object, exceptionDetails: undefined};
+      }
+      return {object: new ExtensionRemoteObject(callFrame, object, plugin), exceptionDetails: undefined};
     } catch (error) {
       if (error instanceof FormattingError) {
         const {exception: object, exceptionDetails} = error;
@@ -1542,4 +1561,12 @@ class ModelData {
 export interface DebuggerLanguagePlugin extends Chrome.DevTools.LanguageExtensionPlugin {
   name: string;
   handleScript(script: SDK.Script.Script): boolean;
+
+  // These are optional in the public interface for compatibility purposes, but ExtensionAPI handles the missing
+  // functions gracefully, so we can mark them non-optional here.
+  // TODO(crbug.com/1342848) Remove
+  evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: unknown):
+      Promise<Chrome.DevTools.RemoteObject|null>;
+  getProperties(objectId: Chrome.DevTools.RemoteObjectId): Promise<Chrome.DevTools.PropertyDescriptor[]>;
+  releaseObject(objectId: Chrome.DevTools.RemoteObjectId): Promise<void>;
 }

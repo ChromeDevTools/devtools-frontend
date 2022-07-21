@@ -365,38 +365,40 @@ describe('The Sources Tab', async function() {
     });
   });
 
-  it('automatically ignore-lists third party code from source maps', async function() {
-    const {target} = getBrowserAndPages();
-    await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
+  // Flaky - timeouts almost every time on mac.
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1346228] automatically ignore-lists third party code from source maps', async function() {
+        const {target} = getBrowserAndPages();
+        await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
 
-    let scriptEvaluation: Promise<unknown>;
-    const breakLocationOuterRegExp = /index\.js:12$/;
+        let scriptEvaluation: Promise<unknown>;
+        const breakLocationOuterRegExp = /index\.js:12$/;
 
-    await step('Run to breakpoint', async () => {
-      scriptEvaluation = target.evaluate('window.foo()');
+        await step('Run to breakpoint', async () => {
+          scriptEvaluation = target.evaluate('window.foo()');
 
-      const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
-      assert.match(scriptLocation, breakLocationOuterRegExp);
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-    });
+          const scriptLocation = await waitForStackTopMatch(breakLocationOuterRegExp);
+          assert.match(scriptLocation, breakLocationOuterRegExp);
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Toggle to show ignore-listed frames', async () => {
-      await click('.ignore-listed-message-label');
-      await waitFor('.ignore-listed-call-frame:not(.hidden)');
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
-    });
+        await step('Toggle to show ignore-listed frames', async () => {
+          await click('.ignore-listed-message-label');
+          await waitFor('.ignore-listed-call-frame:not(.hidden)');
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'vendor', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Toggle back off', async () => {
-      await click('.ignore-listed-message-label');
-      await waitFor('.ignore-listed-call-frame.hidden');
-      assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
-    });
+        await step('Toggle back off', async () => {
+          await click('.ignore-listed-message-label');
+          await waitFor('.ignore-listed-call-frame.hidden');
+          assert.deepEqual(await getCallFrameNames(), ['baz', 'bar', 'foo', '(anonymous)']);
+        });
 
-    await step('Resume execution', async () => {
-      await click(RESUME_BUTTON);
-      await scriptEvaluation;
-    });
-  });
+        await step('Resume execution', async () => {
+          await click(RESUME_BUTTON);
+          await scriptEvaluation;
+        });
+      });
 
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();

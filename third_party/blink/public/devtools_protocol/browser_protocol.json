@@ -1,4 +1,8 @@
 {
+    "version": {
+        "major": "1",
+        "minor": "3"
+    },
     "domains": [
         {
             "domain": "Accessibility",
@@ -25773,9 +25777,5 @@
                 }
             ]
         }
-    ],
-    "version": {
-        "major": "1",
-        "minor": "3"
-    }
+    ]
 }

@@ -42,7 +42,7 @@ USE_PYTHON3 = True
 
 def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
     if isinstance(script_path, six.string_types):
-        script_path = [input_api.python_executable, script_path]
+        script_path = [input_api.python3_executable, script_path]
 
     start_time = time.time()
     process = input_api.subprocess.Popen(script_path + args,

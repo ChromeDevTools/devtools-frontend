@@ -11,7 +11,7 @@ import {
   clickStartButton,
   navigateToLighthouseTab,
   selectCategories,
-  waitForLHR,
+  waitForResult,
 } from '../helpers/lighthouse-helpers.js';
 
 // This test will fail (by default) in headful mode, as the target page never gets painted.
@@ -52,9 +52,9 @@ describe('request blocking', async function() {
 
     await clickStartButton();
 
-    const lighthouseResult = await waitForLHR();
+    const {lhr} = await waitForResult();
 
-    const requests = lighthouseResult.audits['network-requests'].details.items;
+    const requests = lhr.audits['network-requests'].details.items;
 
     const trimmedRequests = requests.map((item: Record<string, unknown>) => {
       return {

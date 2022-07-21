@@ -74,8 +74,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {
-           const input = document.createElement("input");
-           input.type = "checkbox";
+           const input = document.createElement('input');
+           input.type = 'checkbox';
            return input;
          })()`,
         false, false);
@@ -111,8 +111,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {
-           const input = document.createElement("input");
-           input.type = "file";
+           const input = document.createElement('input');
+           input.type = 'file';
            return input;
          })()`,
         false, false);
@@ -142,6 +142,44 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
 
     assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
     assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
+  });
+
+  it('visually distinguishes important DOM properties for anchors', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
+    const treeOutline = await setupTreeOutline(
+        `(() => {
+           const a = document.createElement('a');
+           a.href = 'https://www.google.com:1234/foo/bar/baz?hello=world#what';
+           const code = document.createElement('code');
+           code.innerHTML = 'hello world';
+           a.append(code);
+           return a;
+         })()`,
+        false, false);
+
+    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
+    const expected = new Set<string>([
+      // https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element
+      'text: "hello world"',
+      // https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils
+      'href: "https://www.google.com:1234/foo/bar/baz?hello=world#what"',
+      'origin: "https://www.google.com:1234"',
+      'protocol: "https:"',
+      'hostname: "www.google.com"',
+      'port: "1234"',
+      'pathname: "/foo/bar/baz"',
+      'search: "?hello=world"',
+      'hash: "#what"',
+    ]);
+
+    for (const element of webidlProperties) {
+      const textContent = element.querySelector('.name-and-value')?.textContent;
+      if (textContent && expected.has(textContent)) {
+        expected.delete(textContent);
+      }
+    }
+
+    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
   });
 });
 

@@ -30,6 +30,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import type * as Components from '../utils/utils.js';
+import * as Root from '../../../../core/root/root.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as LinearMemoryInspector from '../../../components/linear_memory_inspector/linear_memory_inspector.js';
@@ -1118,10 +1119,12 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedValueElement = this.createExpandedValueElement(this.property.value);
     }
 
+    const experiment = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
+
     let adorner: Element|string = '';
     let container: Element;
 
-    if (this.property.webIdl?.applicable) {
+    if (this.property.webIdl?.applicable && experiment) {
       const icon = new IconButton.Icon.Icon();
       icon.data = {
         iconName: 'star_outline',
@@ -1148,7 +1151,10 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.removeChildren();
     this.rowContainer = (container as HTMLElement);
     this.listItemElement.appendChild(this.rowContainer);
-    this.listItemElement.dataset.webidl = this.property.webIdl?.applicable ? 'true' : 'false';
+
+    if (experiment) {
+      this.listItemElement.dataset.webidl = this.property.webIdl?.applicable ? 'true' : 'false';
+    }
   }
 
   private updatePropertyPath(): void {

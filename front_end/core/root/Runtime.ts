@@ -293,6 +293,7 @@ export enum ExperimentName {
   INSTRUMENTATION_BREAKPOINTS = 'instrumentationBreakpoints',
   CSS_AUTHORING_HINTS = 'cssAuthoringHints',
   AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
+  IMPORTANT_DOM_PROPERTIES = 'importantDOMProperties',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

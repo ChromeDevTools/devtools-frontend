@@ -14,6 +14,7 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {
   addBreakpointForLine,
@@ -53,7 +54,8 @@ describe('Ignore list', async function() {
     await scriptEvaluation;
   });
 
-  it('shows no toggle when everything is ignore-listed', async function() {
+  // Flaky - timeouts on mac often lately.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1346232] shows no toggle when everything is ignore-listed', async function() {
     await setIgnoreListPattern('multi|puppeteer');
     const {target, frontend} = getBrowserAndPages();
 

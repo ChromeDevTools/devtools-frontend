@@ -72,23 +72,22 @@ export class PreviewToggle extends HTMLElement {
     render(
       html`
       <div class="container">
-        <div class="checkbox-line">
-          <label class="experiment-preview">
-            <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name}/>
-            <${IconButton.Icon.Icon.litTagName} .data=${{
-              iconName: 'ic_preview_feature',
-              width: '16px',
-              height: '16px',
-              color: 'var(--color-text-secondary)',
-            } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>${this.#name}
-          </label>
-          ${this.#feedbackURL && !this.#helperText
-            ? html`<div class="feedback"><x-link class="x-link" href=${this.#feedbackURL}>${i18nString(UIStrings.shortFeedbackLink)}</x-link></div>`
-            : nothing}
-        </div>
+        <label class="experiment-preview">
+          <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name}/>
+          <${IconButton.Icon.Icon.litTagName} .data=${{
+            iconName: 'ic_preview_feature',
+            width: '16px',
+            height: '16px',
+            color: 'var(--color-text-secondary)',
+          } as IconButton.Icon.IconData}>
+          </${IconButton.Icon.Icon.litTagName}>${this.#name}
+        </label>
+        <div class="spacer"></div>
+        ${this.#feedbackURL && !this.#helperText
+          ? html`<div class="feedback"><x-link class="x-link" href=${this.#feedbackURL}>${i18nString(UIStrings.shortFeedbackLink)}</x-link></div>`
+          : nothing}
         ${this.#learnMoreURL
-          ? html`<x-link class="x-link" href=${this.#learnMoreURL}>${i18nString(UIStrings.learnMoreLink)}</x-link>`
+          ? html`<div class="learn-more"><x-link class="x-link" href=${this.#learnMoreURL}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>`
           : nothing}
         <div class="helper">
           ${this.#helperText && this.#feedbackURL

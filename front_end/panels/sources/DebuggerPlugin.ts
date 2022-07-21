@@ -235,6 +235,9 @@ export class DebuggerPlugin extends Plugin {
     Common.Settings.Settings.instance()
         .moduleSetting('skipContentScripts')
         .addChangeListener(this.showIgnoreListInfobarIfNeeded, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
+        .addChangeListener(this.showIgnoreListInfobarIfNeeded, this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
@@ -1624,6 +1627,9 @@ export class DebuggerPlugin extends Plugin {
         .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
     Common.Settings.Settings.instance()
         .moduleSetting('skipContentScripts')
+        .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
         .removeChangeListener(this.showIgnoreListInfobarIfNeeded, this);
     super.dispose();
 

@@ -9548,6 +9548,12 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Âd́d̂ ṕât́t̂ér̂ń..."
   },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Âút̂óm̂át̂íĉál̂ĺŷ ád̂d́ k̂ńôẃn̂ t́ĥír̂d́-p̂ár̂t́ŷ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Âd́d̂ śôúr̂ćêś f̂ŕôḿ t̂h́ê x_google_ignoreList f́îél̂d́ f̂ŕôḿ ŝóûŕĉé m̂áp̂ś t̂ó t̂h́ê íĝńôŕê ĺîśt̂"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "B̂éĥáv̂íôŕ"
   },

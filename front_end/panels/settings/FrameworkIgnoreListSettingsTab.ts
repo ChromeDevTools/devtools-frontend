@@ -26,6 +26,15 @@ const UIStrings = {
   */
   ignoreListContentScriptsExtension: 'Add content scripts to ignore list (extension scripts in the page)',
   /**
+  *@description Text in Framework Ignore List Settings Tab of the Settings
+  */
+  automaticallyIgnoreListKnownThirdPartyScripts: 'Automatically add known third-party scripts to ignore list',
+  /**
+  *@description Text in Framework Ignore List Settings Tab of the Settings
+  */
+  automaticallyIgnoreListKnownThirdPartyScriptsTooltip:
+      'Add sources from the `x_google_ignoreList` field from source maps to the ignore list',
+  /**
   *@description Ignore List label in Framework Ignore List Settings Tab of the Settings
   */
   ignoreList: 'Ignore List',
@@ -97,6 +106,13 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         i18nString(UIStrings.ignoreListContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
     UI.Tooltip.Tooltip.install(ignoreListContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
+
+    const automaticallyIgnoreList = this.contentElement.createChild('div', 'automatically-ignore-list');
+    automaticallyIgnoreList.appendChild(UI.SettingsUI.createSettingCheckbox(
+        i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
+        Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts'), true));
+    UI.Tooltip.Tooltip.install(
+        automaticallyIgnoreList, i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScriptsTooltip));
 
     this.ignoreListLabel = i18nString(UIStrings.ignoreList);
     this.disabledLabel = i18nString(UIStrings.disabled);

@@ -1155,6 +1155,7 @@
       'showWhitespacesInEditor',
       'sidebarPosition',
       'skipContentScripts',
+      'automaticallyIgnoreListKnownThirdPartyScripts',
       'skipStackFramesPattern',
       'sourceMapInfobarDisabled',
       'sourcesPanelDebuggerSidebarSplitViewState',

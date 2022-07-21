@@ -232,7 +232,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       this.processPendingEvents(frame);
       this.dispatchEventToListeners(Events.MainFrameNavigated, frame);
       const networkManager = this.target().model(NetworkManager);
-      if (networkManager) {
+      if (networkManager && frame.isTopFrame()) {
         networkManager.clearRequests();
       }
     }

@@ -914,8 +914,13 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     const oldDispatcher = (NetworkManager.forRequest(request) as NetworkManager).dispatcher;
     oldDispatcher.#requestsById.delete(requestId);
     oldDispatcher.#requestsByURL.delete(request.url());
+    const builder = oldDispatcher.#requestIdToExtraInfoBuilder.get(requestId);
+    oldDispatcher.#requestIdToExtraInfoBuilder.delete(requestId);
     this.#requestsById.set(requestId, request);
     this.#requestsByURL.set(request.url(), request);
+    if (builder) {
+      this.#requestIdToExtraInfoBuilder.set(requestId, builder);
+    }
     requestToManagerMap.set(request, this.#manager);
     return request;
   }
@@ -981,9 +986,21 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   clearRequests(): void {
-    this.#requestsById.clear();
-    this.#requestsByURL.clear();
-    this.#requestIdToExtraInfoBuilder.clear();
+    for (const [requestId, request] of this.#requestsById) {
+      if (request.finished) {
+        this.#requestsById.delete(requestId);
+      }
+    }
+    for (const [requestURL, request] of this.#requestsByURL) {
+      if (request.finished) {
+        this.#requestsByURL.delete(requestURL);
+      }
+    }
+    for (const [requestId, builder] of this.#requestIdToExtraInfoBuilder) {
+      if (builder.isFinished()) {
+        this.#requestIdToExtraInfoBuilder.delete(requestId);
+      }
+    }
   }
 
   webTransportCreated({transportId, url: requestURL, timestamp: time, initiator}:
@@ -1641,6 +1658,10 @@ class ExtraInfoBuilder {
   finished(): void {
     this.#finishedInternal = true;
     this.updateFinalRequest();
+  }
+
+  isFinished(): boolean {
+    return this.#finishedInternal;
   }
 
   private sync(index: number): void {

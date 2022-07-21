@@ -185,8 +185,7 @@ describe('The Network Request view', async () => {
     }
   }
 
-  // Flaky on mac bots.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1342537] shows request headers and payload', async () => {
+  it('shows request headers and payload', async () => {
     await navigateToNetworkTab('headers-and-payload.html');
 
     await waitForSomeRequestsToAppear(2);

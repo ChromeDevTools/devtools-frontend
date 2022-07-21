@@ -61,7 +61,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
   });
 
-  it('calls clearRequests on frameNavigated', () => {
+  it('calls clearRequests on top frame navigated', () => {
     if (!networkManager) {
       throw new Error('No networkManager');
     }
@@ -80,6 +80,28 @@ describeWithMockConnection('ResourceTreeModel', () => {
       },
     });
     assert.isTrue(clearRequests.calledOnce, 'Not called just once');
+  });
+
+  it('does not call clearRequests on non-top frame navigated', () => {
+    if (!networkManager) {
+      throw new Error('No networkManager');
+    }
+    const clearRequests = sinon.stub(networkManager, 'clearRequests');
+    dispatchEvent(target, 'Page.frameNavigated', {
+      frame: {
+        id: 'main',
+        parentId: 'parentId',
+        loaderId: 'foo',
+        url: 'http://example.com',
+        domainAndRegistry: 'example.com',
+        securityOrigin: 'http://example.com',
+        mimeType: 'text/html',
+        secureContextType: Protocol.Page.SecureContextType.Secure,
+        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
+        gatedAPIFeatures: [],
+      },
+    });
+    assert.isTrue(clearRequests.notCalled, 'Called unexpctedly');
   });
 
   it('records prerenderingStatus', () => {

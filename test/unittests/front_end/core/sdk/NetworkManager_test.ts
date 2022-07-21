@@ -57,12 +57,33 @@ describe('NetworkDispatcher', () => {
       assert.exists(networkDispatcher.requestForId('mockId'));
     });
 
-    it('is cleared on clearRequests()', () => {
+    it('clears finished requests on clearRequests()', () => {
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
       networkDispatcher.loadingFinished(loadingFinishedEvent);
 
+      const unfinishedRequestWillBeSentEvent = {requestId: 'unfinishedRequestId', request: {url: 'example.com'}} as
+          Protocol.Network.RequestWillBeSentEvent;
+      networkDispatcher.requestWillBeSent(unfinishedRequestWillBeSentEvent);
+
       networkDispatcher.clearRequests();
       assert.notExists(networkDispatcher.requestForId('mockId'));
+      assert.exists(networkDispatcher.requestForId('unfinishedRequestId'));
+    });
+
+    it('preserves extra info for unfinished clearRequests()', () => {
+      const requestWillBeSentExtraInfoEvent = {
+        requestId: 'mockId',
+        associatedCookies: [],
+        headers: {'Header-From-Extra-Info': 'foo'},
+        connectTiming: {requestTime: 0},
+      } as unknown as Protocol.Network.RequestWillBeSentExtraInfoEvent;
+      networkDispatcher.requestWillBeSentExtraInfo(requestWillBeSentExtraInfoEvent);
+
+      networkDispatcher.clearRequests();
+      networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
+      assert.exists(networkDispatcher.requestForId('mockId'));
+      assert.deepEqual(
+          networkDispatcher.requestForId('mockId')?.requestHeaders(), [{name: 'Header-From-Extra-Info', value: 'foo'}]);
     });
 
     it('response headers are overwritten by request interception', () => {

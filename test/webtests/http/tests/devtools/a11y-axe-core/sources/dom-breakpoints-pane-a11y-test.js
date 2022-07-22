@@ -29,11 +29,27 @@
   const domBreakpointsPane = BrowserDebugger.DOMBreakpointsSidebarPane.instance();
 
   TestRunner.addResult(`DOM breakpoints container text content: ${domBreakpointContainer.contentElement.deepTextContent()}`);
+  TestRunner.addResult(
+      `DOM breakpoints container ARIA descriptions: ${getDeepARIADescriptions(domBreakpointContainer.contentElement)}`);
   TestRunner.addResult(`DOM breakpoints pane text content: ${domBreakpointsPane.contentElement.deepTextContent()}`);
+  TestRunner.addResult(
+      `DOM breakpoints pane ARIA descriptions: ${getDeepARIADescriptions(domBreakpointsPane.contentElement)}`);
 
   TestRunner.addResult(
       'Running the axe-core linter on the DOM breakpoints pane.');
 
   await AxeCoreTestRunner.runValidation(domBreakpointContainer.element);
   TestRunner.completeTest();
+
+  function getDeepARIADescriptions(root) {
+    let node = root;
+    const descriptions = [];
+    while (node) {
+      if (node.nodeType === node.ELEMENT_NODE && node.hasAttribute('aria-description')) {
+        descriptions.push(node.getAttribute('aria-description'));
+      }
+      node = node.traverseNextNode(root);
+    }
+    return descriptions.join();
+  }
 })();

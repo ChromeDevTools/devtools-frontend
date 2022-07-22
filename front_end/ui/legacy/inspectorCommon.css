@@ -629,15 +629,6 @@ button.link:focus-visible {
   --override-link-focus-background-color: rgb(230 230 230 / 8%);
 }
 
-/* See ARIAUtils.js */
-[data-aria-utils-animation-hack] {
-  animation: ANIMATION-HACK 0s;
-}
-
-@keyframes ANIMATION-HACK {
-  /* empty keyframe to trigger the animation hack above */
-}
-
 @media (forced-colors: active) {
   .dimmed,
   .chrome-select:disabled {

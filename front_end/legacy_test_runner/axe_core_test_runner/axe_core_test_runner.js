@@ -133,7 +133,7 @@ const DEFAULT_CONFIG = {
     // ignored by the 'aria-valid-attr' rule.
     // This should be removed after axe-core is updated.
     // See: https://github.com/dequelabs/axe-core/issues/1457
-    {id: 'aria-valid-attr', options: ['aria-placeholder']}
+    {id: 'aria-valid-attr', options: ['aria-placeholder', 'aria-description']}
   ],
   runOnly: {type: 'tags', values: {include: ['wcag2a', 'best-practice'], exclude: ['experimental']}}
 };

@@ -4,7 +4,7 @@ browsers should be placed in third_party/blink/web_tests/external/wpt.
 When using the [integrated checkout workflow](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/workflows.md#Integrated-checkout), web tests from the DevTools repository can be run as via the following command:
 
 ```bash
-third_party/blink/tools/run_web_tests.py -t Default --layout-tests-directory=third_party/devtools-frontend/src/test/webtests/ http/tests/devtools/lighthouse/
+third_party/blink/tools/run_web_tests.py -t Default --layout-tests-directory=third_party/devtools-frontend/test/webtests/ http/tests/devtools/lighthouse/
 ```
 
 For more information about blink tests, please see the Chromium documentation on Web Tests (formerly known as "Layout Tests" or "LayoutTests"):

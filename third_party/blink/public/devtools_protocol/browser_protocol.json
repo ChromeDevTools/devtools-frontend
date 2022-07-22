@@ -1577,11 +1577,14 @@
                         "LocalCSSFileExtensionRejected",
                         "MediaSourceAbortRemove",
                         "MediaSourceDurationTruncatingBuffered",
+                        "NavigateEventRestoreScroll",
+                        "NavigateEventTransitionWhile",
                         "NoSysexWebMIDIWithoutPermission",
                         "NotificationInsecureOrigin",
                         "NotificationPermissionRequestedIframe",
                         "ObsoleteWebRtcCipherSuite",
                         "OpenWebDatabaseInsecureContext",
+                        "OverflowVisibleOnReplacedElement",
                         "PictureSourceSrc",
                         "PrefixedCancelAnimationFrame",
                         "PrefixedRequestAnimationFrame",
@@ -19110,6 +19113,22 @@
                         {
                             "name": "origin",
                             "description": "Security origin.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageTypes",
+                            "description": "Comma separated list of StorageType to clear.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "clearDataForStorageKey",
+                    "description": "Clears storage for storage key.",
+                    "parameters": [
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key.",
                             "type": "string"
                         },
                         {

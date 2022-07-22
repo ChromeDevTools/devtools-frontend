@@ -3417,6 +3417,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Clears storage for storage key.
+     */
+    'Storage.clearDataForStorageKey': {
+      paramsType: [Protocol.Storage.ClearDataForStorageKeyRequest];
+      returnType: void;
+    };
+    /**
      * Returns all browser cookies.
      */
     'Storage.getCookies': {

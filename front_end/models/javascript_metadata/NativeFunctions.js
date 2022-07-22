@@ -2239,7 +2239,8 @@ export const NativeFunctions = [
   },
   {
     name: 'scroll',
-    signatures: [['?options'],['x','y']]
+    signatures: [['?options'],['x','y']],
+    receivers: ['Element','Window']
   },
   {
     name: 'scrollBy',
@@ -6394,6 +6395,10 @@ export const NativeFunctions = [
   {
     name: 'transitionWhile',
     signatures: [['newNavigationAction','?options']]
+  },
+  {
+    name: 'intercept',
+    signatures: [['?options']]
   },
   {
     name: 'NavigationCurrentEntryChangeEvent',

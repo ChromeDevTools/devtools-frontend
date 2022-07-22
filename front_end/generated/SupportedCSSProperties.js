@@ -1915,6 +1915,12 @@ export const generatedProperties = [
   "name": "height"
  },
  {
+  "name": "hover-pop-up-delay"
+ },
+ {
+  "name": "hover-pop-up-hide-delay"
+ },
+ {
   "inherited": true,
   "keywords": [
    "none",

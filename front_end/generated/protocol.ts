@@ -1041,11 +1041,14 @@ export namespace Audits {
     LocalCSSFileExtensionRejected = 'LocalCSSFileExtensionRejected',
     MediaSourceAbortRemove = 'MediaSourceAbortRemove',
     MediaSourceDurationTruncatingBuffered = 'MediaSourceDurationTruncatingBuffered',
+    NavigateEventRestoreScroll = 'NavigateEventRestoreScroll',
+    NavigateEventTransitionWhile = 'NavigateEventTransitionWhile',
     NoSysexWebMIDIWithoutPermission = 'NoSysexWebMIDIWithoutPermission',
     NotificationInsecureOrigin = 'NotificationInsecureOrigin',
     NotificationPermissionRequestedIframe = 'NotificationPermissionRequestedIframe',
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
     OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
+    OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
     PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
@@ -12889,6 +12892,17 @@ export namespace Storage {
      * Security origin.
      */
     origin: string;
+    /**
+     * Comma separated list of StorageType to clear.
+     */
+    storageTypes: string;
+  }
+
+  export interface ClearDataForStorageKeyRequest {
+    /**
+     * Storage key.
+     */
+    storageKey: string;
     /**
      * Comma separated list of StorageType to clear.
      */

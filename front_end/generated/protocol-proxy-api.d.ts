@@ -2878,6 +2878,11 @@ declare namespace ProtocolProxyApi {
     invoke_clearDataForOrigin(params: Protocol.Storage.ClearDataForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Clears storage for storage key.
+     */
+    invoke_clearDataForStorageKey(params: Protocol.Storage.ClearDataForStorageKeyRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Returns all browser cookies.
      */
     invoke_getCookies(params: Protocol.Storage.GetCookiesRequest): Promise<Protocol.Storage.GetCookiesResponse>;

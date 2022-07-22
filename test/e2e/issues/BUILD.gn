@@ -12,6 +12,7 @@ node_ts_library("issues") {
     "cors-private-network-issues_test.ts",
     "csp-violations-tab_test.ts",
     "deprecation-issues_test.ts",
+    "expect-ct-issues_test.ts",
     "generic-issues_test.ts",
     "group-by-categories_test.ts",
     "group-by-kind_test.ts",

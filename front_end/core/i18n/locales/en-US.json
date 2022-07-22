@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "The Expect-CT header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Check the feature status page for more details."
   },

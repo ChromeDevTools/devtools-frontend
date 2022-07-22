@@ -100,6 +100,10 @@ const UIStrings = {
    */
   eventPath: '`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead.',
   /**
+   * @description This message is shown when the deprecated Expect-CT header is present.
+   */
+  expectCTHeader: 'The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.',
+  /**
    * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
   geolocationInsecureOrigin:
@@ -373,6 +377,11 @@ export class DeprecationIssue extends Issue {
         messageFunction = i18nLazyString(UIStrings.eventPath);
         feature = 5726124632965120;
         milestone = 109;
+        break;
+      case Protocol.Audits.DeprecationIssueType.ExpectCTHeader:
+        messageFunction = i18nLazyString(UIStrings.expectCTHeader);
+        feature = 6244547273687040;
+        milestone = 107;
         break;
       case Protocol.Audits.DeprecationIssueType.GeolocationInsecureOrigin:
         messageFunction = i18nLazyString(UIStrings.geolocationInsecureOrigin);

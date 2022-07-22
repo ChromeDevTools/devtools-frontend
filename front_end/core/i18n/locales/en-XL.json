@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path îś d̂ép̂ŕêćât́êd́ âńd̂ ẃîĺl̂ b́ê ŕêḿôv́êd́. P̂ĺêáŝé ûśê Event.composedPath() ín̂śt̂éâd́."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "T̂h́ê Expect-CT h́êád̂ér̂ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂. Ćĥŕôḿê ŕêq́ûír̂éŝ Ćêŕt̂íf̂íĉát̂é T̂ŕâńŝṕâŕêńĉý f̂ór̂ ál̂ĺ p̂úb̂ĺîćl̂ý t̂ŕûśt̂éd̂ ćêŕt̂íf̂íĉát̂éŝ íŝśûéd̂ áf̂t́êŕ Âṕr̂íl̂ 30, 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Ĉh́êćk̂ t́ĥé f̂éât́ûŕê śt̂át̂úŝ ṕâǵê f́ôŕ m̂ór̂é d̂ét̂áîĺŝ."
   },

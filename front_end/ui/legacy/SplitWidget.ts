@@ -719,6 +719,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   hideDefaultResizer(noSplitter?: boolean): void {
+    this.resizerElementInternal.classList.toggle('hidden', Boolean(noSplitter));
     this.uninstallResizer(this.resizerElementInternal);
     this.sidebarElementInternal.classList.toggle('no-default-splitter', Boolean(noSplitter));
   }

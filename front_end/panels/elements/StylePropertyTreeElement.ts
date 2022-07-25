@@ -716,7 +716,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const authoringHint = this.getAuthoringHint(this.computedStyles, this.parentsComputedStyles);
-    if (authoringHint !== null) {
+    const showAuthoringHint = authoringHint !== null && this.property.parsedOk;
+    if (showAuthoringHint) {
       const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
       const hintPopover =
           new UI.PopoverHelper.PopoverHelper(hintIcon, event => this.handleHintPopoverRequest(authoringHint, event));

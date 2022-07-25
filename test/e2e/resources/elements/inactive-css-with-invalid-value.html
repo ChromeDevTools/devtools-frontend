@@ -1,0 +1,31 @@
+<!--
+  Copyright 2022 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<style>
+  #wrapper {
+    width: 100px;
+    border: 1px solid black;
+    display: block;
+    align-content: center;
+    gap: 15px;
+  }
+
+  #wrapper > div {
+    width: 100px;
+    height: 50px;
+    background-color: #4285F4;
+    margin-top: 15px;
+    flex: invalid;
+  }
+
+</style>
+
+<h1>Inactive CSS with invalid value</h1>
+
+<div id="wrapper">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>

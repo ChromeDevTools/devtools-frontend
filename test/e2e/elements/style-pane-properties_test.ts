@@ -1055,6 +1055,18 @@ describe('The Styles pane', async () => {
     assert.deepEqual(propertiesWithHints, ['align-content']);
   });
 
+  it('does not show authoring hint when property value is invalid', async () => {
+    await enableExperiment('cssAuthoringHints');
+
+    await goToResourceAndWaitForStyleSection('elements/inactive-css-with-invalid-value.html');
+    await waitForStyleRule('body');
+    await waitForAndClickTreeElementWithPartialText('wrapper');
+    await waitForStyleRule('#wrapper');
+
+    const propertiesWithHints = await getPropertiesWithHints();
+    assert.deepEqual(propertiesWithHints, []);
+  });
+
   it('can display @scope at-rules', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-scope.html');
 

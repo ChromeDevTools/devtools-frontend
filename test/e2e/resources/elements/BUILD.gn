@@ -39,6 +39,7 @@ copy_to_gen("elements") {
     "highlight-pseudo-inheritance.html",
     "hover.html",
     "inactive-css-page.html",
+    "inactive-css-with-invalid-value.html",
     "limited-quirks-mode.html",
     "low-contrast.html",
     "multiple-constructed-stylesheets.html",

@@ -546,7 +546,3 @@
     --override-error-text-color: HighlightText;
   }
 }
-
-[slot="insertion-point-sidebar"] {
-  contain: layout style;
-}

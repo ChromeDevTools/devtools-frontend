@@ -65,7 +65,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   hash: string;
   readonly #isContentScriptInternal: boolean;
   readonly #isLiveEditInternal: boolean;
-  sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
+  sourceMapURL?: string;
   debugSymbols: Protocol.Debugger.DebugSymbols|null;
   hasSourceURL: boolean;
   contentLength: number;
@@ -79,10 +79,9 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   constructor(
       debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString,
       startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number,
-      hash: string, isContentScript: boolean, isLiveEdit: boolean,
-      sourceMapURL: Platform.DevToolsPath.UrlString|undefined, hasSourceURL: boolean, length: number,
-      isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
-      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
+      hash: string, isContentScript: boolean, isLiveEdit: boolean, sourceMapURL: string|undefined,
+      hasSourceURL: boolean, length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
+      codeOffset: number|null, scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
       embedderName: Platform.DevToolsPath.UrlString|null) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;

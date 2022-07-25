@@ -27,7 +27,9 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   readonly #target: Target;
   #isEnabled: boolean;
   readonly #relativeSourceURL: Map<T, Platform.DevToolsPath.UrlString>;
-  readonly #relativeSourceMapURL: Map<T, Platform.DevToolsPath.UrlString>;
+  // Stores the raw sourceMappingURL as provided by V8. These are not guaranteed to
+  // be valid URLs and will be checked and resolved once `attachSourceMap` is called.
+  readonly #relativeSourceMapURL: Map<T, string>;
   #resolvedSourceMapId: Map<T, string>;
   readonly #sourceMapById: Map<string, SourceMap>;
   #sourceMapIdToLoadingClients: Platform.MapUtilities.Multimap<string, T>;
@@ -157,8 +159,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     return `${sourceURL}:${sourceMapURL}`;
   }
 
-  private resolveRelativeURLs(
-      sourceURL: Platform.DevToolsPath.UrlString, sourceMapURL: Platform.DevToolsPath.UrlString): {
+  private resolveRelativeURLs(sourceURL: Platform.DevToolsPath.UrlString, sourceMapURL: string): {
     sourceURL: Platform.DevToolsPath.UrlString,
     sourceMapURL: Platform.DevToolsPath.UrlString,
     sourceMapId: string,
@@ -182,7 +183,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
   attachSourceMap(
       client: T, relativeSourceURL: Platform.DevToolsPath.UrlString|undefined,
-      relativeSourceMapURL: Platform.DevToolsPath.UrlString|undefined): void {
+      relativeSourceMapURL: string|undefined): void {
     // TODO(chromium:1011811): Strengthen the type to obsolte the undefined check once core/sdk/ is fully typescriptified.
     if (relativeSourceURL === undefined || !relativeSourceMapURL) {
       return;

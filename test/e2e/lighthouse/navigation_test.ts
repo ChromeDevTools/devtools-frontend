@@ -18,7 +18,8 @@ import {
 // This test will fail (by default) in headful mode, as the target page never gets painted.
 // To resolve this when debugging, just make sure the target page is visible during the lighthouse run.
 
-describe('Navigation', async function() {
+// Flaky on Mac
+describe.skipOnPlatforms(['mac'], '[crbug.com/1347220] Navigation', async function() {
   // The tests in this suite are particularly slow
   this.timeout(60_000);
 

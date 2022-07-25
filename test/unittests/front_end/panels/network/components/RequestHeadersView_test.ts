@@ -228,6 +228,27 @@ describeWithEnvironment('RequestHeadersView', () => {
     const fullRawTextContent = rawHeadersDiv.textContent?.replace(/ {2,}/g, '');
     assert.strictEqual(fullRawTextContent?.length, 4450);
   });
+
+  it('displays decoded "x-client-data"-header', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      requestHeaders: () => [{name: 'x-client-data', value: 'CJa2yQEIpLbJAQiTocsB'}],
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
+    assertElement(requestHeadersCategory, HTMLElement);
+    assert.strictEqual(
+        getCleanTextContentFromElements(requestHeadersCategory, '.header-name')[0],
+        'x-client-data:',
+    );
+    assert.isTrue((getCleanTextContentFromElements(requestHeadersCategory, '.header-value')[0])
+                      .startsWith('CJa2yQEIpLbJAQiTocsB'));
+    assert.strictEqual(
+        getCleanTextContentFromElements(requestHeadersCategory, '.header-value code')[0],
+        'message ClientVariations {// Active client experiment variation IDs.repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
+    );
+  });
 });
 
 describeWithEnvironment('RequestHeadersView\'s Category', () => {

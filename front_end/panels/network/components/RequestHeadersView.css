@@ -168,3 +168,10 @@ div.raw-headers-row {
 .inline-icon {
   vertical-align: middle;
 }
+
+.header-value code {
+  display: block;
+  white-space: pre-wrap;
+  font-size: 90%;
+  color: var(--color-text-secondary);
+}

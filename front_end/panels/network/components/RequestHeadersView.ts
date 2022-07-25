@@ -10,6 +10,7 @@ import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -24,10 +25,22 @@ const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
+  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
+  */
+  activeClientExperimentVariation: 'Active `client experiment variation IDs`.',
+  /**
+  *@description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
+  */
+  activeClientExperimentVariationIds: 'Active `client experiment variation IDs` that trigger server-side behavior.',
+  /**
   *@description Text in Headers View of the Network panel
   */
   chooseThisOptionIfTheResourceAnd:
       'Choose this option if the resource and the document are served from the same site.',
+  /**
+  *@description Text in Headers View of the Network panel for X-Client-Data HTTP headers
+  */
+  decoded: 'Decoded:',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -271,6 +284,7 @@ export class RequestHeadersComponent extends HTMLElement {
         `}
       </${Category.litTagName}>
     `;
+    // clang-format on
   }
 
   #renderRequestHeaders(): LitHtml.TemplateResult {
@@ -307,6 +321,7 @@ export class RequestHeadersComponent extends HTMLElement {
         `}
       </${Category.litTagName}>
     `;
+    // clang-format on
   }
 
   #maybeRenderProvisionalHeadersWarning(): LitHtml.LitTemplate {
@@ -341,12 +356,44 @@ export class RequestHeadersComponent extends HTMLElement {
   }
 
   #renderHeader(header: HeaderDescriptor): LitHtml.TemplateResult {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
       <div class="row">
-        <div class="header-name">${header.headerNotSet ? html`<div class="header-badge header-badge-text">not-set</div>` : ''}${header.name}:</div>
-        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">${header.value?.toString()||''}</div>
+        <div class="header-name">
+          ${header.headerNotSet ? html`
+            <div class="header-badge header-badge-text">
+              ${i18n.i18n.lockedString('not-set')}
+            </div>
+          ` : ''}${header.name}:
+        </div>
+        ${this.#renderHeaderValue(header)}
       </div>
       ${this.#maybeRenderHeaderDetails(header.details)}
+    `;
+    // clang-format on
+  }
+
+  #renderHeaderValue(header: HeaderDescriptor): LitHtml.TemplateResult {
+    const headerId = header.name.toLowerCase();
+    if (headerId === 'x-client-data') {
+      const data = ClientVariations.parseClientVariations(header.value?.toString() || '');
+      const output = ClientVariations.formatClientVariations(
+          data, i18nString(UIStrings.activeClientExperimentVariation),
+          i18nString(UIStrings.activeClientExperimentVariationIds));
+      return html`
+        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
+          ${header.value?.toString() || ''}
+          <div>${i18nString(UIStrings.decoded)}</div>
+          <code>${output}</code>
+        </div>
+      `;
+    }
+
+    return html`
+      <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
+        ${header.value?.toString() || ''}
+      </div>
     `;
   }
 

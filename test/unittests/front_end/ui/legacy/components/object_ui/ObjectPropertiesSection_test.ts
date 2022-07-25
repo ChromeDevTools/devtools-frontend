@@ -181,6 +181,34 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
 
     assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
   });
+
+  it('visually distinguishes important DOM properties for the window object', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
+    const treeOutline = await setupTreeOutline(
+        `(() => {
+           return window;
+         })()`,
+        false, false);
+
+    const webidlProperties = treeOutline.rootElement().childrenListElement.querySelectorAll('[data-webidl="true"]');
+    const expected = new Set<string>([
+      'customElements: CustomElementRegistry',
+      'document: document',
+      'frames: Window',
+      'history: History',
+      'location: Location',
+      'navigator: Navigator',
+    ]);
+
+    for (const element of webidlProperties) {
+      const textContent = element.querySelector('.name-and-value')?.textContent;
+      if (textContent && expected.has(textContent)) {
+        expected.delete(textContent);
+      }
+    }
+
+    assert.strictEqual(expected.size, 0, 'Not all expected properties were found');
+  });
 });
 
 describeWithMockConnection('ObjectPropertiesSection', () => {

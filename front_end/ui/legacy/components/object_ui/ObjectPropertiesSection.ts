@@ -224,7 +224,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     const includedWebIdlTypes = webIdlType.includes?.map(className => domPinnedProperties[className]) ?? [];
-    const includedWebIdlProps = includedWebIdlTypes.flatMap(webIdlType => Object.entries(webIdlType.props ?? {}));
+    const includedWebIdlProps = includedWebIdlTypes.flatMap(webIdlType => Object.entries(webIdlType?.props ?? {}));
     const webIdlProps = {...webIdlType.props, ...Object.fromEntries(includedWebIdlProps)};
 
     for (const property of properties) {

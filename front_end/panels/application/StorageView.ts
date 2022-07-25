@@ -473,7 +473,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   static clearByStorageKey(target: SDK.Target.Target, storageKey: string, selectedStorageTypes: string[]): void {
-    // TODO(crbug.com/1313434) Invoke protocol `clear` once it ready for storageKey
+    void target.storageAgent().invoke_clearDataForStorageKey(
+        {storageKey, storageTypes: selectedStorageTypes.join(',')});
 
     const set = new Set(selectedStorageTypes);
     const hasAll = set.has(Protocol.Storage.StorageType.All);

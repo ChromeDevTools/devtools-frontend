@@ -49,6 +49,7 @@ copy_to_gen("elements") {
     "selection-after-delete.html",
     "shadow-roots.html",
     "sidebar-event-listeners.html",
+    "simple-body-color.html",
     "simple-styled-page.html",
     "slot-element.html",
     "style-pane-properties.html",

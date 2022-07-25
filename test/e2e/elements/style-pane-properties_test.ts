@@ -32,6 +32,8 @@ import {
   expandSelectedNodeRecursively,
   waitForAndClickTreeElementWithPartialText,
   getPropertiesWithHints,
+  focusCSSPropertyValue,
+  waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
@@ -1078,5 +1080,41 @@ describe('The Styles pane', async () => {
     const scopeQuery = await waitFor('.query.editable', rule1PropertiesSection);
     const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText as string);
     assert.deepEqual(scopeQueryText, '@scope (body)', 'incorrectly displayed @supports rule');
+  });
+
+  it('cancels editing if the page is reloaded', async () => {
+    const {frontend, target} = getBrowserAndPages();
+    const green = 'rgb(0, 255, 0)';
+    const blue = 'rgb(0, 0, 255)';
+
+    async function assertBodyColor(expected: string) {
+      assert.strictEqual(
+          await target.evaluate(() => {
+            return getComputedStyle(document.body).color;
+          }),
+          expected);
+    }
+
+    async function assertIsEditing(isEditing: boolean) {
+      // .child-editing class is added by StylePropertyTreeElement when user edits a value.
+      assert.lengthOf(await frontend.$$('pierce/.child-editing'), isEditing ? 1 : 0);
+    }
+
+    await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+    await assertBodyColor(green);
+
+    // Start editing.
+    await focusCSSPropertyValue('body', 'color');
+    await frontend.keyboard.type(blue, {delay: 100});
+    await assertBodyColor(blue);
+    await assertIsEditing(true);
+
+    // Reload and wait for styles.
+    await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+
+    // Expect the editing to be discarded and the editing mode turned off.
+    await waitForCSSPropertyValue('body', 'color', green);
+    await assertBodyColor(green);
+    await assertIsEditing(false);
   });
 });

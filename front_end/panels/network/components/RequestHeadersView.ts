@@ -260,6 +260,18 @@ export class RequestHeadersComponent extends HTMLElement {
 
     const mergedHeaders = mergeHeadersWithIssues(this.#request.sortedResponseHeaders.slice(), headersWithIssues);
 
+    const blockedResponseCookies = this.#request.blockedResponseCookies();
+    const blockedCookieLineToReasons = new Map<string, Protocol.Network.SetCookieBlockedReason[]>(
+        blockedResponseCookies?.map(c => [c.cookieLine, c.blockedReasons]));
+    for (const header of mergedHeaders) {
+      if (header.name.toLowerCase() === 'set-cookie' && header.value) {
+        const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value.toString());
+        if (matchingBlockedReasons) {
+          header.setCookieBlockedReasons = matchingBlockedReasons;
+        }
+      }
+    }
+
     const toggleShowRaw = (): void => {
       this.#showResponseHeadersText = !this.#showResponseHeadersText;
       this.#render();
@@ -367,45 +379,60 @@ export class RequestHeadersComponent extends HTMLElement {
             </div>
           ` : ''}${header.name}:
         </div>
-        ${this.#renderHeaderValue(header)}
+        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
+          ${header.value?.toString() || ''}
+          ${this.#maybeRenderHeaderValueSuffix(header)}
+        </div>
       </div>
-      ${this.#maybeRenderHeaderDetails(header.details)}
+      ${this.#maybeRenderBlockedDetails(header.blockedDetails)}
     `;
     // clang-format on
   }
 
-  #renderHeaderValue(header: HeaderDescriptor): LitHtml.TemplateResult {
+  #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): LitHtml.LitTemplate {
     const headerId = header.name.toLowerCase();
+
+    if (headerId === 'set-cookie' && header.setCookieBlockedReasons) {
+      const titleText =
+          header.setCookieBlockedReasons.map(SDK.NetworkRequest.setCookieBlockedReasonToUiString).join('\n');
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      return html`
+        <${IconButton.Icon.Icon.litTagName} class="inline-icon" title=${titleText} .data=${{
+          iconName: 'warning_icon',
+          width: '12px',
+          height: '12px',
+        } as IconButton.Icon.IconData}>
+        </${IconButton.Icon.Icon.litTagName}>
+      `;
+      // clang-format on
+    }
+
     if (headerId === 'x-client-data') {
       const data = ClientVariations.parseClientVariations(header.value?.toString() || '');
       const output = ClientVariations.formatClientVariations(
           data, i18nString(UIStrings.activeClientExperimentVariation),
           i18nString(UIStrings.activeClientExperimentVariationIds));
       return html`
-        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
-          ${header.value?.toString() || ''}
-          <div>${i18nString(UIStrings.decoded)}</div>
-          <code>${output}</code>
-        </div>
+        <div>${i18nString(UIStrings.decoded)}</div>
+        <code>${output}</code>
       `;
     }
 
-    return html`
-      <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
-        ${header.value?.toString() || ''}
-      </div>
-    `;
+    return LitHtml.nothing;
   }
 
-  #maybeRenderHeaderDetails(headerDetails?: HeaderDetailsDescriptor): LitHtml.LitTemplate {
-    if (!headerDetails) {
+  #maybeRenderBlockedDetails(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
+    if (!blockedDetails) {
       return LitHtml.nothing;
     }
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
       <div class="call-to-action">
         <div class="call-to-action-body">
-          <div class="explanation">${headerDetails.explanation()}</div>
-          ${headerDetails.examples.map(example => html`
+          <div class="explanation">${blockedDetails.explanation()}</div>
+          ${blockedDetails.examples.map(example => html`
             <div class="example">
               <code>${example.codeSnippet}</code>
               ${example.comment ? html`
@@ -413,13 +440,14 @@ export class RequestHeadersComponent extends HTMLElement {
               ` : ''}
             </div>
           `)}
-          ${this.#maybeRenderHeaderDetailsLink(headerDetails)}
+          ${this.#maybeRenderBlockedDetailsLink(blockedDetails)}
         </div>
       </div>
     `;
+    // clang-format on
   }
 
-  #maybeRenderHeaderDetailsLink(headerDetails?: HeaderDetailsDescriptor): LitHtml.LitTemplate {
+  #maybeRenderBlockedDetailsLink(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
     if (this.#request && IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, IssuesManager.Issue.IssueCategory.CrossOriginEmbedderPolicy)) {
       const followLink = (): void => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.LearnMoreLinkCOEP);
@@ -441,9 +469,11 @@ export class RequestHeadersComponent extends HTMLElement {
         </div>
       `;
     }
-    if (headerDetails?.link) {
+    if (blockedDetails?.link) {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
       return html`
-        <x-link href=${headerDetails.link.url} class="link">
+        <x-link href=${blockedDetails.link.url} class="link">
           <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
             iconName: 'link_icon',
             color: 'var(--color-link)',
@@ -454,6 +484,7 @@ export class RequestHeadersComponent extends HTMLElement {
           >${i18nString(UIStrings.learnMore)}
         </x-link>
       `;
+      // clang-format on
     }
     return LitHtml.nothing;
   }
@@ -674,7 +705,7 @@ declare global {
   }
 }
 
-interface HeaderDetailsDescriptor {
+interface BlockedDetailsDescriptor {
   explanation: () => string;
   examples: Array<{
     codeSnippet: string,
@@ -689,8 +720,9 @@ interface HeaderDescriptor {
   name: string;
   value: Object|null;
   headerValueIncorrect?: boolean|null;
-  details?: HeaderDetailsDescriptor;
+  blockedDetails?: BlockedDetailsDescriptor;
   headerNotSet: boolean|null;
+  setCookieBlockedReasons?: Protocol.Network.SetCookieBlockedReason[];
 }
 
 const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescriptor>([
@@ -700,7 +732,7 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
       name: 'cross-origin-embedder-policy',
       value: null,
       headerValueIncorrect: null,
-      details: {
+      blockedDetails: {
         explanation: i18nLazyString(UIStrings.toEmbedThisFrameInYourDocument),
         examples: [{codeSnippet: 'Cross-Origin-Embedder-Policy: require-corp', comment: undefined}],
         link: {url: 'https://web.dev/coop-coep/'},
@@ -714,7 +746,7 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: null,
-      details: {
+      blockedDetails: {
         explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferent),
         examples: [
           {
@@ -737,7 +769,7 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
       name: 'cross-origin-opener-policy',
       value: null,
       headerValueIncorrect: false,
-      details: {
+      blockedDetails: {
         explanation: i18nLazyString(UIStrings.thisDocumentWasBlockedFrom),
         examples: [],
         link: {url: 'https://web.dev/coop-coep/'},
@@ -751,7 +783,7 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
-      details: {
+      blockedDetails: {
         explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentSite),
         examples: [
           {
@@ -770,7 +802,7 @@ const BlockedReasonDetails = new Map<Protocol.Network.BlockedReason, HeaderDescr
       name: 'cross-origin-resource-policy',
       value: null,
       headerValueIncorrect: true,
-      details: {
+      blockedDetails: {
         explanation: i18nLazyString(UIStrings.toUseThisResourceFromADifferentOrigin),
         examples: [
           {

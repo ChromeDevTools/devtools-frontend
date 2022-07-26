@@ -38,10 +38,8 @@ const defaultRequest = {
   ],
   requestHeadersText: () => '',
   requestHeaders: () =>
-      [{name: ':method', value: 'GET'},
-       {name: 'accept-encoding', value: 'gzip, deflate, br'},
-       {name: 'cache-control', value: 'no-cache'},
-],
+      [{name: ':method', value: 'GET'}, {name: 'accept-encoding', value: 'gzip, deflate, br'},
+       {name: 'cache-control', value: 'no-cache'}],
   responseHeadersText: `HTTP/1.1 200 OK
   age: 0
   cache-control: max-age=600
@@ -49,6 +47,7 @@ const defaultRequest = {
   content-length: 661
   `,
   wasBlocked: () => false,
+  blockedResponseCookies: () => [],
 } as unknown as SDK.NetworkRequest.NetworkRequest;
 
 async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest) {
@@ -248,6 +247,36 @@ describeWithEnvironment('RequestHeadersView', () => {
         getCleanTextContentFromElements(requestHeadersCategory, '.header-value code')[0],
         'message ClientVariations {// Active client experiment variation IDs.repeated int32 variation_id = [3300118, 3300132, 3330195];\n}',
     );
+  });
+
+  it('displays info about blocked "Set-Cookie"-headers', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      sortedResponseHeaders: [{name: 'Set-Cookie', value: 'secure=only; Secure'}],
+      blockedResponseCookies: () => [{
+        blockedReasons: ['SecureOnly', 'OverwriteSecure'],
+        cookieLine: 'secure=only; Secure',
+        cookie: null,
+      }],
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+    assert.strictEqual(
+        getCleanTextContentFromElements(responseHeadersCategory, '.header-name')[0],
+        'Set-Cookie:',
+    );
+    assert.strictEqual(
+        getCleanTextContentFromElements(responseHeadersCategory, '.header-value')[0], 'secure=only; Secure');
+    const icon = responseHeadersCategory.querySelector('devtools-icon');
+    assertElement(icon, HTMLElement);
+    assert.strictEqual(
+        icon.title,
+        'This attempt to set a cookie via a Set-Cookie header was blocked because it had the ' +
+            '"Secure" attribute but was not received over a secure connection.\nThis attempt to ' +
+            'set a cookie via a Set-Cookie header was blocked because it was not sent over a ' +
+            'secure connection and would have overwritten a cookie with the Secure attribute.');
   });
 });
 

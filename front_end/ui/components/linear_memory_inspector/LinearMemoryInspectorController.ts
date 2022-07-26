@@ -111,6 +111,7 @@ type SerializableSettings = {
 export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
   #paneInstance = LinearMemoryInspectorPaneImpl.instance();
   #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
+  #bufferIdToHighlightInfo: Map<string, HighlightInfo> = new Map();
   #settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {
@@ -176,6 +177,18 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       modes: new Map(settings.valueTypeModes),
       endianness: settings.endianness,
     };
+  }
+
+  getHighlightInfo(bufferId: string): HighlightInfo|undefined {
+    return this.#bufferIdToHighlightInfo.get(bufferId);
+  }
+
+  #setHighlightInfo(bufferId: string, highlightInfo: HighlightInfo): void {
+    this.#bufferIdToHighlightInfo.set(bufferId, highlightInfo);
+  }
+
+  #resetHighlightInfo(bufferId: string): void {
+    this.#bufferIdToHighlightInfo.delete(bufferId);
   }
 
   static async retrieveDWARFMemoryObjectAndAddress(obj: SDK.RemoteObject.RemoteObject):
@@ -253,8 +266,6 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       memoryObj = response.obj;
     }
 
-    const highlightInfo = this.#extractHighlightInfo(obj, memoryAddress);
-
     if (memoryAddress !== undefined) {
       Host.userMetrics.linearMemoryInspectorTarget(
           Host.UserMetrics.LinearMemoryInspectorTarget.DWARFInspectableAddress);
@@ -277,9 +288,14 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
     const memoryProperty = internalProperties?.find(({name}) => name === '[[WebAssemblyMemory]]');
     const memory = memoryProperty?.value;
-
+    const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, memoryAddress);
+    if (highlightInfo !== undefined) {
+      this.#setHighlightInfo(id, highlightInfo);
+    } else {
+      this.#resetHighlightInfo(id);
+    }
     if (this.#bufferIdToRemoteObject.has(id)) {
-      this.#paneInstance.reveal(id, memoryAddress, highlightInfo);
+      this.#paneInstance.reveal(id, memoryAddress);
       void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }
@@ -288,11 +304,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     this.#bufferIdToRemoteObject.set(id, buffer.object());
     const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
-    this.#paneInstance.create(id, title, arrayBufferWrapper, memoryAddress, highlightInfo);
+    this.#paneInstance.create(id, title, arrayBufferWrapper, memoryAddress);
     void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 
-  #extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, memoryAddress?: number): HighlightInfo|undefined {
+  static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, memoryAddress?: number): HighlightInfo|undefined {
     let highlightInfo;
     if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
       try {
@@ -311,6 +327,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     for (const [bufferId, remoteObject] of this.#bufferIdToRemoteObject) {
       if (model === remoteObject.runtimeModel()) {
         this.#bufferIdToRemoteObject.delete(bufferId);
+        this.#resetHighlightInfo(bufferId);
         this.#paneInstance.close(bufferId);
       }
     }
@@ -320,7 +337,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const debuggerModel = event.data;
     for (const [bufferId, remoteObject] of this.#bufferIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
-        this.#paneInstance.resetHighlightInfo(bufferId);
+        this.#resetHighlightInfo(bufferId);
         this.#paneInstance.refreshView(bufferId);
       }
     }
@@ -336,5 +353,6 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       remoteObj.release();
     }
     this.#bufferIdToRemoteObject.delete(bufferId);
+    this.#resetHighlightInfo(bufferId);
   }
 }

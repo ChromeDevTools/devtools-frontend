@@ -14,7 +14,10 @@ export const enum IssueCode {
   AttributionSourceUntrustworthyOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyOrigin',
   AttributionUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionUntrustworthyFrameOrigin',
   AttributionUntrustworthyOrigin = 'AttributionReportingIssue::AttributionUntrustworthyOrigin',
+  UntrustworthyReportingOrigin = 'AttributionReportingIssue::UntrustworthyReportingOrigin',
+  InsecureContext = 'AttributionReportingIssue::InsecureContext',
   InvalidHeader = 'AttributionReportingIssue::InvalidHeader',
+  InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
 }
 
 function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
@@ -27,8 +30,14 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
     case Protocol.Audits.AttributionReportingIssueType.AttributionUntrustworthyOrigin:
       return details.frame !== undefined ? IssueCode.AttributionUntrustworthyFrameOrigin :
                                            IssueCode.AttributionUntrustworthyOrigin;
+    case Protocol.Audits.AttributionReportingIssueType.UntrustworthyReportingOrigin:
+      return IssueCode.UntrustworthyReportingOrigin;
+    case Protocol.Audits.AttributionReportingIssueType.InsecureContext:
+      return IssueCode.InsecureContext;
     case Protocol.Audits.AttributionReportingIssueType.InvalidHeader:
       return IssueCode.InvalidHeader;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterTriggerHeader:
+      return IssueCode.InvalidRegisterTriggerHeader;
   }
 }
 
@@ -83,11 +92,17 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arAttributionUntrustworthyOrigin.md',
           links: [],
         };
+      case IssueCode.UntrustworthyReportingOrigin:
+        return null;
+      case IssueCode.InsecureContext:
+        return null;
       case IssueCode.InvalidHeader:
         return {
           file: 'arInvalidHeader.md',
           links: [],
         };
+      case IssueCode.InvalidRegisterTriggerHeader:
+        return null;
     }
   }
 

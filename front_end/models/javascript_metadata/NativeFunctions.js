@@ -6808,7 +6808,7 @@ export const NativeFunctions = [
     signatures: [['data']]
   },
   {
-    name: 'logoutRps',
+    name: 'logoutRPs',
     signatures: [['?logout_requests']]
   },
   {

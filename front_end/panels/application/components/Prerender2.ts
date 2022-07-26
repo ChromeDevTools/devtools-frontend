@@ -144,6 +144,16 @@ const UIStrings = {
     */
   EmbedderTriggeredAndDestroyed:
       'Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is is destroyed in the destructor.',
+
+  /**
+    *@description  Description text for Prerender2 cancellation status MemoryLimitExceeded.
+    */
+  MemoryLimitExceeded: 'Memory limit exceeded',
+
+  /**
+    *@description  Description text for Prerender2 cancellation status FailToGetMemoryUsage.
+    */
+  FailToGetMemoryUsage: 'Fail to get memory usage',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/Prerender2.ts', UIStrings);
@@ -185,4 +195,6 @@ export const Prerender2ReasonDescription = {
   'EmbedderTriggeredAndCrossOriginRedirected':
       {name: i18nLazyString(UIStrings.EmbedderTriggeredAndCrossOriginRedirected)},
   'EmbedderTriggeredAndDestroyed': {name: i18nLazyString(UIStrings.EmbedderTriggeredAndDestroyed)},
+  'MemoryLimitExceeded': {name: i18nLazyString(UIStrings.MemoryLimitExceeded)},
+  'FailToGetMemoryUsage': {name: i18nLazyString(UIStrings.FailToGetMemoryUsage)},
 };

@@ -1448,7 +1448,10 @@
                         "PermissionPolicyDisabled",
                         "AttributionSourceUntrustworthyOrigin",
                         "AttributionUntrustworthyOrigin",
-                        "InvalidHeader"
+                        "UntrustworthyReportingOrigin",
+                        "InsecureContext",
+                        "InvalidHeader",
+                        "InvalidRegisterTriggerHeader"
                     ]
                 },
                 {
@@ -1462,6 +1465,7 @@
                         },
                         {
                             "name": "frame",
+                            "description": "TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.",
                             "optional": true,
                             "$ref": "AffectedFrame"
                         },
@@ -8897,7 +8901,14 @@
                     "parameters": [
                         {
                             "name": "securityOrigin",
-                            "description": "Security origin.",
+                            "description": "At least and at most one of securityOrigin, storageKey must be specified.\nSecurity origin.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key.",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -8918,7 +8929,14 @@
                     "parameters": [
                         {
                             "name": "securityOrigin",
-                            "description": "Security origin.",
+                            "description": "At least and at most one of securityOrigin, storageKey must be specified.\nSecurity origin.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key.",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -16264,7 +16282,9 @@
                         "TriggerBackgrounded",
                         "EmbedderTriggeredAndSameOriginRedirected",
                         "EmbedderTriggeredAndCrossOriginRedirected",
-                        "EmbedderTriggeredAndDestroyed"
+                        "EmbedderTriggeredAndDestroyed",
+                        "MemoryLimitExceeded",
+                        "FailToGetMemoryUsage"
                     ]
                 }
             ],
@@ -22635,7 +22655,7 @@
                         },
                         {
                             "name": "functionBodyOffsets",
-                            "description": "The offsets of all function bodies plus one additional entry pointing\none by past the end of the last function.",
+                            "description": "The offsets of all function bodies, in the format [start1, end1,\nstart2, end2, ...] where all ends are exclusive.",
                             "type": "array",
                             "items": {
                                 "type": "integer"

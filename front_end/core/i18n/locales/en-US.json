@@ -3284,6 +3284,9 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is canceled because the navigation is redirected to another same-origin page."
   },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Fail to get memory usage"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
   },
@@ -3304,6 +3307,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Max number of prerendering exceeded."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Memory limit exceeded"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Prerendering is canceled by a mixed content frame."

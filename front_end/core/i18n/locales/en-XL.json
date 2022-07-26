@@ -3284,6 +3284,9 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ t̂ŕîǵĝér̂éd̂ b́ŷ Ćĥŕôḿê ín̂t́êŕn̂ál̂ (é.ĝ., Óm̂ńîb́ôx́ p̂ŕêŕêńd̂ér̂ín̂ǵ) îś ĉán̂ćêĺêd́ b̂éĉáûśê t́ĥé n̂áv̂íĝát̂íôń îś r̂éd̂ír̂éĉt́êd́ t̂ó âńôt́ĥér̂ śâḿê-ór̂íĝín̂ ṕâǵê."
   },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "F̂áîĺ t̂ó ĝét̂ ḿêḿôŕŷ úŝáĝé"
+  },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "ÎńP̂ŕôǵr̂éŝśN̂áv̂íĝát̂íôń."
   },
@@ -3304,6 +3307,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "M̂áx̂ ńûḿb̂ér̂ óf̂ ṕr̂ér̂én̂d́êŕîńĝ éx̂ćêéd̂éd̂."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "M̂ém̂ór̂ý l̂ím̂ít̂ éx̂ćêéd̂éd̂"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "P̂ŕêŕêńd̂ér̂ín̂ǵ îś ĉán̂ćêĺêd́ b̂ý â ḿîx́êd́ ĉón̂t́êńt̂ f́r̂ám̂é."

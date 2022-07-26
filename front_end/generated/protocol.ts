@@ -1055,6 +1055,7 @@ export namespace Audits {
     ObsoleteWebRtcCipherSuite = 'ObsoleteWebRtcCipherSuite',
     OpenWebDatabaseInsecureContext = 'OpenWebDatabaseInsecureContext',
     OverflowVisibleOnReplacedElement = 'OverflowVisibleOnReplacedElement',
+    PersistentQuotaType = 'PersistentQuotaType',
     PictureSourceSrc = 'PictureSourceSrc',
     PrefixedCancelAnimationFrame = 'PrefixedCancelAnimationFrame',
     PrefixedRequestAnimationFrame = 'PrefixedRequestAnimationFrame',
@@ -5899,7 +5900,15 @@ export namespace IndexedDB {
   }
 
   export interface DeleteObjectStoreEntriesRequest {
-    securityOrigin: string;
+    /**
+     * At least and at most one of securityOrigin, storageKey must be specified.
+     * Security origin.
+     */
+    securityOrigin?: string;
+    /**
+     * Storage key.
+     */
+    storageKey?: string;
     databaseName: string;
     objectStoreName: string;
     /**
@@ -5952,9 +5961,14 @@ export namespace IndexedDB {
 
   export interface GetMetadataRequest {
     /**
+     * At least and at most one of securityOrigin, storageKey must be specified.
      * Security origin.
      */
-    securityOrigin: string;
+    securityOrigin?: string;
+    /**
+     * Storage key.
+     */
+    storageKey?: string;
     /**
      * Database name.
      */

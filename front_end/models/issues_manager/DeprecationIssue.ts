@@ -27,9 +27,14 @@ const UIStrings = {
    */
   title: 'Deprecated Feature Used',
 
-  // Store alphabetized messages per DeprecationIssueType in this block.
   /**
-   * @description TODO(crbug.com/1318846): Description needed for translation
+   * @description We show this warning when 1) an "authorization" header is
+   *   attached to the request by scripts, 2) there is no "authorization" in
+   *   the "access-control-allow-headers" header in the response, and 3) there
+   *   is a wildcard symbol ("*") in the "access-control-allow-header" header
+   *   in the response. This is allowed now, but we're planning to reject such
+   *   responses and require responses to have an "access-control-allow-headers"
+   *   containing "authorization".
    */
   authorizationCoveredByWildcard:
       'Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling.',

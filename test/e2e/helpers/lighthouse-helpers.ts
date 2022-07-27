@@ -116,7 +116,7 @@ export async function waitForStorageUsage(p: (quota: number) => boolean) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getAuditsBreakdown(lhr: any) {
+export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const auditResults = Object.values(lhr.audits) as any[];
   const irrelevantDisplayModes = new Set(['notApplicable', 'manual']);
@@ -134,7 +134,9 @@ export function getAuditsBreakdown(lhr: any) {
 
   // 0.5 is the minimum score before we consider an audit "failed"
   // https://github.com/GoogleChrome/lighthouse/blob/d956ec929d2b67028279f5e40d7e9a515a0b7404/report/renderer/util.js#L27
-  const failedAudits = applicableAudits.filter(audit => audit.score !== null && audit.score < 0.5);
+  const failedAudits = applicableAudits.filter(
+      audit => audit.score !== null && audit.score < 0.5 && !flakyAudits.includes(audit.id),
+  );
 
   return {auditResults, erroredAudits, failedAudits};
 }

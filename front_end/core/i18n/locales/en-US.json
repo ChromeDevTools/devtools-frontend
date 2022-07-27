@@ -5708,9 +5708,6 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Frame"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Invalid Header Value"
   },

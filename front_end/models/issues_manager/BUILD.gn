@@ -53,11 +53,10 @@ devtools_module("issues_manager") {
 }
 
 devtools_issue_description_files = [
-  "arAttributionSourceUntrustworthyFrameOrigin.md",
-  "arAttributionSourceUntrustworthyOrigin.md",
-  "arAttributionUntrustworthyFrameOrigin.md",
-  "arAttributionUntrustworthyOrigin.md",
-  "arInvalidHeader.md",
+  "arUntrustworthyReportingOrigin.md",
+  "arInsecureContext.md",
+  "arInvalidRegisterSourceHeader.md",
+  "arInvalidRegisterTriggerHeader.md",
   "arPermissionPolicyDisabled.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",
   "clientHintMetaTagModifiedHTML.md",

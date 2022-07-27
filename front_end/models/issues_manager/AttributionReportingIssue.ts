@@ -10,34 +10,29 @@ import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 export const enum IssueCode {
   PermissionPolicyDisabled = 'AttributionReportingIssue::PermissionPolicyDisabled',
-  AttributionSourceUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyFrameOrigin',
-  AttributionSourceUntrustworthyOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyOrigin',
-  AttributionUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionUntrustworthyFrameOrigin',
-  AttributionUntrustworthyOrigin = 'AttributionReportingIssue::AttributionUntrustworthyOrigin',
   UntrustworthyReportingOrigin = 'AttributionReportingIssue::UntrustworthyReportingOrigin',
   InsecureContext = 'AttributionReportingIssue::InsecureContext',
-  InvalidHeader = 'AttributionReportingIssue::InvalidHeader',
+  InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
+  // TODO(apaseltiner): Remove this once old issue types are removed from
+  // protocol.
+  Unknown = 'AttributionReportingIssue::Unknown',
 }
 
 function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
   switch (details.violationType) {
     case Protocol.Audits.AttributionReportingIssueType.PermissionPolicyDisabled:
       return IssueCode.PermissionPolicyDisabled;
-    case Protocol.Audits.AttributionReportingIssueType.AttributionSourceUntrustworthyOrigin:
-      return details.frame !== undefined ? IssueCode.AttributionSourceUntrustworthyFrameOrigin :
-                                           IssueCode.AttributionSourceUntrustworthyOrigin;
-    case Protocol.Audits.AttributionReportingIssueType.AttributionUntrustworthyOrigin:
-      return details.frame !== undefined ? IssueCode.AttributionUntrustworthyFrameOrigin :
-                                           IssueCode.AttributionUntrustworthyOrigin;
     case Protocol.Audits.AttributionReportingIssueType.UntrustworthyReportingOrigin:
       return IssueCode.UntrustworthyReportingOrigin;
     case Protocol.Audits.AttributionReportingIssueType.InsecureContext:
       return IssueCode.InsecureContext;
     case Protocol.Audits.AttributionReportingIssueType.InvalidHeader:
-      return IssueCode.InvalidHeader;
+      return IssueCode.InvalidRegisterSourceHeader;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterTriggerHeader:
       return IssueCode.InvalidRegisterTriggerHeader;
+    default:
+      return IssueCode.Unknown;
   }
 }
 
@@ -61,47 +56,27 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arPermissionPolicyDisabled.md',
           links: [],
         };
-      case IssueCode.AttributionSourceUntrustworthyFrameOrigin:
-        return {
-          file: 'arAttributionSourceUntrustworthyFrameOrigin.md',
-          links: [],
-        };
-      case IssueCode.AttributionSourceUntrustworthyOrigin:
-        return {
-          file: 'arAttributionSourceUntrustworthyOrigin.md',
-          links: [
-            {
-              link:
-                  'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributiondestination-required',
-              linkTitle: 'attributiondestination attribute',
-            },
-            {
-              link:
-                  'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionreportto',
-              linkTitle: 'attributionreportto attribute',
-            },
-          ],
-        };
-      case IssueCode.AttributionUntrustworthyFrameOrigin:
-        return {
-          file: 'arAttributionUntrustworthyFrameOrigin.md',
-          links: [],
-        };
-      case IssueCode.AttributionUntrustworthyOrigin:
-        return {
-          file: 'arAttributionUntrustworthyOrigin.md',
-          links: [],
-        };
       case IssueCode.UntrustworthyReportingOrigin:
-        return null;
-      case IssueCode.InsecureContext:
-        return null;
-      case IssueCode.InvalidHeader:
         return {
-          file: 'arInvalidHeader.md',
+          file: 'arUntrustworthyReportingOrigin.md',
+          links: [],
+        };
+      case IssueCode.InsecureContext:
+        return {
+          file: 'arInsecureContext.md',
+          links: [],
+        };
+      case IssueCode.InvalidRegisterSourceHeader:
+        return {
+          file: 'arInvalidRegisterSourceHeader.md',
           links: [],
         };
       case IssueCode.InvalidRegisterTriggerHeader:
+        return {
+          file: 'arInvalidRegisterTriggerHeader.md',
+          links: [],
+        };
+      case IssueCode.Unknown:
         return null;
     }
   }

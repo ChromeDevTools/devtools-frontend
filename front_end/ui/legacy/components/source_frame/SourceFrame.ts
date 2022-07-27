@@ -437,6 +437,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       progressIndicator.setTotalWork(100);
       this.progressToolbarItem.element.appendChild(progressIndicator.element);
 
+      progressIndicator.setWorked(1);
+
       const deferredContent = await this.lazyContent();
       let error, content;
       if (deferredContent.content === null) {
@@ -448,57 +450,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
           const view = new DataView(Common.Base64.decode(deferredContent.content));
           const decoder = new TextDecoder();
           this.rawContent = decoder.decode(view, {stream: true});
+        } else if ('wasmDisassemblyInfo' in deferredContent && deferredContent.wasmDisassemblyInfo) {
+          const {wasmDisassemblyInfo} = deferredContent;
+          this.rawContent = CodeMirror.Text.of(wasmDisassemblyInfo.lines);
+          this.wasmDisassemblyInternal = wasmDisassemblyInfo;
         } else {
-          this.rawContent = deferredContent.content;
-        }
-      }
-
-      progressIndicator.setWorked(1);
-
-      if (!error && this.contentType === 'application/wasm') {
-        const worker = Common.Worker.WorkerWrapper.fromURL(
-            new URL('../../../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
-        const promise = new Promise<{
-          lines: string[],
-          offsets: number[],
-          functionBodyOffsets: {
-            start: number,
-            end: number,
-          }[],
-        }>((resolve, reject) => {
-          worker.onmessage =
-              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ({data}: MessageEvent<any>): void => {
-                if ('event' in data) {
-                  switch (data.event) {
-                    case 'progress':
-                      progressIndicator.setWorked(data.params.percentage);
-                      break;
-                  }
-                } else if ('method' in data) {
-                  switch (data.method) {
-                    case 'disassemble':
-                      if ('error' in data) {
-                        reject(data.error);
-                      } else if ('result' in data) {
-                        resolve(data.result);
-                      }
-                      break;
-                  }
-                }
-              };
-          worker.onerror = reject;
-        });
-        worker.postMessage({method: 'disassemble', params: {content}});
-        try {
-          const {lines, offsets, functionBodyOffsets} = await promise;
-          this.rawContent = content = CodeMirror.Text.of(lines);
-          this.wasmDisassemblyInternal = new Common.WasmDisassembly.WasmDisassembly(offsets, functionBodyOffsets);
-        } catch (e) {
-          this.rawContent = content = error = e.message;
-        } finally {
-          worker.terminate();
+          this.rawContent = content;
+          this.wasmDisassemblyInternal = null;
         }
       }
 
@@ -514,7 +472,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         this.textEditor.editor.setState(this.placeholderEditorState(error));
         this.prettyToggle.setEnabled(false);
       } else {
-        if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content)) {
+        if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content || '')) {
           await this.setPretty(true);
         } else {
           await this.setContent(this.rawContent || '');

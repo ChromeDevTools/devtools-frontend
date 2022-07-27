@@ -14,10 +14,15 @@ interface FunctionBodyOffset {
   end: number;
 }
 export class WasmDisassembly {
+  readonly lines: string[];
   readonly #offsets: number[];
   #functionBodyOffsets: FunctionBodyOffset[];
 
-  constructor(offsets: number[], functionBodyOffsets: FunctionBodyOffset[]) {
+  constructor(lines: string[], offsets: number[], functionBodyOffsets: FunctionBodyOffset[]) {
+    if (lines.length !== offsets.length) {
+      throw new Error('Lines and offsets don\'t match');
+    }
+    this.lines = lines;
     this.#offsets = offsets;
     this.#functionBodyOffsets = functionBodyOffsets;
   }

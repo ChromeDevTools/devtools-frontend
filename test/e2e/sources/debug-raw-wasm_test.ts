@@ -45,7 +45,9 @@ import {
 
 describe('Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
-  this.timeout(10000);
+  if (this.timeout() > 0) {
+    this.timeout(10000);
+  }
 
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
@@ -177,7 +179,7 @@ describe('Sources Tab', async function() {
     await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html');
     assert.deepEqual(await getNonBreakableLines(), [
       0x000,
-      0x020,
+      0x022,
       0x04b,
     ]);
     assert.deepEqual(await getBreakpointDecorators(), []);
@@ -283,7 +285,17 @@ describe('Sources Tab', async function() {
       assert.strictEqual(selectedThreadName, 'Main', 'the Main thread is not active');
     });
 
-    await step('add a breakpoint to line No.0x060', async () => {
+    await step('check non-breakable lines and add a breakpoint to line No.0x060', async () => {
+      assert.deepEqual(await getNonBreakableLines(), [
+        0x000,
+        0x03f,
+        0x047,
+        0x04f,
+        0x057,
+        0x05f,
+        0x06c,
+        0x0c1,
+      ]);
       await addBreakpointForLine(frontend, '0x060');
     });
 

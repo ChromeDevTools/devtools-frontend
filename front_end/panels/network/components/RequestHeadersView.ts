@@ -350,14 +350,16 @@ export class RequestHeadersComponent extends HTMLElement {
     } else {
       cautionText = i18nString(UIStrings.provisionalHeadersAreShown);
     }
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
       <div class="call-to-action">
         <div class="call-to-action-body">
           <div class="explanation" title=${cautionTitle}>
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-              iconName: 'warning_icon',
-              width: '12px',
-              height: '12px',
+                iconName: 'clear-warning_icon',
+                width: '12px',
+                height: '12px',
               } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
             ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>
@@ -365,6 +367,7 @@ export class RequestHeadersComponent extends HTMLElement {
         </div>
       </div>
     `;
+    // clang-format on
   }
 
   #renderHeader(header: HeaderDescriptor): LitHtml.TemplateResult {
@@ -398,10 +401,10 @@ export class RequestHeadersComponent extends HTMLElement {
       // clang-format off
       return html`
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" title=${titleText} .data=${{
-          iconName: 'warning_icon',
-          width: '12px',
-          height: '12px',
-        } as IconButton.Icon.IconData}>
+            iconName: 'clear-warning_icon',
+            width: '12px',
+            height: '12px',
+          } as IconButton.Icon.IconData}>
         </${IconButton.Icon.Icon.litTagName}>
       `;
       // clang-format on

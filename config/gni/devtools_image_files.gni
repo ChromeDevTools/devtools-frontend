@@ -58,6 +58,7 @@ devtools_svg_sources = [
   "chromeSelectDark.svg",
   "circled_backslash_icon.svg",
   "circled_exclamation_icon.svg",
+  "clear-warning_icon.svg",
   "close-icon.svg",
   "copy_icon.svg",
   "dropdown_7x6_icon.svg",

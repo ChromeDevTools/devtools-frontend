@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="10"
+   height="10"
+   viewBox="0 0 2.6458333 2.6458334"
+   version="1.1"
+   id="svg278"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="clear-warning_icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview280"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="5.1337949"
+     inkscape:cx="-96.712084"
+     inkscape:cy="68.760051"
+     inkscape:window-width="2028"
+     inkscape:window-height="1445"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs275">
+    <mask
+       id="path4453-6-mask">
+      <rect
+         id="rect8990"
+         style="fill:#ffffff"
+         height="10"
+         width="10"
+         x="0"
+         y="0" />
+      <path
+         style="fill:#000000"
+         inkscape:connector-curvature="0"
+         id="path4453-6"
+         d="m 64,3 h 2 V 5.25 L 65.5,7 h -1 L 64,5.25 V 3 m 0,5 h 2 v 1 h -2"
+         transform="translate(-60)" />
+    </mask>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       mask="url(#path4453-6-mask)"
+       transform="matrix(0.26458333,0,0,0.26458333,1.6666664e-8,-1.6329569e-5)"
+       id="g4443-7">
+      <path
+         style="stroke:#c19600;stroke-width:2;stroke-linejoin:round"
+         inkscape:connector-curvature="0"
+         id="path4447-5"
+         d="m 61,9 4,-8 4,8 z"
+         transform="translate(-60)" />
+      <path
+         style="fill:#f4bd00;stroke:#f5bd00;stroke-width:1.5;stroke-linejoin:round"
+         inkscape:connector-curvature="0"
+         id="path4449-3"
+         d="m 61,9 4,-8 4,8 z"
+         transform="translate(-60)" />
+      <path
+         style="fill:#ad8601"
+         inkscape:connector-curvature="0"
+         id="path4451-5"
+         d="m 63.75,2.75 h 2.5 v 2.5 L 65.75,7 h -1.5 l -0.5,-1.75 v -2.5 m 0,5.25 h 2.5 v 1.25 h -2.5"
+         transform="translate(-60)" />
+      <mask
+         id="mask258">
+        <rect
+           id="rect254"
+           style="fill:#ffffff"
+           height="10"
+           width="10"
+           x="0"
+           y="0" />
+        <path
+           style="fill:#000000"
+           inkscape:connector-curvature="0"
+           id="path256"
+           d="m 64,3 h 2 V 5.25 L 65.5,7 h -1 L 64,5.25 V 3 m 0,5 h 2 v 1 h -2"
+           transform="translate(-60)" />
+      </mask>
+    </g>
+  </g>
+</svg>

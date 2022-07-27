@@ -373,11 +373,10 @@ export class RequestHeadersComponent extends HTMLElement {
     return html`
       <div class="row">
         <div class="header-name">
-          ${header.headerNotSet ? html`
-            <div class="header-badge header-badge-text">
-              ${i18n.i18n.lockedString('not-set')}
-            </div>
-          ` : ''}${header.name}:
+          ${header.headerNotSet ?
+            html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div>` :
+            LitHtml.nothing
+          }${header.name}:
         </div>
         <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
           ${header.value?.toString() || ''}

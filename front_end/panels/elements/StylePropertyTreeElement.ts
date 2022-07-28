@@ -26,6 +26,8 @@ import {cssRuleValidatorsMap, type AuthoringHint} from './CSSRuleValidator.js';
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 
+export const activeHints = new WeakMap<Element, AuthoringHint>();
+
 const UIStrings = {
   /**
   *@description Text in Color Swatch Popover Icon of the Elements panel
@@ -719,11 +721,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const showAuthoringHint = authoringHint !== null && this.property.parsedOk;
     if (showAuthoringHint) {
       const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
-      const hintPopover =
-          new UI.PopoverHelper.PopoverHelper(hintIcon, event => this.handleHintPopoverRequest(authoringHint, event));
-      hintPopover.setHasPadding(true);
-      hintPopover.setTimeout(0, 100);
-
+      activeHints.set(hintIcon, authoringHint);
       this.listItemElement.append(hintIcon);
     }
 
@@ -834,24 +832,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     return null;
-  }
-
-  private handleHintPopoverRequest(authoringHint: AuthoringHint, event: Event): UI.PopoverHelper.PopoverRequest|null {
-    const link = event.composedPath()[0];
-    Platform.DCHECK(() => link instanceof Element, 'Link is not an instance of Element');
-
-    return {
-      box: (link as Element).boxInWindow(),
-      show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-        const node = this.node();
-        if (!node) {
-          return false;
-        }
-        const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(authoringHint);
-        popover.contentElement.insertAdjacentElement('beforeend', popupElement);
-        return true;
-      },
-    };
   }
 
   private mouseUp(event: MouseEvent): void {

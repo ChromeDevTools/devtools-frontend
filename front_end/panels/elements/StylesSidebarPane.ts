@@ -60,7 +60,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 
-import {type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {
   StylePropertiesSection,
   BlankStylePropertiesSection,
@@ -213,6 +213,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private needsForceUpdate: boolean;
   private readonly resizeThrottler: Common.Throttler.Throttler;
   private readonly imagePreviewPopover: ImagePreviewPopover;
+  #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
   #copyChangesButton?: UI.Toolbar.ToolbarButton;
@@ -282,6 +283,35 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }, () => this.node());
 
     this.activeCSSAngle = null;
+
+    this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
+      const icon = event.composedPath()[0] as Element;
+
+      if (!icon) {
+        return null;
+      }
+
+      if (!icon.matches('.hint')) {
+        return null;
+      }
+
+      const hint = activeHints.get(icon);
+
+      if (!hint) {
+        return null;
+      }
+
+      return {
+        box: icon.boxInWindow(),
+        show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+          const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
+          popover.contentElement.appendChild(popupElement);
+          return true;
+        },
+      };
+    });
+    this.#hintPopoverHelper.setTimeout(200);
+    this.#hintPopoverHelper.setHasPadding(true);
   }
 
   swatchPopoverHelper(): InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper {

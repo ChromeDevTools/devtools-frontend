@@ -188,6 +188,14 @@ export function dispatchMouseLeaveEvent<T extends Element>(element: T, options: 
 }
 
 /**
+ * Dispatches a clipboard copy event.
+ */
+export function dispatchCopyEvent<T extends Element>(element: T, options: ClipboardEventInit = {}) {
+  const copyEvent = new ClipboardEvent('copy', options);
+  element.dispatchEvent(copyEvent);
+}
+
+/**
  * Listens to an event of an element and returns a Promise that resolves to the
  * specified event type.
  */

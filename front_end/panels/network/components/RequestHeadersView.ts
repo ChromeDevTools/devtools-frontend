@@ -385,7 +385,10 @@ export class RequestHeadersComponent extends HTMLElement {
             LitHtml.nothing
           }${header.name}:
         </div>
-        <div class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}">
+        <div
+          class="header-value ${header.headerValueIncorrect ? 'header-warning' : ''}"
+          @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+        >
           ${header.value?.toString() || ''}
           ${this.#maybeRenderHeaderValueSuffix(header)}
         </div>
@@ -582,28 +585,43 @@ export class RequestHeadersComponent extends HTMLElement {
       >
         <div class="row">
           <div class="header-name">${i18nString(UIStrings.requestUrl)}:</div>
-          <div class="header-value">${this.#request.url()}</div>
+          <div
+            class="header-value"
+            @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+          >${this.#request.url()}</div>
         </div>
         ${this.#request.statusCode? html`
           <div class="row">
             <div class="header-name">${i18nString(UIStrings.requestMethod)}:</div>
-            <div class="header-value">${this.#request.requestMethod}</div>
+            <div
+              class="header-value"
+              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+            >${this.#request.requestMethod}</div>
           </div>
           <div class="row">
             <div class="header-name">${i18nString(UIStrings.statusCode)}:</div>
-            <div class="header-value ${coloredCircleClassName} ${statusTextHasComment ? 'status-with-comment' : ''}">${statusText}</div>
+            <div
+              class="header-value ${coloredCircleClassName} ${statusTextHasComment ? 'status-with-comment' : ''}"
+              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+            >${statusText}</div>
           </div>
         ` : ''}
         ${this.#request.remoteAddress()? html`
           <div class="row">
             <div class="header-name">${i18nString(UIStrings.remoteAddress)}:</div>
-            <div class="header-value">${this.#request.remoteAddress()}</div>
+            <div
+              class="header-value"
+              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+            >${this.#request.remoteAddress()}</div>
           </div>
         ` : ''}
         ${this.#request.referrerPolicy()? html`
           <div class="row">
             <div class="header-name">${i18nString(UIStrings.referrerPolicy)}:</div>
-            <div class="header-value">${this.#request.referrerPolicy()}</div>
+            <div
+              class="header-value"
+              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+            >${this.#request.referrerPolicy()}</div>
           </div>
         ` : ''}
       </${Category.litTagName}>

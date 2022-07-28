@@ -7,10 +7,13 @@ import * as NetworkComponents from '../../../../../../front_end/panels/network/c
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Common from '../../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as Host from '../../../../../../front_end/core/host/host.js';
+
 import {
   assertElement,
   assertShadowRoot,
   dispatchClickEvent,
+  dispatchCopyEvent,
   dispatchKeyDownEvent,
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -117,6 +120,22 @@ describeWithEnvironment('RequestHeadersView', () => {
       'gzip, deflate, br',
       'no-cache',
     ]);
+  });
+
+  it('emits UMA event when a header value is being copied', async () => {
+    const component = await renderHeadersComponent(defaultRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+
+    const spy = sinon.spy(Host.userMetrics, 'actionTaken');
+    const headerValue = responseHeadersCategory.querySelector('.header-value');
+    assertElement(headerValue, HTMLElement);
+
+    assert.isTrue(spy.notCalled);
+    dispatchCopyEvent(headerValue);
+    assert.isTrue(spy.calledWith(Host.UserMetrics.Action.NetworkPanelCopyValue));
   });
 
   it('renders detailed reason for blocked requests', async () => {

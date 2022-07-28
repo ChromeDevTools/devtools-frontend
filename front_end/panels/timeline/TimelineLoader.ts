@@ -98,7 +98,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
   static loadFromURL(url: Platform.DevToolsPath.UrlString, client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
-    Host.ResourceLoader.loadAsStream(url, null, loader);
+    const allowFileUNCPaths = Common.Settings.Settings.instance().moduleSetting('network.enable-unc-loading').get();
+    Host.ResourceLoader.loadAsStream(url, null, loader, undefined, allowFileUNCPaths);
     return loader;
   }
 

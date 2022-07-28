@@ -108,6 +108,11 @@ const UIStrings = {
   *@description Title of a setting under the Network category that can be invoked through the Command Menu
   */
   dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
+  /**
+   * @description Label of a checkbox in the DevTools settings UI.
+   */
+  enableUNCLoading:
+      'Allow `DevTools` to load resources, such as source maps, from Windows Shares via `UNC` paths. Disabled by default for security reasons.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -314,6 +319,17 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.dontGroupNetworkLogItemsByFrame),
     },
   ],
+});
+
+// While this setting is used by the Network module, we place it under the
+// "sources" category as source map loading is the dominant use case.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.SOURCES,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.enableUNCLoading),
+  settingName: 'network.enable-unc-loading',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
 });
 
 UI.ViewManager.registerLocationResolver({

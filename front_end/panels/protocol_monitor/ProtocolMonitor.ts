@@ -287,28 +287,23 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     });
     topToolbar.appendToolbarItem(this.textFilterUI);
 
-    const onSend = (): void => {
-      const value = input.value();
-      // If input cannot be parsed as json, we assume it's the command name
-      // for a command without parameters. Otherwise, we expect an object
-      // with "command" and "parameters" attributes.
-      let json = null;
-      try {
-        json = JSON.parse(value);
-      } catch (err) {
-      }
-      const command = json ? json.command : value;
-      const parameters = json ? json.parameters : null;
-      const test = ProtocolClient.InspectorBackend.test;
-      // TODO: TS thinks that properties are read-only because
-      // in TS test is defined as a namespace.
-      // @ts-ignore
-      test.sendRawMessage(command, parameters, () => {});
-    };
-    const input = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.sendRawCDPCommand), '', 1, .2, '', undefined, false);
-    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, onSend);
     const bottomToolbar = new UI.Toolbar.Toolbar('protocol-monitor-bottom-toolbar', this.contentElement);
-    bottomToolbar.appendToolbarItem(input);
+    bottomToolbar.appendToolbarItem(this.#createCommandInput());
+  }
+
+  #createCommandInput(): UI.Toolbar.ToolbarInput {
+    const input = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.sendRawCDPCommand), '', 1, .2, '', undefined, false);
+    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => this.#onCommandSend(input));
+    return input;
+  }
+
+  #onCommandSend(input: UI.Toolbar.ToolbarInput): void {
+    const {command, parameters} = parseCommandInput(input.value());
+    const test = ProtocolClient.InspectorBackend.test;
+    // TODO: TS thinks that properties are read-only because
+    // in TS test is defined as a namespace.
+    // @ts-ignore
+    test.sendRawMessage(command, parameters, () => {});
   }
 
   static instance(opts = {forceNew: null}): ProtocolMonitorImpl {
@@ -517,4 +512,18 @@ export class InfoWidget extends UI.Widget.VBox {
         data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');
     this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
   }
+}
+
+export function parseCommandInput(input: string): {command: string, parameters: unknown} {
+  // If input cannot be parsed as json, we assume it's the command name
+  // for a command without parameters. Otherwise, we expect an object
+  // with "command"/"method"/"cmd" and "parameters"/"params"/"args"/"arguments" attributes.
+  let json = null;
+  try {
+    json = JSON.parse(input);
+  } catch (err) {
+  }
+  const command = json ? json.command || json.method || json.cmd : input;
+  const parameters = json ? json.parameters || json.params || json.args || json.arguments : null;
+  return {command, parameters};
 }

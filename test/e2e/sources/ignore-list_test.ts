@@ -6,8 +6,10 @@ import {assert} from 'chai';
 
 import {
   click,
+  enableExperiment,
   getBrowserAndPages,
   getPendingEvents,
+  goToResource,
   installEventListener,
   step,
   waitFor,
@@ -21,7 +23,9 @@ import {
   DEBUGGER_PAUSED_EVENT,
   getCallFrameNames,
   openSourceCodeEditorForFile,
+  openSourcesPanel,
   PAUSE_INDICATOR_SELECTOR,
+  readSourcesTreeView,
   RESUME_BUTTON,
   stepIn,
   stepOut,
@@ -101,5 +105,15 @@ describe('Ignore list', async function() {
 
     await click(RESUME_BUTTON);
     await scriptEvaluation;
+  });
+
+  it('removes ignored sources from page source tree', async function() {
+    await enableExperiment('justMyCode');
+    await setIgnoreListPattern('thirdparty');
+    await goToResource('sources/multi-files.html');
+    await openSourcesPanel();
+    assert.deepEqual(
+        await readSourcesTreeView(),
+        ['top', 'localhost:XXXX', 'test/e2e/resources/sources', 'multi-files.html', 'multi-files-mycode.js']);
   });
 });

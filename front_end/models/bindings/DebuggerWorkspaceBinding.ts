@@ -512,10 +512,7 @@ export class Location extends LiveLocationWithPool {
     if (!uiLocation) {
       return false;
     }
-    const manager = this.rawLocation.debuggerModel.sourceMapManager();
-    const script = this.rawLocation.script();
-    const map = script ? await manager.sourceMapForClientPromise(script) : null;
-    return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiLocation.uiSourceCode, map);
+    return IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiLocation.uiSourceCode);
   }
 }
 

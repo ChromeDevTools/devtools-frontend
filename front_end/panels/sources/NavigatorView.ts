@@ -211,6 +211,16 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       this.navigatorGroupByAuthoredExperiment = Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING;
     }
 
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipStackFramesPattern')
+        .addChangeListener(this.ignoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('skipContentScripts')
+        .addChangeListener(this.ignoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts')
+        .addChangeListener(this.ignoreListChanged.bind(this));
+
     this.initGrouping();
 
     Persistence.Persistence.PersistenceImpl.instance().addEventListener(
@@ -443,6 +453,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private addUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
+        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+            uiSourceCode)) {
+      return;
+    }
+
     if (!this.acceptsUISourceCode(uiSourceCode)) {
       return;
     }
@@ -1031,6 +1047,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.onGroupingChanged();
     this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
+  }
+
+  private ignoreListChanged(): void {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE)) {
+      this.groupingChanged();
+    }
   }
 
   private initGrouping(): void {

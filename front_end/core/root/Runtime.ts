@@ -294,6 +294,7 @@ export enum ExperimentName {
   CSS_AUTHORING_HINTS = 'cssAuthoringHints',
   AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
   IMPORTANT_DOM_PROPERTIES = 'importantDOMProperties',
+  JUST_MY_CODE = 'justMyCode',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

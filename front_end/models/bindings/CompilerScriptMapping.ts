@@ -345,11 +345,14 @@ class Binding {
     this.uiSourceCode = null;
   }
 
-  private recreateUISourceCodeIfNeeded(frameId: Protocol.Page.FrameId): void {
+  private recreateUISourceCodeIfNeeded(frameId: Protocol.Page.FrameId, isKnownThirdParty: boolean): void {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
 
     const newUISourceCode =
         this.#project.createUISourceCode(this.#url, Common.ResourceType.resourceTypes.SourceMapScript);
+    if (isKnownThirdParty) {
+      newUISourceCode.markKnownThirdParty();
+    }
     uiSourceCodeToBinding.set(newUISourceCode, this);
     const contentProvider =
         sourceMap.sourceContentProvider(this.#url, Common.ResourceType.resourceTypes.SourceMapScript);
@@ -374,7 +377,7 @@ class Binding {
       NetworkProject.addFrameAttribution(this.uiSourceCode, frameId);
     }
     this.referringSourceMaps.push(sourceMap);
-    this.recreateUISourceCodeIfNeeded(frameId);
+    this.recreateUISourceCodeIfNeeded(frameId, sourceMap.hasIgnoreListHint(this.#url));
   }
 
   removeSourceMap(sourceMap: SDK.SourceMap.SourceMap, frameId: Protocol.Page.FrameId): void {
@@ -388,7 +391,7 @@ class Binding {
       this.#project.removeFile(uiSourceCode.url());
       this.uiSourceCode = null;
     } else {
-      this.recreateUISourceCodeIfNeeded(frameId);
+      this.recreateUISourceCodeIfNeeded(frameId, sourceMap.hasIgnoreListHint(this.#url));
     }
   }
 

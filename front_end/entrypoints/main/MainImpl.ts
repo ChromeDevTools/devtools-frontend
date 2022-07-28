@@ -406,6 +406,10 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into Authored and Deployed trees');
 
+    // Hide third party code (as determined by ignore lists or source maps)
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in sources tree view');
+
     // Highlight important DOM properties in the Object Properties viewer.
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES,

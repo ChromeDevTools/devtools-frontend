@@ -637,8 +637,9 @@ export enum DevtoolsExperiments {
   'cssAuthoringHints' = 62,
   'authoredDeployedGrouping' = 63,
   'importantDOMProperties' = 64,
+  'justMyCode' = 65,
   // Increment this when new experiments are added.
-  'MaxValue' = 65,
+  'MaxValue' = 66,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

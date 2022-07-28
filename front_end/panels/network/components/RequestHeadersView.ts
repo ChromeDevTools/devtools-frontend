@@ -6,7 +6,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
@@ -212,7 +211,9 @@ export class RequestHeadersComponent extends HTMLElement {
   }
 
   #render(): void {
-    assertNotNullOrUndefined(this.#request);
+    if (!this.#request) {
+      return;
+    }
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -224,8 +225,10 @@ export class RequestHeadersComponent extends HTMLElement {
     // clang-format on
   }
 
-  #renderResponseHeaders(): LitHtml.TemplateResult {
-    assertNotNullOrUndefined(this.#request);
+  #renderResponseHeaders(): LitHtml.LitTemplate {
+    if (!this.#request) {
+      return LitHtml.nothing;
+    }
 
     const headersWithIssues = [];
     if (this.#request.wasBlocked()) {
@@ -299,8 +302,10 @@ export class RequestHeadersComponent extends HTMLElement {
     // clang-format on
   }
 
-  #renderRequestHeaders(): LitHtml.TemplateResult {
-    assertNotNullOrUndefined(this.#request);
+  #renderRequestHeaders(): LitHtml.LitTemplate {
+    if (!this.#request) {
+      return LitHtml.nothing;
+    }
 
     const headers = this.#request.requestHeaders().slice();
     headers.sort(function(a, b) {
@@ -337,8 +342,7 @@ export class RequestHeadersComponent extends HTMLElement {
   }
 
   #maybeRenderProvisionalHeadersWarning(): LitHtml.LitTemplate {
-    assertNotNullOrUndefined(this.#request);
-    if (this.#request.requestHeadersText() !== undefined) {
+    if (!this.#request || this.#request.requestHeadersText() !== undefined) {
       return LitHtml.nothing;
     }
 
@@ -535,8 +539,10 @@ export class RequestHeadersComponent extends HTMLElement {
     `;
   }
 
-  #renderGeneralSection(): LitHtml.TemplateResult {
-    assertNotNullOrUndefined(this.#request);
+  #renderGeneralSection(): LitHtml.LitTemplate {
+    if (!this.#request) {
+      return LitHtml.nothing;
+    }
 
     let coloredCircleClassName = 'red-circle';
     if (this.#request.statusCode < 300 || this.#request.statusCode === 304) {

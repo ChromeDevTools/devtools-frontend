@@ -14,6 +14,7 @@ export const enum IssueCode {
   InsecureContext = 'AttributionReportingIssue::InsecureContext',
   InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
+  InvalidEligibleHeader = 'AttributionReportingIssue::InvalidEligibleHeader',
   // TODO(apaseltiner): Remove this once old issue types are removed from
   // protocol.
   Unknown = 'AttributionReportingIssue::Unknown',
@@ -31,6 +32,8 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidRegisterSourceHeader;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterTriggerHeader:
       return IssueCode.InvalidRegisterTriggerHeader;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidEligibleHeader:
+      return IssueCode.InvalidEligibleHeader;
     default:
       return IssueCode.Unknown;
   }
@@ -75,6 +78,14 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
         return {
           file: 'arInvalidRegisterTriggerHeader.md',
           links: [],
+        };
+      case IssueCode.InvalidEligibleHeader:
+        return {
+          file: 'arInvalidEligibleHeader.md',
+          links: [{
+            link: 'https://tools.ietf.org/id/draft-ietf-httpbis-header-structure-15.html#rfc.section.4.2.2',
+            linkTitle: 'Structured Headers RFC',
+          }],
         };
       case IssueCode.Unknown:
         return null;

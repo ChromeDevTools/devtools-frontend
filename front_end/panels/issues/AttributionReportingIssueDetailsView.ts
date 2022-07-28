@@ -57,6 +57,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         this.appendColumnTitle(header, i18nString(UIStrings.invalidHeaderValue));
         break;
@@ -92,6 +93,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
         this.#appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;

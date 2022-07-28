@@ -280,6 +280,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/TwaHttpError.md",
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
   "front_end/models/issues_manager/descriptions/arInsecureContext.md",
+  "front_end/models/issues_manager/descriptions/arInvalidEligibleHeader.md",
   "front_end/models/issues_manager/descriptions/arInvalidRegisterSourceHeader.md",
   "front_end/models/issues_manager/descriptions/arInvalidRegisterTriggerHeader.md",
   "front_end/models/issues_manager/descriptions/arPermissionPolicyDisabled.md",

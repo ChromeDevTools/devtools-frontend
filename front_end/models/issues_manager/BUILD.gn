@@ -56,6 +56,7 @@ devtools_issue_description_files = [
   "arUntrustworthyReportingOrigin.md",
   "arInsecureContext.md",
   "arInvalidRegisterSourceHeader.md",
+  "arInvalidEligibleHeader.md",
   "arInvalidRegisterTriggerHeader.md",
   "arPermissionPolicyDisabled.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",

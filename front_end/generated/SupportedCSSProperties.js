@@ -1302,8 +1302,7 @@ export const generatedProperties = [
   "keywords": [
    "visible",
    "auto",
-   "hidden",
-   "hidden-matchable"
+   "hidden"
   ],
   "name": "content-visibility"
  },
@@ -4082,8 +4081,7 @@ export const generatedPropertyValues = {
   "values": [
    "visible",
    "auto",
-   "hidden",
-   "hidden-matchable"
+   "hidden"
   ]
  },
  "counter-increment": {

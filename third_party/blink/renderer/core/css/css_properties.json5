@@ -3716,7 +3716,6 @@
       field_template: "external",
       keywords: ["auto"],
       typedom_types: ["Keyword"],
-      runtime_flag: "NamedPages",
       computable: false,
     },
     {
@@ -3728,7 +3727,6 @@
       field_size: 2,
       default_value: "PageOrientation::kUpright",
       include_paths: ["third_party/blink/public/common/css/page_orientation.h"],
-      runtime_flag: "NamedPages",
       computable: false,
     },
     {
@@ -3843,7 +3841,7 @@
       name: "content-visibility",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_template: "keyword",
-      keywords: ["visible", "auto", "hidden", "hidden-matchable"],
+      keywords: ["visible", "auto", "hidden"],
       default_value: "visible",
       typedom_types: ["Keyword"],
       computable: false,
@@ -3930,7 +3928,6 @@
         "auto", "stable", "both-edges"
       ],
       typedom_types: ["Keyword"],
-      runtime_flag: "ScrollbarGutter",
     },
     {
       name: "scrollbar-width",

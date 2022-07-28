@@ -1446,12 +1446,11 @@
                     "type": "string",
                     "enum": [
                         "PermissionPolicyDisabled",
-                        "AttributionSourceUntrustworthyOrigin",
-                        "AttributionUntrustworthyOrigin",
                         "UntrustworthyReportingOrigin",
                         "InsecureContext",
                         "InvalidHeader",
-                        "InvalidRegisterTriggerHeader"
+                        "InvalidRegisterTriggerHeader",
+                        "InvalidEligibleHeader"
                     ]
                 },
                 {
@@ -1462,12 +1461,6 @@
                         {
                             "name": "violationType",
                             "$ref": "AttributionReportingIssueType"
-                        },
-                        {
-                            "name": "frame",
-                            "description": "TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.",
-                            "optional": true,
-                            "$ref": "AffectedFrame"
                         },
                         {
                             "name": "request",
@@ -8992,7 +8985,14 @@
                     "parameters": [
                         {
                             "name": "securityOrigin",
-                            "description": "Security origin.",
+                            "description": "At least and at most one of securityOrigin, storageKey must be specified.\nSecurity origin.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key.",
+                            "optional": true,
                             "type": "string"
                         },
                         {
@@ -9089,7 +9089,14 @@
                     "parameters": [
                         {
                             "name": "securityOrigin",
-                            "description": "Security origin.",
+                            "description": "At least and at most one of securityOrigin, storageKey must be specified.\nSecurity origin.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "storageKey",
+                            "description": "Storage key.",
+                            "optional": true,
                             "type": "string"
                         },
                         {

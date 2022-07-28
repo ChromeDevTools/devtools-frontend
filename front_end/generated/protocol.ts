@@ -963,12 +963,11 @@ export namespace Audits {
 
   export const enum AttributionReportingIssueType {
     PermissionPolicyDisabled = 'PermissionPolicyDisabled',
-    AttributionSourceUntrustworthyOrigin = 'AttributionSourceUntrustworthyOrigin',
-    AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
     UntrustworthyReportingOrigin = 'UntrustworthyReportingOrigin',
     InsecureContext = 'InsecureContext',
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
+    InvalidEligibleHeader = 'InvalidEligibleHeader',
   }
 
   /**
@@ -977,10 +976,6 @@ export namespace Audits {
    */
   export interface AttributionReportingIssueDetails {
     violationType: AttributionReportingIssueType;
-    /**
-     * TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.
-     */
-    frame?: AffectedFrame;
     request?: AffectedRequest;
     violatingNodeId?: DOM.BackendNodeId;
     invalidParameter?: string;
@@ -5919,9 +5914,14 @@ export namespace IndexedDB {
 
   export interface RequestDataRequest {
     /**
+     * At least and at most one of securityOrigin, storageKey must be specified.
      * Security origin.
      */
-    securityOrigin: string;
+    securityOrigin?: string;
+    /**
+     * Storage key.
+     */
+    storageKey?: string;
     /**
      * Database name.
      */
@@ -5994,9 +5994,14 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseRequest {
     /**
+     * At least and at most one of securityOrigin, storageKey must be specified.
      * Security origin.
      */
-    securityOrigin: string;
+    securityOrigin?: string;
+    /**
+     * Storage key.
+     */
+    storageKey?: string;
     /**
      * Database name.
      */

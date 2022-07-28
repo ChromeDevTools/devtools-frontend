@@ -699,23 +699,18 @@ experimental domain Audits
   type AttributionReportingIssueType extends string
     enum
       PermissionPolicyDisabled
-      # TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.
-      AttributionSourceUntrustworthyOrigin
-      # TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.
-      AttributionUntrustworthyOrigin
       UntrustworthyReportingOrigin
       InsecureContext
       # TODO(apaseltiner): Rename this to InvalidRegisterSourceHeader
       InvalidHeader
       InvalidRegisterTriggerHeader
+      InvalidEligibleHeader
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
     properties
       AttributionReportingIssueType violationType
-      # TODO(apaseltiner): Remove this once it is no longer referenced by the frontend.
-      optional AffectedFrame frame
       optional AffectedRequest request
       optional DOM.BackendNodeId violatingNodeId
       optional string invalidParameter
@@ -4125,8 +4120,11 @@ experimental domain IndexedDB
   # Requests data from object store or index.
   command requestData
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
       # Object store name.
@@ -4168,8 +4166,11 @@ experimental domain IndexedDB
   # Requests database with given name in given frame.
   command requestDatabase
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
     returns

@@ -1504,10 +1504,12 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       headers['Cache-Control'] = 'no-cache';
     }
 
+    const allowFileUNCPaths = Common.Settings.Settings.instance().moduleSetting('network.enable-unc-loading').get();
+
     return new Promise(
         resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
           resolve({success, content, errorDescription});
-        }));
+        }, allowFileUNCPaths));
   }
 }
 

@@ -125,6 +125,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   private messages: LogMessage[] = [];
   private isRecording: boolean = false;
 
+  #historyAutocompleteDataProvider = new HistoryAutocompleteDataProvider();
+
   constructor() {
     super(true);
     this.started = false;
@@ -303,21 +305,24 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const shrinkFactor = 0.2;
     const tooltip = i18nString(UIStrings.sendRawCDPCommandExplanation);
     const input = new UI.Toolbar.ToolbarInput(
-        placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, undefined, false);
+        placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip,
+        this.#historyAutocompleteDataProvider.buildTextPromptCompletions, false);
     input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => this.#onCommandSend(input));
     return input;
   }
 
   #onCommandSend(input: UI.Toolbar.ToolbarInput): void {
-    const {command, parameters} = parseCommandInput(input.value());
+    const value = input.value();
+    const {command, parameters} = parseCommandInput(value);
     const test = ProtocolClient.InspectorBackend.test;
     // TODO: TS thinks that properties are read-only because
     // in TS test is defined as a namespace.
     // @ts-ignore
     test.sendRawMessage(command, parameters, () => {});
+    this.#historyAutocompleteDataProvider.addEntry(value);
   }
 
-  static instance(opts = {forceNew: null}): ProtocolMonitorImpl {
+  static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {
     const {forceNew} = opts;
     if (!protocolMonitorImplInstance || forceNew) {
       protocolMonitorImplInstance = new ProtocolMonitorImpl();
@@ -484,6 +489,39 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     void stream.write(JSON.stringify(this.messages, null, '  '));
     void stream.close();
+  }
+}
+
+export class HistoryAutocompleteDataProvider {
+  #maxHistorySize = 200;
+  #commandHistory = new Set<string>();
+
+  constructor(maxHistorySize?: number) {
+    if (maxHistorySize !== undefined) {
+      this.#maxHistorySize = maxHistorySize;
+    }
+  }
+
+  buildTextPromptCompletions =
+      async(expression: string, prefix: string, force?: boolean): Promise<UI.SuggestBox.Suggestions> => {
+    if (!prefix && !force && expression) {
+      return [];
+    }
+    const newestToOldest = [...this.#commandHistory].reverse();
+    return newestToOldest.filter(cmd => cmd.startsWith(prefix)).map(text => ({
+                                                                      text,
+                                                                    }));
+  };
+
+  addEntry(value: string): void {
+    if (this.#commandHistory.has(value)) {
+      this.#commandHistory.delete(value);
+    }
+    this.#commandHistory.add(value);
+    if (this.#commandHistory.size > this.#maxHistorySize) {
+      const earliestEntry = this.#commandHistory.values().next().value;
+      this.#commandHistory.delete(earliestEntry);
+    }
   }
 }
 

@@ -89,7 +89,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   initialize(
-      completions: (this: null, arg1: string, arg2: string, arg3?: boolean|undefined) => Promise<Suggestion[]>,
+      completions: (this: null, expression: string, filter: string, force?: boolean|undefined) => Promise<Suggestion[]>,
       stopCharacters?: string, usesSuggestionBuilder?: boolean): void {
     this.loadCompletions = completions;
     this.completionStopCharacters = stopCharacters || ' =:[({;,!+-*/&|^<>.';

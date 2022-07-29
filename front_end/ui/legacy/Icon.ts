@@ -105,7 +105,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-checkmark-behind', {position: 'd6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-command-result', {position: 'a4', spritesheet: 'smallicons'}],
   ['smallicon-contrast-ratio', {position: 'a6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-cross', {position: 'b4', spritesheet: 'smallicons'}],
+  ['smallicon-cross', {position: 'b4', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-device', {position: 'c5', spritesheet: 'smallicons'}],
   ['smallicon-error', {position: 'c4', spritesheet: 'smallicons'}],
   ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],

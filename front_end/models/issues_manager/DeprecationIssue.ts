@@ -291,7 +291,11 @@ const UIStrings = {
    */
   xhrJSONEncodingDetection: 'UTF-16 is not supported by response json in `XMLHttpRequest`',
   /**
-   * @description TODO(crbug.com/1318882): Description needed for translation
+   * @description Warning displayed to developers. It is shown when
+   * the `XMLHttpRequest` API is used in a way that it slows down the page load
+   * of the next page. The `main thread` refers to an operating systems thread
+   * used to run most of the processing of HTML documents, so please use a
+   * consistent wording.
    */
   xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload:
       'Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user\u2019s experience. For more help, check https://xhr.spec.whatwg.org/.',

@@ -21,6 +21,8 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
@@ -296,6 +298,38 @@ describeWithEnvironment('RequestHeadersView', () => {
             '"Secure" attribute but was not received over a secure connection.\nThis attempt to ' +
             'set a cookie via a Set-Cookie header was blocked because it was not sent over a ' +
             'secure connection and would have overwritten a cookie with the Secure attribute.');
+  });
+
+  it('re-renders on request headers update', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [{name: 'originalName', value: 'originalValue'}];
+
+    const view = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+    const div = document.createElement('div');
+    renderElementIntoDOM(div);
+    view.markAsRoot();
+    view.show(div);
+
+    const component = view.element.querySelector('devtools-request-headers');
+    assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
+    assertShadowRoot(component.shadowRoot);
+    const responseHeadersCategory = component.shadowRoot.querySelector('[aria-label="Response Headers"]');
+    assertElement(responseHeadersCategory, HTMLElement);
+
+    const spy = sinon.spy(component, 'data', ['set']);
+    assert.isTrue(spy.set.notCalled);
+    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), ['originalName:']);
+    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), ['originalValue']);
+
+    request.responseHeaders = [{name: 'updatedName', value: 'updatedValue'}];
+    assert.isTrue(spy.set.calledOnce);
+    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), ['updatedName:']);
+    assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), ['updatedValue']);
+
+    view.detach();
   });
 });
 

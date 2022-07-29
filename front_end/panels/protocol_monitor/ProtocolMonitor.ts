@@ -82,6 +82,11 @@ const UIStrings = {
   *@description A placeholder for an input in Protocol Monitor. The input accepts commands that are sent to the backend on Enter. CDP stands for Chrome DevTools Protocol.
   */
   sendRawCDPCommand: 'Send a raw `CDP` command',
+  /**
+   * @description A tooltip text for the input in the Protocol Monitor panel. The tooltip describes what format is expected.
+   */
+  sendRawCDPCommandExplanation:
+      'Format: `\'Domain.commandName\'` for a command without parameters, or `\'{"command":"Domain.commandName", "parameters": {...}}\'` as a JSON object for a command with parameters. `\'cmd\'`/`\'method\'` and `\'args\'`/`\'params\'`/`\'arguments\'` are also supported as alternative keys for the `JSON` object.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -292,7 +297,13 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   }
 
   #createCommandInput(): UI.Toolbar.ToolbarInput {
-    const input = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.sendRawCDPCommand), '', 1, .2, '', undefined, false);
+    const placeholder = i18nString(UIStrings.sendRawCDPCommand);
+    const accessiblePlaceholder = placeholder;
+    const growFactor = 1;
+    const shrinkFactor = 0.2;
+    const tooltip = i18nString(UIStrings.sendRawCDPCommandExplanation);
+    const input = new UI.Toolbar.ToolbarInput(
+        placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, undefined, false);
     input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => this.#onCommandSend(input));
     return input;
   }

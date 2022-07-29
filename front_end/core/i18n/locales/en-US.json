@@ -8795,6 +8795,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Send a raw CDP command"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' for a command without parameters, or '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' as a JSON object for a command with parameters. 'cmd'/'method' and 'args'/'params'/'arguments' are also supported as alternative keys for the JSON object."
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
   },

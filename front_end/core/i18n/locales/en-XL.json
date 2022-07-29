@@ -8795,6 +8795,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Ŝén̂d́ â ŕâẃ CDP ĉóm̂ḿâńd̂"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "F̂ór̂ḿât́: 'Domain.commandName' f̂ór̂ á ĉóm̂ḿâńd̂ ẃît́ĥóût́ p̂ár̂ám̂ét̂ér̂ś, ôŕ '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' âś â J́ŜÓN̂ ób̂j́êćt̂ f́ôŕ â ćôḿm̂án̂d́ ŵít̂h́ p̂ár̂ám̂ét̂ér̂ś. 'cmd'/'method' âńd̂ 'args'/'params'/'arguments' ár̂é âĺŝó ŝúp̂ṕôŕt̂éd̂ áŝ ál̂t́êŕn̂át̂ív̂é k̂éŷś f̂ór̂ t́ĥé JSON ôb́ĵéĉt́."
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Ŝéŝśîón̂"
   },

@@ -19,12 +19,13 @@
     "url": "git+https://github.com/ChromeDevTools/devtools-frontend.git"
   },
   "scripts": {
-    "auto-debug-e2etest": "autoninja -C out/Default && npm run debug-e2etest --",
-    "auto-debug-interactionstest": "autoninja -C out/Default && npm run debug-interactionstest --",
+    "auto-debug-e2etest": "npm run build && npm run debug-e2etest --",
+    "auto-debug-interactionstest": "npm run build && npm run debug-interactionstest --",
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
-    "auto-e2etest": "autoninja -C out/Default && npm run e2etest --",
-    "auto-interactionstest": "autoninja -C out/Default && npm run interactionstest --",
+    "auto-e2etest": "npm run build && npm run e2etest --",
+    "auto-interactionstest": "npm run build && npm run interactionstest --",
     "auto-unittest": "scripts/test/run_auto_unittests.py --no-text-coverage",
+    "prebuild": "gn gen out/Default",
     "build": "autoninja -C out/Default",
     "build-release": "autoninja -C out/Release",
     "check": "npm run check-lint && npm run check-loc",

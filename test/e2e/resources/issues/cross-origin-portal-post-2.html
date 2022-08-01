@@ -17,9 +17,9 @@
       const xoriginportal1 = document.getElementById("x-origin-portal1");
       const xoriginportal2 = document.getElementById("x-origin-portal2");
       xoriginportal1.src = portalUrl1;
+      xoriginportal1.onload = () => xoriginportal1.postMessage('test');
       xoriginportal2.src = portalUrl2;
-      xoriginportal1.postMessage('test');
-      xoriginportal2.postMessage('test');
+      xoriginportal2.onload = () => xoriginportal2.postMessage('test');
     };
   </script>
 </head>

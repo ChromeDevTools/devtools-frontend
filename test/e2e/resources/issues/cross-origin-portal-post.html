@@ -9,11 +9,12 @@
 <head>
   <script>
     const url = new URL('cross-origin-portal.html', document.location).toString()
+      .replace('devtools.xorigin.test', 'devtools.another.test')
       .replace('localhost', 'devtools.xorigin.test');
     window.onload = () => {
       const xoriginportal = document.getElementById("x-origin-portal");
       xoriginportal.src = url;
-      xoriginportal.postMessage('test');
+      xoriginportal.onload = () => xoriginportal.postMessage('test')
     };
   </script>
 </head>

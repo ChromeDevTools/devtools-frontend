@@ -2,7 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getTestServerPort, goToResource, waitForNone} from '../../shared/helper.js';
+import {
+  assertNotNullOrUndefined,
+  getTestServerPort,
+  goToResource,
+  waitForNone,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   ensureResourceSectionIsExpanded,
@@ -30,8 +35,7 @@ describe('Cross-origin portal post message issue', async () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  // TODO: crbug/1325742 flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1325742] should handle multiple issue correctly', async () => {
+  it('should handle multiple issue correctly', async () => {
     await goToResource('issues/cross-origin-portal-post-2.html');
     await navigateToIssuesTab();
     await expandIssue();

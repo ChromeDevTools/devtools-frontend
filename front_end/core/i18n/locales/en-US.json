@@ -6863,6 +6863,9 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "General"
   },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Header overrides"
+  },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Learn more"
   },

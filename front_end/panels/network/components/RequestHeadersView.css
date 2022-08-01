@@ -27,17 +27,12 @@ details[open] .header-count {
   display: none;
 }
 
-details summary label {
+details .hide-when-closed {
   display: none;
 }
 
-details[open] summary label {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.raw-checkbox-container {
-  float: right;
+details[open] .hide-when-closed {
+  display: block;
 }
 
 details summary input {
@@ -174,4 +169,41 @@ div.raw-headers-row {
   white-space: pre-wrap;
   font-size: 90%;
   color: var(--color-text-secondary);
+}
+
+.header-grid-container {
+  display: inline-grid;
+  grid-template-columns: 156px 50px 1fr;
+  grid-gap: 4px;
+  /* Make this fit into the same line as the summary marker */
+  width: calc(100% - 15px);
+}
+
+.header-grid-container div:last-child {
+  text-align: right;
+}
+
+.header .devtools-link {
+  color: var(--color-text-primary);
+}
+
+x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
+  padding-right: 3px;
+}
+
+.purple-dot {
+  filter: hue-rotate(160deg);
+}
+
+.-theme-with-dark-background .purple-dot,
+:host-context(.-theme-with-dark-background) .purple-dot {
+  filter: invert(80%) hue-rotate(350deg);
+}
+
+summary label {
+  color: var(--color-text-secondary);
+}
+
+summary label:hover {
+  color: var(--color-text-primary);
 }

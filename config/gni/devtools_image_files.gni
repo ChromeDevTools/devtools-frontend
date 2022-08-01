@@ -66,6 +66,8 @@ devtools_svg_sources = [
   "errorWave.svg",
   "error_icon.svg",
   "feedback_button_icon.svg",
+  "file-sync_icon.svg",
+  "file_icon.svg",
   "flex-direction-icon.svg",
   "flex-nowrap-icon.svg",
   "flex-wrap-icon.svg",

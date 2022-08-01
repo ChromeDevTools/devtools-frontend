@@ -6,9 +6,12 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
+import * as Persistence from '../../../models/persistence/persistence.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -16,6 +19,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Sources from '../../sources/sources.js';
 
 import requestHeadersViewStyles from './RequestHeadersView.css.js';
 
@@ -68,6 +72,11 @@ const UIStrings = {
   *@description Section header for a list of the main aspects of a http request
   */
   general: 'General',
+  /**
+  *@description Label for a link from the network panel's headers view to the file in which
+  * header overrides are defined in the sources panel.
+  */
+  headerOverrides: 'Header overrides',
   /**
   *@description Text that is usually a hyperlink to more documentation
   */
@@ -204,6 +213,7 @@ export class RequestHeadersComponent extends HTMLElement {
   #showRequestHeadersText = false;
   #showResponseHeadersTextFull = false;
   #showRequestHeadersTextFull = false;
+  readonly #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   set data(data: RequestHeadersComponentData) {
     this.#request = data.request;
@@ -212,6 +222,23 @@ export class RequestHeadersComponent extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles];
+    this.#workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+  }
+
+  disconnectedCallback(): void {
+    this.#workspace.removeEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#workspace.removeEventListener(
+        Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+  }
+
+  #uiSourceCodeAddedOrRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    if (this.#getHeaderOverridesFileUrl() === event.data.url()) {
+      this.#render();
+    }
   }
 
   #render(): void {
@@ -294,6 +321,7 @@ export class RequestHeadersComponent extends HTMLElement {
           title: i18nString(UIStrings.responseHeaders),
           headerCount: this.#request.sortedResponseHeaders.length,
           checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
+          additionalContent: this.#renderHeaderOverridesLink(),
         } as CategoryData}
         aria-label=${i18nString(UIStrings.responseHeaders)}
       >
@@ -304,6 +332,57 @@ export class RequestHeadersComponent extends HTMLElement {
       </${Category.litTagName}>
     `;
     // clang-format on
+  }
+
+  #renderHeaderOverridesLink(): LitHtml.LitTemplate {
+    const overrideable = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+    if (!overrideable || !this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl())) {
+      return LitHtml.nothing;
+    }
+
+    const overridesSetting: Common.Settings.Setting<boolean> =
+        Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled');
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    const fileIcon = overridesSetting.get() ? html`
+      <${IconButton.Icon.Icon.litTagName} class="inline-icon purple-dot" .data=${{
+          iconName: 'file-sync_icon',
+          width: '11px',
+          height: '13px',
+        } as IconButton.Icon.IconData}>
+      </${IconButton.Icon.Icon.litTagName}>` : html`
+      <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+          iconName: 'file_icon',
+          color: 'var(--color-text-primary)',
+          width: '12px',
+          height: '12px',
+        } as IconButton.Icon.IconData}>
+      </${IconButton.Icon.Icon.litTagName}>`;
+    // clang-format on
+
+    const revealHeadersFile = (event: Event): void => {
+      event.preventDefault();
+      const uiSourceCode = this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl());
+      if (uiSourceCode) {
+        Sources.SourcesPanel.SourcesPanel.instance().showUISourceCode(uiSourceCode);
+      }
+    };
+
+    return html`
+      <x-link @click=${revealHeadersFile} class="link devtools-link">
+        ${fileIcon}${i18nString(UIStrings.headerOverrides)}
+      </x-link>
+    `;
+  }
+
+  #getHeaderOverridesFileUrl(): Platform.DevToolsPath.UrlString {
+    if (!this.#request) {
+      return Platform.DevToolsPath.EmptyUrlString;
+    }
+    const fileUrl = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().fileUrlFromNetworkUrl(
+        this.#request.url(), /* ignoreInactive */ true);
+    return fileUrl.substring(0, fileUrl.lastIndexOf('/')) + '/' +
+        Persistence.NetworkPersistenceManager.HEADERS_FILENAME as Platform.DevToolsPath.UrlString;
   }
 
   #renderRequestHeaders(): LitHtml.LitTemplate {
@@ -647,6 +726,7 @@ export interface CategoryData {
   title: Common.UIString.LocalizedString;
   headerCount?: number;
   checked?: boolean;
+  additionalContent?: LitHtml.LitTemplate;
 }
 
 export class Category extends HTMLElement {
@@ -656,6 +736,7 @@ export class Category extends HTMLElement {
   #title: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
   #headerCount?: number = undefined;
   #checked: boolean|undefined = undefined;
+  #additionalContent: LitHtml.LitTemplate|undefined = undefined;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles, Input.checkboxStyles];
@@ -667,6 +748,7 @@ export class Category extends HTMLElement {
         Common.Settings.Settings.instance().createSetting('request-info-' + data.name + '-category-expanded', true);
     this.#headerCount = data.headerCount;
     this.#checked = data.checked;
+    this.#additionalContent = data.additionalContent;
     this.#render();
   }
 
@@ -681,18 +763,19 @@ export class Category extends HTMLElement {
     render(html`
       <details ?open=${isOpen} @toggle=${this.#onToggle}>
         <summary class="header" @keydown=${this.#onSummaryKeyDown}>
-          ${this.#title}${this.#headerCount ?
-            html`<span class="header-count"> (${this.#headerCount})</span>` :
-            LitHtml.nothing
-          }
-          ${this.#checked !== undefined ? html`
-            <span class="raw-checkbox-container">
-              <label>
-                <input type="checkbox" .checked=${this.#checked} @change=${this.#onCheckboxToggle} />
-                ${i18nString(UIStrings.raw)}
-              </label>
-            </span>
-          ` : LitHtml.nothing}
+          <div class="header-grid-container">
+            <div>
+              ${this.#title}${this.#headerCount ?
+                html`<span class="header-count"> (${this.#headerCount})</span>` :
+                LitHtml.nothing
+              }
+            </div>
+            <div class="hide-when-closed">
+              ${this.#checked !== undefined ? html`
+                <label><input type="checkbox" .checked=${this.#checked} @change=${this.#onCheckboxToggle} />${i18nString(UIStrings.raw)}</label>
+              ` : LitHtml.nothing}
+            </div>
+            <div class="hide-when-closed">${this.#additionalContent}</div>
         </summary>
         <slot></slot>
       </details>

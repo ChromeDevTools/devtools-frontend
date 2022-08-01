@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("workspace") {
   testonly = true
-  sources = [ "WorkspaceImpl_test.ts" ]
+  sources = [
+    "UISourceCode_test.ts",
+    "WorkspaceImpl_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/core/common:bundle",

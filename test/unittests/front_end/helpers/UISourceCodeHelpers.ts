@@ -106,3 +106,13 @@ export function createFileSystemUISourceCode(options: {
   project.addUISourceCode(uiSourceCode);
   return {uiSourceCode, project};
 }
+
+export function setupMockedUISourceCode(url: string = 'https://example.com/') {
+  const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
+  const urlStringTagExample = url as Platform.DevToolsPath.UrlString;
+  const contentTypeStub = sinon.createStubInstance(Common.ResourceType.ResourceType);
+
+  const uiSourceCode = new Workspace.UISourceCode.UISourceCode(projectStub, urlStringTagExample, contentTypeStub);
+
+  return {sut: uiSourceCode, projectStub: projectStub, contentTypeStub: contentTypeStub};
+}

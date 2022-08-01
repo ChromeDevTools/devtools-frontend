@@ -58,6 +58,7 @@ export interface DataGridData {
   activeSort: SortState|null;
   contextMenus?: DataGridContextMenusConfiguration;
   label?: string;
+  paddingRowsCount?: number;
 }
 
 const enum UserScrollState {
@@ -69,7 +70,6 @@ const enum UserScrollState {
 const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 
 const ROW_HEIGHT_PIXELS = 18;
-const PADDING_ROWS_COUNT = 10;
 
 export class DataGrid extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-data-grid`;
@@ -82,6 +82,7 @@ export class DataGrid extends HTMLElement {
   #userScrollState: UserScrollState = UserScrollState.NOT_SCROLLED;
   #contextMenus?: DataGridContextMenusConfiguration = undefined;
   #label?: string = undefined;
+  #paddingRowsCount = 10;
   #currentResize: {
     rightCellCol: HTMLTableColElement,
     leftCellCol: HTMLTableColElement,
@@ -139,6 +140,7 @@ export class DataGrid extends HTMLElement {
       activeSort: this.#sortState,
       contextMenus: this.#contextMenus,
       label: this.#label,
+      paddingRowsCount: this.#paddingRowsCount,
     };
   }
 
@@ -169,6 +171,10 @@ export class DataGrid extends HTMLElement {
      */
     if (!this.#hasRenderedAtLeastOnce) {
       this.#cellToFocusIfUserTabsIn = calculateFirstFocusableCell({columns: this.#columns, rows: this.#rows});
+    }
+
+    if (data.paddingRowsCount !== undefined) {
+      this.#paddingRowsCount = data.paddingRowsCount;
     }
 
     if (this.#hasRenderedAtLeastOnce && this.#userHasCellFocused()) {
@@ -642,7 +648,7 @@ export class DataGrid extends HTMLElement {
         scrollTop = wrapper.scrollTop;
         clientHeight = wrapper.clientHeight;
       }
-      const padding = ROW_HEIGHT_PIXELS * PADDING_ROWS_COUNT;
+      const padding = ROW_HEIGHT_PIXELS * this.#paddingRowsCount;
       let topVisibleRow = Math.floor((scrollTop - padding) / ROW_HEIGHT_PIXELS);
       let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
 

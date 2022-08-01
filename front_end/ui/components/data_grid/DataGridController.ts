@@ -31,6 +31,7 @@ export interface DataGridControllerData {
   initialSort?: SortState;
   contextMenus?: DataGridContextMenusConfiguration;
   label?: string;
+  paddingRowsCount?: number;
 }
 
 export class DataGridController extends HTMLElement {
@@ -55,6 +56,8 @@ export class DataGridController extends HTMLElement {
   #sortState: Readonly<SortState>|null = null;
   #filters: readonly TextUtils.TextUtils.ParsedFilter[] = [];
 
+  #paddingRowsCount?: number;
+
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [dataGridControllerStyles];
   }
@@ -66,6 +69,7 @@ export class DataGridController extends HTMLElement {
       filters: this.#filters,
       contextMenus: this.#contextMenus,
       label: this.#label,
+      paddingRowsCount: this.#paddingRowsCount,
     };
   }
 
@@ -87,6 +91,8 @@ export class DataGridController extends HTMLElement {
     if (this.#sortState) {
       this.#sortRows(this.#sortState);
     }
+
+    this.#paddingRowsCount = data.paddingRowsCount;
 
     this.#render();
   }
@@ -222,6 +228,7 @@ export class DataGridController extends HTMLElement {
           activeSort: this.#sortState,
           contextMenus: this.#contextMenus,
           label: this.#label,
+          paddingRowsCount: this.#paddingRowsCount,
         } as DataGridData}
         @columnheaderclick=${this.#onColumnHeaderClick}
         @contextmenucolumnsortclick=${this.#onContextMenuColumnSortClick}

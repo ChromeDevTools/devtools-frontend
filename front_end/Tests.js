@@ -276,34 +276,6 @@
   };
 
   /**
-   * Tests that scripts tab is populated with inspected scripts even if it
-   * hadn't been shown by the moment inspected paged refreshed.
-   * @see http://crbug.com/26312
-   */
-  TestSuite.prototype.testScriptsTabIsPopulatedOnInspectedPageRefresh = function() {
-    const test = this;
-    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
-    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
-
-    this.showPanel('elements').then(function() {
-      // Reload inspected page. It will reset the debugger agent.
-      test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
-    });
-
-    function waitUntilScriptIsParsed() {
-      debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
-      test.showPanel('sources').then(function() {
-        test._waitUntilScriptsAreParsed(['debugger_test_page.html'], function() {
-          test.releaseControl();
-        });
-      });
-    }
-
-    // Wait until all scripts are added to the debugger.
-    this.takeControl();
-  };
-
-  /**
    * Tests that scripts list contains content scripts.
    */
   TestSuite.prototype.testContentScriptIsPresent = function() {

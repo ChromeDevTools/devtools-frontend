@@ -4847,6 +4847,9 @@
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
     "message": "Parent element has {REASON_RULE_CODE} rule, therefore this elements {AFFECTED_RULE_CODE} has no effect"
   },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "For this property to work, please change the {EXISTING_RULE} rule to {TARGET_RULE}"
+  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
     "message": "For this property to work, please remove or change the value of {REASON_RULE_CODE}"
   },

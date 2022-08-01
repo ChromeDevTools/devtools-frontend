@@ -4847,6 +4847,9 @@
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
     "message": "P̂ár̂én̂t́ êĺêḿêńt̂ h́âś {REASON_RULE_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê t́ĥíŝ él̂ém̂én̂t́ŝ {AFFECTED_RULE_CODE} h́âś n̂ó êf́f̂éĉt́"
   },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ćĥán̂ǵê t́ĥé {EXISTING_RULE} r̂úl̂é t̂ó {TARGET_RULE}"
+  },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
     "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ŕêḿôv́ê ór̂ ćĥán̂ǵê t́ĥé v̂ál̂úê óf̂ {REASON_RULE_CODE}"
   },

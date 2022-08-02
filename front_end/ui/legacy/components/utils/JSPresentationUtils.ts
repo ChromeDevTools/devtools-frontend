@@ -94,7 +94,6 @@ export function buildStackTraceRows(
     updateCallback?: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
     ): (StackTraceRegularRow|StackTraceAsyncRow)[] {
   const stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[] = [];
-  let regularRowCount = 0;
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
@@ -110,14 +109,11 @@ export function buildStackTraceRows(
       asyncRow = {
         asyncDescription: UI.UIUtils.asyncStackTraceLabel(stackTrace.description, previousCallFrames),
         ignoreListHide: false,
-        rowCountHide: false,
       };
       stackTraceRows.push(asyncRow);
     }
     let hiddenCallFrames = 0;
     for (const stackFrame of stackTrace.callFrames) {
-      regularRowCount++;
-      const rowCountHide = regularRowCount > 30 && stackTrace.callFrames.length > 31;
       let ignoreListHide = false;
       const functionName = UI.UIUtils.beautifyFunctionName(stackFrame.functionName);
       const link =
@@ -125,10 +121,13 @@ export function buildStackTraceRows(
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
+        // Note: This has always checked whether the call frame location *in the generated
+        // code* is ignore-listed or not. This can change after the live location updates,
+        // and is handled again in the linkifier live location update callback.
         const uiLocation = Linkifier.uiLocation(link);
         if (uiLocation &&
-            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
-                uiLocation.uiSourceCode.url())) {
+            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+                uiLocation.uiSourceCode)) {
           ignoreListHide = true;
         }
         // Linkifier is using a workaround with the 'zero width space' (\u200b).
@@ -137,13 +136,13 @@ export function buildStackTraceRows(
           link.textContent = i18nString(UIStrings.unknownSource);
         }
       }
-      if (rowCountHide || ignoreListHide) {
+      if (ignoreListHide) {
         ++hiddenCallFrames;
       }
-      stackTraceRows.push({functionName, link, ignoreListHide, rowCountHide});
+      stackTraceRows.push({functionName, link, ignoreListHide});
     }
     if (asyncRow && hiddenCallFrames > 0 && hiddenCallFrames === stackTrace.callFrames.length) {
-      stackTraceRows[1].rowCountHide ? asyncRow.rowCountHide = true : asyncRow.ignoreListHide = true;
+      asyncRow.ignoreListHide = true;
     }
   }
 
@@ -173,20 +172,24 @@ function updateHiddenRows(
     const row = stackTraceRows[i];
 
     if ('link' in row && row.link) {
+      // Note: This checks whether the call frame location *in the live location* is
+      // ignore-listed or not. When a source map is present, this corresponds to the
+      // location in the original source, not the generated source. Therefore, the
+      // ignore-list status might be different now from when the row was created.
       const uiLocation = Linkifier.uiLocation(row.link);
       if (uiLocation &&
-          Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(
-              uiLocation.uiSourceCode.url())) {
+          Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+              uiLocation.uiSourceCode)) {
         row.ignoreListHide = true;
       }
-      if (row.rowCountHide || row.ignoreListHide) {
+      if (row.ignoreListHide) {
         shouldHideSubCount++;
       }
     }
     if ('asyncDescription' in row) {
       // hide current row if all (regular) rows since the previous asyncRow are hidden
       if (shouldHideSubCount > 0 && shouldHideSubCount === indexOfAsyncRow - i - 1) {
-        stackTraceRows[i + 1].rowCountHide ? row.rowCountHide = true : row.ignoreListHide = true;
+        row.ignoreListHide = true;
       }
       indexOfAsyncRow = i;
       shouldHideSubCount = 0;
@@ -238,11 +241,11 @@ function renderStackTraceTable(
         row.createChild('td').appendChild(item.link);
         links.push(item.link);
       }
-      if (item.rowCountHide || item.ignoreListHide) {
+      if (item.ignoreListHide) {
         ++hiddenCallFramesCount;
       }
     }
-    if (item.rowCountHide || item.ignoreListHide) {
+    if (item.ignoreListHide) {
       row.classList.add('hidden-row');
     }
     container.appendChild(row);
@@ -271,11 +274,9 @@ export interface StackTraceRegularRow {
   functionName: string;
   ignoreListHide: boolean;
   link: HTMLElement|null;
-  rowCountHide: boolean;
 }
 
 export interface StackTraceAsyncRow {
   asyncDescription: string;
   ignoreListHide: boolean;
-  rowCountHide: boolean;
 }

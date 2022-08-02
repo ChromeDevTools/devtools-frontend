@@ -155,7 +155,7 @@ export class StackTrace extends HTMLElement {
     const expandableRows = [];
     let hiddenCallFramesCount = 0;
     for (const item of this.#stackTraceRows) {
-      if (this.#showHidden || (!item.ignoreListHide && !item.rowCountHide)) {
+      if (this.#showHidden || !item.ignoreListHide) {
         if ('functionName' in item) {
           expandableRows.push(LitHtml.html`
           <${StackTraceRow.litTagName} data-stack-trace-row .data=${{
@@ -168,7 +168,7 @@ export class StackTrace extends HTMLElement {
           `);
         }
       }
-      if (!this.#showHidden && 'functionName' in item && (item.ignoreListHide || item.rowCountHide)) {
+      if (!this.#showHidden && 'functionName' in item && item.ignoreListHide) {
         hiddenCallFramesCount++;
       }
     }

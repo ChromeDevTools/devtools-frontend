@@ -95,7 +95,7 @@ export class ImageView extends UI.View.SimpleView {
   private readonly mimeTypeLabel: UI.Toolbar.ToolbarText;
   private readonly container: HTMLElement;
   private imagePreviewElement: HTMLImageElement;
-  private cachedContent?: string|null;
+  private cachedContent?: TextUtils.ContentProvider.DeferredContent;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
     this.registerRequiredCSS(imageViewStyles);
@@ -153,20 +153,21 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private async updateContentIfNeeded(): Promise<void> {
-    const {content} = await this.contentProvider.requestContent();
-    if (this.cachedContent === content) {
+    const content = await this.contentProvider.requestContent();
+    if (this.cachedContent?.content === content.content) {
       return;
     }
 
-    const contentEncoded = await this.contentProvider.contentEncoded();
     this.cachedContent = content;
-    const imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this.mimeType, contentEncoded) || this.url;
+    const imageSrc =
+        TextUtils.ContentProvider.contentAsDataURL(content.content, this.mimeType, content.isEncoded) || this.url;
     const loadPromise = new Promise(x => {
       this.imagePreviewElement.onload = x;
     });
     this.imagePreviewElement.src = imageSrc;
     this.imagePreviewElement.alt = i18nString(UIStrings.imageFromS, {PH1: this.url});
-    const size = content && !contentEncoded ? content.length : Platform.StringUtilities.base64ToSize(content);
+    const size = content.content && !content.isEncoded ? content.content.length :
+                                                         Platform.StringUtilities.base64ToSize(content.content);
     this.sizeLabel.setText(Platform.NumberUtilities.bytesToString(size));
     await loadPromise;
     this.dimensionsLabel.setText(i18nString(
@@ -203,13 +204,11 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private async saveImage(): Promise<void> {
-    const contentEncoded = await this.contentProvider.contentEncoded();
-    if (!this.cachedContent) {
+    if (!this.cachedContent || !this.cachedContent.content) {
       return;
     }
-    const cachedContent = this.cachedContent;
-    const imageDataURL =
-        TextUtils.ContentProvider.contentAsDataURL(cachedContent, this.mimeType, contentEncoded, '', false);
+    const imageDataURL = TextUtils.ContentProvider.contentAsDataURL(
+        this.cachedContent.content, this.mimeType, this.cachedContent.isEncoded, '', false);
 
     if (!imageDataURL) {
       return;

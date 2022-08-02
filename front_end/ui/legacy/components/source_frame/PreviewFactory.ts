@@ -45,7 +45,7 @@ export class PreviewFactory {
     }
 
     let content: string = deferredContent.content;
-    if (await provider.contentEncoded()) {
+    if (deferredContent.isEncoded) {
       content = window.atob(content);
     }
 

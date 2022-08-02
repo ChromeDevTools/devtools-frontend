@@ -68,10 +68,6 @@ export class CompilerSourceMappingContentProvider implements TextUtils.ContentPr
     return this.#contentTypeInternal;
   }
 
-  async contentEncoded(): Promise<boolean> {
-    return false;
-  }
-
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     try {
       const {content} = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);

@@ -209,11 +209,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.contentTypeInternal;
   }
 
-  async contentEncoded(): Promise<boolean> {
-    await this.requestContent();
-    return this.contentEncodedInternal || false;
-  }
-
   project(): Project {
     return this.projectInternal;
   }

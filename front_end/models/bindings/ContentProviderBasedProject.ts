@@ -66,13 +66,12 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     const contentProvider =
         (this.#contentProviders.get(uiSourceCode.url()) as TextUtils.ContentProvider.ContentProvider);
     try {
-      const [content, isEncoded] =
-          await Promise.all([contentProvider.requestContent(), contentProvider.contentEncoded()]);
+      const content = await contentProvider.requestContent();
       const wasmDisassemblyInfo = 'wasmDisassemblyInfo' in content ? content.wasmDisassemblyInfo : undefined;
       return {
         content: content.content,
         wasmDisassemblyInfo,
-        isEncoded,
+        isEncoded: content.isEncoded,
         error: 'error' in content && content.error || '',
       };
     } catch (err) {

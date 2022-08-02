@@ -730,9 +730,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private async getResourceContent(
       contentProvider: TextUtils.ContentProvider.ContentProvider, message: PrivateAPI.ExtensionServerRequestMessage,
       port: MessagePort): Promise<void> {
-    const {content} = await contentProvider.requestContent();
-    const encoded = await contentProvider.contentEncoded();
-    this.dispatchCallback(message.requestId, port, {encoding: encoded ? 'base64' : '', content: content});
+    const {content, isEncoded} = await contentProvider.requestContent();
+    this.dispatchCallback(message.requestId, port, {encoding: isEncoded ? 'base64' : '', content: content});
   }
 
   private onGetRequestContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {

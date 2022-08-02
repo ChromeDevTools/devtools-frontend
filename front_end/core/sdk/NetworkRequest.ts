@@ -1196,10 +1196,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#resourceTypeInternal;
   }
 
-  async contentEncoded(): Promise<boolean> {
-    return (await this.contentData()).encoded;
-  }
-
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     const {content, error, encoded} = await this.contentData();
     return {

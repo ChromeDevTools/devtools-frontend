@@ -462,10 +462,6 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     return this.firstResource().contentType();
   }
 
-  contentEncoded(): Promise<boolean> {
-    return this.firstResource().contentEncoded();
-  }
-
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     return this.firstResource().requestContent();
   }

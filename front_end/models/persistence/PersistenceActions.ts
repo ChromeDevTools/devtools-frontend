@@ -54,12 +54,13 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
         (contentProvider as Workspace.UISourceCode.UISourceCode).commitWorkingCopy();
       }
-      let content: string = (await contentProvider.requestContent()).content || '';
-      if (await contentProvider.contentEncoded()) {
-        content = window.atob(content);
+      const content = await contentProvider.requestContent();
+      let decodedContent = content.content || '';
+      if (content.isEncoded) {
+        decodedContent = window.atob(decodedContent);
       }
       const url = contentProvider.contentURL();
-      void Workspace.FileManager.FileManager.instance().save(url, content as string, true);
+      void Workspace.FileManager.FileManager.instance().save(url, decodedContent, true);
       Workspace.FileManager.FileManager.instance().close(url);
     }
 

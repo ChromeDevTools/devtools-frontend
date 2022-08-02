@@ -168,9 +168,9 @@ describe('UISourceCode', () => {
     const deferredContentStub = {content: 'Example', isEncoded: true} as TextUtils.ContentProvider.DeferredContent;
     sutObject.projectStub.requestFileContent.resolves(deferredContentStub);
 
-    const result = await sutObject.sut.contentEncoded();
+    const {isEncoded} = await sutObject.sut.requestContent();
 
-    assert.isTrue(result);
+    assert.isTrue(isEncoded);
   });
 
   it('can commit content', async () => {

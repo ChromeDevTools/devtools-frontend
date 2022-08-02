@@ -39,10 +39,6 @@ export class StaticContentProvider implements ContentProvider {
     return this.contentTypeInternal;
   }
 
-  contentEncoded(): Promise<boolean> {
-    return Promise.resolve(false);
-  }
-
   requestContent(): Promise<DeferredContent> {
     return this.lazyContent();
   }

@@ -968,6 +968,7 @@ export namespace Audits {
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
     InvalidEligibleHeader = 'InvalidEligibleHeader',
+    TooManyConcurrentRequests = 'TooManyConcurrentRequests',
   }
 
   /**
@@ -6017,9 +6018,14 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseNamesRequest {
     /**
+     * At least and at most one of securityOrigin, storageKey must be specified.
      * Security origin.
      */
-    securityOrigin: string;
+    securityOrigin?: string;
+    /**
+     * Storage key.
+     */
+    storageKey?: string;
   }
 
   export interface RequestDatabaseNamesResponse extends ProtocolResponseWithError {
@@ -13035,6 +13041,13 @@ export namespace Storage {
     origin: string;
   }
 
+  export interface TrackIndexedDBForStorageKeyRequest {
+    /**
+     * Storage key.
+     */
+    storageKey: string;
+  }
+
   export interface UntrackCacheStorageForOriginRequest {
     /**
      * Security origin.
@@ -13047,6 +13060,13 @@ export namespace Storage {
      * Security origin.
      */
     origin: string;
+  }
+
+  export interface UntrackIndexedDBForStorageKeyRequest {
+    /**
+     * Storage key.
+     */
+    storageKey: string;
   }
 
   export interface GetTrustTokensResponse extends ProtocolResponseWithError {
@@ -13110,6 +13130,10 @@ export namespace Storage {
      */
     origin: string;
     /**
+     * Storage key to update.
+     */
+    storageKey: string;
+    /**
      * Database to update.
      */
     databaseName: string;
@@ -13127,6 +13151,10 @@ export namespace Storage {
      * Origin to update.
      */
     origin: string;
+    /**
+     * Storage key to update.
+     */
+    storageKey: string;
   }
 
   /**
@@ -13398,6 +13426,30 @@ export namespace Target {
     browserContextId?: Browser.BrowserContextID;
   }
 
+  /**
+   * A filter used by target query/discovery/auto-attach operations.
+   */
+  export interface FilterEntry {
+    /**
+     * If set, causes exclusion of mathcing targets from the list.
+     */
+    exclude?: boolean;
+    /**
+     * If not present, matches any type.
+     */
+    type?: string;
+  }
+
+  /**
+   * The entries in TargetFilter are matched sequentially against targets and
+   * the first entry that matches determines if the target is included or not,
+   * depending on the value of `exclude` field in the entry.
+   * If filter is not specified, the one assumed is
+   * [{type: "browser", exclude: true}, {type: "tab", exclude: true}, {}]
+   * (i.e. include everything but `browser` and `tab`).
+   */
+  export type TargetFilter = FilterEntry[];
+
   export interface RemoteLocation {
     host: string;
     port: integer;
@@ -13547,6 +13599,15 @@ export namespace Target {
     targetInfo: TargetInfo;
   }
 
+  export interface GetTargetsRequest {
+    /**
+     * Only targets matching filter will be reported. If filter is not specified
+     * and target discovery is currently enabled, a filter used for target discovery
+     * is used for consistency.
+     */
+    filter?: TargetFilter;
+  }
+
   export interface GetTargetsResponse extends ProtocolResponseWithError {
     /**
      * The list of targets.
@@ -13582,6 +13643,10 @@ export namespace Target {
      * and eventually retire it. See crbug.com/991325.
      */
     flatten?: boolean;
+    /**
+     * Only targets matching filter will be attached.
+     */
+    filter?: TargetFilter;
   }
 
   export interface AutoAttachRelatedRequest {
@@ -13591,6 +13656,10 @@ export namespace Target {
      * to run paused targets.
      */
     waitForDebuggerOnStart: boolean;
+    /**
+     * Only targets matching filter will be attached.
+     */
+    filter?: TargetFilter;
   }
 
   export interface SetDiscoverTargetsRequest {
@@ -13598,6 +13667,11 @@ export namespace Target {
      * Whether to discover available targets.
      */
     discover: boolean;
+    /**
+     * Only targets matching filter will be attached. If `discover` is false,
+     * `filter` must be omitted or empty.
+     */
+    filter?: TargetFilter;
   }
 
   export interface SetRemoteLocationsRequest {

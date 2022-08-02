@@ -2918,6 +2918,11 @@ declare namespace ProtocolProxyApi {
     invoke_trackIndexedDBForOrigin(params: Protocol.Storage.TrackIndexedDBForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Registers storage key to be notified when an update occurs to its IndexedDB.
+     */
+    invoke_trackIndexedDBForStorageKey(params: Protocol.Storage.TrackIndexedDBForStorageKeyRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Unregisters origin from receiving notifications for cache storage.
      */
     invoke_untrackCacheStorageForOrigin(params: Protocol.Storage.UntrackCacheStorageForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -2926,6 +2931,11 @@ declare namespace ProtocolProxyApi {
      * Unregisters origin from receiving notifications for IndexedDB.
      */
     invoke_untrackIndexedDBForOrigin(params: Protocol.Storage.UntrackIndexedDBForOriginRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Unregisters storage key from receiving notifications for IndexedDB.
+     */
+    invoke_untrackIndexedDBForStorageKey(params: Protocol.Storage.UntrackIndexedDBForStorageKeyRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Returns the number of stored Trust Tokens per issuer for the
@@ -3061,7 +3071,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Retrieves a list of available targets.
      */
-    invoke_getTargets(): Promise<Protocol.Target.GetTargetsResponse>;
+    invoke_getTargets(params: Protocol.Target.GetTargetsRequest): Promise<Protocol.Target.GetTargetsResponse>;
 
     /**
      * Sends protocol message over session with given id.

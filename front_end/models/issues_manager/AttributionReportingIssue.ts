@@ -15,6 +15,7 @@ export const enum IssueCode {
   InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
   InvalidEligibleHeader = 'AttributionReportingIssue::InvalidEligibleHeader',
+  TooManyConcurrentRequests = 'AttributionReportingIssue::TooManyConcurrentRequests',
   // TODO(apaseltiner): Remove this once old issue types are removed from
   // protocol.
   Unknown = 'AttributionReportingIssue::Unknown',
@@ -34,6 +35,8 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidRegisterTriggerHeader;
     case Protocol.Audits.AttributionReportingIssueType.InvalidEligibleHeader:
       return IssueCode.InvalidEligibleHeader;
+    case Protocol.Audits.AttributionReportingIssueType.TooManyConcurrentRequests:
+      return IssueCode.TooManyConcurrentRequests;
     default:
       return IssueCode.Unknown;
   }
@@ -86,6 +89,11 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
             link: 'https://tools.ietf.org/id/draft-ietf-httpbis-header-structure-15.html#rfc.section.4.2.2',
             linkTitle: 'Structured Headers RFC',
           }],
+        };
+      case IssueCode.TooManyConcurrentRequests:
+        return {
+          file: 'arTooManyConcurrentRequests.md',
+          links: [],
         };
       case IssueCode.Unknown:
         return null;

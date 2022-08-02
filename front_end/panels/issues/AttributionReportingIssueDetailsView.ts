@@ -23,6 +23,10 @@ const UIStrings = {
    */
   invalidHeaderValue: 'Invalid Header Value',
   /**
+   * @description Noun, label for the column showing the maximum concurrent registrations header value in the issue details table.
+   */
+  maximumConcurrentRegistrations: 'Maximum Concurrent Registrations',
+  /**
    * @description Noun, label for the column showing the associated network request in the issue details table.
    */
   request: 'Request',
@@ -71,6 +75,10 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.TooManyConcurrentRequests:
+        this.appendColumnTitle(header, i18nString(UIStrings.element));
+        this.appendColumnTitle(header, i18nString(UIStrings.maximumConcurrentRegistrations));
+        break;
     }
 
     this.affectedResources.appendChild(header);
@@ -106,6 +114,10 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
         await this.#appendElementOrEmptyCell(element, issue);
         this.#appendRequestOrEmptyCell(element, details.request);
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.TooManyConcurrentRequests:
+        await this.#appendElementOrEmptyCell(element, issue);
+        this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
     }
 

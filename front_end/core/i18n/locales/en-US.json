@@ -4836,25 +4836,25 @@
     "message": "Show all"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Deprecated Property"
+    "message": "Deprecated property"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inactive rule"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inactive property"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Please change parent elements {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue."
+    "message": "Please change parent element's {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Parent element has {REASON_RULE_CODE} rule, therefore this elements {AFFECTED_RULE_CODE} has no effect"
+    "message": "Parent element has {REASON_PROPERTY_DECLARATION_CODE} rule, therefore this elements {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "For this property to work, please change the {EXISTING_RULE} rule to {TARGET_RULE}"
+    "message": "For this property to work, please change the {EXISTING_PROPERTY_DECLARATION} rule to {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "For this property to work, please remove or change the value of {REASON_RULE_CODE}"
+    "message": "For this property to work, please remove or change the value of {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "This element has {REASON_RULE_CODE} rule, therefore {AFFECTED_RULE_CODE} has no effect."
+    "message": "This element has the {REASON_PROPERTY_DECLARATION_CODE} property and, therefore, {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"

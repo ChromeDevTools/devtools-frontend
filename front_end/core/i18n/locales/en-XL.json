@@ -4836,25 +4836,25 @@
     "message": "Ŝh́ôẃ âĺl̂"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "D̂ép̂ŕêćât́êd́ P̂ŕôṕêŕt̂ý"
+    "message": "D̂ép̂ŕêćât́êd́ p̂ŕôṕêŕt̂ý"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Îńâćt̂ív̂é r̂úl̂é"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Îńâćt̂ív̂é p̂ŕôṕêŕt̂ý"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "P̂ĺêáŝé ĉh́âńĝé p̂ár̂én̂t́ êĺêḿêńt̂ś {EXISTING_PARENT_ELEMENT_RULE} t̂ó {TARGET_PARENT_ELEMENT_RULE} t̂ó f̂íx̂ t́ĥíŝ íŝśûé."
+    "message": "P̂ĺêáŝé ĉh́âńĝé p̂ár̂én̂t́ êĺêḿêńt̂'ś {EXISTING_PARENT_ELEMENT_RULE} t̂ó {TARGET_PARENT_ELEMENT_RULE} t̂ó f̂íx̂ t́ĥíŝ íŝśûé."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "P̂ár̂én̂t́ êĺêḿêńt̂ h́âś {REASON_RULE_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê t́ĥíŝ él̂ém̂én̂t́ŝ {AFFECTED_RULE_CODE} h́âś n̂ó êf́f̂éĉt́"
+    "message": "P̂ár̂én̂t́ êĺêḿêńt̂ h́âś {REASON_PROPERTY_DECLARATION_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê t́ĥíŝ él̂ém̂én̂t́ŝ {AFFECTED_PROPERTY_DECLARATION_CODE} h́âś n̂ó êf́f̂éĉt́."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ćĥán̂ǵê t́ĥé {EXISTING_RULE} r̂úl̂é t̂ó {TARGET_RULE}"
+    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ćĥán̂ǵê t́ĥé {EXISTING_PROPERTY_DECLARATION} r̂úl̂é t̂ó {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ŕêḿôv́ê ór̂ ćĥán̂ǵê t́ĥé v̂ál̂úê óf̂ {REASON_RULE_CODE}"
+    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ŕêḿôv́ê ór̂ ćĥán̂ǵê t́ĥé v̂ál̂úê óf̂ {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "T̂h́îś êĺêḿêńt̂ h́âś {REASON_RULE_CODE} r̂úl̂é, t̂h́êŕêf́ôŕê {AFFECTED_RULE_CODE} h́âś n̂ó êf́f̂éĉt́."
+    "message": "T̂h́îś êĺêḿêńt̂ h́âś t̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ án̂d́, t̂h́êŕêf́ôŕê, {AFFECTED_PROPERTY_DECLARATION_CODE} h́âś n̂ó êf́f̂éĉt́."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"

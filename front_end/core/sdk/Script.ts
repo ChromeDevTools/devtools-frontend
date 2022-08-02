@@ -174,7 +174,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     if (result.getError()) {
       throw new Error(result.getError());
     }
-    const {scriptSource} = result;
+    const {scriptSource, bytecode} = result;
+    if (bytecode) {
+      return {content: bytecode, isEncoded: true};
+    }
     let content: string = scriptSource || '';
     if (this.hasSourceURL && this.sourceURL.startsWith('snippet://')) {
       // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
@@ -192,7 +195,9 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
         await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({scriptId: this.scriptId});
 
     if (result.getError()) {
-      throw new Error(result.getError());
+      // Fall through to text content loading if v8-based disassembly fails. This is to ensure backwards compatibility with
+      // older v8 versions;
+      return this.loadTextContent();
     }
 
     const {streamId, functionBodyOffsets, chunk: {lines, bytecodeOffsets}} = result;

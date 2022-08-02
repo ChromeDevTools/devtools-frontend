@@ -40,9 +40,8 @@ async function disableNetworkRequestBlocking() {
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(false);
 }
 
-// Flakey in the beforeEach step on Mac bot.
-describe.skip('[crbug.com/1259120] Network request blocking panel', async () => {
-  beforeEach(async () => {
+describe('Network request blocking panel', async () => {
+  async function setup() {
     await navigateToNetworkRequestBlockingTab();
     for (let i = 0; i < 20; i++) {
       const plusButton = await waitForAria('Add pattern');
@@ -52,9 +51,10 @@ describe.skip('[crbug.com/1259120] Network request blocking panel', async () => 
       const addButton = await waitForAria('Add');
       await addButton.click();
     }
-  });
+  }
 
   it('pattern list inactive when blocking disabled', async () => {
+    await setup();
     await disableNetworkRequestBlocking();
 
     await waitForAriaNone('Edit');
@@ -68,6 +68,7 @@ describe.skip('[crbug.com/1259120] Network request blocking panel', async () => 
   });
 
   it('pattern scrollable when blocking disabled', async () => {
+    await setup();
     await disableNetworkRequestBlocking();
 
     const list = await waitFor('.list');

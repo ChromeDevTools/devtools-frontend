@@ -400,6 +400,36 @@ describeWithMockConnection('RequestHeadersView', () => {
     const linkElement = responseHeadersCategory.shadowRoot.querySelector('x-link');
     assert.isNull(linkElement);
   });
+
+  it('skips rendering category if there are no headers', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      sortedResponseHeaders: [],
+      requestHeaders: () => [],
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    assert.isNull(component.shadowRoot.querySelector('[aria-label="Response Headers"]'));
+    assert.isNull(component.shadowRoot.querySelector('[aria-label="Request Headers"]'));
+  });
+
+  it('renders provisional headers warning for request headers even if there are no headers', async () => {
+    const component = await renderHeadersComponent({
+      ...defaultRequest,
+      sortedResponseHeaders: [],
+      requestHeaders: () => [],
+      requestHeadersText: () => undefined,
+    } as unknown as SDK.NetworkRequest.NetworkRequest);
+    assertShadowRoot(component.shadowRoot);
+
+    assert.isNull(component.shadowRoot.querySelector('[aria-label="Response Headers"]'));
+    const requestHeadersCategory = component.shadowRoot.querySelector('[aria-label="Request Headers"]');
+    assertElement(requestHeadersCategory, HTMLElement);
+    assert.strictEqual(
+        getCleanTextContentFromElements(requestHeadersCategory, '.call-to-action')[0],
+        'Provisional headers are shown. Disable cache to see full headers. Learn more',
+    );
+  });
 });
 
 describeWithEnvironment('RequestHeadersView\'s Category', () => {

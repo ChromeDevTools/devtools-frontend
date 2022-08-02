@@ -311,6 +311,10 @@ export class RequestHeadersComponent extends HTMLElement {
       this.#render();
     };
 
+    if (!mergedHeaders.length) {
+      return LitHtml.nothing;
+    }
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -395,6 +399,9 @@ export class RequestHeadersComponent extends HTMLElement {
       return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
     const requestHeadersText = this.#request.requestHeadersText();
+    if (!headers.length && requestHeadersText !== undefined) {
+      return LitHtml.nothing;
+    }
 
     const toggleShowRaw = (): void => {
       this.#showRequestHeadersText = !this.#showRequestHeadersText;

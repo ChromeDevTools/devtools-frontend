@@ -64,6 +64,7 @@ div.raw-headers-row {
   font-weight: 500;
   width: 160px;
   flex-shrink: 0;
+  text-transform: capitalize;
 }
 
 .header-value {

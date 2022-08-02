@@ -23,7 +23,7 @@ interface Hint {
     getHintPrefix(): string;
     getHintMessage(): string;
     getPossibleFixMessage(): string|null;
-    getLearnMoreLink(): string|null;
+    getLearnMoreLink(): string|undefined;
 }
 
 export class CSSHintDetailsView extends HTMLElement {
@@ -39,25 +39,28 @@ export class CSSHintDetailsView extends HTMLElement {
     }
 
     #render(): void {
-        render(html`
-            <div class="hint-popup-wrapper">
-                <div class="hint-popup-reason">
-                    <strong>${this.#authoringHint.getHintPrefix()}:</strong> ${Directives.unsafeHTML(this.#authoringHint.getHintMessage())}
-                </div>
-                ${this.#authoringHint.getPossibleFixMessage() ? html`
-                    <div class="hint-popup-possible-fix">
-                        ${Directives.unsafeHTML(this.#authoringHint.getPossibleFixMessage())}
-                        ${this.#authoringHint.getLearnMoreLink() ? html`
-                            <x-link id='learn-more' href='${this.#authoringHint.getLearnMoreLink()}' class='clickable underlined unbreakable-text'}>
-                                ${i18nString(UIStrings.learnMore)}
-                            </x-link>
-                        `: ''}
-                    </div>
-                ` : ''}
-            </div>
-        `, this.#shadow, {
-            host: this,
-          });
+      const link = this.#authoringHint.getLearnMoreLink();
+      // clang-format off
+      render(html`
+        <div class="hint-popup-wrapper">
+          <div class="hint-popup-reason">
+              <strong>${this.#authoringHint.getHintPrefix()}:</strong> ${Directives.unsafeHTML(this.#authoringHint.getHintMessage())}
+          </div>
+          ${this.#authoringHint.getPossibleFixMessage() ? html`
+              <div class="hint-popup-possible-fix">
+                  ${Directives.unsafeHTML(this.#authoringHint.getPossibleFixMessage())}
+                  ${link ? html`
+                      <x-link id="learn-more" href=${link} class="clickable underlined unbreakable-text"}>
+                          ${i18nString(UIStrings.learnMore)}
+                      </x-link>
+                  `: ''}
+              </div>
+          ` : ''}
+        </div>
+      `, this.#shadow, {
+        host: this,
+      });
+      // clang-format on
     }
 }
 

@@ -68,13 +68,14 @@ export class AuthoringHint {
   readonly #hintType: AuthoringHintType;
   readonly #hintMessage: string;
   readonly #possibleFixMessage: string|null;
-  readonly #learnMore: string|null;
+  readonly #learnMoreLink: string|undefined;
 
-  constructor(property: string, hintType: AuthoringHintType, hintMessage: string, possibleFixMessage: string|null, showLearnMore: boolean) {
+  constructor(
+      hintType: AuthoringHintType, hintMessage: string, possibleFixMessage: string|null, learnMoreLink?: string) {
     this.#hintType = hintType;
     this.#hintMessage = hintMessage;
     this.#possibleFixMessage = possibleFixMessage;
-    this.#learnMore = showLearnMore ? property : null; // TODO: Add Goo.gle short link base url
+    this.#learnMoreLink = learnMoreLink;
   }
 
   getHintPrefix(): string {
@@ -94,8 +95,8 @@ export class AuthoringHint {
     return this.#possibleFixMessage;
   }
 
-  getLearnMoreLink(): string|null {
-    return this.#learnMore;
+  getLearnMoreLink(): string|undefined {
+    return this.#learnMoreLink;
   }
 }
 
@@ -141,7 +142,6 @@ export class AlignContentValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText('align-content');
 
     return new AuthoringHint(
-        'align-content',
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -150,7 +150,6 @@ export class AlignContentValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -175,7 +174,6 @@ export class FlexItemValidator extends CSSRuleValidator {
     const targeParentPropertyDeclaration = buildStyledRuleText('display', 'flex');
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -185,7 +183,6 @@ export class FlexItemValidator extends CSSRuleValidator {
           'EXISTING_PARENT_ELEMENT_RULE': reasonPropertyDeclaration,
           'TARGET_PARENT_ELEMENT_RULE': targeParentPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -208,7 +205,6 @@ export class FlexContainerValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -218,7 +214,6 @@ export class FlexContainerValidator extends CSSRuleValidator {
           'EXISTING_PROPERTY_DECLARATION': reasonPropertyDeclaration,
           'TARGET_PROPERTY_DECLARATION': targetRuleCode,
         }),
-        true,
     );
   }
 }
@@ -250,7 +245,6 @@ export class GridContainerValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -260,7 +254,6 @@ export class GridContainerValidator extends CSSRuleValidator {
           'EXISTING_PROPERTY_DECLARATION': reasonPropertyDeclaration,
           'TARGET_PROPERTY_DECLARATION': targetRuleCode,
         }),
-        true,
     );
   }
 }
@@ -291,7 +284,6 @@ export class GridItemValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -301,7 +293,6 @@ export class GridItemValidator extends CSSRuleValidator {
           'EXISTING_PARENT_ELEMENT_RULE': reasonPropertyDeclaration,
           'TARGET_PARENT_ELEMENT_RULE': targeParentPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -328,7 +319,6 @@ export class FlexGridValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -337,7 +327,6 @@ export class FlexGridValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -367,7 +356,6 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -376,7 +364,6 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -407,7 +394,6 @@ export class PaddingValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -416,7 +402,6 @@ export class PaddingValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -444,7 +429,6 @@ export class PositionValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -453,7 +437,6 @@ export class PositionValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }
@@ -479,7 +462,6 @@ export class ZIndexValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
 
     return new AuthoringHint(
-        property,
         AuthoringHintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
@@ -488,7 +470,6 @@ export class ZIndexValidator extends CSSRuleValidator {
         i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
         }),
-        true,
     );
   }
 }

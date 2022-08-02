@@ -18,11 +18,10 @@ describeWithEnvironment('CSSHintDetailsView', async () => {
 
     it('renders every section', async () => {
       const hintMessage = new Elements.CSSRuleValidator.AuthoringHint(
-          'align-content',
           Elements.CSSRuleValidator.AuthoringHintType.INACTIVE_PROPERTY,
           'This element has <code class="unbreakable-text"><span class="property">flex-wrap</span>: nowrap</code> rule, therefore <code class="unbreakable-text"><span class="property">align-content</span></code> has no effect.',
           'For this property to work, please remove or change the value of <code class="unbreakable-text"><span class="property">flex-wrap</span></code> rule.',
-          true,
+          'align-content',
       );
 
       const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hintMessage);
@@ -43,11 +42,9 @@ describeWithEnvironment('CSSHintDetailsView', async () => {
 
     it('does not render learn more', async () => {
       const hintMessage = new Elements.CSSRuleValidator.AuthoringHint(
-          'align-content',
           Elements.CSSRuleValidator.AuthoringHintType.INACTIVE_PROPERTY,
           'This element has <code class="unbreakable-text"><span class="property">flex-wrap</span>: nowrap</code> rule, therefore <code class="unbreakable-text"><span class="property">align-content</span></code> has no effect.',
           'For this property to work, please remove or change the value of <code class="unbreakable-text"><span class="property">flex-wrap</span></code> rule.',
-          false,
       );
 
       const popupComponent = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hintMessage);

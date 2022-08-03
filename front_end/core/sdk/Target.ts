@@ -73,6 +73,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.Browser:
         this.#capabilitiesMask = Capability.Target | Capability.IO;
         break;
+      case Type.Tab:
+        this.#capabilitiesMask = Capability.Target;
+        break;
     }
     this.#typeInternal = type;
     this.#parentTargetInternal = parentTarget;
@@ -227,6 +230,7 @@ export enum Type {
   Node = 'node',
   Browser = 'browser',
   AuctionWorklet = 'auction-worklet',
+  Tab = 'tab',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

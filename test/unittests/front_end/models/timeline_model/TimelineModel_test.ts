@@ -302,6 +302,16 @@ describeWithEnvironment('TimelineModel', () => {
         processId: 1537729,
         processName: 'Renderer',
       },
+      {
+        name: 'User Interactions',
+        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
+        forMainFrame: true,
+        url: Platform.DevToolsPath.EmptyUrlString,
+        threadName: 'CrRendererMain',
+        threadId: 1,
+        processId: 1537729,
+        processName: 'Renderer',
+      },
     ]);
   });
 
@@ -428,6 +438,16 @@ describeWithEnvironment('TimelineModel', () => {
         type: TimelineModel.TimelineModel.TrackType.Experience,
         url: Platform.DevToolsPath.EmptyUrlString,
       },
+      {
+        name: 'User Interactions',
+        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
+        forMainFrame: true,
+        url: Platform.DevToolsPath.EmptyUrlString,
+        threadName: 'CrRendererMain',
+        threadId: 1,
+        processId: 1537729,
+        processName: 'Renderer',
+      },
     ]);
   });
 
@@ -551,6 +571,16 @@ describeWithEnvironment('TimelineModel', () => {
         threadName: 'CrRendererMain',
         type: TimelineModel.TimelineModel.TrackType.Experience,
         url: Platform.DevToolsPath.EmptyUrlString,
+      },
+      {
+        name: 'User Interactions',
+        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
+        forMainFrame: true,
+        url: Platform.DevToolsPath.EmptyUrlString,
+        threadName: 'CrRendererMain',
+        threadId: 1,
+        processId: 1537729,
+        processName: 'Renderer',
       },
     ]);
   });
@@ -678,6 +708,16 @@ describeWithEnvironment('TimelineModel', () => {
         threadName: 'CrRendererMain',
         type: 'Experience',
         url: '',
+      },
+      {
+        name: 'User Interactions',
+        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
+        forMainFrame: true,
+        url: Platform.DevToolsPath.EmptyUrlString,
+        threadName: 'CrRendererMain',
+        threadId: 1,
+        processId: 1537729,
+        processName: 'Renderer',
       },
     ]);
   });
@@ -826,6 +866,16 @@ describeWithEnvironment('TimelineModel', () => {
         processId: 1537729,
         processName: 'Renderer',
       },
+      {
+        name: 'User Interactions',
+        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
+        forMainFrame: true,
+        url: Platform.DevToolsPath.EmptyUrlString,
+        threadName: 'CrRendererMain',
+        threadId: 1,
+        processId: 1537729,
+        processName: 'Renderer',
+      },
     ]);
 
     // Now, verify that the actual track honors the timestamp boundaries.
@@ -835,5 +885,70 @@ describeWithEnvironment('TimelineModel', () => {
       }
       assert.deepEqual(track.events.map(event => event.name), ['RunTaskA', 'RunTaskB']);
     }
+  });
+
+  describe('#isEventTimingInteractionEvent', () => {
+    it('returns true for an event timing with a duration and interactionId', () => {
+      const event = {
+        name: 'EventTiming',
+        args: {
+          data: {
+            duration: 100,
+            interactionId: 200,
+          },
+        },
+      } as unknown as SDK.TracingModel.Event;
+      assert.isTrue(timelineModel.isEventTimingInteractionEvent(event));
+    });
+
+    it('returns false if the event has no duration', () => {
+      const event = {
+        name: 'EventTiming',
+        args: {
+          data: {
+            interactionId: 200,
+          },
+        },
+      } as unknown as SDK.TracingModel.Event;
+      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
+    });
+
+    it('returns false if the event has no interaction ID', () => {
+      const event = {
+        name: 'EventTiming',
+        args: {
+          data: {
+            duration: 200,
+          },
+        },
+      } as unknown as SDK.TracingModel.Event;
+      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
+    });
+
+    it('returns false if the duration is 0', () => {
+      const event = {
+        name: 'EventTiming',
+        args: {
+          data: {
+            duration: 0,
+            interactionId: 200,
+          },
+        },
+      } as unknown as SDK.TracingModel.Event;
+      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
+    });
+
+    it('returns false if the interactionId is 0', () => {
+      const event = {
+        name: 'EventTiming',
+        args: {
+          data: {
+            duration: 100,
+            interactionId: 0,
+          },
+        },
+      } as unknown as SDK.TracingModel.Event;
+      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
+    });
   });
 });

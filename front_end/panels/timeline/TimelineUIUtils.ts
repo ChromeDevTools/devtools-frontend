@@ -467,6 +467,10 @@ const UIStrings = {
   */
   layoutShift: 'Layout Shift',
   /**
+  *@description Text in Timeline for an Event Timing record
+  */
+  eventTiming: 'Event Timing',
+  /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
   keyCharacter: 'Key — Character',
@@ -578,6 +582,12 @@ const UIStrings = {
   *@description Text to parse something
   */
   parse: 'Parse',
+  /**
+  *@description Text shown when rendering an interaction/
+  *@example {click} PH1
+  *@example {1200} PH2
+  */
+  interactionEvent: 'Interaction type:{PH1} id:{PH2}',
   /**
   *@description Text with two placeholders separated by a colon
   *@example {Node removed} PH1
@@ -1382,6 +1392,8 @@ export class TimelineUIUtils {
 
     eventStyles[type.LayoutShift] = new TimelineRecordStyle(i18nString(UIStrings.layoutShift), experience);
 
+    eventStyles[type.EventTiming] = new TimelineRecordStyle(UIStrings.eventTiming, experience);
+
     eventStylesMap = eventStyles;
     return eventStyles;
   }
@@ -1560,6 +1572,10 @@ export class TimelineUIUtils {
     const eventData = event.args['data'];
     if (event.name === recordType.JSFrame) {
       return TimelineUIUtils.frameDisplayName(eventData);
+    }
+
+    if (event.name === 'EventTiming' && event.args.data && event.args.data.interactionId) {
+      return i18nString(UIStrings.interactionEvent, {PH1: event.args.data.type, PH2: event.args.data.interactionId});
     }
     const title = TimelineUIUtils.eventStyle(event).title;
     if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {

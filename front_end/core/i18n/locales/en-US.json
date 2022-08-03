@@ -1709,6 +1709,9 @@
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auction Worklet — {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "User Interactions"
+  },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
@@ -10856,6 +10859,9 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Timings"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interactions"
+  },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Network"
   },
@@ -11318,6 +11324,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Event"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Event Timing"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "evolved"
   },
@@ -11428,6 +11437,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Install Timer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaction type:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalidate Layout"

@@ -192,19 +192,32 @@ describe('StringUtilities', () => {
     });
   });
   describe('filterRegex', () => {
-    it('should do nothing for single non-special character', () => {
-      const regex = Platform.StringUtilities.filterRegex('f');
-      assert.strictEqual(regex.toString(), '/f/i');
-    });
-
-    it('should prepend [^\\0 ]* patterns for following characters', () => {
+    it('should prepend [^\\0 ]* patterns for all characters', () => {
       const regex = Platform.StringUtilities.filterRegex('bar');
-      assert.strictEqual(regex.toString(), '/b[^\\0a]*a[^\\0r]*r/i');
+      assert.strictEqual(regex.toString(), '/^(?:.*\\0)?[^\\0b]*b[^\\0a]*a[^\\0r]*r/i');
     });
 
-    it('should espace special characters', () => {
+    it('should escape special characters', () => {
       const regex = Platform.StringUtilities.filterRegex('{?}');
-      assert.strictEqual(regex.toString(), '/\\{[^\\0\\?]*\\?[^\\0\\}]*\\}/i');
+      assert.strictEqual(regex.toString(), '/^(?:.*\\0)?[^\\0\\{]*\\{[^\\0\\?]*\\?[^\\0\\}]*\\}/i');
+    });
+
+    it('should match strings that have the query characters in the same order', () => {
+      const testCases = [
+        {query: 'abc', pos: ['abc', 'adabxac', 'AbC', 'a\x00abc'], neg: ['ab', 'acb', 'a\x00bc']},
+        {query: 'aba', pos: ['abba', 'abracadabra'], neg: ['ab', 'aab', 'baa']},
+        {query: '.?a*', pos: ['x.y?ax*b'], neg: ['', 'a?a*', 'a*', '.?']},
+      ];
+      for (const {query, pos, neg} of testCases) {
+        const regex = Platform.StringUtilities.filterRegex(query);
+        assert.exists(regex, `Could not create regex from query "${query}"`);
+        for (const example of pos) {
+          assert.isTrue(regex.test(example), `query "${query}" should match "${example}"`);
+        }
+        for (const example of neg) {
+          assert.isFalse(regex.test(example), `query "${query}" should not match "${example}"`);
+        }
+      }
     });
   });
 

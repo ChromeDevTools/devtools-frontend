@@ -263,16 +263,13 @@ export const regexSpecialCharacters = function(): string {
 };
 
 export const filterRegex = function(query: string): RegExp {
-  let regexString = '';
+  let regexString = '^(?:.*\\0)?';  // Start from beginning or after a \0
   for (let i = 0; i < query.length; ++i) {
     let c = query.charAt(i);
     if (SPECIAL_REGEX_CHARACTERS.indexOf(c) !== -1) {
       c = '\\' + c;
     }
-    if (i) {
-      regexString += '[^\\0' + c + ']*';
-    }
-    regexString += c;
+    regexString += '[^\\0' + c + ']*' + c;
   }
   return new RegExp(regexString, 'i');
 };

@@ -103,7 +103,7 @@ export class ElementsTreeOutline extends
   private treeElementBeingDragged?: ElementsTreeElement;
   private dragOverTreeElement?: ElementsTreeElement;
   private updateModifiedNodesTimeout?: number;
-  private topLayerContainer?: TopLayerContainer;
+  #topLayerContainerByParent: Map<UI.TreeOutline.TreeElement, TopLayerContainer> = new Map();
 
   constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
     super();
@@ -453,7 +453,7 @@ export class ElementsTreeOutline extends
       }
     }
 
-    this.createTopLayerContainer();
+    void this.createTopLayerContainer(this.rootElement(), this.rootDOMNode.domModel());
 
     if (selectedNode) {
       this.revealAndSelectNode(selectedNode, true);
@@ -1183,9 +1183,16 @@ export class ElementsTreeOutline extends
     });
   }
 
-  createTopLayerContainer(): void {
-    this.topLayerContainer = new TopLayerContainer(this);
-    void this.topLayerContainer.throttledUpdateTopLayerElements();
+  async createTopLayerContainer(parent: UI.TreeOutline.TreeElement, domModel: SDK.DOMModel.DOMModel): Promise<void> {
+    if (!parent.treeOutline || !(parent.treeOutline instanceof ElementsTreeOutline)) {
+      return;
+    }
+    const container = new TopLayerContainer(parent.treeOutline, domModel);
+    await container.throttledUpdateTopLayerElements();
+    if (container.currentTopLayerElements.size > 0) {
+      parent.appendChild(container);
+    }
+    this.#topLayerContainerByParent.set(parent, container);
   }
 
   private createElementTreeElement(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean): ElementsTreeElement {
@@ -1342,6 +1349,9 @@ export class ElementsTreeOutline extends
       isClosingTag?: boolean): ElementsTreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
+    if (child.nodeType() === Node.DOCUMENT_NODE) {
+      void this.createTopLayerContainer(newElement, child.domModel());
+    }
     return newElement;
   }
 
@@ -1447,8 +1457,14 @@ export class ElementsTreeOutline extends
     }
   }
 
-  private topLayerElementsChanged(): void {
-    void this.topLayerContainer?.throttledUpdateTopLayerElements();
+  private async topLayerElementsChanged(): Promise<void> {
+    for (const [parent, container] of this.#topLayerContainerByParent) {
+      await container.throttledUpdateTopLayerElements();
+      if (container.currentTopLayerElements.size > 0 && container.parent !== parent) {
+        parent.appendChild(container);
+      }
+      container.hidden = container.currentTopLayerElements.size === 0;
+    }
   }
 
   private static treeOutlineSymbol = Symbol('treeOutline');

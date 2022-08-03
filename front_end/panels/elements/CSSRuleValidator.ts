@@ -27,7 +27,7 @@ const UIStrings = {
     *@example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
     */
   ruleViolatedBySameElementRuleReason:
-      'This element has the {REASON_PROPERTY_DECLARATION_CODE} property and, therefore, {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
+      'This element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
   /**
     *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to some other property.
     *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
@@ -47,14 +47,14 @@ const UIStrings = {
     *@example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
     */
   ruleViolatedByParentElementRuleReason:
-      'Parent element has {REASON_PROPERTY_DECLARATION_CODE} rule, therefore this elements {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
+      'The parent element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, this element\'s property {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
   /**
     *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to the properties of the parent element.
     *@example {display: block} EXISTING_PARENT_ELEMENT_RULE
     *@example {display: flex} TARGET_PARENT_ELEMENT_RULE
     */
   ruleViolatedByParentElementRuleFix:
-      'Please change parent element\'s {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue.',
+      'Please change the parent element\'s property declaration from {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

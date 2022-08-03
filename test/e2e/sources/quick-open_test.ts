@@ -7,10 +7,12 @@ import {assert} from 'chai';
 import {
   $$,
   click,
+  enableExperiment,
   goToResource,
   waitFor,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {
   openSourcesPanel,
 } from '../helpers/sources-helpers.js';
@@ -46,5 +48,16 @@ describe('Source Panel Quick Open', async () => {
     await typeIntoQuickOpen('mult');
     const list = await readQuickOpenResults();
     assert.deepEqual(list, ['multi-workers.js', 'multi-workers.min.js', 'multi-workers-sourcemap.html']);
+  });
+
+  it('Does not list ignore-listed files', async () => {
+    await enableExperiment('justMyCode');
+    await setIgnoreListPattern('workers.js');
+    await goToResource(targetPage);
+    await openSourcesPanel();
+
+    await typeIntoQuickOpen('mult');
+    const list = await readQuickOpenResults();
+    assert.deepEqual(list, ['multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });
 });

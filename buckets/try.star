@@ -141,7 +141,10 @@ builder_coverage(
     builder_name_pattern = "e2e_stressor_%s",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"builder_config": "Debug"},
+    properties = {
+        "builder_config": "Debug",
+        "devtools_skip_typecheck": True,
+    },
 )
 
 luci.list_view(

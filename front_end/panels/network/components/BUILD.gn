@@ -43,6 +43,7 @@ devtools_module("components") {
     "../../../ui/components/report_view:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
+    "../forward:bundle",
   ]
 }
 

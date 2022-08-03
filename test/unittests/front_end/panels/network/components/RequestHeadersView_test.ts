@@ -8,6 +8,7 @@ import * as Coordinator from '../../../../../../front_end/ui/components/render_c
 import type * as Common from '../../../../../../front_end/core/common/common.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Host from '../../../../../../front_end/core/host/host.js';
+import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
 
 import {
   assertElement,
@@ -356,6 +357,42 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.isTrue(spy.set.calledOnce);
     assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-name'), ['updatedName:']);
     assert.deepEqual(getCleanTextContentFromElements(responseHeadersCategory, '.header-value'), ['updatedValue']);
+
+    view.detach();
+  });
+
+  it('can highlight individual headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    request.responseHeaders = [
+      {name: 'foo', value: 'bar'},
+      {name: 'highlightMe', value: 'some value'},
+      {name: 'DevTools', value: 'rock'},
+    ];
+
+    const view = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+    const div = document.createElement('div');
+    renderElementIntoDOM(div);
+    view.markAsRoot();
+    view.show(div);
+
+    const component = view.element.querySelector('devtools-request-headers');
+    assertElement(component, NetworkComponents.RequestHeadersView.RequestHeadersComponent);
+    assertShadowRoot(component.shadowRoot);
+    const responseHeaderRows = component.shadowRoot.querySelectorAll('[aria-label="Response Headers"] .row');
+    assertElement(responseHeaderRows[0], HTMLElement);
+    assertElement(responseHeaderRows[1], HTMLElement);
+    assertElement(responseHeaderRows[2], HTMLElement);
+
+    assert.isFalse(responseHeaderRows[0].classList.contains('header-highlight'));
+    assert.isFalse(responseHeaderRows[1].classList.contains('header-highlight'));
+    assert.isFalse(responseHeaderRows[2].classList.contains('header-highlight'));
+    view.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'HiGhLiGhTmE');
+    assert.isFalse(responseHeaderRows[0].classList.contains('header-highlight'));
+    assert.isFalse(responseHeaderRows[1].classList.contains('header-highlight'));
+    assert.isTrue(responseHeaderRows[2].classList.contains('header-highlight'));
 
     view.detach();
   });

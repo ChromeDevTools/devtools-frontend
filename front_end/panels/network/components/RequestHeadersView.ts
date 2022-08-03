@@ -12,6 +12,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
+import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -199,10 +200,18 @@ export class RequestHeadersView extends UI.Widget.VBox {
       request: this.#request,
     };
   }
+
+  revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string): void {
+    this.#headersView.data = {
+      request: this.#request,
+      toReveal: {section, header: header},
+    };
+  }
 }
 
 export interface RequestHeadersComponentData {
   request: SDK.NetworkRequest.NetworkRequest;
+  toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
 }
 
 export class RequestHeadersComponent extends HTMLElement {
@@ -213,10 +222,12 @@ export class RequestHeadersComponent extends HTMLElement {
   #showRequestHeadersText = false;
   #showResponseHeadersTextFull = false;
   #showRequestHeadersTextFull = false;
+  #toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string} = undefined;
   readonly #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   set data(data: RequestHeadersComponentData) {
     this.#request = data.request;
+    this.#toReveal = data.toReveal;
     this.#render();
   }
 
@@ -326,12 +337,13 @@ export class RequestHeadersComponent extends HTMLElement {
           headerCount: this.#request.sortedResponseHeaders.length,
           checked: this.#request.responseHeadersText ? this.#showResponseHeadersText : undefined,
           additionalContent: this.#renderHeaderOverridesLink(),
+          forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response,
         } as CategoryData}
         aria-label=${i18nString(UIStrings.responseHeaders)}
       >
         ${this.#showResponseHeadersText ?
             this.#renderRawHeaders(this.#request.responseHeadersText, true) : html`
-          ${mergedHeaders.map(header => this.#renderHeader(header))}
+          ${mergedHeaders.map(header => this.#renderHeader(header, NetworkForward.UIRequestLocation.UIHeaderSection.Response))}
         `}
       </${Category.litTagName}>
     `;
@@ -418,13 +430,14 @@ export class RequestHeadersComponent extends HTMLElement {
           title: i18nString(UIStrings.requestHeaders),
           headerCount: this.#request.requestHeaders().length,
           checked: requestHeadersText? this.#showRequestHeadersText : undefined,
+          forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Request,
         } as CategoryData}
         aria-label=${i18nString(UIStrings.requestHeaders)}
       >
         ${(this.#showRequestHeadersText && requestHeadersText) ?
             this.#renderRawHeaders(requestHeadersText, false) : html`
           ${this.#maybeRenderProvisionalHeadersWarning()}
-          ${headers.map(header => this.#renderHeader({...header, headerNotSet: false}))}
+          ${headers.map(header => this.#renderHeader({...header, headerNotSet: false}, NetworkForward.UIRequestLocation.UIHeaderSection.Request))}
         `}
       </${Category.litTagName}>
     `;
@@ -464,11 +477,14 @@ export class RequestHeadersComponent extends HTMLElement {
     // clang-format on
   }
 
-  #renderHeader(header: HeaderDescriptor): LitHtml.TemplateResult {
+  #renderHeader(header: HeaderDescriptor, section: NetworkForward.UIRequestLocation.UIHeaderSection):
+      LitHtml.TemplateResult {
+    const isHighlighted =
+        section === this.#toReveal?.section && header.name.toUpperCase() === this.#toReveal?.header?.toUpperCase();
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <div class="row">
+      <div class="row ${isHighlighted ? 'header-highlight' : ''}">
         <div class="header-name">
           ${header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div>` :
@@ -637,86 +653,69 @@ export class RequestHeadersComponent extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    let coloredCircleClassName = 'red-circle';
+    const statusClasses = [];
     if (this.#request.statusCode < 300 || this.#request.statusCode === 304) {
-      coloredCircleClassName = 'green-circle';
+      statusClasses.push('green-circle');
     } else if (this.#request.statusCode < 400) {
-      coloredCircleClassName = 'yellow-circle';
+      statusClasses.push('yellow-circle');
+    } else {
+      statusClasses.push('red-circle');
     }
 
     let statusText = this.#request.statusCode + ' ' + this.#request.statusText;
-    let statusTextHasComment = false;
     if (this.#request.cachedInMemory()) {
       statusText += ' ' + i18nString(UIStrings.fromMemoryCache);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     } else if (this.#request.fetchedViaServiceWorker) {
       statusText += ' ' + i18nString(UIStrings.fromServiceWorker);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     } else if (this.#request.redirectSourceSignedExchangeInfoHasNoErrors()) {
       statusText += ' ' + i18nString(UIStrings.fromSignedexchange);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     } else if (this.#request.webBundleInnerRequestInfo()) {
       statusText += ' ' + i18nString(UIStrings.fromWebBundle);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     } else if (this.#request.fromPrefetchCache()) {
       statusText += ' ' + i18nString(UIStrings.fromPrefetchCache);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     } else if (this.#request.cached()) {
       statusText += ' ' + i18nString(UIStrings.fromDiskCache);
-      statusTextHasComment = true;
+      statusClasses.push('status-with-comment');
     }
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
       <${Category.litTagName}
-        .data=${{name: 'general', title: i18nString(UIStrings.general)} as CategoryData}
+        .data=${{
+          name: 'general',
+          title: i18nString(UIStrings.general),
+          forceOpen: this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.General,
+        } as CategoryData}
         aria-label=${i18nString(UIStrings.general)}
       >
-        <div class="row">
-          <div class="header-name">${i18nString(UIStrings.requestUrl)}:</div>
-          <div
-            class="header-value"
-            @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-          >${this.#request.url()}</div>
-        </div>
-        ${this.#request.statusCode? html`
-          <div class="row">
-            <div class="header-name">${i18nString(UIStrings.requestMethod)}:</div>
-            <div
-              class="header-value"
-              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-            >${this.#request.requestMethod}</div>
-          </div>
-          <div class="row">
-            <div class="header-name">${i18nString(UIStrings.statusCode)}:</div>
-            <div
-              class="header-value ${coloredCircleClassName} ${statusTextHasComment ? 'status-with-comment' : ''}"
-              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-            >${statusText}</div>
-          </div>
-        ` : ''}
-        ${this.#request.remoteAddress()? html`
-          <div class="row">
-            <div class="header-name">${i18nString(UIStrings.remoteAddress)}:</div>
-            <div
-              class="header-value"
-              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-            >${this.#request.remoteAddress()}</div>
-          </div>
-        ` : ''}
-        ${this.#request.referrerPolicy()? html`
-          <div class="row">
-            <div class="header-name">${i18nString(UIStrings.referrerPolicy)}:</div>
-            <div
-              class="header-value"
-              @copy=${():void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
-            >${this.#request.referrerPolicy()}</div>
-          </div>
-        ` : ''}
+        ${this.#renderGeneralRow(i18nString(UIStrings.requestUrl), this.#request.url())}
+        ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.requestMethod), this.#request.requestMethod) : LitHtml.nothing}
+        ${this.#request.statusCode? this.#renderGeneralRow(i18nString(UIStrings.statusCode), statusText, statusClasses) : LitHtml.nothing}
+        ${this.#request.remoteAddress()? this.#renderGeneralRow(i18nString(UIStrings.remoteAddress), this.#request.remoteAddress()) : LitHtml.nothing}
+        ${this.#request.referrerPolicy()? this.#renderGeneralRow(i18nString(UIStrings.referrerPolicy), String(this.#request.referrerPolicy())) : LitHtml.nothing}
       </${Category.litTagName}>
     `;
     // clang-format on
+  }
+
+  #renderGeneralRow(name: Common.UIString.LocalizedString, value: string, classNames?: string[]): LitHtml.LitTemplate {
+    const isHighlighted = this.#toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.General &&
+        name.toUpperCase() === this.#toReveal?.header?.toUpperCase();
+    return html`
+      <div class="row ${isHighlighted ? 'header-highlight' : ''}">
+        <div class="header-name">${name}:</div>
+        <div
+          class="header-value ${classNames?.join(' ')}"
+          @copy=${(): void => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+        >${value}</div>
+      </div>
+    `;
   }
 }
 
@@ -734,6 +733,7 @@ export interface CategoryData {
   headerCount?: number;
   checked?: boolean;
   additionalContent?: LitHtml.LitTemplate;
+  forceOpen?: boolean;
 }
 
 export class Category extends HTMLElement {
@@ -744,6 +744,7 @@ export class Category extends HTMLElement {
   #headerCount?: number = undefined;
   #checked: boolean|undefined = undefined;
   #additionalContent: LitHtml.LitTemplate|undefined = undefined;
+  #forceOpen: boolean|undefined = undefined;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [requestHeadersViewStyles, Input.checkboxStyles];
@@ -756,6 +757,7 @@ export class Category extends HTMLElement {
     this.#headerCount = data.headerCount;
     this.#checked = data.checked;
     this.#additionalContent = data.additionalContent;
+    this.#forceOpen = data.forceOpen;
     this.#render();
   }
 
@@ -764,7 +766,7 @@ export class Category extends HTMLElement {
   }
 
   #render(): void {
-    const isOpen = this.#expandedSetting ? this.#expandedSetting.get() : true;
+    const isOpen = (this.#expandedSetting ? this.#expandedSetting.get() : true) || this.#forceOpen;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`

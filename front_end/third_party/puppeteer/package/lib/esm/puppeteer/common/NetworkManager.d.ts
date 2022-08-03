@@ -63,6 +63,10 @@ interface FrameManager {
 export declare class NetworkManager extends EventEmitter {
     #private;
     constructor(client: CDPSession, ignoreHTTPSErrors: boolean, frameManager: FrameManager);
+    /**
+     * Initialize calls should avoid async dependencies between CDP calls as those
+     * might not resolve until after the target is resumed causing a deadlock.
+     */
     initialize(): Promise<void>;
     authenticate(credentials?: Credentials): Promise<void>;
     setExtraHTTPHeaders(extraHTTPHeaders: Record<string, string>): Promise<void>;

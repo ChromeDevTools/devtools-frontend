@@ -92,9 +92,6 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        if (options.product) {
-            this._productName = options.product;
-        }
         return super.connect(options);
     }
     /**

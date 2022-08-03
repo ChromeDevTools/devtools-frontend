@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isErrnoException = exports.isErrorLike = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.waitWithTimeout = exports.makePredicateString = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
+exports.createDeferredPromiseWithTimer = exports.isErrnoException = exports.isErrorLike = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.makePredicateString = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("./assert.js");
 const Debug_js_1 = require("./Debug.js");
@@ -339,12 +339,26 @@ exports.waitWithTimeout = waitWithTimeout;
 /**
  * @internal
  */
+let fs = null;
+/**
+ * @internal
+ */
+async function importFS() {
+    if (!fs) {
+        fs = await Promise.resolve().then(() => __importStar(require('fs')));
+    }
+    return fs;
+}
+exports.importFS = importFS;
+/**
+ * @internal
+ */
 async function getReadableAsBuffer(readable, path) {
     const buffers = [];
     if (path) {
         let fs;
         try {
-            fs = (await Promise.resolve().then(() => __importStar(require('fs')))).promises;
+            fs = (await importFS()).promises;
         }
         catch (error) {
             if (error instanceof TypeError) {
@@ -414,4 +428,35 @@ function isErrnoException(obj) {
         ('errno' in obj || 'code' in obj || 'path' in obj || 'syscall' in obj));
 }
 exports.isErrnoException = isErrnoException;
+/**
+ * Creates an returns a promise along with the resolve/reject functions.
+ *
+ * If the promise has not been resolved/rejected withing the `timeout` period,
+ * the promise gets rejected with a timeout error.
+ *
+ * @internal
+ */
+function createDeferredPromiseWithTimer(timeoutMessage, timeout = 5000) {
+    let resolver = (_) => { };
+    let rejector = (_) => { };
+    const taskPromise = new Promise((resolve, reject) => {
+        resolver = resolve;
+        rejector = reject;
+    });
+    const timeoutId = setTimeout(() => {
+        rejector(new Error(timeoutMessage));
+    }, timeout);
+    return {
+        promise: taskPromise,
+        resolve: (value) => {
+            clearTimeout(timeoutId);
+            resolver(value);
+        },
+        reject: (err) => {
+            clearTimeout(timeoutId);
+            rejector(err);
+        },
+    };
+}
+exports.createDeferredPromiseWithTimer = createDeferredPromiseWithTimer;
 //# sourceMappingURL=util.js.map

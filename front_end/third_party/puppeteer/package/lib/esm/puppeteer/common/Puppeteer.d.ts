@@ -19,7 +19,6 @@ import { ConnectionTransport } from './ConnectionTransport.js';
 import { devices } from './DeviceDescriptors.js';
 import { errors } from './Errors.js';
 import { networkConditions } from './NetworkConditions.js';
-import { Product } from './Product.js';
 import { CustomQueryHandler } from './QueryHandler.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of environment.
@@ -36,7 +35,6 @@ export interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
-    product?: Product;
 }
 /**
  * The main Puppeteer class.

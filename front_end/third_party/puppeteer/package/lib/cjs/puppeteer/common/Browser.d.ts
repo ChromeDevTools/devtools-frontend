@@ -21,6 +21,7 @@ import { EventEmitter } from './EventEmitter.js';
 import { Page } from './Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 /**
  * BrowserContext options.
  *
@@ -158,7 +159,7 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    static _create(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<Browser>;
+    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback): Promise<Browser>;
     /**
      * @internal
      */
@@ -166,12 +167,24 @@ export declare class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback);
+    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback);
+    /**
+     * @internal
+     */
+    _attach(): Promise<void>;
+    /**
+     * @internal
+     */
+    _detach(): void;
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process(): ChildProcess | null;
+    /**
+     * @internal
+     */
+    _targetManager(): TargetManager;
     /**
      * @internal
      */

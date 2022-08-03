@@ -15,6 +15,19 @@
  */
 import { isNode } from '../environment.js';
 /**
+ * @internal
+ */
+let debugModule = null;
+/**
+ * @internal
+ */
+export async function importDebug() {
+    if (!debugModule) {
+        debugModule = (await import('debug')).default;
+    }
+    return debugModule;
+}
+/**
  * A debug function that can be used in any environment.
  *
  * @remarks
@@ -54,7 +67,7 @@ import { isNode } from '../environment.js';
 export const debug = (prefix) => {
     if (isNode) {
         return async (...logArgs) => {
-            (await import('debug')).default(prefix)(logArgs);
+            (await importDebug())(prefix)(logArgs);
         };
     }
     return (...logArgs) => {

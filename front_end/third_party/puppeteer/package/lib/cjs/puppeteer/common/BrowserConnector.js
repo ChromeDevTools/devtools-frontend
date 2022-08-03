@@ -76,10 +76,16 @@ async function _connectToBrowser(options) {
         const connectionTransport = await WebSocketClass.create(connectionURL);
         connection = new Connection_js_1.Connection(connectionURL, connectionTransport, slowMo);
     }
+    const version = await connection.send('Browser.getVersion');
+    const product = version.product.toLowerCase().includes('firefox')
+        ? 'firefox'
+        : 'chrome';
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser_js_1.Browser._create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
+    const browser = await Browser_js_1.Browser._create(product || 'chrome', connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
         return connection.send('Browser.close').catch(util_js_1.debugError);
     }, targetFilter, isPageTarget);
+    await browser.pages();
+    return browser;
 }
 exports._connectToBrowser = _connectToBrowser;
 async function getWSEndpoint(browserURL) {

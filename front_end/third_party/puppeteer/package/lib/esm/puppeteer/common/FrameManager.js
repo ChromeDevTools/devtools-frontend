@@ -24,15 +24,14 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_frames, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_mainFrame, _FrameManager_client, _FrameManager_onAttachedToTarget, _FrameManager_onDetachedFromTarget, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively, _Frame_parentFrame, _Frame_url, _Frame_detached, _Frame_client;
+var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_frames, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_mainFrame, _FrameManager_client, _FrameManager_framesPendingTargetInit, _FrameManager_framesPendingAttachment, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively, _Frame_parentFrame, _Frame_url, _Frame_detached, _Frame_client;
 import { assert } from './assert.js';
-import { Connection } from './Connection.js';
 import { DOMWorld } from './DOMWorld.js';
 import { EventEmitter } from './EventEmitter.js';
 import { EVALUATION_SCRIPT_URL, ExecutionContext } from './ExecutionContext.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
 import { NetworkManager } from './NetworkManager.js';
-import { debugError, isErrorLike } from './util.js';
+import { createDeferredPromiseWithTimer, debugError, isErrorLike, } from './util.js';
 const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
 /**
  * We use symbols to prevent external parties listening to these events.
@@ -65,6 +64,15 @@ export class FrameManager extends EventEmitter {
         _FrameManager_isolatedWorlds.set(this, new Set());
         _FrameManager_mainFrame.set(this, void 0);
         _FrameManager_client.set(this, void 0);
+        /**
+         * Keeps track of OOPIF targets/frames (target ID == frame ID for OOPIFs)
+         * that are being initialized.
+         */
+        _FrameManager_framesPendingTargetInit.set(this, new Map());
+        /**
+         * Keeps track of frames that are in the process of being attached in #onFrameAttached.
+         */
+        _FrameManager_framesPendingAttachment.set(this, new Map());
         __classPrivateFieldSet(this, _FrameManager_client, client, "f");
         __classPrivateFieldSet(this, _FrameManager_page, page, "f");
         __classPrivateFieldSet(this, _FrameManager_networkManager, new NetworkManager(client, ignoreHTTPSErrors, this), "f");
@@ -114,25 +122,16 @@ export class FrameManager extends EventEmitter {
         session.on('Page.lifecycleEvent', event => {
             __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onLifecycleEvent).call(this, event);
         });
-        session.on('Target.attachedToTarget', async (event) => {
-            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onAttachedToTarget).call(this, event);
-        });
-        session.on('Target.detachedFromTarget', async (event) => {
-            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onDetachedFromTarget).call(this, event);
-        });
     }
-    async initialize(client = __classPrivateFieldGet(this, _FrameManager_client, "f")) {
+    async initialize(targetId, client = __classPrivateFieldGet(this, _FrameManager_client, "f")) {
+        var _a;
         try {
+            if (!__classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").has(targetId)) {
+                __classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").set(targetId, createDeferredPromiseWithTimer(`Waiting for target frame ${targetId} failed`));
+            }
             const result = await Promise.all([
                 client.send('Page.enable'),
                 client.send('Page.getFrameTree'),
-                client !== __classPrivateFieldGet(this, _FrameManager_client, "f")
-                    ? client.send('Target.setAutoAttach', {
-                        autoAttach: true,
-                        waitForDebuggerOnStart: false,
-                        flatten: true,
-                    })
-                    : Promise.resolve(),
             ]);
             const { frameTree } = result[1];
             __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_handleFrameTree).call(this, client, frameTree);
@@ -156,6 +155,10 @@ export class FrameManager extends EventEmitter {
             }
             throw error;
         }
+        finally {
+            (_a = __classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").get(targetId)) === null || _a === void 0 ? void 0 : _a.resolve();
+            __classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").delete(targetId);
+        }
     }
     networkManager() {
         return __classPrivateFieldGet(this, _FrameManager_networkManager, "f");
@@ -163,6 +166,7 @@ export class FrameManager extends EventEmitter {
     async navigateFrame(frame, url, options = {}) {
         assertNoLegacyNavigationOptions(options);
         const { referer = __classPrivateFieldGet(this, _FrameManager_networkManager, "f").extraHTTPHeaders()['referer'], waitUntil = ['load'], timeout = __classPrivateFieldGet(this, _FrameManager_timeoutSettings, "f").navigationTimeout(), } = options;
+        let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher(this, frame, waitUntil, timeout);
         let error = await Promise.race([
             navigate(__classPrivateFieldGet(this, _FrameManager_client, "f"), url, referer, frame._id),
@@ -171,8 +175,9 @@ export class FrameManager extends EventEmitter {
         if (!error) {
             error = await Promise.race([
                 watcher.timeoutOrTerminationPromise(),
-                watcher.newDocumentNavigationPromise(),
-                watcher.sameDocumentNavigationPromise(),
+                ensureNewDocumentNavigation
+                    ? watcher.newDocumentNavigationPromise()
+                    : watcher.sameDocumentNavigationPromise(),
             ]);
         }
         watcher.dispose();
@@ -187,6 +192,7 @@ export class FrameManager extends EventEmitter {
                     referrer,
                     frameId,
                 });
+                ensureNewDocumentNavigation = !!response.loaderId;
                 return response.errorText
                     ? new Error(`${response.errorText} at ${url}`)
                     : null;
@@ -213,6 +219,25 @@ export class FrameManager extends EventEmitter {
             throw error;
         }
         return await watcher.navigationResponse();
+    }
+    async onAttachedToTarget(target) {
+        if (target._getTargetInfo().type !== 'iframe') {
+            return;
+        }
+        const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(target._getTargetInfo().targetId);
+        if (frame) {
+            frame._updateClient(target._session());
+        }
+        this.setupEventListeners(target._session());
+        this.initialize(target._getTargetInfo().targetId, target._session());
+    }
+    async onDetachedFromTarget(target) {
+        const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(target._targetId);
+        if (frame && frame.isOOPFrame()) {
+            // When an OOP iframe is removed from the page, it
+            // will only get a Target.detachedFromTarget event.
+            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_removeFramesRecursively).call(this, frame);
+        }
     }
     page() {
         return __classPrivateFieldGet(this, _FrameManager_page, "f");
@@ -259,31 +284,7 @@ export class FrameManager extends EventEmitter {
         return context;
     }
 }
-_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_frames = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_mainFrame = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onAttachedToTarget = async function _FrameManager_onAttachedToTarget(event) {
-    if (event.targetInfo.type !== 'iframe') {
-        return;
-    }
-    const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(event.targetInfo.targetId);
-    const connection = Connection.fromSession(__classPrivateFieldGet(this, _FrameManager_client, "f"));
-    assert(connection);
-    const session = connection.session(event.sessionId);
-    assert(session);
-    if (frame) {
-        frame._updateClient(session);
-    }
-    this.setupEventListeners(session);
-    await this.initialize(session);
-}, _FrameManager_onDetachedFromTarget = async function _FrameManager_onDetachedFromTarget(event) {
-    if (!event.targetId) {
-        return;
-    }
-    const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(event.targetId);
-    if (frame && frame.isOOPFrame()) {
-        // When an OOP iframe is removed from the page, it
-        // will only get a Target.detachedFromTarget event.
-        __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_removeFramesRecursively).call(this, frame);
-    }
-}, _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
+_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_frames = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_mainFrame = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_framesPendingTargetInit = new WeakMap(), _FrameManager_framesPendingAttachment = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
     const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(event.frameId);
     if (!frame) {
         return;
@@ -325,42 +326,68 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         }
         return;
     }
-    assert(parentFrameId);
     const parentFrame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(parentFrameId);
-    assert(parentFrame);
-    const frame = new Frame(this, parentFrame, frameId, session);
-    __classPrivateFieldGet(this, _FrameManager_frames, "f").set(frame._id, frame);
-    this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
+    const complete = (parentFrame) => {
+        assert(parentFrame, `Parent frame ${parentFrameId} not found`);
+        const frame = new Frame(this, parentFrame, frameId, session);
+        __classPrivateFieldGet(this, _FrameManager_frames, "f").set(frame._id, frame);
+        this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
+    };
+    if (parentFrame) {
+        return complete(parentFrame);
+    }
+    if (__classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").has(parentFrameId)) {
+        if (!__classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").has(frameId)) {
+            __classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").set(frameId, createDeferredPromiseWithTimer(`Waiting for frame ${frameId} to attach failed`));
+        }
+        __classPrivateFieldGet(this, _FrameManager_framesPendingTargetInit, "f").get(parentFrameId).promise.then(() => {
+            var _a;
+            complete(__classPrivateFieldGet(this, _FrameManager_frames, "f").get(parentFrameId));
+            (_a = __classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").get(frameId)) === null || _a === void 0 ? void 0 : _a.resolve();
+            __classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").delete(frameId);
+        });
+        return;
+    }
+    throw new Error(`Parent frame ${parentFrameId} not found`);
 }, _FrameManager_onFrameNavigated = function _FrameManager_onFrameNavigated(framePayload) {
+    const frameId = framePayload.id;
     const isMainFrame = !framePayload.parentId;
-    let frame = isMainFrame
-        ? __classPrivateFieldGet(this, _FrameManager_mainFrame, "f")
-        : __classPrivateFieldGet(this, _FrameManager_frames, "f").get(framePayload.id);
-    assert(isMainFrame || frame, 'We either navigate top level or have old version of the navigated frame');
-    // Detach all child frames first.
-    if (frame) {
-        for (const child of frame.childFrames()) {
-            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_removeFramesRecursively).call(this, child);
-        }
-    }
-    // Update or create main frame.
-    if (isMainFrame) {
+    const frame = isMainFrame ? __classPrivateFieldGet(this, _FrameManager_mainFrame, "f") : __classPrivateFieldGet(this, _FrameManager_frames, "f").get(frameId);
+    const complete = (frame) => {
+        assert(isMainFrame || frame, `Missing frame isMainFrame=${isMainFrame}, frameId=${frameId}`);
+        // Detach all child frames first.
         if (frame) {
-            // Update frame id to retain frame identity on cross-process navigation.
-            __classPrivateFieldGet(this, _FrameManager_frames, "f").delete(frame._id);
-            frame._id = framePayload.id;
+            for (const child of frame.childFrames()) {
+                __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_removeFramesRecursively).call(this, child);
+            }
         }
-        else {
-            // Initial main frame navigation.
-            frame = new Frame(this, null, framePayload.id, __classPrivateFieldGet(this, _FrameManager_client, "f"));
+        // Update or create main frame.
+        if (isMainFrame) {
+            if (frame) {
+                // Update frame id to retain frame identity on cross-process navigation.
+                __classPrivateFieldGet(this, _FrameManager_frames, "f").delete(frame._id);
+                frame._id = frameId;
+            }
+            else {
+                // Initial main frame navigation.
+                frame = new Frame(this, null, frameId, __classPrivateFieldGet(this, _FrameManager_client, "f"));
+            }
+            __classPrivateFieldGet(this, _FrameManager_frames, "f").set(frameId, frame);
+            __classPrivateFieldSet(this, _FrameManager_mainFrame, frame, "f");
         }
-        __classPrivateFieldGet(this, _FrameManager_frames, "f").set(framePayload.id, frame);
-        __classPrivateFieldSet(this, _FrameManager_mainFrame, frame, "f");
+        // Update frame payload.
+        assert(frame);
+        frame._navigated(framePayload);
+        this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+    };
+    if (__classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").has(frameId)) {
+        __classPrivateFieldGet(this, _FrameManager_framesPendingAttachment, "f").get(frameId).promise.then(() => {
+            complete(isMainFrame ? __classPrivateFieldGet(this, _FrameManager_mainFrame, "f") : __classPrivateFieldGet(this, _FrameManager_frames, "f").get(frameId));
+        });
     }
-    // Update frame payload.
-    assert(frame);
-    frame._navigated(framePayload);
-    this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+    else {
+        complete(frame);
+    }
 }, _FrameManager_onFrameNavigatedWithinDocument = function _FrameManager_onFrameNavigatedWithinDocument(frameId, url) {
     const frame = __classPrivateFieldGet(this, _FrameManager_frames, "f").get(frameId);
     if (!frame) {
@@ -528,6 +555,12 @@ export class Frame {
         __classPrivateFieldSet(this, _Frame_client, client, "f");
         this._mainWorld = new DOMWorld(__classPrivateFieldGet(this, _Frame_client, "f"), this._frameManager, this, this._frameManager._timeoutSettings);
         this._secondaryWorld = new DOMWorld(__classPrivateFieldGet(this, _Frame_client, "f"), this._frameManager, this, this._frameManager._timeoutSettings);
+    }
+    /**
+     * @returns a page associated with the frame.
+     */
+    page() {
+        return this._frameManager.page();
     }
     /**
      * @remarks

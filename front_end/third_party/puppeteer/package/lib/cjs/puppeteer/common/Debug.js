@@ -38,8 +38,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.debug = void 0;
+exports.debug = exports.importDebug = void 0;
 const environment_js_1 = require("../environment.js");
+/**
+ * @internal
+ */
+let debugModule = null;
+/**
+ * @internal
+ */
+async function importDebug() {
+    if (!debugModule) {
+        debugModule = (await Promise.resolve().then(() => __importStar(require('debug')))).default;
+    }
+    return debugModule;
+}
+exports.importDebug = importDebug;
 /**
  * A debug function that can be used in any environment.
  *
@@ -80,7 +94,7 @@ const environment_js_1 = require("../environment.js");
 const debug = (prefix) => {
     if (environment_js_1.isNode) {
         return async (...logArgs) => {
-            (await Promise.resolve().then(() => __importStar(require('debug')))).default(prefix)(logArgs);
+            (await importDebug())(prefix)(logArgs);
         };
     }
     return (...logArgs) => {

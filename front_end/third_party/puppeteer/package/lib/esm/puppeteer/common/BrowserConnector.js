@@ -50,10 +50,16 @@ export async function _connectToBrowser(options) {
         const connectionTransport = await WebSocketClass.create(connectionURL);
         connection = new Connection(connectionURL, connectionTransport, slowMo);
     }
+    const version = await connection.send('Browser.getVersion');
+    const product = version.product.toLowerCase().includes('firefox')
+        ? 'firefox'
+        : 'chrome';
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
-    return Browser._create(connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
+    const browser = await Browser._create(product || 'chrome', connection, browserContextIds, ignoreHTTPSErrors, defaultViewport, undefined, () => {
         return connection.send('Browser.close').catch(debugError);
     }, targetFilter, isPageTarget);
+    await browser.pages();
+    return browser;
 }
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);

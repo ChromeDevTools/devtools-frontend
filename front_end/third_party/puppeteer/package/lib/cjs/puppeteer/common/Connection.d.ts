@@ -56,6 +56,10 @@ export declare class Connection extends EventEmitter {
     protected onMessage(message: string): Promise<void>;
     dispose(): void;
     /**
+     * @internal
+     */
+    isAutoAttached(targetId: string): boolean;
+    /**
      * @param targetInfo - The target info
      * @returns The CDP session that is created
      */

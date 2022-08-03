@@ -210,6 +210,12 @@ export class JSHandle {
         }
         return 'JSHandle:' + valueFromRemoteObject(__classPrivateFieldGet(this, _JSHandle_remoteObject, "f"));
     }
+    /**
+     * Provides access to [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject) backing this JSHandle.
+     */
+    remoteObject() {
+        return __classPrivateFieldGet(this, _JSHandle_remoteObject, "f");
+    }
 }
 _JSHandle_client = new WeakMap(), _JSHandle_disposed = new WeakMap(), _JSHandle_context = new WeakMap(), _JSHandle_remoteObject = new WeakMap();
 //# sourceMappingURL=JSHandle.js.map

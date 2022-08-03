@@ -25,7 +25,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Target_browserContext, _Target_targetInfo, _Target_sessionFactory, _Target_ignoreHTTPSErrors, _Target_defaultViewport, _Target_pagePromise, _Target_workerPromise, _Target_screenshotTaskQueue;
+var _Target_browserContext, _Target_session, _Target_targetInfo, _Target_sessionFactory, _Target_ignoreHTTPSErrors, _Target_defaultViewport, _Target_pagePromise, _Target_workerPromise, _Target_screenshotTaskQueue, _Target_targetManager;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Target = void 0;
 const Page_js_1 = require("./Page.js");
@@ -37,8 +37,9 @@ class Target {
     /**
      * @internal
      */
-    constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue, isPageTargetCallback) {
+    constructor(targetInfo, session, browserContext, targetManager, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue, isPageTargetCallback) {
         _Target_browserContext.set(this, void 0);
+        _Target_session.set(this, void 0);
         _Target_targetInfo.set(this, void 0);
         _Target_sessionFactory.set(this, void 0);
         _Target_ignoreHTTPSErrors.set(this, void 0);
@@ -46,6 +47,9 @@ class Target {
         _Target_pagePromise.set(this, void 0);
         _Target_workerPromise.set(this, void 0);
         _Target_screenshotTaskQueue.set(this, void 0);
+        _Target_targetManager.set(this, void 0);
+        __classPrivateFieldSet(this, _Target_session, session, "f");
+        __classPrivateFieldSet(this, _Target_targetManager, targetManager, "f");
         __classPrivateFieldSet(this, _Target_targetInfo, targetInfo, "f");
         __classPrivateFieldSet(this, _Target_browserContext, browserContext, "f");
         this._targetId = targetInfo.targetId;
@@ -83,10 +87,22 @@ class Target {
         }
     }
     /**
+     * @internal
+     */
+    _session() {
+        return __classPrivateFieldGet(this, _Target_session, "f");
+    }
+    /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */
     createCDPSession() {
         return __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this);
+    }
+    /**
+     * @internal
+     */
+    _targetManager() {
+        return __classPrivateFieldGet(this, _Target_targetManager, "f");
     }
     /**
      * @internal
@@ -100,7 +116,7 @@ class Target {
     async page() {
         var _a;
         if (this._isPageTargetCallback(__classPrivateFieldGet(this, _Target_targetInfo, "f")) && !__classPrivateFieldGet(this, _Target_pagePromise, "f")) {
-            __classPrivateFieldSet(this, _Target_pagePromise, __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this).then(client => {
+            __classPrivateFieldSet(this, _Target_pagePromise, (__classPrivateFieldGet(this, _Target_session, "f") ? Promise.resolve(__classPrivateFieldGet(this, _Target_session, "f")) : __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this)).then(client => {
                 var _a;
                 return Page_js_1.Page._create(client, this, __classPrivateFieldGet(this, _Target_ignoreHTTPSErrors, "f"), (_a = __classPrivateFieldGet(this, _Target_defaultViewport, "f")) !== null && _a !== void 0 ? _a : null, __classPrivateFieldGet(this, _Target_screenshotTaskQueue, "f"));
             }), "f");
@@ -117,7 +133,7 @@ class Target {
         }
         if (!__classPrivateFieldGet(this, _Target_workerPromise, "f")) {
             // TODO(einbinder): Make workers send their console logs.
-            __classPrivateFieldSet(this, _Target_workerPromise, __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this).then(client => {
+            __classPrivateFieldSet(this, _Target_workerPromise, (__classPrivateFieldGet(this, _Target_session, "f") ? Promise.resolve(__classPrivateFieldGet(this, _Target_session, "f")) : __classPrivateFieldGet(this, _Target_sessionFactory, "f").call(this)).then(client => {
                 return new WebWorker_js_1.WebWorker(client, __classPrivateFieldGet(this, _Target_targetInfo, "f").url, () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */);
             }), "f");
         }
@@ -182,5 +198,5 @@ class Target {
     }
 }
 exports.Target = Target;
-_Target_browserContext = new WeakMap(), _Target_targetInfo = new WeakMap(), _Target_sessionFactory = new WeakMap(), _Target_ignoreHTTPSErrors = new WeakMap(), _Target_defaultViewport = new WeakMap(), _Target_pagePromise = new WeakMap(), _Target_workerPromise = new WeakMap(), _Target_screenshotTaskQueue = new WeakMap();
+_Target_browserContext = new WeakMap(), _Target_session = new WeakMap(), _Target_targetInfo = new WeakMap(), _Target_sessionFactory = new WeakMap(), _Target_ignoreHTTPSErrors = new WeakMap(), _Target_defaultViewport = new WeakMap(), _Target_pagePromise = new WeakMap(), _Target_workerPromise = new WeakMap(), _Target_screenshotTaskQueue = new WeakMap(), _Target_targetManager = new WeakMap();
 //# sourceMappingURL=Target.js.map

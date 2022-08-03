@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_sessions, _Connection_closed, _Connection_callbacks, _Connection_onClose, _CDPSession_sessionId, _CDPSession_targetType, _CDPSession_callbacks, _CDPSession_connection;
+var _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_sessions, _Connection_closed, _Connection_callbacks, _Connection_manuallyAttached, _Connection_onClose, _CDPSession_sessionId, _CDPSession_targetType, _CDPSession_callbacks, _CDPSession_connection;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.ConnectionEmittedEvents = void 0;
 /**
@@ -56,6 +56,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         _Connection_sessions.set(this, new Map());
         _Connection_closed.set(this, false);
         _Connection_callbacks.set(this, new Map());
+        _Connection_manuallyAttached.set(this, new Set());
         __classPrivateFieldSet(this, _Connection_url, url, "f");
         __classPrivateFieldSet(this, _Connection_delay, delay, "f");
         __classPrivateFieldSet(this, _Connection_transport, transport, "f");
@@ -177,10 +178,17 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         __classPrivateFieldGet(this, _Connection_transport, "f").close();
     }
     /**
+     * @internal
+     */
+    isAutoAttached(targetId) {
+        return !__classPrivateFieldGet(this, _Connection_manuallyAttached, "f").has(targetId);
+    }
+    /**
      * @param targetInfo - The target info
      * @returns The CDP session that is created
      */
     async createSession(targetInfo) {
+        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
         const { sessionId } = await this.send('Target.attachToTarget', {
             targetId: targetInfo.targetId,
             flatten: true,
@@ -193,7 +201,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.Connection = Connection;
-_Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_lastId = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
+_Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_lastId = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_manuallyAttached = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
     if (__classPrivateFieldGet(this, _Connection_closed, "f")) {
         return;
     }

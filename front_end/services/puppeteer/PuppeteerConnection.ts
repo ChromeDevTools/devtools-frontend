@@ -88,7 +88,8 @@ export async function getPuppeteerConnection(
     return targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId || targetInfo.type === 'iframe';
   };
 
-  const browser = await puppeteer.Browser._create(
+  const browserPromise = puppeteer.Browser._create(
+      'chrome',
       connection,
       [] /* contextIds */,
       false /* ignoreHTTPSErrors */,
@@ -97,6 +98,11 @@ export async function getPuppeteerConnection(
       undefined /* closeCallback */,
       targetFilterCallback,
   );
+
+  const [, browser] = await Promise.all([
+    connection.createSession({ targetId: mainTargetId }),
+    browserPromise,
+  ]);
 
   const pages = await browser.pages();
   const page = pages.find(p => p.mainFrame()._id === mainFrameId) || null;

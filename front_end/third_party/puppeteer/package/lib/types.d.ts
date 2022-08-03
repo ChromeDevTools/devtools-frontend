@@ -168,11 +168,14 @@ export declare class Browser extends EventEmitter {
     /* Excluded from this release type: _create */
     /* Excluded from this release type: _targets */
     /* Excluded from this release type: __constructor */
+    /* Excluded from this release type: _attach */
+    /* Excluded from this release type: _detach */
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process(): ChildProcess | null;
+    /* Excluded from this release type: _targetManager */
     /* Excluded from this release type: _getIsPageTargetCallback */
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
@@ -747,6 +750,8 @@ export declare interface CDPSessionOnMessageObject {
  */
 export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
 
+/* Excluded from this release type: ChromeTargetManager */
+
 /**
  * Clears all registered handlers.
  *
@@ -815,6 +820,7 @@ export declare class Connection extends EventEmitter {
     /* Excluded from this release type: _rawSend */
     /* Excluded from this release type: onMessage */
     dispose(): void;
+    /* Excluded from this release type: isAutoAttached */
     /**
      * @param targetInfo - The target info
      * @returns The CDP session that is created
@@ -866,7 +872,6 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
-    product?: Product;
 }
 
 /* Excluded from this release type: _connectToBrowser */
@@ -1042,6 +1047,8 @@ export declare interface CoverageEntry {
 
 export declare const createBrowserFetcher: (options: BrowserFetcherOptions) => BrowserFetcher;
 
+/* Excluded from this release type: createDeferredPromiseWithTimer */
+
 /* Excluded from this release type: createJSHandle */
 
 /* Excluded from this release type: createLauncher */
@@ -1134,6 +1141,8 @@ export declare function customQueryHandlerNames(): string[];
 export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
 
 export declare const defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
+
+/* Excluded from this release type: DeferredPromise */
 
 /**
  * Copyright 2017 Google Inc. All rights reserved.
@@ -1910,6 +1919,8 @@ export declare class FileChooser {
 
 /* Excluded from this release type: FirefoxLauncher */
 
+/* Excluded from this release type: FirefoxTargetManager */
+
 /**
  * @public
  */
@@ -1977,6 +1988,10 @@ export declare class Frame {
     /* Excluded from this release type: _childFrames */
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: _updateClient */
+    /**
+     * @returns a page associated with the frame.
+     */
+    page(): Page;
     /**
      * @remarks
      *
@@ -2905,6 +2920,10 @@ export declare class HTTPResponse {
      frame(): Frame | null;
     }
 
+    /* Excluded from this release type: importDebug */
+
+    /* Excluded from this release type: importFS */
+
     /* Excluded from this release type: initializePuppeteer */
 
     /**
@@ -3121,6 +3140,10 @@ export declare class HTTPResponse {
          * @remarks Useful during debugging.
          */
         toString(): string;
+        /**
+         * Provides access to [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject) backing this JSHandle.
+         */
+        remoteObject(): Protocol.Runtime.RemoteObject;
     }
 
     /**
@@ -5152,7 +5175,7 @@ export declare class HTTPResponse {
          * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
          * properties. Defaults to `false`.
          *
-         * - `hidden`: ait for element to not be found in the DOM or to be hidden,
+         * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
          * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
          * `false`.
          *
@@ -5704,6 +5727,8 @@ export declare class HTTPResponse {
         product: Product;
     }
 
+    export { Protocol }
+
     /**
      * ProtocolError is emitted whenever there is an error from the protocol.
      *
@@ -6212,10 +6237,12 @@ export declare class HTTPResponse {
              /* Excluded from this release type: _targetId */
              /* Excluded from this release type: _isPageTargetCallback */
              /* Excluded from this release type: __constructor */
+             /* Excluded from this release type: _session */
              /**
               * Creates a Chrome Devtools Protocol session attached to the target.
               */
              createCDPSession(): Promise<CDPSession>;
+             /* Excluded from this release type: _targetManager */
              /* Excluded from this release type: _getTargetInfo */
              /**
               * If the target is not of type `"page"` or `"background_page"`, returns `null`.
@@ -6249,10 +6276,18 @@ export declare class HTTPResponse {
              /* Excluded from this release type: _targetInfoChanged */
          }
 
+         /* Excluded from this release type: TargetFactory */
+
          /**
           * @public
           */
          export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
+
+         /* Excluded from this release type: TargetInterceptor */
+
+         /* Excluded from this release type: TargetManager */
+
+         /* Excluded from this release type: TargetManagerEmittedEvents */
 
          /* Excluded from this release type: TaskQueue */
 

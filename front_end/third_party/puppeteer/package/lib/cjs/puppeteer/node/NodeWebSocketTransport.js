@@ -34,6 +34,7 @@ exports.NodeWebSocketTransport = void 0;
 const ws_1 = __importDefault(require("ws"));
 const version_js_1 = require("../generated/version.js");
 const dns_1 = require("dns");
+const url_1 = require("url");
 /**
  * @internal
  */
@@ -62,7 +63,7 @@ class NodeWebSocketTransport {
         // manually with the previous behavior according to:
         // - https://nodejs.org/api/dns.html#dnslookuphostname-options-callback
         // because of https://bugzilla.mozilla.org/show_bug.cgi?id=1769994.
-        const url = new URL(urlString);
+        const url = new url_1.URL(urlString);
         if (url.hostname === 'localhost') {
             const { address } = await dns_1.promises.lookup(url.hostname, { verbatim: false });
             url.hostname = address;

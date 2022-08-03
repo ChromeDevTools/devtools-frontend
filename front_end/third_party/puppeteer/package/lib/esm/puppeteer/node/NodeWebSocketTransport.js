@@ -28,6 +28,7 @@ var _NodeWebSocketTransport_ws;
 import NodeWebSocket from 'ws';
 import { packageVersion } from '../generated/version.js';
 import { promises as dns } from 'dns';
+import { URL } from 'url';
 /**
  * @internal
  */

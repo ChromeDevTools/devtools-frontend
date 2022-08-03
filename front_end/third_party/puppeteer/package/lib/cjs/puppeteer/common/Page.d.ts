@@ -1876,7 +1876,7 @@ export declare class Page extends EventEmitter {
      * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
      * properties. Defaults to `false`.
      *
-     * - `hidden`: ait for element to not be found in the DOM or to be hidden,
+     * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
      * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
      * `false`.
      *

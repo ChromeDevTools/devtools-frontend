@@ -1,6 +1,6 @@
 {
   "name": "puppeteer",
-  "version": "15.3.1",
+  "version": "16.0.0",
   "description": "A high-level API to control headless Chrome over the DevTools Protocol",
   "keywords": [
     "puppeteer",
@@ -27,7 +27,7 @@
     "node": ">=14.1.0"
   },
   "scripts": {
-    "test": "c8 --check-coverage --lines 94 run-s test:chrome test:chrome:* test:firefox",
+    "test": "c8 --check-coverage --lines 93 run-s test:chrome test:chrome:* test:firefox",
     "test:types": "tsd",
     "test:install": "scripts/test-install.sh",
     "test:firefox": "cross-env PUPPETEER_PRODUCT=firefox MOZ_WEBRENDER=0 mocha",
@@ -49,7 +49,7 @@
     "docs": "run-s build generate:markdown",
     "debug": "npm run build && mocha --inspect-brk",
     "commitlint": "commitlint --from=HEAD~1",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf test/build",
     "check": "run-p check:*",
     "check:protocol-revision": "ts-node -s scripts/ensure-correct-devtools-protocol-package",
     "check:pinned-deps": "ts-node -s scripts/ensure-pinned-deps",
@@ -62,14 +62,15 @@
   "files": [
     "lib",
     "install.js",
-    "typescript-if-required.js"
+    "typescript-if-required.js",
+    "!**/*.tsbuildinfo"
   ],
   "author": "The Chromium Authors",
   "license": "Apache-2.0",
   "dependencies": {
     "cross-fetch": "3.1.5",
     "debug": "4.3.4",
-    "devtools-protocol": "0.0.1011705",
+    "devtools-protocol": "0.0.1019158",
     "extract-zip": "2.0.1",
     "https-proxy-agent": "5.0.1",
     "pkg-dir": "4.2.0",
@@ -78,7 +79,7 @@
     "rimraf": "3.0.2",
     "tar-fs": "2.1.1",
     "unbzip2-stream": "1.4.3",
-    "ws": "8.8.0"
+    "ws": "8.8.1"
   },
   "devDependencies": {
     "@commitlint/cli": "17.0.1",

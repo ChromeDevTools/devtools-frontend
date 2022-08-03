@@ -17,6 +17,10 @@ declare global {
     var __PUPPETEER_DEBUG: string;
 }
 /**
+ * @internal
+ */
+export declare function importDebug(): Promise<typeof import('debug')>;
+/**
  * A debug function that can be used in any environment.
  *
  * @remarks

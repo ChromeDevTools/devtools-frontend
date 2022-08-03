@@ -89,7 +89,7 @@ class ChromeLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser_js_1.Browser._create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
+            browser = await Browser_js_1.Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
         }
         catch (error) {
             runner.kill();
@@ -123,7 +123,8 @@ class ChromeLauncher {
             '--disable-extensions',
             // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
             // once crbug.com/1324138 is fixed and released.
-            '--disable-features=Translate,BackForwardCache,AvoidUnnecessaryBeforeUnloadCheckSync',
+            // AcceptCHFrame disabled because of crbug.com/1348106.
+            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',

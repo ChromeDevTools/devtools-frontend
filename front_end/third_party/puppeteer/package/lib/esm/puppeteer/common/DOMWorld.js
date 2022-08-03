@@ -29,7 +29,7 @@ import { assert } from './assert.js';
 import { TimeoutError } from './Errors.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
 import { getQueryHandlerAndSelector } from './QueryHandler.js';
-import { debugError, isNumber, isString, makePredicateString, pageBindingInitString, } from './util.js';
+import { debugError, importFS, isNumber, isString, makePredicateString, pageBindingInitString, } from './util.js';
 /**
  * @internal
  */
@@ -122,7 +122,7 @@ export class DOMWorld {
     async _setContext(context) {
         var _b;
         if (context) {
-            assert(__classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f"), 'Execution Context has already been set.');
+            assert(__classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f"), `ExecutionContext ${context._contextId} has already been set.`);
             __classPrivateFieldGet(this, _DOMWorld_ctxBindings, "f").clear();
             (_b = __classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f")) === null || _b === void 0 ? void 0 : _b.call(null, context);
             __classPrivateFieldSet(this, _DOMWorld_contextResolveCallback, null, "f");
@@ -334,7 +334,7 @@ export class DOMWorld {
         if (path !== null) {
             let fs;
             try {
-                fs = (await import('fs')).promises;
+                fs = (await importFS()).promises;
             }
             catch (error) {
                 if (error instanceof TypeError) {

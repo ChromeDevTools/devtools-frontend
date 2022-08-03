@@ -24,13 +24,15 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Browser_instances, _Browser_ignoreHTTPSErrors, _Browser_defaultViewport, _Browser_process, _Browser_connection, _Browser_closeCallback, _Browser_targetFilterCallback, _Browser_isPageTargetCallback, _Browser_defaultContext, _Browser_contexts, _Browser_screenshotTaskQueue, _Browser_targets, _Browser_ignoredTargets, _Browser_setIsPageTargetCallback, _Browser_targetCreated, _Browser_targetDestroyed, _Browser_targetInfoChanged, _Browser_getVersion, _BrowserContext_connection, _BrowserContext_browser, _BrowserContext_id;
+var _Browser_instances, _Browser_ignoreHTTPSErrors, _Browser_defaultViewport, _Browser_process, _Browser_connection, _Browser_closeCallback, _Browser_targetFilterCallback, _Browser_isPageTargetCallback, _Browser_defaultContext, _Browser_contexts, _Browser_screenshotTaskQueue, _Browser_targetManager, _Browser_emitDisconnected, _Browser_setIsPageTargetCallback, _Browser_createTarget, _Browser_onAttachedToTarget, _Browser_onDetachedFromTarget, _Browser_onTargetChanged, _Browser_onTargetDiscovered, _Browser_getVersion, _BrowserContext_connection, _BrowserContext_browser, _BrowserContext_id;
 import { assert } from './assert.js';
 import { ConnectionEmittedEvents } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { waitWithTimeout } from './util.js';
 import { Target } from './Target.js';
 import { TaskQueue } from './TaskQueue.js';
+import { ChromeTargetManager } from './ChromeTargetManager.js';
+import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
     ['geolocation', 'geolocation'],
     ['midi', 'midi'],
@@ -102,7 +104,7 @@ export class Browser extends EventEmitter {
     /**
      * @internal
      */
-    constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
+    constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
         super();
         _Browser_instances.add(this);
         _Browser_ignoreHTTPSErrors.set(this, void 0);
@@ -115,8 +117,56 @@ export class Browser extends EventEmitter {
         _Browser_defaultContext.set(this, void 0);
         _Browser_contexts.set(this, void 0);
         _Browser_screenshotTaskQueue.set(this, void 0);
-        _Browser_targets.set(this, void 0);
-        _Browser_ignoredTargets.set(this, new Set());
+        _Browser_targetManager.set(this, void 0);
+        _Browser_emitDisconnected.set(this, () => {
+            this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
+        });
+        _Browser_createTarget.set(this, (targetInfo, session) => {
+            var _a;
+            const { browserContextId } = targetInfo;
+            const context = browserContextId && __classPrivateFieldGet(this, _Browser_contexts, "f").has(browserContextId)
+                ? __classPrivateFieldGet(this, _Browser_contexts, "f").get(browserContextId)
+                : __classPrivateFieldGet(this, _Browser_defaultContext, "f");
+            if (!context) {
+                throw new Error('Missing browser context');
+            }
+            return new Target(targetInfo, session, context, __classPrivateFieldGet(this, _Browser_targetManager, "f"), () => {
+                return __classPrivateFieldGet(this, _Browser_connection, "f").createSession(targetInfo);
+            }, __classPrivateFieldGet(this, _Browser_ignoreHTTPSErrors, "f"), (_a = __classPrivateFieldGet(this, _Browser_defaultViewport, "f")) !== null && _a !== void 0 ? _a : null, __classPrivateFieldGet(this, _Browser_screenshotTaskQueue, "f"), __classPrivateFieldGet(this, _Browser_isPageTargetCallback, "f"));
+        });
+        _Browser_onAttachedToTarget.set(this, async (target) => {
+            if (await target._initializedPromise) {
+                this.emit("targetcreated" /* BrowserEmittedEvents.TargetCreated */, target);
+                target
+                    .browserContext()
+                    .emit("targetcreated" /* BrowserContextEmittedEvents.TargetCreated */, target);
+            }
+        });
+        _Browser_onDetachedFromTarget.set(this, async (target) => {
+            target._initializedCallback(false);
+            target._closedCallback();
+            if (await target._initializedPromise) {
+                this.emit("targetdestroyed" /* BrowserEmittedEvents.TargetDestroyed */, target);
+                target
+                    .browserContext()
+                    .emit("targetdestroyed" /* BrowserContextEmittedEvents.TargetDestroyed */, target);
+            }
+        });
+        _Browser_onTargetChanged.set(this, ({ target, targetInfo, }) => {
+            const previousURL = target.url();
+            const wasInitialized = target._isInitialized;
+            target._targetInfoChanged(targetInfo);
+            if (wasInitialized && previousURL !== target.url()) {
+                this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
+                target
+                    .browserContext()
+                    .emit("targetchanged" /* BrowserContextEmittedEvents.TargetChanged */, target);
+            }
+        });
+        _Browser_onTargetDiscovered.set(this, (targetInfo) => {
+            this.emit('targetdiscovered', targetInfo);
+        });
+        product = product || 'chrome';
         __classPrivateFieldSet(this, _Browser_ignoreHTTPSErrors, ignoreHTTPSErrors, "f");
         __classPrivateFieldSet(this, _Browser_defaultViewport, defaultViewport, "f");
         __classPrivateFieldSet(this, _Browser_process, process, "f");
@@ -128,32 +178,52 @@ export class Browser extends EventEmitter {
                 return true;
             }), "f");
         __classPrivateFieldGet(this, _Browser_instances, "m", _Browser_setIsPageTargetCallback).call(this, isPageTargetCallback);
+        if (product === 'firefox') {
+            __classPrivateFieldSet(this, _Browser_targetManager, new FirefoxTargetManager(connection, __classPrivateFieldGet(this, _Browser_createTarget, "f"), __classPrivateFieldGet(this, _Browser_targetFilterCallback, "f")), "f");
+        }
+        else {
+            __classPrivateFieldSet(this, _Browser_targetManager, new ChromeTargetManager(connection, __classPrivateFieldGet(this, _Browser_createTarget, "f"), __classPrivateFieldGet(this, _Browser_targetFilterCallback, "f")), "f");
+        }
         __classPrivateFieldSet(this, _Browser_defaultContext, new BrowserContext(__classPrivateFieldGet(this, _Browser_connection, "f"), this), "f");
         __classPrivateFieldSet(this, _Browser_contexts, new Map(), "f");
         for (const contextId of contextIds) {
             __classPrivateFieldGet(this, _Browser_contexts, "f").set(contextId, new BrowserContext(__classPrivateFieldGet(this, _Browser_connection, "f"), this, contextId));
         }
-        __classPrivateFieldSet(this, _Browser_targets, new Map(), "f");
-        __classPrivateFieldGet(this, _Browser_connection, "f").on(ConnectionEmittedEvents.Disconnected, () => {
-            return this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
-        });
-        __classPrivateFieldGet(this, _Browser_connection, "f").on('Target.targetCreated', __classPrivateFieldGet(this, _Browser_instances, "m", _Browser_targetCreated).bind(this));
-        __classPrivateFieldGet(this, _Browser_connection, "f").on('Target.targetDestroyed', __classPrivateFieldGet(this, _Browser_instances, "m", _Browser_targetDestroyed).bind(this));
-        __classPrivateFieldGet(this, _Browser_connection, "f").on('Target.targetInfoChanged', __classPrivateFieldGet(this, _Browser_instances, "m", _Browser_targetInfoChanged).bind(this));
     }
     /**
      * @internal
      */
-    static async _create(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
-        const browser = new Browser(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback);
-        await connection.send('Target.setDiscoverTargets', { discover: true });
+    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
+        const browser = new Browser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback);
+        await browser._attach();
         return browser;
     }
     /**
      * @internal
      */
     get _targets() {
-        return __classPrivateFieldGet(this, _Browser_targets, "f");
+        return __classPrivateFieldGet(this, _Browser_targetManager, "f").getAvailableTargets();
+    }
+    /**
+     * @internal
+     */
+    async _attach() {
+        __classPrivateFieldGet(this, _Browser_connection, "f").on(ConnectionEmittedEvents.Disconnected, __classPrivateFieldGet(this, _Browser_emitDisconnected, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").on("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, __classPrivateFieldGet(this, _Browser_onAttachedToTarget, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").on("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _Browser_onDetachedFromTarget, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").on("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, __classPrivateFieldGet(this, _Browser_onTargetChanged, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").on("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, __classPrivateFieldGet(this, _Browser_onTargetDiscovered, "f"));
+        await __classPrivateFieldGet(this, _Browser_targetManager, "f").initialize();
+    }
+    /**
+     * @internal
+     */
+    _detach() {
+        __classPrivateFieldGet(this, _Browser_connection, "f").off(ConnectionEmittedEvents.Disconnected, __classPrivateFieldGet(this, _Browser_emitDisconnected, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").off("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, __classPrivateFieldGet(this, _Browser_onAttachedToTarget, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").off("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _Browser_onDetachedFromTarget, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").off("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, __classPrivateFieldGet(this, _Browser_onTargetChanged, "f"));
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").off("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, __classPrivateFieldGet(this, _Browser_onTargetDiscovered, "f"));
     }
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
@@ -162,6 +232,12 @@ export class Browser extends EventEmitter {
     process() {
         var _a;
         return (_a = __classPrivateFieldGet(this, _Browser_process, "f")) !== null && _a !== void 0 ? _a : null;
+    }
+    /**
+     * @internal
+     */
+    _targetManager() {
+        return __classPrivateFieldGet(this, _Browser_targetManager, "f");
     }
     /**
      * @internal
@@ -256,7 +332,7 @@ export class Browser extends EventEmitter {
             url: 'about:blank',
             browserContextId: contextId || undefined,
         });
-        const target = __classPrivateFieldGet(this, _Browser_targets, "f").get(targetId);
+        const target = __classPrivateFieldGet(this, _Browser_targetManager, "f").getAvailableTargets().get(targetId);
         if (!target) {
             throw new Error(`Missing target for page (id = ${targetId})`);
         }
@@ -275,7 +351,7 @@ export class Browser extends EventEmitter {
      * an array with all the targets in all browser contexts.
      */
     targets() {
-        return Array.from(__classPrivateFieldGet(this, _Browser_targets, "f").values()).filter(target => {
+        return Array.from(__classPrivateFieldGet(this, _Browser_targetManager, "f").getAvailableTargets().values()).filter(target => {
             return target._isInitialized;
         });
     }
@@ -386,6 +462,7 @@ export class Browser extends EventEmitter {
      * cannot be used anymore.
      */
     disconnect() {
+        __classPrivateFieldGet(this, _Browser_targetManager, "f").dispose();
         __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
     }
     /**
@@ -395,71 +472,13 @@ export class Browser extends EventEmitter {
         return !__classPrivateFieldGet(this, _Browser_connection, "f")._closed;
     }
 }
-_Browser_ignoreHTTPSErrors = new WeakMap(), _Browser_defaultViewport = new WeakMap(), _Browser_process = new WeakMap(), _Browser_connection = new WeakMap(), _Browser_closeCallback = new WeakMap(), _Browser_targetFilterCallback = new WeakMap(), _Browser_isPageTargetCallback = new WeakMap(), _Browser_defaultContext = new WeakMap(), _Browser_contexts = new WeakMap(), _Browser_screenshotTaskQueue = new WeakMap(), _Browser_targets = new WeakMap(), _Browser_ignoredTargets = new WeakMap(), _Browser_instances = new WeakSet(), _Browser_setIsPageTargetCallback = function _Browser_setIsPageTargetCallback(isPageTargetCallback) {
+_Browser_ignoreHTTPSErrors = new WeakMap(), _Browser_defaultViewport = new WeakMap(), _Browser_process = new WeakMap(), _Browser_connection = new WeakMap(), _Browser_closeCallback = new WeakMap(), _Browser_targetFilterCallback = new WeakMap(), _Browser_isPageTargetCallback = new WeakMap(), _Browser_defaultContext = new WeakMap(), _Browser_contexts = new WeakMap(), _Browser_screenshotTaskQueue = new WeakMap(), _Browser_targetManager = new WeakMap(), _Browser_emitDisconnected = new WeakMap(), _Browser_createTarget = new WeakMap(), _Browser_onAttachedToTarget = new WeakMap(), _Browser_onDetachedFromTarget = new WeakMap(), _Browser_onTargetChanged = new WeakMap(), _Browser_onTargetDiscovered = new WeakMap(), _Browser_instances = new WeakSet(), _Browser_setIsPageTargetCallback = function _Browser_setIsPageTargetCallback(isPageTargetCallback) {
     __classPrivateFieldSet(this, _Browser_isPageTargetCallback, isPageTargetCallback ||
         ((target) => {
             return (target.type === 'page' ||
                 target.type === 'background_page' ||
                 target.type === 'webview');
         }), "f");
-}, _Browser_targetCreated = async function _Browser_targetCreated(event) {
-    var _a;
-    const targetInfo = event.targetInfo;
-    const { browserContextId } = targetInfo;
-    const context = browserContextId && __classPrivateFieldGet(this, _Browser_contexts, "f").has(browserContextId)
-        ? __classPrivateFieldGet(this, _Browser_contexts, "f").get(browserContextId)
-        : __classPrivateFieldGet(this, _Browser_defaultContext, "f");
-    if (!context) {
-        throw new Error('Missing browser context');
-    }
-    const shouldAttachToTarget = __classPrivateFieldGet(this, _Browser_targetFilterCallback, "f").call(this, targetInfo);
-    if (!shouldAttachToTarget) {
-        __classPrivateFieldGet(this, _Browser_ignoredTargets, "f").add(targetInfo.targetId);
-        return;
-    }
-    const target = new Target(targetInfo, context, () => {
-        return __classPrivateFieldGet(this, _Browser_connection, "f").createSession(targetInfo);
-    }, __classPrivateFieldGet(this, _Browser_ignoreHTTPSErrors, "f"), (_a = __classPrivateFieldGet(this, _Browser_defaultViewport, "f")) !== null && _a !== void 0 ? _a : null, __classPrivateFieldGet(this, _Browser_screenshotTaskQueue, "f"), __classPrivateFieldGet(this, _Browser_isPageTargetCallback, "f"));
-    assert(!__classPrivateFieldGet(this, _Browser_targets, "f").has(event.targetInfo.targetId), 'Target should not exist before targetCreated');
-    __classPrivateFieldGet(this, _Browser_targets, "f").set(event.targetInfo.targetId, target);
-    if (await target._initializedPromise) {
-        this.emit("targetcreated" /* BrowserEmittedEvents.TargetCreated */, target);
-        context.emit("targetcreated" /* BrowserContextEmittedEvents.TargetCreated */, target);
-    }
-}, _Browser_targetDestroyed = async function _Browser_targetDestroyed(event) {
-    if (__classPrivateFieldGet(this, _Browser_ignoredTargets, "f").has(event.targetId)) {
-        return;
-    }
-    const target = __classPrivateFieldGet(this, _Browser_targets, "f").get(event.targetId);
-    if (!target) {
-        throw new Error(`Missing target in _targetDestroyed (id = ${event.targetId})`);
-    }
-    target._initializedCallback(false);
-    __classPrivateFieldGet(this, _Browser_targets, "f").delete(event.targetId);
-    target._closedCallback();
-    if (await target._initializedPromise) {
-        this.emit("targetdestroyed" /* BrowserEmittedEvents.TargetDestroyed */, target);
-        target
-            .browserContext()
-            .emit("targetdestroyed" /* BrowserContextEmittedEvents.TargetDestroyed */, target);
-    }
-}, _Browser_targetInfoChanged = function _Browser_targetInfoChanged(event) {
-    if (__classPrivateFieldGet(this, _Browser_ignoredTargets, "f").has(event.targetInfo.targetId)) {
-        return;
-    }
-    const target = __classPrivateFieldGet(this, _Browser_targets, "f").get(event.targetInfo.targetId);
-    if (!target) {
-        throw new Error(`Missing target in targetInfoChanged (id = ${event.targetInfo.targetId})`);
-    }
-    const previousURL = target.url();
-    const wasInitialized = target._isInitialized;
-    target._targetInfoChanged(event.targetInfo);
-    if (wasInitialized && previousURL !== target.url()) {
-        this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
-        target
-            .browserContext()
-            .emit("targetchanged" /* BrowserContextEmittedEvents.TargetChanged */, target);
-    }
 }, _Browser_getVersion = function _Browser_getVersion() {
     return __classPrivateFieldGet(this, _Browser_connection, "f").send('Browser.getVersion');
 };

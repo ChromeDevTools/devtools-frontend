@@ -148,7 +148,7 @@ class DOMWorld {
     async _setContext(context) {
         var _b;
         if (context) {
-            (0, assert_js_1.assert)(__classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f"), 'Execution Context has already been set.');
+            (0, assert_js_1.assert)(__classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f"), `ExecutionContext ${context._contextId} has already been set.`);
             __classPrivateFieldGet(this, _DOMWorld_ctxBindings, "f").clear();
             (_b = __classPrivateFieldGet(this, _DOMWorld_contextResolveCallback, "f")) === null || _b === void 0 ? void 0 : _b.call(null, context);
             __classPrivateFieldSet(this, _DOMWorld_contextResolveCallback, null, "f");
@@ -360,7 +360,7 @@ class DOMWorld {
         if (path !== null) {
             let fs;
             try {
-                fs = (await Promise.resolve().then(() => __importStar(require('fs')))).promises;
+                fs = (await (0, util_js_1.importFS)()).promises;
             }
             catch (error) {
                 if (error instanceof TypeError) {

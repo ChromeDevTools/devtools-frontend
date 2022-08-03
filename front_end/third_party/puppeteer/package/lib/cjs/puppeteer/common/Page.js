@@ -14,29 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
@@ -48,7 +25,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Page_instances, _Page_closed, _Page_client, _Page_target, _Page_keyboard, _Page_mouse, _Page_timeoutSettings, _Page_touchscreen, _Page_accessibility, _Page_frameManager, _Page_emulationManager, _Page_tracing, _Page_pageBindings, _Page_coverage, _Page_javascriptEnabled, _Page_viewport, _Page_screenshotTaskQueue, _Page_workers, _Page_fileChooserInterceptors, _Page_disconnectPromise, _Page_userDragInterceptionEnabled, _Page_handlerMap, _Page_initialize, _Page_onFileChooser, _Page_onTargetCrashed, _Page_onLogEntryAdded, _Page_emitMetrics, _Page_buildMetricsObject, _Page_handleException, _Page_onConsoleAPI, _Page_onBindingCalled, _Page_addConsoleMessage, _Page_onDialog, _Page_resetDefaultBackgroundColor, _Page_setTransparentBackgroundColor, _Page_sessionClosePromise, _Page_go, _Page_screenshotTask;
+var _Page_instances, _Page_closed, _Page_client, _Page_target, _Page_keyboard, _Page_mouse, _Page_timeoutSettings, _Page_touchscreen, _Page_accessibility, _Page_frameManager, _Page_emulationManager, _Page_tracing, _Page_pageBindings, _Page_coverage, _Page_javascriptEnabled, _Page_viewport, _Page_screenshotTaskQueue, _Page_workers, _Page_fileChooserInterceptors, _Page_disconnectPromise, _Page_userDragInterceptionEnabled, _Page_handlerMap, _Page_onDetachedFromTarget, _Page_onAttachedToTarget, _Page_initialize, _Page_onFileChooser, _Page_onTargetCrashed, _Page_onLogEntryAdded, _Page_emitMetrics, _Page_buildMetricsObject, _Page_handleException, _Page_onConsoleAPI, _Page_onBindingCalled, _Page_addConsoleMessage, _Page_onDialog, _Page_resetDefaultBackgroundColor, _Page_setTransparentBackgroundColor, _Page_sessionClosePromise, _Page_go, _Page_screenshotTask;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Page = void 0;
 const Accessibility_js_1 = require("./Accessibility.js");
@@ -143,6 +120,32 @@ class Page extends EventEmitter_js_1.EventEmitter {
         _Page_disconnectPromise.set(this, void 0);
         _Page_userDragInterceptionEnabled.set(this, false);
         _Page_handlerMap.set(this, new WeakMap());
+        _Page_onDetachedFromTarget.set(this, (target) => {
+            var _a;
+            const sessionId = (_a = target._session()) === null || _a === void 0 ? void 0 : _a.id();
+            __classPrivateFieldGet(this, _Page_frameManager, "f").onDetachedFromTarget(target);
+            const worker = __classPrivateFieldGet(this, _Page_workers, "f").get(sessionId);
+            if (!worker) {
+                return;
+            }
+            __classPrivateFieldGet(this, _Page_workers, "f").delete(sessionId);
+            this.emit("workerdestroyed" /* PageEmittedEvents.WorkerDestroyed */, worker);
+        });
+        _Page_onAttachedToTarget.set(this, async (createdTarget) => {
+            await __classPrivateFieldGet(this, _Page_frameManager, "f").onAttachedToTarget(createdTarget);
+            if (createdTarget._getTargetInfo().type === 'worker') {
+                const session = createdTarget._session();
+                (0, assert_js_1.assert)(session);
+                const worker = new WebWorker_js_1.WebWorker(session, createdTarget.url(), __classPrivateFieldGet(this, _Page_instances, "m", _Page_addConsoleMessage).bind(this), __classPrivateFieldGet(this, _Page_instances, "m", _Page_handleException).bind(this));
+                __classPrivateFieldGet(this, _Page_workers, "f").set(session.id(), worker);
+                this.emit("workercreated" /* PageEmittedEvents.WorkerCreated */, worker);
+            }
+            if (createdTarget._session()) {
+                __classPrivateFieldGet(this, _Page_target, "f")
+                    ._targetManager()
+                    .addTargetInterceptor(createdTarget._session(), __classPrivateFieldGet(this, _Page_onAttachedToTarget, "f"));
+            }
+        });
         __classPrivateFieldSet(this, _Page_client, client, "f");
         __classPrivateFieldSet(this, _Page_target, target, "f");
         __classPrivateFieldSet(this, _Page_keyboard, new Input_js_1.Keyboard(client), "f");
@@ -155,41 +158,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
         __classPrivateFieldSet(this, _Page_coverage, new Coverage_js_1.Coverage(client), "f");
         __classPrivateFieldSet(this, _Page_screenshotTaskQueue, screenshotTaskQueue, "f");
         __classPrivateFieldSet(this, _Page_viewport, null, "f");
-        client.on('Target.attachedToTarget', (event) => {
-            switch (event.targetInfo.type) {
-                case 'worker':
-                    const connection = Connection_js_1.Connection.fromSession(client);
-                    (0, assert_js_1.assert)(connection);
-                    const session = connection.session(event.sessionId);
-                    (0, assert_js_1.assert)(session);
-                    const worker = new WebWorker_js_1.WebWorker(session, event.targetInfo.url, __classPrivateFieldGet(this, _Page_instances, "m", _Page_addConsoleMessage).bind(this), __classPrivateFieldGet(this, _Page_instances, "m", _Page_handleException).bind(this));
-                    __classPrivateFieldGet(this, _Page_workers, "f").set(event.sessionId, worker);
-                    this.emit("workercreated" /* PageEmittedEvents.WorkerCreated */, worker);
-                    break;
-                case 'iframe':
-                    break;
-                default:
-                    // If we don't detach from service workers, they will never die. We
-                    // still want to attach to workers for emitting events. We still
-                    // want to attach to iframes so sessions may interact with them. We
-                    // detach from all other types out of an abundance of caution. See
-                    // https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypePage%5B%5D%22
-                    // for the complete list of available types.
-                    client
-                        .send('Target.detachFromTarget', {
-                        sessionId: event.sessionId,
-                    })
-                        .catch(util_js_1.debugError);
-            }
-        });
-        client.on('Target.detachedFromTarget', event => {
-            const worker = __classPrivateFieldGet(this, _Page_workers, "f").get(event.sessionId);
-            if (!worker) {
-                return;
-            }
-            __classPrivateFieldGet(this, _Page_workers, "f").delete(event.sessionId);
-            this.emit("workerdestroyed" /* PageEmittedEvents.WorkerDestroyed */, worker);
-        });
+        __classPrivateFieldGet(this, _Page_target, "f")
+            ._targetManager()
+            .addTargetInterceptor(__classPrivateFieldGet(this, _Page_client, "f"), __classPrivateFieldGet(this, _Page_onAttachedToTarget, "f"));
+        __classPrivateFieldGet(this, _Page_target, "f")
+            ._targetManager()
+            .on("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _Page_onDetachedFromTarget, "f"));
         __classPrivateFieldGet(this, _Page_frameManager, "f").on(FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, event => {
             return this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, event);
         });
@@ -247,6 +221,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
             return __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFileChooser).call(this, event);
         });
         __classPrivateFieldGet(this, _Page_target, "f")._isClosedPromise.then(() => {
+            __classPrivateFieldGet(this, _Page_target, "f")
+                ._targetManager()
+                .removeTargetInterceptor(__classPrivateFieldGet(this, _Page_client, "f"), __classPrivateFieldGet(this, _Page_onAttachedToTarget, "f"));
+            __classPrivateFieldGet(this, _Page_target, "f")
+                ._targetManager()
+                .off("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _Page_onDetachedFromTarget, "f"));
             this.emit("close" /* PageEmittedEvents.Close */);
             __classPrivateFieldSet(this, _Page_closed, true, "f");
         });
@@ -2232,7 +2212,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
      * properties. Defaults to `false`.
      *
-     * - `hidden`: ait for element to not be found in the DOM or to be hidden,
+     * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
      * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
      * `false`.
      *
@@ -2368,14 +2348,9 @@ class Page extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.Page = Page;
-_Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_mouse = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_accessibility = new WeakMap(), _Page_frameManager = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_tracing = new WeakMap(), _Page_pageBindings = new WeakMap(), _Page_coverage = new WeakMap(), _Page_javascriptEnabled = new WeakMap(), _Page_viewport = new WeakMap(), _Page_screenshotTaskQueue = new WeakMap(), _Page_workers = new WeakMap(), _Page_fileChooserInterceptors = new WeakMap(), _Page_disconnectPromise = new WeakMap(), _Page_userDragInterceptionEnabled = new WeakMap(), _Page_handlerMap = new WeakMap(), _Page_instances = new WeakSet(), _Page_initialize = async function _Page_initialize() {
+_Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_mouse = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_accessibility = new WeakMap(), _Page_frameManager = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_tracing = new WeakMap(), _Page_pageBindings = new WeakMap(), _Page_coverage = new WeakMap(), _Page_javascriptEnabled = new WeakMap(), _Page_viewport = new WeakMap(), _Page_screenshotTaskQueue = new WeakMap(), _Page_workers = new WeakMap(), _Page_fileChooserInterceptors = new WeakMap(), _Page_disconnectPromise = new WeakMap(), _Page_userDragInterceptionEnabled = new WeakMap(), _Page_handlerMap = new WeakMap(), _Page_onDetachedFromTarget = new WeakMap(), _Page_onAttachedToTarget = new WeakMap(), _Page_instances = new WeakSet(), _Page_initialize = async function _Page_initialize() {
     await Promise.all([
-        __classPrivateFieldGet(this, _Page_frameManager, "f").initialize(),
-        __classPrivateFieldGet(this, _Page_client, "f").send('Target.setAutoAttach', {
-            autoAttach: true,
-            waitForDebuggerOnStart: false,
-            flatten: true,
-        }),
+        __classPrivateFieldGet(this, _Page_frameManager, "f").initialize(__classPrivateFieldGet(this, _Page_target, "f")._targetId),
         __classPrivateFieldGet(this, _Page_client, "f").send('Performance.enable'),
         __classPrivateFieldGet(this, _Page_client, "f").send('Log.enable'),
     ]);
@@ -2612,7 +2587,7 @@ async function _Page_setTransparentBackgroundColor() {
         : Buffer.from(result.data, 'base64');
     if (options.path) {
         try {
-            const fs = (await Promise.resolve().then(() => __importStar(require('fs')))).promises;
+            const fs = (await (0, util_js_1.importFS)()).promises;
             await fs.writeFile(options.path, buffer);
         }
         catch (error) {

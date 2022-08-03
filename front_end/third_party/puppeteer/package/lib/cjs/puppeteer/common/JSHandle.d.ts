@@ -174,6 +174,10 @@ export declare class JSHandle<T = unknown> {
      * @remarks Useful during debugging.
      */
     toString(): string;
+    /**
+     * Provides access to [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject) backing this JSHandle.
+     */
+    remoteObject(): Protocol.Runtime.RemoteObject;
 }
 /**
  * @public

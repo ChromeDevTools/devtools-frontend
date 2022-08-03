@@ -89,9 +89,6 @@ export class PuppeteerNode extends Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        if (options.product) {
-            this._productName = options.product;
-        }
         return super.connect(options);
     }
     /**

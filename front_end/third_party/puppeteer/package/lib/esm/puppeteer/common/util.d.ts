@@ -106,6 +106,10 @@ export declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string
 /**
  * @internal
  */
+export declare function importFS(): Promise<typeof import('fs')>;
+/**
+ * @internal
+ */
 export declare function getReadableAsBuffer(readable: Readable, path?: string): Promise<Buffer | null>;
 /**
  * @internal
@@ -126,4 +130,21 @@ export declare function isErrorLike(obj: unknown): obj is ErrorLike;
  * @internal
  */
 export declare function isErrnoException(obj: unknown): obj is NodeJS.ErrnoException;
+/**
+ * @internal
+ */
+export declare type DeferredPromise<T> = {
+    promise: Promise<T>;
+    resolve: (_: T) => void;
+    reject: (_: Error) => void;
+};
+/**
+ * Creates an returns a promise along with the resolve/reject functions.
+ *
+ * If the promise has not been resolved/rejected withing the `timeout` period,
+ * the promise gets rejected with a timeout error.
+ *
+ * @internal
+ */
+export declare function createDeferredPromiseWithTimer<T>(timeoutMessage: string, timeout?: number): DeferredPromise<T>;
 //# sourceMappingURL=util.d.ts.map

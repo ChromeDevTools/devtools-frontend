@@ -297,12 +297,25 @@ export async function waitWithTimeout(promise, taskName, timeout) {
 /**
  * @internal
  */
+let fs = null;
+/**
+ * @internal
+ */
+export async function importFS() {
+    if (!fs) {
+        fs = await import('fs');
+    }
+    return fs;
+}
+/**
+ * @internal
+ */
 export async function getReadableAsBuffer(readable, path) {
     const buffers = [];
     if (path) {
         let fs;
         try {
-            fs = (await import('fs')).promises;
+            fs = (await importFS()).promises;
         }
         catch (error) {
             if (error instanceof TypeError) {
@@ -367,5 +380,35 @@ export function isErrorLike(obj) {
 export function isErrnoException(obj) {
     return (isErrorLike(obj) &&
         ('errno' in obj || 'code' in obj || 'path' in obj || 'syscall' in obj));
+}
+/**
+ * Creates an returns a promise along with the resolve/reject functions.
+ *
+ * If the promise has not been resolved/rejected withing the `timeout` period,
+ * the promise gets rejected with a timeout error.
+ *
+ * @internal
+ */
+export function createDeferredPromiseWithTimer(timeoutMessage, timeout = 5000) {
+    let resolver = (_) => { };
+    let rejector = (_) => { };
+    const taskPromise = new Promise((resolve, reject) => {
+        resolver = resolve;
+        rejector = reject;
+    });
+    const timeoutId = setTimeout(() => {
+        rejector(new Error(timeoutMessage));
+    }, timeout);
+    return {
+        promise: taskPromise,
+        resolve: (value) => {
+            clearTimeout(timeoutId);
+            resolver(value);
+        },
+        reject: (err) => {
+            clearTimeout(timeoutId);
+            rejector(err);
+        },
+    };
 }
 //# sourceMappingURL=util.js.map

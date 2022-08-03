@@ -585,9 +585,9 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         let boundingBox = await this.boundingBox();
         (0, assert_js_1.assert)(boundingBox, 'Node is either not visible or not an HTMLElement');
         const viewport = __classPrivateFieldGet(this, _ElementHandle_page, "f").viewport();
-        (0, assert_js_1.assert)(viewport);
-        if (boundingBox.width > viewport.width ||
-            boundingBox.height > viewport.height) {
+        if (viewport &&
+            (boundingBox.width > viewport.width ||
+                boundingBox.height > viewport.height)) {
             const newViewport = {
                 width: Math.max(viewport.width, Math.ceil(boundingBox.width)),
                 height: Math.max(viewport.height, Math.ceil(boundingBox.height)),
@@ -609,7 +609,7 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         const imageData = await __classPrivateFieldGet(this, _ElementHandle_page, "f").screenshot(Object.assign({}, {
             clip,
         }, options));
-        if (needsViewportReset) {
+        if (needsViewportReset && viewport) {
             await __classPrivateFieldGet(this, _ElementHandle_page, "f").setViewport(viewport);
         }
         return imageData;
@@ -743,46 +743,46 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
 }
 exports.ElementHandle = ElementHandle;
 _ElementHandle_frame = new WeakMap(), _ElementHandle_page = new WeakMap(), _ElementHandle_frameManager = new WeakMap(), _ElementHandle_instances = new WeakSet(), _ElementHandle_scrollIntoViewIfNeeded = async function _ElementHandle_scrollIntoViewIfNeeded() {
-    const error = await this.evaluate(async (element, pageJavascriptEnabled) => {
+    const error = await this.evaluate(async (element) => {
         if (!element.isConnected) {
             return 'Node is detached from document';
         }
         if (element.nodeType !== Node.ELEMENT_NODE) {
             return 'Node is not of type HTMLElement';
         }
-        // force-scroll if page's javascript is disabled.
-        if (!pageJavascriptEnabled) {
-            element.scrollIntoView({
-                block: 'center',
-                inline: 'center',
-                // @ts-expect-error Chrome still supports behavior: instant but
-                // it's not in the spec so TS shouts We don't want to make this
-                // breaking change in Puppeteer yet so we'll ignore the line.
-                behavior: 'instant',
-            });
-            return false;
-        }
-        const visibleRatio = await new Promise(resolve => {
-            const observer = new IntersectionObserver(entries => {
-                resolve(entries[0].intersectionRatio);
-                observer.disconnect();
-            });
-            observer.observe(element);
-        });
-        if (visibleRatio !== 1.0) {
-            element.scrollIntoView({
-                block: 'center',
-                inline: 'center',
-                // @ts-expect-error Chrome still supports behavior: instant but
-                // it's not in the spec so TS shouts We don't want to make this
-                // breaking change in Puppeteer yet so we'll ignore the line.
-                behavior: 'instant',
-            });
-        }
-        return false;
-    }, __classPrivateFieldGet(this, _ElementHandle_page, "f").isJavaScriptEnabled());
+        return;
+    });
     if (error) {
         throw new Error(error);
+    }
+    try {
+        await this._client.send('DOM.scrollIntoViewIfNeeded', {
+            objectId: this._remoteObject.objectId,
+        });
+    }
+    catch (_err) {
+        // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
+        await this.evaluate(async (element, pageJavascriptEnabled) => {
+            const visibleRatio = async () => {
+                return await new Promise(resolve => {
+                    const observer = new IntersectionObserver(entries => {
+                        resolve(entries[0].intersectionRatio);
+                        observer.disconnect();
+                    });
+                    observer.observe(element);
+                });
+            };
+            if (!pageJavascriptEnabled || (await visibleRatio()) !== 1.0) {
+                element.scrollIntoView({
+                    block: 'center',
+                    inline: 'center',
+                    // @ts-expect-error Chrome still supports behavior: instant but
+                    // it's not in the spec so TS shouts We don't want to make this
+                    // breaking change in Puppeteer yet so we'll ignore the line.
+                    behavior: 'instant',
+                });
+            }
+        }, __classPrivateFieldGet(this, _ElementHandle_page, "f").isJavaScriptEnabled());
     }
 }, _ElementHandle_getOOPIFOffsets = async function _ElementHandle_getOOPIFOffsets(frame) {
     let offsetX = 0;

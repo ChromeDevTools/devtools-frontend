@@ -24,6 +24,7 @@ import { MouseButton } from './Input.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { NetworkManager } from './NetworkManager.js';
 import { Page } from './Page.js';
+import { Target } from './Target.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
 /**
@@ -57,7 +58,7 @@ export declare class FrameManager extends EventEmitter {
     get _client(): CDPSession;
     constructor(client: CDPSession, page: Page, ignoreHTTPSErrors: boolean, timeoutSettings: TimeoutSettings);
     private setupEventListeners;
-    initialize(client?: CDPSession): Promise<void>;
+    initialize(targetId: string, client?: CDPSession): Promise<void>;
     networkManager(): NetworkManager;
     navigateFrame(frame: Frame, url: string, options?: {
         referer?: string;
@@ -68,6 +69,8 @@ export declare class FrameManager extends EventEmitter {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
+    onAttachedToTarget(target: Target): Promise<void>;
+    onDetachedFromTarget(target: Target): Promise<void>;
     page(): Page;
     mainFrame(): Frame;
     frames(): Frame[];
@@ -238,6 +241,10 @@ export declare class Frame {
      * @internal
      */
     _updateClient(client: CDPSession): void;
+    /**
+     * @returns a page associated with the frame.
+     */
+    page(): Page;
     /**
      * @remarks
      *

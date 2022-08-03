@@ -226,7 +226,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     const highlightInfo = LinearMemoryInspectorController.instance().getHighlightInfo(this.#tabId);
     if (highlightInfo !== undefined) {
       if (highlightInfo.startAddress < 0 || highlightInfo.startAddress >= this.#memoryWrapper.length()) {
-        throw new Error('Highlight info start address is out of bounds.');
+        throw new Error('HighlightInfo start address is out of bounds.');
       }
       if (highlightInfo.size <= 0) {
         throw new Error('Highlight size must be a positive number.');

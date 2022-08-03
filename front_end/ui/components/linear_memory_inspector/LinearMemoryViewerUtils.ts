@@ -5,4 +5,8 @@
 export interface HighlightInfo {
   startAddress: number;
   size: number;
+  // If the inspector is opened from a different UI location
+  // than the scope view, we don't have guaranteed access to the name.
+  name?: string;
+  type: string;
 }

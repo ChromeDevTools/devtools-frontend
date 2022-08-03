@@ -386,16 +386,17 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
   static createPropertyValueWithCustomSupport(
       value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, parentElement?: Element,
-      linkifier?: Components.Linkifier.Linkifier): ObjectPropertyValue {
+      linkifier?: Components.Linkifier.Linkifier, variableName?: string): ObjectPropertyValue {
     if (value.customPreview()) {
       const result = (new CustomPreviewComponent(value)).element;
       result.classList.add('object-properties-section-custom-section');
       return new ObjectPropertyValue(result);
     }
-    return ObjectPropertiesSection.createPropertyValue(value, wasThrown, showPreview, parentElement, linkifier);
+    return ObjectPropertiesSection.createPropertyValue(
+        value, wasThrown, showPreview, parentElement, linkifier, variableName);
   }
 
-  static appendMemoryIcon(element: Element, obj: SDK.RemoteObject.RemoteObject): void {
+  static appendMemoryIcon(element: Element, obj: SDK.RemoteObject.RemoteObject, variableName?: string): void {
     // We show the memory icon only on ArrayBuffer, WebAssembly.Memory and DWARF memory instances.
     // TypedArrays DataViews are also supported, but showing the icon next to their
     // previews is quite a significant visual overhead, and users can easily get to
@@ -418,7 +419,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       const controller =
           LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
       Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
-      void controller.openInspectorView(obj);
+      void controller.openInspectorView(obj, undefined /* address */, variableName);
     };
 
     UI.Tooltip.Tooltip.install(memoryIcon, 'Reveal in Memory Inspector panel');
@@ -428,7 +429,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
   static createPropertyValue(
       value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, parentElement?: Element,
-      linkifier?: Components.Linkifier.Linkifier): ObjectPropertyValue {
+      linkifier?: Components.Linkifier.Linkifier, variableName?: string): ObjectPropertyValue {
     let propertyValue;
     const type = value.type;
     const subtype = value.subtype;
@@ -464,7 +465,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
         propertyValue.element.textContent = description;
         UI.Tooltip.Tooltip.install(propertyValue.element as HTMLElement, description);
       }
-      this.appendMemoryIcon(valueElement, value);
+      this.appendMemoryIcon(valueElement, value, variableName);
     }
 
     if (wasThrown) {
@@ -1090,7 +1091,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else if (this.property.value) {
       const showPreview = this.property.name !== '[[Prototype]]';
       this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-          this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this.linkifier);
+          this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this.linkifier,
+          this.path() /* variableName */);
       this.valueElement = (this.propertyValue.element as HTMLElement);
     } else if (this.property.getter) {
       this.valueElement = document.createElement('span');

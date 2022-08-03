@@ -164,6 +164,21 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return await memoryWrapper.getRange(start, chunkEnd);
   }
 
+  async evaluateExpression(callFrame: SDK.DebuggerModel.CallFrame, expressionName: string):
+      Promise<SDK.RemoteObject.RemoteObject|undefined> {
+    const result = await callFrame.evaluate({expression: expressionName});
+    if ('error' in result) {
+      console.error(`Tried to evaluate the expression '${expressionName}' but got an error: ${result.error}`);
+      return undefined;
+    }
+    if ('exceptionDetails' in result && result?.exceptionDetails?.text) {
+      console.error(
+          `Tried to evaluate the expression '${expressionName}' but got an exception: ${result.exceptionDetails.text}`);
+      return undefined;
+    }
+    return result.object;
+  }
+
   saveSettings(data: Settings): void {
     const valueTypes = Array.from(data.valueTypes);
     const modes = [...data.modes];
@@ -233,14 +248,15 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   // This function returns the size of the source language value represented
   // by the ValueNode. If the value is a pointer, the function returns the size of
   // the pointed-to value. If the pointed-to value is also a pointer, it returns
-  // the size of the pointer (usually 4 bytes) to stay consistent with the DWARF extension.
+  // the size of the pointer (usually 4 bytes). This is the convention taken
+  // by the DWARF extension.
   // > double x = 42.0;
   // > double *ptr = &x;
   // > double **dblptr = &ptr;
   //
   // retrieveObjectSize(ptr_ValueNode) -> 8, the size of a double
   // retrieveObjectSize(dblptr_ValueNode) -> 4, the size of a pointer
-  static retrieveObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode): number {
+  static extractObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode): number {
     let typeInfo = obj.sourceType.typeInfo;
     const pointerMembers = typeInfo.members.filter(member => member.name === '*');
     if (pointerMembers.length === 1) {
@@ -257,7 +273,34 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return typeInfo.size;
   }
 
-  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number): Promise<void> {
+  // The object type description corresponds to the type of the highlighted memory
+  // that the user sees in the memory inspector. For pointers, we highlight the pointed to object.
+  //
+  // Example: The variable `x` has the type `int *`. Assume that `x` points to the value 3.
+  // -> The memory inspector will jump to the address where 3 is stored.
+  // -> The memory inspector will highlight the bytes that represent the 3.
+  // -> The object type description of what we show will thus be `int` and not `int *`.
+  static extractObjectTypeDescription(obj: Bindings.DebuggerLanguagePlugins.ValueNode): string {
+    const objType = obj.description;
+    if (!objType) {
+      return '';
+    }
+    const lastChar = objType.charAt(objType.length - 1);
+    const secondToLastChar = objType.charAt(objType.length - 2);
+    const isPointerType = lastChar === '*' || lastChar === '&';
+    const isOneLevelPointer = secondToLastChar === ' ';
+    if (!isPointerType) {
+      return objType;
+    }
+    if (isOneLevelPointer) {
+      // For example, 'int *'and 'int &' become 'int'.
+      return objType.slice(0, objType.length - 2);
+    }
+    // For example, 'int **' becomes 'int *'.
+    return objType.slice(0, objType.length - 1);
+  }
+
+  async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number, expression?: string): Promise<void> {
     const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(obj);
     let memoryObj = obj;
     let memoryAddress = address;
@@ -288,8 +331,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
     const memoryProperty = internalProperties?.find(({name}) => name === '[[WebAssemblyMemory]]');
     const memory = memoryProperty?.value;
-    const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, memoryAddress);
-    if (highlightInfo !== undefined) {
+    const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, expression);
+    if (highlightInfo) {
       this.#setHighlightInfo(id, highlightInfo);
     } else {
       this.#resetHighlightInfo(id);
@@ -308,17 +351,21 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 
-  static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, memoryAddress?: number): HighlightInfo|undefined {
+  static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string): HighlightInfo|undefined {
+    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
+      return undefined;
+    }
+
     let highlightInfo;
-    if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
-      try {
-        highlightInfo = {
-          startAddress: memoryAddress || 0,
-          size: LinearMemoryInspectorController.retrieveObjectSize(obj),
-        };
-      } catch (err) {
-        highlightInfo = undefined;
-      }
+    try {
+      highlightInfo = {
+        startAddress: obj.inspectableAddress || 0,
+        size: LinearMemoryInspectorController.extractObjectSize(obj),
+        name: expression,
+        type: LinearMemoryInspectorController.extractObjectTypeDescription(obj),
+      };
+    } catch (err) {
+      highlightInfo = undefined;
     }
     return highlightInfo;
   }
@@ -337,8 +384,16 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const debuggerModel = event.data;
     for (const [bufferId, remoteObject] of this.#bufferIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
-        this.#resetHighlightInfo(bufferId);
-        this.#paneInstance.refreshView(bufferId);
+        const topCallFrame = debuggerModel.debuggerPausedDetails()?.callFrames[0];
+        if (topCallFrame) {
+          void this
+              .updateHighlightedMemory(bufferId, topCallFrame)
+              // Need to call refreshView in the callback to trigger re-render.
+              .then(() => this.#paneInstance.refreshView(bufferId));
+        } else {
+          this.#resetHighlightInfo(bufferId);
+          this.#paneInstance.refreshView(bufferId);
+        }
       }
     }
   }
@@ -354,5 +409,30 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
     this.#bufferIdToRemoteObject.delete(bufferId);
     this.#resetHighlightInfo(bufferId);
+  }
+
+  async updateHighlightedMemory(bufferId: string, callFrame: SDK.DebuggerModel.CallFrame): Promise<void> {
+    const oldHighlightInfo = this.getHighlightInfo(bufferId);
+    const expressionName = oldHighlightInfo?.name;
+    if (!oldHighlightInfo || !expressionName) {
+      this.#resetHighlightInfo(bufferId);
+      return;
+    }
+    const obj = await this.evaluateExpression(callFrame, expressionName);
+    if (!obj) {
+      this.#resetHighlightInfo(bufferId);
+      return;
+    }
+
+    const newHighlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, expressionName);
+    if (!newHighlightInfo || !this.#pointToSameMemoryObject(newHighlightInfo, oldHighlightInfo)) {
+      this.#resetHighlightInfo(bufferId);
+    } else {
+      this.#setHighlightInfo(bufferId, newHighlightInfo);
+    }
+  }
+
+  #pointToSameMemoryObject(highlightInfoA: HighlightInfo, highlightInfoB: HighlightInfo): boolean {
+    return highlightInfoA.type === highlightInfoB.type && highlightInfoA.startAddress === highlightInfoB.startAddress;
   }
 }

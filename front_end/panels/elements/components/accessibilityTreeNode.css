@@ -4,6 +4,15 @@
  * found in the LICENSE file.
  */
 
+.container {
+  width: 100%;
+  display: inline-block;
+}
+
+.container:hover {
+  background-color: var(--item-hover-color);
+}
+
 span {
   color: var(--color-syntax-8);
   font-family: var(--monospace-font-family);

@@ -77,16 +77,15 @@ export class AccessibilityTreeNode extends HTMLElement {
     const name = LitHtml.html`"<span class='attribute-value'>${this.#name}</span>"`;
     const properties = this.#properties.map(
         ({name, value}) => isPrintable(value.type) ?
-            LitHtml.html`&nbsp<span class='attribute-name'>${name}</span>:&nbsp<span class='attribute-value'>${
+            LitHtml.html` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${
                 value.value}</span>` :
             LitHtml.nothing);
-
+    const content = this.#ignored ? LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>` :
+                                    LitHtml.html`${role}&nbsp;${name}${properties}`;
     await Coordinator.RenderCoordinator.RenderCoordinator.instance().write('Accessibility node render', () => {
       // clang-format off
       LitHtml.render(
-        this.#ignored ?
-          LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>` :
-          LitHtml.html`${role}&nbsp${name}${properties}`,
+        LitHtml.html`<div class='container'>${content}</div>`,
         this.#shadow,
         {host: this});
       // clang-format on

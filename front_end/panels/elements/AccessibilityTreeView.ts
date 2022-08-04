@@ -7,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
+import accessibilityTreeViewStyles from './accessibilityTreeView.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox implements
@@ -21,8 +22,12 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     // toggleButton is bound to a click handler on ElementsPanel to switch between the DOM tree
     // and accessibility tree views.
     this.toggleButton = toggleButton;
-    this.contentElement.appendChild(this.toggleButton);
-    this.contentElement.appendChild(this.accessibilityTreeComponent);
+
+    const container = this.contentElement.createChild('div');
+
+    container.classList.add('accessibility-tree-view-container');
+    container.appendChild(this.toggleButton);
+    container.appendChild(this.accessibilityTreeComponent);
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this);
 
@@ -61,6 +66,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     if (this.inspectedDOMNode) {
       await this.loadSubTreeIntoAccessibilityModel(this.inspectedDOMNode);
     }
+    this.registerCSSFiles([accessibilityTreeViewStyles]);
   }
 
   async refreshAccessibilityTree(): Promise<void> {

@@ -1008,7 +1008,7 @@
     "message": "Покажи ја обработката"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Вклучете/исклучете боја од типот „forces CSS prefers-color-scheme“"
+    "message": "Функција за вклучување/исклучување типови елементи на CSS prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "проблем со видот"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate не се поддржува. Наместо тоа, користете RTCPeerConnectionIceErrorEvent.address или RTCPeerConnectionIceErrorEvent.port."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "Потеклото на трговец и произволните податоци од случајот на услужен работник canmakepayment не се поддржани и ќе се отстранат: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Веб-сајтот побара подресурс од мрежа до која можеше да пристапи само поради привилегираната мрежна положба на нејзините корисници. Овие барања откриваат уреди и услуги на интернет што не се јавни, зголемувајќи го ризикот за напад со фалсификат на барање од повеќе сајтови (CSRF) и/или протекување на податоците. За да ги ублажи овие ризици, Chrome не поддржува барања до подресурси што не се јавни кога се иницирани од небезбедни контексти и ќе започне да ги блокира."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Вашиот партнер преговара со застарена верзија на (D)TLS. Проверете со партнерот за да го поправи ова."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "WebSQL не е безбеден контекст, не се поддржува и ќе се отстрани во M107. Користете капацитет на прелистувач или индексирана база на податоци."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> со надредена <picture> е неважечки и затоа се игнорира. Наместо тоа, користете <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo не се поддржува. Наместо тоа, користете navigator.webkitTemporaryStorage или navigator.webkitPersistentStorage."
+    "message": "window.webkitStorageInfo не се поддржува. Наместо тоа, користете стандардизиран navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Барањата на подресурси чии URL-адреси содржат вметнати акредитиви (на пр., https://user:pass@host/) се блокирани."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Низа {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Worklet за наддавач"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Worklet за наддавач — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Доделен Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Worklet за продавач"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Worklet за продавач — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Низа {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Worklet за аукција"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Worklet за аукција — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} - {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Услуга за Worklet за аукција"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Услуга за Worklet за аукција — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Икона за примарен манифест од {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Ракувачи на протоколи"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} не ја одредува својата големина во манифестот"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Услуги во заднина"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: активирајте за да лизгате до оваа секција во манифестот"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Кеш"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Манифест"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Лизгано до {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Манифест: активирајте за да лизгате до горниот дел на манифестот"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Се отвори Windows"
@@ -2577,7 +2619,7 @@
     "message": "Ставки во капацитетот на DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "Избришани: {PH1}"
+    "message": "Ставките од DOM-капацитет се отстранети"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Број на записи што се прикажуваат во табелата: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Рамкава е создадена програмски. stack trace покажува каде ова се случило."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Скрипта за реклами на создавач"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Изолирано вкрстено потекло"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Прикажи детали"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Активирано."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Претходното прикажување сѐ уште не поддржува AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Вчитувањето ресурси е блокирано од клиентот."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Страницата бара сертификат за клиент кој не е соодветен за скриена страница, како претходно прикажување."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Претходно прикажаната страница премина на URL-адреса со вкрстено потекло по вчитување. Моментално страниците за претходно прикажување со вкрстено потекло не се дозволени."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Се направи обид за претходно прикажување URL-адреса која пренасочува кон URL-адреса со вкрстено потекло. Моментално страниците за претходно прикажување со вкрстено потекло не се дозволени."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Страница за претходно прикажување беше напуштена од непознати причини."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "DidFailLoadWithError се случи при претходното прикажување."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Преземањето не е дозволено во претходно прикажување."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Претходното прикажување активирано од Chrome внатрешно (на пр., претходно прикажување со Omnibox) е откажано бидејќи навигацијата е пренасочена на друга страница со вкрстено потекло."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Претходното прикажување активирано од Chrome внатрешно (на пр., претходно прикажување со Omnibox) е уништено во уништувачот."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Претходното прикажување активирано од Chrome внатрешно (на пр., претходно прикажување со Omnibox) е откажано бидејќи навигацијата е пренасочена на друга страница со исто потекло."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Дозволена е само навигација со HTTP(S) за претходно прикажување."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Се направи обид за претходно прикажување URL-адреса која пренасочува кон URL-адреса што не е HTTP(S). Само страници HTTP(S) може да се прикажуваат претходно."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Претходното прикажување не поддржува auth-барања од UI."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Претходното прикажување не е поддржано за уреди со мала меморија."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Навигирања по навигација на првично претходно прикажување се недозволени"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Надминат е максималниот број на претходни прикажувања."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Претходното прикажување е откажано од рамка со мешани содржини."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "Користено е недозволено API од страницата за претходно прикажување"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "Навигацијата за првично претходно прикажување не беше успешна бидејќи серверот врати код за статус што не е 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Страницата за претходно прикажување не е извршена на крајот."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Барањето за навигација е блокирано од CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Имаше грешка на мрежата при претходното прикажување."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Претходно прикажаната страница падна."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Процесот на прикажување за страницата за претходно прикажување е прекинат."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Грешка со SSL-сертификат."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Картичката е запрена."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Картичката е во заднина"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Претходното прикажување не е активирано и уништено е со активаторот."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "Потребно е вчитување по UserAgentOverride."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Изберете ракувач на протокол"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "манифест"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Ви треба помош? Прочитајте {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "Најдена е важечка регистрација за ракувач на протокол во {PH1}. Додека апликацијата е инсталирана, тестирајте ги регистрираните протоколи."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Регистрација на ракувач на протокол за URL-адреса за PWA"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Дефинирајте ги ракувачите на протокол во {PH1} за да ја регистрирате апликацијата како ракувач за приспособени протоколи кога апликацијата е инсталирана."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Протокол за тест"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Параметар на барање или крајна точка за ракувач на протокол"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Дестинација"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Прикажи ги програмерските ресурси"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Својството не е поддржано"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Неактивно правило"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Променете ги елементите на родител {EXISTING_PARENT_ELEMENT_RULE} во {TARGET_PARENT_ELEMENT_RULE} за да се поправи проблемов."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Родителот има правило {REASON_RULE_CODE}, затоа елементиве {AFFECTED_RULE_CODE} немаат ефект"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "За својствово да функционира, отстранете или променете ја вредноста на {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Елементов има правило {REASON_RULE_CODE}, затоа {AFFECTED_RULE_CODE} нема ефект."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Додај нова класа"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Овозможи преклопување за лизгање и заклучување"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Влези во режим на изолација"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Излези од режим на изолација"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Проширувај повторливо"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Непознато име на својство"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "горен слој"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Игнориран"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Прикажи значки"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Дознајте повеќе"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Елементи за навигација на DOM-дрвото"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Грешка"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Предизвикано од:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Код за грешка:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Податоци:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Група на грешка:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Stacktrace:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Филтрирај пораки од евиденцијата"
   },
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Се прикажуваат привремени заглавја. Оневозможете го кешот за да гледате целосни заглавја."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Снимен настан со trigger-data: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Правило на упатувачот"
   },
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Прикажи го сертификатот"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Изберете ја опцијава ако ресурсот и документот доаѓаат од истиот сајт."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(од кеш на дискот)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Општи"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Дознајте повеќе во картичката „Проблеми“"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Изберете ја опцијава само ако произволниот веб-сајт што го вклучува ресурсов не претставува безбедносен ризик."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Достапни се само привремени заглавја бидејќи барањето не беше испратено преку мрежата, туку доаѓа од локалниот кеш којшто не ги складира оригиналните заглавја на барањата. Оневозможете го кешот за да гледате целосни заглавја на барањата."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Се прикажуваат привремени заглавја."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Се прикажуваат привремени заглавја. Оневозможете го кешот за да гледате целосни заглавја."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Неанализирани"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код на статус"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Вчитувањето на документов во iframe беше блокирано со атрибутот sandbox бидејќи документов наведе правило за алатката за отворање со вкрстено потекло."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "За да се вметне оваа рамка во вашиот документ, одговорот треба да овозможи правило на алатката за вметнување со вкрстено потекло така што ќе го наведе следното заглавје за одговор:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "За да се користи овој ресурс од друго потекло, серверот треба да го одреди правилото за ресурси со вкрстено потекло во заглавјата на одговорите:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "За да се користи овој ресурс од друго потекло, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавјето на одговорот:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "За да се користи овој ресурс од друг сајт, серверот можеби ќе го олесни правилото за ресурси со вкрстено потекло за заглавјето на одговорот:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргументот од клиентот беше неправилно форматиран или на друг начин неважечки."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "содржини со грешки во сертификатот"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "овозможено"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Шифрирано ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Означено од „Безбедно прелистување со Google“"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Размена на клучеви"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Главна група за размена"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ID на евиденција"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Преглед на безбедноста"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Потпис на сервер"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Прикажи целосни детали"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Непознато/откажано"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "непознат"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "важечки и доверлив"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Додајте шема…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Автоматски додајте познати скрипти од трети страни во списокот за игнорирање"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Додајте извори од полето x_google_ignoreList од картите на извори во списокот за игнорирање"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Однесување"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Додај"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "URL-адреса на DWARF-симболи: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL-адреса на изворната карта: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Додај изворна карта…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Додајте информации за DWARF-отстранување грешки…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Поврзаните датотеки се достапни преку дрвото на датотеки или {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Од програмерот"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Содржи оригинални извори"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Избриши"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Од прелистувачот"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Содржи крајни извори што прелистувачот ги гледа"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Исклучи папка"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Затворање ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Не може да се отвори инспекторот за линеарна меморија: привремената меморија не успеа да се лоцира."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Исклучок"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Групирајте ги датотеките според „Од програмерот/Од прелистувачот“"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Исчисти ја конфигурацијата"
@@ -9948,7 +10209,7 @@
     "message": "Спуштете ја папката за работниот простор тука"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Групирај по Од програмерот/Од прелистувачот (експериментално)"
+    "message": "Групирајте според „Од програмерот/Од прелистувачот“"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Групирај според папка"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адресата мора да биде број помеѓу {PH1} и {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Не може да се отвори инспекторот за линеарна меморија: привремената меморија не успеа да се лоцира."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Нема отворени инспекции"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Видео и документација"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Дознајте повеќе"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Испратете ни повратни информации."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Испратете повратни информации"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Кликнете за да се отвори мрежната табла и да се прикаже барање за URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Нема својства"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Нема преземач на својства"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Покажи ги сите {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "непознато"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<нечитливо>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Вредноста не е пристапна за отстранувачот на грешки"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<value unavailable>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "празно"

@@ -1008,7 +1008,7 @@
     "message": "ರೆಂಡರಿಂಗ್ ತೋರಿಸಿ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "ಟಾಗಲ್, CSS ಆದ್ಯತೆ-ಬಣ್ಣ-ಸ್ಕೀಮ್ ಬಣ್ಣವನ್ನು ಒತ್ತಾಯಿಸುತ್ತದೆ"
+    "message": "CSS ಮಾಧ್ಯಮ ಫೀಚರ್ prefers-color-scheme ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "ದೃಷ್ಟಿ ನ್ಯೂನತೆ"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ RTCPeerConnectionIceErrorEvent.address ಅಥವಾ RTCPeerConnectionIceErrorEvent.port ಬಳಸಿ."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "canmakepayment ಸೇವಾ ಪೂರೈಕೆದಾರರ ಈವೆಂಟ್‌ನಿಂದ ವ್ಯಾಪಾರಿ ಮೂಲ ಹಾಗೂ ಅನಿಯಂತ್ರಿತ ಡೇಟಾವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ವೆಬ್‌ಸೈಟ್ ತನ್ನ ಬಳಕೆದಾರರ ವಿಶೇಷ ನೆಟ್‌ವರ್ಕ್ ಸ್ಥಾನದ ಕಾರಣದಿಂದ ಮಾತ್ರ ಪ್ರವೇಶಿಸಬಹುದಾದ ನೆಟ್‌ವರ್ಕ್‌ನಿಂದ ಸಬ್‌ರಿಸೋರ್ಸ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ. ಈ ವಿನಂತಿಗಳು ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಾಧನಗಳು ಮತ್ತು ಸರ್ವರ್‌ಗಳನ್ನು ಇಂಟರ್ನೆಟ್‌ಗೆ ಬಹಿರಂಗಪಡಿಸುತ್ತವೆ, ಕ್ರಾಸ್-ಸೈಟ್ ವಿನಂತಿಯ ಫೋರ್ಜರಿ (CSRF) ದಾಳಿಯ ಮತ್ತು/ಅಥವಾ ಮಾಹಿತಿ ಸೋರಿಕೆಯ ಅಪಾಯವನ್ನು ಹೆಚ್ಚಿಸುತ್ತವೆ. ಈ ಅಪಾಯಗಳನ್ನು ತಗ್ಗಿಸಲು, ಸುರಕ್ಷಿತವಲ್ಲದ ಕಾಂಟೆಕ್ಸ್ಟ್‌ಗಳಿಂದ ಪ್ರಾರಂಭಿಸಿದಾಗ ಸಾರ್ವಜನಿಕವಲ್ಲದ ಸಬ್‌ರಿಸೋರ್ಸ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ವಿನಂತಿಗಳನ್ನು Chrome ತಡೆಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಅವುಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ಪ್ರಾರಂಭಿಸುತ್ತದೆ."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "ನಿಮ್ಮ ಪಾಲುದಾರರು ಬಳಕೆಯಲ್ಲಿಲ್ಲದ (D)TLS ಆವೃತ್ತಿಯ ಕುರಿತು ಮಾತುಕತೆ ನಡೆಸುತ್ತಿದ್ದಾರೆ. ಇದನ್ನು ಸರಿಪಡಿಸಲು ನಿಮ್ಮ ಪಾಲುದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "ಅಸುರಕ್ಷಿತ ಸಂದರ್ಭಗಳಲ್ಲಿರುವ WebSQL ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗುತ್ತದೆ ಹಾಗೂ M107 ನಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ವೆಬ್ ಸಂಗ್ರಹಣೆ ಅಥವಾ ಇಂಡೆಕ್ಸ್ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬಳಸಿ."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> ಪೇರೆಂಟ್ ಜೊತೆಗಿನ <source src> ಅಮಾನ್ಯವಾಗಿದೆ ಮತ್ತು ಆದ್ದರಿಂದ ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ. ಬದಲಿಗೆ <source srcset> ಬಳಸಿ."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ navigator.webkitTemporaryStorage ಅಥವಾ navigator.webkitPersistentStorage ಬಳಸಿ."
+    "message": "window.webkitStorageInfo ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ಎಂಬೆಡ್ ಮಾಡಿದ ರುಜುವಾತುಗಳನ್ನು (ಉದಾ. https://user:pass@host/) ಹೊಂದಿರುವ URL ಗಳ ಸಬ್‌ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "ಥ್ರೆಡ್ {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "ಮೀಸಲು Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "ಥ್ರೆಡ್ {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(ಸೂಚಿಕೆ)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "{PH1} ನಲ್ಲಿನ ಪ್ರಾಥಮಿಕ ಮ್ಯಾನಿಫೆಸ್ಟ್ ಐಕಾನ್"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್‌ಗಳು"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} ಅದರ ಗಾತ್ರವನ್ನು ಮ್ಯಾನಿಫೆಸ್ಟ್‌ನಲ್ಲಿ ಸೂಚಿಸುವುದಿಲ್ಲ"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "ಹಿನ್ನೆಲೆ ಸೇವೆಗಳು"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: ಮ್ಯಾನಿಫೆಸ್ಟ್‌ನಲ್ಲಿ ಈ ವಿಭಾಗಕ್ಕೆ ಸ್ಕ್ರಾಲ್ ಮಾಡುವುದಕ್ಕಾಗಿ ವಿನಂತಿಸಿ"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "ಕ್ಯಾಷ್"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "{PH1} ಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಲಾಗಿದೆ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್: ಮ್ಯಾನಿಫೆಸ್ಟ್‌ನ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸ್ಕ್ರಾಲ್ ಮಾಡುವುದಕ್ಕಾಗಿ ವಿನಂತಿಸಿ"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "ತೆರೆದಿರುವ Windows"
@@ -2577,7 +2619,7 @@
     "message": "DOM ಸಂಗ್ರಹಣೆ ಐಟಂಗಳು"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} ಅನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ"
+    "message": "DOM ಸಂಗ್ರಹಣೆಯ ಐಟಂಗಳನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "ಟೇಬಲ್‌ನಲ್ಲಿ ತೋರಿಸಲಾದ ನಮೂದುಗಳ ಸಂಖ್ಯೆ: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "ಈ ಫ್ರೇಮ್ ಅನ್ನು ಪ್ರೊಗ್ರಾಮ್ಯಾಟಿಕಲಿ ರಚಿಸಲಾಗಿದೆ. ಇದು ಎಲ್ಲಿ ನಡೆಯಿತು ಎಂಬುದನ್ನು stack trace ತೋರಿಸುತ್ತದೆ."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "ರಚನೆಕಾರರ ಜಾಹೀರಾತು ಸ್ಕ್ರಿಪ್ಟ್"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಪ್ರತ್ಯೇಕಗೊಳಿಸಲಾಗಿದೆ"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "ವಿವರಗಳನ್ನು ತೋರಿಸಿ"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ AudioContext API ಅನ್ನು ಇನ್ನೂ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "ಮಾಹಿತಿಯ ಮೂಲವು ಲೋಡ್ ಆಗುವುದನ್ನು ಕ್ಲೈಂಟ್ ನಿರ್ಬಂಧಿಸಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "ಪುಟವು ಕ್ಲೈಂಟ್ ಪ್ರಮಾಣಪತ್ರವನ್ನು ವಿನಂತಿಸುತ್ತಿದೆ, ಅದು ಪ್ರೀರೆಂಡರಿಂಗ್‌ನಂತಹ ಮರೆಮಾಡಲಾದ ಪುಟಕ್ಕೆ ಸೂಕ್ತವಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "ಲೋಡ್ ಮಾಡಿದ ನಂತರ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಕ್ರಾಸ್-ಆರಿಜಿನ್ URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲಾಗಿದೆ. ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಪುಟಗಳನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡುವುದನ್ನು ಪ್ರಸ್ತುತ ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "ಕ್ರಾಸ್-ಆರಿಜಿನ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾದ URL ಅನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ. ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಪುಟಗಳನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡುವುದನ್ನು ಪ್ರಸ್ತುತ ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "ಅಪರಿಚಿತ ಕಾರಣಗಳಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಮಾಡುವಾಗ DidFailLoadWithError ಸಂಭವಿಸಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "ಪ್ರೀರೆಂಡರ್‌ನಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಅನ್ನು ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಲಾಗಿದೆ ಏಕೆಂದರೆ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮತ್ತೊಂದು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಪುಟಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಡಿಸ್ಟ್ರಕ್ಟರ್‌ನಲ್ಲಿ ನಾಶಪಡಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಲಾಗಿದೆ ಏಕೆಂದರೆ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮತ್ತೊಂದು ಅದೇ ಮೂಲಸ್ಥಾನ ಪುಟಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್‌ಗಾಗಿ HTTP(S) ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮಾತ್ರ ಅನುಮತಿಸಲಾಗುತ್ತದೆ."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "HTTP(S) ಅಲ್ಲದ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾದ URL ಅನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ. HTTP(S) ಪುಟಗಳನ್ನು ಮಾತ್ರ ಪ್ರೀರೆಂಡರ್ ಮಾಡಬಹುದು."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "UI ನಿಂದ ಪ್ರಮಾಣೀಕರಣ ವಿನಂತಿಗಳನ್ನು ಪ್ರೀರೆಂಡರ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "ಕಡಿಮೆ ಸಂಗ್ರಹಣೆಯನ್ನು ಹೊಂದಿರುವ ಸಾಧನಗಳಲ್ಲಿ ಪ್ರೀರೆಂಡರಿಂಗ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "ಆರಂಭಿಕ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ನಂತರ ನ್ಯಾವಿಗೇಶನ್‌ಗಳನ್ನು ಅನುಮತಿಸಲಾಗುವುದಿಲ್ಲ"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "ಗರಿಷ್ಟ ಸಂಖ್ಯೆಯ ಪ್ರೀರೆಂಡರಿಂಗ್ ಮಿತಿಯನ್ನು ಮೀರಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "ಮಿಶ್ರ ವಿಷಯದ ಫ್ರೇಮ್ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟದಲ್ಲಿ ಅನುಮತಿಸದ API ಅನ್ನು ಬಳಸಲಾಗಿದೆ"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "200/204/205 ಅಲ್ಲದ ಸ್ಥಿತಿ ಕೋಡ್ ಅನ್ನು ಸರ್ವರ್ ತೋರಿಸಿರುವ ಕಾರಣ ಆರಂಭಿಕ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ಯಶಸ್ವಿಯಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟವನ್ನು ನ್ಯಾವಿಗೇಟ್ ಮಾಡುವಾಗ ಯಾವುದೇ ಫಲಿತಾಂಶ ಕಂಡುಬಂದಿಲ್ಲ."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "ನ್ಯಾವಿಗೇಶನ್ ವಿನಂತಿಯನ್ನು CSP ನಿರ್ಬಂಧಿಸಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಸಮಯದಲ್ಲಿ ನೆಟ್‌ವರ್ಕ್ ದೋಷ ಎದುರಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟವು ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ರೆಂಡರರ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಕೊನೆಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL ಪ್ರಮಾಣಪತ್ರ ದೋಷ."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "ಟ್ಯಾಬ್ ಅನ್ನು ನಿಲ್ಲಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "ಟ್ಯಾಬ್ ಹಿನ್ನೆಲೆಯಲ್ಲಿದೆ"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ ಮತ್ತು ಅದನ್ನು ಟ್ರಿಗರ್ ಮೂಲಕ ನಾಶಪಡಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "UserAgentOverride ನಂತರ ಪುನಃ ಲೋಡ್ ಮಾಡುವ ಅಗತ್ಯವಿದೆ."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "ಮ್ಯಾನಿಫೆಸ್ಟ್"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "ಸಹಾಯ ಬೇಕೇ? {PH1} ಓದಿ."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "{PH1} ನಲ್ಲಿ ಮಾನ್ಯವಾದ ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್ ನೋಂದಣಿ ಕಂಡುಬಂದಿದೆ. ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ನಂತರ ನೋಂದಾಯಿಸಲಾದ ಪ್ರೊಟೊಕಾಲ್‌ಗಳನ್ನು ಪರೀಕ್ಷಿಸಿ."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "PWA ಗಳಿಗಾಗಿ URL ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್ ನೋಂದಣಿ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "ನಿಮ್ಮ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದಾಗ, ಕಸ್ಟಮ್ ಪ್ರೊಟೊಕಾಲ್‌ಗಳಿಗಾಗಿ ನಿಮ್ಮ ಆ್ಯಪ್ ಅನ್ನು ಹ್ಯಾಂಡ್‌ಲರ್ ಆಗಿ ನೋಂದಾಯಿಸಲು {PH1} ನಲ್ಲಿ ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್‌ಗಳನ್ನು ವ್ಯಾಖ್ಯಾನಿಸಿ."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "ಪ್ರೊಟೊಕಾಲ್ ಅನ್ನು ಪರೀಕ್ಷಿಸಿ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "ಪ್ರೊಟೊಕಾಲ್ ಹ್ಯಾಂಡ್‌ಲರ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಕ್ವೆರಿ ಪ್ಯಾರಾಮೀಟರ್ ಅಥವಾ ಎಂಡ್‌ಪಾಯಿಂಟ್"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "ಗಮ್ಯಸ್ಥಾನ"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "ಡೆವಲಪರ್ ಮಾಹಿತಿಯ ಮೂಲಗಳನ್ನು ತೋರಿಸಿ"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "ತಡೆಹಿಡಿದಿರುವ ಪ್ರಾಪರ್ಟಿ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "ನಿಷ್ಕ್ರಿಯವಾಗಿರುವ ನಿಯಮ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "ಈ ಸಮಸ್ಯೆಯನ್ನು ಬಗೆಹರಿಸಲು ಮೂಲ ಎಲಿಮೆಂಟ್‌ಗಳನ್ನು{EXISTING_PARENT_ELEMENT_RULE} {TARGET_PARENT_ELEMENT_RULE} ಗೆ ಬದಲಿಸಿ."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "ಮೂಲ ಎಲಿಮೆಂಟ್ {REASON_RULE_CODE} ನಿಯಮವನ್ನು ಹೊಂದಿದೆ, ಹಾಗಾಗಿ ಈ ಎಲಿಮೆಂಟ್‌ಗಳು {AFFECTED_RULE_CODE} ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "ಈ ಪ್ರಾಪರ್ಟಿ ಕೆಲಸ ಮಾಡಲು {REASON_RULE_CODE} ನ ಮೌಲ್ಯವನ್ನು ತೆಗೆದುಹಾಕಿ ಅಥವಾ ಬದಲಾಯಿಸಿ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "ಈ ಎಲಿಮೆಂಟ್ {REASON_RULE_CODE} ನಿಯಮವನ್ನು ಹೊಂದಿದೆ ಹಾಗಾಗಿ {AFFECTED_RULE_CODE} ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ಹೊಸ ವರ್ಗವನ್ನು ಸೇರಿಸಿ"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "ಸ್ಕ್ರಾಲ್-ಸ್ನ್ಯಾಪ್ ಓವರ್‌ಲೇ ಸಕ್ರಿಯಗೊಳಿಸಿ"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "ಐಸೋಲೇಶನ್ ಮೋಡ್ ಅನ್ನು ಪ್ರವೇಶಿಸಿ"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "ಐಸೋಲೇಶನ್ ಮೋಡ್‌ನಿಂದ ನಿರ್ಗಮಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ಮರುಕಳಿಸುವ ಹಾಗೆ ವಿಸ್ತರಿಸಿ"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ಅಪರಿಚಿತ ಪ್ರಾಪರ್ಟಿ ಹೆಸರು"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "ಟಾಪ-ಲೇಯರ್"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ಬ್ಯಾಡ್ಜ್‌ಗಳನ್ನು ತೋರಿಸಿ"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ಟ್ರೀ ಬ್ರೆಡ್‌ಕ್ರಂಬ್ಸ್"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "ದೋಷ"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "ಈ ಕಾರಣದಿಂದ ಉಂಟಾಗಿದೆ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "ದೋಷ ಕೋಡ್:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "ಡೇಟಾ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "ದೋಷದ ಗುಂಪು:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "ಸ್ಟ್ಯಾಕ್‌ಟ್ರೇಸ್:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "ಲಾಗ್ ಸಂದೇಶಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ"
   },
@@ -7248,7 +7449,7 @@
     "message": "ಸರ್ವರ್-ಸೈಡ್ ವರ್ತನೆಯನ್ನು ಟ್ರಿಗರ್ ಮಾಡುವ, ಸಕ್ರಿಯ client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ಒಂದೇ ಸೈಟ್‌ನಿಂದ ಸಂಪನ್ಮೂಲ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ನೀಡಿದ್ದರೆ, ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
+    "message": "ಮಾಹಿತಿಯ ಮೂಲ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ಒಂದೇ ಸೈಟ್‌ನಿಂದ ನೀಡಿದ್ದರೆ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
   },
   "panels/network/RequestHeadersView.ts | copyValue": {
     "message": "ಮೌಲ್ಯವನ್ನು ನಕಲಿಸಿ"
@@ -7284,22 +7485,19 @@
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "ಸಮಸ್ಯೆಗಳ ಟ್ಯಾಬ್‌ನಲ್ಲಿ ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+    "message": "'ಸಮಸ್ಯೆಗಳು' ಎಂಬ ಟ್ಯಾಬ್‌ನಲ್ಲಿ ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಒಳಗೊಂಡಂತೆ ಅನಿಯಂತ್ರಿತ ವೆಬ್‌ಸೈಟ್ ಸುರಕ್ಷತಾ ಅಪಾಯವನ್ನು ಹೇರದಿದ್ದರೆ ಮಾತ್ರ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "ತಾತ್ಕಾಲಿಕ ಶಿರೋಲೇಖಗಳು ಮಾತ್ರ ಲಭ್ಯವಿವೆ ಏಕೆಂದರೆ ಈ ವಿನಂತಿಯನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಕಳುಹಿಸಲಾಗಿಲ್ಲ ಮತ್ತು ಬದಲಿಗೆ ಸ್ಥಳೀಯ ಕ್ಯಾಷ್ ಒಂದರಿಂದ ಒದಗಿಸಲಾಗಿದೆ, ಅದು ಮೂಲ ವಿನಂತಿಯ ಶಿರೋಲೇಖಗಳನ್ನು ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ. ಪೂರ್ಣ ವಿನಂತಿ ಶಿರೋಲೇಖಗಳನ್ನು ನೋಡಲು ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
+    "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳು ಮಾತ್ರ ಲಭ್ಯವಿವೆ ಏಕೆಂದರೆ ಈ ವಿನಂತಿಯನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಕಳುಹಿಸಲಾಗಿಲ್ಲ ಮತ್ತು ಬದಲಿಗೆ ಸ್ಥಳೀಯ ಕ್ಯಾಷ್ ಒಂದರಿಂದ ಒದಗಿಸಲಾಗಿದೆ, ಅದು ಮೂಲ ವಿನಂತಿಯ ಹೆಡರ್‌ಗಳನ್ನು ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ. ಪೂರ್ಣ ವಿನಂತಿ ಹೆಡರ್‌ಗಳನ್ನು ನೋಡಲು ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ. ಪೂರ್ಣ ಹೆಡರ್‌ಗಳನ್ನು ನೋಡಲು ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "trigger-data ಜೊತೆಗೆ ಗುಣಲಕ್ಷಣವನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲಾಗಿದೆ: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "ರೆಫರ್ ಮಾಡುವವರಿಗಾಗಿ ನೀತಿ"
@@ -7326,19 +7524,19 @@
     "message": "ಸ್ಥಿತಿ ಕೋಡ್"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "sandbox ಗುಣಲಕ್ಷಣವಿರುವ iframe ನಲ್ಲಿ ಲೋಡ್ ಆಗದಂತೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ, ಏಕೆಂದರೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಆರಂಭಿಕ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದೆ."
+    "message": "sandbox ಗುಣಲಕ್ಷಣವಿರುವ iframe ನಲ್ಲಿ ಲೋಡ್ ಆಗದಂತೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ, ಏಕೆಂದರೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆರಂಭಿಕ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದೆ."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ನಿಮ್ಮ ಡಾಕ್ಯುಮೆಂಟ್‌ನಲ್ಲಿ ಈ ಫ್ರೇಮ್ ಅನ್ನು ಎಂಬೆಡ್ ಮಾಡಲು, ಪ್ರತಿಕ್ರಿಯೆಯು ಈ ಕೆಳಗಿನ ಪ್ರತಿಕ್ರಿಯೆ ಶಿರೋಲೇಖವನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವ ಮೂಲಕ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಎಂಬೆಡರ್ ನೀತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಬೇಕಾಗುತ್ತದೆ:"
+    "message": "ನಿಮ್ಮ ಡಾಕ್ಯುಮೆಂಟ್‌ನಲ್ಲಿ ಈ ಫ್ರೇಮ್ ಅನ್ನು ಎಂಬೆಡ್ ಮಾಡಲು, ಪ್ರತಿಕ್ರಿಯೆಯು ಈ ಕೆಳಗಿನ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವ ಮೂಲಕ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಎಂಬೆಡರ್ ನೀತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಬೇಕಾಗುತ್ತದೆ:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲದಿಂದ ಬಳಸಲು ಸರ್ವರ್, ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳಲ್ಲಿ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಬೇಕಾಗುತ್ತದೆ:"
+    "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲದಿಂದ ಬಳಸಲು ಸರ್ವರ್, ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳಲ್ಲಿ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಬೇಕಾಗುತ್ತದೆ:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲಸ್ಥಾನದಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ರಿಲ್ಯಾಕ್ಸ್ ಮಾಡಬಹುದು."
+    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲಸ್ಥಾನದಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ಸಡಿಲಿಸಬಹುದು:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಸೈಟ್‌ನಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ರಿಲ್ಯಾಕ್ಸ್ ಮಾಡಬಹುದು:"
+    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಸೈಟ್‌ನಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ಸಡಿಲಿಸಬಹುದು:"
   },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "ಪಾರ್ಸ್ ಮಾಡಿರುವುದನ್ನು ವೀಕ್ಷಿಸಿ"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ಪ್ರಮಾಣಪತ್ರವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ಮಾಹಿತಿಯ ಮೂಲ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ಒಂದೇ ಸೈಟ್‌ನಿಂದ ನೀಡಿದ್ದರೆ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ಡಿಸ್ಕ್ ಕ್ಯಾಷ್‌ನಿಂದ)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ಸಾಮಾನ್ಯ"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "'ಸಮಸ್ಯೆಗಳು' ಎಂಬ ಟ್ಯಾಬ್‌ನಲ್ಲಿ ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಒಳಗೊಂಡಂತೆ ಅನಿಯಂತ್ರಿತ ವೆಬ್‌ಸೈಟ್ ಸುರಕ್ಷತಾ ಅಪಾಯವನ್ನು ಹೇರದಿದ್ದರೆ ಮಾತ್ರ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳು ಮಾತ್ರ ಲಭ್ಯವಿವೆ ಏಕೆಂದರೆ ಈ ವಿನಂತಿಯನ್ನು ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಕಳುಹಿಸಲಾಗಿಲ್ಲ ಮತ್ತು ಬದಲಿಗೆ ಸ್ಥಳೀಯ ಕ್ಯಾಷ್ ಒಂದರಿಂದ ಒದಗಿಸಲಾಗಿದೆ, ಅದು ಮೂಲ ವಿನಂತಿಯ ಹೆಡರ್‌ಗಳನ್ನು ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ. ಪೂರ್ಣ ವಿನಂತಿ ಹೆಡರ್‌ಗಳನ್ನು ನೋಡಲು ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ತಾತ್ಕಾಲಿಕ ಹೆಡರ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ. ಪೂರ್ಣ ಹೆಡರ್‌ಗಳನ್ನು ನೋಡಲು ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "ಕಚ್ಚಾ ಡೇಟಾ"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "ಸ್ಥಿತಿ ಕೋಡ್"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "sandbox ಗುಣಲಕ್ಷಣವಿರುವ iframe ನಲ್ಲಿ ಲೋಡ್ ಆಗದಂತೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ, ಏಕೆಂದರೆ ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆರಂಭಿಕ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿದೆ."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ನಿಮ್ಮ ಡಾಕ್ಯುಮೆಂಟ್‌ನಲ್ಲಿ ಈ ಫ್ರೇಮ್ ಅನ್ನು ಎಂಬೆಡ್ ಮಾಡಲು, ಪ್ರತಿಕ್ರಿಯೆಯು ಈ ಕೆಳಗಿನ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸುವ ಮೂಲಕ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಎಂಬೆಡರ್ ನೀತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಬೇಕಾಗುತ್ತದೆ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "ಈ ಮಾಹಿತಿ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲದಿಂದ ಬಳಸಲು ಸರ್ವರ್, ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳಲ್ಲಿ ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಬೇಕಾಗುತ್ತದೆ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಮೂಲಸ್ಥಾನದಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ಸಡಿಲಿಸಬಹುದು:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ಈ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಬೇರೊಂದು ಸೈಟ್‌ನಿಂದ ಬಳಸಲು, ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಮಾಹಿತಿ ಮೂಲ ನೀತಿಯ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್ ಅನ್ನು ಸರ್ವರ್ ಸಡಿಲಿಸಬಹುದು:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ಕ್ಲೈಂಟ್-ಒದಗಿಸಿದ ಆರ್ಗ್ಯುಮೆಂಟ್ ಸರಿಯಾಗಿ ರಚಿಸಿಲ್ಲ ಅಥವಾ ಅಮಾನ್ಯವಾಗಿದೆ."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "ಪ್ರಮಾಣಪತ್ರ ದೋಷಗಳಿರುವ ಕಂಟೆಂಟ್"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾದ ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Google ಸುರಕ್ಷಿತ ಬ್ರೌಸಿಂಗ್ ಮೂಲಕ ಫ್ಲ್ಯಾಗ್ ಮಾಡಲಾಗಿದೆ"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "ಕೀ ವಿನಿಮಯ"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "ಕೀ ಎಕ್ಸ್‌ಚೇಂಜ್ ಗುಂಪು"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ಲಾಗ್ ಐಡಿ"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "ಭದ್ರತಾ ಅವಲೋಕನ"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "ಸರ್ವರ್ ಸಹಿಯ ಅಲ್ಗಾರಿದಮ್"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "ಪೂರ್ಣ ವಿವರಗಳನ್ನು ತೋರಿಸಿ"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "ಅಪರಿಚಿತ / ರದ್ದುಪಡಿಸಲಾಗಿದೆ"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "ಅಪರಿಚಿತ"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "ಮಾನ್ಯ ಮತ್ತು ವಿಶ್ವಾಸಾರ್ಹ"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "ಪ್ಯಾಟರ್ನ್ ಸೇರಿಸಿ..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "'ನಿರ್ಲಕ್ಷಿಸಿ' ಎಂಬ ಪಟ್ಟಿಗೆ ಪರಿಚಿತ ಥರ್ಡ್ ಪಾರ್ಟಿ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇರಿಸಿ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "ಮೂಲ ನಕ್ಷೆಯಲ್ಲಿನ x_google_ignoreList ಫೀಲ್ಡ್‌ನಿಂದ ಮೂಲಗಳನ್ನು 'ನಿರ್ಲಕ್ಷಿಸಿ' ಎಂಬ ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "ವರ್ತನೆ"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "ಸೇರಿಸಿ"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "DWARF ಸಂಕೇತಗಳನ್ನು ಹೊಂದಿರುವ URL: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "ಸೋರ್ಸ್-ಮ್ಯಾಪ್‌ನ URL: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "ಸೋರ್ಸ್-ಮ್ಯಾಪ್ ಸೇರಿಸಿ…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "DWARF ಡೀಬಗ್ ಮಾಹಿತಿಯನ್ನು ಸೇರಿಸಿ…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "ಸಂಬಂಧಿತ ಫೈಲ್‌ಗಳು ಫೈಲ್ ಟ್ರೀ ಅಥವಾ {PH1} ಮೂಲಕ ಲಭ್ಯವಿವೆ."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "ಲೇಖಕರು"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "ಒರಿಜಿನಲ್ ಮೂಲಗಳನ್ನು ಹೊಂದಿದೆ"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ಅಳಿಸಿ"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "ನಿಯೋಜಿತ"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "ಬ್ರೌಸರ್‌ಗೆ ಕಾಣಿಸುವ ಅಂತಿಮ ಮೂಲಗಳನ್ನು ಹೊಂದಿದೆ"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ಫೋಲ್ಡರ್ ಹೊರತುಪಡಿಸಿ"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "ಮುಚ್ಚುವಿಕೆ ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "ಲೀನಿಯರ್ ಮೆಮೊರಿ ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ : ಬಫರ್ ಹುಡುಕಲು ವಿಫಲವಾಗಿದೆ."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "ವಿನಾಯಿತಿ"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "ದೃಢೀಕರಿಸಿದ/ನಿಯೋಜಿಸಿದ ಪ್ರಕಾರ ಫೈಲ್‌ಗಳನ್ನು ಗುಂಪು ಮಾಡಿ"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ಕಾನ್ಫಿಗರೇಶನ್ ತೆರವುಗೊಳಿಸಿ"
@@ -9948,7 +10209,7 @@
     "message": "ಕಾರ್ಯಸ್ಥಳದ ಫೋಲ್ಡರ್ ಅನ್ನು ಇಲ್ಲಿ ಡ್ರಾಪ್ ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "ಲೇಖಕರು/ನಿಯೋಜಿತ (ಪ್ರಾಯೋಗಿಕ) ಮೂಲಕ ಗುಂಪು"
+    "message": "ದೃಢೀಕರಿಸಿದ/ನಿಯೋಜಿಸಿದ ಪ್ರಕಾರ ಗುಂಪು ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ಫೋಲ್ಡರ್ ಪ್ರಕಾರ ಗುಂಪು ಮಾಡಿ"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ವಿಳಾಸವು {PH1} ಮತ್ತು {PH2} ರ ನಡುವೆ ಸಂಖ್ಯೆಯಾಗಿರಬೇಕು"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "ಲೀನಿಯರ್ ಮೆಮೊರಿ ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ : ಬಫರ್ ಹುಡುಕಲು ವಿಫಲವಾಗಿದೆ."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "ಯಾವುದೇ ಮುಕ್ತ ತಪಾಸಣೆಗಳಿಲ್ಲ"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "ವೀಡಿಯೊ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟೇಶನ್"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "ನಮಗೆ ನಿಮ್ಮ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಕಳುಹಿಸಿ"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಪ್ಯಾನೆಲ್ ಅನ್ನು ತೆರೆಯಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಮತ್ತು URL ಗಾಗಿ ವಿನಂತಿಯನ್ನು ತೋರಿಸಿ: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "ಯಾವುದೇ ಗುಣಲಕ್ಷಣಗಳಿಲ್ಲ"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "ಯಾವುದೇ ಗುಣಲಕ್ಷಣ ಗೆಟ್ಟರ್ ಇಲ್ಲ"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "ಎಲ್ಲಾ {PH1} ತೋರಿಸಿ"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "ಅಪರಿಚಿತ"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "ಡೀಬಗರ್‌ಗೆ ಮೌಲ್ಯವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<ಮೌಲ್ಯವು ಲಭ್ಯವಿಲ್ಲ>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "ಖಾಲಿ"

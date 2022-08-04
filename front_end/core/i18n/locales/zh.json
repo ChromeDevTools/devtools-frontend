@@ -1008,7 +1008,7 @@
     "message": "显示“渲染”工具"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "开启/关闭“强制使用 CSS prefers-color-scheme”设置对应的颜色"
+    "message": "开启/关闭 CSS 媒体功能 prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "视觉缺陷"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate 已被弃用。请改用 RTCPeerConnectionIceErrorEvent.address 或 RTCPeerConnectionIceErrorEvent.port。"
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "canmakepayment Service Worker 事件中的商家源和任意数据已被弃用，并将被移除：topOrigin、paymentRequestOrigin、methodData、modifiers。"
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "该网站向网络请求了一项子资源，而且仅仅因为其用户的特权网络位置而能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "您的合作伙伴正在协商某个已过时的 (D)TLS 版本。请与您的合作伙伴联系，以解决此问题。"
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "不安全情境中的 WebSQL 已被弃用，并将在 M107 中被移除。请使用网络存储或索引型数据库。"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "带有 <picture> 父级的 <source src> 无效，因此会被忽略。请改用 <source srcset>。"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo 已被弃用。请改用 navigator.webkitTemporaryStorage 或 navigator.webkitPersistentStorage。"
+    "message": "window.webkitStorageInfo 已被弃用。请改用标准化 navigator.storage。"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "如果对应的网址包含嵌入式凭据（例如 https://user:pass@host/），子资源请求会被屏蔽。"
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "线程 {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "出价方 Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "出价方 Worklet - {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "专用 Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "卖方 Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "卖方 Worklet - {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "线程 {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "竞价 Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "竞价 Worklet - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker：{PH1} - {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "竞价 Worklet 服务"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "竞价 Worklet 服务 - {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "（索引）"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "来自 {PH1} 的清单主图标"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "协议处理程序"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} 未在清单中指定其大小"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "后台服务"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}：调用后可滚动至清单中的这一部分"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "缓存"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "清单"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "已滚动至{PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "清单：调用后可滚动至清单顶部"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "已打开的窗口"
@@ -2577,7 +2619,7 @@
     "message": "DOM 存储项"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1}已清除"
+    "message": "DOM 存储项已被清除"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "表格中显示的条目的数量：{PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "此框架是以编程方式创建的。stack trace会显示相应的创建位置。"
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "创作者广告脚本"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "已跨源隔离"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "显示详细信息"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "已启用。"
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "预渲染尚不支持 AudioContext API。"
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "客户端阻止了资源加载。"
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting。"
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "该网页正在请求客户端证书，但此证书不适用于隐藏的网页（例如预渲染的网页）。"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "预渲染的网页在加载后导航到了跨源网址。目前不允许预渲染跨源网页。"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "已尝试预渲染重定向到跨源网址的网址。目前不允许预渲染跨源网页。"
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "预渲染的网页因不明原因被舍弃。"
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "预渲染期间发生了 DidFailLoadWithError。"
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "禁止在预渲染模式下进行下载。"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）被取消了，因为导航会重定向到另一个跨源网页。"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）会在析构函数中被销毁。"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）被取消了，因为导航会重定向到另一个同源网页。"
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation。"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "预渲染时只能使用 HTTP(S) 导航。"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "已尝试预渲染重定向到非 HTTP(S) 网址的网址。只能预渲染 HTTP(S) 网页。"
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "预渲染不支持来自界面的身份验证请求。"
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "内存较小的设备不支持预渲染。"
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "禁止在初始预渲染导航之后进行导航"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "超出了预渲染次数上限。"
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "混合内容框架取消了预渲染。"
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "预渲染的网页使用了被禁用的 API"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "由于服务器返回的状态代码不是 200/204/205，初始预渲染导航未成功。"
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "预渲染网页最终不会显示。"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "CSP 阻止了导航请求。"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "在预渲染过程中遇到了网络连接错误。"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "预渲染的网页崩溃了。"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "预渲染页面的渲染程序进程被终止了。"
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL 证书错误。"
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "该标签页已停止。"
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "该标签页位于后台"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "预渲染未启用，且已通过触发器销毁。"
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "执行 UserAgentOverride 之后需要重新加载。"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "选择协议处理程序"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "清单"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "需要帮助？请阅读 {PH1} 上的文章。"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "在 {PH1} 中找到了有效注册的协议处理程序。安装应用后，测试已注册的协议。"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "PWA 的网址协议处理程序注册"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "在 {PH1} 中定义协议处理程序，以便在用户安装您的应用时将它注册为自定义协议的处理程序。"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "测试协议"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "协议处理程序的查询参数或端点"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "目标端点"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "显示“开发者资源”面板"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "已弃用的属性"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "无效的规则"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "若要解决此问题，请将父元素 {EXISTING_PARENT_ELEMENT_RULE} 更改为 {TARGET_PARENT_ELEMENT_RULE}。"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "父元素设有 {REASON_RULE_CODE} 规则，因此 {AFFECTED_RULE_CODE} 元素不会产生任何影响"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "为了使此属性正常发挥作用，请移除或更改 {REASON_RULE_CODE} 的值"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "此元素设有 {REASON_RULE_CODE} 规则，因此 {AFFECTED_RULE_CODE} 不会产生任何影响。"
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "添加新类"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "启用滚动贴靠叠加层"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "进入隔离模式"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "退出隔离模式"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "以递归方式展开"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "属性名称未知"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "顶层"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "已忽略"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "显示标志"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "了解详情"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM 树面包屑导航"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "错误"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "原因："
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "错误代码："
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "数据："
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "错误组："
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "堆栈轨迹："
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "过滤日志消息"
   },
@@ -7296,10 +7497,7 @@
     "message": "显示的是预配标头"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
-    "message": "显示的是预配标头。停用缓存即可查看完整标头。"
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "trigger-data 为 {PH1} 的已记录归因事件"
+    "message": "当前显示的是预配标头。停用缓存即可查看完整标头。"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "引荐来源网址政策"
@@ -7329,16 +7527,16 @@
     "message": "此文档指定了跨源 opener 政策，因此被禁止在具有 sandbox 属性的 iframe 中加载。"
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "如需在您的文档中嵌入此框架，则需要在响应中指定以下响应标头，以启用跨源嵌入器政策："
+    "message": "若要在您的文档中嵌入此框架，则需在响应中指定如下响应标头，以启用跨源嵌入器政策："
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "为了从另一个来源使用此资源，服务器需要在响应标头中指定跨域资源政策："
+    "message": "为了从另一个源使用此资源，服务器需要在响应标头中指定跨源资源政策："
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "为了从另一个来源使用该资源，服务器可能会放宽跨域资源政策响应标头："
+    "message": "为了从另一个源使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "为了从其他网站使用此资源，服务器可能会放宽跨域资源政策响应标头："
+    "message": "为了从另一个网站使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
   },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "查看解析结果"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看证书"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "如果资源和文档由同一网站提供，请选择此选项。"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "（来自磁盘缓存）"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "常规"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "了解详情"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "前往“问题”标签页了解详情"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "仅当包括此资源在内的任意网站不会带来安全风险时，才可选择此选项。"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "仅预配标头可用，因为此请求并非通过网络发送，而是从本地缓存提供，其中不会存储原始请求标头。停用缓存即可查看完整请求标头。"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "当前显示的是预配标头。"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "当前显示的是预配标头。停用缓存即可查看完整标头。"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "原始"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "状态代码"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "此文档指定了跨源 opener 政策，因此被禁止在具有 sandbox 属性的 iframe 中加载。"
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "若要在您的文档中嵌入此框架，则需在响应中指定如下响应标头，以启用跨源嵌入器政策："
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "为了从另一个源使用此资源，服务器需要在响应标头中指定跨源资源政策："
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "为了从另一个源使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "为了从另一个网站使用此资源，服务器可能会放宽对跨源资源政策响应标头的要求："
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "客户端提供的参数格式不正确或无效。"
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "具有证书错误的内容"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "已启用"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "已加密的 ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "已被 Google 安全浏览标记"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "密钥交换"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "密钥交换群组"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "日志 ID"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "安全性概览"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "服务器签名"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "显示完整详情"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "未知/已取消"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "未知"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "有效且可信"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "添加格式…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "自动将已知的第三方脚本添加到忽略列表"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "将来源映射关系 x_google_ignoreList 字段中的来源添加到忽略列表"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "行为"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "添加"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "DWARF 符号网址： "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "来源映射网址："
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "添加来源映射…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "添加 DWARF 调试信息…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "相关文件可通过文件树或按相应的组合键 ({PH1}) 获取。"
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "已编写"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "包含原始来源"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "删除"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "已部署"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "包含浏览器检测到的最终来源"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "排除文件夹"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "闭包 ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "无法打开线性内存检查器：无法找到缓冲区。"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "异常"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "按“已编写”/“已部署”将文件分组"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "清除配置"
@@ -9948,7 +10209,7 @@
     "message": "将工作区文件夹拖放到此处"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "按已编写/已部署分组（实验性）"
+    "message": "按“已编写”/“已部署”分组"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "按文件夹分组"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "地址必须是一个介于 {PH1} 和 {PH2} 之间的数字"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "无法打开线性内存检查器：无法找到缓冲区。"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "没有待处理的检查"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "视频和文档"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "了解详情"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "向我们提供反馈。"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "发送反馈"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "点击即可打开“网络”面板并显示网址请求：{url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "无属性"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "无属性 getter"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "显示全部 {PH1} 项"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "未知"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<不可读>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "调试程序无法获取值"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<没有可用的值>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "空白"

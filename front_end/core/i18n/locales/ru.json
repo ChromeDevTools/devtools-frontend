@@ -1008,7 +1008,7 @@
     "message": "Показать \"Отрисовка\""
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Использовать цвет, заданный в функции CSS prefers-color-scheme"
+    "message": "Включить или отключить медиафункцию CSS prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "дефекты зрения"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate больше не поддерживается. Используйте RTCPeerConnectionIceErrorEvent.address или RTCPeerConnectionIceErrorEvent.port."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "Страна продавца и случайные данные из события service workercanmakepayment устарели и будут удалены: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Сайт запросил подресурс из сети, доступ к которому можно получить только благодаря расширенным сетевым разрешениям пользователей. Такие запросы делают внутренние устройства и серверы доступными через интернет, что повышает риск подделки межсайтовых запросов (CSRF) и утечки информации. Чтобы предотвратить такие ситуации, в Chrome прекращается поддержка запросов к внутренним подресурсам, которые инициируются в небезопасных контекстах. В будущем такие запросы будут блокироваться."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Ваш партнер обменивается данными с использованием устаревшей версии (D)TLS. Сообщите ему о необходимости это исправить."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "Технология WebSQL в небезопасных контекстах больше не поддерживается и будет удалена в версии M107. Используйте веб-хранилище или индексированную базу."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Элемент <source src> с родительским объектом <picture> недействителен, поэтому игнорируется. Используйте <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo больше не поддерживается. Используйте navigator.webkitTemporaryStorage или navigator.webkitPersistentStorage."
+    "message": "window.webkitStorageInfo больше не поддерживается. Используйте стандартный метод navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Запросы подресурсов, в URL которых содержатся встроенные учетные данные (например, https://user:pass@host/), блокируются."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Поток {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Worklet покупателя"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Worklet покупателя — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Выделенное: Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Worklet продавца"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Worklet продавца — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Поток {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Аукцион Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Аукцион Worklet — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Сервис аукциона Worklet"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Сервис аукциона Worklet — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Основной значок манифеста из {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Обработчики протоколов"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} ({PH2}): в файле манифеста не указан размер."
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фоновые службы"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: вызовите, чтобы прокрутить до этого раздела манифеста"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Кеш"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Манифест"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Прокручено до подраздела {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Файл манифеста: вызовите, чтобы прокрутить в начало манифеста"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Открытые окна"
@@ -2577,7 +2619,7 @@
     "message": "Элементы хранилища DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} удалены"
+    "message": "Данные таблицы \"Элементы хранилища DOM\" удалены"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Записей в таблице: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Фрейм создан с помощью программных средств. stack trace показывает, где это произошло."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Скрипт объявления для авторов"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Изолирован от разных источников"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Показать сведения"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Активировано."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Предварительная отрисовка пока не поддерживает AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Загрузка ресурсов заблокирована клиентом."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Страница запрашивает сертификат клиента. Для скрытых страниц (например, предварительно отрисованных) эта процедура не применяется."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Предварительно отрисованная страница была загружена, после чего для нее выполнен переход по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Не удалось предварительно отрисовать страницу, переход с которой выполняется на междоменный URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "По неизвестной причине предварительно отрисованная страница была покинута."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "Во время предварительной отрисовки произошла ошибка DidFailLoadWithError."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Скачивание во время предварительной отрисовки запрещено."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с иным источником."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) уничтожена в деструкторе."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с тем же источником."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Для предварительной отрисовки доступна только навигация по HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Не удалось предварительно отрисовать страницу, переход с которой выполняется на другой URL-адрес с протоколом, отличным от HTTP(S). Предварительно отрисованы могут быть только страницы HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Предварительная отрисовка не поддерживает запросы на авторизацию, направленные из интерфейса."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Предварительная отрисовка не поддерживается на устройствах с малым объемом памяти."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Переход по страницам после начальной навигации с предварительной отрисовкой запрещен."
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Превышено максимальное число предварительных отрисовок."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Предварительная отрисовка отменена фреймом смешанного контента."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "На предварительно отрисованной странице был использован запрещенный API."
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "Не удалось выполнить начальный переход с предварительной отрисовкой, поскольку сервер не возвратил один из следующих кодов статуса: 200, 204, 205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Страница с предварительной отрисовкой не загрузится."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Запрос на переход заблокирован со стороны CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Во время предварительной отрисовки произошла ошибка сети."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Произошел сбой предварительно отрисованной страницы."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Отрисовка, которая должна была быть выполнена для этой страницы предварительно, остановлена."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Ошибка сертификата SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Работа вкладки остановлена."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Вкладка работает в фоновом режиме."
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Предварительная отрисовка не активирована и уничтожена триггером."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "После использования UserAgentOverride необходимо перезагрузить страницу."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Выберите обработчик протоколов"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "файл манифеста"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Нужна помощь? Прочитайте эту статью: {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "Найдена действительная регистрация обработчика протокола в файле {PH1}. Когда приложение будет установлено, протестируйте зарегистрированные протоколы."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Регистрация обработчика протокола URL для PWA"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Определите обработчики протоколов в файле {PH1}, чтобы зарегистрировать приложение в качестве обработчика пользовательских протоколов, когда оно установлено."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Тестировать протокол"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Укажите параметр запроса или конечную точку для обработчика протоколов"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Целевая конечная точка"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Показать ресурсы для разработчиков"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Устаревшее свойство"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Неактивное правило"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Чтобы устранить эту проблему, измените родительские элементы {EXISTING_PARENT_ELEMENT_RULE} на следующие: {TARGET_PARENT_ELEMENT_RULE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Родительский элемент использует правило {REASON_RULE_CODE}, поэтому правило {AFFECTED_RULE_CODE} не работает."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Чтобы это свойство работало, удалите или измените значение {REASON_RULE_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Этот элемент использует правило {REASON_RULE_CODE}, поэтому правило {AFFECTED_RULE_CODE} не работает."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавить класс"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Включить оверлей с прокруткой и привязкой"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Войти в режим изоляции"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Выйти из режима изоляции"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Рекурсивное расширение"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Неизвестное имя свойства"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "верхний слой"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Игнорируется"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Показать пометки"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Подробнее"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Строки навигации дерева DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Ошибка"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Причина:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Код ошибки:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Данные:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Группа ошибок:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Трассировка стека:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Фильтровать сообщения журнала"
   },
@@ -7290,16 +7491,13 @@
     "message": "Выбирайте этот параметр, только если случайный сайт, включая этот ресурс, не представляет угрозу безопасности."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Доступны только предварительные заголовки, так как запрос не был отправлен через сеть, а был использован локальный кеш, который не хранит заголовки исходных запросов. Отключите кеш, чтобы видеть полные заголовки запросов."
+    "message": "Доступны только предварительные заголовки, так как запрос не был отправлен через сеть, а был использован локальный кеш, который не хранит заголовки исходных запросов. Чтобы видеть полные заголовки запросов, отключите кеш."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "Показаны предварительные заголовки"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Отображаются предварительные заголовки. Чтобы увидеть полные заголовки, отключите кеш."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Зарегистрирована атрибуция на основе данных (trigger-data): {PH1}."
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Правило для URL перехода"
@@ -7335,7 +7533,7 @@
     "message": "Чтобы использовать этот ресурс из другого источника, серверу нужно указать заголовок ответа в правилах для ресурсов с разными источниками:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Чтобы использовать этот ресурс из другого источника, сервер может использовать заголовок ответа в правилах для ресурсов с разными источниками:"
+    "message": "Чтобы использовать этот ресурс из другого источника, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа."
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "Чтобы использовать этот ресурс с другого сайта, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа:"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Показать сертификат"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(источник: кеш диска)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Общие"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Узнайте больше на вкладке \"Проблемы\""
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Выбирайте этот параметр, только если случайный сайт, включая этот ресурс, не представляет угрозу безопасности."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Доступны только предварительные заголовки, так как запрос не был отправлен через сеть, а был использован локальный кеш, который не хранит заголовки исходных запросов. Чтобы видеть полные заголовки запросов, отключите кеш."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Отображаются предварительные заголовки."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Отображаются предварительные заголовки. Чтобы увидеть полные заголовки, отключите кеш."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Исходные заголовки"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Код статуса"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Загрузка этого документа в окне iframe с атрибутом sandbox заблокирована, потому что в документе указаны правила междоменного открытия."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Чтобы встроить этот фрейм в документ, необходимо включить правило междоменного встраивания, указав следующий заголовок ответа:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Чтобы использовать этот ресурс из другого источника, серверу нужно указать заголовок ответа в правилах для ресурсов с разными источниками:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Чтобы использовать этот ресурс из другого источника, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа."
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Чтобы использовать этот ресурс с другого сайта, сервер может ослабить правила совместного использования ресурсов между разными источниками в заголовке ответа:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Аргумент, предоставленный клиентом, недопустим (например, имеет неверный формат)."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "контент с ошибками сертификата"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "включено"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Сообщение ClientHello зашифровано"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Отмечено сервисом \"Google Безопасный просмотр\""
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Обмен ключами"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Группа обмена ключами"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "Идентификатор журнала"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Общие сведения о безопасности"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Подпись сервера"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Показать полные сведения"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Неизвестно/отменено"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "неизвестно"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "действительный и надежный"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Добавить шаблон…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Автоматически добавлять известные сторонние скрипты в список игнорируемых"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Добавить источники из поля x_google_ignoreList карты исходного кода в список игнорируемых"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Поведение"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Добавить"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "URL-адрес, содержащий символы DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL карты исходного кода: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Добавить карту исходного кода…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Добавить сведения для отладки DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Связанные файлы доступны через дерево файлов или сочетание клавиш {PH1}"
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Авторские"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Содержит оригинальные источники"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Удалить"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Развернутые"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Содержит итоговые источники, доступные браузеру"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Исключить папку"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Замыкание ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Не удалось открыть инспектор линейной памяти. Буфер не найден."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Исключение"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Ввод"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Сгруппировать файлы по авторским и развернутым"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Очистить настройки"
@@ -9948,7 +10209,7 @@
     "message": "Перетащите папку рабочей области сюда."
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Сгруппировать по авторским и развернутым (экспериментальная функция)"
+    "message": "Сгруппировать по авторским и развернутым"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Группировка по папке"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адрес должен быть числом от {PH1} до {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Не удалось открыть инспектор линейной памяти. Буфер не найден."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Нет открытых проверок"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Видео и документация"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Подробнее…"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Отправить отзыв"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Оставить отзыв"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Нажмите, чтобы открыть панель \"Сеть\" и показать запрос для следующего URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Нет свойств"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Не определен геттер свойства"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Показать все {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "неизвестно"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Отладчик не может получить доступ к значению"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<значение недоступно>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "пусто"

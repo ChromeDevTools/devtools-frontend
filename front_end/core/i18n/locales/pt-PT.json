@@ -1008,7 +1008,7 @@
     "message": "Mostrar renderização"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Ativar/desativar cor forçada para a propriedade CSS prefers-color-scheme"
+    "message": "Ativar/desativar a funcionalidade de multimédia CSS prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "deficiência visual"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "O atributo RTCPeerConnectionIceErrorEvent.hostCandidate foi descontinuado. Em alternativa, use o atributo RTCPeerConnectionIceErrorEvent.address ou RTCPeerConnectionIceErrorEvent.port."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "A origem do comerciante e os dados arbitrários do evento do service canmakepayment worker foram descontinuados e vão ser removidos: topOrigin, paymentRequestOrigin, methodData e modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "O Website pediu um subrecurso de uma rede à qual só podia aceder devido à posição da rede privilegiada dos respetivos utilizadores. Estes pedidos expõem servidores e dispositivos não públicos à Internet, aumentando o risco de um ataque de falsificação de pedido entre sites (CSRF) e/ou de uma fuga de informações. Para mitigar estes riscos, o Chrome descontinua pedidos para subrecursos não públicos quando forem iniciados por contextos não seguros e vai começar a bloqueá-los."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "O seu parceiro está a negociar uma versão do (D)TLS (Transport Layer Security) obsoleta. Contacte o seu parceiro para corrigir isto."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "O WebSQL em contextos não seguros foi descontinuado e vai ser removido no M107. Use o armazenamento Web ou a base de dados indexada."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "O atributo <source src> com um <picture> superior é inválido e, por isso, vai ser ignorado. Em alternativa, use <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "O atributo window.webkitStorageInfo foi descontinuado. Em alternativa, use o atributo navigator.webkitTemporaryStorage ou navigator.webkitPersistentStorage."
+    "message": "O atributo window.webkitStorageInfo foi descontinuado. Em alternativa, use o atributo navigator.storage padronizado."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Os pedidos de subrecursos cujos URLs continham credenciais incorporadas (por exemplo, https://user:pass@host/) foram bloqueados."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Worklet de licitador"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Worklet de licitador – {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker dedicado"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Worklet de vendedor"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Worklet de vendedor — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Worklet de leilão"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Worklet de leilão – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Serviço de worklet de leilão"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Serviço de worklet de leilão — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(índice)"
@@ -2268,7 +2298,7 @@
     "message": "Nome"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
-    "message": "Precisa de ajuda? Leu {PH1}."
+    "message": "Precisa de ajuda? Leia {PH1}."
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Novo URL de nota"
@@ -2320,6 +2350,9 @@
   },
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Ícone de manifesto principal de {PH1}"
+  },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Controladores de protocolos"
   },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} não especifica o respetivo tamanho no manifesto."
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Serviços em segundo plano"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: invoque para deslocar a página para esta secção no manifesto"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Cache"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifesto"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Deslocou a página até {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Manifesto: invoque para deslocar a página até à parte superior do manifesto"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Janelas abertas"
@@ -2577,7 +2619,7 @@
     "message": "Itens de armazenamento do DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} limpo(s)"
+    "message": "Itens de armazenamento do DOM limpos"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Número de entradas mostradas na tabela: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Este frame foi criado programaticamente stack trace apresenta onde isto aconteceu."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Script de anúncios do criador"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Origem cruzada isolada"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Mostrar detalhes"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Ativada."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "A pré-renderização ainda não suporta a API AudioContext."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "O carregamento de recursos foi bloqueado pelo cliente."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "A página está a pedir o certificado de cliente, o que não é adequado para uma página oculta, como a pré-renderização."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "A página pré-renderizada navegou para um URL de origem cruzada após o carregamento. Atualmente, a pré-renderização de páginas de origem cruzada não é permitida."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Tentou pré-renderizar um URL que redirecionava para um URL de origem cruzada. Atualmente, a pré-renderização de páginas de origem cruzada não é permitida."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Uma página pré-renderizada foi abandonada por motivos desconhecidos."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "O DidFailLoadWithError ocorreu durante a pré-renderização."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "A transferência não é permitida na pré-renderização."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "A pré-renderização acionada pelo Chrome internamente (por exemplo, pré-renderização da caixa geral) foi cancelada porque a navegação é redirecionada para outra página de origem cruzada."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "A pré-renderização acionada pelo Chrome internamente (por exemplo, pré-renderização da caixa geral) foi destruída no destruidor."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "A pré-renderização acionada pelo Chrome internamente (por exemplo, pré-renderização da caixa geral) foi cancelada porque a navegação é redirecionada para outra página da mesma origem."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Apenas é permitida a navegação HTTP(S) para a pré-renderização."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Tentou pré-renderizar um URL que redirecionou para um URL não HTTP(S). Apenas é possível pré-renderizar páginas HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "A pré-renderização não suporta pedidos de autenticação da IU."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "A pré-renderização não é suportada para dispositivos com pouca memória."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "As navegações após a navegação de pré-renderização inicial não são permitidas"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Número máximo de pré-renderizações excedido."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "A pré-renderização foi cancelada por um frame de conteúdo misto."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "A página pré-renderizada usou uma API não permitida"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "A navegação de pré-renderização inicial não foi realizada com êxito porque o servidor devolveu um código de estado diferente de 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "A página de pré-renderização não é comprometida no final."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "O pedido de navegação foi bloqueado pela CSP (Política de Segurança de Conteúdos)."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Foi encontrado um erro de rede durante a pré-renderização."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "A página pré-renderizada falhou."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "O processo do renderizador da página de pré-renderização foi interrompido."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Erro de certificado SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "O separador está parado."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "O separador está em segundo plano"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "A pré-renderização não foi ativada nem destruída com o acionador."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "É necessário atualizar após o UserAgentOverride."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Selecione o controlador de protocolos"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "manifesto"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Precisa de ajuda? Leia {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "Foi encontrado um registo de controladores de protocolos válido no {PH1}. Com a app instalada, teste os protocolos registados."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Registo de controladores de protocolos de URL para PWAs (apps Web progressivas)"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Defina os controladores de protocolos no {PH1} para registar a sua app como um controlador para os protocolos personalizados quando a mesma estiver instalada."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Testar protocolo"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Parâmetro de consulta ou ponto final para controlador de protocolos"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destino"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Mostrar recursos para programadores"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Propriedade descontinuada"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Regra inativa"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Altere os elementos superiores {EXISTING_PARENT_ELEMENT_RULE} para {TARGET_PARENT_ELEMENT_RULE} para corrigir este problema."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "O elemento principal tem {REASON_RULE_CODE} regra e, por isso, o {AFFECTED_RULE_CODE} deste elemento não tem efeito"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Para que esta propriedade funcione, remova ou altere o valor de {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Este elemento tem {REASON_RULE_CODE} regra e, por isso, o {AFFECTED_RULE_CODE} não tem efeito."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Adicionar nova classe"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Ativar sobreposição de scroll-snap"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Entrar no Modo de isolamento"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Sair do Modo de isolamento"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Expandir recorrentemente"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nome da propriedade desconhecido"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "camada superior"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorado"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Mostre emblemas"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Saber mais"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Hierarquias da página da árvore DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Erro"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Causado por:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Código de erro:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Dados:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Grupo de erros:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Rastreio de pilha:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Filtrar mensagens de registo"
   },
@@ -7284,7 +7485,7 @@
     "message": "Saiba mais"
   },
   "panels/network/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
-    "message": "Saber mais no separador Issues"
+    "message": "Saiba mais no separador de problemas"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
     "message": "Escolha esta opção apenas se um Website arbitrário que inclua este recurso não impuser um risco à segurança."
@@ -7297,9 +7498,6 @@
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "São apresentados cabeçalhos provisórios. Desative a cache para ver os cabeçalhos completos."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Atribuição registada com trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Política do referenciador"
@@ -7332,13 +7530,13 @@
     "message": "Para incorporar este frame no seu documento, a resposta precisa de permitir a política de incorporação de origem cruzada ao especificar o seguinte cabeçalho da resposta:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Para utilizar este recurso de uma origem diferente, o servidor tem de especificar uma política de recursos de origem cruzada nos cabeçalhos das respostas:"
+    "message": "Para usar este recurso de uma origem diferente, o servidor tem de especificar uma política de recursos de origem cruzada nos cabeçalhos das respostas:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Para utilizar este recurso de uma origem diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
+    "message": "Para usar este recurso de uma origem diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Para utilizar este recurso de um site diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
+    "message": "Para usar este recurso de um site diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
   },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "Ver dados analisados"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Ver certificado"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Escolha esta opção se o recurso e o documento forem publicados a partir do mesmo site."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(da cache do disco)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Geral"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Saiba mais"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Saiba mais no separador de problemas"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Escolha esta opção apenas se um Website arbitrário que inclua este recurso não impuser um risco à segurança."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Só estão disponíveis cabeçalhos provisórios porque este pedido não foi enviado pela rede e, em vez disso, foi publicado a partir de uma cache local, que não armazena os cabeçalhos do pedido original. Desative a cache para ver os cabeçalhos do pedido completos."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "São apresentados cabeçalhos provisórios."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "São apresentados cabeçalhos provisórios. Desative a cache para ver os cabeçalhos completos."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Não processados"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Código de estado"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "O carregamento deste documento foi bloqueado num iframe com um atributo sandbox porque o documento especificou uma política de abertura de origem cruzada."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Para incorporar este frame no seu documento, a resposta precisa de permitir a política de incorporação de origem cruzada ao especificar o seguinte cabeçalho da resposta:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Para usar este recurso de uma origem diferente, o servidor tem de especificar uma política de recursos de origem cruzada nos cabeçalhos das respostas:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Para usar este recurso de uma origem diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Para usar este recurso de um site diferente, o servidor pode tornar o cabeçalho da resposta da política de recursos de origem cruzada menos rígido:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Um argumento fornecido pelo cliente tem um formato incorreto ou é inválido."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "conteúdos com erros de certificados"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "ativado"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ClientHello encriptado"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Sinalizado pela Navegação segura do Google"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Troca de chaves"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Grupo de troca de chaves"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ID de registo"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Descrição geral de segurança"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Assinatura do servidor"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Mostrar detalhes completos"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Desconhecido/cancelado"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "desconhecido"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "válido e fidedigno"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Adicionar padrão…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Adicionar automaticamente scripts de terceiros conhecidos à lista de itens a ignorar"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Adicionar origens do campo x_google_ignoreList dos mapas de origem à lista de itens a ignorar"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Comportamento"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Adicionar"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "URL de símbolos DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL do mapa de origem: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Adicionar mapa de origem…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Adicionar informações de depuração DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Os ficheiros associados estão disponíveis através da árvore de ficheiros ou {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Criada"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Contém fontes originais"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Eliminar"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Implementada"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Contém origens finais que o navegador vê"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Excluir pasta"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Encerramento ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Não foi possível abrir o inspetor de memória linear: falha ao localizar o buffer."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Exceção"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Agrupar ficheiros por Criados/Implementados"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Limpar configuração"
@@ -9948,7 +10209,7 @@
     "message": "Largue a pasta do espaço de trabalho aqui"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Agrupar por Criada/Implementada (experimental)"
+    "message": "Agrupar por Criados/Implementados"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Agrupar por pasta"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "O endereço tem de ser um número entre {PH1} e {PH2}."
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Não foi possível abrir o inspetor de memória linear: falha ao localizar o buffer."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Sem inspeções abertas"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Vídeo e documentação"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Saiba mais"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Envie-nos o seu feedback."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Envie feedback"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Clique para abrir o Painel de rede e mostrar o pedido para o URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Sem propriedades"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Sem getter da propriedade"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Mostrar tudo: {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "desconhecido"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<ilegível>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "O valor não está acessível para o depurador"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<valor indisponível>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "vazio"

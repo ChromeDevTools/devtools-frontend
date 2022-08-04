@@ -1008,7 +1008,7 @@
     "message": "הצגת הרינדור"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "החלפת מצב לאילוץ צבע של prefers-color-scheme ב-CSS"
+    "message": "החלפת מצב למדיה של CSS עם העדפה לערכת צבעים"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "לקות ראייה"
@@ -1410,7 +1410,10 @@
     "message": "האפשרות getUserMedia() לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "האפשרות RTCPeerConnectionIceErrorEvent.hostCandidate הוצאה משימוש. במקומה יש להשתמש באפשרות RTCPeerConnectionIceErrorEvent.address או RTCPeerConnectionIceErrorEvent.port."
+    "message": "האפשרות RTCPeerConnectionIceErrorEvent.hostCandidate הוצאה משימוש. במקומה יש להשתמש באפשרות RTCPeerConnectionIceErrorEvent.address או באפשרות RTCPeerConnectionIceErrorEvent.port."
+  },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "המקור של המוכר ונתונים שרירותיים מאירוע של קובץ השירות (service worker)‏ canmakepayment הוצאו משימוש ויוסרו: topOrigin‏, paymentRequestOrigin‏, methodData‏, modifiers."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "האתר שלח בקשה למשאב משנה מרשת שיש לו גישה אליה רק בגלל שלמשתמשים שלו יש הרשאות למיקום הרשת. הבקשות האלה חושפות שרתים ומכשירים שלא גלויים לכולם לאינטרנט, ומגבירות את הסיכון למתקפת זיוף של בקשה בין אתרים (CSRF) או לדליפת מידע. כדי להפחית את הסיכונים האלה, מערכת Chrome מוציאה משימוש בקשות למשאבי משנה שאינם גלויים לכולם כשהן מגיעות מהקשרים לא מאובטחים, ובקרוב המערכת תתחיל לחסום אותן."
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "WebSQL בהקשרים לא מאובטחים הוצא משימוש ויוסר ב-M107. יש להשתמש ב-Web Storage או ב-Indexed Database."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "רכיב <source src> עם הורה מסוג <picture> נחשב ללא תקין, והמערכת מתעלמת ממנו. במקומו יש להשתמש במאפיין <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "האפשרות window.webkitStorageInfo הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.webkitTemporaryStorage או navigator.webkitPersistentStorage."
+    "message": "האפשרות window.webkitStorageInfo הוצאה משימוש. במקומה יש להשתמש באפשרות navigator.storage רגילה."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "בקשות למשאבי משנה שכתובות ה-URL שלהן מכילות פרטי כניסה מוטמעים (למשל https://user:pass@host/) חסומות."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "פרוטוקול Thread {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "worklet של מגיש הצעות המחיר"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "worklet של מגיש הצעות המחיר – {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker ייעודי"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "worklet של בית העסק"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "worklet של בית העסק — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "פרוטוקול Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "worklet של מכרזים"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "worklet של מכרזים – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "שירות worklet של מכרזים"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "שירות worklet של מכרזים – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(אינדקס)"
@@ -2268,7 +2298,7 @@
     "message": "שם"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
-    "message": "רוצה עזרה? מידע נוסף מופיע בכתובת {PH1}."
+    "message": "דרושה לך עזרה? מידע נוסף מופיע בכתובת {PH1}."
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "כתובת URL של הערה חדשה"
@@ -2320,6 +2350,9 @@
   },
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "סמל של מניפסט ראשי מ-{PH1}"
+  },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "רכיבי handler של פרוטוקול"
   },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} אינו מציין את הגודל שלו במניפסט"
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "שירותים הפועלים ברקע"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: יש להפעיל כדי לגלול לקטע הזה במניפסט"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "מטמון"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "מניפסט"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "בוצעה גלילה אל {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "מניפסט: יש להפעיל כדי לגלול לתחילת המניפסט"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "חלונות פתוחים"
@@ -2577,7 +2619,7 @@
     "message": "פריטי אחסון של DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} נוקו"
+    "message": "פריטי אחסון של DOM נוקו"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "מספר הרשומות שמוצגות בטבלה: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "המסגרת הזו נוצרה באופן פרוגרמטי. ב-stack trace מוצג איפה זה קרה."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "הסקריפט שיצר את המודעה"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "פרטים מבודדים מרובי מקורות"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "הצגת הפרטים"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "מופעל."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "העיבוד מראש עדיין לא תומך ב-AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "טעינת המשאב חסומה על ידי הלקוח."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "הדף מבקש אישור לקוח, שלא מתאים לדף מוסתר כמו במצב של עיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקורות שונים לאחר הטעינה. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL ממקור שונה. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "דף שעבר עיבוד מראש ננטש מסיבות לא ידועות."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "שגיאה מסוג DidFailLoadWithError אירעה במהלך העיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "ההורדה אסורה במצב עיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "עיבוד מראש שהופעל פנימית על ידי Chrome (למשל, עיבוד מראש של סרגל הכתובות) בוטל, כי הניווט מופנה לדף אחר ממקורות שונים."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "עיבוד מראש שהופעל פנימית על ידי Chrome (למשל, עיבוד מראש של סרגל הכתובות) נכבה סופית בדיסטרקטור."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "עיבוד מראש שהופעל פנימית על ידי Chrome (למשל, עיבוד מראש של סרגל הכתובות) בוטל, כי הניווט מופנה לדף אחר מאותו מקור."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "רק ניווט ל-HTTP(S) מותר בעיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL אחרת שאינה HTTP(S). ניתן לבצע עיבוד מראש רק בדפי HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "התכונה 'עיבוד מראש' לא תומכת בבקשות לאימות מממשק המשתמש."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "אין תמיכה בעיבוד מראש במכשירים עם נפח זיכרון נמוך."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "ניווטים לאחר הניווט הראשוני של העיבוד מראש אסורים"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "חלה חריגה מהמספר המקסימלי של תהליכי עיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "העיבוד מראש מבוטל על ידי מסגרת של תוכן מעורב."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "נעשה שימוש ב-API אסור על ידי הדף שעבר עיבוד מראש"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "הניווט הראשוני של העיבוד מראש לא הצליח בגלל שהשרת החזיר קוד סטטוס שאינו 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "דף העיבוד מראש לא מגיע לתוצאה."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "בקשת הניווט חסומה על ידי CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "אירעה שגיאה בחיבור לרשת במהלך תהליך העיבוד מראש."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "הדף שעבר עיבוד מראש קרס."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "תהליך העיבוד לדף שעובר עיבוד מראש הופסק."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "שגיאת אישור SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "הכרטיסייה הופסקה."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "הכרטיסייה פועלת ברקע"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "העיבוד מראש לא מופעל ונכבה סופית באמצעות הטריגר."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "צריך לטעון מחדש אחרי UserAgentOverride."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "בחירת handler של פרוטוקול"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "מניפסט"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "דרושה לך עזרה? מידע נוסף מופיע בכתובת {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "נמצא רישום חוקי של handler של פרוטוקול ב-{PH1}. כשהאפליקציה מותקנת, יש לבדוק את הפרוטוקולים הרשומים."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "רישום handlers של פרוטוקול כתובת URL ל-PWA"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "יש להגדיר רכיבי handler של פרוטוקולים ב-{PH1}, כדי לרשום את האפליקציה כ-handler לפרוטוקולים בהתאמה אישית כשהאפליקציה מותקנת."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "פרוטוקול בדיקה"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "פרמטר של שאילתה או נקודת קצה (endpoint) עבור handler של פרוטוקול"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "יעד"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "הצגת מקורות המידע של המפתחים"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "נכס שהוצא משימוש"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "כלל לא פעיל"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "כדי לפתור את הבעיה, צריך לשנות את רכיבי ההורה {EXISTING_PARENT_ELEMENT_RULE} ל-{TARGET_PARENT_ELEMENT_RULE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "לרכיב ההורה יש כלל {REASON_RULE_CODE}, לכן לרכיב {AFFECTED_RULE_CODE} אין השפעה"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "כדי שהנכס הזה יפעל, יש להסיר או לשנות את הערך של {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "לרכיב הזה יש כלל {REASON_RULE_CODE}, ולכן לכלל {AFFECTED_RULE_CODE} אין השפעה."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "הוספת מחלקה חדשה"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "הפעלת שכבת העל של הגלילה-הצמדה"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "כניסה למצב בידוד"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "יציאה ממצב בידוד"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "הרחבה חוזרת"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "שם מאפיין לא ידוע"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "שכבה עליונה"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "המערכת מתעלמת מהרכיב"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "הצגת התגים"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "מידע נוסף"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "נתיבי ניווט של עץ DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "שגיאה"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "גורם השגיאה:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "קוד שגיאה:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "נתונים:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "קבוצת שגיאה:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "דוח קריסות:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "סינון הודעות ביומן"
   },
@@ -7287,19 +7488,16 @@
     "message": "מידע נוסף על כרטיסיית הבעיות"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "יש לבחור את האפשרות הזאת רק אם אתר שרירותי, הכולל את מקור המידע הזה, אינו מהווה סיכון אבטחה."
+    "message": "יש לבחור את האפשרות הזאת רק אם אתר שרירותי, שכולל את מקור המידע הזה, לא מהווה סיכון אבטחה."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "הבקשה הזו לא נשלחה דרך הרשת אלא הוצגה ממטמון מקומי, שלא מאוחסנות בו כותרות מקוריות של בקשות, לכן יש רק כותרות זמניות. כדי לראות את הכותרות המלאות של הבקשות, יש להשבית את המטמון."
+    "message": "הבקשה הזו לא נשלחה דרך הרשת אלא הוצגה ממטמון מקומי שלא מאוחסנות בו כותרות מקוריות של בקשות, ולכן יש רק כותרות זמניות. כדי לראות את הכותרות המלאות של הבקשות, יש להשבית את המטמון."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "כותרות זמניות מוצגות"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "כותרות זמניות מוצגות. יש להשבית את המטמון כדי לראות את הכותרות בשלמותן."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "תועד שיוך עם trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "מדיניות הגורם המפנה"
@@ -7326,10 +7524,10 @@
     "message": "קוד סטטוס"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "טעינת המסמך הזה נחסמה ב-iframe עם מאפיין sandbox מכיוון שבמסמך צוינה מדיניות פתיחה מרובת מקורות."
+    "message": "טעינת המסמך הזה נחסמה ב-iframe עם מאפיין sandbox מכיוון שבמסמך צוינה מדיניות פתיחה ממקורות שונים."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "כדי להטמיע את המסגרת הזו במסמך, יש להפעיל את מדיניות כלי ההטמעה ממקורות מרובים בתגובה על ידי ציון כותרת התגובה הבאה:"
+    "message": "כדי להטמיע את המסגרת הזו במסמך, יש להפעיל את המדיניות של כלי ההטמעה ממקורות שונים בתגובה על ידי ציון כותרת התגובה הבאה:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "כדי להשתמש במשאב הזה ממקור אחר, השרת צריך לציין את המדיניות בנושא משאבים ממקורות שונים בכותרות התגובה:"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "הצגת אישור"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "יש לבחור באפשרות זו אם המידע והמסמך מוצגים מאותו האתר."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ממטמון האחסון)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "כללי"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "מידע נוסף"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "מידע נוסף על כרטיסיית הבעיות"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "יש לבחור את האפשרות הזאת רק אם אתר שרירותי, שכולל את מקור המידע הזה, לא מהווה סיכון אבטחה."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "הבקשה הזו לא נשלחה דרך הרשת אלא הוצגה ממטמון מקומי שלא מאוחסנות בו כותרות מקוריות של בקשות, ולכן יש רק כותרות זמניות. כדי לראות את הכותרות המלאות של הבקשות, יש להשבית את המטמון."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "כותרות זמניות מוצגות."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "כותרות זמניות מוצגות. יש להשבית את המטמון כדי לראות את הכותרות בשלמותן."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "גולמי"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "קוד סטטוס"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "טעינת המסמך הזה נחסמה ב-iframe עם מאפיין sandbox מכיוון שבמסמך צוינה מדיניות פתיחה ממקורות שונים."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "כדי להטמיע את המסגרת הזו במסמך, יש להפעיל את המדיניות של כלי ההטמעה ממקורות שונים בתגובה על ידי ציון כותרת התגובה הבאה:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "כדי להשתמש במשאב הזה ממקור אחר, השרת צריך לציין את המדיניות בנושא משאבים ממקורות שונים בכותרות התגובה:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "כדי להשתמש במשאב הזה ממקור אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "כדי להשתמש במשאב הזה מאתר אחר, ייתכן שהשרת יחיל את המדיניות בנושא משאבים ממקורות שונים באופן חלקי על כותרת התגובה:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "התבנית של ארגומנט שסופק על ידי לקוח שגויה, או שהארגומנט לא חוקי מסיבה אחרת."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "תוכן עם שגיאות אישור"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "מופעל"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ClientHello מוצפן"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "סומן על ידי 'גלישה בטוחה של Google'"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "חילופי מפתחות"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "קבוצת Key exchange"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "מזהה יומן רישום"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "סקירה כללית של אבטחה"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "חתימת השרת"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "הצגת הפרטים המלאים"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "לא ידוע / מבוטל"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "לא ידוע"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "תקין ומהימן"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "הוספת דפוס מתבצעת…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "הוספת סקריפטים ידועים של צד שלישי באופן אוטומטי לרשימת הפריטים להתעלמות."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "הוספת מקורות מהשדה x_google_ignoreList ממיפוי המקור לרשימת הפריטים להתעלמות"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "התנהגות"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "הוספה"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "כתובת URL של סמלי DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "כתובת ה-URL של מפת המקור: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "הוספת מפת מקור…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "הוספת מידע על תוצאות ניפוי הבאגים של DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "הקבצים המשויכים זמינים דרך עץ הקבצים או בהקשת {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "כפי שנוצר"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "מכיל מקורות מקוריים"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "מחיקה"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "פרוס"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "מכיל מקורות סופיים שהדפדפן רואה"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "אי-הכללה של תיקייה"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "סגירה ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "לא ניתן היה לפתוח את מפקח הזיכרון הליניארי: נכשל איתור מאגר הנתונים הזמני."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "חריג"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "‎⌘+Enter‎"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "קיבוץ קבצים לפי 'כפי שנוצר'/'פרוס'"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ניקוי ההגדרות האישיות"
@@ -9948,7 +10209,7 @@
     "message": "כאן יש לשחרר את התיקייה של סביבת העבודה"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "קיבוץ לפי 'כפי שנוצר'/'פרוס' (ניסיוני)"
+    "message": "קיבוץ לפי 'כפי שנוצר'/'פרוס'"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "קיבוץ לפי תיקייה"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "הכתובת חייבת להיות מספר בין {PH1} לבין {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "לא ניתן היה לפתוח את מפקח הזיכרון הליניארי: נכשל איתור מאגר הנתונים הזמני."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "אין בדיקות פתוחות"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "סרטונים ותיעוד"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "מידע נוסף"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "נשמח לקבל ממך משוב."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "שליחת משוב"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "יש ללחוץ כדי לפתוח את החלונית 'רשת' ולהציג את הבקשה של כתובת ה-URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "אין מאפיינים"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "אין getter של מאפיין"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "הצגת כל {PH1} הפריטים"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "לא ידוע"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<לא קריא>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "הערך לא נגיש לכלי לניפוי באגים"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<הערך לא זמין>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "ריק"

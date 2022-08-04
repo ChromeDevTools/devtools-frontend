@@ -50,7 +50,8 @@ describe('Source Panel Quick Open', async () => {
     assert.deepEqual(list, ['multi-workers.js', 'multi-workers.min.js', 'multi-workers-sourcemap.html']);
   });
 
-  it('Does not list ignore-listed files', async () => {
+  // Flaky on Mac.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1350083] Does not list ignore-listed files', async () => {
     await enableExperiment('justMyCode');
     await setIgnoreListPattern('workers.js');
     await goToResource(targetPage);

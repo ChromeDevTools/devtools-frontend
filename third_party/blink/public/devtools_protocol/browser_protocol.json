@@ -991,7 +991,8 @@
                         "ExcludeSameSiteLax",
                         "ExcludeSameSiteStrict",
                         "ExcludeInvalidSameParty",
-                        "ExcludeSamePartyCrossPartyContext"
+                        "ExcludeSamePartyCrossPartyContext",
+                        "ExcludeDomainNonASCII"
                     ]
                 },
                 {
@@ -1006,7 +1007,8 @@
                         "WarnSameSiteStrictCrossDowngradeLax",
                         "WarnSameSiteLaxCrossDowngradeStrict",
                         "WarnSameSiteLaxCrossDowngradeLax",
-                        "WarnAttributeValueExceedsMaxSize"
+                        "WarnAttributeValueExceedsMaxSize",
+                        "WarnDomainNonASCII"
                     ]
                 },
                 {
@@ -1665,7 +1667,6 @@
                         "ClientMetadataHttpNotFound",
                         "ClientMetadataNoResponse",
                         "ClientMetadataInvalidResponse",
-                        "ClientMetadataMissingPrivacyPolicyUrl",
                         "DisabledInSettings",
                         "ErrorFetchingSignin",
                         "InvalidSigninResponse",

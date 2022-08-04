@@ -703,6 +703,7 @@ export namespace Audits {
     ExcludeSameSiteStrict = 'ExcludeSameSiteStrict',
     ExcludeInvalidSameParty = 'ExcludeInvalidSameParty',
     ExcludeSamePartyCrossPartyContext = 'ExcludeSamePartyCrossPartyContext',
+    ExcludeDomainNonASCII = 'ExcludeDomainNonASCII',
   }
 
   export const enum CookieWarningReason {
@@ -715,6 +716,7 @@ export namespace Audits {
     WarnSameSiteLaxCrossDowngradeStrict = 'WarnSameSiteLaxCrossDowngradeStrict',
     WarnSameSiteLaxCrossDowngradeLax = 'WarnSameSiteLaxCrossDowngradeLax',
     WarnAttributeValueExceedsMaxSize = 'WarnAttributeValueExceedsMaxSize',
+    WarnDomainNonASCII = 'WarnDomainNonASCII',
   }
 
   export const enum CookieOperation {
@@ -1116,7 +1118,6 @@ export namespace Audits {
     ClientMetadataHttpNotFound = 'ClientMetadataHttpNotFound',
     ClientMetadataNoResponse = 'ClientMetadataNoResponse',
     ClientMetadataInvalidResponse = 'ClientMetadataInvalidResponse',
-    ClientMetadataMissingPrivacyPolicyUrl = 'ClientMetadataMissingPrivacyPolicyUrl',
     DisabledInSettings = 'DisabledInSettings',
     ErrorFetchingSignin = 'ErrorFetchingSignin',
     InvalidSigninResponse = 'InvalidSigninResponse',

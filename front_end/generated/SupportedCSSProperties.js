@@ -1290,8 +1290,7 @@ export const generatedProperties = [
   "keywords": [
    "normal",
    "inline-size",
-   "size",
-   "style"
+   "size"
   ],
   "name": "container-type"
  },
@@ -4073,8 +4072,7 @@ export const generatedPropertyValues = {
   "values": [
    "normal",
    "inline-size",
-   "size",
-   "style"
+   "size"
   ]
  },
  "content-visibility": {

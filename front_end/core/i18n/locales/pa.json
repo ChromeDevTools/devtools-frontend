@@ -1008,7 +1008,7 @@
     "message": "ਰੈਂਡਰਿੰਗ ਦਿਖਾਓ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "forces CSS prefers-color-scheme ਰੰਗ ਨੂੰ ਟੌਗਲ ਕਰੋ"
+    "message": "CSS ਮੀਡਿਆ ਵਿਸ਼ੇਸ਼ਤਾ prefers-color-scheme ਨੂੰ ਟੌਗਲ ਕਰੋ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "ਨਜ਼ਰ ਸੰਬੰਧੀ ਸਮੱਸਿਆ"
@@ -1410,7 +1410,10 @@
     "message": "getUserMedia() ਹੁਣ ਅਸੁਰੱਖਿਅਤ ਮੂਲਾਂ 'ਤੇ ਕੰਮ ਨਹੀਂ ਕਰਦਾ। ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਵਰਤਣ ਲਈ, ਤੁਹਾਨੂੰ ਆਪਣੀ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ HTTPS ਵਰਗੇ ਕਿਸੇ ਸੁਰੱਖਿਅਤ ਮੂਲ 'ਤੇ ਸਵਿੱਚ ਕਰਨ ਬਾਰੇ ਵਿਚਾਰ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ। ਹੋਰ ਵੇਰਵਿਆਂ ਲਈ https://goo.gle/chrome-insecure-origins ਦੇਖੋ।"
   },
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਦੀ ਬਜਾਏ RTCPeerConnectionIceErrorEvent.address ਜਾਂ RTCPeerConnectionIceErrorEvent.port ਦੀ ਵਰਤੋਂ ਕਰੋ।"
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਦੀ ਬਜਾਏ RTCPeerConnectionIceErrorEvent.address ਜਾਂ RTCPeerConnectionIceErrorEvent.port ਦੀ ਵਰਤੋਂ ਕਰੋ।"
+  },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "canmakepayment ਸਰਵਿਸ ਵਰਕਰ ਇਵੈਂਟ ਤੋਂ ਪ੍ਰਾਪਤ ਵਪਾਰੀ ਮੂਲ ਅਤੇ ਇਖਤਿਆਰੀ ਡਾਟਾ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ ਅਤੇ ਇਸਨੂੰ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ: topOrigin, paymentRequestOrigin, methodData, modifiers."
   },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ਵੈੱਬਸਾਈਟ ਨੇ ਕਿਸੇ ਨੈੱਟਵਰਕ ਤੋਂ ਇੱਕ ਅਜਿਹੇ ਉਪ-ਸਰੋਤ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਹੈ ਜਿਸ ਤੱਕ ਇਹ ਸਿਰਫ਼ ਆਪਣੇ ਵਰਤੋਂਕਾਰਾਂ ਦੀ ਵਿਸ਼ੇਸ਼-ਅਧਿਕਾਰ ਪ੍ਰਾਪਤ ਨੈੱਟਵਰਕ ਸਥਿਤੀ ਦੇ ਕਾਰਨ ਪਹੁੰਚ ਕਰ ਸਕਦੀ ਹੈ। ਇਨ੍ਹਾਂ ਬੇਨਤੀਆਂ ਨਾਲ ਗੈਰ-ਜਨਤਕ ਡੀਵਾਈਸ ਅਤੇ ਸਰਵਰ ਇੰਟਰਨੈੱਟ 'ਤੇ ਜਨਤਕ ਹੋ ਜਾਂਦੇ ਹਨ, ਜਿਸ ਕਰਕੇ ਜਾਅਲੀ ਕ੍ਰਾਸ-ਸਾਈਟ ਬੇਨਤੀ (CSRF) ਸੰਬੰਧੀ ਹਮਲੇ ਅਤੇ/ਜਾਂ ਜਾਣਕਾਰੀ ਲੀਕ ਹੋਣ ਦਾ ਜੋਖਮ ਵਧ ਜਾਂਦਾ ਹੈ। ਇਨ੍ਹਾਂ ਜੋਖਮਾਂ ਨੂੰ ਘੱਟ ਕਰਨ ਲਈ, Chrome ਗੈਰ-ਸੁਰੱਖਿਅਤ ਸੰਦਰਭਾਂ ਤੋਂ ਸ਼ੁਰੂ ਕੀਤੇ ਜਾਣ 'ਤੇ ਗੈਰ-ਜਨਤਕ ਉਪ-ਸਰੋਤਾਂ ਲਈ ਬੇਨਤੀਆਂ ਨੂੰ ਨਾਪਸੰਦ ਕਰ ਦਿੰਦਾ ਹੈ ਅਤੇ ਉਨ੍ਹਾਂ ਨੂੰ ਬਲਾਕ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰ ਦੇਵੇਗਾ।"
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "ਤੁਹਾਡਾ ਪਾਰਟਨਰ ਕਿਸੇ ਅਪ੍ਰਚਲਿਤ (D)TLS ਵਰਜਨ ਲਈ ਗੱਲਬਾਤ ਕਰ ਰਿਹਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਨੂੰ ਠੀਕ ਕਰਨ ਲਈ ਆਪਣੇ ਪਾਰਟਨਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "ਗੈਰ-ਸੁਰੱਖਿਅਤ ਸੰਦਰਭਾਂ ਵਿੱਚ WebSQL ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ ਅਤੇ M107 ਵਿੱਚ ਇਸਨੂੰ ਹਟਾ ਦਿੱਤਾ ਜਾਵੇਗਾ। ਕਿਰਪਾ ਕਰਕੇ ਵੈੱਬ ਸਟੋਰੇਜ ਜਾਂ ਕ੍ਰਮ-ਸੂਚੀ ਵਾਲਾ ਡਾਟਾਬੇਸ ਵਰਤੋ।"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> ਪੇਰੈਂਟ ਵਾਲਾ <source src> ਅਵੈਧ ਹੈ ਅਤੇ ਇਸ ਲਈ ਇਸਨੂੰ ਅਣਡਿੱਠ ਕੀਤਾ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਦੀ ਬਜਾਏ <source srcset> ਦੀ ਵਰਤੋਂ ਕਰੋ।"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਦੀ ਬਜਾਏ navigator.webkitTemporaryStorage ਜਾਂ navigator.webkitPersistentStorage ਦੀ ਵਰਤੋਂ ਕਰੋ।"
+    "message": "window.webkitStorageInfo ਨੂੰ ਨਾਪਸੰਦ ਕੀਤਾ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਇਸਦੀ ਬਜਾਏ ਮਿਆਰੀ navigator.storage ਦੀ ਵਰਤੋਂ ਕਰੋ।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ਉਨ੍ਹਾਂ ਉਪ-ਸਰੋਤ ਬੇਨਤੀਆਂ ਨੂੰ ਬਲਾਕ ਕੀਤਾ ਗਿਆ ਹੈ ਜਿਨ੍ਹਾਂ ਦੇ URL ਵਿੱਚ ਪਰੋਏ ਹੋਏ ਕ੍ਰੀਡੈਂਸ਼ੀਅਲ (ਜਿਵੇਂ ਕਿ https://user:pass@host/) ਸ਼ਾਮਲ ਹਨ।"
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "ਥ੍ਰੈੱਡ {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "ਬੋਲੀ ਲਗਾਉਣ ਵਾਲਾ ਵਰਕਲੈੱਟ"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "ਬੋਲੀ ਲਗਾਉਣ ਵਾਲਾ ਵਰਕਲੈੱਟ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "ਸਮਰਪਿਤ Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "ਵਿਕਰੇਤਾ ਵਰਕਲੈੱਟ"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "ਵਿਕਰੇਤਾ ਵਰਕਲੈੱਟ — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "ਥ੍ਰੈੱਡ {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "ਨਿਲਾਮੀ ਵਰਕਲੈੱਟ"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "ਨਿਲਾਮੀ ਵਰਕਲੈੱਟ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "ਨਿਲਾਮੀ ਵਰਕਲੈੱਟ ਸੇਵਾ"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "ਨਿਲਾਮੀ ਵਰਕਲੈੱਟ ਸੇਵਾ — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(ਕ੍ਰਮ-ਸੂਚੀ)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "{PH1} ਤੋਂ ਮੁੱਖ ਮੈਨੀਫ਼ੈਸਟ ਪ੍ਰਤੀਕ"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰ"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} ਮੈਨੀਫ਼ੈਸਟ ਵਿੱਚ ਆਪਣਾ ਆਕਾਰ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕਰਦਾ"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "ਬੈਕਗ੍ਰਾਊਂਡ ਸੇਵਾਵਾਂ"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: ਮੈਨੀਫ਼ੈਸਟ ਵਿੱਚ ਇਸ ਸੈਕਸ਼ਨ ਤੱਕ ਸਕ੍ਰੋਲ ਕਰਨਾ ਚਾਲੂ ਕਰੋ"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "ਕੈਸ਼ੇ"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "ਮੈਨੀਫ਼ੈਸਟ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "{PH1} ਤੱਕ ਸਕ੍ਰੋਲ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "ਮੈਨੀਫ਼ੈਸਟ: ਮੈਨੀਫ਼ੈਸਟ ਦੇ ਸਿਖਰ ਤੱਕ ਸਕ੍ਰੋਲ ਕਰਨਾ ਚਾਲੂ ਕਰੋ"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "ਖੁੱਲ੍ਹੀਆਂ ਵਿੰਡੋ"
@@ -2577,7 +2619,7 @@
     "message": "DOM ਸਟੋਰੇਜ ਆਈਟਮਾਂ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} ਨੂੰ ਕਲੀਅਰ ਕਰੋ"
+    "message": "DOM ਸਟੋਰੇਜ ਆਈਟਮਾਂ ਕਲੀਅਰ ਕੀਤੀਆਂ ਗਈਆਂ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "ਸਾਰਨੀ ਵਿੱਚ ਦਿਖਾਈਆਂ ਗਈਆਂ ਐਂਟਰੀਆਂ ਦੀ ਗਿਣਤੀ: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "ਇਹ ਫ੍ਰੇਮ ਪ੍ਰੋਗਰਾਮਤਮਿਕ ਤੌਰ 'ਤੇ ਬਣਾਇਆ ਗਿਆ ਸੀ। stack trace ਦਿਖਾਉਂਦਾ ਹੈ ਕਿ ਇਸ ਨੂੰ ਕਿੱਥੇ ਬਣਾਇਆ ਗਿਆ ਸੀ।"
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "ਰਚਨਾਕਾਰ ਵਿਗਿਆਪਨ ਸਕ੍ਰਿਪਟ"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "ਵਖਰੇ ਕੀਤੇ ਗਏ ਕ੍ਰੌਸ-ਮੂਲ"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "ਵੇਰਵੇ ਦਿਖਾਓ"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "ਕਿਰਿਆਸ਼ੀਲ ਕੀਤੀ ਗਈ।"
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "ਪ੍ਰੀ-ਰੇਂਡਰਿੰਗ ਅਜੇ ਤੱਕ AudioContext API ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦੀ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "ਸਰੋਤ ਲੋਡ ਕਰਨ ਦੀ ਸੁਵਿਧਾ ਨੂੰ ਕਲਾਇੰਟ ਨੇ ਬਲਾਕ ਕਰ ਦਿੱਤਾ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "ਪੰਨਾ ਅਜਿਹੇ ਕਲਾਇੰਟ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੀ ਬੇਨਤੀ ਕਰ ਰਿਹਾ ਹੈ, ਜੋ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਵਰਗੇ ਲੁਕਵੇਂ ਪੰਨੇ ਲਈ ਢੁਕਵਾਂ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤਾ ਪੰਨਾ ਲੋਡ ਕਰਨ ਤੋਂ ਬਾਅਦ ਕ੍ਰੌਸ-ਮੂਲ ਦੇ URL 'ਤੇ ਨੈਵੀਗੇਟ ਹੋ ਗਿਆ। ਫ਼ਿਲਹਾਲ ਕ੍ਰੌਸ-ਮੂਲ ਵਾਲੇ ਪੰਨਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "ਉਸ URL ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਗਈ ਜਿਸਨੂੰ ਕਿਸੇ ਕ੍ਰੌਸ-ਮੂਲ URL 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਗਿਆ ਹੈ। ਫ਼ਿਲਹਾਲ ਕ੍ਰੌਸ-ਮੂਲ ਵਾਲੇ ਪੰਨਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "ਅਗਿਆਤ ਕਾਰਨਾਂ ਕਰਕੇ ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤਾ ਪੰਨਾ ਛੱਡ ਦਿੱਤਾ ਗਿਆ।"
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਦੌਰਾਨ DidFailLoadWithError ਹੋ ਗਈ।"
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰ ਵਿੱਚ ਡਾਊਨਲੋਡ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Chrome ਦੀ ਅੰਦਰੂਨੀ ਪ੍ਰਕਿਰਿਆ ਵੱਲੋਂ ਟ੍ਰਿਗਰ ਕੀਤੀ ਗਈ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ (ਜਿਵੇਂ ਕਿ, ਓਮਨੀਬਾਕਸ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ) ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ ਕਿਉਂਕਿ ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਕਿਸੇ ਹੋਰ ਕ੍ਰੌਸ-ਮੂਲ ਵਾਲੇ ਪੰਨੇ 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Chrome ਦੀ ਅੰਦਰੂਨੀ ਪ੍ਰਕਿਰਿਆ ਵੱਲੋਂ ਟ੍ਰਿਗਰ ਕੀਤੀ ਗਈ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ (ਜਿਵੇਂ ਕਿ, ਓਮਨੀਬਾਕਸ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ) ਨੂੰ ਡਿਸਟ੍ਰਕਟਰ ਵਿੱਚ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Chrome ਦੀ ਅੰਦਰੂਨੀ ਪ੍ਰਕਿਰਿਆ ਵੱਲੋਂ ਟ੍ਰਿਗਰ ਕੀਤੀ ਗਈ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ (ਜਿਵੇਂ ਕਿ, ਓਮਨੀਬਾਕਸ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ) ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ ਕਿਉਂਕਿ ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਕਿਸੇ ਹੋਰ ਸਮਾਨ-ਮੂਲ ਵਾਲੇ ਪੰਨੇ 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "ਪ੍ਰੀਰੈਂਡਰ ਲਈ ਸਿਰਫ਼ HTTP ਨੈਵੀਗੇਸ਼ਨ ਦੀ ਆਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "ਉਸ URL ਨੂੰ ਪਹਿਲਾਂ ਹੀ ਰੈਂਡਰ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ ਗਈ ਜਿਸਨੂੰ ਕਿਸੇ ਗੈਰ-HTTP URL 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਗਿਆ ਹੈ। ਸਿਰਫ਼ HTTP ਪੰਨਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰ UI ਤੋਂ ਪ੍ਰਾਪਤ ਪ੍ਰਮਾਣੀਕਰਨ ਦੀਆਂ ਬੇਨਤੀਆਂ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦਾ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "ਘੱਟ-ਮੈਮੋਰੀ ਵਾਲੇ ਡੀਵਾਈਸਾਂ ਲਈ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "ਸ਼ੁਰੂਆਤੀ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਨੈਵੀਗੇਸ਼ਨ ਤੋਂ ਬਾਅਦ ਨੈਵੀਗੇਸ਼ਨਾਂ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਦੀ ਵੱਧੋ-ਵੱਧ ਸੰਖਿਆ ਪਾਰ ਹੋ ਗਈ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "ਰਲਵੀ ਸਮੱਗਰੀ ਵਾਲੇ ਫ੍ਰੇਮ ਵੱਲੋਂ ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਨੂੰ ਰੱਦ ਕੀਤਾ ਗਿਆ।"
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤੇ ਪੰਨੇ ਵੱਲੋਂ ਅਜਿਹੇ API ਦੀ ਵਰਤੋਂ ਕੀਤੀ ਗਈ, ਜਿਸਦੀ ਆਗਿਆ ਨਹੀਂ ਸੀ"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "ਸ਼ੁਰੂਆਤੀ ਪ੍ਰੀ-ਰੇਂਡਰਿੰਗ ਨੈਵੀਗੇਸ਼ਨ ਅਸਫਲ ਰਹੀ ਕਿਉਂਕਿ ਸਰਵਰ ਗੈਰ-200/204/205 ਸਥਿਤੀ ਕੋਡ ਦਿਖਾ ਰਿਹਾ ਸੀ।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਪੰਨਾ ਅਖੀਰ ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "ਨੇਵੀਗੇਸ਼ਨ ਦੀ ਬੇਨਤੀ CSP ਵੱਲੋਂ ਬਲਾਕ ਕੀਤੀ ਗਈ।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਦੌਰਾਨ ਨੈੱਟਵਰਕ ਗੜਬੜ ਦਾ ਸਾਹਮਣਾ ਕਰਨਾ ਪਿਆ।"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "ਪਹਿਲਾਂ ਤੋਂ ਰੈਂਡਰ ਕੀਤਾ ਪੰਨਾ ਕ੍ਰੈਸ਼ ਹੋ ਗਿਆ।"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰਿੰਗ ਪੰਨੇ ਲਈ ਰੈਂਡਰਰ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਖਤਮ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL ਪ੍ਰਮਾਣ-ਪੱਤਰ ਸੰਬੰਧੀ ਗੜਬੜ।"
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "ਟੈਬ ਨੂੰ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "ਟੈਬ ਬੈਕਗ੍ਰਾਊਂਡ ਵਿੱਚ ਮੌਜੂਦ ਹੈ"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "ਪ੍ਰੀ-ਰੈਂਡਰ ਕਿਰਿਆਸ਼ੀਲ ਨਹੀਂ ਹੈ ਅਤੇ ਟ੍ਰਿਗਰ ਨਾਲ ਇਸਨੂੰ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।"
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "UserAgentOverride ਤੋਂ ਬਾਅਦ ਰੀਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਹੈ।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰ ਚੁਣੋ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "ਮੈਨੀਫ਼ੈਸਟ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "ਕੀ ਮਦਦ ਦੀ ਲੋੜ ਹੈ? {PH1} ਪੜ੍ਹੋ।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "{PH1} ਵਿੱਚ ਵੈਧ ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰ ਰਜਿਸਟਰੇਸ਼ਨ ਮਿਲਿਆ। ਐਪ ਸਥਾਪਤ ਕਰ ਕੇ, ਰਜਿਸਟਰ ਕੀਤੇ ਪ੍ਰੋਟੋਕੋਲਾਂ ਦੀ ਜਾਂਚ ਕਰੋ।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "PWA ਲਈ URL ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰ ਰਜਿਸਟਰੇਸ਼ਨ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "ਐਪ ਸਥਾਪਤ ਹੋਣ 'ਤੇ, ਵਿਉਂਂਤੇ ਪ੍ਰੋਟੋਕੋਲਾਂ ਲਈ ਹੈਂਡਲਰ ਵਜੋਂ ਆਪਣੀ ਐਪ ਨੂੰ ਰਜਿਸਟਰ ਕਰਨ ਵਾਸਤੇ {PH1} ਵਿੱਚ ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰਾਂ ਨੂੰ ਪਰਿਭਾਸ਼ਿਤ ਕਰੋ।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "ਪ੍ਰੋਟੋਕੋਲ ਦੀ ਜਾਂਚ ਕਰੋ"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "ਪ੍ਰੋਟੋਕੋਲ ਹੈਂਡਲਰ ਲਈ ਪੁੱਛਗਿੱਛ ਪੈਰਾਮੀਟਰ ਜਾਂ ਅਖੀਰਲਾ ਬਿੰਦੂ"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "ਮੰਜ਼ਿਲ"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "ਵਿਕਾਸਕਾਰ ਸਰੋਤ ਦਿਖਾਓ"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "ਨਾਪਸੰਦ ਕੀਤੀ ਗਈ ਪ੍ਰਾਪਰਟੀ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "ਅਕਿਰਿਆਸ਼ੀਲ ਨਿਯਮ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਸਮੱਸਿਆ ਨੂੰ ਹੱਲ ਕਰਨ ਲਈ ਮੂਲ ਤੱਤ {EXISTING_PARENT_ELEMENT_RULE} ਨੂੰ {TARGET_PARENT_ELEMENT_RULE} ਵਿੱਚ ਬਦਲੋ।"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "ਮੂਲ ਤੱਤ ਵਿੱਚ {REASON_RULE_CODE} ਨਿਯਮ ਹੈ, ਇਸ ਲਈ ਇਸ ਤੱਤ {AFFECTED_RULE_CODE} ਦਾ ਕੋਈ ਪ੍ਰਭਾਵ ਨਹੀਂ ਹੈ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "ਇਸ ਪ੍ਰਾਪਰਟੀ ਦੇ ਕੰਮ ਕਰਨ ਲਈ, ਕਿਰਪਾ ਕਰਕੇ {REASON_RULE_CODE} ਦਾ ਮੁੱਲ ਹਟਾਓ ਜਾਂ ਬਦਲੋ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "ਇਸ ਤੱਤ ਵਿੱਚ {REASON_RULE_CODE} ਨਿਯਮ ਹੈ, ਇਸ ਲਈ {AFFECTED_RULE_CODE} ਦਾ ਕੋਈ ਪ੍ਰਭਾਵ ਨਹੀਂ ਹੈ।"
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ਨਵੀਂ ਸ਼੍ਰੇਣੀ ਸ਼ਾਮਲ ਕਰੋ"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "ਸਕ੍ਰੋਲ-ਸਨੈਪ ਓਵਰਲੇ ਚਾਲੂ ਕਰੋ"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "ਆਈਸੋਲੇਸ਼ਨ ਮੋਡ ਵਿੱਚ ਦਾਖਲ ਹੋਵੋ"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "ਆਈਸੋਲੇਸ਼ਨ ਮੋਡ ਤੋਂ ਬਾਹਰ ਜਾਓ"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ਲਗਾਤਾਰ ਵਿਸਤਾਰ ਕਰੋ"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ਅਗਿਆਤ ਵਿਸ਼ੇਸ਼ਤਾ ਨਾਮ"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "ਸਭ ਤੋਂ ਉੱਪਰਲੀ ਤਹਿ"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ਅਣਡਿੱਠ ਕੀਤਾ ਗਿਆ"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ਬੈਜ ਦਿਖਾਓ"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ਹੋਰ ਜਾਣੋ"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ਟ੍ਰੀ ਬ੍ਰੈਡਕਰੰਬ"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "ਗੜਬੜ"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "ਗੜਬੜ ਦਾ ਕਾਰਨ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "ਗੜਬੜ ਕੋਡ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "ਡਾਟਾ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "ਗੜਬੜ ਗਰੁੱਪ:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "ਸਟੈਕ ਟ੍ਰੇਸ:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "ਲੌਗ ਸੁਨੇਹੇ ਫਿਲਟਰ ਕਰੋ"
   },
@@ -7248,7 +7449,7 @@
     "message": "ਸਰਗਰਮ client experiment variation IDs ਜੋ ਸਰਵਰ-ਸਾਈਡ ਵਿਹਾਰ ਨੂੰ ਟ੍ਰਿਗਰ ਕਰਦਾ ਹੈ।"
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
-    "message": "ਜੇ ਸਰੋਤ ਅਤੇ ਦਸਤਾਵੇਜ਼ ਇੱਕੋ ਹੀ ਸਾਈਟ ਤੋਂ ਪੇਸ਼ ਕੀਤੇ ਜਾਂਦੇ ਹਨ ਤਾਂ ਇਹ ਵਿਕਲਪ ਚੁਣੋ।"
+    "message": "ਜੇ ਸਰੋਤ ਅਤੇ ਦਸਤਾਵੇਜ਼ ਇੱਕੋ ਹੀ ਸਾਈਟ ਤੋਂ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ, ਤਾਂ ਇਹ ਵਿਕਲਪ ਚੁਣੋ।"
   },
   "panels/network/RequestHeadersView.ts | copyValue": {
     "message": "ਮੁੱਲ ਕਾਪੀ ਕਰੋ"
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "ਆਰਜ਼ੀ ਸਿਰਲੇਖ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ। ਪੂਰੇ ਸਿਰਲੇਖਾਂ ਨੂੰ ਦੇਖਣ ਲਈ ਕੈਸ਼ੇ ਨੂੰ ਬੰਦ ਕਰੋ।"
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "trigger-data ਨਾਲ ਰਿਕਾਰਡ ਕੀਤੀ ਗਈ ਵਿਸ਼ੇਸ਼ਤਾ: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "ਰੈਫਰਲ ਨੀਤੀ"
   },
@@ -7326,19 +7524,19 @@
     "message": "ਸਥਿਤੀ ਕੋਡ"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ਇਸ ਦਸਤਾਵੇਜ਼ ਨੂੰ ਇੱਕ sandbox ਵਿਸ਼ੇਸ਼ਤਾ ਵਾਲੇ iframe ਵਿੱਚ ਲੋਡ ਕਰਨ ਤੋਂ ਬਲਾਕ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ ਕਿਉਂਕਿ ਇਸ ਦਸਤਾਵੇਜ਼ ਨੇ ਇੱਕ ਕ੍ਰੌਸ-ਮੂਲ ਓਪਨਰ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਸੀ।"
+    "message": "ਇਸ ਦਸਤਾਵੇਜ਼ ਨੂੰ sandbox ਵਿਸ਼ੇਸ਼ਤਾ ਵਾਲੇ iframe ਵਿੱਚ ਲੋਡ ਕਰਨ ਤੋਂ ਬਲਾਕ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ ਕਿਉਂਕਿ ਇਸ ਦਸਤਾਵੇਜ਼ ਨੇ ਕ੍ਰੌਸ-ਮੂਲ ਓਪਨਰ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਸੀ।"
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼ ਵਿੱਚ ਇਸ ਫ੍ਰੇਮ ਨੂੰ ਪਰੋਣ ਲਈ, ਜਵਾਬ ਨੂੰ ਹੇਠਾਂ ਦਿੱਤਾ ਜਵਾਬ ਸਿਰਲੇਖ ਨਿਰਧਾਰਿਤ ਕਰਕੇ ਕ੍ਰੌਸ-ਮੂਲ ਪਰੋਈ ਹੋਈ ਨੀਤੀ ਨੂੰ ਚਾਲੂ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
+    "message": "ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼ ਵਿੱਚ ਇਸ ਫ੍ਰੇਮ ਨੂੰ ਪਰੋਣ ਲਈ, ਜਵਾਬ ਨੂੰ ਅੱਗੇ ਦਿੱਤਾ ਜਵਾਬ ਸਿਰਲੇਖ ਨਿਰਧਾਰਿਤ ਕਰ ਕੇ ਕ੍ਰੌਸ-ਮੂਲ ਸੰਬੰਧੀ ਪਰੋਈ ਹੋਈ ਨੀਤੀ ਨੂੰ ਚਾਲੂ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "ਇਸ ਸਰੋਤ ਦੀ ਕਿਸੇ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤੋਂ ਕਰਨ ਲਈ, ਸਰਵਰ ਨੂੰ ਜਵਾਬ ਸਿਰਲੇਖਾਂ ਵਿੱਚ ਕ੍ਰੌਸ ਮੂਲ ਸਰੋਤ ਨਾਲ ਸੰਬੰਧਿਤ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
+    "message": "ਇਸ ਸਰੋਤ ਦੀ ਕਿਸੇ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤੋਂ ਕਰਨ ਲਈ, ਸਰਵਰ ਨੂੰ ਜਵਾਬ ਸਿਰਲੇਖਾਂ ਵਿੱਚ ਕ੍ਰੌਸ ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "ਇਸ ਸਰੋਤ ਦੀ ਇੱਕ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤੋਂ ਕਰਨ ਲਈ, ਸਰਵਰ ਕ੍ਰੌਸ ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡ ਸਕਦਾ ਹੈ:"
+    "message": "ਇਸ ਸਰੋਤ ਨੂੰ ਕਿਸੇ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤਣ ਲਈ, ਸਰਵਰ ਨੂੰ ਕ੍ਰੌਸ-ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਦੇ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡਣਾ ਪਵੇਗਾ:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "ਇਸ ਸਰੋਤ ਨੂੰ ਇੱਕ ਵੱਖਰੀ ਸਾਈਟ ਤੋਂ ਵਰਤਣ ਲਈ, ਸਰਵਰ ਨੂੰ ਕ੍ਰੌਸ ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਦੇ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡਣਾ ਪਵੇਗਾ:"
+    "message": "ਇਸ ਸਰੋਤ ਨੂੰ ਕਿਸੇ ਵੱਖਰੀ ਸਾਈਟ ਤੋਂ ਵਰਤਣ ਲਈ, ਸਰਵਰ ਨੂੰ ਕ੍ਰੌਸ-ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਦੇ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡਣਾ ਪਵੇਗਾ:"
   },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "ਪਾਰਸ ਕੀਤਾ ਗਿਆ ਦੇਖੋ"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੇਖੋ"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "ਜੇ ਸਰੋਤ ਅਤੇ ਦਸਤਾਵੇਜ਼ ਇੱਕੋ ਹੀ ਸਾਈਟ ਤੋਂ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ, ਤਾਂ ਇਹ ਵਿਕਲਪ ਚੁਣੋ।"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ਡਿਸਕ ਕੈਸ਼ੇ ਤੋਂ)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ਸਧਾਰਨ"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "ਹੋਰ ਜਾਣੋ"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "ਸਮੱਸਿਆਵਾਂ ਟੈਬ ਵਿੱਚ ਹੋਰ ਜਾਣੋ"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "ਜੇ ਇਸ ਸਰੋਤ ਸਮੇਤ ਕਿਸੇ ਇਖਤਿਆਰੀ ਵੈੱਬਸਾਈਟ ਤੋਂ ਕੋਈ ਸੁਰੱਖਿਆ ਜੋਖਮ ਨਹੀਂ ਹੈ, ਤਾਂ ਹੀ ਸਿਰਫ਼ ਇਹ ਵਿਕਲਪ ਚੁਣੋ।"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "ਸਿਰਫ਼ ਆਰਜ਼ੀ ਸਿਰਲੇਖ ਉਪਲਬਧ ਹਨ ਕਿਉਂਕਿ ਇਹ ਬੇਨਤੀ ਨੈੱਟਵਰਕ 'ਤੇ ਨਾ ਭੇਜ ਕੇ ਇੱਕ ਸਥਾਨਕ ਕੈਸ਼ੇ ਤੋਂ ਦਿਖਾਈ ਗਈ ਸੀ, ਜਿਸ ਵਿੱਚ ਮੂਲ ਬੇਨਤੀ ਸਿਰਲੇਖਾਂ ਨੂੰ ਸਟੋਰ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ। ਪੂਰੇ ਬੇਨਤੀ ਸਿਰਲੇਖਾਂ ਨੂੰ ਦੇਖਣ ਲਈ ਕੈਸ਼ੇ ਨੂੰ ਬੰਦ ਕਰੋ।"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "ਆਰਜ਼ੀ ਸਿਰਲੇਖ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ।"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "ਆਰਜ਼ੀ ਸਿਰਲੇਖ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ। ਪੂਰੇ ਸਿਰਲੇਖਾਂ ਨੂੰ ਦੇਖਣ ਲਈ ਕੈਸ਼ੇ ਨੂੰ ਬੰਦ ਕਰੋ।"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "ਸਥਿਤੀ ਕੋਡ"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "ਇਸ ਦਸਤਾਵੇਜ਼ ਨੂੰ sandbox ਵਿਸ਼ੇਸ਼ਤਾ ਵਾਲੇ iframe ਵਿੱਚ ਲੋਡ ਕਰਨ ਤੋਂ ਬਲਾਕ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ ਕਿਉਂਕਿ ਇਸ ਦਸਤਾਵੇਜ਼ ਨੇ ਕ੍ਰੌਸ-ਮੂਲ ਓਪਨਰ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਸੀ।"
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼ ਵਿੱਚ ਇਸ ਫ੍ਰੇਮ ਨੂੰ ਪਰੋਣ ਲਈ, ਜਵਾਬ ਨੂੰ ਅੱਗੇ ਦਿੱਤਾ ਜਵਾਬ ਸਿਰਲੇਖ ਨਿਰਧਾਰਿਤ ਕਰ ਕੇ ਕ੍ਰੌਸ-ਮੂਲ ਸੰਬੰਧੀ ਪਰੋਈ ਹੋਈ ਨੀਤੀ ਨੂੰ ਚਾਲੂ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "ਇਸ ਸਰੋਤ ਦੀ ਕਿਸੇ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤੋਂ ਕਰਨ ਲਈ, ਸਰਵਰ ਨੂੰ ਜਵਾਬ ਸਿਰਲੇਖਾਂ ਵਿੱਚ ਕ੍ਰੌਸ ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਨਿਰਧਾਰਿਤ ਕਰਨ ਦੀ ਲੋੜ ਹੈ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "ਇਸ ਸਰੋਤ ਨੂੰ ਕਿਸੇ ਵੱਖਰੇ ਮੂਲ ਤੋਂ ਵਰਤਣ ਲਈ, ਸਰਵਰ ਨੂੰ ਕ੍ਰੌਸ-ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਦੇ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡਣਾ ਪਵੇਗਾ:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "ਇਸ ਸਰੋਤ ਨੂੰ ਕਿਸੇ ਵੱਖਰੀ ਸਾਈਟ ਤੋਂ ਵਰਤਣ ਲਈ, ਸਰਵਰ ਨੂੰ ਕ੍ਰੌਸ-ਮੂਲ ਸਰੋਤ ਨੀਤੀ ਦੇ ਜਵਾਬ ਸਿਰਲੇਖ ਨੂੰ ਛੱਡਣਾ ਪਵੇਗਾ:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "ਕਲਾਇੰਟ ਵੱਲੋਂ ਮੁਹੱਈਆ ਕੀਤਾ ਗਿਆ ਆਰਗੂਮੈਂਟ ਨੁਕਸਦਾਰ ਸੀ ਜਾਂ ਕਿਸੇ ਤਰ੍ਹਾਂ ਨਾਲ ਅਵੈਧ ਸੀ।"
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "ਪ੍ਰਮਾਣ-ਪੱਤਰ ਗੜਬੜਾਂ ਵਾਲੀ ਸਮੱਗਰੀ"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "ਚਾਲੂ ਹੈ"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ਇਨਕ੍ਰਿਪਟਡ ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Google ਸੁਰੱਖਿਅਤ ਬ੍ਰਾਊਜ਼ਿੰਗ ਵੱਲੋਂ ਫਲੈਗ ਕੀਤਾ ਗਿਆ"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "ਕੁੰਜੀ ਐਕਸਚੇਂਜ"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "ਕੁੰਜੀ ਐਕਸਚੇਂਜ ਗਰੁੱਪ"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ਲੌਗ ਆਈਡੀ"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "ਸੁਰੱਖਿਆ ਦੀ ਰੂਪ-ਰੇਖਾ"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "ਸਰਵਰ ਹਸਤਾਖਰ"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "ਪੂਰੇ ਵੇਰਵੇ ਦਿਖਾਓ"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "ਅਗਿਆਤ / ਰੱਦ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "ਅਗਿਆਤ"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "ਵੈਧ ਅਤੇ ਭਰੋਸੇਯੋਗ"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "ਪੈਟਰਨ ਸ਼ਾਮਲ ਕਰੋ..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "ਸੂਚੀ ਨੂੰ ਅਣਡਿੱਠ ਕਰਨ ਲਈ ਸਵੈਚਲਿਤ ਤੌਰ 'ਤੇ ਤੀਜੀ-ਧਿਰ ਦੀਆਂ ਜਾਣੂ ਸਕ੍ਰਿਪਟਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "ਸਰੋਤ ਨਕਸ਼ਿਆਂ ਵਿੱਚ x_google_ignoreList ਖੇਤਰ ਤੋਂ ਸਰੋਤਾਂ ਨੂੰ ਅਣਡਿੱਠ ਸੂਚੀ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "ਕਾਰਵਾਈ"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "ਸ਼ਾਮਲ ਕਰੋ"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "DWARF ਚਿੰਨ੍ਹ URL: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "ਸਰੋਤ ਨਕਸ਼ੇ ਦਾ URL: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "ਸਰੋਤ ਨਕਸ਼ਾ ਸ਼ਾਮਲ ਕਰੋ…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "DWARF ਡੀਬੱਗ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਕਰੋ…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "ਸੰਬੰਧਿਤ ਫ਼ਾਈਲਾਂ, ਫ਼ਾਈਲ ਟ੍ਰੀ ਜਾਂ {PH1} ਰਾਹੀਂ ਉਪਲਬਧ ਹਨ।"
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "ਅਧਿਕਾਰਿਤ"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "ਇਸ ਵਿੱਚ ਮੂਲ ਸਰੋਤ ਸ਼ਾਮਲ ਹਨ"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ਮਿਟਾਓ"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "ਤੈਨਾਤ"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "ਇਸ ਵਿੱਚ ਬ੍ਰਾਊਜ਼ਰ ਵੱਲੋ ਦੇਖੇ ਜਾਣ ਵਾਲੇ ਅੰਤਿਮ ਸਰੋਤ ਸ਼ਾਮਲ ਹਨ"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ਫੋਲਡਰ ਨੂੰ ਬਾਹਰ ਰੱਖੋ"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "ਬੰਦ ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "ਰੇਖਾਬੱਧ ਮੈਮੋਰੀ ਜਾਂਚਕ ਨੂੰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: ਬਫ਼ਰ ਦਾ ਟਿਕਾਣਾ ਲੱਭਣਾ ਅਸਫਲ ਰਿਹਾ।"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "ਅਪਵਾਦ"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "ਅਧਿਕਾਰਿਤ/ਤੈਨਾਤ ਮੁਤਾਬਕ ਫ਼ਾਈਲਾਂ ਗਰੁੱਪਬੱਧ ਕਰੋ"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ਸੰਰੂਪਣ ਕਲੀਅਰ ਕਰੋ"
@@ -9948,7 +10209,7 @@
     "message": "ਇੱਥੇ ਵਰਕਸਪੇਸ ਫੋਲਡਰ ਛੱਡੋ"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "ਅਧਿਕਾਰਿਤ/ਤੈਨਾਤ ਮੁਤਾਬਕ ਗਰੁੱਪਬੱਧ ਕਰੋ (ਪ੍ਰਯੋਗਮਈ)"
+    "message": "ਅਧਿਕਾਰਿਤ/ਤੈਨਾਤ ਮੁਤਾਬਕ ਗਰੁੱਪਬੱਧ ਕਰੋ"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ਫੋਲਡਰ ਮੁਤਾਬਕ ਗਰੁੱਪਬੱਧ ਕਰੋ"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ਪਤਾ {PH1} ਅਤੇ {PH2} ਦੇ ਵਿਚਕਾਰ ਦਾ ਇੱਕ ਨੰਬਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "ਰੇਖਾਬੱਧ ਮੈਮੋਰੀ ਜਾਂਚਕ ਨੂੰ ਖੋਲ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ: ਬਫ਼ਰ ਦਾ ਟਿਕਾਣਾ ਲੱਭਣਾ ਅਸਫਲ ਰਿਹਾ।"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "ਕੋਈ ਖੁੱਲ੍ਹੀਆਂ ਜਾਂਚਾਂ ਨਹੀਂ ਹਨ"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "ਵੀਡੀਓ ਅਤੇ ਦਸਤਾਵੇਜ਼ੀਕਰਨ"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "ਹੋਰ ਜਾਣੋ"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "ਸਾਨੂੰ ਆਪਣਾ ਵਿਚਾਰ ਭੇਜੋ।"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "ਵਿਚਾਰ ਭੇਜੋ"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "ਨੈੱਟਵਰਕ ਪੈਨਲ ਨੂੰ ਖੋਲ੍ਹਣ ਅਤੇ URL ਲਈ ਬੇਨਤੀ ਦਿਖਾਉਣ ਲਈ ਕਲਿੱਕ ਕਰੋ: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "ਕੋਈ ਵਿਸ਼ੇਸ਼ਤਾ ਨਹੀਂ"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "ਕੋਈ ਵਿਸ਼ੇਸ਼ਤਾ ਗੈਟਰ ਨਹੀਂ ਹੈ"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "ਸਾਰੀਆਂ {PH1} ਪੇਸ਼ਕਸ਼ਾਂ ਦਿਖਾਓ"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "ਅਗਿਆਤ"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<ਨਾ-ਪੜ੍ਹਨਯੋਗ>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "ਡੀਬੱਗਰ ਲਈ ਮੁੱਲ ਪਹੁੰਚਯੋਗ ਨਹੀਂ ਹੈ"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<ਮੁੱਲ ਅਣਉਪਲਬਧ ਹੈ>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "ਖਾਲੀ"

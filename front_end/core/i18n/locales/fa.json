@@ -1008,7 +1008,7 @@
     "message": "نمایش پرداز زدن"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "روشن/خاموش کردن رنگ forces CSS prefers-color-scheme"
+    "message": "روشن/ خاموش کردن ویژگی رسانه خدمات خرید مقایسه‌ای prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "نقص بینایی"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate منسوخ شده است. لطفاً درعوض از RTCPeerConnectionIceErrorEvent.address یا RTCPeerConnectionIceErrorEvent.port استفاده کنید."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "داده‌های اختیاری و مبدأ فروشنده از رویداد عامل خدماتی canmakepayment منسوخ شده‌اند و برداشته خواهند شد: topOrigin، paymentRequestOrigin، methodData، modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "این وب‌سایت به‌دلیل جایگاه شبکه امتیازدار کاربرانش، منبعی فرعی را از شبکه‌ای درخواست کرده است که فقط می‌تواند به آن دسترسی داشته باشد. این درخواست‌ها دستگاه‌ها و سرورهای غیرعمومی را درمعرض اینترنت قرار می‌دهد. این امر موجب افزایش خطر نشت اطلاعات و/یا حمله جعل درخواست بین‌سایتی (CSRF) می‌شود. برای کاهش این خطرها، وقتی درخواست‌های ارسالی به منابع فرعی غیرعمومی از بسترهای ناامن ارائه می‌شود، Chrome این درخواست‌ها را منسوخ می‌کند و مسدود خواهد کرد."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "شریک شما درحال مذاکره با نسخه منسوخی از ‎(D)TLS است. لطفاً برای برطرف کردن این مشکل با شریکتان تماس بگیرید."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "WebSQL در بافتارهای ناامن منسوخ شده است و در M107 برداشته خواهد شد. لطفاً از «فضای ذخیره‌سازی وب» یا «پایگاه داده نمایه‌شده» استفاده کنید."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> با مادر <picture> نامعتبر است و درنتیجه نادیده گرفته می‌شود. لطفاً درعوض از <source srcset> استفاده کنید."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo منسوخ شده است. لطفاً درعوض از navigator.webkitTemporaryStorage یا navigator.webkitPersistentStorage استفاده کنید."
+    "message": "window.webkitStorageInfo منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "درخواست‌های منبع فرعی‌ای که نشانی‌های وب آن‌ها حاوی اطلاعات کاربری جاسازی‌شده (مثل https://user:pass@host/) است مسدود می‌شود."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "رشته {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "وُرکلت پیشنهادکننده"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "وُرکلت پیشنهادکننده — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker اختصاصی"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "وُرکلت فروشنده"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "وُرکلت فروشنده — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "رشته {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "وُرکلت حراج"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "وُرکلت حراج — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "خدمات وُرکلت حراج"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "خدمات وُرکلت حراج — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(نمایه)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "نماد مانیفست اصلی از {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "کنترل‌کننده‌های پروتکل"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} اندازه‌اش را در مانیفست مشخص نمی‌کند"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "سرویس‌های پس‌زمینه‌ای"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: برای پیمایش به این بخش در مانیفست، فراخوان دهید"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "حافظهٔ پنهان"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "مانیفست"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "به {PH1} پیمایش شد"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "مانیفست: برای پیمایش به بالای مانیفست، فراخوان دهید"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "پنجره‌های بازشده"
@@ -2577,7 +2619,7 @@
     "message": "موارد فضای ذخیره‌سازی DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} پاک شد"
+    "message": "موارد موجود در فضای ذخیره‌سازی DOM پاک شد"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "تعداد ورودی‌های نشان‌داده‌شده در جدول: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "این قاب بااستفاده از برنامه ایجاد شده است. stack trace نشان می‌دهد این اتفاق کجا رخ داده است."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "متن آگهی سازنده"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "وضعیت منزوی بین‌مبدائی"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "نمایش جزئیات"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "فعال."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "پیش‌پرداز هنوز از AudioContext API پشتیبانی نکرده است."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "کارخواه بار کردن منبع را مسدود کرده است."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "صفحهْ گواهینامه کارخواه را درخواست می‌کند که برای صفحه‌های پنهان نظیر پیش‌پرداز مناسب نیست."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "صفحه پیش‌پردازشده بعداز بارشدن به نشانی وب بین‌مبدائی پیمایش کرد. درحال‌حاضر پیش‌پرداز صفحه‌های بین‌مبدائی مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "تلاش برای پیش‌پرداز نشانی وبی که به نشانی وب بین‌مبدائی هدایت می‌شود. درحال‌حاضر پیش‌پرداز صفحه‌های بین‌مبدائی مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "یکی‌از صفحه‌های پیش‌پردازشده به‌دلایلی نامشخصی رها شد."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "در حین پیش‌پرداز، DidFailLoadWithError رخ داد."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "بارگیری در «پیش‌پرداز» مجاز نیست."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "پیش‌پرداز راه‌اندازی‌شده توسط Chrome داخلی (برای نمونه، پیش‌پرداز Omnibox) لغو شده است زیرا پیمایش به صفحه بین‌مبدائی دیگری هدایت می‌شود."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "پیش‌پرداز راه‌اندازی‌شده توسط Chrome داخلی (برای نمونه، پیش‌پرداز Omnibox) در مخرب تخریب شده است."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "پیش‌پرداز راه‌اندازی‌شده توسط Chrome داخلی (برای نمونه، پیش‌پرداز Omnibox) لغو شده است زیرا پیمایش به صفحه دیگری با مبدأ یکسان هدایت می‌شود."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "فقط پیمایش اچ‌تی‌تی‌پی(اس) برای «پیش‌پرداز» مجاز است."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "تلاش برای پیش‌پرداز نشانی وبی که به نشانی وب غیر-اچ‌تی‌تی‌پی(اس) هدایت کرد. فقط صفحه‌های اچ‌تی‌تی‌پی‌(اس) قابل‌پیش‌پرداز هستند."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "پیش‌پرداز از درخواست‌های احراز هویت ارسالی از میانای کاربری پشتیبانی نمی‌کند."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "پیش‌پرداز در دستگاه‌هایی که حافظه کمی دارند پشتیبانی نمی‌شود."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "پیمایش بعداز پیمایش پیش‌پرداز اولیه مجاز نیست"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "از حداکثر تعداد مجاز پیش‌پرداز فراتر رفته‌اید."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "قاب محتوای ترکیبی پیش‌پرداز را لغو کرده است."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "صفحه پیش‌پردازشده از میانای برنامه‌سازی کاربردی غیرمجاز استفاده کرده است"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "پیمایش پیش‌پرداز اولیه موفق نبود زیرا سرور رمز وضعیت غیر200/204/205 را برمی‌گرداند."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "صفحه پیش‌پرداز در انتها متعهد نیست."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "خط‌مشی امنیتی محتوا درخواست پیمایش را مسدود کرده است."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "درحین پیش‌پرداز زدن خطای شبکه رخ داد."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "صفحه پیش‌پردازشده ازکار افتاد."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "پردازش تولیدکننده تصویر برای صفحه پیش‌پرداز متوقف شد."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "خطای گواهینامه SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "برگه متوقف شده است."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "برگه در پس‌زمینه قرار دارد"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "پیش‌پرداز با راه‌انداز فعال و تخریب نمی‌شود."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "بعداز UserAgentOverride، بار کردن مجدد لازم است."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "انتخاب کنترل‌كننده پروتکل"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "مانیفست"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "راهنمایی می‌خواهید؟ {PH1} را مطالعه کنید."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "ثبت کنترل‌كننده پروتکل معتبر در {PH1} پیدا شد. با نصب برنامه، پروتکل‌های ثبت‌شده را آزمایش کنید."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "ثبت کنترل‌كننده پروتکل نشانی وب برای برنامه‌های وب پیش‌رو"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "کنترل‌کننده‌های پروتکل را در {PH1} تعریف کنید تا برنامه‌تان هنگام نصب شدن، به‌عنوان کنترل‌کننده پروتکل‌های سفارشی ثبت شود."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "آزمایش پروتکل"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "نقطه پایان یا پارامتر پُرسمان برای کنترل‌كننده پروتکل"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "مقصد"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "نمایش منبع‌های توسعه‌دهنده"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "خصوصیت منسوخ‌شده"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "قانون غیرفعال"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "برای رفع این مشکل، لطفاً عنصرهای ولی {EXISTING_PARENT_ELEMENT_RULE} را به {TARGET_PARENT_ELEMENT_RULE} تغییر دهید."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "عنصر ولی قانون {REASON_RULE_CODE} را دارد، درنتیجه ای عنصر {AFFECTED_RULE_CODE} بی‌تأثیر است"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "برای اینکه این خصوصیت کار کند، لطفاً مقدار {REASON_RULE_CODE} را بردارید یا تغییر دهید."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "این عنصر قانون {REASON_RULE_CODE} را دارد، درنتیجه {AFFECTED_RULE_CODE} بی‌تأثیر است."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "افزودن کلاس جدید"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "فعال کردن همپوشانی قفل پیمایش"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "ورود به «حالت جداسازی»"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "خروج از «حالت جداسازی»"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "گسترده کردن تکرارشونده"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "نام دارایی نامشخص است"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "لایه بالایی"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "نادیده‌گرفته‌شده"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "نمایش نشان‌ها"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "بیشتر بدانید"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "نشانگر صفحات درخت DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "خطا"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "ناشی از:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "کد خطا:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "داده:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "گروه خطا:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "ردیاب پشته‌ای:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "فیلتر کردن پیام‌های گزارش"
   },
@@ -6693,7 +6894,7 @@
     "message": "devtools"
   },
   "panels/network/NetworkDataGridNode.ts | diskCache": {
-    "message": "(حافظه پنهان دیسک)"
+    "message": "(حافظه نهان دیسک)"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(انجام نشد)"
@@ -6753,7 +6954,7 @@
     "message": "درخواستی که این پیش‌بررسی را راه‌اندازی کرد انتخاب کنید"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromDiskCacheResourceSizeS": {
-    "message": "ارائه‌شده از حافظه پنهان دیسک، اندازه منبع: {PH1}"
+    "message": "ارائه‌شده از حافظه نهان دیسک، اندازه منبع: {PH1}"
   },
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "عرضه‌شده از حافظه پنهان، اندازه منبع: {PH1}"
@@ -7257,7 +7458,7 @@
     "message": "رمزگشایی‌شده:"
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(از حافظه پنهان دیسک)"
+    "message": "(از حافظه نهان دیسک)"
   },
   "panels/network/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(از حافظه پنهان)"
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "سرصفحه‌های موقت نمایش داده شده است. برای دیدن سرصفحه‌های کامل، حافظه پنهان را غیرفعال کنید."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "مشخصه ضبط‌شده با trigger-data: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "خط‌مشی ارجاع‌دهنده"
   },
@@ -7335,7 +7533,7 @@
     "message": "برای استفاده از این منبع از مبدائی دیگر، سرور باید خط‌مشی منبع بین‌مبدائی را در سرصفحه پاسخ مشخص کند:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور ممکن است سرصفحه پاسخ مربوط به خط‌مشی منبع بین مبدائی را کاهش دهد:"
+    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور ممکن است سرصفحه پاسخ مربوط به خط‌مشی منبع بین‌مبدائی را رها کند:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
@@ -7670,8 +7868,11 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "مشاهده گواهینامه"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "این گزینه را درصورتی انتخاب کنید که منبع و سند از یک سایت عرضه شوند."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
-    "message": "(از حافظه پنهان دیسک)"
+    "message": "(از حافظه نهان دیسک)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
     "message": "(از حافظه پنهان)"
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "کلی"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "اطلاعات بیشتر در برگه مشکلات"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "فقط درصورتی این گزینه را انتخاب کنید که وب‌سایت اختیاریِ حاوی این منبع با تحمیل خطر امنیتی همراه نباشد."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "فقط سرصفحه‌های موقت دردسترس است زیرا این درخواست ازطریق شبکه ارسال نشده است و درعوض ازطریق حافظه پنهان محلی ارائه شده است، که این حافظه سرصفحه‌های اصلی درخواست را ذخیره نمی‌کند. برای دیدن سرصفحه‌های کامل درخواست، حافظه پنهان را غیرفعال کنید."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "سرصفحه‌های موقت نمایش داده شده است."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "سرصفحه‌های موقت نمایش داده شده است. برای دیدن سرصفحه‌های کامل، حافظه پنهان را غیرفعال کنید."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "خام"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "رمز وضعیت"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "از بار شدن این سند در iframe با مشخصه sandbox جلوگیری شد زیرا این سند خط‌مشی بازکننده بین‌مبدائی را مشخص می‌کند."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "برای جاسازی کردن این قاب در سند، پاسخ باید ازطریق تعیین کردن سرصفحه پاسخ زیر، خط‌مشی جاساز بین‌مبدائی را فعال کند:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور باید خط‌مشی منبع بین‌مبدائی را در سرصفحه پاسخ مشخص کند:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "برای استفاده از این منبع از مبدائی دیگر، سرور ممکن است سرصفحه پاسخ مربوط به خط‌مشی منبع بین‌مبدائی را رها کند:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "متغیر مستقلی که کارخواه ارائه کرده است ناقص یا نامعتبر است."
@@ -7782,7 +8016,7 @@
     "message": "انواع منبع کد رنگ"
   },
   "panels/network/network-meta.ts | diskCache": {
-    "message": "حافظه پنهان دیسک"
+    "message": "حافظه نهان دیسک"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "موارد گزارش شبکه براساس قاب گروه‌بندی نشود"
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "محتوای دارای خطاهای گواهینامه"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "فعال"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ClientHello رمزگذاری شده است"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "پرچم‌گذاری‌شده توسط «مرور ایمن Google»"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "تبادل کلید"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "گروه تبادل کلید"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "شناسه ورود"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "نمای کلی امنیت"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "امضای سرور"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "نمایش کامل جزئیات"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "نامشخص / لغوشده"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "نامشخص"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "معتبر و قابل اطمینان"
@@ -9173,6 +9416,12 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "افزودن الگو…"
   },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "متن‌های اشخاص ثالث آشنا به‌طور خودکار به فهرست نادیده گرفتن اضافه می‌شوند"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "منابع برگرفته‌شده از فیلد x_google_ignoreList از نقشه‌های منبع به فهرست نادیده گرفتن اضافه می‌شود"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "رفتار"
   },
@@ -9414,7 +9663,7 @@
     "message": "به‌روزرسانی"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "نکات کارخواه نماینده کاربر یک جایگزین برای رشته نماینده کاربر است که مرورگر و دستگاه را به‌طور ساختاریافته‌تری شناسایی می‌کند و توجه بیشتر به حریم‌خصوصی می‌کند. برای اطلاعات بیشتر، روی دکمه کلیک کنید."
+    "message": "نکات کارخواه نماینده کاربر یک جایگزین برای رشته نماینده کاربر است که مرورگر و دستگاه را به‌طور ساختاریافته‌تری شناسایی می‌کند و توجه بیشتر به حریم خصوصی می‌کند. برای اطلاعات بیشتر، روی دکمه کلیک کنید."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
     "message": "نسخه"
@@ -9472,6 +9721,9 @@
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "افزودن"
+  },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "نشانی وب نمادهای DWARF: "
   },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "نشانی وب نگاشت منبع: "
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "افزودن نگاشت منبع…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "افزودن اطلاعات اشکال‌زدایی DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "فایل‌های مرتبط ازطریق درخت فایل یا {PH1} دردسترس هستند."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "نوشته‌شده"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "حاوی منابع اصلی است"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "حذف"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "مستقرشده"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "حاوی منابع نهایی‌ای است که مرورگر می‌بیند"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "مستثنی کردن پوشه"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "بسته شدن ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "بازرس حافظه خطی باز نشد: مکان میان‌گیری پیدا نشد"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "استثنا"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "گروه‌بندی فایل‌ها براساس نوشته‌شده/ مستقرشده"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "پاک کردن پیکربندی"
@@ -9948,7 +10209,7 @@
     "message": "پوشه فضای کاری را اینجا رها کنید"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "گروه‌بندی براساس نوشته‌شده/ مستقرشده (آزمایشی)"
+    "message": "گروه‌بندی براساس نوشته‌شده/ مستقرشده"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "گروه‌بندی براساس پوشه"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "نشانی باید عددی بین {PH1} و {PH2} باشد"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "بازرس حافظه خطی باز نشد: مکان میان‌گیری پیدا نشد"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "هیچ بازرسی بازی وجود ندارد"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "ویدیو و مستندات"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "بیشتر بدانید"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "بازخوردتان را برای ما ارسال کنید."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "ارسال بازخورد"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "برای باز کردن پانل شبکه و نمایش درخواست برای نشانی وب {url}، کلیک کنید"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "مشخصه‌ای وجود ندارد"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "گیرنده مشخصه‌ای وجود ندارد"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "نمایش همه {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "نامشخص"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "مقدار برای اشکال‌زدا قابل‌دسترس نیست"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<مقدار دردسترس نیست>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "خالی"

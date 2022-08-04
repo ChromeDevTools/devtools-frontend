@@ -1008,7 +1008,7 @@
     "message": "Shfaq paraqitjen"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Aktivizo/çaktivizo ngjyrën e detyruar për karakteristikën \"prefers-color-scheme\" të gjuhës CSS"
+    "message": "Aktivizo/çaktivizo veçorinë prefers-color-scheme të medias CSS"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "problem me shikimin"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate është zhvlerësuar. Përdor RTCPeerConnectionIceErrorEvent.address ose RTCPeerConnectionIceErrorEvent.port më mirë."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "Origjina e tregtarit dhe të dhënat arbitrare nga ngjarja canmakepayment e punonjësit të shërbimit janë zhvlerësuar dhe do të hiqen: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Sajti i uebit kërkonte një nënburim nga një rrjet ku mund të kishte qasje vetëm për shkak të pozicionit të privilegjuar të rrjet të përdoruesve të tij. Këto kërkesa i ekspozojnë pajisjet dhe serverët jopublikë në internet, duke rritur rrezikun për një sulm me falsifikimin e një kërkese nga një sajt i jashtëm (CSRF) dhe/ose rrjedhjen e informacioneve. Për t'i minimizuar këto rreziqe, Chrome i zhvlerëson kërkesat për nënburimet jopublike kur nisen nga kontekste jo të sigurta dhe do të fillojë t'i bllokojë ato."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Partneri yt po negocion për një version të vjetruar (D)TLS. Kontakto me partnerin për ta rregulluar këtë."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "WebSQL në kontekste jo të sigurta është zhvlerësuar dhe do të hiqet në M107. Përdor hapësirën ruajtëse të uebit ose bazën e indeksuar të të dhënave."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> me një prind <picture> është i pavlefshëm dhe, për këtë arsye, është shpërfillur. Përdor <source srcset> më mirë."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo është zhvlerësuar. Përdor navigator.webkitTemporaryStorage ose navigator.webkitPersistentStorage më mirë."
+    "message": "window.webkitStorageInfo është zhvlerësuar. Përdor më mirë një version të standardizuar të navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Kërkesat e nënburimit, URL-të e të cilave përfshijnë kredenciale të integruara (p.sh. https://user:pass@host/), janë bllokuar."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Nënprocesi {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Worklet-i i ofruesit"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Worklet-i i ofruesit - {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker i dedikuar"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Worklet-i i shitësit"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Worklet-i i shitësit - {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Nënprocesi {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Worklet-i i ankandit"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Worklet-i i ankandit - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Shërbimi i worklet-it të ankandit"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Shërbimi i worklet-it të ankandit - {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeksi)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Ikona kryesore e manifestit nga {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Përpunuesit e protokolleve"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} nuk e specifikon madhësinë e vet në manifest"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Shërbimet e sfondit"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: Thirre për të lëvizur te ky seksion në manifest"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Memoria specifike"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifesti"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Lëvizur te {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Manifesti: Thirre për të lëvizur në krye të manifestit"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Dritaret e hapura"
@@ -2577,7 +2619,7 @@
     "message": "Artikujt e hapësirës ruajtëse të DOM-it"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "Të pastruara: {PH1}"
+    "message": "Artikujt e hapësirës ruajtëse DOM u pastruan"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Numri i regjistrimeve të shfaqura në tabelë: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Ky kuadër është krijuar në mënyrë programatike. stack trace shfaq se ku ka ndodhur kjo gjë."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Skripti i reklamës së krijuesit"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Origjina e ndërthurur e izoluar"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Shfaq detajet"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Aktivizuar."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Paraqitja paraprake nuk e mbështet ende AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Ngarkimi i burimit është bllokuar nga klienti."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Faqja po kërkon certifikatën e klientit, e cila nuk është e përshtatshme për një faqe të fshehur, si p.sh. në fazën e paraqitjes paraprake."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL me origjinë të kryqëzuar pas ngarkimit. Paraqitja paraprake e faqeve me origjinë të kryqëzuar nuk lejohet aktualisht."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "U bë një përpjekje për të paraqitur paraprakisht një URL që të ridrejtonte te një URL me origjinë të kryqëzuar. Paraqitja paraprake e faqeve me origjinë të kryqëzuar nuk lejohet aktualisht."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Një faqe e paraqitur paraprakisht u braktis për arsye të panjohura."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "DidFailLoadWithError ndodhi gjatë paraqitjes paraprake."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Shkarkimi është ndaluar te paraqitësi paraprak."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është anuluar sepse navigimi është ridrejtuar te një faqe tjetër me origjinë të kryqëzuar."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është shkatërruar te shkatërruesi."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është anuluar sepse navigimi është ridrejtuar te një faqe tjetër me origjinë të njëjtë."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Vetëm navigimi me protokollin HTTP(S) lejohet për paraqitësin paraprak"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "U bë një përpjekje për të paraqitur paraprakisht një URL që të ridrejtonte te një URL që nuk është e protokollit HTTP(S). Vetëm faqet e protokollit HTTP(S) mund të paraqiten paraprakisht."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Paraqitësi paraprak nuk i mbështet kërkesat e vërtetimit nga ndërfaqja e përdoruesit."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Paraqitja paraprake nuk mbështetet për pajisjet me memorie të ulët."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Navigimet pas navigimit fillestar të paraqitjes paraprake janë ndaluar"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "U kalua numri maksimal i paraqitjeve paraprake."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Paraqitja paraprake është anuluar nga një kuadër i përmbajtjeve të përziera."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "Një API e ndaluar është përdorur nga faqja e paraqitur paraprakisht"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "Navigimi fillestar i paraqitjes paraprake nuk u krye me sukses për shkak se serveri nuk dha një kod statusi 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Faqja e paraqitjes paraprake përfundimisht nuk është konfirmuar."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Kërkesa e navigimit është bllokuar nga CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "U ndesh një gabim rrjeti gjatë paraqitjes paraprake."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Faqja e paraqitur paraprakisht pësoi një ndërprerje aksidentale."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Procesi i paraqitësit për faqen në fazën e paraqitjes paraprake u mbyll."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Gabim i certifikatës SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Skeda është ndaluar."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Skeda është në sfond"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Paraqitësi paraprak nuk është aktivizuar dhe është shkatërruar me aktivizuesin."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "Nevojitet ringarkimi pas UserAgentOverride."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Zgjidh përpunuesin e protokollit"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "manifesti"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Ke nevojë për ndihmë? Lexo {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "U gjet një regjistrim i vlefshëm i përpunuesit të protokollit në {PH1}. Kur aplikacioni është i instaluar, mund të testosh protokollet e regjistruara."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Regjistrimi i përpunuesit të protokollit URL për aplikacionet PWA"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Përcakto përpunuesit e protokollit në {PH1} për ta regjistruar aplikacionin tënd si përpunues për protokolle të personalizuara kur instalohet aplikacioni yt."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Protokolli i testit"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Parametri i kërkesës ose pika fundore për përpunuesin e protokollit"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Destinacioni"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Shfaq burimet e zhvilluesit"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Karakteristikë e zhvlerësuar"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Rregulli joaktiv"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Ndrysho elementet prind {EXISTING_PARENT_ELEMENT_RULE} në {TARGET_PARENT_ELEMENT_RULE} për ta rregulluar këtë problem."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Elementi prind ka rregullin {REASON_RULE_CODE} dhe prandaj {AFFECTED_RULE_CODE} i këtij elementi nuk ka asnjë efekt"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Që kjo karakteristikë të funksionojë, hiq ose ndrysho vlerën e {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Ky element ka rregullin {REASON_RULE_CODE} dhe prandaj {AFFECTED_RULE_CODE} nuk ka asnjë efekt."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Shto klasë të re"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Aktivizo mbivendosjen e kapjes me lëvizje"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Futu në \"Modalitetin e izolimit\""
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Dil nga \"Modaliteti i izolimit\""
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Zgjero në mënyrë rekursive"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Emër karakteristike i panjohur"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "shtresa e sipërme"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Shpërfillur"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Shfaq stemat"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Mëso më shumë"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Shtegu i navigimit i pemës DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Gabim"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Shkaktuar nga:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Kodi i gabimit:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Të dhënat:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Grupi i gabimit:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Gjurmimi i stivës:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Filtro mesazhet e regjistrit"
   },
@@ -7260,7 +7461,7 @@
     "message": "(nga memoria specifike e diskut)"
   },
   "panels/network/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(nga memoria specifike e memories)"
+    "message": "(nga memoria specifike)"
   },
   "panels/network/RequestHeadersView.ts | fromPrefetchCache": {
     "message": "(nga memoria specifike e marrë paraprakisht)"
@@ -7287,19 +7488,16 @@
     "message": "Mëso më shumë në skedën e problemeve"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Zgjidh vetëm këtë opsion nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
+    "message": "Zgjidh këtë opsion vetëm nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Vetëm titujt e përkohshme ofrohen sepse kjo kërkesë nuk u dërgua nga rrjeti dhe në vend të saj u paraqit nga një memorie specifike lokale e cila nuk i ruan titujt e kërkesës origjinale. Çaktivizo memorien specifike për të parë titujt e plotë të kërkesave."
+    "message": "Vetëm titujt e përkohshëm ofrohen sepse kjo kërkesë nuk u dërgua nga rrjeti dhe në vend të saj u paraqit nga një memorie specifike lokale që nuk i ruan titujt e kërkesës origjinale. Çaktivizo memorien specifike për të parë titujt e plotë të kërkesave."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "Shfaqen titujt e përkohshëm"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Shfaqen titujt e përkohshëm. Çaktivizo memorien specifike për të parë titujt e plotë."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Atribuimi i regjistruar me trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Politika për referuesit"
@@ -7326,19 +7524,19 @@
     "message": "Kodi i statusit"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Ky dokument është bllokuar nga ngarkimi në një iframe me një atribut sandbox për shkak se ky dokument ka specifikuar një politikë hapësi me origjinë të ndërthurur."
+    "message": "Ky dokument është bllokuar nga ngarkimi në një iframe me një atribut sandbox për shkak se ky dokument ka specifikuar një politikë hapësi me origjinë të kryqëzuar."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Për ta integruar këtë kuadër në dokumentin tënd, përgjigja duhet të aktivizojë politikën e integruesit me origjinë të ndërthurur duke specifikuar titullin e përgjigjes së mëposhtme:"
+    "message": "Për ta integruar këtë kuadër në dokumentin tënd, përgjigja duhet të aktivizojë politikën e integruesit me origjinë të kryqëzuar duke specifikuar titullin e përgjigjes së mëposhtme:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri duhet të specifikojë një politikë burimesh origjine të ndërthurur në titujt e përgjigjeve:"
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri duhet të specifikojë një politikë për burimet me origjinë të kryqëzuar në titujt e përgjigjeve:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
-    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të ndërthurur:"
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
-    "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të ndërthurur:"
+    "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
   },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "Shiko të analizuara"
@@ -7670,11 +7868,14 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Shiko certifikatën"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(nga memoria specifike e diskut)"
   },
   "panels/network/components/RequestHeadersView.ts | fromMemoryCache": {
-    "message": "(nga memoria specifike e memories)"
+    "message": "(nga memoria specifike)"
   },
   "panels/network/components/RequestHeadersView.ts | fromPrefetchCache": {
     "message": "(nga memoria specifike e marrë paraprakisht)"
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Të përgjithshme"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Mëso më shumë në skedën e problemeve"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Zgjidh këtë opsion vetëm nëse një sajt uebi arbitrar, duke përfshirë këtë burim, nuk përbën një rrezik sigurie."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Vetëm titujt e përkohshëm ofrohen sepse kjo kërkesë nuk u dërgua nga rrjeti dhe në vend të saj u paraqit nga një memorie specifike lokale që nuk i ruan titujt e kërkesës origjinale. Çaktivizo memorien specifike për të parë titujt e plotë të kërkesave."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Shfaqen titujt e përkohshëm."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Shfaqen titujt e përkohshëm. Çaktivizo memorien specifike për të parë titujt e plotë."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Të papërpunuara"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Kodi i statusit"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Ky dokument është bllokuar nga ngarkimi në një iframe me një atribut sandbox për shkak se ky dokument ka specifikuar një politikë hapësi me origjinë të kryqëzuar."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Për ta integruar këtë kuadër në dokumentin tënd, përgjigja duhet të aktivizojë politikën e integruesit me origjinë të kryqëzuar duke specifikuar titullin e përgjigjes së mëposhtme:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri duhet të specifikojë një politikë për burimet me origjinë të kryqëzuar në titujt e përgjigjeve:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Për të përdorur këtë burim nga një origjinë e ndryshme, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Për të përdorur këtë burim nga një sajt i ndryshëm, serveri mund të lehtësojë titullin e përgjigjes së politikës së burimit me origjinë të kryqëzuar:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Një argument i ofruar nga klienti ishte i keqformuar ose përndryshe i pavlefshëm."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "përmbajtja me gabimet e certifikatës"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "aktivizuar"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ClientHello është enkriptuar"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Raportuar nga \"Shfletimi i sigurt i Google\""
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Shkëmbimi i çelësave"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Grupi i shkëmbimit kyç"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ID-ja e evidencës"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Përmbledhje e sigurisë"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Nënshkrimi i serverit"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Shfaq detajet e plota"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Të panjohura/anuluara"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "i panjohur"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "e vlefshme dhe e besuar"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Shto motiv..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Shto automatikisht skriptet e njohura të palëve të treta te lista e shpërfilljeve"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Shto burime nga fusha x_google_ignoreList nga hartat e burimeve te lista e shpërfilljeve"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Sjellja"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Shto"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "URL-ja e simboleve DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL-ja e hartës burim: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Shto hartë burimi…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Shto informacionet e korrigjimit për DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Skedarët e lidhur ofrohen përmes pemës së skedarëve ose {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Shkruar nga zhvilluesi"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Përmban burime origjinale"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Fshi"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Shpërndarë"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Përmban burimet përfundimtare që shikon shfletuesi"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Përjashto dosjen"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Mbyllja ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Nuk mund të hapej inspektuesi i memories lineare: ndërmemoria nuk mund të gjendej."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Përjashtim"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Grupo skedarët si të krijuar nga zhvilluesi ose të vendosur nga shfletuesi"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Pastro konfigurimin"
@@ -9948,7 +10209,7 @@
     "message": "Lëshoje këtu dosjen e hapësirës së punës"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Grupo sipas opsionit \"shkruar nga zhvilluesi\" ose \"shpërndarë\" (eksperimentale)"
+    "message": "Grupo si të krijuar nga zhvilluesi ose të vendosur nga shfletuesi"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Grupo sipas dosjes"
@@ -10755,7 +11016,7 @@
     "message": " (nga memoria specifike)"
   },
   "panels/timeline/TimelineUIUtils.ts | FromMemoryCache": {
-    "message": " (nga memoria specifike e memories)"
+    "message": "(nga memoria specifike)"
   },
   "panels/timeline/TimelineUIUtils.ts | FromPush": {
     "message": " (nga sistemi)"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa duhet të jetë numër mes {PH1} dhe {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Nuk mund të hapej inspektuesi i memories lineare: ndërmemoria nuk mund të gjendej."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Asnjë inspektim i hapur"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Videoja dhe dokumentacioni"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Mëso më shumë"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Na dërgo komentet e tua."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Dërgo komente"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Kliko për të hapur panelin e rrjetit dhe për të shfaqur kërkesën për URL-në: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Pa karakteristika"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Nuk ka marrës karakteristike"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Shfaqi të gjitha: {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "i panjohur"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<i palexueshëm>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Vlera nuk është e qasshme te korrigjuesi"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<vlera nuk ofrohet>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "bosh"

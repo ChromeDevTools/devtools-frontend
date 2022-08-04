@@ -1008,7 +1008,7 @@
     "message": "Zobrazit nástroj Vykreslení"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Přepnout vynucení barvy dané pomocí vlastnosti CSS prefers-color-scheme"
+    "message": "Přepnout funkci média CSS prefers-color-scheme"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "vada zraku"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "Pole RTCPeerConnectionIceErrorEvent.hostCandidate je zastaralé. Použijte místo něj pole RTCPeerConnectionIceErrorEvent.address nebo RTCPeerConnectionIceErrorEvent.port."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "Zdroj obchodníka a libovolná data z události canmakepayment procesu service worker jsou zastaralé a budou odstraněny: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Web si vyžádal dílčí zdroj ze sítě, ke které měl přístup pouze díky privilegované pozici svých uživatelů v síti. Tyto požadavky umožňují získat z internetu přístup k neveřejným zařízením a serverům, čímž se zvyšuje riziko útoku CSRF (cross-site request forgery) a/nebo úniku informací. Aby Chrome tato rizika zmírnil, přestává podporovat požadavky na neveřejné dílčí zdroje iniciované z nezabezpečených kontextů a začne je blokovat."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Váš partner vyjednává zastaralou verzi (D)TLS. Požádejte ho o nápravu."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "Podpora WebSQL v nezabezpečených kontextech je zastaralá a v M107 bude odstraněna. Použijte rozhraní Web Storage nebo IndexedDB."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Prvek <source src> s nadřazeným prvkem <picture> je neplatný, a proto je ignorován. Použijte místo něj prvek <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "Pole window.webkitStorageInfo je zastaralé. Použijte místo něj pole navigator.webkitTemporaryStorage nebo navigator.webkitPersistentStorage."
+    "message": "Rozhraní window.webkitStorageInfo je zastaralé. Použijte místo něj standardizované rozhraní navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Požadavky na dílčí zdroje, jejichž adresy URL obsahují vložené přihlašovací údaje (např. https://user:pass@host/), jsou blokovány."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Vlákno {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Worklet pro podávání nabídek"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Worklet pro podávání nabídek – {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Vyhrazený Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Worklet prodejce"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Worklet prodejce – {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Vlákno {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Worklet pro aukce"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Worklet pro aukce — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Služba aukčního workletu"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Služba aukčního workletu – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(index)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Primární ikona manifestu z {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Obslužné nástroje protokolů"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} neuvádí svoji velikost v manifestu"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Služby na pozadí"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: Vyvoláním přejdete na tuto sekci v manifestu"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Mezipaměť"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Posunuto na {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Manifest: Zavoláním přejdete na začátek manifestu"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Otevřená okna"
@@ -2577,7 +2619,7 @@
     "message": "Položky úložiště DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} vymazáno"
+    "message": "Položky úložiště DOM byly vymazány"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Počet položek zobrazených v tabulce: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Tento rámec byl vytvořen programaticky. Trasování zásobníku (stack trace) ukazuje, kde k tomu došlo."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Zdrojový reklamní skript"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Izolovány zdroje v různých doménách"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Zobrazit podrobnosti"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Aktivováno."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Předběžné vykreslování zatím nepodporuje rozhraní AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Načítání zdroje je blokováno klientem."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Stránka žádá o certifikát klienta, který není vhodný pro skrytou stránku, jako je například předběžné vykreslení."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Předběžně vykreslená stránka po načtení přešla na adresu URL z jiného zdroje. Předběžné vykreslování stránek z jiných zdrojů je aktuálně zakázáno."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Došlo k pokusu o předběžného vykreslení adresy URL, která přesměrovávala na adresu URL z jiného zdroje. Předběžné vykreslování stránek z jiných zdrojů je aktuálně zakázáno."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Předběžně vykreslená stránka byla z neznámých důvodů opuštěna."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "Při předběžném vykreslování došlo k chybě DidFailLoadWithError."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "V procesu předběžného vykreslování není povoleno stahování."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Předběžné vykreslení spuštěné interní akcí Chromu (např. předběžné vykreslování z omniboxu) je zrušeno, protože navigace je přesměrována na jinou stránku z jiného zdroje."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Předběžné vykreslení spuštěné interním modulem Chromu (např. předběžné vykreslování z omniboxu) je zničeno v destruktoru."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Předběžné vykreslování spuštěné interní akcí Chromu (např. předběžným vykreslováním omniboxu) je zrušeno, protože navigace je přesměrována na jinou stránku stejného zdroje."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "U procesu předběžného vykreslování je povolena pouze navigace HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Došlo k pokusu o předběžné vykreslení adresy URL, která byla přesměrována na adresu URL s jiným protokolem než HTTP(S). Předběžně vykreslovat lze pouze stránky HTTP(S)."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Předběžné vykreslování nepodporuje žádosti o autorizaci z uživatelského rozhraní."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Vykreslování není podporováno na zařízeních s malým množstvím paměti."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Navigace po počáteční navigaci předběžného vykreslování není povolena"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Byl překročen maximální počet předběžných vykreslení."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Předběžné vykreslování je zrušeno rámcem smíšeného obsahu."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "Předběžně vykreslená stránka použila nepovolené rozhraní API"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "Počáteční navigace při předběžném vykreslování nebyla úspěšná, protože server vrátil jiný stavový kód než 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Předběžně vykreslená stránka se nakonec nezobrazuje."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Navigační požadavek je blokován zásadami CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Při předběžném vykreslování došlo k chybě sítě."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Předběžně vykreslená stránka selhala."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Vykreslovací proces pro předběžně vykreslovanou stránku byl ukončen."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Chyba certifikátu SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Tato karta je zastavena."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Karta je na pozadí"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Předběžné vykreslování není aktivováno a zničeno spouštěčem."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "Po UserAgentOverride je potřeba opětné načtení."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Vyberte obslužný nástroj protokolu"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "manifest"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Potřebujete poradit? Přečtete si stránku {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "V souboru {PH1} byla nalezena platná registrace obslužných nástrojů protokolů. Po instalaci aplikace zaregistrované protokoly otestujte."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Registrace obslužného nástroje protokolu URL pro progresivní webové aplikace"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Pokud aplikaci chcete při instalaci zaregistrovat jako obslužný nástroj pro vlastní protokoly, definujte jejich obslužné nástroje v souboru {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Otestovat protokol"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Parametr dotazu nebo koncový bod pro obslužný nástroj protokolu"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Cíl"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Zobrazit zdroje pro vývojáře"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Podpora služby byla ukončena"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Neaktivní pravidlo"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Tento problém lze vyřešit změnou nadřazených prvků {EXISTING_PARENT_ELEMENT_RULE} na {TARGET_PARENT_ELEMENT_RULE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Nadřazený prvek má pravidlo {REASON_RULE_CODE}, proto tyto prvky {AFFECTED_RULE_CODE} nemají žádný účinek"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Aby tato vlastnost fungovala, odstraňte nebo změňte hodnotu {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Tento prvek má pravidlo {REASON_RULE_CODE}, takže {AFFECTED_RULE_CODE} nemá žádný vliv."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Přidat novou třídu"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Povolit překryvnou vrstvu scroll-snap"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Přejít do režimu izolace"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Ukončit režim izolace"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Rekurzivně rozbalit"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Neznámý název vlastnosti"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "horní vrstva"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorováno"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Ukázat odznaky"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Další informace"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Struktura stromu modelu DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Chyba"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Příčina chyby:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Kód chyby:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Data:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Skupina chyb:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Trasování zásobníku:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Filtrovat zprávy protokolu"
   },
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Jsou zobrazena prozatímní záhlaví. Pokud chcete vidět úplná záhlaví, vypněte mezipaměť."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Zaznamenána atribuce s trigger-data: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Zásady pro odkazy"
   },
@@ -7332,7 +7530,7 @@
     "message": "Pokud chcete tento rámec vložit do svého dokumentu, odpověď musí zapnout zásadu pro vkládání napříč doménami uvedením následujícího záhlaví odpovědi:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
-    "message": "Aby tento zdroj bylo možné použít v jiné doméně, musí server v záhlaví odpovědi uvést zásadu použití zdrojů napříč doménami:"
+    "message": "Aby tento zdroj bylo možné použít z jiné domény, musí server v záhlaví odpovědi uvést zásadu použití zdrojů napříč doménami:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
     "message": "Za účelem použití tohoto zdroje z jiné domény je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Zobrazit certifikát"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Tuto možnost vyberte, pokud je zdroj i dokument poskytován ze stejného webu."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(z mezipaměti disku)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Obecné"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Další informace"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Další informace najdete na kartě s problémy"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Tuto možnost vyberte pouze v případě, že web zahrnující tento zdroj nepředstavuje bezpečnostní riziko.‏"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Jsou k dispozici jen přechodná záhlaví, protože tento požadavek nebyl odeslán přes síť a místo toho byl doplněn z místní mezipaměti, která neukládá záhlaví původních požadavků. Pokud chcete vidět úplná záhlaví požadavků, vypněte mezipaměť."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Jsou zobrazena prozatímní záhlaví."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Jsou zobrazena prozatímní záhlaví. Pokud chcete vidět úplná záhlaví, vypněte mezipaměť."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nezpracováno"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Stavový kód"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Načtení tohoto dokumentu bylo zablokováno v iframe s atributem sandbox, protože tento dokument zadal zásadu otevírače napříč doménami."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Pokud chcete tento rámec vložit do svého dokumentu, odpověď musí zapnout zásadu pro vkládání napříč doménami uvedením následujícího záhlaví odpovědi:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Aby tento zdroj bylo možné použít z jiné domény, musí server v záhlaví odpovědi uvést zásadu použití zdrojů napříč doménami:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Za účelem použití tohoto zdroje z jiné domény je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Za účelem použití tohoto zdroje z jiného webu je na serveru možné nastavit méně omezující záhlaví odpovědi Cross-Origin-Resource-Policy:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Argument poskytnutý klientem měl nesprávný formát nebo byl z jiného důvodu neplatný."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "obsah s chybami certifikátů"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "povoleno"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Šifrovaná zpráva ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Nahlášeno Bezpečným prohlížením Google"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Výměna klíčů"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Skupina výměny klíčů"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "ID protokolu"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Přehled zabezpečení"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Podpis serveru"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Zobrazit všechny podrobnosti"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Neznámé/zrušené"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "není známo"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "platný a důvěryhodný"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Přidat vzor…"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Automaticky přidávat známé skripty třetích stran do seznamu ignorovaných"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Přidat zdroje z pole x_google_ignoreList z map zdrojů do seznamu ignorovaných"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Chování"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Přidat"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "Adresa URL symbolů DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Adresa URL mapy zdroje: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Přidat mapu zdroje…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Přidat ladicí informace DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Přidružené soubory jsou dostupné prostřednictvím stromu souborů nebo {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Autorské"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Obsahuje původní zdroje"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Smazat"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Implementované"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Obsahuje finální zdroje, které vidí prohlížeč"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Vyloučit složku"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Uzávěra ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Inspektor lineární paměti nebylo možné otevřít: nepodařilo se najít vyrovnávací paměť."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Výjimka"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Seskupit soubory podle původní/nasazeno"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Vymazat konfiguraci"
@@ -9948,7 +10209,7 @@
     "message": "Sem přetáhněte pracovní složku"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Seskupit podle autorské/implementované (experimentální)"
+    "message": "Seskupit podle původní/implementováno"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Seskupit po složkách"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa musí být číslo mezi {PH1} a {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Inspektor lineární paměti nebylo možné otevřít: nepodařilo se najít vyrovnávací paměť."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Žádné otevřené kontroly"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Video a dokumentace"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Další informace"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Zašlete nám svoji zpětnou vazbu."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Poslat zpětnou vazbu"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Kliknutím otevřete panel sítě a zobrazíte žádost pro adresu URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Žádné vlastnosti"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Žádná metoda getter vlastnosti"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Zobrazit vše (celkem {PH1})"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "neznámý"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<unreadable>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Ladicí nástroj k hodnotě nemá přístup."
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<hodnota není k dispozici>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "prázdné"

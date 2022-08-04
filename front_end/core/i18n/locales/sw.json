@@ -1008,7 +1008,7 @@
     "message": "Onyesha Utekelezaji"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Ugeuzaji hulazimisha kipengele cha CSS cha chati ya rangi"
+    "message": "Geuza kipengele cha maudhui ya CSS cha kupendelea chati ya rangi"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "tatizo la kuona"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate imeacha kuendesha huduma. Tafadhali tumia RTCPeerConnectionIceErrorEvent.address au RTCPeerConnectionIceErrorEvent.port badala yake."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "Data halisi ya muuzaji na data holela kutoka kwenye canmakepayment tukio la kitoa huduma unganishi imeacha kuendesha huduma na itaondolewa: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Tovuti imeomba nyenzo ndogo kutoka kwenye mtandao ambao iliweza tu kuufikia kwa sababu ya nafasi maalum ya mtandao wa watumiaji wake. Maombi haya hufichua vifaa na seva zisizo za umma kwenye intaneti, yakiongeza hatari ya mashambulio ya kughushi maombi kutoka tovuti tofauti (CSRF) na/au kuvuja kwa taarifa. Ili kukabiliana na hatari hizi, Chrome imeacha kuendesha huduma ya maombi ya nyenzo ndogo zisizo za umma zinapoanzishwa kutoka kwenye miktadha isiyo salama na itaanza kuzizuia."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "Mshirika wako anajadili toleo lililopitwa na wakati la (D)TLS. Tafadhali wasiliana na mshirika wako ili atatue tatizo hili."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "WebSQL kwenye miktadha isiyo salama imeacha kuendesha huduma na itaondolewa kwenye M107. Tafadhali tumia Hifadhi ya Kivinjari au Hifadhidata Iliyonakiliwa katika Faharasa."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> yenye <picture> kuu si sahihi, hivyo imepuuzwa. Tafadhali tumia <source srcset> badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo imeacha kuendesha huduma. Tafadhali tumia navigator.webkitTemporaryStorage au navigator.webkitPersistentStorage badala yake."
+    "message": "window.webkitStorageInfo imeacha kuendesha huduma. Tafadhali tumia navigator.storage ya kawaida badala yake."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Maombi ya nyenzo ndogo ambazo URL zake zinajumuisha vitambulisho vilivyopachikwa (mfano https://user:pass@host/) yamezuiwa."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Mchakato wa {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Kitendakazi Kidogo cha Mzabuni"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Kitendakazi Kidogo cha Mzabuni — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker maalum"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Kitendakazi Kidogo cha Muuzaji"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Kitendakazi Kidogo cha Muuzaji — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Mchakato wa {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Kitendakazi Kidogo cha Mnada"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Kitendakazi kidogo cha Mnada — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Huduma ya Kitendakazi Kidogo cha Mnada"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Huduma ya Kitendakazi Kidogo cha Mnada — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(faharasa)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "Aikoni ya msingi ya faili ya maelezo kutoka {PH1}"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Vidhibiti Itifaki"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2} haibainishi ukubwa wake katika faili ya maelezo"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Huduma za Chinichini"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}:Omba ili uweze kusogeza kwenye sehemu hii katika faili ya maelezo"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Akiba"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Faili ya maelezo"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "Umesogeza kwenye {PH1}"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Faili ya maelezo: Omba ili uweze kusogeza kwenye sehemu ya juu ya faili ya maelezo"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Madirisha Yaliyofunguliwa"
@@ -2577,7 +2619,7 @@
     "message": "Vipengee vya Hifadhi ya DOM"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} vimefutwa"
+    "message": "Vipengee vya Uhifadhi wa DOM vimefutwa"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Idadi ya vipengee iliyoonyeshwa kwenye jedwali: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Fremu hii imeundwa kwa kutumia programu. stack trace unaonyesha sehemu ya msimbo ambapo hali hiyo ilitokea."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "Hati ya Matangazo ya Mtayarishaji"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Fremu za Asili Mseto Zilizotengwa"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Onyesha maelezo"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Imeanzishwa."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Uonyeshaji wa awali wa ukurasa bado hauwezi kutumia AudioContext API."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Upakiaji wa nyenzo umezuiwa na seva teja."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "Futa Seva Zote Pangishi Kwa Ajili Ya Majaribio."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Ukurasa unaomba cheti cha kompyuta teja, kisichofaa kwa ajili ya ukurasa uliofichwa kama vile uonyeshaji wa awali wa ukurasa."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Ukurasa unaoonyeshwa awali umesogezwa kwenye URL ya vyanzo mbalimbali baada ya kupakiwa. Uonyeshaji wa awali wa kurasa kutoka vyanzo mbalimbali umezuiwa kwa sasa."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Ulijaribu kuonyesha ukurasa wa awali wa URL iliyokuelekeza kwenye URL ya vyanzo mbalimbali. Uonyeshaji wa awali wa kurasa kutoka vyanzo mbalimbali umezuiwa kwa sasa."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Ukurasa unaoonyeshwa awali haukukamilishwa kwa sababu zisizojulikana."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "Hitilafu ya DidFailLoadWithError ilitokea wakati wa uonyeshaji wa awali wa ukurasa."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Hairuhusiwi kupakua faili ukurasa ukiwa katika hali ya uonyeshaji wa awali."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Uonyeshaji wa awali wa ukurasa umeanzishwa na Chrome ya ndani (k.m., Uonyeshaji wa awali wa ukurasa wa sanduku kuu) umefutwa kwa sababu usogezaji umeelekezwa kwenye ukurasa mwingine wa vyanzo mbalimbali."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Uonyeshaji wa awali wa ukurasa umeanzishwa na Chrome ya ndani (k.m., Uonyeshaji wa awali wa ukurasa wa sanduku kuu) unaharibiwa kiotomatiki."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Uonyeshaji wa awali wa ukurasa umeanzishwa na Chrome ya ndani (k.m., Uonyeshaji wa awali wa ukurasa wa sanduku kuu) umefutwa kwa sababu usogezaji umeelekezwa kwenye ukurasa mwingine wa chanzo kimoja."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "Usogezaji Unaendelea."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Usogezaji wa kurasa za HTTP(S) pekee unaruhusiwa kwa Uonyeshaji wa awali wa ukurasa."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "Ulijaribu kuonyesha ukurasa wa awali wa URL iliyoelekezwe kwenye URL isiyo ya HTTP(S). Kurasa za HTTP(S) pekee ndizo zinaweza kuonyeshwa awali."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Uonyeshaji wa awali wa ukurasa hauoani na maombi ya uthibitishaji kwenye kiolesura."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Uonyeshaji wa awali wa ukurasa hauwezi kutumika kwenye vifaa vyenye hifadhi ndogo."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "Usogezaji unaofanywa baada ya usogezaji wa mwanzo wa uonyeshaji wa awali wa ukurasa huzimwa"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Umezidisha kiwango cha juu zaidi cha uonyeshaji wa awali wa ukurasa."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Uonyeshaji wa awali wa ukurasa umeghahiriwa na fremu ya maudhui yaliyochanganywa."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "API iliyozuiwa imetumiwa na ukurasa unaoonyeshwa awali"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "Usogezaji wa awali wa ukurasa haukufanikiwa kwa sababu seva imerudisha nambari ya kuonyesha hali isiyo ya 200/204/205."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Ukurasa wa uonyeshaji wa awali mwishoni haupatikani."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Ombi la usogezaji limezuiwa na CSP."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Kifaa kimepata hitilafu ya mtandao wakati wa uonyeshaji wa awali wa ukurasa."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Ukurasa unaoonyeshwa awali umeacha kufanya kazi."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Mchakato wa kitekelezaji uonyeshaji wa awali wa ukurasa umesitishwa."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "Hitilafu ya cheti cha SSL."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Kichupo kimesitishwa."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Kichupo kinaendelea kutumika chinichini"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Uonyeshaji wa awali wa ukurasa haujaanza kutumiwa na umeharibiwa na kichocheo."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "Unatakiwa kupakia upya baada ya Kubatilisha Ala ya Mtumiaji."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Chagua kidhibiti itifaki"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "faili ya maelezo"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Unahitaji usaidizi? Soma {PH1}."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "Usajili halali wa kidhibiti itifaki umepatikana kwenye {PH1}. Kwa kutumia programu uliyosakinisha, jaribu itifaki zilizosajiliwa."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "Usajili wa kidhibiti itifaki cha URL ya programu za wavuti za kisasa (PWAs)"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Bainisha vidhibiti itifaki kwenye {PH1} ili usajili programu yako kuwa kidhibiti itifaki maalum wakati programu yako inasakinishwa."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Jaribu itifaki"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Kigezo cha hoja au kikomo cha kidhibiti itifaki"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Inakoenda"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Onyesha Nyenzo za Wasanidi Programu"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Thamani Haitumiki"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Kanuni isiyotumika"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Tafadhali badilisha vipengele vikuu vya {EXISTING_PARENT_ELEMENT_RULE} kuwa {TARGET_PARENT_ELEMENT_RULE} ili urekebishe hitilafu hii."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Kipengee kikuu kinatumia kanuni ya {REASON_RULE_CODE}, kwa hiyo kipengee hiki {AFFECTED_RULE_CODE} hakitakuwa na athari"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Ili thamani hii ifanye kazi, tafadhali ondoa au badilisha thamani ya {REASON_RULE_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Kipengee hiki kinatumia kanuni ya {REASON_RULE_CODE}, kwa hiyo {AFFECTED_RULE_CODE} hakitakuwa na athari."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Weka daraja jipya"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Ruhusu tangazo lililowekelewa juu la kikomo cha usogezaji"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "Ingia Katika Hali ya Kutenga"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "Funga Hali ya Kutenga"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Panua kwa urudiaji"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Jina la kipengele halijulikani"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "safu ya juu"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Imepuuzwa"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Onyesha beji"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Pata Maelezo Zaidi"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Madaraja ya kurasa ya mfumo wa DOM"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Hitilafu"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Imesababishwa na:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Msimbo wa Hitilafu:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Data:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Kikundi cha Hitilafu:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Ufuatiliaji wa rafu:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Chuja ujumbe wa kumbukumbu"
   },
@@ -7287,19 +7488,16 @@
     "message": "Pata maelezo zaidi katika kichupo cha hitilafu"
   },
   "panels/network/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
-    "message": "Teua tu chaguo hili iwapo tovuti ya jumla ikiwa ni pamoja na nyenzo hii hazileti hatari ya usalama."
+    "message": "Teua tu chaguo hili iwapo tovuti hatarishi pamoja na nyenzo hii haileti hatari ya usalama."
   },
   "panels/network/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
-    "message": "Vichwa vya kutumika kwa muda ndivyo pekee vinavyopatikana kwa sababu ombi hili halikutumwa kupitia mtandao, badala yake lilitolewa kwenye akiba ya mfumo ambayo haihifadhi vichwa vya asili vya maombi. Zima akiba ili uone vichwa kamili vya maombi."
+    "message": "Vichwa vinavyooneshwa kwa ufupi ndivyo pekee vinavyopatikana kwa sababu ombi hili halikutumwa kupitia mtandao, badala yake lilitolewa kwenye akiba ya mfumo ambayo haihifadhi vichwa halisi vya maombi. Zima akiba ili uone vichwa kamili vya maombi."
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShown": {
     "message": "Inaonyesha vichwa kwa muda"
   },
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Inaonyesha vichwa kwa muda. Zima akiba ili uone vichwa kamili."
-  },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "Imerekodi tukio lenye trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Sera ya Anayeelekeza"
@@ -7326,10 +7524,10 @@
     "message": "Nambari ya Kuonyesha Hali"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Hati hii imezuiwa isipakie katika iframe kwa sifa ya sandbox kwa sababu hati hii ilibainisha sera ya kufungua ya vyanzo vingi."
+    "message": "Hati hii imezuiwa isipakie katika iframe kwa sifa ya sandbox kwa sababu hati hii ilibainisha sera ya kufungua ya vyanzo mbalimbali."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Ili uweze kupachika fremu hii katika hati yako, jibu linahitaji kuruhusu sera ya kipachikaji cha asili mbalimbali kwa kubainisha kichwa kifuatacho cha jibu:"
+    "message": "Ili uweze kupachika fremu hii katika hati yako, jibu linahitaji kuruhusu sera ya kipachikaji cha vyanzo mbalimbali kwa kubainisha kichwa kifuatacho cha jibu:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "Ili uweze kutumia nyenzo hii kutoka chanzo tofauti, seva inahitaji kubainisha sera ya kutumia nyenzo kutoka vyanzo mbalimbali katika vichwa vya majibu:"
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Angalia cheti"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Teua chaguo hili iwapo nyenzo na hati zimetoka kwenye tovuti moja."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(kutoka katika akiba ya diski)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Jumla"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Pata maelezo zaidi"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Pata maelezo zaidi katika kichupo cha hitilafu"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Teua tu chaguo hili iwapo tovuti hatarishi pamoja na nyenzo hii haileti hatari ya usalama."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Vichwa vinavyooneshwa kwa ufupi ndivyo pekee vinavyopatikana kwa sababu ombi hili halikutumwa kupitia mtandao, badala yake lilitolewa kwenye akiba ya mfumo ambayo haihifadhi vichwa halisi vya maombi. Zima akiba ili uone vichwa kamili vya maombi."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Inaonyesha vichwa kwa muda."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Inaonyesha vichwa kwa muda. Zima akiba ili uone vichwa kamili."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Kichwa Ghafi"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Nambari ya Kuonyesha Hali"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Hati hii imezuiwa isipakie katika iframe kwa sifa ya sandbox kwa sababu hati hii ilibainisha sera ya kufungua ya vyanzo mbalimbali."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Ili uweze kupachika fremu hii katika hati yako, jibu linahitaji kuruhusu sera ya kipachikaji cha vyanzo mbalimbali kwa kubainisha kichwa kifuatacho cha jibu:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Ili uweze kutumia nyenzo hii kutoka chanzo tofauti, seva inahitaji kubainisha sera ya kutumia nyenzo kutoka vyanzo mbalimbali katika vichwa vya majibu:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Ili uweze kutumia nyenzo hii kutoka chanzo tofauti, huenda seva isifuate kichwa cha jibu cha sera ya kutumia nyenzo kutoka vyanzo mbalimbali:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Ili uweze kutumia nyenzo hii kutoka tovuti tofauti, huenda seva isifuate kichwa cha jibu cha sera ya kutumia nyenzo kutoka vyanzo mbalimbali:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "Kipengele kilichotolewa na programu teja kina hitilafu au si sahihi."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "maudhui yenye hitilafu za cheti"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "imewashwa"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "ClientHello iliyosimbwa kwa njia fiche"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Imeripotiwa na Kipengele cha Kuvinjari Salama na Google"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Ubadilishanaji wa ufunguo"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Kikundi cha ubadilishaji wa funguo"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "Kitambulisho cha kumbukumbu"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Muhtasari wa usalama"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Sahihi ya seva"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Onyesha maelezo kamili"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Haijulikani / imeghairiwa"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "haijulikani"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "sahihi na inaaminika"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Weka mchoro..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Weka kiotomatiki hati za watu wengine unaowatambua ili upuuze usiowatambua"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Weka vyanzo kutoka sehemu ya x_google_ignoreList kwenye kipengele cha vyanzo vya ramani ili upuuze vyanzo vingine"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Hali"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Ongeza"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "URL ya alama za DWARF: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL ya ramani chanzo: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Weka ramani chanzo…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "Weka maelezo ya utatuzi ya DWARF…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "Unaweza kupata faili zinazohusiana kwenye mfumo wa ngazi wa faili au kwa kubonyeza {PH1}."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Imeandikwa na"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Kina vyanzo halisi"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Futa"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Imesambazwa"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Inajumuisha vyanzo vya mwisho ambavyo kivinjari kinaona"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Usijumuishe folda"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Kufungwa ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Imeshindwa kufungua kikaguzi cha hifadhi cha mfululizo: imeshindwa kupata akiba."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "Tukio lisilofuata kanuni"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Weka faili katika vikundi kulingana na Zilivyoandikwa au Zilivyopangwa"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Futa mipangilio"
@@ -9948,7 +10209,7 @@
     "message": "Dondosha folda ya nafasi ya kazi hapa"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Weka katika kikundi kulingana na ilivyoandikwa au ilivyosambazwa (kwa majaribio)"
+    "message": "Weka katika vikundi kulingana na Zilivyoandikwa au Zilivyopangwa"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Weka kwenye vikundi kulingana na folda"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Sharti anwani iwe nambari kati ya {PH1} na {PH2}"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Imeshindwa kufungua kikaguzi cha hifadhi cha mfululizo: imeshindwa kupata akiba."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Hamna ukaguzi unaoendelea"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Video na hati"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Pata Maelezo Zaidi"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Tutumie maoni yako."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Tuma maoni"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Bofya ili ufungue dashibodi ya mtandao na uonyeshe ombi la URL: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Hakuna sifa"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Hakuna kibainishaji cha sifa"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Onyesha zote {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "haijulikani"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<haiwezi kusomeka>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Thamani haiwezi kufikiwa kwenye kitatuzi"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<thamani haipatikani>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "tupu"

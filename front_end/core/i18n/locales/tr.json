@@ -1008,7 +1008,7 @@
     "message": "Oluşturmayı göster"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "Forces CSS prefers-color-scheme rengini açma/kapatma"
+    "message": "CSS prefers-color-scheme medya özelliğini aç/kapat"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "görme bozukluğu"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate kullanımdan kaldırıldı. Yerine lütfen RTCPeerConnectionIceErrorEvent.address veya RTCPeerConnectionIceErrorEvent.port kullanın."
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "canmakepayment hizmet çalışanı etkinliğindeki satıcı kaynağı ve rastgele veriler kullanımdan kaldırılacak ve mevcut olmayacak: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "Web sitesi, kullanıcılarının ayrıcalıklı ağ konumu sayesinde erişebildiği bir ağdan alt kaynak istedi. Bu istekler herkese açık olmayan cihazların ve sunucuların internette açığa çıkmasına neden olarak, siteler arası istek sahtekarlığı (CSRF) saldırısı ve/veya bilgi sızıntısı riskini artırır. Bu riskleri azaltmak amacıyla Chrome, güvenli olmayan bağlamlardan herkese açık olmayan alt kaynaklara gönderilen istekleri kullanımdan kaldıracak ve engellemeye başlayacaktır."
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "İş ortağınızın anlaşma yaptığı (D)TLS sürümü artık kullanılmıyor. Lütfen iş ortağınızla görüşüp bu durumu düzeltin."
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "Güvenli olmayan bağlamlarda WebSQL kullanımı kaldırılacak ve M107'de mevcut olmayacak. Lütfen web depolama veya dizine eklenmiş veritabanı kullanın."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Üst öğesi <picture> olan <source src> öğeleri geçersiz olduğundan yoksayılır. Lütfen bunun yerine <source srcset> politikasını kullanın."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo kullanımdan kaldırıldı. Yerine lütfen navigator.webkitTemporaryStorage veya navigator.webkitPersistentStorage kullanın."
+    "message": "window.webkitStorageInfo kullanımdan kaldırıldı. Lütfen bunun yerine standart navigator.storage kullanın."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL'lerinde yerleştirilmiş kimlik bilgileri (ör. https://user:pass@host/) olan alt kaynak istekleri engellenir."
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "Teklif Veren İş Akışı"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "Teklif Veren İş Akışı — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Özel Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "Satıcı İş Akışı"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "Satıcı İş Akışı — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "Açık Artırma İş Akışı"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "Açık Artırma İş Akışı — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "Açık Artırma İş Akışı Hizmeti"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "Açık Artırma İş Akışı Hizmeti — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(dizin)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "{PH1} adresinden birincil manifest simgesi"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "Protokol İşleyicileri"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "Manifest dosyasında {PH1} {PH2} boyutu belirtilmemiş"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Arka Plan Hizmetleri"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: Çağırarak manifest dosyasında bu bölüme gidin"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "Önbellek"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifest"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "{PH1} bölümüne gidildi"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "Manifest: Çağırarak manifest dosyasının üst tarafına gidin"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Açık Pencereler"
@@ -2577,7 +2619,7 @@
     "message": "DOM Depolama Öğeleri"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} temizlendi"
+    "message": "DOM depolama öğeleri temizlendi"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "Tabloda gösterilen girişlerin sayısı: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Bu çerçeve, programlı şekilde oluşturuldu. stack trace, bunun nerede gerçekleştiğini gösterir."
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "İçerik Üretici Reklam Komut Dosyası"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Kökler Arası Erişime Kapalı"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ayrıntıları göster"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "Etkinleştirildi."
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "Önceden oluşturma, AudioContext API'sini henüz desteklememektedir."
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "Kaynak yükü, istemci tarafından engellendi."
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting."
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "Sayfa, istemci sertifikası istiyor. Bu durum, önceden oluşturma gibi gizli bir sayfa için uygun değil."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "Önceden oluşturulmuş sayfa, yüklendikten sonra çapraz kaynak URL'sine gitti. Şu anda çapraz kaynak sayfalarının önceden oluşturulmasına izin verilmemektedir."
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "Çapraz kaynak URL'sine yönlendirilen bir URL'yi önceden oluşturma girişimi gerçekleşti. Şu anda çapraz kaynak sayfalarının önceden oluşturulmasına izin verilmemektedir."
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "Önceden oluşturulmuş bir sayfa, bilinmeyen nedenlerle terk edildi."
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "Önceden oluşturma sırasında DidFailLoadWithError oluştu."
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "Önceden oluşturmada indirme yapılmasına izin verilmez."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), gezinme işlemi çapraz kaynağa sahip başka bir sayfaya yönlendirildiği için iptal edildi."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), yıkıcıda kaldırıldı."
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), gezinme işlemi aynı kaynağa sahip başka bir sayfaya yönlendirildiği için iptal edildi."
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "Önceden oluşturma için yalnızca HTTP(S) gezinmesine izin verilir."
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "HTTP(S) olmayan URL'ye yönlendirilen bir URL'yi önceden oluşturma girişimi gerçekleşti. Yalnızca HTTP(S) sayfaları önceden oluşturulabilir."
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "Önceden oluşturma, kullanıcı arayüzünden gelen kimlik doğrulama isteklerini desteklemez."
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "Düşük bellekli cihazlarda önceden oluşturma desteklenmez."
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "İlk defa yapılan önceden oluşturma gezinmesinden sonraki gezinmelere izin verilmez"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "Maksimum önceden oluşturma sayısı aşıldı."
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "Önceden oluşturma, karma içerik çerçevesi tarafından iptal edildi."
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "Önceden oluşturulmuş sayfa, izin verilmeyen bir API kullandı"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "İlk defa yapılan önceden oluşturma gezinmesi, sunucunun 200/204/205 dışında bir durum kodu döndürmesi nedeniyle başarısız oldu."
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "Sonunda, önceden oluşturma sayfası olması taahhüt edilmez."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "Gezinme isteği, İGP tarafından engellendi."
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "Önceden oluşturma sırasında bir ağ hatasıyla karşılaşıldı."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "Önceden oluşturulmuş sayfa kilitlendi."
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "Önceden oluşturma sayfasıyla ilgili oluşturucu süreci sonlandırıldı."
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL sertifika hatası."
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "Sekme durduruldu."
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "Sekme arka planda"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "Önceden oluşturma, tetikleyiciyle etkinleştirilmez ve kaldırılmaz."
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "UserAgentOverride sonrasında yeniden yükleme yapılması gerekir."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "Protokol işleyiciyi seçin"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "manifest"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "Yardıma mı ihtiyacınız var? {PH1} okundu."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "{PH1} içinde geçerli bir protokol işleyici kaydı bulundu. Uygulama yüklendikten sonra kayıtlı protokolleri test edin."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "PWA'lar (Progresif Web Uygulaması) için URL protokol işleyici kaydı"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "Yüklenen uygulamanızı özel protokollerde işleyici olarak kaydetmek için {PH1} içinde protokol işleyicileri tanımlayın."
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "Protokolü test et"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "Protokol işleyici için sorgu parametresi veya uç nokta"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "Hedef"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Geliştirici Kaynaklarını Göster"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "Kullanımdan Kaldırılan Özellik"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "Etkin olmayan kural"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "Bu sorunu düzeltmek için lütfen {EXISTING_PARENT_ELEMENT_RULE} olan üst öğeleri {TARGET_PARENT_ELEMENT_RULE} olarak değiştirin."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "Üst öğede {REASON_RULE_CODE} kuralı olduğu için bu {AFFECTED_RULE_CODE} öğeleri herhangi bir etkiye sahip değildir"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "Bu özelliğin çalışabilmesi için lütfen {REASON_RULE_CODE} değerini kaldırın veya değiştirin"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "Bu öğede {REASON_RULE_CODE} kuralı olduğu için {AFFECTED_RULE_CODE} herhangi bir etkiye sahip değildir."
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Yeni sınıf ekle"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Kaydırmayı tutturma yer paylaşımını etkinleştir"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "İzolasyon Modu'na gir"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "İzolasyon Modu'ndan çık"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Yinelemeli olarak genişlet"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Özellik adı bilinmiyor"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "üst katman"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Yoksayıldı"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Rozetleri göster"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Daha Fazla Bilgi"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ağacı içerik haritaları"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "Hata"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "Yol açan neden:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "Hata Kodu:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "Veri:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "Hata Grubu:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "Yığın izleme:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "Günlük mesajlarını filtrele"
   },
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Hazır başlıklar gösteriliyor. Bütün başlıkları görmek için önbelleği devre dışı bırakın."
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "trigger-data ile kaydedilen ilişkilendirme: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Yönlendirme Politikası"
   },
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Sertifikayı göster"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "Hem kaynak hem de doküman aynı siteden yayınlanıyorsa bu seçeneği belirleyin."
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk önbelleğinden)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Genel"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "Daha fazla bilgi"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "Sorunlar sekmesinde daha fazla bilgi bulabilirsiniz"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "Yalnızca, bu kaynağı içeren rastgele bir web sitesi bir güvenlik riski oluşturmuyorsa bu seçeneği belirleyin."
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "Bu istek ağ üzerinden gönderilmek yerine orijinal istek başlıklarını depolamayan yerel bir önbellekten sunulduğu için yalnızca hazır başlıklar kullanılabilir. Bütün istek başlıklarını görmek için önbelleği devre dışı bırakın."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "Hazır başlıklar gösteriliyor."
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "Hazır başlıklar gösteriliyor. Bütün başlıkları görmek için önbelleği devre dışı bırakın."
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "İşlenmemiş"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "Durum Kodu"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "Bu doküman çapraz kaynak açıcı politikası belirttiği için dokümanın sandbox özelliği olan bir iframe içinde yüklenmesi engellendi."
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "Bu çerçeveyi dokümanınıza yerleştirmek için yanıtın aşağıdaki yanıt üst bilgisini belirleyerek çapraz kaynak yerleştirme politikasını etkinleştirmesi gerekir:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "Bu kaynağı başka bir merkezden kullanabilmek için sunucu tarafından yanıt üst bilgilerinde merkezler arası kaynak politikası belirtmesi gerekir:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "Sunucu, bu kaynağı başka bir merkezden kullanabilmek için merkezler arası kaynak politikası yanıt başlığını gevşetebilir:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "Sunucu, bu kaynağı başka bir siteden kullanabilmek için merkezler arası kaynak politikası başlığını gevşetebilir."
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "İstemci tarafından sağlanan bir bağımsız değişken bozuk veya geçersizdi."
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "sertifika hataları olan içerik"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "etkin"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "Encrypted ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Google Güvenli Tarama tarafından işaretlendi"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "Anahtar değişimi"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "Anahtar takas grubu"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "Giriş kimliği"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "Güvenliğe genel bakış"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "Sunucu imzası"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "Tüm detayları göster"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "Bilinmiyor / iptal edildi"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "bilinmiyor"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "geçerli ve güvenilir"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Desen ekle..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "Bilinen üçüncü taraf komut dosyalarını yoksayılanlar listesine otomatik olarak ekle"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "Kaynak eşlemelerindeki x_google_ignoreList alanında yer alan kaynakları yoksayılanlar listesine ekle"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "Davranış"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Ekle"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "DWARF sembolleri URL'si: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Kaynak eşleşmesi URL'si: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "Kaynak eşleşmesi ekle…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "DWARF hata ayıklama bilgileri ekleyin…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "İlişkili dosyalara dosya ağacı üzerinden veya {PH1} tuşlarıyla ulaşılabilir."
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Oluşturuldu"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "Orijinal kaynaklar içerir"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Sil"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Dağıtıldı"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "Tarayıcının gördüğü son kaynakları içerir"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Klasörü hariç bırak"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "Kapatma ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "Doğrusal bellek denetleyici açılamadı: arabellek bulunamadı."
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "İstisna"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "Dosyaları oluşturulma/dağıtılma bazında gruplandırın"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Yapılandırmayı temizle"
@@ -9948,7 +10209,7 @@
     "message": "Çalışma alanı klasörünü buraya bırakın"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "Oluşturulma/dağıtılma bazında gruplama (deneysel)"
+    "message": "Oluşturulma/dağıtılma bazında gruplama"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "Klasöre göre gruplandır"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres {PH1} ile {PH2} arasında bir sayı olmalıdır"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "Doğrusal bellek denetleyici açılamadı: arabellek bulunamadı."
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Açık inceleme yok"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "Video ve dokümanlar"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "Daha Fazla Bilgi"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Geri bildiriminizi gönderin."
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "Geri bildirim gönder"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Ağ panelini açıp URL isteğini göstermek için tıklayın: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Özellik yok"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "Mülk alıcısı yok"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "{PH1} teklifin tümünü göster"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "bilinmiyor"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<okunamıyor>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "Hata ayıklayıcı, değere erişemiyor"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<değer yok>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "boş"

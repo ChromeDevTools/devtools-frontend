@@ -1008,7 +1008,7 @@
     "message": "ৰেণ্ডাৰিং দেখুৱাওক"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | toggleCssPrefersColorSchemeMedia": {
-    "message": "forces CSS prefers-color-scheme ৰং ট’গল কৰক"
+    "message": "CSS মিডিয়াৰ সুবিধা prefers-color-scheme টগ'ল কৰক"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "দৃষ্টিৰ অভাৱ"
@@ -1412,6 +1412,9 @@
   "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate অপ্ৰচলিত। তাৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি RTCPeerConnectionIceErrorEvent.address অথবা RTCPeerConnectionIceErrorEvent.port ব্যৱহাৰ কৰক।"
   },
+  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
+    "message": "canmakepayment সেৱাৰ কর্মচাৰীৰ অনুষ্ঠানৰ পৰা বণিকৰ উৎস আৰু আৰ্বিট্ৰেৰী ডেটাসমূহ অপ্ৰচলিত কৰা হৈছে আৰু সেইবোৰ আঁতৰোৱা হ'ব: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
   "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
     "message": "ৱেবছাইটটোৱে এটা নেটৱৰ্কৰ পৰা এটা উপসম্পদৰ বাবে অনুৰোধ কৰিছে যিটো ইয়াৰ ব্যৱহাৰকাৰীৰ বিশেষাধিকাৰযুক্ত নেটৱৰ্কৰ স্থিতিৰ বাবে কেৱল ই এক্সেছ কৰিব পাৰে। এই অনুৰোধবোৰে ব্যক্তিগত ডিভাইচ আৰু ছাৰ্ভাৰসমূহ ইণ্টাৰনেটত ফাদিল কৰে, যাৰ ফলত ক্ৰছ-ছাইট অনুৰোধ জালিয়াতি (CSRF) আক্ৰমণ আৰু/অথবা তথ্য ফাদিল হোৱাৰ আশংকা বৃদ্ধি পায়। এই বিপদসমূহ কম কৰিবলৈ, Chromeএ অসুৰক্ষিত প্ৰসংগৰ পৰা অৰাজহুৱা উপসম্পদসমূহলৈ অহা অনুৰোধসমূহ অস্বীকাৰ কৰে আৰু সেইবোৰ অৱৰোধ কৰা আৰম্ভ কৰিব।"
   },
@@ -1442,11 +1445,14 @@
   "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
     "message": "আপোনাৰ অংশীদাৰে এটা অপ্ৰচলিত (D)TLS সংস্কৰণৰ আলোচনা কৰি আছে। এইটো ঠিক কৰিবলৈ অনুগ্ৰহ কৰি আপোনাৰ অংশীদাৰৰ সৈতে পৰীক্ষা কৰক।"
   },
+  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
+    "message": "অনা উৎসৰ প্ৰসংগত থকা WebSQL অপ্ৰচলিত কৰা হৈছে আৰু M107ত আঁতৰোৱা হ'ব। অনুগ্ৰহ কৰি Web Storage অথবা Indexed Database ব্যৱহাৰ কৰক।"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture>ৰ ভিতৰত <source src> থকাটো অমান্য আৰু সেয়ে ইয়াক আওকাণ কৰা হৈছে। তাৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি <source srcset> ব্যৱহাৰ কৰক।"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo অপ্ৰচলিত। তাৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি navigator.webkitTemporaryStorage অথবা navigator.webkitPersistentStorage ব্যৱহাৰ কৰক।"
+    "message": "window.webkitStorageInfo অপ্ৰচলিত। তাৰ পৰিৱর্তে উন্নত কৰা navigator.storage ব্যৱহাৰ কৰক।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "উপসম্পদৰ অনুৰোধসমূহ যাৰ URLসমূহত এম্বেড কৰা ক্ৰেডেনশ্বিয়েল (যেনে, https://user:pass@host/) থাকে, সেয়া অৱৰোধ কৰা হয়।"
@@ -1673,17 +1679,41 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "থ্ৰেড {PH1}"
   },
+  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
+    "message": "বিডাৰৰ ৱর্কলেট"
+  },
+  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
+    "message": "বিডাৰৰ ৱর্কলেট — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "সমৰ্পিত Worker"
   },
+  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
+    "message": "বিক্ৰেতাৰ ৱর্কলেট"
+  },
+  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
+    "message": "বিক্ৰেতাৰ ৱর্কলেট — {PH1}"
+  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "থ্ৰেড {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেট"
+  },
+  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেট — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "models/timeline_model/TimelineModel.ts | workletService": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা"
+  },
+  "models/timeline_model/TimelineModel.ts | workletServiceS": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(সূচক)"
@@ -2321,6 +2351,9 @@
   "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
     "message": "{PH1}ৰ প্ৰাথমিক মেনিফেষ্ট চিহ্ন"
   },
+  "panels/application/AppManifestView.ts | protocolHandlers": {
+    "message": "প্ৰট’কল নিয়ন্ত্ৰক"
+  },
   "panels/application/AppManifestView.ts | sSDoesNotSpecifyItsSizeInThe": {
     "message": "{PH1} {PH2}এ মেনিফেষ্টত ইয়াৰ আকাৰ নিৰ্দিষ্ট নকৰে"
   },
@@ -2405,6 +2438,9 @@
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "নেপথ্যৰ সেৱা"
   },
+  "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
+    "message": "{PH1}: মেনিফেষ্টত এই শাখাটোলৈ স্ক্ৰ’ল কৰিবলৈ আহ্বান জনাওক"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cache": {
     "message": "কেশ্ব"
   },
@@ -2437,6 +2473,12 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "মেনিফেষ্ট"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
+    "message": "{PH1}লৈ স্ক্ৰ'ল কৰক"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | onInvokeManifestAlert": {
+    "message": "মেনিফেষ্ট: মেনিফেষ্টৰ ওপৰলৈ স্ক্ৰ'ল কৰিবলৈ আহ্বান কৰক"
   },
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "খুলি ৰখা ৱিণ্ড'"
@@ -2577,7 +2619,7 @@
     "message": "DOM ষ্ট’ৰেজত থকা বস্তু"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
-    "message": "{PH1} মচা হৈছে"
+    "message": "DOM ষ্ট'ৰেজৰ বস্তুবোৰ মচা হৈছে"
   },
   "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
     "message": "তালিকাত দেখুওৱা প্ৰবিষ্টিৰ সংখ্যা: {PH1}"
@@ -3503,6 +3545,9 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "এই ফ্ৰে’মটো কম্পিউটাৰ প্ৰ’গ্ৰাম ব্যৱহাৰ কৰি সৃষ্টি কৰা হৈছে। এইটো ক’ত হৈছে সেয়া stack trace দেখুৱায়।"
   },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
+    "message": "সৃষ্টিকর্তাৰ বিজ্ঞাপনৰ স্ক্ৰীপ্ট"
+  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "ক্ৰছ-অৰিজিন পৃথক কৰা হৈছে"
   },
@@ -3673,6 +3718,129 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "সবিশেষ দেখুৱাওক"
+  },
+  "panels/application/components/Prerender2.ts | Activated": {
+    "message": "সক্ৰিয় কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
+    "message": "প্ৰিৰেণ্ডাৰিঙে এতিয়ালৈকে AudioContext API সমর্থন কৰা নাই।"
+  },
+  "panels/application/components/Prerender2.ts | BlockedByClient": {
+    "message": "ক্লায়েণ্টগৰাকীয়ে সম্পদ ল'ড কৰাটো অৱৰোধ কৰিছে।"
+  },
+  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
+    "message": "CancelAllHostsForTesting।"
+  },
+  "panels/application/components/Prerender2.ts | ClientCertRequested": {
+    "message": "পৃষ্ঠাখনে ক্লায়েণ্ট চার্টৰ বাবে অনুৰোধ কৰিছে, যিটো প্ৰিৰেণ্ডাৰিঙৰ দৰে লুকুৱাই ৰখা পৃষ্ঠা এখনৰ বাবে উপযোগী নহয়।"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
+    "message": "প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠাখন ল'ড কৰাৰ পাছত এটা ক্ৰছ-অৰিজিন URLলৈ নেভিগে'ট কৰা হৈছে। বর্তমান ক্ৰছ-অৰিজিন পৃষ্ঠাসমূহ প্ৰিৰেণ্ডাৰিং কৰাৰ অনুমতি নাই।"
+  },
+  "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
+    "message": "এটা ক্ৰছ-অৰিজিন URLলৈ ৰিডাইৰেক্ট কৰা এটা URL প্ৰিৰেণ্ডাৰ কৰিবলৈ প্ৰয়াস কৰা হৈছে। বর্তমান ক্ৰছ-অৰিজিন পৃষ্ঠাসমূহ প্ৰিৰেণ্ডাৰিং কৰাৰ অনুমতি নাই।"
+  },
+  "panels/application/components/Prerender2.ts | Destroyed": {
+    "message": "কোনো অজ্ঞাত কাৰণত এখন প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠা পৰিত্যাগ কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | DidFailLoad": {
+    "message": "প্ৰিৰেণ্ডাৰিঙৰ সময়ত DidFailLoadWithError হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | Download": {
+    "message": "প্ৰিৰেণ্ডাৰাৰত ডাউনল'ড কৰাৰ অনুমতি নাই।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
+    "message": "নেভিগেশ্বনটো ভিন্ন-উৎসৰ অন্য এখন পৃষ্ঠালৈ ৰিডাইৰেক্ট কৰা হৈছে বাবে Chrome অভ্যন্তৰীণে (যেনে, অ'মনিবক্স প্ৰিৰেণ্ডাৰিং) আৰম্ভ কৰা প্ৰিৰেণ্ডাৰিঙ বাতিল কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
+    "message": "Chrome অভ্যন্তৰীণে (যেনে, অ'মনিবক্স প্ৰিৰেণ্ডাৰিং) আৰম্ভ কৰা প্ৰিৰেণ্ডাৰিঙ ধ্বংস কৰাটোত ধ্বংস কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
+    "message": "নেভিগেশ্বনটো একেই-উৎসৰ অন্য এখন পৃষ্ঠালৈ ৰিডাইৰেক্ট কৰা হৈছে বাবে Chrome অভ্যন্তৰীণে (যেনে, অ'মনিবক্স প্ৰিৰেণ্ডাৰিং) আৰম্ভ কৰা প্ৰিৰেণ্ডাৰিঙ বাতিল কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | InProgressNavigation": {
+    "message": "InProgressNavigation।"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
+    "message": "প্ৰিৰেণ্ডাৰৰ বাবে কেৱল HTTP(S) নেভিগেশ্বনৰ অনুমতি দিয়া হয়।"
+  },
+  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
+    "message": "এটা অনা-HTTP(S) URLলৈ ৰিডাইৰেক্ট কৰা URL প্ৰিৰেণ্ডাৰ কৰিবলৈ প্ৰয়াস কৰা হৈছে। কেৱল HTTP(S) পৃষ্ঠাসমূহ প্ৰিৰেণ্ডাৰ কৰিব পাৰি।"
+  },
+  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
+    "message": "প্ৰিৰেণ্ডাৰে UIৰ লেখকৰ অনুৰোধ সমর্থন নকৰে।"
+  },
+  "panels/application/components/Prerender2.ts | LowEndDevice": {
+    "message": "কম মেম'ৰীৰ ডিভাইচৰ বাবে প্ৰিৰেণ্ডাৰিঙ সমর্থিত নহয়।"
+  },
+  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
+    "message": "প্ৰাৰম্ভিক প্ৰিৰেণ্ডাৰিং নেভিগেশ্বনৰ পাছত নেভিগেশ্বনৰ অনুমতি নাই"
+  },
+  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
+    "message": "প্ৰিৰেণ্ডাৰিঙৰ সর্বাধিক সংখ্যা অতিক্ৰম কৰিছে।"
+  },
+  "panels/application/components/Prerender2.ts | MixedContent": {
+    "message": "মিশ্ৰিত সমলৰ ফ্ৰে'মে প্ৰিৰেণ্ডাৰিং বাতিক কৰিছে।"
+  },
+  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
+    "message": "প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠাখনে এটা অনুমতি নথকা API ব্যৱহাৰ কৰিছে"
+  },
+  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
+    "message": "প্ৰাৰম্ভিক প্ৰিৰেণ্ডাৰিং নেভিগেশ্বন সফল নহ'ল কাৰণ ছার্ভাৰে এটা অনা-200/204/205 স্থিতি ক'ড উভতাই দিছে।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
+    "message": "শেষত প্ৰিৰেণ্ডাৰিঙৰ পৃষ্ঠাখন কার্যকৰী কৰা হোৱা নাই।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
+    "message": "নেভিগেশ্বনৰ অনুৰোধ CSPএ অৱৰোধ কৰিছে।"
+  },
+  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
+    "message": "প্ৰিৰেণ্ডাৰিঙৰ সময়ত এটা নেটৱর্ক সম্পর্কীয় আসোঁৱাহৰ সন্মুখীন হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
+    "message": "প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠাখন স্ক্ৰাছ হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
+    "message": "প্ৰিৰেণ্ডাৰিঙৰ পৃষ্ঠাখনৰ বাবে ৰেণ্ডাৰাৰ প্ৰক্ৰিয়াটো বন্ধ কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | SslCertificateError": {
+    "message": "SSL প্ৰমাণপত্ৰ সম্পর্কীয় আসোঁৱাহ।"
+  },
+  "panels/application/components/Prerender2.ts | Stop": {
+    "message": "টেবটো ৰখোৱা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
+    "message": "টেবটো পৃষ্ঠভূমিত আছে"
+  },
+  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
+    "message": "প্ৰিৰেণ্ডাৰ সক্ৰিয় কৰা হোৱা নাই আৰু টিগাৰৰ জৰিয়তে ধ্বংস কৰা হৈছে।"
+  },
+  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
+    "message": "UserAgentOverrideৰ পাছত পুনৰ ল'ড কৰাৰ আৱশ্যক হয়।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
+    "message": "প্ৰট’কল পৰিচালক বাছনি কৰক"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | manifest": {
+    "message": "মেনিফেষ্ট"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | needHelpReadOur": {
+    "message": "সহায় লাগে নেকি? {PH1} পঢ়ক।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolDetected": {
+    "message": "{PH1}ত মান্য প্ৰ’ট’ক’ল নিয়ন্ত্ৰকৰ পঞ্জীয়ন বিচাৰি পোৱা গৈছে। এপ্‌টো ইনষ্টল কৰাৰ জৰিয়তে, পঞ্জীয়ন কৰা প্ৰ'ট'ক'লসমূহ পৰীক্ষা কৰক।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolHandlerRegistrations": {
+    "message": "PWAৰ বাবে URL প্ৰ'ট'ক'ল নিয়ন্ত্ৰকৰ পঞ্জীয়ন"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | protocolNotDetected": {
+    "message": "আপোনাৰ এপ্‌টো ইনষ্টল কৰিলে সেইটোক কাষ্টম প্ৰ’ট’ক’লৰ বাবে এটা নিয়ন্ত্ৰক হিচাপে পঞ্জীয়ন কৰিবলৈ {PH1}ত প্ৰ’ট’ক’ল নিয়ন্ত্ৰকসমূহ সংজ্ঞাবদ্ধ কৰক।"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | testProtocol": {
+    "message": "প্ৰ'ট'ক'ল পৰীক্ষা কৰক"
+  },
+  "panels/application/components/ProtocolHandlersView.ts | textboxLabel": {
+    "message": "প্ৰ'ট'ক'ল নিয়ন্ত্ৰকৰ বাবে প্ৰশ্নৰ পেৰামিটাৰ অথবা অন্তিম বিন্দু"
   },
   "panels/application/components/ReportsGrid.ts | destination": {
     "message": "লক্ষ্যস্থান"
@@ -4562,6 +4730,24 @@
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "বিকাশকৰ্তাৰ উৎসসমূহ দেখুৱাওক"
   },
+  "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
+    "message": "অপ্ৰচলিত সম্পদ"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
+    "message": "নিষ্ক্ৰিয় হৈ থকা নিয়ম"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
+    "message": "এই সমস্যাটো সমাধান কৰিবলৈ অভিভাৱক উপাদান {EXISTING_PARENT_ELEMENT_RULE}ৰ পৰা {TARGET_PARENT_ELEMENT_RULE}লৈ সলনি কৰক।"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
+    "message": "অভিভাৱক উপাদানটোৰ {REASON_RULE_CODE} নিয়মটো আছে, গতিকে এই উপাদানসমূহৰ {AFFECTED_RULE_CODE} কোনো প্ৰভাৱ নাই"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
+    "message": "এই সম্পদটোৱে কাম কৰিবলৈ {REASON_RULE_CODE}ৰ মান আঁতৰাওক বা সলনি কৰক"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
+    "message": "উপাদানটোত {REASON_RULE_CODE} নিয়মটো আছে, সেই কাৰণে {AFFECTED_RULE_CODE}ৰ কোনো প্ৰভাৱ নাই।"
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "নতুন শ্ৰেণী যোগ দিয়ক"
   },
@@ -4735,12 +4921,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "স্ক্ৰ’ল-স্নেপ দেখুওৱা অ’ভাৰলে’ সক্ষম কৰক"
-  },
-  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
-    "message": "নিলগাই ৰখা ম’ডটো দিয়ক"
-  },
-  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
-    "message": "নিলগাই ৰখা ম’ডৰ পৰা বাহিৰ হওক"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "পুনৰাবৃত্তি হোৱাকৈ বিস্তাৰ কৰক"
@@ -5003,6 +5183,9 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "অজ্ঞাত সম্পদৰ নাম"
   },
+  "panels/elements/TopLayerContainer.ts | topLayer": {
+    "message": "শীর্ষ স্তৰ"
+  },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "উপেক্ষিত"
   },
@@ -5011,6 +5194,9 @@
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "প্ৰতীক দেখুৱাওক"
+  },
+  "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "অধিক জানক"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM ট্ৰীৰ ব্ৰেডক্ৰাম্ব"
@@ -6293,6 +6479,21 @@
   "panels/media/PlayerMessagesView.ts | error": {
     "message": "আসোঁৱাহ"
   },
+  "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
+    "message": "ইয়াৰ বাবে আসোঁৱাহ হ’ল:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
+    "message": "আসোঁৱাহ ক’ড:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorDataLabel": {
+    "message": "ডেটা:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
+    "message": "আসোঁৱাহ গোট:"
+  },
+  "panels/media/PlayerMessagesView.ts | errorStackLabel": {
+    "message": "ষ্টেকট্ৰে’চ:"
+  },
   "panels/media/PlayerMessagesView.ts | filterLogMessages": {
     "message": "ফিল্টাৰ লগ বাৰ্তা"
   },
@@ -7298,9 +7499,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে। সম্পূৰ্ণ হেডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
   },
-  "panels/network/RequestHeadersView.ts | recordedAttribution": {
-    "message": "trigger-dataৰ জৰিয়তে ৰেকৰ্ড কৰা এট্ৰিবিউশ্বন: {PH1}"
-  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "প্ৰসংগ দিওঁতা নীতি"
   },
@@ -7670,6 +7868,9 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "প্ৰমাণপত্ৰ চাওক"
   },
+  "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
+    "message": "সম্পদটো আৰু নথিখন একেটা ছাইটৰ পৰা আগবঢ়োৱা হ’লে এই বিকল্পটো বাছনি কৰক।"
+  },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ডিস্কৰ কেশ্বৰ পৰা)"
   },
@@ -7690,6 +7891,24 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "সাধাৰণ"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMore": {
+    "message": "অধিক জানক"
+  },
+  "panels/network/components/RequestHeadersView.ts | learnMoreInTheIssuesTab": {
+    "message": "সমস্যাৰ টেবত অধিক জানক"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyChooseThisOptionIfAn": {
+    "message": "এই উৎসটোকে ধৰি কোনো নিয়মবহিৰ্ভূত ৱেবছাইটত সুৰক্ষা বিষয়ক বিপদাশংকা নাথাকিলেহে এই বিকল্পটো বাছনি কৰক।"
+  },
+  "panels/network/components/RequestHeadersView.ts | onlyProvisionalHeadersAre": {
+    "message": "কেৱল প্ৰ’ভিজনেল হে'ডাৰসমূহ উপলব্ধ কাৰণ এই অনুৰোধটো এটা নেটৱৰ্কৰ জৰিয়তে পঠিওৱা হোৱা নাই আৰু তাৰ সলনি এটা স্থানীয় কেশ্বৰ পৰা প্ৰদান কৰা হৈছে, যিটোৱে প্ৰকৃত অনুৰোধৰ হে'ডাৰসমূহ ষ্ট'ৰ নকৰে। সম্পূৰ্ণ অনুৰোধৰ হে'ডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShown": {
+    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে।"
+  },
+  "panels/network/components/RequestHeadersView.ts | provisionalHeadersAreShownDisableCache": {
+    "message": "প্ৰ’ভিজনেল হেডাৰসমূহ দেখুওৱা হৈছে। সম্পূৰ্ণ হেডাৰসমূহ চাবলৈ কেশ্ব অক্ষম কৰক।"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "শাৰী"
@@ -7717,6 +7936,21 @@
   },
   "panels/network/components/RequestHeadersView.ts | statusCode": {
     "message": "স্থিতিৰ ক’ড"
+  },
+  "panels/network/components/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
+    "message": "এই নথিখন sandbox এট্ৰিবিউটৰ সৈতে এটা iframeত ল’ড কৰাটো অৱৰোধ কৰা হৈছে কাৰণ এই নথিখনে এটা ক্ৰছ-অৰিজিন অপেনাৰ নীতি নিৰ্দিষ্ট কৰে।"
+  },
+  "panels/network/components/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
+    "message": "আপোনাৰ নথিত এই ফ্ৰে'মটো এম্বেড কৰিবলৈ সঁহাৰিটোৱে তলত দিয়া সঁহাৰিৰ হে'ডাৰটো নিৰ্দিষ্ট কৰি ক্ৰছ-অৰিজিন এম্বেডাৰ নীতিটো সক্ষম কৰিব লাগে:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
+    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে এটা ক্ৰছ-অৰিজিন সম্পদ নীতি সঁহাৰিৰ হে'ডাৰ নিৰ্দিষ্ট কৰিব লাগে:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentOrigin": {
+    "message": "এই সম্পদটো অন্য এটা উৎসৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে হয়তো ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হে'ডাৰ শিথিল কৰিব পাৰে:"
+  },
+  "panels/network/components/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
+    "message": "এই উৎসটো অন্য এটা ছাইটৰ পৰা ব্যৱহাৰ কৰিবলৈ ছাৰ্ভাৰটোৱে ক্ৰছ-অৰিজিন উৎস নীতিৰ সঁহাৰিৰ হেডাৰ শিথিল কৰিব পাৰে:"
   },
   "panels/network/components/RequestTrustTokensView.ts | aClientprovidedArgumentWas": {
     "message": "এগৰাকী ক্লায়েণ্টে প্ৰদান কৰা যুক্তিটোৱে কাম কৰা নাই অথবা সেইটো মান্য নহয়।"
@@ -8687,6 +8921,12 @@
   "panels/security/SecurityPanel.ts | contentWithCertificateErrors": {
     "message": "প্ৰমাণত্ৰত আসোঁৱাহ থকা সমল"
   },
+  "panels/security/SecurityPanel.ts | enabled": {
+    "message": "সক্ষম কৰা আছে"
+  },
+  "panels/security/SecurityPanel.ts | encryptedClientHello": {
+    "message": "এনক্ৰিপ্ট কৰা ClientHello"
+  },
   "panels/security/SecurityPanel.ts | flaggedByGoogleSafeBrowsing": {
     "message": "Googleৰ সুৰক্ষিত ব্ৰাউজিঙে অভিযোগ কৰা"
   },
@@ -8716,9 +8956,6 @@
   },
   "panels/security/SecurityPanel.ts | keyExchange": {
     "message": "কী বিনিময়"
-  },
-  "panels/security/SecurityPanel.ts | keyExchangeGroup": {
-    "message": "কী বিনিময় গোট"
   },
   "panels/security/SecurityPanel.ts | logId": {
     "message": "লগ আইডি"
@@ -8819,6 +9056,9 @@
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "সুৰক্ষাৰ ৰূপৰেখা"
   },
+  "panels/security/SecurityPanel.ts | serverSignature": {
+    "message": "ছার্ভাৰৰ চহী"
+  },
   "panels/security/SecurityPanel.ts | showFullDetails": {
     "message": "সম্পূৰ্ণ সবিশেষ দেখুৱাওক"
   },
@@ -8914,6 +9154,9 @@
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "অজ্ঞাত / বাতিল কৰা"
+  },
+  "panels/security/SecurityPanel.ts | unknownField": {
+    "message": "অজ্ঞাত"
   },
   "panels/security/SecurityPanel.ts | validAndTrusted": {
     "message": "মান্য আৰু বিশ্বস্ত"
@@ -9172,6 +9415,12 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "আৰ্হি যোগ দিয়ক..."
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
+    "message": "উপেক্ষা সূচীত স্বয়ংক্ৰিয়ভাৱে তৃতীয় পক্ষৰ স্ক্ৰিপ্ট যোগ দিয়ক"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
+    "message": "উপেক্ষাৰ সূচীত উৎসৰ মেপৰ পৰা x_google_ignoreListৰ পৰা উৎস যোগ দিয়ক"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | behavior": {
     "message": "আচৰণ"
@@ -9473,6 +9722,9 @@
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "যোগ দিয়ক"
   },
+  "panels/sources/AddSourceMapURLDialog.ts | debugInfoUrl": {
+    "message": "DWARFএ URL সূচায়: "
+  },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "উৎস মেপৰ URL: "
   },
@@ -9626,6 +9878,9 @@
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
     "message": "উৎসৰ মেপ যোগ দিয়ক…"
   },
+  "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
+    "message": "DWARF ডিবাগ তথ্য যোগ দিয়ক…"
+  },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
     "message": "সংশ্লিষ্ট ফাইলবোৰ ফাইল ট্ৰী অথবা {PH1}ৰ জৰিয়তে উপলব্ধ হয়।"
   },
@@ -9776,6 +10031,9 @@
   "panels/sources/NavigatorView.ts | authored": {
     "message": "লেখক"
   },
+  "panels/sources/NavigatorView.ts | authoredTooltip": {
+    "message": "মূল উৎস থাকে"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "মচক"
   },
@@ -9784,6 +10042,9 @@
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "বলৱৎ কৰা হৈছে"
+  },
+  "panels/sources/NavigatorView.ts | deployedTooltip": {
+    "message": "ব্ৰাউজাৰটোৱে দেখা পোৱা চূড়ান্ত উৎসসমূহ থাকে"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "ফ’ল্ডাৰ বহিৰ্ভূত কৰক"
@@ -9839,9 +10100,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | closureS": {
     "message": "বন্ধ ({PH1})"
   },
-  "panels/sources/ScopeChainSidebarPane.ts | couldNotOpenLinearMemory": {
-    "message": "লিনিয়াৰ মেম’ৰিৰ বাবে নিৰীক্ষক খুলিব পৰা নগ’ল: বাফাৰৰ অৱস্থান নিৰ্ণয় কৰিব পৰা নগ’ল।"
-  },
   "panels/sources/ScopeChainSidebarPane.ts | exception": {
     "message": "ব্যতিক্ৰম"
   },
@@ -9877,6 +10135,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+এণ্টাৰ"
+  },
+  "panels/sources/SourcesNavigator.ts | authoredDescription": {
+    "message": "লেখক/বলৱৎ কৰা অনুসৰি ফাইলসমূহ গোটত বিভক্ত কৰক"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "কনফিগাৰেশ্বন মচক"
@@ -9948,7 +10209,7 @@
     "message": "ৱৰ্কস্পেছ ফ’ল্ডাৰ ইয়াত টানি আনি এৰক"
   },
   "panels/sources/SourcesPanel.ts | groupByAuthored": {
-    "message": "লেখক/বলৱৎ কৰা অনুসৰি গোটত বিভক্ত কৰক (পৰীক্ষামূলক)"
+    "message": "লেখক/বলৱৎ কৰা অনুসৰি গোটত বিভক্ত কৰক"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "ফ’ল্ডাৰ অনুসৰি গোটত বিভক্ত কৰক"
@@ -11837,6 +12098,9 @@
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ঠিকনাটো {PH1} আৰু {PH2}ৰ মাজৰ এটা সংখ্যা হ’ব লাগিব"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
+    "message": "লিনিয়াৰ মেম’ৰিৰ বাবে নিৰীক্ষক খুলিব পৰা নগ’ল: বাফাৰৰ অৱস্থান নিৰ্ণয় কৰিব পৰা নগ’ল।"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "মুক্ত নিৰীক্ষণ নাই"
   },
@@ -11906,8 +12170,14 @@
   "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
     "message": "ভিডিঅ’ আৰু নথি"
   },
+  "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
+    "message": "অধিক জানক"
+  },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "আমালৈ আপোনাৰ মতামত পঠিয়াওক।"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
+    "message": "মতামত পঠিয়াওক"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "নেটৱৰ্ক পেনেলটো খুলিবলৈ ক্লিক কৰক আৰু এই URLটোৰ বাবে থকা অনুৰোধ দেখুৱাওক: {url}"
@@ -12473,9 +12743,6 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "কোনো সম্পত্তি নাই"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noPropertyGetter": {
-    "message": "কোনো সম্পত্তি সংগ্ৰহকাৰী নাই"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "আটাইবোৰ দেখুৱাওক {PH1}"
   },
@@ -12488,8 +12755,11 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unknown": {
     "message": "অজ্ঞাত"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | unreadable": {
-    "message": "<পঢ়িব নোৱাৰা>"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
+    "message": "ডিবাগাৰটোৰ বাবে মানটো এক্সেছ কৰিব নোৱাৰি"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
+    "message": "<মান নাই>"
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | empty": {
     "message": "খালী"

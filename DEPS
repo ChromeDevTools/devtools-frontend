@@ -31,7 +31,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:9ef321772ecc161937db69acb346397e0ccc484d',
+  'gn_version': 'git_revision:c8c63300ac8ecb66d8126af5407257209ae59044',
 
   # reclient CIPD package version
   'reclient_version': 're_client_version:0.19.2.319f839',

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as FS from 'fs';
 import * as Mocha from 'mocha';
 import * as Path from 'path';
 
@@ -14,7 +15,11 @@ import {platform, type Platform} from './helper.js';
 
 export {beforeEach} from 'mocha';
 
-export async function takeScreenshots() {
+function htmlEscape(raw: string) {
+  return raw.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+}
+
+export async function takeScreenshots(testName: string) {
   try {
     const {target, frontend} = getBrowserAndPages();
     const opts = {
@@ -23,10 +28,24 @@ export async function takeScreenshots() {
     const targetScreenshot = await target.screenshot(opts);
     const frontendScreenshot = await frontend.screenshot(opts);
     const prefix = 'data:image/png;base64,';
-    console.error('Target page screenshot (copy the next line and open in the browser):');
-    console.error(prefix + targetScreenshot);
-    console.error('Frontend screenshot (copy the next line and open in the browser):');
-    console.error(prefix + frontendScreenshot);
+    const screenshotFile = getEnvVar('HTML_OUTPUT_FILE');
+    if (screenshotFile) {
+      try {
+        FS.appendFileSync(
+            screenshotFile,
+            `<div><h3>${htmlEscape(testName)}</h3><p>Target page screenshot</p><p><img src="${
+                prefix + targetScreenshot}"/></p><p>Frontend screenshot</p><p><img src="${
+                prefix + frontendScreenshot}"/></p></div>\n`);
+        console.error(`Screenshots saved to "${screenshotFile}"`);
+      } catch (err) {
+        console.error(`Error saving to file "${screenshotFile}": `, err);
+      }
+    } else {
+      console.error('Target page screenshot (copy the next line and open in the browser):');
+      console.error(prefix + targetScreenshot);
+      console.error('Frontend screenshot (copy the next line and open in the browser):');
+      console.error(prefix + frontendScreenshot);
+    }
   } catch (err) {
     console.error('Error taking a screenshot', err);
   }
@@ -117,7 +136,7 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
     console.error(`Pending async operations during failure:\n${stacks.join('\n\n')}`);
   }
   if (err && !getEnvVar('DEBUG_TEST')) {
-    await takeScreenshots();
+    await takeScreenshots(this.fullTitle());
   }
   if (done) {
     // This workaround is needed to allow timeoutHook to be async.

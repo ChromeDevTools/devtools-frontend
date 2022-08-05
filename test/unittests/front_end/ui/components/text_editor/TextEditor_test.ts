@@ -124,8 +124,6 @@ describeWithEnvironment('TextEditor', () => {
       await testQueryType('foo.bar', 7, TextEditor.JavaScript.QueryType.PropertyName, 'bar', 'foo.bar');
       await testQueryType('foo.', 4, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
       await testQueryType('if (foo.', 8, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
-      await testQueryType('foo.', 4, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
-      await testQueryType('foo.\n', 5, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
       await testQueryType('new foo.bar().', 14, TextEditor.JavaScript.QueryType.PropertyName, '', 'new foo.bar().');
       await testQueryType('foo?.', 5, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo?.');
       await testQueryType('foo?.b', 6, TextEditor.JavaScript.QueryType.PropertyName, 'b', 'foo?.b');
@@ -133,7 +131,6 @@ describeWithEnvironment('TextEditor', () => {
 
     it('recognizes property expression queries', async () => {
       await testQueryType('foo[', 4, TextEditor.JavaScript.QueryType.PropertyExpression, '', 'foo[');
-      await testQueryType('foo[ ', 5, TextEditor.JavaScript.QueryType.PropertyExpression, '', 'foo[');
       await testQueryType('foo["ba', 7, TextEditor.JavaScript.QueryType.PropertyExpression, '"ba', 'foo["ba');
     });
 

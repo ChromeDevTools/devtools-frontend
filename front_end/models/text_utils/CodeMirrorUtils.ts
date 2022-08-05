@@ -34,8 +34,7 @@ type Tokenizer = (line: string, callback: (value: string, style: string|null) =>
 export function createCssTokenizer(): Tokenizer {
   async function tokenize(line: string, callback: (value: string, style: string|null) => void): Promise<void> {
     const streamParser = await CodeMirror.cssStreamParser();
-    const stream = new CodeMirror.StringStream();
-    stream.string = line;
+    const stream = new CodeMirror.StringStream(line, 4, 2);
 
     const state = streamParser.startState();
     let lastPos = stream.pos;

@@ -1227,6 +1227,7 @@ grd_files_debug_sources = [
   "front_end/panels/snippets/SnippetsQuickOpen.js",
   "front_end/panels/sources/AddSourceMapURLDialog.js",
   "front_end/panels/sources/BreakpointEditDialog.js",
+  "front_end/panels/sources/BreakpointsSidebarPane.js",
   "front_end/panels/sources/CSSPlugin.js",
   "front_end/panels/sources/CallStackSidebarPane.js",
   "front_end/panels/sources/CoveragePlugin.js",

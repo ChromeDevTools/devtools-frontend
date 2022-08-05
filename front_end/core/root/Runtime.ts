@@ -295,6 +295,7 @@ export enum ExperimentName {
   AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
   IMPORTANT_DOM_PROPERTIES = 'importantDOMProperties',
   JUST_MY_CODE = 'justMyCode',
+  BREAKPOINT_VIEW = 'breakpointView',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

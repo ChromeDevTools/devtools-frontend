@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("sources") {
   testonly = true
   sources = [
+    "BreakpointsSidebarPane_test.ts",
     "FilePathScoreFunction_test.ts",
     "ScriptSnippetFileSystem_test.ts",
     "SourcesView_test.ts",

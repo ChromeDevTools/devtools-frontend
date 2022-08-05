@@ -638,8 +638,9 @@ export enum DevtoolsExperiments {
   'authoredDeployedGrouping' = 63,
   'importantDOMProperties' = 64,
   'justMyCode' = 65,
+  'breakpointView' = 66,
   // Increment this when new experiments are added.
-  'MaxValue' = 66,
+  'MaxValue' = 67,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

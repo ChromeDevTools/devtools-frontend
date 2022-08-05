@@ -9785,6 +9785,9 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "P̂áûśê ón̂ĺŷ ẃĥén̂ t́ĥé ĉón̂d́ît́îón̂ íŝ t́r̂úê"
   },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "N̂ó b̂ŕêák̂ṕôín̂t́ŝ"
+  },
   "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
     "message": "Âd́d̂ ál̂ĺ ĉón̂t́êńt̂ śĉŕîṕt̂ś t̂ó îǵn̂ór̂é l̂íŝt́"
   },

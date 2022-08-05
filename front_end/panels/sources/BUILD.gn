@@ -29,6 +29,7 @@ devtools_module("sources") {
   sources = [
     "AddSourceMapURLDialog.ts",
     "BreakpointEditDialog.ts",
+    "BreakpointsSidebarPane.ts",
     "CSSPlugin.ts",
     "CallStackSidebarPane.ts",
     "CoveragePlugin.ts",

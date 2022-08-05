@@ -29,8 +29,9 @@ const exampleLog = new HAR.HARFormat.HARLog({
     {
       _initiator: {
         type: 'script',
+        requestId: '12',
         stack: {
-          callframes: [
+          callFrames: [
             {
               functionName: 'testFunction',
               scriptId: '52',
@@ -39,6 +40,22 @@ const exampleLog = new HAR.HARFormat.HARLog({
               columnNumber: 1,
             },
           ],
+          description: 'wow',
+          parentId: {
+            id: '34',
+            debuggerId: '36',
+          },
+          parent: {
+            callFrames: [
+              {
+                functionName: 'testFunction1',
+                scriptId: '53',
+                url: 'https://example.com/script1.js',
+                lineNumber: 1,
+                columnNumber: 2,
+              },
+            ],
+          },
         },
       },
       _priority: 'High',
@@ -183,8 +200,48 @@ describe('HAR Importer', () => {
     assert.strictEqual(parsedRequest.frameId, null);
     assert.strictEqual(parsedRequest.loaderId, null);
     assert.deepStrictEqual(
-        parsedRequest.initiator(),
-        {type: Protocol.Network.InitiatorType.Script, url: undefined, lineNumber: undefined});
+        parsedRequest.initiator() as HAR.HARFormat.HARInitiator,
+        {
+          type: Protocol.Network.InitiatorType.Script,
+          requestId: '12' as Protocol.Network.RequestId,
+          stack: {
+            callFrames: [
+              {
+                custom: new Map(),
+                functionName: 'testFunction',
+                scriptId: '52' as Protocol.Runtime.ScriptId,
+                url: 'https://example.com/script.js',
+                lineNumber: 0,
+                columnNumber: 1,
+              } as HAR.HARFormat.HARCallFrame,
+            ],
+            custom: new Map(),
+            description: 'wow',
+            parentId: {
+              id: '34',
+              debuggerId: '36' as Protocol.Runtime.UniqueDebuggerId,
+            },
+            parent: {
+              callFrames: [
+                {
+                  custom: new Map(),
+                  functionName: 'testFunction1',
+                  scriptId: '53' as Protocol.Runtime.ScriptId,
+                  url: 'https://example.com/script1.js',
+                  lineNumber: 1,
+                  columnNumber: 2,
+                } as HAR.HARFormat.HARCallFrame,
+              ],
+              custom: new Map(),
+              description: undefined,
+              parent: undefined,
+              parentId: undefined,
+            } as HAR.HARFormat.HARStack,
+          } as HAR.HARFormat.HARStack,
+          url: undefined,
+          lineNumber: undefined,
+        } as HAR.HARFormat.HARInitiator,
+    );
   });
 
   it('Creates documents for entries with a pageref', () => {

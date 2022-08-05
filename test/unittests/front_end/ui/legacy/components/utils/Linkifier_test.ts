@@ -257,4 +257,22 @@ describeWithMockConnection('Linkifier', async () => {
     const observer = new MutationObserver(callback);
     observer.observe(anchor, {childList: true});
   });
+
+  it('linkifyStackTraceTopFrame without a target returns an initiator link', () => {
+    const lineNumber = 165;
+    const {linkifier} = setUpEnvironment();
+
+    const anchor = linkifier.linkifyStackTraceTopFrame(null, {
+      callFrames: [{
+        url: 'https://w.com/a.js',
+        functionName: 'wow',
+        scriptId: '1' as Protocol.Runtime.ScriptId,
+        lineNumber,
+        columnNumber: 15,
+      }],
+    });
+
+    assertNotNullOrUndefined(anchor);
+    assert.strictEqual(anchor.textContent, `w.com/a.js:${lineNumber + 1}`);
+  });
 });

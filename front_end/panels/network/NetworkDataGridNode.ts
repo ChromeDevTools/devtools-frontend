@@ -1208,17 +1208,13 @@ export class NetworkRequestNode extends NetworkNode {
       }
 
       case SDK.NetworkRequest.InitiatorType.Script: {
-        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-        if (!networkManager) {
-          return;
-        }
-
+        const target = SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
         const linkifier = this.parentView().linkifier();
         if (initiator.stack) {
-          this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(networkManager.target(), initiator.stack);
+          this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
         } else {
           this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
-              networkManager.target(), initiator.scriptId, initiator.url, initiator.lineNumber,
+              target, initiator.scriptId, initiator.url, initiator.lineNumber,
               {columnNumber: initiator.columnNumber, inlineFrameIndex: 0});
         }
         UI.Tooltip.Tooltip.install((this.linkifiedInitiatorAnchor), '');

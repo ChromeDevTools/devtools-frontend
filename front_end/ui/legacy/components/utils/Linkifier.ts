@@ -308,8 +308,8 @@ export class Linkifier implements SDK.TargetManager.Observer {
         linkifyOptions);
   }
 
-  linkifyStackTraceTopFrame(target: SDK.Target.Target, stackTrace: Protocol.Runtime.StackTrace, className?: string):
-      HTMLElement {
+  linkifyStackTraceTopFrame(
+      target: SDK.Target.Target|null, stackTrace: Protocol.Runtime.StackTrace, className?: string): HTMLElement {
     console.assert(stackTrace.callFrames.length > 0);
 
     const {url, lineNumber, columnNumber} = stackTrace.callFrames[0];
@@ -322,6 +322,11 @@ export class Linkifier implements SDK.TargetManager.Observer {
       maxLength: this.maxLength,
       preventClick: true,
     });
+
+    // HAR imported network logs have no associated NetworkManager.
+    if (!target) {
+      return fallbackAnchor;
+    }
 
     // The contract is that disposed targets don't have a LiveLocationPool
     // associated, whereas all active targets have one such pool. This ensures

@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -374,17 +376,78 @@ export class HARTimings extends HARBase {
 }
 
 export class HARInitiator extends HARBase {
-  type: string|undefined;
-  url: string|undefined;
-  lineNumber: number|undefined;
+  type: Protocol.Network.InitiatorType;
+  url?: string;
+  lineNumber?: number;
+  requestId?: Protocol.Network.RequestId;
+  stack?: HARStack;
   /**
-   * Based on Initiator defined in browser_protocol.pdl
+   * Based on Protocol.Network.Initiator defined in browser_protocol.pdl
    */
   constructor(data: any) {
     super(data);
-    this.type = HARBase.optionalString(data['type']);
+    this.type = (HARBase.optionalString(data['type']) ?? SDK.NetworkRequest.InitiatorType.Other) as
+        Protocol.Network.InitiatorType;
     this.url = HARBase.optionalString(data['url']);
     this.lineNumber = HARBase.optionalNumber(data['lineNumber']);
+    this.requestId = HARBase.optionalString(data['requestId']) as Protocol.Network.RequestId;
+    if (data['stack']) {
+      this.stack = new HARStack(data['stack']);
+    }
+  }
+}
+
+export class HARStack extends HARBase {
+  description?: string;
+  callFrames: HARCallFrame[];
+  parent?: HARStack;
+  parentId?: {
+    id: string,
+    debuggerId?: Protocol.Runtime.UniqueDebuggerId,
+  };
+  /**
+  * Based on Protocol.Runtime.StackTrace defined in browser_protocol.pdl
+   */
+  constructor(data: any) {
+    super(data);
+
+    this.callFrames = Array.isArray(data.callFrames) ?
+        data.callFrames.map((item: any) => item ? new HARCallFrame(item) : null).filter(Boolean) :
+        [];
+
+    if (data['parent']) {
+      this.parent = new HARStack(data['parent']);
+    }
+
+    this.description = HARBase.optionalString(data['description']);
+
+    const parentId = data['parentId'];
+    if (parentId) {
+      this.parentId = {
+        id: HARBase.optionalString(parentId['id']) ?? '',
+        debuggerId: HARBase.optionalString(parentId['debuggerId']) as Protocol.Runtime.UniqueDebuggerId | undefined,
+      };
+    }
+  }
+}
+
+export class HARCallFrame extends HARBase {
+  functionName: string;
+  scriptId: Protocol.Runtime.ScriptId;
+  url: string = '';
+  lineNumber: number = -1;
+  columnNumber: number = -1;
+  /**
+  * Based on Protocol.Runtime.CallFrame defined in browser_protocol.pdl
+   */
+  constructor(data: any) {
+    super(data);
+
+    this.functionName = HARBase.optionalString(data['functionName']) ?? '';
+    this.scriptId = (HARBase.optionalString(data['scriptId']) ?? '') as Protocol.Runtime.ScriptId;
+    this.url = HARBase.optionalString(data['url']) ?? '';
+    this.lineNumber = HARBase.optionalNumber(data['lineNumber']) ?? -1;
+    this.columnNumber = HARBase.optionalNumber(data['columnNumber']) ?? -1;
   }
 }
 

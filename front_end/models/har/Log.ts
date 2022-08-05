@@ -130,6 +130,9 @@ export class Entry {
       if (initiator.url !== undefined) {
         exportedInitiator.url = initiator.url;
       }
+      if (initiator.requestId !== undefined) {
+        exportedInitiator.requestId = initiator.requestId;
+      }
       if (initiator.lineNumber !== undefined) {
         exportedInitiator.lineNumber = initiator.lineNumber;
       }

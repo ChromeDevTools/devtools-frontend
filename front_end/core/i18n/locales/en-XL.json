@@ -4842,19 +4842,19 @@
     "message": "Îńâćt̂ív̂é p̂ŕôṕêŕt̂ý"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "P̂ĺêáŝé ĉh́âńĝé t̂h́ê ṕâŕêńt̂ él̂ém̂én̂t́'ŝ ṕr̂óp̂ér̂t́ŷ d́êćl̂ár̂át̂íôń f̂ŕôḿ {EXISTING_PARENT_ELEMENT_RULE} t̂ó {TARGET_PARENT_ELEMENT_RULE} t̂ó f̂íx̂ t́ĥíŝ íŝśûé."
+    "message": "T̂ŕŷ ćĥán̂ǵîńĝ t́ĥé {EXISTING_PARENT_ELEMENT_RULE} p̂ŕôṕêŕt̂ý ôń t̂h́ê ṕâŕêńt̂ t́ô {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "T̂h́ê ṕâŕêńt̂ él̂ém̂én̂t́ ĥáŝ t́ĥé {REASON_PROPERTY_DECLARATION_CODE} p̂ŕôṕêŕt̂ý âńd̂ t́ĥér̂éf̂ór̂é, t̂h́îś êĺêḿêńt̂'ś p̂ŕôṕêŕt̂ý {AFFECTED_PROPERTY_DECLARATION_CODE} ĥáŝ ńô éf̂f́êćt̂."
+    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé p̂ár̂én̂t́ êĺêḿêńt̂ b́ŷṕâśŝéŝ t́ĥé êf́f̂éĉt́ ôf́ {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ćĥán̂ǵê t́ĥé {EXISTING_PROPERTY_DECLARATION} r̂úl̂é t̂ó {TARGET_PROPERTY_DECLARATION}."
+    "message": "T̂ŕŷ ćĥán̂ǵîńĝ t́ĥé {EXISTING_PROPERTY_DECLARATION} p̂ŕôṕêŕt̂ý t̂ó {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "F̂ór̂ t́ĥíŝ ṕr̂óp̂ér̂t́ŷ t́ô ẃôŕk̂, ṕl̂éâśê ŕêḿôv́ê ór̂ ćĥán̂ǵê t́ĥé v̂ál̂úê óf̂ {REASON_PROPERTY_DECLARATION_CODE}."
+    "message": "T̂ŕŷ ŕêḿôv́îńĝ {REASON_PROPERTY_DECLARATION_CODE} ór̂ ćĥán̂ǵîńĝ ít̂ś v̂ál̂úê."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "T̂h́îś êĺêḿêńt̂ h́âś t̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ án̂d́ t̂h́êŕêf́ôŕê, {AFFECTED_PROPERTY_DECLARATION_CODE} h́âś n̂ó êf́f̂éĉt́."
+    "message": "T̂h́ê {REASON_PROPERTY_DECLARATION_CODE} ṕr̂óp̂ér̂t́ŷ ón̂ t́ĥé ŝám̂é êĺêḿêńt̂ b́ŷṕâśŝéŝ t́ĥé êf́f̂éĉt́ ôf́ {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<n̂ód̂é>"

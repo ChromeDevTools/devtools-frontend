@@ -14,47 +14,46 @@ import {
 
 const UIStrings = {
   /**
-    *@description The type of the CSS rule validation message that is shown in the Style panel. "Deprecated property" means that the property in the declaration is deprecated and should not be used.
+    *@description The type of the CSS rule validation message shown in the Style pane. "Deprecated property" means that a property in the declaration is deprecated and should not be used.
     */
   deprecatedPropertyHintPrefix: 'Deprecated property',
   /**
-    *@description The type of the CSS rule validation message that is shown in the Style panel. "Inactive property" means that a property declaration was valid syntactially but didn't have expected effect.
+    *@description The type of the CSS rule validation message shown in the Style pane. "Inactive property" means that a property declaration was valid syntactially but didn't have expected effect.
     */
   inactivePropertyHintPrefix: 'Inactive property',
   /**
-    *@description The message that is shown in the Style panel when the user hovers over a property that has not effect due to some other property.
+    *@description The message shown in the Style pane when the user hovers over a property that has no effect due to some other property.
     *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
     *@example {align-content} AFFECTED_PROPERTY_DECLARATION_CODE
     */
   ruleViolatedBySameElementRuleReason:
-      'This element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
+      'The {REASON_PROPERTY_DECLARATION_CODE} property on the same element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}.',
   /**
-    *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to some other property.
+    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to some other property.
     *@example {flex-wrap: nowrap} REASON_PROPERTY_DECLARATION_CODE
     */
-  ruleViolatedBySameElementRuleFix:
-      'For this property to work, please remove or change the value of {REASON_PROPERTY_DECLARATION_CODE}.',
+  ruleViolatedBySameElementRuleFix: 'Try removing {REASON_PROPERTY_DECLARATION_CODE} or changing its value.',
   /**
-    *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to the current property value.
+    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the current property value.
     *@example {display: block} EXISTING_PROPERTY_DECLARATION
     *@example {display: flex} TARGET_PROPERTY_DECLARATION
     */
   ruleViolatedBySameElementRuleChangeSuggestion:
-      'For this property to work, please change the {EXISTING_PROPERTY_DECLARATION} rule to {TARGET_PROPERTY_DECLARATION}.',
+      'Try changing the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}.',
   /**
-    *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to properties of the parent element.
+    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to properties of the parent element.
     *@example {display: block} REASON_PROPERTY_DECLARATION_CODE
     *@example {flex} AFFECTED_PROPERTY_DECLARATION_CODE
     */
   ruleViolatedByParentElementRuleReason:
-      'The parent element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, this element\'s property {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect.',
+      'The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}.',
   /**
-    *@description The message that is shown in the Style panel when the user hovers over a property declaration that has not effect due to the properties of the parent element.
+    *@description The message shown in the Style pane when the user hovers over a property declaration that has no effect due to the properties of the parent element.
     *@example {display: block} EXISTING_PARENT_ELEMENT_RULE
     *@example {display: flex} TARGET_PARENT_ELEMENT_RULE
     */
   ruleViolatedByParentElementRuleFix:
-      'Please change the parent element\'s property declaration from {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue.',
+      'Try changing the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

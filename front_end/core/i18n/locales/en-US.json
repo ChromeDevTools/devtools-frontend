@@ -4842,19 +4842,19 @@
     "message": "Inactive property"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Please change the parent element's property declaration from {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue."
+    "message": "Try changing the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "The parent element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, this element's property {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect."
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
-    "message": "For this property to work, please change the {EXISTING_PROPERTY_DECLARATION} rule to {TARGET_PROPERTY_DECLARATION}."
+    "message": "Try changing the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "For this property to work, please remove or change the value of {REASON_PROPERTY_DECLARATION_CODE}."
+    "message": "Try removing {REASON_PROPERTY_DECLARATION_CODE} or changing its value."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "This element has the {REASON_PROPERTY_DECLARATION_CODE} property and therefore, {AFFECTED_PROPERTY_DECLARATION_CODE} has no effect."
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the same element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"

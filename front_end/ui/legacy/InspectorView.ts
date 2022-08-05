@@ -186,6 +186,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add('main-tabbed-pane');
+    // The 'Inspect element' and 'Device mode' buttons in the tabs toolbar takes longer to load than
+    // the tabs themselves, so a space equal to the buttons' total width is preemptively allocated
+    // to prevent to prevent a shift in the tab layout. Note that when DevTools cannot be docked,
+    // the Device mode button is not added and so the allocated space is smaller.
+    const allocatedSpace = Root.Runtime.Runtime.queryParam(Root.Runtime.ConditionName.CAN_DOCK) ? '69px' : '41px';
+    this.tabbedPane.leftToolbar().element.style.minWidth = allocatedSpace;
     this.tabbedPane.registerRequiredCSS(inspectorViewTabbedPaneStyles);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));

@@ -287,7 +287,9 @@ const UIStrings = {
   v8SharedArrayBufferConstructedInExtensionWithoutIsolation:
       'Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.',
   /**
-   * @description TODO(crbug.com/1318881): Description needed for translation
+   * @description Warning displayed to developers that they are using
+   * `XMLHttpRequest` API in a way that they expect an unsupported character
+   * encoding `UTF-16` could be used in the server reply.
    */
   xhrJSONEncodingDetection: 'UTF-16 is not supported by response json in `XMLHttpRequest`',
   /**

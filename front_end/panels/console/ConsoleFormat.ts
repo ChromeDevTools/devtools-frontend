@@ -199,7 +199,9 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
 
 export const updateStyle = (currentStyle: Map<string, {value: string, priority: string}>, styleToAdd: string): void => {
   const ALLOWED_PROPERTY_PREFIXES = ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
-  const BLOCKED_URL_SCHEMES = ['chrome', 'resource', 'about', 'app', 'http', 'https', 'ftp', 'file'];
+  // We only allow data URLs with the `url()` CSS function.
+  // The capture group is not intended to grab the whole URL exactly, just enough so we can check the scheme.
+  const URL_REGEX = /url\([\'\"]?([^\)]*)/g;
 
   currentStyle.clear();
   const buffer = document.createElement('span');
@@ -209,8 +211,12 @@ export const updateStyle = (currentStyle: Map<string, {value: string, priority: 
             prefix => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
       continue;
     }
+
+    // There could be multiple `url()` functions, so we check them all.
+    // If any of them is not a `data` URL, we skip the whole property.
     const value = buffer.style.getPropertyValue(property);
-    if (BLOCKED_URL_SCHEMES.some(scheme => value.includes(scheme + ':'))) {
+    const potentialUrls = [...value.matchAll(URL_REGEX)].map(match => match[1]);
+    if (potentialUrls.some(potentialUrl => !potentialUrl.startsWith('data:'))) {
       continue;
     }
     currentStyle.set(property, {

@@ -20,6 +20,7 @@ import {
   waitForFunction,
   getBrowserAndPages,
   getResourcesPath,
+  assertNotNullOrUndefined,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
@@ -110,8 +111,8 @@ describe('The Network Request view', async () => {
 
     const names = await getAllRequestNames();
     const name = names.find(v => v && v.startsWith('data:'));
-    assert.isNotNull(name);
-    await selectRequestByName(name as string);
+    assertNotNullOrUndefined(name);
+    await selectRequestByName(name);
 
     const styleSrcError = expectError(`Refused to load the stylesheet '${stylesheet}'`);
     const networkView = await waitFor('.network-item-view');
@@ -127,6 +128,37 @@ describe('The Network Request view', async () => {
 
     assert.deepEqual(color, 'rgb(0, 0, 0)');
     await waitForFunction(async () => await styleSrcError.caught);
+  });
+
+  it('permits inline styles on the preview tab.', async () => {
+    await navigateToNetworkTab('embedded_requests.html');
+    const contents = '<head><style>p { color: red; }</style></head><body><p>Content</p></body>';
+    const {target} = getBrowserAndPages();
+    await waitForFunction(async () => (await target.$('iframe')) ?? undefined);
+    const dataUrl = `data:text/html,${contents}`;
+    await target.evaluate((dataUrl: string) => {
+      (document.querySelector('iframe') as HTMLIFrameElement).src = dataUrl;
+    }, dataUrl);
+
+    await waitForSomeRequestsToAppear(2);
+
+    const names = await getAllRequestNames();
+    const name = names.find(v => v && v.startsWith('data:'));
+    assertNotNullOrUndefined(name);
+    await selectRequestByName(name);
+
+    const networkView = await waitFor('.network-item-view');
+    const previewTabHeader = await waitFor('[aria-label=Preview][role=tab]', networkView);
+    await click(previewTabHeader);
+    await waitFor('[aria-label=Preview][role=tab][aria-selected=true]', networkView);
+
+    const frame = await waitFor('.html-preview-frame');
+    const content = await waitForFunction(async () => (await frame.contentFrame() ?? undefined));
+    const p = await waitForFunction(async () => (await content.$('p') ?? undefined));
+
+    const color = await p.evaluate(e => getComputedStyle(e).color);
+
+    assert.deepEqual(color, 'rgb(255, 0, 0)');
   });
 
   it('stores websocket filter', async () => {

@@ -35,7 +35,7 @@ describeWithLocale('RequestPreviewView', () => {
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
     expect(frame).to.be.not.null;
-    expect(frame?.getAttribute('csp')).to.eql('default-src \'none\'');
+    expect(frame?.getAttribute('csp')).to.eql('default-src \'none\';style-src \'unsafe-inline\'');
     component.detach();
   });
 });

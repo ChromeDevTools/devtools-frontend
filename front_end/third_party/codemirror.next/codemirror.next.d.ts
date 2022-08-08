@@ -2525,10 +2525,11 @@ declare class EditorView {
     */
     get compositionStarted(): boolean;
     private _dispatch;
+    private _root;
     /**
     The document or shadow root that the view lives in.
     */
-    readonly root: DocumentOrShadowRoot;
+    get root(): DocumentOrShadowRoot;
     /**
     The DOM element that wraps the entire editor view.
     */
@@ -2630,13 +2631,14 @@ declare class EditorView {
     /**
     Find the text line or block widget at the given vertical
     position (which is interpreted as relative to the [top of the
-    document](https://codemirror.net/6/docs/ref/#view.EditorView.documentTop)
+    document](https://codemirror.net/6/docs/ref/#view.EditorView.documentTop)).
     */
     elementAtHeight(height: number): BlockInfo;
     /**
     Find the line block (see
     [`lineBlockAt`](https://codemirror.net/6/docs/ref/#view.EditorView.lineBlockAt) at the given
-    height.
+    height, again interpreted relative to the [top of the
+    document](https://codemirror.net/6/docs/ref/#view.EditorView.documentTop).
     */
     lineBlockAtHeight(height: number): BlockInfo;
     /**
@@ -2798,6 +2800,11 @@ declare class EditorView {
     Put focus on the editor.
     */
     focus(): void;
+    /**
+    Update the [root](https://codemirror.net/6/docs/ref/##view.EditorViewConfig.root) in which the editor lives. This is only
+    necessary when moving the editor's existing DOM to a new window or shadow root.
+    */
+    setRoot(root: Document | ShadowRoot): void;
     /**
     Clean up this editor view, removing its element from the
     document, unregistering event handlers, and notifying

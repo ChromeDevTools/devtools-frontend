@@ -971,6 +971,9 @@ export namespace Audits {
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
     InvalidEligibleHeader = 'InvalidEligibleHeader',
     TooManyConcurrentRequests = 'TooManyConcurrentRequests',
+    SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
+    SourceIgnored = 'SourceIgnored',
+    TriggerIgnored = 'TriggerIgnored',
   }
 
   /**
@@ -12172,6 +12175,11 @@ export namespace Page {
     initiatingFrameId: FrameId;
     prerenderingUrl: string;
     finalStatus: PrerenderFinalStatus;
+    /**
+     * This is used to give users more information about the cancellation details,
+     * and this will be formatted for display.
+     */
+    reasonDetails?: string;
   }
 
   export interface LoadEventFiredEvent {

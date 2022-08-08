@@ -2029,7 +2029,7 @@ export const NativeFunctions = [
   {
     name: 'setData',
     signatures: [['data']],
-    receivers: ['PendingBeacon']
+    receivers: ['PendingPostBeacon']
   },
   {
     name: 'setData',
@@ -6165,7 +6165,15 @@ export const NativeFunctions = [
     signatures: [['hints']]
   },
   {
-    name: 'PendingBeacon',
+    name: 'PendingGetBeacon',
+    signatures: [['url','?options']]
+  },
+  {
+    name: 'setURL',
+    signatures: [['url']]
+  },
+  {
+    name: 'PendingPostBeacon',
     signatures: [['url','?options']]
   },
   {
@@ -6855,7 +6863,7 @@ export const NativeFunctions = [
   },
   {
     name: 'UDPSocket',
-    signatures: [['address','port','?options']]
+    signatures: [['options']]
   },
   {
     name: 'TextDecoderStream',

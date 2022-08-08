@@ -1913,12 +1913,6 @@ export const generatedProperties = [
   "name": "height"
  },
  {
-  "name": "hover-pop-up-delay"
- },
- {
-  "name": "hover-pop-up-hide-delay"
- },
- {
   "inherited": true,
   "keywords": [
    "none",
@@ -2633,6 +2627,12 @@ export const generatedProperties = [
    "all"
   ],
   "name": "pointer-events"
+ },
+ {
+  "name": "pop-up-hide-delay"
+ },
+ {
+  "name": "pop-up-show-delay"
  },
  {
   "keywords": [

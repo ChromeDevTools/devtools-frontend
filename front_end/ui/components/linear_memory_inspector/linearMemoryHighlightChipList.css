@@ -1,0 +1,92 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.highlight-chip-list {
+  min-height: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.highlight-chip {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-background-elevation-2);
+  height: 15px;
+  margin-right: 5px;
+  padding: 1px;
+  border-radius: 4px;
+  margin-bottom: 1px;
+  display: flex;
+}
+
+.highlight-chip:hover {
+  background-color: var(--color-background-elevation-1);
+}
+
+.delete-highlight-button {
+  width: 15px;
+  height: 15px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 2px;
+}
+
+.delete-highlight-button:hover {
+  background-color: var(--color-details-hairline);
+}
+
+.highlight-chip > .delete-highlight-button {
+  visibility: hidden;
+}
+
+.highlight-chip:hover > .delete-highlight-button {
+  visibility: visible;
+}
+
+.jump-to-highlight-button {
+  cursor: pointer;
+  padding: 0 0 0 4px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+}
+
+.jump-to-highlight-button:hover {
+  color: var(--color-text-primary);
+}
+
+.delete-highlight-button devtools-icon {
+  --icon-color: var(--color-text-primary);
+}
+
+.source-code {
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size);
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value {
+  color: var(--color-syntax-2);
+}
+
+.separator {
+  white-space: pre;
+  flex-shrink: 0;
+}

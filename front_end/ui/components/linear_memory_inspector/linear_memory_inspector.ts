@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as LinearMemoryHighlightChipList from './LinearMemoryHighlightChipList.js';
 import * as LinearMemoryInspector from './LinearMemoryInspector.js';
 import * as LinearMemoryInspectorController from './LinearMemoryInspectorController.js';
 import * as LinearMemoryInspectorPane from './LinearMemoryInspectorPane.js';
@@ -15,6 +16,7 @@ import * as ValueInterpreterDisplayUtils from './ValueInterpreterDisplayUtils.js
 import * as ValueInterpreterSettings from './ValueInterpreterSettings.js';
 
 export {
+  LinearMemoryHighlightChipList,
   LinearMemoryInspector,
   LinearMemoryInspectorController,
   LinearMemoryInspectorPane,

@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "linearMemoryHighlightChipList.css",
     "linearMemoryInspector.css",
     "linearMemoryNavigator.css",
     "linearMemoryValueInterpreter.css",
@@ -20,6 +21,7 @@ generate_css("css_files") {
 
 devtools_module("linear_memory_inspector") {
   sources = [
+    "LinearMemoryHighlightChipList.ts",
     "LinearMemoryInspector.ts",
     "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.ts",

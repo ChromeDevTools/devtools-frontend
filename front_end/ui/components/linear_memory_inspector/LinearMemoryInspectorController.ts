@@ -198,7 +198,14 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return this.#bufferIdToHighlightInfo.get(bufferId);
   }
 
-  #setHighlightInfo(bufferId: string, highlightInfo: HighlightInfo): void {
+  removeHighlight(bufferId: string, highlightInfo: HighlightInfo): void {
+    const currentHighlight = this.getHighlightInfo(bufferId);
+    if (currentHighlight === highlightInfo) {
+      this.#bufferIdToHighlightInfo.delete(bufferId);
+    }
+  }
+
+  setHighlightInfo(bufferId: string, highlightInfo: HighlightInfo): void {
     this.#bufferIdToHighlightInfo.set(bufferId, highlightInfo);
   }
 
@@ -333,7 +340,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const memory = memoryProperty?.value;
     const highlightInfo = LinearMemoryInspectorController.extractHighlightInfo(obj, expression);
     if (highlightInfo) {
-      this.#setHighlightInfo(id, highlightInfo);
+      this.setHighlightInfo(id, highlightInfo);
     } else {
       this.#resetHighlightInfo(id);
     }
@@ -428,7 +435,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     if (!newHighlightInfo || !this.#pointToSameMemoryObject(newHighlightInfo, oldHighlightInfo)) {
       this.#resetHighlightInfo(bufferId);
     } else {
-      this.#setHighlightInfo(bufferId, newHighlightInfo);
+      this.setHighlightInfo(bufferId, newHighlightInfo);
     }
   }
 

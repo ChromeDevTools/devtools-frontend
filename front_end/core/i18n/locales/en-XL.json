@@ -12149,6 +12149,12 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Ŝh́ôẃ M̂ém̂ór̂ý Îńŝṕêćt̂ór̂"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "D̂él̂ét̂é m̂ém̂ór̂ý ĥíĝh́l̂íĝh́t̂"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Ĵúm̂ṕ t̂ó ĥíĝh́l̂íĝh́t̂éd̂ ḿêḿôŕŷ"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Âd́d̂ŕêśŝ h́âś t̂ó b̂é â ńûḿb̂ér̂ b́êt́ŵéêń {PH1} âńd̂ {PH2}"
   },

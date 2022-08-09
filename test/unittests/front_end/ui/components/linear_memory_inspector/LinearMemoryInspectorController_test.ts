@@ -324,6 +324,34 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
                               .extractObjectTypeDescription(obj);
     assert.strictEqual(extractedType, 'int');
   });
+
+  it('removes the provided highlightInfo when it is stored in the Controller', () => {
+    const highlightInfo = {startAddress: 0, size: 16, name: 'myNumbers', type: 'int[]'} as
+        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+    const bufferId = 'someBufferId';
+    const instance = LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+
+    instance.setHighlightInfo(bufferId, highlightInfo);
+    assert.deepEqual(instance.getHighlightInfo(bufferId), highlightInfo);
+
+    instance.removeHighlight(bufferId, highlightInfo);
+    assert.deepEqual(instance.getHighlightInfo(bufferId), undefined);
+  });
+
+  it('does not change the stored highlight when the provided highlightInfo does not match', () => {
+    const highlightInfo = {startAddress: 0, size: 16, name: 'myNumbers', type: 'int[]'} as
+        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+    const differentHighlightInfo = {startAddress: 20, size: 50, name: 'myBytes', type: 'bool[]'} as
+        LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
+    const bufferId = 'someBufferId';
+    const instance = LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
+
+    instance.setHighlightInfo(bufferId, highlightInfo);
+    assert.deepEqual(instance.getHighlightInfo(bufferId), highlightInfo);
+
+    instance.removeHighlight(bufferId, differentHighlightInfo);
+    assert.deepEqual(instance.getHighlightInfo(bufferId), highlightInfo);
+  });
 });
 
 describe('RemoteArrayBufferWrapper', () => {

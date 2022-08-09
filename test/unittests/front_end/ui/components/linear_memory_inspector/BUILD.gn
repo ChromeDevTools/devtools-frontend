@@ -8,6 +8,7 @@ ts_library("linear_memory_inspector") {
   testonly = true
   sources = [
     "LinearMemoryInspectorController_test.ts",
+    "LinearMemoryInspectorHighlightChipList_test.ts",
     "LinearMemoryInspectorPane_test.ts",
     "LinearMemoryInspector_test.ts",
     "LinearMemoryNavigator_test.ts",

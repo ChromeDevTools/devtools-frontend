@@ -7,15 +7,16 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../legacy/legacy.js';
 
 import {
+  AddressChangedEvent,
   LinearMemoryInspector,
-  type AddressChangedEvent,
-  type MemoryRequestEvent,
+  MemoryRequestEvent,
+  SettingsChangedEvent,
   type Settings,
-  type SettingsChangedEvent,
 } from './LinearMemoryInspector.js';
 
 import {LinearMemoryInspectorController, type LazyUint8Array} from './LinearMemoryInspectorController.js';
 import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
+import {DeleteMemoryHighlightEvent} from './LinearMemoryHighlightChipList.js';
 
 const UIStrings = {
   /**
@@ -147,16 +148,20 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#address = address;
     this.#tabId = tabId;
     this.#inspector = new LinearMemoryInspector();
-    this.#inspector.addEventListener('memoryrequest', (event: MemoryRequestEvent) => {
+    this.#inspector.addEventListener(MemoryRequestEvent.eventName, (event: MemoryRequestEvent) => {
       this.#memoryRequested(event);
     });
-    this.#inspector.addEventListener('addresschanged', (event: AddressChangedEvent) => {
+    this.#inspector.addEventListener(AddressChangedEvent.eventName, (event: AddressChangedEvent) => {
       this.updateAddress(event.data);
     });
-    this.#inspector.addEventListener('settingschanged', (event: SettingsChangedEvent) => {
+    this.#inspector.addEventListener(SettingsChangedEvent.eventName, (event: SettingsChangedEvent) => {
       // Stop event from bubbling up, since no element further up needs the event.
       event.stopPropagation();
       this.saveSettings(event.data);
+    });
+    this.#inspector.addEventListener(DeleteMemoryHighlightEvent.eventName, (event: DeleteMemoryHighlightEvent) => {
+      LinearMemoryInspectorController.instance().removeHighlight(this.#tabId, event.data);
+      this.refreshData();
     });
     this.contentElement.appendChild(this.#inspector);
     this.firstTimeOpen = true;

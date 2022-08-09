@@ -51,7 +51,7 @@ describe('Live edit', async () => {
     });
 
     await step('reload the page and verify that the breakpoint has moved', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, 'live-edit-moving-breakpoint.js');
+      await reloadPageAndWaitForSourceFile(target, 'live-edit-moving-breakpoint.js');
       await openSourceCodeEditorForFile('live-edit-moving-breakpoint.js', 'live-edit-moving-breakpoint.html');
 
       // TODO(crbug.com/1216904): Flip this assumption once crbug.com/1216904 is fixed.

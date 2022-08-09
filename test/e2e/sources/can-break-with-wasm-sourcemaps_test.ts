@@ -44,7 +44,7 @@ describe('The Sources Tab', async () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
+      await reloadPageAndWaitForSourceFile(target, fileName);
     });
 
     await step('open original source file', async () => {
@@ -70,7 +70,7 @@ describe('The Sources Tab', async () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
+      await reloadPageAndWaitForSourceFile(target, fileName);
     });
 
     await step('open original source file', async () => {
@@ -85,7 +85,7 @@ describe('The Sources Tab', async () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
+      await reloadPageAndWaitForSourceFile(target, fileName);
     });
 
     await waitForFunction(async () => await isBreakpointSet(6));

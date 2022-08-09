@@ -36,7 +36,7 @@ describe('Scope View', async () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
+      await reloadPageAndWaitForSourceFile(target, fileName);
     });
 
     await step('expand the module scope', async () => {

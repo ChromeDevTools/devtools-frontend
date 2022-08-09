@@ -3,17 +3,16 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer';
 
 import {$$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   addBreakpointForLine,
   getSelectedSource,
-  listenForSourceFilesLoaded,
   openSourceCodeEditorForFile,
   retrieveTopCallFrameScriptLocation,
-  waitForSourceLoadedEvent,
+  SourceFileEvents,
+  waitForSourceFiles,
 } from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
@@ -23,32 +22,32 @@ async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
   return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
-async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
-  await listenForSourceFilesLoaded(frontend);
-  const previousTextContent = await retrieveCodeMirrorEditorContent();
-
-  await waitFor(PRETTY_PRINT_BUTTON);
-  await click(PRETTY_PRINT_BUTTON);
-
-  // A separate editor is opened which shows the formatted file
-  await waitForFunction(async () => {
-    const currentTextContent = await retrieveCodeMirrorEditorContent();
-    return currentTextContent.join('\n') !== previousTextContent.join('\n');
-  });
-
+async function prettyPrintMinifiedFile() {
   const source = await getSelectedSource();
-  await waitForSourceLoadedEvent(frontend, source);
+  await waitForSourceFiles(
+      SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(`${source}:formatted`)), async () => {
+        const previousTextContent = await retrieveCodeMirrorEditorContent();
+
+        await waitFor(PRETTY_PRINT_BUTTON);
+        await click(PRETTY_PRINT_BUTTON);
+
+        // A separate editor is opened which shows the formatted file
+        await waitForFunction(async () => {
+          const currentTextContent = await retrieveCodeMirrorEditorContent();
+          return currentTextContent.join('\n') !== previousTextContent.join('\n');
+        });
+      });
 }
 
 describe('The Sources Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
-  this.timeout(10000);
+  if (this.timeout() > 0) {
+    this.timeout(10000);
+  }
 
   it('can format a JavaScript file', async () => {
-    const {frontend} = getBrowserAndPages();
-
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
-    await prettyPrintMinifiedFile(frontend);
+    await prettyPrintMinifiedFile();
 
     const expectedLines = [
       '// Copyright 2020 The Chromium Authors. All rights reserved.',
@@ -74,10 +73,8 @@ describe('The Sources Tab', async function() {
   });
 
   it('causes the correct line number to show up in the console panel', async () => {
-    const {frontend} = getBrowserAndPages();
-
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
-    await prettyPrintMinifiedFile(frontend);
+    await prettyPrintMinifiedFile();
 
     await click('#tab-console');
 
@@ -119,7 +116,7 @@ describe('The Sources Tab', async function() {
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
-    await prettyPrintMinifiedFile(frontend);
+    await prettyPrintMinifiedFile();
     await addBreakpointForLine(frontend, 10);
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
@@ -141,7 +138,7 @@ describe('The Sources Tab', async function() {
 
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');
     await addBreakpointForLine(frontend, 6);
-    await prettyPrintMinifiedFile(frontend);
+    await prettyPrintMinifiedFile();
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('notFormattedFunction();', target);
     assert.deepEqual(scriptLocation, 'minified-source…s:formatted:10');

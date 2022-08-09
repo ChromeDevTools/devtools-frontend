@@ -8,11 +8,9 @@ import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
-  listenForSourceFilesAdded,
+  captureAddedSourceFiles,
   openFileInSourcesPanel,
   openSourcesPanel,
-  retrieveSourceFilesAdded,
-  waitForAdditionalSourceFiles,
 } from '../helpers/sources-helpers.js';
 
 declare global {
@@ -25,16 +23,12 @@ declare global {
 
 describe('The Sources Tab', async () => {
   it('can show JavaScript files after dynamic loading', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openFileInSourcesPanel('dynamic-loading-javascript.html');
-    await listenForSourceFilesAdded(frontend);
 
     // Load the JavaScript files by executing the function in `dynamic-loading.html`
-    await target.evaluate('go();');
-    await waitForAdditionalSourceFiles(frontend);
-
-    const capturedFileNames = await retrieveSourceFilesAdded(frontend);
+    const capturedFileNames = await captureAddedSourceFiles(2, () => target.evaluate('go();'));
 
     assert.deepEqual(capturedFileNames, [
       '/test/e2e/resources/sources/minified-sourcecode.js',
@@ -46,19 +40,16 @@ describe('The Sources Tab', async () => {
     const {target, frontend} = getBrowserAndPages();
 
     await openFileInSourcesPanel('dynamic-loading-css.html');
-    await listenForSourceFilesAdded(frontend);
 
-    // Load the CSS file by executing the function in `dynamic-loading-css.html`
-    await target.evaluate('go();');
+    const capturedFileNames = await captureAddedSourceFiles(1, async () => {
+      // Load the CSS file by executing the function in `dynamic-loading-css.html`
+      await target.evaluate('go();');
 
-    // We must focus the target page, as Chrome does not actually fetch the
-    // css file if the tab is not focused
-    await target.bringToFront();
-    await frontend.bringToFront();
-
-    await waitForAdditionalSourceFiles(frontend);
-
-    const capturedFileNames = await retrieveSourceFilesAdded(frontend);
+      // We must focus the target page, as Chrome does not actually fetch the
+      // css file if the tab is not focused
+      await target.bringToFront();
+      await frontend.bringToFront();
+    });
 
     assert.deepEqual(capturedFileNames, [
       '/test/e2e/resources/sources/dynamic.css',
@@ -66,17 +57,13 @@ describe('The Sources Tab', async () => {
   });
 
   it('populates sources even if it the Sources Tab was not open at refresh', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     await goToResource('pages/hello-world.html');
     await navigateToElementsTab();
-    await listenForSourceFilesAdded(frontend);
-
-    await target.reload({waitUntil: 'networkidle0'});
-    await openSourcesPanel();
-
-    await waitForAdditionalSourceFiles(frontend);
-
-    const capturedFileNames = await retrieveSourceFilesAdded(frontend);
+    const capturedFileNames = await captureAddedSourceFiles(1, async () => {
+      await target.reload({waitUntil: 'networkidle0'});
+      await openSourcesPanel();
+    });
 
     assert.deepEqual(capturedFileNames, [
       '/test/e2e/resources/pages/hello-world.html',

@@ -33,7 +33,7 @@ describe('Source Tab', async () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(frontend, target, fileName);
+      await reloadPageAndWaitForSourceFile(target, fileName);
     });
 
     await step('check that the module, local, and stack scope appear', async () => {

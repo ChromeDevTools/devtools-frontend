@@ -33,22 +33,19 @@ import {
 } from '../helpers/console-helpers.js';
 
 import {
-  clearSourceFilesAdded,
   getCallFrameLocations,
   getCallFrameNames,
   getNonBreakableLines,
   getValuesForScope,
-  listenForSourceFilesAdded,
   openFileInEditor,
   openSourceCodeEditorForFile,
   openSourcesPanel,
   PAUSE_ON_EXCEPTION_BUTTON,
   RESUME_BUTTON,
-  retrieveSourceFilesAdded,
   switchToCallFrame,
-  waitForAdditionalSourceFiles,
   WasmLocationLabels,
   type LabelMapping,
+  captureAddedSourceFiles,
 } from '../helpers/sources-helpers.js';
 import {expectError} from '../../conductor/events.js';
 
@@ -75,7 +72,7 @@ describe('The Debugger Language Plugins', async () => {
 
   // Load a simple wasm file and verify that the source file shows up in the file tree.
   it('can show C filenames after loading the module', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
     await extension.evaluate(() => {
@@ -93,12 +90,7 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource(
         'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
     await openSourcesPanel();
-    await listenForSourceFilesAdded(frontend);
-    const additionalFilesPromise = waitForAdditionalSourceFiles(frontend);
-    await target.evaluate('loadModule();');
-    await additionalFilesPromise;
-
-    const capturedFileNames = await retrieveSourceFilesAdded(frontend);
+    const capturedFileNames = await captureAddedSourceFiles(2, () => target.evaluate('loadModule();'));
     assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm', '/source_file.c']);
   });
 
@@ -1223,7 +1215,7 @@ describe('The Debugger Language Plugins', async () => {
   });
 
   it('lets users manually attach debug info', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
     await extension.evaluate(() => {
@@ -1246,30 +1238,25 @@ describe('The Debugger Language Plugins', async () => {
     await goToResource(
         'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
     await openSourcesPanel();
-    await listenForSourceFilesAdded(frontend);
-    const additionalFilesPromise = waitForAdditionalSourceFiles(frontend);
-    await target.evaluate('loadModule();');
-    await additionalFilesPromise;
-
-    const capturedFileNames = await retrieveSourceFilesAdded(frontend);
-    assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm']);
 
     {
-      await clearSourceFilesAdded(frontend);
-      const additionalFilesPromise = waitForAdditionalSourceFiles(frontend);
-      await openFileInEditor('global_variable.wasm');
+      const capturedFileNames = await captureAddedSourceFiles(1, () => target.evaluate('loadModule();'));
+      assert.deepEqual(capturedFileNames, ['/test/e2e/resources/extensions/global_variable.wasm']);
+    }
 
-      const editor = await waitForAria('Code editor');
-      await click(editor, {clickOptions: {button: 'right'}});
-      const menuItem = await waitForAria('Add DWARF debug info…');
-      await click(menuItem);
-      await waitFor('.add-source-map');
-      await typeText('foobar81');
-      await pressKey('Enter');
+    {
+      const capturedFileNames = await captureAddedSourceFiles(1, async () => {
+        await openFileInEditor('global_variable.wasm');
 
-      await additionalFilesPromise;
+        const editor = await waitForAria('Code editor');
+        await click(editor, {clickOptions: {button: 'right'}});
+        const menuItem = await waitForAria('Add DWARF debug info…');
+        await click(menuItem);
+        await waitFor('.add-source-map');
+        await typeText('foobar81');
+        await pressKey('Enter');
+      });
 
-      const capturedFileNames = await retrieveSourceFilesAdded(frontend);
       assert.deepEqual(capturedFileNames, ['/source_file.c']);
     }
   });

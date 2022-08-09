@@ -47,19 +47,11 @@ export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
 const WATCH_EXPRESSION_VALUE_SELECTOR = '.watch-expression-tree-item .object-value-string.value';
 
 export async function navigateToLine(frontend: puppeteer.Page, lineNumber: number|string) {
-  // Navigating to a line will trigger revealing the current
-  // uiSourceCodeFrame. Make sure to consume the 'source-file-loaded'
-  // event for this file.
-  await listenForSourceFilesLoaded(frontend);
-
   await frontend.keyboard.down('Control');
   await frontend.keyboard.press('KeyG');
   await frontend.keyboard.up('Control');
   await frontend.keyboard.type(`${lineNumber}`);
   await frontend.keyboard.press('Enter');
-
-  const source = await getSelectedSource();
-  await waitForSourceLoadedEvent(frontend, source);
 }
 
 export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
@@ -171,14 +163,10 @@ export async function createNewSnippet(snippetName: string, content?: string) {
 }
 
 export async function openFileInEditor(sourceFile: string) {
-  const {frontend} = getBrowserAndPages();
-
-  await listenForSourceFilesLoaded(frontend);
-
-  // Open a particular file in the editor
-  await doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`);
-
-  await waitForSourceLoadedEvent(frontend, sourceFile);
+  await waitForSourceFiles(
+      SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(sourceFile)),
+      // Open a particular file in the editor
+      () => doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`));
 }
 
 export async function openSourceCodeEditorForFile(sourceFile: string, testInput: string) {
@@ -345,33 +333,71 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     /* eslint-disable @typescript-eslint/naming-convention */
-    __sourceFilesAddedEvents: string[];
-    __sourceFilesLoadedEvents: string[];
-    __sourceFilesLoadedEventListenerAdded: boolean;
+    __sourceFileEvents: Map<number, {files: string[], handler: (e: Event) => void}>;
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 
-export async function reloadPageAndWaitForSourceFile(
-    frontend: puppeteer.Page, target: puppeteer.Page, sourceFile: string) {
-  await listenForSourceFilesLoaded(frontend);
-  await target.reload();
-  await waitForSourceLoadedEvent(frontend, sourceFile);
+export const enum SourceFileEvents {
+  SourceFileLoaded = 'source-file-loaded',
+  AddedToSourceTree = 'source-tree-file-added',
 }
 
-export function listenForSourceFilesLoaded(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => {
-    if (!window.__sourceFilesLoadedEvents) {
-      window.__sourceFilesLoadedEvents = [];
+let nextEventHandlerId = 0;
+export async function waitForSourceFiles<T>(
+    eventName: SourceFileEvents, waitCondition: (files: string[]) => boolean | Promise<boolean>,
+    action: () => T): Promise<T> {
+  const {frontend} = getBrowserAndPages();
+  const eventHandlerId = nextEventHandlerId++;
+
+  // Install new listener for the event
+  await frontend.evaluate((eventName, eventHandlerId) => {
+    if (!window.__sourceFileEvents) {
+      window.__sourceFileEvents = new Map();
     }
-    if (!window.__sourceFilesLoadedEventListenerAdded) {
-      window.addEventListener('source-file-loaded', (event: Event) => {
-        const customEvent = event as CustomEvent<string>;
-        window.__sourceFilesLoadedEvents.push(customEvent.detail);
-      });
-      window.__sourceFilesLoadedEventListenerAdded = true;
-    }
+    const handler = (event: Event) => {
+      const {detail} = event as CustomEvent<string>;
+      if (!detail.endsWith('/__puppeteer_evaluation_script__')) {
+        window.__sourceFileEvents.get(eventHandlerId)?.files.push(detail);
+      }
+    };
+    window.__sourceFileEvents.set(eventHandlerId, {files: [], handler});
+    window.addEventListener(eventName, handler);
+  }, eventName, eventHandlerId);
+
+  const result = await action();
+
+  await waitForFunction(async () => {
+    const files =
+        await frontend.evaluate(eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
+    assertNotNullOrUndefined(files);
+    return await waitCondition(files);
   });
+
+  await frontend.evaluate((eventName, eventHandlerId) => {
+    const handler = window.__sourceFileEvents.get(eventHandlerId);
+    if (!handler) {
+      throw new Error('handler unexpectandly unregistered');
+    }
+    window.__sourceFileEvents.delete(eventHandlerId);
+    window.removeEventListener(eventName, handler.handler);
+  }, eventName, eventHandlerId);
+
+  return result;
+}
+
+export async function captureAddedSourceFiles(count: number, action: () => Promise<void>): Promise<string[]> {
+  let capturedFileNames!: string[];
+  await waitForSourceFiles(SourceFileEvents.AddedToSourceTree, files => {
+    capturedFileNames = files;
+    return files.length >= count;
+  }, action);
+  return capturedFileNames.map(f => new URL(`http://${f}`).pathname);
+}
+
+export async function reloadPageAndWaitForSourceFile(target: puppeteer.Page, sourceFile: string) {
+  await waitForSourceFiles(
+      SourceFileEvents.SourceFileLoaded, files => files.some(f => f.endsWith(sourceFile)), () => target.reload());
 }
 
 export function isEqualOrAbbreviation(abbreviated: string, full: string): boolean {
@@ -381,52 +407,6 @@ export function isEqualOrAbbreviation(abbreviated: string, full: string): boolea
   }
   assert.lengthOf(split, 2);
   return full.startsWith(split[0]) && full.endsWith(split[1]);
-}
-
-export async function waitForSourceLoadedEvent(frontend: puppeteer.Page, fileName: string) {
-  const nameRegex = fileName.replace('…', '.*');
-
-  await waitForFunction(async () => {
-    return frontend.evaluate(nameRegex => {
-      return window.__sourceFilesLoadedEvents.some(x => new RegExp(nameRegex).test(x));
-    }, nameRegex);
-  });
-
-  await frontend.evaluate(nameRegex => {
-    window.__sourceFilesLoadedEvents =
-        window.__sourceFilesLoadedEvents.filter(event => !new RegExp(nameRegex).test(event));
-  }, nameRegex);
-}
-
-export function listenForSourceFilesAdded(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => {
-    window.__sourceFilesAddedEvents = [];
-    window.addEventListener('source-tree-file-added', (event: Event) => {
-      const {detail} = event as CustomEvent<string>;
-      if (!detail.endsWith('/__puppeteer_evaluation_script__')) {
-        window.__sourceFilesAddedEvents.push(detail);
-      }
-    });
-  });
-}
-
-export function waitForAdditionalSourceFiles(frontend: puppeteer.Page, count = 1) {
-  return waitForFunction(async () => {
-    return frontend.evaluate(count => {
-      return window.__sourceFilesAddedEvents.length >= count;
-    }, count);
-  });
-}
-
-export function clearSourceFilesAdded(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => {
-    window.__sourceFilesAddedEvents = [];
-  });
-}
-
-export function retrieveSourceFilesAdded(frontend: puppeteer.Page) {
-  // Strip hostname, to make it agnostic of which server port we use
-  return frontend.evaluate(() => window.__sourceFilesAddedEvents.map(file => new URL(`https://${file}`).pathname));
 }
 
 // Helpers for navigating the file tree.

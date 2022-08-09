@@ -7,6 +7,7 @@ import * as ExtensionPanel from './ExtensionPanel.js';
 import * as ExtensionServer from './ExtensionServer.js';
 import * as ExtensionTraceProvider from './ExtensionTraceProvider.js';
 import * as ExtensionView from './ExtensionView.js';
+import * as RecorderExtensionEndpoint from './RecorderExtensionEndpoint.js';
 import * as RecorderPluginManager from './RecorderPluginManager.js';
 
 export {
@@ -15,5 +16,6 @@ export {
   ExtensionServer,
   ExtensionTraceProvider,
   ExtensionView,
+  RecorderExtensionEndpoint,
   RecorderPluginManager,
 };

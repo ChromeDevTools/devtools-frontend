@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("extensions") {
   testonly = true
-  sources = [ "ExtensionServer_test.ts" ]
+  sources = [
+    "ExtensionServer_test.ts",
+    "RecorderPluginManager_test.ts",
+  ]
 
   deps = [ "../../../../../front_end/models/extensions:bundle" ]
 }

@@ -394,24 +394,37 @@ export class TimelineModelImpl {
   }
 
   private collectInteractionEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const mainRendererThread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
-    if (!mainRendererThread) {
+    const interactionEvents: SDK.TracingModel.AsyncEvent[] = [];
+    for (const process of tracingModel.sortedProcesses()) {
+      // Interactions will only appear on the Renderer processes.
+      if (process.name() !== 'Renderer') {
+        continue;
+      }
+
+      // And also only on CrRendererMain threads.
+      const rendererThread = process.threadByName('CrRendererMain');
+      if (!rendererThread) {
+        continue;
+      }
+
+      // EventTiming events are async, so we only have to check asyncEvents,
+      // and not worry about sync events.
+      for (const event of rendererThread.asyncEvents()) {
+        if (!this.isEventTimingInteractionEvent(event)) {
+          continue;
+        }
+        interactionEvents.push(event);
+      }
+    }
+    if (interactionEvents.length === 0) {
+      // No events found, so bail early and don't bother creating the track
+      // because it will be empty.
       return;
     }
 
-    const interactionEvents: SDK.TracingModel.AsyncEvent[] = [];
-
     const track = this.ensureNamedTrack(TrackType.UserInteractions);
-    track.thread = mainRendererThread;
     track.name = UIStrings.userInteractions;
     track.forMainFrame = true;
-
-    for (const event of mainRendererThread.asyncEvents()) {
-      if (!this.isEventTimingInteractionEvent(event)) {
-        continue;
-      }
-      interactionEvents.push(event);
-    }
     track.asyncEvents = interactionEvents;
   }
 

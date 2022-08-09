@@ -302,16 +302,6 @@ describeWithEnvironment('TimelineModel', () => {
         processId: 1537729,
         processName: 'Renderer',
       },
-      {
-        name: 'User Interactions',
-        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
-        forMainFrame: true,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
-      },
     ]);
   });
 
@@ -438,16 +428,6 @@ describeWithEnvironment('TimelineModel', () => {
         type: TimelineModel.TimelineModel.TrackType.Experience,
         url: Platform.DevToolsPath.EmptyUrlString,
       },
-      {
-        name: 'User Interactions',
-        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
-        forMainFrame: true,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
-      },
     ]);
   });
 
@@ -571,16 +551,6 @@ describeWithEnvironment('TimelineModel', () => {
         threadName: 'CrRendererMain',
         type: TimelineModel.TimelineModel.TrackType.Experience,
         url: Platform.DevToolsPath.EmptyUrlString,
-      },
-      {
-        name: 'User Interactions',
-        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
-        forMainFrame: true,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
       },
     ]);
   });
@@ -708,16 +678,6 @@ describeWithEnvironment('TimelineModel', () => {
         threadName: 'CrRendererMain',
         type: 'Experience',
         url: '',
-      },
-      {
-        name: 'User Interactions',
-        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
-        forMainFrame: true,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
       },
     ]);
   });
@@ -860,16 +820,6 @@ describeWithEnvironment('TimelineModel', () => {
         name: '',
         type: TimelineModel.TimelineModel.TrackType.Experience,
         forMainFrame: false,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
-      },
-      {
-        name: 'User Interactions',
-        type: TimelineModel.TimelineModel.TrackType.UserInteractions,
-        forMainFrame: true,
         url: Platform.DevToolsPath.EmptyUrlString,
         threadName: 'CrRendererMain',
         threadId: 1,

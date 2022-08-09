@@ -5,17 +5,22 @@
 import {assert} from 'chai';
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
-import {waitForHighlightedLine, getToolbarText} from '../helpers/sources-helpers.js';
+import {
+  waitForHighlightedLine,
+  getToolbarText,
+  waitForSourceFiles,
+  SourceFileEvents,
+  openFileInSourcesPanel,
+} from '../helpers/sources-helpers.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {getBrowserAndPages, getResourcesPath} from '../../shared/helper.js';
+import {getResourcesPath} from '../../shared/helper.js';
 
 describe('The Extension API', async () => {
   it('can open wasm resources with offset', async () => {
-    const {target} = getBrowserAndPages();
-    await target.goto(`${getResourcesPath()}/sources/wasm/scopes.html`);
-
+    await waitForSourceFiles(
+        SourceFileEvents.AddedToSourceTree, files => files.some(f => f.endsWith('scopes.wasm')),
+        () => openFileInSourcesPanel('wasm/scopes.html'));
     const extension = await loadExtension('TestExtension');
-
     const resource = `${getResourcesPath()}/sources/wasm/scopes.wasm`;
 
     await extension.waitForFunction(async (resource: string) => {
@@ -56,9 +61,10 @@ describe('The Extension API', async () => {
   });
 
   it('can open page resources with column numbers', async () => {
-    const {target} = getBrowserAndPages();
     const resource = `${getResourcesPath()}/sources/wasm/scopes.html`;
-    await target.goto(resource);
+    await waitForSourceFiles(
+        SourceFileEvents.AddedToSourceTree, files => files.some(f => f.endsWith('scopes.wasm')),
+        () => openFileInSourcesPanel('wasm/scopes.html'));
 
     const extension = await loadExtension('TestExtension');
 

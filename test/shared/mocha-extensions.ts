@@ -32,6 +32,20 @@ export async function takeScreenshots() {
   }
 }
 
+function wrapSuiteFunction(fn: (this: Mocha.Suite) => void) {
+  return function(this: Mocha.Suite): void {
+    const hookCreationHook = (hook: Mocha.Hook): void => {
+      const originalDone = hook.callback;
+      hook.callback = timeoutHook.bind(hook, originalDone);
+    };
+    this.on('beforeEach', hookCreationHook);
+    this.on('beforeAll', hookCreationHook);
+    this.on('afterEach', hookCreationHook);
+    this.on('afterAll', hookCreationHook);
+    fn.call(this);
+  };
+}
+
 export function wrapDescribe<ReturnT>(
     mochaFn: (title: string, fn: (this: Mocha.Suite) => void) => ReturnT, title: string,
     fn: (this: Mocha.Suite) => void): ReturnT {
@@ -55,7 +69,7 @@ export function wrapDescribe<ReturnT>(
     };
     const err = new Error();
 
-    return mochaFn(`${err.stack}: ${title}`, fn);
+    return mochaFn(`${err.stack}: ${title}`, wrapSuiteFunction(fn));
   } finally {
     Error.prepareStackTrace = originalFn;
   }

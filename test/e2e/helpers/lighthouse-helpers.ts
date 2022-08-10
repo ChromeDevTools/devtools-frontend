@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, goToResource, waitFor, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 
 import {waitForQuotaUsage} from './application-helpers.js';
 
@@ -51,8 +51,8 @@ type CheckboxLabel = Element&{checkboxElement: HTMLInputElement};
  * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'|'lighthouse-plugin-publisher-ads'
  */
 export async function selectCategories(selectedCategoryIds: string[]) {
-  const panel = await waitFor('.lighthouse-start-view-fr');
-  const checkboxHandles = await panel.$$('[is=dt-checkbox]');
+  const startViewHandle = await waitFor('.lighthouse-start-view-fr');
+  const checkboxHandles = await startViewHandle.$$('[is=dt-checkbox]');
   for (const checkboxHandle of checkboxHandles) {
     await checkboxHandle.evaluate((dtCheckboxElem, selectedCategoryIds: string[]) => {
       const elem = dtCheckboxElem as CheckboxLabel;
@@ -63,13 +63,36 @@ export async function selectCategories(selectedCategoryIds: string[]) {
   }
 }
 
+export async function selectMode(device: 'mobile'|'desktop') {
+  const startViewHandle = await waitFor('.lighthouse-start-view-fr');
+  await startViewHandle.$eval(`input[value="${device}"][name="lighthouse.device_type"]`, radioElem => {
+    (radioElem as HTMLInputElement).checked = true;
+    (radioElem as HTMLInputElement)
+        .dispatchEvent(new Event('change'));  // Need change event to update the backing setting.
+  });
+}
+
+export async function setClearStorage(enabled: boolean) {
+  const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
+  const label = await waitForElementWithTextContent('Clear storage', toolbarHandle);
+  await label.evaluate((label, enabled: boolean) => {
+    const rootNode = label.getRootNode() as ShadowRoot;
+    const checkboxId = label.getAttribute('for') as string;
+    const checkboxElem = rootNode.getElementById(checkboxId) as HTMLInputElement;
+    checkboxElem.checked = enabled;
+    checkboxElem.dispatchEvent(new Event('change'));  // Need change event to update the backing setting.
+  }, enabled);
+}
+
 export async function setLegacyNavigation(enabled: boolean) {
   const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
-  await toolbarHandle.evaluate((toolbar, enabled: boolean) => {
-    const navCheckboxElem = toolbar.shadowRoot?.querySelector('[is=dt-checkbox]') as CheckboxLabel;
-    navCheckboxElem.checkboxElement.checked = enabled;
-    navCheckboxElem.checkboxElement.dispatchEvent(
-        new Event('change'));  // Need change event to update the backing setting.
+  const label = await waitForElementWithTextContent('Legacy navigation', toolbarHandle);
+  await label.evaluate((label, enabled: boolean) => {
+    const rootNode = label.getRootNode() as ShadowRoot;
+    const checkboxId = label.getAttribute('for') as string;
+    const checkboxElem = rootNode.getElementById(checkboxId) as HTMLInputElement;
+    checkboxElem.checked = enabled;
+    checkboxElem.dispatchEvent(new Event('change'));  // Need change event to update the backing setting.
   }, enabled);
 }
 

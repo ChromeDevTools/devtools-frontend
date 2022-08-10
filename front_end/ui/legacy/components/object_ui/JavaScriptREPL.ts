@@ -36,7 +36,7 @@ export class JavaScriptREPL {
 
   static async evaluateAndBuildPreview(
       text: string, throwOnSideEffect: boolean, replMode: boolean, timeout?: number, allowErrors?: boolean,
-      objectGroup?: string, awaitPromise: boolean = false): Promise<{
+      objectGroup?: string, awaitPromise: boolean = false, silent: boolean = false): Promise<{
     preview: DocumentFragment,
     result: SDK.RuntimeModel.EvaluationResult|null,
   }> {
@@ -56,7 +56,7 @@ export class JavaScriptREPL {
       objectGroup: objectGroup,
       disableBreaks: true,
       replMode: replMode,
-      silent: undefined,
+      silent: silent,
       returnByValue: undefined,
       allowUnsafeEvalBlockedByCSP: undefined,
     };

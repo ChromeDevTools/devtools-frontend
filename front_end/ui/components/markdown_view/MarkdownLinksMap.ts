@@ -27,6 +27,7 @@ export const markdownLinks = new Map<string, string>([
   ],
   ['issueQuirksModeDoctype', 'https://web.dev/doctype/'],
   ['sameSiteAndSameOrigin', 'https://web.dev/same-site-same-origin/'],
+  ['punycodeReference', 'https://wikipedia.org/wiki/Punycode'],
   // Link URLs for deprecation issues (see blink::Deprecation)
   ['https://xhr.spec.whatwg.org/', 'https://xhr.spec.whatwg.org/'],
   ['https://goo.gle/chrome-insecure-origins', 'https://goo.gle/chrome-insecure-origins'],

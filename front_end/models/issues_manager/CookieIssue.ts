@@ -435,6 +435,16 @@ const attributeValueExceedsMaxSize: LazyMarkdownIssueDescription = {
   links: [],
 };
 
+const warnDomainNonAscii: LazyMarkdownIssueDescription = {
+  file: 'cookieWarnDomainNonAscii.md',
+  links: [],
+};
+
+const excludeDomainNonAscii: LazyMarkdownIssueDescription = {
+  file: 'cookieExcludeDomainNonAscii.md',
+  links: [],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
   ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
@@ -466,4 +476,8 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['CookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie', samePartyCrossPartyContextSet],
   ['CookieIssue::WarnAttributeValueExceedsMaxSize::ReadCookie', attributeValueExceedsMaxSize],
   ['CookieIssue::WarnAttributeValueExceedsMaxSize::SetCookie', attributeValueExceedsMaxSize],
+  ['CookieIssue::WarnDomainNonASCII::ReadCookie', warnDomainNonAscii],
+  ['CookieIssue::WarnDomainNonASCII::SetCookie', warnDomainNonAscii],
+  ['CookieIssue::ExcludeDomainNonASCII::ReadCookie', excludeDomainNonAscii],
+  ['CookieIssue::ExcludeDomainNonASCII::SetCookie', excludeDomainNonAscii],
 ]);

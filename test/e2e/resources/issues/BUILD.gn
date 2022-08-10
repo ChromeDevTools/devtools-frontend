@@ -10,6 +10,7 @@ copy_to_gen("issues") {
     "acao-mismatch.rawresponse",
     "client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html",
     "client-hint-issue-DelegateCH-MetaTagModifiedHTML.html",
+    "cookie-domain-non-ascii.rawresponse",
     "corp-frame.rawresponse",
     "cors-issue-2.html",
     "cors-issue.html",

@@ -307,6 +307,22 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return objType.slice(0, objType.length - 1);
   }
 
+  // When inspecting a pointer variable, we indicate that we display the pointed-to object in the viewer
+  // by prepending an asterisk to the pointer expression's name (mimicking C++ dereferencing).
+  // If the object isn't a pointer, we return the expression unchanged.
+  //
+  // Examples:
+  // (int *) myNumber -> (int) *myNumber
+  // (int[]) numbers -> (int[]) numbers
+  static extractObjectName(obj: Bindings.DebuggerLanguagePlugins.ValueNode, expression: string): string {
+    const lastChar = obj.description?.charAt(obj.description.length - 1);
+    const isPointerType = lastChar === '*';
+    if (isPointerType) {
+      return '*' + expression;
+    }
+    return expression;
+  }
+
   async openInspectorView(obj: SDK.RemoteObject.RemoteObject, address?: number, expression?: string): Promise<void> {
     const response = await LinearMemoryInspectorController.retrieveDWARFMemoryObjectAndAddress(obj);
     let memoryObj = obj;
@@ -368,7 +384,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       highlightInfo = {
         startAddress: obj.inspectableAddress || 0,
         size: LinearMemoryInspectorController.extractObjectSize(obj),
-        name: expression,
+        name: expression ? LinearMemoryInspectorController.extractObjectName(obj, expression) : expression,
         type: LinearMemoryInspectorController.extractObjectTypeDescription(obj),
       };
     } catch (err) {

@@ -352,6 +352,24 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
     instance.removeHighlight(bufferId, differentHighlightInfo);
     assert.deepEqual(instance.getHighlightInfo(bufferId), highlightInfo);
   });
+
+  it('extracts name unchanged when object is not pointer', () => {
+    const name = 'myNumbers';
+    const obj = {description: 'int[]'} as Bindings.DebuggerLanguagePlugins.ValueNode;
+    const extractedName =
+        LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+            obj, name);
+    assert.strictEqual(extractedName, name);
+  });
+
+  it('extracts name with preprended \'*\' when object is a pointer', () => {
+    const name = 'myPointerObject';
+    const obj = {description: 'int *'} as Bindings.DebuggerLanguagePlugins.ValueNode;
+    const extractedName =
+        LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
+            obj, name);
+    assert.strictEqual(extractedName, '*' + name);
+  });
 });
 
 describe('RemoteArrayBufferWrapper', () => {

@@ -62,6 +62,8 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.SourceIgnored:
+      case IssuesManager.AttributionReportingIssue.IssueCode.TriggerIgnored:
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         this.appendColumnTitle(header, i18nString(UIStrings.invalidHeaderValue));
         break;
@@ -78,6 +80,9 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.TooManyConcurrentRequests:
         this.appendColumnTitle(header, i18nString(UIStrings.element));
         this.appendColumnTitle(header, i18nString(UIStrings.maximumConcurrentRegistrations));
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.SourceAndTriggerHeaders:
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
         break;
     }
 
@@ -102,6 +107,8 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
+      case IssuesManager.AttributionReportingIssue.IssueCode.SourceIgnored:
+      case IssuesManager.AttributionReportingIssue.IssueCode.TriggerIgnored:
         this.#appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
@@ -118,6 +125,9 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.TooManyConcurrentRequests:
         await this.#appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
+        break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.SourceAndTriggerHeaders:
+        this.#appendRequestOrEmptyCell(element, details.request);
         break;
     }
 

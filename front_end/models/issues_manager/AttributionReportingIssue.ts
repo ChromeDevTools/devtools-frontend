@@ -16,6 +16,9 @@ export const enum IssueCode {
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
   InvalidEligibleHeader = 'AttributionReportingIssue::InvalidEligibleHeader',
   TooManyConcurrentRequests = 'AttributionReportingIssue::TooManyConcurrentRequests',
+  SourceAndTriggerHeaders = 'AttributionReportingIssue::SourceAndTriggerHeaders',
+  SourceIgnored = 'AttributionReportingIssue::SourceIgnored',
+  TriggerIgnored = 'AttributionReportingIssue::TriggerIgnored',
   // TODO(apaseltiner): Remove this once old issue types are removed from
   // protocol.
   Unknown = 'AttributionReportingIssue::Unknown',
@@ -37,10 +40,21 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidEligibleHeader;
     case Protocol.Audits.AttributionReportingIssueType.TooManyConcurrentRequests:
       return IssueCode.TooManyConcurrentRequests;
+    case Protocol.Audits.AttributionReportingIssueType.SourceAndTriggerHeaders:
+      return IssueCode.SourceAndTriggerHeaders;
+    case Protocol.Audits.AttributionReportingIssueType.SourceIgnored:
+      return IssueCode.SourceIgnored;
+    case Protocol.Audits.AttributionReportingIssueType.TriggerIgnored:
+      return IssueCode.TriggerIgnored;
     default:
       return IssueCode.Unknown;
   }
 }
+
+const structuredHeaderLink = {
+  link: 'https://tools.ietf.org/id/draft-ietf-httpbis-header-structure-15.html#rfc.section.4.2.2',
+  linkTitle: 'Structured Headers RFC',
+};
 
 export class AttributionReportingIssue extends Issue<IssueCode> {
   issueDetails: Readonly<Protocol.Audits.AttributionReportingIssueDetails>;
@@ -85,15 +99,27 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidEligibleHeader:
         return {
           file: 'arInvalidEligibleHeader.md',
-          links: [{
-            link: 'https://tools.ietf.org/id/draft-ietf-httpbis-header-structure-15.html#rfc.section.4.2.2',
-            linkTitle: 'Structured Headers RFC',
-          }],
+          links: [structuredHeaderLink],
         };
       case IssueCode.TooManyConcurrentRequests:
         return {
           file: 'arTooManyConcurrentRequests.md',
           links: [],
+        };
+      case IssueCode.SourceAndTriggerHeaders:
+        return {
+          file: 'arSourceAndTriggerHeaders.md',
+          links: [],
+        };
+      case IssueCode.SourceIgnored:
+        return {
+          file: 'arSourceIgnored.md',
+          links: [structuredHeaderLink],
+        };
+      case IssueCode.TriggerIgnored:
+        return {
+          file: 'arTriggerIgnored.md',
+          links: [structuredHeaderLink],
         };
       case IssueCode.Unknown:
         return null;

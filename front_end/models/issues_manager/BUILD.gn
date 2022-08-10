@@ -53,12 +53,15 @@ devtools_module("issues_manager") {
 }
 
 devtools_issue_description_files = [
-  "arUntrustworthyReportingOrigin.md",
   "arInsecureContext.md",
-  "arInvalidRegisterSourceHeader.md",
   "arInvalidEligibleHeader.md",
+  "arInvalidRegisterSourceHeader.md",
   "arInvalidRegisterTriggerHeader.md",
   "arPermissionPolicyDisabled.md",
+  "arSourceAndTriggerHeaders.md",
+  "arSourceIgnored.md",
+  "arTriggerIgnored.md",
+  "arUntrustworthyReportingOrigin.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",
   "clientHintMetaTagModifiedHTML.md",
   "CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",

@@ -54,8 +54,14 @@ export async function takeScreenshots(testName: string) {
 function wrapSuiteFunction(fn: (this: Mocha.Suite) => void) {
   return function(this: Mocha.Suite): void {
     const hookCreationHook = (hook: Mocha.Hook): void => {
-      const originalDone = hook.callback;
-      hook.callback = timeoutHook.bind(hook, originalDone);
+      const originalFn = hook.fn;
+      if (!originalFn) {
+        return;
+      }
+      hook.fn = function(this, args) {
+        hookTestTimeout(hook);
+        return originalFn.call(this, args);
+      };
     };
     this.on('beforeEach', hookCreationHook);
     this.on('beforeAll', hookCreationHook);
@@ -196,16 +202,20 @@ export function makeCustomWrappedIt(namePrefix: string = '') {
   return newMochaItFunc;
 }
 
+function hookTestTimeout(test?: Mocha.Runnable) {
+  if (test) {
+    const originalDone = test.callback;
+    test.callback = timeoutHook.bind(test, originalDone);
+    // If a timeout is already scheduled, reset it to install our new hook
+    test.resetTimeout();
+  }
+}
+
 function wrapMochaCall(
     call: Mocha.TestFunction|Mocha.PendingTestFunction|Mocha.ExclusiveTestFunction, name: string,
     callback: Mocha.Func|Mocha.AsyncFunc) {
   const test = call(name, function(done: Mocha.Done) {
-    if (test) {
-      const originalDone = test.callback;
-      test.callback = timeoutHook.bind(test, originalDone);
-      // If a timeout is already scheduled, reset it to install our new hook
-      test.resetTimeout();
-    }
+    hookTestTimeout(test);
 
     if (callback.length === 0) {
       (callback as Mocha.AsyncFunc).bind(this)().then(done, done);

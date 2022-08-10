@@ -317,16 +317,17 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
     if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
       if (target.property && target.property.value &&
           LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(target.property.value)) {
+        const expression = target.path();
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.revealInMemoryInspectorPanel),
-            this.openMemoryInspector.bind(this, target.property.name, target.property.value));
+            this.openMemoryInspector.bind(this, expression, target.property.value));
       }
     }
   }
 
-  private async openMemoryInspector(name: string, obj: SDK.RemoteObject.RemoteObject): Promise<void> {
+  private async openMemoryInspector(expression: string, obj: SDK.RemoteObject.RemoteObject): Promise<void> {
     const controller = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance();
     Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.ContextMenu);
-    void controller.openInspectorView(obj, undefined /* address */, name);
+    void controller.openInspectorView(obj, /* address */ undefined, expression);
   }
 }

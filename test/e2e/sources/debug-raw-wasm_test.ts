@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   $,
   click,
+  enableExperiment,
   getBrowserAndPages,
   goToResource,
   installEventListener,
@@ -47,7 +48,7 @@ describe('Sources Tab', async function() {
 
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
   });
 
   it('shows the correct wasm source on load and reload', async () => {
@@ -268,9 +269,11 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  // TODO(crbug.com/1349297) Disabled because of time out flakes.
-  it.skip('[crbug.com/1349297] is able to step with state in multi-threaded code in main thread', async () => {
+  it('is able to step with state in multi-threaded code in main thread', async () => {
+    await enableExperiment('instrumentationBreakpoints');
     const {target, frontend} = getBrowserAndPages();
+    // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     const fileName = 'stepping-with-state.wasm';
     await step('navigate to a page and open the Sources tab', async () => {
       await openSourceCodeEditorForFile('stepping-with-state.wasm', 'wasm/stepping-with-state-and-threads.html');
@@ -380,9 +383,11 @@ describe('Sources Tab', async function() {
     await checkBreakpointDidNotActivate();
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1321898]: is able to step with state in multi-threaded code in worker thread', async () => {
+  it('is able to step with state in multi-threaded code in worker thread', async () => {
+    await enableExperiment('instrumentationBreakpoints');
     const {target, frontend} = getBrowserAndPages();
+    // enableExperiment() reloads the devtools page, so we need to reinstall the listener on the new window.
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     const fileName = 'stepping-with-state.wasm';
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -486,9 +491,7 @@ describe('Sources Tab', async function() {
 });
 
 describe('Raw-Wasm', async () => {
-  // TODO(crbug.com/1349290) The test flakily fails with the "Element is no longer attached to the dom"
-  // error.
-  it.skip('[crbug.com/1349290] displays correct location in Wasm source', async () => {
+  it('displays correct location in Wasm source', async () => {
     const {target} = getBrowserAndPages();
 
     // Have the target load the page.

@@ -46,14 +46,6 @@ export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
 const WATCH_EXPRESSION_VALUE_SELECTOR = '.watch-expression-tree-item .object-value-string.value';
 
-export async function navigateToLine(frontend: puppeteer.Page, lineNumber: number|string) {
-  await frontend.keyboard.down('Control');
-  await frontend.keyboard.press('KeyG');
-  await frontend.keyboard.up('Control');
-  await frontend.keyboard.type(`${lineNumber}`);
-  await frontend.keyboard.press('Enter');
-}
-
 export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
   const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
   await frontend.keyboard.down(modifierKey);
@@ -211,23 +203,21 @@ export async function getToolbarText() {
 }
 
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
-  await navigateToLine(frontend, index);
   const breakpointLine = await getLineNumberElement(index);
-  assert.isNotNull(breakpointLine, 'Line is not visible or does not exist');
+  assertNotNullOrUndefined(breakpointLine);
 
   await waitForFunction(async () => !(await isBreakpointSet(index)));
-  await breakpointLine?.click();
+  await click(breakpointLine);
 
   await waitForFunction(async () => await isBreakpointSet(index));
 }
 
 export async function removeBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
-  await navigateToLine(frontend, index);
   const breakpointLine = await getLineNumberElement(index);
-  assert.isNotNull(breakpointLine, 'Line is not visible or does not exist');
+  assertNotNullOrUndefined(breakpointLine);
 
   await waitForFunction(async () => await isBreakpointSet(index));
-  await breakpointLine?.click();
+  await click(breakpointLine);
   await waitForFunction(async () => !(await isBreakpointSet(index)));
 }
 

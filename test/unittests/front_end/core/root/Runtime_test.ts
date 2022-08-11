@@ -7,6 +7,10 @@ import * as Root from '../../../../../front_end/core/root/root.js';
 const {assert} = chai;
 
 describe('Runtime', () => {
+  beforeEach(() => {
+    Root.Runtime.experiments.clearForTest();
+  });
+
   describe('Module', () => {
     describe('getRemoteBase', () => {
       const bundled = 'devtools://devtools/bundled/devtools_app.html';
@@ -30,5 +34,24 @@ describe('Runtime', () => {
         assert.isNull(Root.Runtime.getRemoteBase(`${bundled}?remoteBase=${remoteOrigin}`));
       });
     });
+  });
+
+  it('allConfigurableExperiments returns all registered experiments', () => {
+    Root.Runtime.experiments.register('example', 'example');
+    Root.Runtime.experiments.register('configurable', 'configurable');
+
+    const experiments = Root.Runtime.experiments.allConfigurableExperiments();
+
+    assert.deepStrictEqual(experiments.map(experiment => experiment.name), ['example', 'configurable']);
+  });
+
+  it('allConfigurableExperiments do not return nonConfigurableExperiments', () => {
+    Root.Runtime.experiments.register('example', 'example');
+    Root.Runtime.experiments.register('nonConfigurable', 'nonConfigurable');
+    Root.Runtime.experiments.setNonConfigurableExperiments(['nonConfigurable']);
+
+    const experiments = Root.Runtime.experiments.allConfigurableExperiments();
+
+    assert.deepStrictEqual(experiments.map(experiment => experiment.name), ['example']);
   });
 });

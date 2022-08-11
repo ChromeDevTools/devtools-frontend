@@ -8,8 +8,11 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import type * as ProtocolProxyApi from '../../../../../front_end/generated/protocol-proxy-api.js';
+import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
+
+import * as Root from '../../../../../front_end/core/root/root.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describe('MultitargetNetworkManager', () => {
   describe('Trust Token done event', () => {
@@ -234,23 +237,209 @@ describe('NetworkDispatcher', () => {
   });
 });
 
-describe('InterceptedRequest', () => {
-  it('always responds with status code 200 when fulfilling a request', async () => {
-    const fetchAgent = {
-      invoke_fulfillRequest: () => {},
-    } as unknown as ProtocolProxyApi.FetchApi;
-    const spy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
-    const request = {
-      url: 'https://www.example.com/',
-    } as Protocol.Network.Request;
-    const requestId = 'requestId' as Protocol.Fetch.RequestId;
-    const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
-        fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, /* responseStatusCode */ 300);
-    const textContent = 'some content';
-    const responseHeaders = [{name: 'headerName', value: 'headerValue'}] as Protocol.Fetch.HeaderEntry[];
+interface OverriddenResponse {
+  requestId: Protocol.Fetch.RequestId;
+  responseCode: number;
+  body: string;
+  responseHeaders: Protocol.Fetch.HeaderEntry[];
+}
 
-    await interceptedRequest.continueRequestWithContent(
-        new Blob([textContent], {type: 'text/html'}), false, responseHeaders);
-    assert.isTrue(spy.calledWith({requestId, responseCode: 200, body: btoa(textContent), responseHeaders}));
+async function checkRequestOverride(
+    target: SDK.Target.Target, request: Protocol.Network.Request, requestId: Protocol.Fetch.RequestId,
+    responseStatusCode: number, responseHeaders: Protocol.Fetch.HeaderEntry[], responseBody: string,
+    expectedOverriddenResponse: OverriddenResponse) {
+  const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+  const fetchAgent = target.fetchAgent();
+  const spy = sinon.spy(fetchAgent, 'invoke_fulfillRequest');
+
+  const fulfilledRequest = new Promise(resolve => {
+    multitargetNetworkManager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.RequestFulfilled, resolve);
+  });
+
+  const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
+      fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, responseStatusCode, responseHeaders);
+  interceptedRequest.responseBody = async () => {
+    return {error: null, content: responseBody, encoded: true};
+  };
+
+  assert.isTrue(spy.notCalled);
+  await multitargetNetworkManager.requestIntercepted(interceptedRequest);
+  await fulfilledRequest;
+  assert.isTrue(spy.calledOnceWithExactly(expectedOverriddenResponse));
+}
+
+describeWithMockConnection('InterceptedRequest', () => {
+  let target: SDK.Target.Target;
+
+  beforeEach(async () => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+    target = createTarget();
+    const networkPersistenceManager =
+        await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
+          {
+            name: '.headers',
+            path: 'www.example.com/',
+            content: `[
+            {
+              "applyTo": "index.html",
+              "headers": {
+                "index-only": "only added to index.html"
+              }
+            },
+            {
+              "applyTo": "*.css",
+              "headers": {
+                "css-only": "only added to css files"
+              }
+            },
+            {
+              "applyTo": "path/to/*.js",
+              "headers": {
+                "another-header": "only added to specific path"
+              }
+            }
+          ]`,
+          },
+          {
+            name: '.headers',
+            path: '',
+            content: `[
+            {
+              "applyTo": "*",
+              "headers": {
+                "age": "overridden"
+              }
+            }
+          ]`,
+          },
+          {name: 'helloWorld.html', path: 'www.example.com/', content: 'Hello World!'},
+        ]);
+    sinon.stub(target.fetchAgent(), 'invoke_enable');
+    await networkPersistenceManager.updateInterceptionPatternsForTests();
+  });
+
+  it('can override headers-only for a status 200 request', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_1' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/styles.css',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode,
+          body: responseBody,
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+            {name: 'css-only', value: 'only added to css files'},
+          ],
+        });
+  });
+
+  it('can override headers and content for a status 200 request', async () => {
+    const responseCode = 200;
+    const requestId = 'request_id_2' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/helloWorld.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode,
+          body: btoa('Hello World!'),
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+          ],
+        });
+  });
+
+  it('can override headers-only for a status 300 (redirect) request', async () => {
+    const responseCode = 300;
+    const requestId = 'request_id_3' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/path/to/foo.js',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode,
+          body: '',
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+            {name: 'another-header', value: 'only added to specific path'},
+          ],
+        });
+  });
+
+  it('can override headers and content for a status 300 (redirect) request', async () => {
+    const responseCode = 300;
+    const requestId = 'request_id_4' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/helloWorld.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode: 200,
+          body: btoa('Hello World!'),
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+          ],
+        });
+  });
+
+  it('can override headers-only for a status 404 (not found) request', async () => {
+    const responseCode = 404;
+    const requestId = 'request_id_5' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/doesNotExist.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode,
+          body: 'interceptedRequest content',
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+          ],
+        });
+  });
+
+  it('can override headers and content for a status 404 (not found) request', async () => {
+    const responseCode = 404;
+    const requestId = 'request_id_6' as Protocol.Fetch.RequestId;
+    const responseBody = 'interceptedRequest content';
+    await checkRequestOverride(
+        target, {
+          method: 'GET',
+          url: 'https://www.example.com/helloWorld.html',
+        } as Protocol.Network.Request,
+        requestId, responseCode, [{name: 'content-type', value: 'text/html; charset=utf-8'}], responseBody, {
+          requestId,
+          responseCode: 200,
+          body: btoa('Hello World!'),
+          responseHeaders: [
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
+            {name: 'age', value: 'overridden'},
+          ],
+        });
   });
 });

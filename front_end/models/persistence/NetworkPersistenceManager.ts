@@ -731,13 +731,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       const blob = await project.requestFileBlob(fileSystemUISourceCode);
       if (blob) {
         void interceptedRequest.continueRequestWithContent(
-            new Blob([blob], {type: mimeType}), /* encoded */ false, responseHeaders);
+            new Blob([blob], {type: mimeType}), /* encoded */ false, responseHeaders, /* isBodyOverridden */ true);
       }
+    } else if (interceptedRequest.isRedirect()) {
+      void interceptedRequest.continueRequestWithContent(
+          new Blob([], {type: mimeType}), /* encoded */ true, responseHeaders, /* isBodyOverridden */ false);
     } else {
       const responseBody = await interceptedRequest.responseBody();
       if (!responseBody.error && responseBody.content) {
         void interceptedRequest.continueRequestWithContent(
-            new Blob([responseBody.content], {type: mimeType}), /* encoded */ true, responseHeaders);
+            new Blob([responseBody.content], {type: mimeType}), /* encoded */ true, responseHeaders,
+            /* isBodyOverridden */ false);
       }
     }
   }

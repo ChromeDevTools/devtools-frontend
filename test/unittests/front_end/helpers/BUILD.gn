@@ -14,6 +14,7 @@ ts_library("helpers") {
     "MockConnection.ts",
     "MutationHelpers.ts",
     "MutationHelpers_test.ts",
+    "OverridesHelpers.ts",
     "RealConnection.ts",
     "SourceMapEncoder.ts",
     "SourceMapEncoder_test.ts",

@@ -465,10 +465,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest.setUrl(response.url as Platform.DevToolsPath.UrlString);
     }
     networkRequest.mimeType = (response.mimeType as MIME_TYPE);
-    if (!networkRequest.statusCode) {
+    if (!networkRequest.statusCode || networkRequest.wasIntercepted()) {
       networkRequest.statusCode = response.status;
     }
-    if (!networkRequest.statusText) {
+    if (!networkRequest.statusText || networkRequest.wasIntercepted()) {
       networkRequest.statusText = response.statusText;
     }
     if (!networkRequest.hasExtraResponseInfo() || networkRequest.wasIntercepted()) {
@@ -1170,6 +1170,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     return multiTargetNetworkManagerInstance;
   }
 
+  static dispose(): void {
+    multiTargetNetworkManagerInstance = null;
+  }
+
   static getChromeVersion(): string {
     const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
     const chromeMatch = navigator.userAgent.match(chromeRegex);
@@ -1523,6 +1527,7 @@ export namespace MultitargetNetworkManager {
     InterceptorsChanged = 'InterceptorsChanged',
     AcceptedEncodingsChanged = 'AcceptedEncodingsChanged',
     RequestIntercepted = 'RequestIntercepted',
+    RequestFulfilled = 'RequestFulfilled',
   }
 
   export type EventTypes = {
@@ -1532,6 +1537,7 @@ export namespace MultitargetNetworkManager {
     [Events.InterceptorsChanged]: void,
     [Events.AcceptedEncodingsChanged]: void,
     [Events.RequestIntercepted]: Platform.DevToolsPath.UrlString,
+    [Events.RequestFulfilled]: Platform.DevToolsPath.UrlString,
   };
 }
 
@@ -1565,11 +1571,15 @@ export class InterceptedRequest {
     return this.#hasRespondedInternal;
   }
 
-  async continueRequestWithContent(contentBlob: Blob, encoded: boolean, responseHeaders: Protocol.Fetch.HeaderEntry[]):
-      Promise<void> {
+  async continueRequestWithContent(
+      contentBlob: Blob, encoded: boolean, responseHeaders: Protocol.Fetch.HeaderEntry[],
+      isBodyOverridden: boolean): Promise<void> {
     this.#hasRespondedInternal = true;
     const body = encoded ? await contentBlob.text() : await blobToBase64(contentBlob);
-    void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode: 200, body, responseHeaders});
+    const responseCode = isBodyOverridden ? 200 : (this.responseStatusCode || 200);
+    void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode, body, responseHeaders});
+    MultitargetNetworkManager.instance().dispatchEventToListeners(
+        MultitargetNetworkManager.Events.RequestFulfilled, this.request.url as Platform.DevToolsPath.UrlString);
 
     async function blobToBase64(blob: Blob): Promise<string> {
       const reader = new FileReader();
@@ -1607,6 +1617,10 @@ export class InterceptedRequest {
     const response = await this.#fetchAgent.invoke_getResponseBody({requestId: this.requestId});
     const error = response.getError() || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
+  }
+
+  isRedirect(): boolean {
+    return this.responseStatusCode !== undefined && this.responseStatusCode >= 300 && this.responseStatusCode < 400;
   }
 }
 

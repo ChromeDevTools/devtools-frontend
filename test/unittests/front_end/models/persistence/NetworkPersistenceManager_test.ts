@@ -4,110 +4,69 @@
 
 const {assert} = chai;
 
-import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {initializeGlobalVars, deinitializeGlobalVars, createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
-
-async function setUpEnvironment() {
-  const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  const targetManager = SDK.TargetManager.TargetManager.instance();
-  const debuggerWorkspaceBinding =
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({forceNew: true, targetManager, workspace});
-  const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
-      {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
-  Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-  const networkPersistenceManager =
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-  return {networkPersistenceManager};
-}
-
-async function setUpHeaderOverrides() {
-  createTarget();
-  const {networkPersistenceManager} = await setUpEnvironment();
-  const uiSourceCodeMap = new Map<string, Workspace.UISourceCode.UISourceCode>();
-  const fileSystem = {
-    fileSystemPath: () => 'file:///path/to/overrides',
-    fileSystemBaseURL: 'file:///path/to/overrides/',
-    uiSourceCodeForURL: (url: string): Workspace.UISourceCode.UISourceCode | null => uiSourceCodeMap.get(url) || null,
-  } as unknown as Persistence.FileSystemWorkspaceBinding.FileSystem;
-
-  const globalHeaders = `[
-    {
-      "applyTo": "*",
-      "headers": {
-        "age": "overridden"
-      }
-    }
-  ]`;
-
-  const exampleHeaders = `[
-    {
-      "applyTo": "index.html",
-      "headers": {
-        "index-only": "only added to index.html"
-      }
-    },
-    {
-      "applyTo": "*.css",
-      "headers": {
-        "css-only": "only added to css files"
-      }
-    },
-    {
-      "applyTo": "path/to/*.js",
-      "headers": {
-        "another-header": "only added to specific path"
-      }
-    }
-  ]`;
-
-  const exampleSourceCode = {
-    requestContent: () => {
-      return Promise.resolve({content: exampleHeaders});
-    },
-    url: () => 'file:///path/to/overrides/www.example.com/.headers',
-    project: () => fileSystem,
-    name: () => '.headers',
-  } as unknown as Workspace.UISourceCode.UISourceCode;
-
-  const globalSourceCode = {
-    requestContent: () => {
-      return Promise.resolve({content: globalHeaders});
-    },
-    url: () => 'file:///path/to/overrides/.headers',
-    project: () => fileSystem,
-    name: () => '.headers',
-  } as unknown as Workspace.UISourceCode.UISourceCode;
-
-  uiSourceCodeMap.set(exampleSourceCode.url(), exampleSourceCode);
-  uiSourceCodeMap.set(globalSourceCode.url(), globalSourceCode);
-
-  const mockProject = {
-    uiSourceCodes: () => [exampleSourceCode, globalSourceCode],
-    id: () => 'file:///path/to/overrides',
-  } as unknown as Workspace.Workspace.Project;
-
-  await networkPersistenceManager.setProject(mockProject);
-  SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns = async () => {};
-  await networkPersistenceManager.updateInterceptionPatternsForTests();
-  return {networkPersistenceManager};
-}
+import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
 
 describeWithMockConnection('NetworkPersistenceManager', () => {
-  beforeEach(() => {
+  let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
+
+  beforeEach(async () => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+    const target = createTarget();
+    networkPersistenceManager =
+        await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
+          {
+            name: '.headers',
+            path: 'www.example.com/',
+            content: `[
+            {
+              "applyTo": "index.html",
+              "headers": {
+                "index-only": "only added to index.html"
+              }
+            },
+            {
+              "applyTo": "*.css",
+              "headers": {
+                "css-only": "only added to css files"
+              }
+            },
+            {
+              "applyTo": "path/to/*.js",
+              "headers": {
+                "another-header": "only added to specific path"
+              }
+            }
+          ]`,
+          },
+          {
+            name: '.headers',
+            path: '',
+            content: `[
+            {
+              "applyTo": "*",
+              "headers": {
+                "age": "overridden"
+              }
+            }
+          ]`,
+          },
+          {name: 'helloWorld.html', path: 'www.example.com/', content: 'Hello World!'},
+        ]);
+    sinon.stub(target.fetchAgent(), 'invoke_enable');
+    await networkPersistenceManager.updateInterceptionPatternsForTests();
   });
 
   it('merges request headers with override without overlap', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     const interceptedRequest = {
       request: {
         url: 'https://www.example.com/',
@@ -126,7 +85,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('merges request headers with override with overlap', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     const interceptedRequest = {
       request: {
         url: 'https://www.example.com/index.html',
@@ -146,7 +104,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('merges request headers with override with file type wildcard', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     const interceptedRequest = {
       request: {
         url: 'https://www.example.com/styles.css',
@@ -166,7 +123,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('merges request headers with override with specific path', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     const interceptedRequest = {
       request: {
         url: 'https://www.example.com/path/to/script.js',
@@ -186,7 +142,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 
   it('merges request headers only when domain matches', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     const interceptedRequest = {
       request: {
         url: 'https://www.web.dev/index.html',
@@ -203,25 +158,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
   });
 
-  it('updates active state when target detach and attach', async () => {
-    const {networkPersistenceManager} = await setUpEnvironment();
-    const {project} =
-        createFileSystemUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
-    await networkPersistenceManager.setProject(project);
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    assert.isNull(targetManager.mainTarget());
-    assert.isFalse(networkPersistenceManager.active());
-
-    const target = await createTarget();
-    assert.isTrue(networkPersistenceManager.active());
-
-    targetManager.removeTarget(target);
-
-    assert.isFalse(networkPersistenceManager.active());
-  });
-
   it('translates URLs into raw and encoded paths', async () => {
-    const {networkPersistenceManager} = await setUpHeaderOverrides();
     let toTest = [
       // Simple tests.
       {
@@ -540,6 +477,31 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
           networkPersistenceManager.encodedPathFromUrl(testStrings.url as Platform.DevToolsPath.UrlString),
           testStrings.encoded);
     });
+  });
+});
+
+describeWithMockConnection('NetworkPersistenceManager', () => {
+  beforeEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.HEADER_OVERRIDES, '');
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+  });
+
+  it('updates active state when target detach and attach', async () => {
+    const {networkPersistenceManager} = await setUpEnvironment();
+    const {project} =
+        createFileSystemUISourceCode({url: 'file:///tmp' as Platform.DevToolsPath.UrlString, mimeType: 'text/plain'});
+    await networkPersistenceManager.setProject(project);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    assert.isNull(targetManager.mainTarget());
+    assert.isFalse(networkPersistenceManager.active());
+
+    const target = await createTarget();
+    assert.isTrue(networkPersistenceManager.active());
+
+    targetManager.removeTarget(target);
+
+    assert.isFalse(networkPersistenceManager.active());
   });
 });
 

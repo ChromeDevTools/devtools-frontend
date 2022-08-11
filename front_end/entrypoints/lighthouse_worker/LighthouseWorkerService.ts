@@ -125,7 +125,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     }
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    const config = self.createConfig(args.categoryIDs, flags.emulatedFormFactor);
+    const config = args.config || self.createConfig(args.categoryIDs, flags.emulatedFormFactor);
     const url = args.url;
 
     // Handle legacy Lighthouse runner path.

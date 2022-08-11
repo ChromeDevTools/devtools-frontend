@@ -63,6 +63,7 @@ export class ProtocolService {
   private parallelConnection?: ProtocolClient.InspectorBackend.Connection;
   private lighthouseWorkerPromise?: Promise<Worker>;
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
+  private configForTesting?: Object;
 
   async attach(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
@@ -113,6 +114,7 @@ export class ProtocolService {
       url: inspectedURL,
       categoryIDs,
       flags,
+      config: this.configForTesting,
       locales: this.getLocales(),
       target: this.targetInfo,
     });
@@ -134,6 +136,7 @@ export class ProtocolService {
       url: inspectedURL,
       categoryIDs,
       flags,
+      config: this.configForTesting,
       locales: this.getLocales(),
       target: this.targetInfo,
     });
@@ -241,7 +244,7 @@ export class ProtocolService {
   }
 
   /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
-  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|Object} = {}):
+  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|Object|undefined} = {}):
       Promise<ReportRenderer.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;

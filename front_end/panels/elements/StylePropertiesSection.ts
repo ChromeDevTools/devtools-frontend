@@ -298,6 +298,18 @@ export class StylePropertiesSection {
     this.parentsComputedStyles = parentsComputedStyles;
   }
 
+  updateAuthoringHint(): void {
+    let child = this.propertiesTreeOutline.firstChild();
+    while (child) {
+      if (child instanceof StylePropertyTreeElement) {
+        child.setComputedStyles(this.computedStyles);
+        child.setParentsComputedStyles(this.parentsComputedStyles);
+        child.updateAuthoringHint();
+      }
+      child = child.nextSibling;
+    }
+  }
+
   setSectionIdx(sectionIdx: number): void {
     this.sectionIdx = sectionIdx;
     this.onpopulate();

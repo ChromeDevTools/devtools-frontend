@@ -142,7 +142,7 @@ export class AlignContentValidator extends CSSRuleValidator {
     if (this.#isRuleValid(computedStyles)) {
       return;
     }
-    const reasonPropertyDeclaration = buildPropertyText('flex-wrap');
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('flex-wrap', 'nowrap');
     const affectedPropertyDeclarationCode = buildPropertyText('align-content');
 
     return new Hint(

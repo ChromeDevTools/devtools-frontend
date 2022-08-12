@@ -785,6 +785,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     for (const section of this.allSections()) {
       section.setComputedStyles(computedStyles);
       section.setParentsComputedStyles(parentsComputedStyles);
+      section.updateAuthoringHint();
     }
   }
 

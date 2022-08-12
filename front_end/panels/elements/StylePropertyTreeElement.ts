@@ -761,7 +761,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private updateAuthoringHint(): void {
+  updateAuthoringHint(): void {
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS)) {
       return;
     }

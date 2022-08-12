@@ -1082,10 +1082,15 @@ describe('The Styles pane', async () => {
     assert.deepEqual(scopeQueryText, '@scope (body)', 'incorrectly displayed @supports rule');
   });
 
-  it('cancels editing if the page is reloaded', async () => {
-    const {frontend, target} = getBrowserAndPages();
-    const green = 'rgb(0, 255, 0)';
-    const blue = 'rgb(0, 0, 255)';
+  describe('Editing', () => {
+    let frontend: puppeteer.Page;
+    let target: puppeteer.Page;
+
+    beforeEach(() => {
+      const browserAndPages = getBrowserAndPages();
+      frontend = browserAndPages.frontend;
+      target = browserAndPages.target;
+    });
 
     async function assertBodyColor(expected: string) {
       assert.strictEqual(
@@ -1100,21 +1105,43 @@ describe('The Styles pane', async () => {
       assert.lengthOf(await frontend.$$('pierce/.child-editing'), isEditing ? 1 : 0);
     }
 
-    await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
-    await assertBodyColor(green);
+    const green = 'rgb(0, 255, 0)';
+    const blue = 'rgb(0, 0, 255)';
 
-    // Start editing.
-    await focusCSSPropertyValue('body', 'color');
-    await frontend.keyboard.type(blue, {delay: 100});
-    await assertBodyColor(blue);
-    await assertIsEditing(true);
+    it('cancels editing if the page is reloaded', async () => {
+      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+      await assertBodyColor(green);
 
-    // Reload and wait for styles.
-    await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+      // Start editing.
+      await focusCSSPropertyValue('body', 'color');
+      await frontend.keyboard.type(blue, {delay: 100});
+      await assertBodyColor(blue);
+      await assertIsEditing(true);
 
-    // Expect the editing to be discarded and the editing mode turned off.
-    await waitForCSSPropertyValue('body', 'color', green);
-    await assertBodyColor(green);
-    await assertIsEditing(false);
+      // Reload and wait for styles.
+      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+
+      // Expect the editing to be discarded and the editing mode turned off.
+      await waitForCSSPropertyValue('body', 'color', green);
+      await assertBodyColor(green);
+      await assertIsEditing(false);
+    });
+
+    it('cancels editing on Esc', async () => {
+      await goToResourceAndWaitForStyleSection('elements/simple-body-color.html');
+      await assertBodyColor(green);
+
+      // Start editing.
+      await focusCSSPropertyValue('body', 'color');
+      await frontend.keyboard.type(blue, {delay: 100});
+      await assertBodyColor(blue);
+      await assertIsEditing(true);
+      await frontend.keyboard.press('Escape');
+
+      // Expect the editing to be discarded and the editing mode turned off.
+      await waitForCSSPropertyValue('body', 'color', green);
+      await assertBodyColor(green);
+      await assertIsEditing(false);
+    });
   });
 });

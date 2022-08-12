@@ -717,23 +717,16 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    const authoringHint = this.getAuthoringHint(this.computedStyles, this.parentsComputedStyles);
-    const showAuthoringHint = authoringHint !== null && this.property.parsedOk;
-    if (showAuthoringHint) {
-      const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
-      activeHints.set(hintIcon, authoringHint);
-      this.listItemElement.append(hintIcon);
-    }
-
-    if (!this.property.parsedOk) {
+    if (this.property.parsedOk) {
+      void this.updateFontVariationSettingsWarning();
+      this.updateAuthoringHint();
+    } else {
       // Avoid having longhands under an invalid shorthand.
       this.listItemElement.classList.add('not-parsed-ok');
 
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
           StylesSidebarPane.createExclamationMark(this.property, null), this.listItemElement.firstChild);
-    } else {
-      void this.updateFontVariationSettingsWarning();
     }
 
     if (!this.property.activeInStyle()) {
@@ -766,6 +759,21 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.append(copyIcon);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
+  }
+
+  private updateAuthoringHint(): void {
+    const existingElement = this.listItemElement.querySelector('.hint');
+    if (existingElement) {
+      activeHints.delete(existingElement);
+      existingElement.parentElement?.removeChild(existingElement);
+    }
+    const authoringHint = this.getAuthoringHint(this.computedStyles, this.parentsComputedStyles);
+    if (!authoringHint) {
+      return;
+    }
+    const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
+    activeHints.set(hintIcon, authoringHint);
+    this.listItemElement.append(hintIcon);
   }
 
   private async updateFontVariationSettingsWarning(): Promise<void> {

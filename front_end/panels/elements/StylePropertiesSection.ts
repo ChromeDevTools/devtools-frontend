@@ -290,6 +290,14 @@ export class StylePropertiesSection {
     this.onpopulate();
   }
 
+  setComputedStyles(computedStyles: Map<string, string>|null): void {
+    this.computedStyles = computedStyles;
+  }
+
+  setParentsComputedStyles(parentsComputedStyles: Map<string, string>|null): void {
+    this.parentsComputedStyles = parentsComputedStyles;
+  }
+
   setSectionIdx(sectionIdx: number): void {
     this.sectionIdx = sectionIdx;
     this.onpopulate();

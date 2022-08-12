@@ -218,6 +218,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
   #copyChangesButton?: UI.Toolbar.ToolbarButton;
   #updateAbortController?: AbortController;
+  #updateComputedStylesAbortController?: AbortController;
 
   static instance(): StylesSidebarPane {
     if (!stylesSidebarPaneInstance) {
@@ -753,15 +754,38 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       for (const section of this.allSections()) {
         section.styleSheetEdited(edit);
       }
+      void this.refreshComputedStyles();
       return;
     }
 
     if (this.userOperation || this.isEditingStyle) {
+      void this.refreshComputedStyles();
       return;
     }
 
     this.resetCache();
     this.update();
+  }
+
+  async refreshComputedStyles(): Promise<void> {
+    this.#updateComputedStylesAbortController?.abort();
+    this.#updateAbortController = new AbortController();
+    const signal = this.#updateAbortController.signal;
+    const matchedStyles = await this.fetchMatchedCascade();
+    const nodeId = this.node()?.id;
+    const parentNodeId = matchedStyles?.getParentLayoutNodeId();
+
+    const [computedStyles, parentsComputedStyles] =
+        await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
+
+    if (signal.aborted) {
+      return;
+    }
+
+    for (const section of this.allSections()) {
+      section.setComputedStyles(computedStyles);
+      section.setParentsComputedStyles(parentsComputedStyles);
+    }
   }
 
   focusedSectionIndex(): number {

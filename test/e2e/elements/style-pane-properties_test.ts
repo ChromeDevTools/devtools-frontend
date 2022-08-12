@@ -13,7 +13,6 @@ import {
   goToResource,
   waitFor,
   waitForFunction,
-  enableExperiment,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -31,7 +30,6 @@ import {
   waitForStyleRule,
   expandSelectedNodeRecursively,
   waitForAndClickTreeElementWithPartialText,
-  getPropertiesWithHints,
   focusCSSPropertyValue,
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
@@ -1043,30 +1041,6 @@ describe('The Styles pane', async () => {
       },
     ];
     assert.deepEqual(inspectedRules, expectedInspectedRules);
-  });
-
-  it('can detect inactive CSS', async () => {
-    await enableExperiment('cssAuthoringHints');
-
-    await goToResourceAndWaitForStyleSection('elements/inactive-css-page.html');
-    await waitForStyleRule('body');
-    await waitForAndClickTreeElementWithPartialText('wrapper');
-    await waitForStyleRule('#wrapper');
-
-    const propertiesWithHints = await getPropertiesWithHints();
-    assert.deepEqual(propertiesWithHints, ['align-content']);
-  });
-
-  it('does not show authoring hint when property value is invalid', async () => {
-    await enableExperiment('cssAuthoringHints');
-
-    await goToResourceAndWaitForStyleSection('elements/inactive-css-with-invalid-value.html');
-    await waitForStyleRule('body');
-    await waitForAndClickTreeElementWithPartialText('wrapper');
-    await waitForStyleRule('#wrapper');
-
-    const propertiesWithHints = await getPropertiesWithHints();
-    assert.deepEqual(propertiesWithHints, []);
   });
 
   it('can display @scope at-rules', async () => {

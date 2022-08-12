@@ -11,6 +11,7 @@ node_ts_library("elements") {
     "adornment_test.ts",
     "classes-pane_test.ts",
     "computed-pane-properties_test.ts",
+    "css-hints_test.ts",
     "element-breadcrumbs_test.ts",
     "flexbox-editor_test.ts",
     "grid-editor_test.ts",

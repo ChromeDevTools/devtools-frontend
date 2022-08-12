@@ -10460,9 +10460,6 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Group files by Authored/Deployed"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
   },

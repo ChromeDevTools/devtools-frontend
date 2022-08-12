@@ -1034,17 +1034,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  /**
-   * Subclasses can override to listen to grouping changes.
-   */
-  onGroupingChanged(): void {
-  }
-
   private groupingChanged(): void {
     this.reset(true);
     this.initGrouping();
     // Reset the workspace to repopulate filesystem folders.
-    this.onGroupingChanged();
     this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }

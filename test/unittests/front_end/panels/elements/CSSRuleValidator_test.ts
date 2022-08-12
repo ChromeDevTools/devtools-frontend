@@ -18,7 +18,6 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['flex-wrap', 'nowrap'],
         ['align-content', 'center'],
       ]),
-      parentsComputedStyles: null,
       validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
       expectedResult: false,
     },
@@ -29,7 +28,6 @@ describeWithEnvironment('CSSRuleValidator', async () => {
         ['flex-wrap', 'nowrap'],
         ['align-content', 'center'],
       ]),
-      parentsComputedStyles: null,
       validator: () => new Elements.CSSRuleValidator.AlignContentValidator(),
       expectedResult: true,
     },
@@ -185,8 +183,13 @@ describeWithEnvironment('CSSRuleValidator', async () => {
 
   for (const test of tests) {
     it(test.description, () => {
-      const actualResult = test.validator().isRuleValid(test.computedStyles, test.parentsComputedStyles);
-      assert.deepEqual(actualResult, test.expectedResult);
+      const actualResult = test.validator().getHint(
+          test.validator().getApplicableProperties()[0], test.computedStyles, test.parentsComputedStyles);
+      if (test.expectedResult) {
+        assert.isUndefined(actualResult);
+      } else {
+        assert.isDefined(actualResult);
+      }
     });
   }
 });

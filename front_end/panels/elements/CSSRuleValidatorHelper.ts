@@ -2,31 +2,37 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export const buildStyledRuleText = (property: String, value: String|undefined): string => {
+export const buildPropertyDefinitionText = (property: string, value?: string): string => {
   if (value === undefined) {
-    return buildStyledPropertyText(property);
+    return buildPropertyText(property);
   }
   return '<code class="unbreakable-text"><span class="property">' + property + '</span>: ' + value + '</code>';
 };
 
-export const buildStyledPropertyText = (property: String): string => {
+export const buildPropertyText = (property: string): string => {
   return '<code class="unbreakable-text"><span class="property">' + property + '</span></code>';
 };
 
-export const isFlexContainer = (computedStyles: Map<String, String>|null): boolean => {
-  if (computedStyles === null) {
+export const isFlexContainer = (computedStyles?: Map<string, string>): boolean => {
+  if (!computedStyles) {
     return false;
   }
   const display = computedStyles.get('display');
   return display === 'flex' || display === 'inline-flex';
 };
 
-export const isGridContainer = (computedStyles: Map<String, String>): boolean => {
+export const isGridContainer = (computedStyles?: Map<string, string>): boolean => {
+  if (!computedStyles) {
+    return false;
+  }
   const display = computedStyles.get('display');
   return display === 'grid' || display === 'inline-grid';
 };
 
-export const isMulticolContainer = (computedStyles: Map<String, String>): boolean => {
+export const isMulticolContainer = (computedStyles?: Map<string, string>): boolean => {
+  if (!computedStyles) {
+    return false;
+  }
   const columnWidth = computedStyles.get('column-width');
   const columnCount = computedStyles.get('column-count');
 

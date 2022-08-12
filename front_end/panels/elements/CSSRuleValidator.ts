@@ -6,8 +6,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import {
-  buildStyledPropertyText,
-  buildStyledRuleText,
+  buildPropertyDefinitionText,
+  buildPropertyText,
   isFlexContainer,
   isGridContainer,
   isMulticolContainer,
@@ -59,35 +59,34 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export const enum AuthoringHintType {
+export const enum HintType {
   INACTIVE_PROPERTY = 'ruleValidation',
   DEPRECATED_PROPERTY = 'deprecatedProperty',
 }
 
-export class AuthoringHint {
-  readonly #hintType: AuthoringHintType;
+export class Hint {
+  readonly #hintType: HintType;
   readonly #hintMessage: string;
   readonly #possibleFixMessage: string|null;
   readonly #learnMoreLink: string|undefined;
 
-  constructor(
-      hintType: AuthoringHintType, hintMessage: string, possibleFixMessage: string|null, learnMoreLink?: string) {
+  constructor(hintType: HintType, hintMessage: string, possibleFixMessage: string|null, learnMoreLink?: string) {
     this.#hintType = hintType;
     this.#hintMessage = hintMessage;
     this.#possibleFixMessage = possibleFixMessage;
     this.#learnMoreLink = learnMoreLink;
   }
 
-  getHintPrefix(): string {
+  getPrefix(): string {
     switch (this.#hintType) {
-      case AuthoringHintType.INACTIVE_PROPERTY:
+      case HintType.INACTIVE_PROPERTY:
         return i18nString(UIStrings.inactivePropertyHintPrefix);
-      case AuthoringHintType.DEPRECATED_PROPERTY:
+      case HintType.DEPRECATED_PROPERTY:
         return i18nString(UIStrings.deprecatedPropertyHintPrefix);
     }
   }
 
-  getHintMessage(): string {
+  getMessage(): string {
     return this.#hintMessage;
   }
 
@@ -111,19 +110,13 @@ export abstract class CSSRuleValidator {
     this.#affectedProperties = affectedProperties;
   }
 
-  /**
-   * If `isRuleValid` returns false, it means there is a hint to be shown. The hint is retrieved by invoking `getAuthoringHint`.
-   */
-  abstract isRuleValid(computedStyles: Map<String, String>|null, parentsComputedStyles?: Map<String, String>|null):
-      boolean;
-
-  getAffectedProperties(): string[] {
+  getApplicableProperties(): string[] {
     return this.#affectedProperties;
   }
 
-  abstract getAuthoringHint(
-      propertyName: string, computedStyles: Map<String, String>|null,
-      parentComputedStyles: Map<String, String>|null): AuthoringHint;
+  abstract getHint(
+      propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined;
 }
 
 export class AlignContentValidator extends CSSRuleValidator {
@@ -135,7 +128,7 @@ export class AlignContentValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.AlignContent;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     if (computedStyles === null || computedStyles === undefined) {
       return true;
     }
@@ -145,12 +138,15 @@ export class AlignContentValidator extends CSSRuleValidator {
     return computedStyles.get('flex-wrap') !== 'nowrap';
   }
 
-  getAuthoringHint(): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledPropertyText('flex-wrap');
-    const affectedPropertyDeclarationCode = buildStyledPropertyText('align-content');
+  getHint(_propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyText('flex-wrap');
+    const affectedPropertyDeclarationCode = buildPropertyText('align-content');
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -171,22 +167,24 @@ export class FlexItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexItem;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null, parentsComputedStyles: Map<String, String>|null): boolean {
-    if (parentsComputedStyles === null) {
+  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
+    if (parentComputedStyles === null) {
       return true;
     }
-    return isFlexContainer(parentsComputedStyles);
+    return isFlexContainer(parentComputedStyles);
   }
 
-  getAuthoringHint(
-      property: string, computedStyles: Map<String, String>|null,
-      parentsComputedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', parentsComputedStyles?.get('display'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
-    const targeParentPropertyDeclaration = buildStyledRuleText('display', 'flex');
+  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined {
+    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+    const targeParentPropertyDeclaration = buildPropertyDefinitionText('display', 'flex');
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -208,20 +206,23 @@ export class FlexContainerValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexContainer;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     if (computedStyles === null) {
       return true;
     }
     return isFlexContainer(computedStyles);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', computedStyles?.get('display'));
-    const targetRuleCode = buildStyledRuleText('display', 'flex');
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    const targetRuleCode = buildPropertyDefinitionText('display', 'flex');
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -252,20 +253,20 @@ export class GridContainerValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.GridContainer;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
-    if (computedStyles === null) {
-      return true;
-    }
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     return isGridContainer(computedStyles);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', computedStyles?.get('display'));
-    const targetRuleCode = buildStyledRuleText('display', 'grid');
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    const targetRuleCode = buildPropertyDefinitionText('display', 'grid');
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -293,22 +294,24 @@ export class GridItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.GridItem;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null, parentComputedStyles: Map<String, String>|null): boolean {
-    if (parentComputedStyles === null) {
+  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
+    if (!parentComputedStyles) {
       return true;
     }
     return isGridContainer(parentComputedStyles);
   }
 
-  getAuthoringHint(
-      property: string, computedStyles: Map<String, String>|null,
-      parentComputedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', parentComputedStyles?.get('display'));
-    const targeParentPropertyDeclaration = buildStyledRuleText('display', 'grid');
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined {
+    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+      return;
+    }
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
+    const targeParentPropertyDeclaration = buildPropertyDefinitionText('display', 'grid');
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -335,19 +338,23 @@ export class FlexGridValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FlexGrid;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     if (computedStyles === null) {
       return true;
     }
     return isFlexContainer(computedStyles) || isGridContainer(computedStyles);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', computedStyles?.get('display'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -376,19 +383,23 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.MulticolFlexGrid;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     if (computedStyles === null) {
       return true;
     }
     return isMulticolContainer(computedStyles) || isFlexContainer(computedStyles) || isGridContainer(computedStyles);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', computedStyles?.get('display'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -415,7 +426,7 @@ export class PaddingValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.Padding;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     const display = computedStyles?.get('display');
     if (display === null || display === undefined) {
       return true;
@@ -425,12 +436,16 @@ export class PaddingValidator extends CSSRuleValidator {
                 .includes(display as string);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('display', computedStyles?.get('display'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('display', computedStyles?.get('display'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -456,7 +471,7 @@ export class PositionValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.Position;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>): boolean {
     const position = computedStyles?.get('position');
     if (position === null || position === undefined) {
       return true;
@@ -464,12 +479,16 @@ export class PositionValidator extends CSSRuleValidator {
     return position !== 'static';
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('position', computedStyles?.get('position'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>): Hint|undefined {
+    if (this.#isRuleValid(computedStyles)) {
+      return;
+    }
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('position', computedStyles?.get('position'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -492,21 +511,25 @@ export class ZIndexValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.ZIndex;
   }
 
-  isRuleValid(computedStyles: Map<String, String>|null, parentComputedStyles: Map<String, String>|null): boolean {
+  #isRuleValid(computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): boolean {
     const position = computedStyles?.get('position');
     if (position === null || position === undefined) {
       return true;
     }
-    return ['absolute', 'relative', 'fixed', 'sticky'].includes(position as string) ||
-        isFlexContainer(parentComputedStyles);
+    return ['absolute', 'relative', 'fixed', 'sticky'].includes(position) || isFlexContainer(parentComputedStyles);
   }
 
-  getAuthoringHint(property: string, computedStyles: Map<String, String>|null): AuthoringHint {
-    const reasonPropertyDeclaration = buildStyledRuleText('position', computedStyles?.get('position'));
-    const affectedPropertyDeclarationCode = buildStyledPropertyText(property);
+  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+      |undefined {
+    if (this.#isRuleValid(computedStyles, parentComputedStyles)) {
+      return;
+    }
 
-    return new AuthoringHint(
-        AuthoringHintType.INACTIVE_PROPERTY,
+    const reasonPropertyDeclaration = buildPropertyDefinitionText('position', computedStyles?.get('position'));
+    const affectedPropertyDeclarationCode = buildPropertyText(propertyName);
+
+    return new Hint(
+        HintType.INACTIVE_PROPERTY,
         i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
           'REASON_PROPERTY_DECLARATION_CODE': reasonPropertyDeclaration,
           'AFFECTED_PROPERTY_DECLARATION_CODE': affectedPropertyDeclarationCode,
@@ -531,11 +554,11 @@ const CSS_RULE_VALIDATORS = [
   ZIndexValidator,
 ];
 
-const setupCSSRulesValidators = (): Map<String, CSSRuleValidator[]> => {
-  const validatorsMap = new Map<String, CSSRuleValidator[]>();
+const setupCSSRulesValidators = (): Map<string, CSSRuleValidator[]> => {
+  const validatorsMap = new Map<string, CSSRuleValidator[]>();
   for (const validatorClass of CSS_RULE_VALIDATORS) {
     const validator = new validatorClass();
-    const affectedProperties = validator.getAffectedProperties();
+    const affectedProperties = validator.getApplicableProperties();
 
     for (const affectedProperty of affectedProperties) {
       let propertyValidators = validatorsMap.get(affectedProperty);
@@ -550,4 +573,4 @@ const setupCSSRulesValidators = (): Map<String, CSSRuleValidator[]> => {
   return validatorsMap;
 };
 
-export const cssRuleValidatorsMap: Map<String, CSSRuleValidator[]> = setupCSSRulesValidators();
+export const cssRuleValidatorsMap: Map<string, CSSRuleValidator[]> = setupCSSRulesValidators();

@@ -20,10 +20,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, Directives} = LitHtml;
 
 interface Hint {
-    getHintPrefix(): string;
-    getHintMessage(): string;
-    getPossibleFixMessage(): string|null;
-    getLearnMoreLink(): string|undefined;
+  getPrefix(): string;
+  getMessage(): string;
+  getPossibleFixMessage(): string|null;
+  getLearnMoreLink(): string|undefined;
 }
 
 export class CSSHintDetailsView extends HTMLElement {
@@ -44,7 +44,7 @@ export class CSSHintDetailsView extends HTMLElement {
       render(html`
         <div class="hint-popup-wrapper">
           <div class="hint-popup-reason">
-              <strong>${this.#authoringHint.getHintPrefix()}:</strong> ${Directives.unsafeHTML(this.#authoringHint.getHintMessage())}
+              <strong>${this.#authoringHint.getPrefix()}:</strong> ${Directives.unsafeHTML(this.#authoringHint.getMessage())}
           </div>
           ${this.#authoringHint.getPossibleFixMessage() ? html`
               <div class="hint-popup-possible-fix">

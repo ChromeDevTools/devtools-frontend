@@ -21,12 +21,12 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
 import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
-import {cssRuleValidatorsMap, type AuthoringHint} from './CSSRuleValidator.js';
+import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 
-export const activeHints = new WeakMap<Element, AuthoringHint>();
+export const activeHints = new WeakMap<Element, Hint>();
 
 const UIStrings = {
   /**
@@ -762,18 +762,32 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private updateAuthoringHint(): void {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS)) {
+      return;
+    }
+
     const existingElement = this.listItemElement.querySelector('.hint');
     if (existingElement) {
       activeHints.delete(existingElement);
       existingElement.parentElement?.removeChild(existingElement);
     }
-    const authoringHint = this.getAuthoringHint(this.computedStyles, this.parentsComputedStyles);
-    if (!authoringHint) {
+    const propertyName = this.property.name;
+
+    if (!cssRuleValidatorsMap.has(propertyName)) {
       return;
     }
-    const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
-    activeHints.set(hintIcon, authoringHint);
-    this.listItemElement.append(hintIcon);
+
+    for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
+      const hint =
+          validator.getHint(propertyName, this.computedStyles || undefined, this.parentsComputedStyles || undefined);
+      if (hint) {
+        Host.userMetrics.cssHintShown(validator.getMetricType());
+        const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
+        activeHints.set(hintIcon, hint);
+        this.listItemElement.append(hintIcon);
+        break;
+      }
+    }
   }
 
   private async updateFontVariationSettingsWarning(): Promise<void> {
@@ -822,25 +836,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.classList.add('has-warning');
     this.listItemElement.insertBefore(
         StylesSidebarPane.createExclamationMark(this.property, warnings.join(' ')), this.listItemElement.firstChild);
-  }
-
-  private getAuthoringHint(computedStyles: Map<string, string>|null, parentComputedStyles: Map<string, string>|null):
-      AuthoringHint|null {
-    const propertyName = this.property.name;
-
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS) ||
-        !cssRuleValidatorsMap.has(propertyName)) {
-      return null;
-    }
-
-    for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
-      if (!validator.isRuleValid(computedStyles, parentComputedStyles)) {
-        Host.userMetrics.cssHintShown(validator.getMetricType());
-        return validator.getAuthoringHint(propertyName, this.computedStyles, this.parentsComputedStyles);
-      }
-    }
-
-    return null;
   }
 
   private mouseUp(event: MouseEvent): void {

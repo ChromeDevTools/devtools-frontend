@@ -68,6 +68,7 @@ devtools_module("elements") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/protocol_client:bundle",

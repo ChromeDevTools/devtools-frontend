@@ -277,6 +277,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ManifestSectionSelected, code, ManifestSectionCodes.MaxValue);
   }
+
+  cssHintShown(type: CSSHintType): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.CSSHintShown, type, CSSHintType.MaxValue);
+  }
 }
 
 /**
@@ -991,6 +996,24 @@ export enum ManifestSectionCodes {
   'Protocol Handlers' = 3,
   'Icons' = 4,
   MaxValue = 5,
+}
+
+// The names here match the CSSRuleValidator names in CSSRuleValidator.ts.
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum CSSHintType {
+  Other = 0,
+  AlignContent = 1,
+  FlexItem = 2,
+  FlexContainer = 3,
+  GridContainer = 4,
+  GridItem = 5,
+  FlexGrid = 6,
+  MulticolFlexGrid = 7,
+  Padding = 8,
+  Position = 9,
+  ZIndex = 10,
+  MaxValue = 11,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

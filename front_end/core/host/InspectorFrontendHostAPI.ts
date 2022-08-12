@@ -377,4 +377,5 @@ export enum EnumeratedHistogram {
   RecordingToggled = 'DevTools.RecordingToggled',
   StyleTextCopied = 'DevTools.StyleTextCopied',
   ManifestSectionSelected = 'DevTools.ManifestSectionSelected',
+  CSSHintShown = 'DevTools.CSSHintShown',
 }

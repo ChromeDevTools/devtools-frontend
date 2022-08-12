@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import {
@@ -100,6 +101,10 @@ export class AuthoringHint {
 }
 
 export abstract class CSSRuleValidator {
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.Other;
+  }
+
   readonly #affectedProperties: string[];
 
   constructor(affectedProperties: string[]) {
@@ -124,6 +129,10 @@ export abstract class CSSRuleValidator {
 export class AlignContentValidator extends CSSRuleValidator {
   constructor() {
     super(['align-content']);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.AlignContent;
   }
 
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
@@ -158,6 +167,10 @@ export class FlexItemValidator extends CSSRuleValidator {
     super(['flex', 'flex-basis', 'flex-grow', 'flex-shrink']);
   }
 
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.FlexItem;
+  }
+
   isRuleValid(computedStyles: Map<String, String>|null, parentsComputedStyles: Map<String, String>|null): boolean {
     if (parentsComputedStyles === null) {
       return true;
@@ -189,6 +202,10 @@ export class FlexItemValidator extends CSSRuleValidator {
 export class FlexContainerValidator extends CSSRuleValidator {
   constructor() {
     super(['flex-direction', 'flex-flow', 'flex-wrap', 'justify-content']);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.FlexContainer;
   }
 
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
@@ -231,6 +248,10 @@ export class GridContainerValidator extends CSSRuleValidator {
     ]);
   }
 
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.GridContainer;
+  }
+
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
     if (computedStyles === null) {
       return true;
@@ -266,6 +287,10 @@ export class GridItemValidator extends CSSRuleValidator {
       'grid-row-end',
       'grid-row-start',
     ]);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.GridItem;
   }
 
   isRuleValid(computedStyles: Map<String, String>|null, parentComputedStyles: Map<String, String>|null): boolean {
@@ -306,6 +331,10 @@ export class FlexGridValidator extends CSSRuleValidator {
     ]);
   }
 
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.FlexGrid;
+  }
+
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
     if (computedStyles === null) {
       return true;
@@ -343,6 +372,10 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     ]);
   }
 
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.MulticolFlexGrid;
+  }
+
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
     if (computedStyles === null) {
       return true;
@@ -376,6 +409,10 @@ export class PaddingValidator extends CSSRuleValidator {
       'padding-bottom',
       'padding-left',
     ]);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.Padding;
   }
 
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
@@ -415,6 +452,10 @@ export class PositionValidator extends CSSRuleValidator {
     ]);
   }
 
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.Position;
+  }
+
   isRuleValid(computedStyles: Map<String, String>|null): boolean {
     const position = computedStyles?.get('position');
     if (position === null || position === undefined) {
@@ -445,6 +486,10 @@ export class ZIndexValidator extends CSSRuleValidator {
     super([
       'z-index',
     ]);
+  }
+
+  getMetricType(): Host.UserMetrics.CSSHintType {
+    return Host.UserMetrics.CSSHintType.ZIndex;
   }
 
   isRuleValid(computedStyles: Map<String, String>|null, parentComputedStyles: Map<String, String>|null): boolean {

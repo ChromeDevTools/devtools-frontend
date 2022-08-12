@@ -835,6 +835,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
       if (!validator.isRuleValid(computedStyles, parentComputedStyles)) {
+        Host.userMetrics.cssHintShown(validator.getMetricType());
         return validator.getAuthoringHint(propertyName, this.computedStyles, this.parentsComputedStyles);
       }
     }

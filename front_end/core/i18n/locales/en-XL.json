@@ -10541,6 +10541,9 @@
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Ĥíd̂é d̂éb̂úĝǵêŕ"
   },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Ĥíd̂é îǵn̂ór̂é-l̂íŝt́êd́ ŝóûŕĉéŝ"
+  },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Ĥíd̂é n̂áv̂íĝát̂ór̂"
   },

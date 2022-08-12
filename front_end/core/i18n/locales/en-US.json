@@ -10541,6 +10541,9 @@
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Hide debugger"
   },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Hide ignore-listed sources"
+  },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Hide navigator"
   },

@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
-  sources = [ "HeadersView_test.ts" ]
+  sources = [
+    "BreakpointsView_test.ts",
+    "HeadersView_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/panels/sources:bundle",

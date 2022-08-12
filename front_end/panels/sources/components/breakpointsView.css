@@ -1,0 +1,95 @@
+/*
+ * Copyright 2022 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.divider {
+  height: 1px;
+  width: inherit;
+  background-color: var(--color-details-hairline);
+}
+
+.code-snippet {
+  width: 100%;
+  padding-left: 6px;
+  font-family: var(--source-code-font-family);
+  font-size: var(--source-code-font-size);
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 100;
+}
+
+input {
+  height: 12px;
+  width: 12px;
+  flex-shrink: 0;
+  margin: 3px 0;
+}
+
+.triangle {
+  margin-left: 6px;
+  margin-right: 4px;
+  display: inline-block;
+  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
+  -webkit-mask-size: 32px 24px;
+  -webkit-mask-position: 0 0;
+  background-color: var(--color-text-primary);
+  height: 12px;
+  width: 8px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  height: 18px;
+}
+
+.expanded > .group-header > .triangle {
+  -webkit-mask-position: -16px 0;
+}
+
+.group-header-title {
+  margin-left: 4px;
+  font-weight: 500;
+  font-size: var(--source-code-font-size);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.breakpoint-item {
+  display: flex;
+  align-items: center;
+  line-height: 13px;
+  height: 18px;
+}
+
+.breakpoint-item:hover {
+  background-color: var(--color-background-elevation-1);
+}
+
+.breakpoint-item.hit {
+  --override-breakpoint-hit-background: rgb(255 255 194);
+
+  background-color: var(--override-breakpoint-hit-background);
+}
+
+.checkbox-label {
+  padding-left: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.location {
+  line-height: 14px;
+  margin: 0 8px;
+}

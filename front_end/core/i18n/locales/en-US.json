@@ -9833,6 +9833,18 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Show more"
   },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} breakpoint hit"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "checked"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "mixed"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "unchecked"
+  },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Add a header"
   },

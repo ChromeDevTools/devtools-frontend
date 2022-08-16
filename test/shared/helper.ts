@@ -9,6 +9,7 @@ import * as puppeteer from 'puppeteer';
 import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
 import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
+
 import {AsyncScope} from './async-scope.js';
 
 declare global {
@@ -58,19 +59,18 @@ export const getElementPosition =
     element = selector;
   }
 
-  const rectData = await element.evaluate((element: Element) => {
+  const rectData = await waitForFunction(() => element.evaluate((element: Element) => {
     if (!element) {
       return {};
     }
 
-    const isConnected = element.isConnected;
+    if (!element.isConnected) {
+      return undefined;
+    }
 
     const {left, top, width, height} = element.getBoundingClientRect();
-    return {left, top, width, height, isConnected};
-  });
-  if (!rectData.isConnected) {
-    throw new Error('Element is no longer attached to the dom');
-  }
+    return {left, top, width, height};
+  }));
 
   if (rectData.left === undefined) {
     throw new Error(`Unable to find element with selector "${selector}"`);

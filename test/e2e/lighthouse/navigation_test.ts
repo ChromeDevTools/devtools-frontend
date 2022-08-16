@@ -34,6 +34,9 @@ describe('Navigation', async function() {
           // TODO: Figure out why these are emitted in FR.
           expectError(/Protocol Error: the message with wrong session id/);
           expectError(/Protocol Error: the message with wrong session id/);
+          expectError(/Protocol Error: the message with wrong session id/);
+          expectError(/Protocol Error: the message with wrong session id/);
+          expectError(/Protocol Error: the message with wrong session id/);
         }
       });
 
@@ -46,7 +49,7 @@ describe('Navigation', async function() {
 
         const {lhr, artifacts, reportEl} = await waitForResult();
 
-        assert.strictEqual(lhr.lighthouseVersion, '9.6.2');
+        assert.strictEqual(lhr.lighthouseVersion, '9.6.6');
         assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
         assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
         assert.strictEqual(lhr.configSettings.disableStorageReset, false);

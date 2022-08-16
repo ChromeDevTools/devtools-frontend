@@ -2586,7 +2586,7 @@
     "message": "Îf́ ŷóû ár̂é ûśîńĝ Ŕêáĉt́ R̂óût́êŕ, m̂ín̂ím̂íẑé ûśâǵê óf̂ t́ĥé `<Redirect>` ĉóm̂ṕôńêńt̂ f́ôŕ [r̂óût́ê ńâv́îǵât́îón̂ś](https://reacttraining.com/react-router/web/api/Redirect)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | server-response-time": {
-    "message": "Îf́ ŷóû ár̂é ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕîńĝ án̂ý R̂éâćt̂ ćôḿp̂ón̂én̂t́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ `renderToNodeStream()` ôŕ `renderToStaticNodeStream()` t̂ó âĺl̂óŵ t́ĥé ĉĺîén̂t́ t̂ó r̂éĉéîv́ê án̂d́ ĥýd̂ŕât́ê d́îf́f̂ér̂én̂t́ p̂ár̂t́ŝ óf̂ t́ĥé m̂ár̂ḱûṕ îńŝt́êád̂ óf̂ ál̂ĺ ât́ ôńĉé. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/react-dom-server.html#rendertonodestream)."
+    "message": "Îf́ ŷóû ár̂é ŝér̂v́êŕ-ŝíd̂é r̂én̂d́êŕîńĝ án̂ý R̂éâćt̂ ćôḿp̂ón̂én̂t́ŝ, ćôńŝíd̂ér̂ úŝín̂ǵ `renderToPipeableStream()` ôŕ `renderToStaticNodeStream()` t̂ó âĺl̂óŵ t́ĥé ĉĺîén̂t́ t̂ó r̂éĉéîv́ê án̂d́ ĥýd̂ŕât́ê d́îf́f̂ér̂én̂t́ p̂ár̂t́ŝ óf̂ t́ĥé m̂ár̂ḱûṕ îńŝt́êád̂ óf̂ ál̂ĺ ât́ ôńĉé. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/react-dom-server.html#renderToPipeableStream)."
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | unminified-css": {
     "message": "Îf́ ŷóûŕ b̂úîĺd̂ śŷśt̂ém̂ ḿîńîf́îéŝ ĆŜŚ f̂íl̂éŝ áût́ôḿât́îćâĺl̂ý, êńŝúr̂é t̂h́ât́ ŷóû ár̂é d̂ép̂ĺôýîńĝ t́ĥé p̂ŕôd́ûćt̂íôń b̂úîĺd̂ óf̂ ýôúr̂ áp̂ṕl̂íĉát̂íôń. Ŷóû ćâń ĉh́êćk̂ t́ĥíŝ ẃît́ĥ t́ĥé R̂éâćt̂ D́êv́êĺôṕêŕ T̂óôĺŝ éx̂t́êńŝíôń. [L̂éâŕn̂ ḿôŕê](https://reactjs.org/docs/optimizing-performance.html#use-the-production-build)."
@@ -2604,7 +2604,7 @@
     "message": "Ĉón̂śîd́êŕ ûṕl̂óâd́îńĝ ýôúr̂ ǴÎF́ t̂ó â śêŕv̂íĉé ŵh́îćĥ ẃîĺl̂ ḿâḱê ít̂ áv̂áîĺâb́l̂é t̂ó êḿb̂éd̂ áŝ án̂ H́T̂ḾL̂5 v́îd́êó."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | modern-image-formats": {
-    "message": "Ĉón̂śîd́êŕ ûśîńĝ á [p̂ĺûǵîń](https://wordpress.org/plugins/search/convert+webp/) ôŕ ŝér̂v́îćê t́ĥát̂ ẃîĺl̂ áût́ôḿât́îćâĺl̂ý ĉón̂v́êŕt̂ ýôúr̂ úp̂ĺôád̂éd̂ ím̂áĝéŝ t́ô t́ĥé ôṕt̂ím̂ál̂ f́ôŕm̂át̂ś."
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ t́ĥé [P̂ér̂f́ôŕm̂án̂ćê Ĺâb́](https://wordpress.org/plugins/performance-lab/) p̂ĺûǵîń t̂ó âút̂óm̂át̂íĉál̂ĺŷ ćôńv̂ér̂t́ ŷóûŕ ûṕl̂óâd́êd́ ĴṔÊǴ îḿâǵêś îńt̂ó Ŵéb̂Ṕ, ŵh́êŕêv́êŕ ŝúp̂ṕôŕt̂éd̂."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | offscreen-images": {
     "message": "Îńŝt́âĺl̂ á [l̂áẑý-l̂óâd́ Ŵór̂d́P̂ŕêśŝ ṕl̂úĝín̂](https://wordpress.org/plugins/search/lazy+load/) t́ĥát̂ ṕr̂óv̂íd̂éŝ t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś, ôŕ ŝẃît́ĉh́ t̂ó â t́ĥém̂é t̂h́ât́ p̂ŕôv́îd́êś t̂h́ât́ f̂ún̂ćt̂íôńâĺît́ŷ. Ál̂śô ćôńŝíd̂ér̂ úŝín̂ǵ [t̂h́ê ÁM̂Ṕ p̂ĺûǵîń](https://wordpress.org/plugins/amp/)."

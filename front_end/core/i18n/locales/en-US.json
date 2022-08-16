@@ -9725,6 +9725,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Restore defaults and reload"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Send feedback"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Settings"
   },

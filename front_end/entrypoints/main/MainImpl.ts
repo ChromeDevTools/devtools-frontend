@@ -341,7 +341,8 @@ export class MainImpl {
     // Full Accessibility Tree
     Root.Runtime.experiments.register(
         'fullAccessibilityTree', 'Enable full accessibility tree view in the Elements panel', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-90/#accesibility-tree');
+        'https://developer.chrome.com/blog/new-in-devtools-90/#accesibility-tree',
+        'https://g.co/devtools/a11y-tree-feedback');
 
     // Font Editor
     Root.Runtime.experiments.register(
@@ -373,9 +374,8 @@ export class MainImpl {
 
     // CSS <length> authoring tool.
     Root.Runtime.experiments.register(
-        'cssTypeComponentLength',
-        'Enable CSS <length> authoring tool in the Styles pane (https://g.co/devtools/length-feedback)', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-96/#length');
+        'cssTypeComponentLength', 'Enable CSS <length> authoring tool in the Styles pane', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-96/#length', 'https://g.co/devtools/length-feedback');
 
     // Display precise changes in the Changes tab.
     Root.Runtime.experiments.register(
@@ -407,7 +407,8 @@ export class MainImpl {
 
     // Change grouping of sources panel to use Authored/Deployed trees
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into Authored and Deployed trees');
+        Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, 'Group sources into Authored and Deployed trees',
+        undefined, 'https://goo.gle/authored-deployed', 'https://goo.gle/authored-deployed-feedback');
 
     // Hide third party code (as determined by ignore lists or source maps)
     Root.Runtime.experiments.register(

@@ -152,13 +152,16 @@ export class ExperimentsSupport {
     self.localStorage['experiments'] = JSON.stringify(value);
   }
 
-  register(experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string): void {
+  register(
+      experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string,
+      feedbackLink?: string): void {
     Platform.DCHECK(
         () => !this.#experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
     this.#experimentNames.add(experimentName);
     this.#experiments.push(new Experiment(
         this, experimentName, experimentTitle, Boolean(unstable),
-        docLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString));
+        docLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString,
+        feedbackLink as Platform.DevToolsPath.UrlString ?? Platform.DevToolsPath.EmptyUrlString));
   }
 
   isEnabled(experimentName: string): boolean {
@@ -257,14 +260,16 @@ export class Experiment {
   title: string;
   unstable: boolean;
   docLink?: Platform.DevToolsPath.UrlString;
+  readonly feedbackLink?: Platform.DevToolsPath.UrlString;
   readonly #experiments: ExperimentsSupport;
   constructor(
       experiments: ExperimentsSupport, name: string, title: string, unstable: boolean,
-      docLink: Platform.DevToolsPath.UrlString) {
+      docLink: Platform.DevToolsPath.UrlString, feedbackLink: Platform.DevToolsPath.UrlString) {
     this.name = name;
     this.title = title;
     this.unstable = unstable;
     this.docLink = docLink;
+    this.feedbackLink = feedbackLink;
     this.#experiments = experiments;
   }
 

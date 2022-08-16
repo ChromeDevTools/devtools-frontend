@@ -1662,7 +1662,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private async copyCurlCommand(request: SDK.NetworkRequest.NetworkRequest, platform: string): Promise<void> {
-    const command = await this.generateCurlCommand(request, platform);
+    const command = await NetworkLogView.generateCurlCommand(request, platform);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(command);
   }
 
@@ -2092,7 +2092,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return commands.join(' ;\n');
   }
 
-  private async generateCurlCommand(request: SDK.NetworkRequest.NetworkRequest, platform: string): Promise<string> {
+  static async generateCurlCommand(request: SDK.NetworkRequest.NetworkRequest, platform: string): Promise<string> {
     let command: string[] = [];
     // Most of these headers are derived from the URL and are automatically added by cURL.
     // The |Accept-Encoding| header is ignored to prevent decompression errors. crbug.com/1015321
@@ -2115,7 +2115,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
          gets to MS Crt parser safely.
 
          The % character is special because MS Crt parser will try and look for
-         ENV variables and fill them in it's place. We cannot escape them with %
+         ENV variables and fill them in its place. We cannot escape them with %
          and cannot escape them with ^ (because it's cmd.exe's escape not MS Crt
          parser); So we can get cmd.exe parser to escape the character after it,
          if it is followed by a valid beginning character of an ENV variable.
@@ -2191,7 +2191,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       if (ignoredHeaders.has(name.toLowerCase())) {
         continue;
       }
-      command.push('-H ' + escapeString(name + ': ' + header.value));
+      if (header.value.trim()) {
+        command.push('-H ' + escapeString(name + ': ' + header.value));
+      } else {
+        // A header passed with -H with no value or only whitespace as its
+        // value tells curl to not set the header at all. To post an empty
+        // header, you have to terminate it with a semicolon.
+        command.push('-H ' + escapeString(name + ';'));
+      }
     }
     command = command.concat(data);
     command.push('--compressed');
@@ -2205,7 +2212,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private async generateAllCurlCommand(requests: SDK.NetworkRequest.NetworkRequest[], platform: string):
       Promise<string> {
     const nonBlobRequests = this.filterOutBlobRequests(requests);
-    const commands = await Promise.all(nonBlobRequests.map(request => this.generateCurlCommand(request, platform)));
+    const commands =
+        await Promise.all(nonBlobRequests.map(request => NetworkLogView.generateCurlCommand(request, platform)));
     if (platform === 'win') {
       return commands.join(' &\r\n');
     }

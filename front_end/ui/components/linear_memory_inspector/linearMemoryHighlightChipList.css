@@ -5,81 +5,99 @@
  */
 
 .highlight-chip-list {
-  min-height: 24px;
+  min-height: 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
   align-items: center;
   background-color: var(--color-background);
-  color: var(--color-text-primary);
+  margin: 8px 0;
+  gap: 8px;
+  row-gap: 6px;
 }
 
 .highlight-chip {
-  background: transparent;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-background-elevation-2);
-  height: 15px;
-  margin-right: 5px;
-  padding: 1px;
+  background: var(--color-background);
+  border: 1px solid var(--color-button-secondary-border);
+  height: 18px;
   border-radius: 4px;
-  margin-bottom: 1px;
-  display: flex;
+  flex: 0 0 auto;
+  max-width: 250px;
+  position: relative;
+  padding: 0 6px;
 }
 
 .highlight-chip:hover {
   background-color: var(--color-background-elevation-1);
 }
 
-.delete-highlight-button {
-  width: 15px;
-  height: 15px;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  background: none;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
+.delete-highlight-container {
+  display: none;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 4px;
+  width: 24px;
   align-items: center;
-  margin: 0 2px;
+  justify-content: center;
+}
+
+.delete-highlight-button {
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-highlight-button:hover {
   background-color: var(--color-details-hairline);
+  border-radius: 50%;
 }
 
-.highlight-chip > .delete-highlight-button {
-  visibility: hidden;
+.highlight-chip:hover > .delete-highlight-container {
+  display: flex;
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(241 243 244) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
-.highlight-chip:hover > .delete-highlight-button {
-  visibility: visible;
+:host-context(.-theme-with-dark-background) .highlight-chip:hover > .delete-highlight-container {
+  display: flex;
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(41 42 45) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .jump-to-highlight-button {
   cursor: pointer;
-  padding: 0 0 0 4px;
+  padding: 0;
   border: none;
   background: none;
-  display: flex;
+  height: 100%;
   align-items: center;
-}
-
-.jump-to-highlight-button:hover {
-  color: var(--color-text-primary);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .delete-highlight-button devtools-icon {
-  --icon-color: var(--color-text-primary);
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
 .source-code {
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
-  max-width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--color-text-primary);
 }
 
 .value {

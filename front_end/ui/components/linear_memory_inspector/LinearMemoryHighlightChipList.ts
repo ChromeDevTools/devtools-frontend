@@ -95,15 +95,17 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
             <span class="value">${expressionName}</span><span class="separator">: </span><span>${expressionType}</span>
           </span>
         </button>
-        <button class="delete-highlight-button" title=${
-            i18nString(UIStrings.deleteHighlight)} @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
-          <${IconButton.Icon.Icon.litTagName} .data=${{
-            iconName: 'close-icon',
-            color: 'black',
-            width: '7px',
-            } as IconButton.Icon.IconData}>
-          </${IconButton.Icon.Icon.litTagName}>
-        </button>
+        <div class="delete-highlight-container">
+          <button class="delete-highlight-button" title=${
+              i18nString(UIStrings.deleteHighlight)} @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
+            <${IconButton.Icon.Icon.litTagName} .data=${{
+              iconName: 'close-icon',
+              color: 'var(--color-text-primary)',
+              width: '7px',
+              } as IconButton.Icon.IconData}>
+            </${IconButton.Icon.Icon.litTagName}>
+          </button>
+        </div>
       </div>
     `;
     // clang-format off

@@ -3272,6 +3272,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Attempted to prerender a URL which redirected to a cross-origin URL. Currently prerendering cross-origin pages is disallowed."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Data saver enabled"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "A prerendered page was abandoned for unknown reasons."
   },
@@ -3283,9 +3286,6 @@
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is is canceled because the navigation is redirected to another cross-origin page."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is is destroyed in the destructor."
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Prerendering triggered by Chrome internal (e.g., Omnibox prerendering) is canceled because the navigation is redirected to another same-origin page."

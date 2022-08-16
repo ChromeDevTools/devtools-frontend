@@ -1537,6 +1537,9 @@ experimental domain CSS
       optional boolean disabled
       # The entire property range in the enclosing style declaration (if available).
       optional SourceRange range
+      # Parsed longhand components of this property if it is a shorthand.
+      # This field will be empty if the given property is not a shorthand.
+      experimental optional array of CSSProperty longhandProperties
 
   # CSS media rule descriptor.
   type CSSMedia extends object
@@ -7156,6 +7159,7 @@ domain Page
       storage-access-api
       sync-xhr
       trust-token-redemption
+      unload
       usb
       vertical-scroll
       web-share
@@ -8455,11 +8459,11 @@ domain Page
       TriggerBackgrounded
       EmbedderTriggeredAndSameOriginRedirected
       EmbedderTriggeredAndCrossOriginRedirected
-      EmbedderTriggeredAndDestroyed
       MemoryLimitExceeded
       # Prerenders can be cancelled when Chrome uses excessive memory. This is
       # recorded when it fails to get the memory usage.
       FailToGetMemoryUsage
+      DataSaverEnabled
 
   # Fired when a prerender attempt is completed.
   experimental event prerenderAttemptCompleted

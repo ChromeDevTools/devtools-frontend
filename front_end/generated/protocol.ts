@@ -2135,6 +2135,11 @@ export namespace CSS {
      * The entire property range in the enclosing style declaration (if available).
      */
     range?: SourceRange;
+    /**
+     * Parsed longhand components of this property if it is a shorthand.
+     * This field will be empty if the given property is not a shorthand.
+     */
+    longhandProperties?: CSSProperty[];
   }
 
   export const enum CSSMediaSource {
@@ -10377,6 +10382,7 @@ export namespace Page {
     StorageAccessAPI = 'storage-access-api',
     SyncXhr = 'sync-xhr',
     TrustTokenRedemption = 'trust-token-redemption',
+    Unload = 'unload',
     Usb = 'usb',
     VerticalScroll = 'vertical-scroll',
     WebShare = 'web-share',
@@ -11154,9 +11160,9 @@ export namespace Page {
     TriggerBackgrounded = 'TriggerBackgrounded',
     EmbedderTriggeredAndSameOriginRedirected = 'EmbedderTriggeredAndSameOriginRedirected',
     EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
-    EmbedderTriggeredAndDestroyed = 'EmbedderTriggeredAndDestroyed',
     MemoryLimitExceeded = 'MemoryLimitExceeded',
     FailToGetMemoryUsage = 'FailToGetMemoryUsage',
+    DataSaverEnabled = 'DataSaverEnabled',
   }
 
   export interface AddScriptToEvaluateOnLoadRequest {

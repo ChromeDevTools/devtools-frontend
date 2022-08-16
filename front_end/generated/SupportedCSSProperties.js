@@ -92,10 +92,6 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
-  "name": "-webkit-hyphenate-character"
- },
- {
-  "inherited": true,
   "keywords": [
    "auto",
    "loose",
@@ -1911,6 +1907,10 @@ export const generatedProperties = [
    "max-content"
   ],
   "name": "height"
+ },
+ {
+  "inherited": true,
+  "name": "hyphenate-character"
  },
  {
   "inherited": true,
@@ -5590,6 +5590,10 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-font-feature-settings",
   "font-feature-settings"
+ ],
+ [
+  "-webkit-hyphenate-character",
+  "hyphenate-character"
  ],
  [
   "-webkit-justify-content",

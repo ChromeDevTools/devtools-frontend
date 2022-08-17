@@ -491,7 +491,8 @@ describe('Sources Tab', async function() {
 });
 
 describe('Raw-Wasm', async () => {
-  it('displays correct location in Wasm source', async () => {
+  // TODO(crbug.com/1349290) Disabled because of time out flakes.
+  it.skip('[crbug.com/1349290] displays correct location in Wasm source', async () => {
     const {target} = getBrowserAndPages();
 
     // Have the target load the page.

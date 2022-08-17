@@ -52,7 +52,7 @@ dimensions = struct(
     },
 )
 
-default_timeout = 45 * time.minute
+default_timeout = 60 * time.minute
 
 def recipe(
         name,

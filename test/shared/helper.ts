@@ -52,25 +52,27 @@ const globalThis: any = global;
  */
 export const getElementPosition =
     async (selector: string|puppeteer.ElementHandle, root?: puppeteer.JSHandle, maxPixelsFromLeft?: number) => {
-  let element: puppeteer.ElementHandle;
-  if (typeof selector === 'string') {
-    element = await waitFor(selector, root);
-  } else {
-    element = selector;
-  }
-
-  const rectData = await waitForFunction(() => element.evaluate((element: Element) => {
-    if (!element) {
-      return {};
+  const rectData = await waitForFunction(async () => {
+    let element: puppeteer.ElementHandle;
+    if (typeof selector === 'string') {
+      element = await waitFor(selector, root);
+    } else {
+      element = selector;
     }
 
-    if (!element.isConnected) {
-      return undefined;
-    }
+    return element.evaluate((element: Element) => {
+      if (!element) {
+        return {};
+      }
 
-    const {left, top, width, height} = element.getBoundingClientRect();
-    return {left, top, width, height};
-  }));
+      if (!element.isConnected) {
+        return undefined;
+      }
+
+      const {left, top, width, height} = element.getBoundingClientRect();
+      return {left, top, width, height};
+    });
+  });
 
   if (rectData.left === undefined) {
     throw new Error(`Unable to find element with selector "${selector}"`);

@@ -239,6 +239,53 @@ def generate_ci_configs(configurations, builders):
             triggers = [name for name, _ in builders_refs],
         )
 
+def get_roller_names(builder_group_definitions):
+    names = []
+    for builder_group in builder_group_definitions:
+        for builder_definition in builder_group.get("builders"):
+            names.append(builder_definition["name"])
+    return names
+
+def generate_devtools_frontend_rollers(builder_group_definitions):
+    for builder_group in builder_group_definitions:
+        for builder_definition in builder_group.get("builders"):
+            builder_properties = {
+                "autoroller_config": {
+                    "target_config": {
+                        "solution_name": "devtools-frontend",
+                        "project_name": "devtools/devtools-frontend",
+                        "account": AUTOROLLER_ACCOUNT,
+                        "log_template": "Rolling %s: %s/+log/%s..%s",
+                        "cipd_log_template": "Rolling %s: %s..%s",
+                    },
+                    "subject": builder_definition["subject"],
+                    "includes": builder_definition.get("includes"),
+                    "excludes": builder_definition.get("excludes"),
+                    "reviewers": [
+                        "machenbach@chromium.org",
+                        "liviurau@chromium.org",
+                    ],
+                    "show_commit_log": builder_definition.get("show_commit_log", False),
+                    "skip_untrusted_origins": builder_group.get("skip_untrusted_origins", False),
+                    "skip_chromium_deps": builder_group.get("skip_chromium_deps", False),
+                    "disable_bot_commit": builder_group.get("disable_bot_commit", False),
+                    "roll_chromium_pin": builder_group.get("roll_chromium_pin", False),
+                    # "Bug: none" is required for presubmit
+                    "bugs": "none",
+                },
+            }
+
+            highly_privileged_builder(
+                name = builder_definition["name"],
+                service_account = AUTOROLLER_ACCOUNT,
+                schedule = builder_definition["schedule"],
+                recipe_name = "v8/auto_roll_v8_deps",
+                dimensions = dimensions.default_ubuntu,
+                execution_timeout = default_timeout,
+                properties = builder_properties,
+                notifies = ["autoroll sheriff notifier"],
+            )
+
 cq_acls = [
     acl.entry(
         [acl.CQ_COMMITTER],

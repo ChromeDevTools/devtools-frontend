@@ -30,21 +30,37 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
             content: `[
             {
               "applyTo": "index.html",
-              "headers": {
-                "index-only": "only added to index.html"
-              }
+              "headers": [{
+                "name": "index-only",
+                "value": "only added to index.html"
+              }]
             },
             {
               "applyTo": "*.css",
-              "headers": {
-                "css-only": "only added to css files"
-              }
+              "headers": [{
+                "name": "css-only",
+                "value": "only added to css files"
+              }]
             },
             {
               "applyTo": "path/to/*.js",
-              "headers": {
-                "another-header": "only added to specific path"
-              }
+              "headers": [{
+                "name": "another-header",
+                "value": "only added to specific path"
+              }]
+            },
+            {
+              "applyTo": "repeated.html",
+              "headers": [
+                {
+                  "name": "repeated",
+                  "value": "first override"
+                },
+                {
+                  "name": "repeated",
+                  "value": "second override"
+                }
+              ]
             }
           ]`,
           },
@@ -54,9 +70,10 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
             content: `[
             {
               "applyTo": "*",
-              "headers": {
-                "age": "overridden"
-              }
+              "headers": [{
+                "name": "age",
+                "value": "overridden"
+              }]
             }
           ]`,
           },
@@ -77,11 +94,12 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     } as SDK.NetworkManager.InterceptedRequest;
 
     const expected = [
-      {name: 'server', value: 'DevTools mock server'},
       {name: 'age', value: 'overridden'},
       {name: 'index-only', value: 'only added to index.html'},
+      {name: 'server', value: 'DevTools mock server'},
     ];
-    assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
   });
 
   it('merges request headers with override with overlap', async () => {
@@ -96,11 +114,12 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     } as SDK.NetworkManager.InterceptedRequest;
 
     const expected = [
-      {name: 'server', value: 'DevTools mock server'},
       {name: 'age', value: 'overridden'},
       {name: 'index-only', value: 'only added to index.html'},
+      {name: 'server', value: 'DevTools mock server'},
     ];
-    assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
   });
 
   it('merges request headers with override with file type wildcard', async () => {
@@ -115,11 +134,12 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     } as SDK.NetworkManager.InterceptedRequest;
 
     const expected = [
-      {name: 'server', value: 'DevTools mock server'},
       {name: 'age', value: 'overridden'},
       {name: 'css-only', value: 'only added to css files'},
+      {name: 'server', value: 'DevTools mock server'},
     ];
-    assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
   });
 
   it('merges request headers with override with specific path', async () => {
@@ -134,11 +154,12 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     } as SDK.NetworkManager.InterceptedRequest;
 
     const expected = [
-      {name: 'server', value: 'DevTools mock server'},
       {name: 'age', value: 'overridden'},
       {name: 'another-header', value: 'only added to specific path'},
+      {name: 'server', value: 'DevTools mock server'},
     ];
-    assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
   });
 
   it('merges request headers only when domain matches', async () => {
@@ -152,10 +173,55 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     } as SDK.NetworkManager.InterceptedRequest;
 
     const expected = [
-      {name: 'server', value: 'DevTools mock server'},
       {name: 'age', value: 'overridden'},
+      {name: 'server', value: 'DevTools mock server'},
     ];
-    assert.deepEqual(await networkPersistenceManager.handleHeaderInterception(interceptedRequest), expected);
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
+  });
+
+  it('merges headers while leaving muliple headers with the same name unchanged', async () => {
+    const interceptedRequest = {
+      request: {
+        url: 'https://www.example.com/index.html',
+      },
+      responseHeaders: [
+        {name: 'repeated', value: 'first'},
+        {name: 'repeated', value: 'second'},
+        {name: 'repeated', value: 'third'},
+      ],
+    } as SDK.NetworkManager.InterceptedRequest;
+
+    const expected = [
+      {name: 'age', value: 'overridden'},
+      {name: 'index-only', value: 'only added to index.html'},
+      {name: 'repeated', value: 'first'},
+      {name: 'repeated', value: 'second'},
+      {name: 'repeated', value: 'third'},
+    ];
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
+  });
+
+  it('merges headers and can override muliple headers with the same name', async () => {
+    const interceptedRequest = {
+      request: {
+        url: 'https://www.example.com/repeated.html',
+      },
+      responseHeaders: [
+        {name: 'repeated', value: 'first'},
+        {name: 'repeated', value: 'second'},
+        {name: 'repeated', value: 'third'},
+      ],
+    } as SDK.NetworkManager.InterceptedRequest;
+
+    const expected = [
+      {name: 'age', value: 'overridden'},
+      {name: 'repeated', value: 'first override'},
+      {name: 'repeated', value: 'second override'},
+    ];
+    const actual = await networkPersistenceManager.handleHeaderInterception(interceptedRequest);
+    assert.deepEqual(actual.sort((a, b) => (a.name.localeCompare(b.name))), expected);
   });
 
   it('translates URLs into raw and encoded paths', async () => {
@@ -556,12 +622,13 @@ describe('NetworkPersistenceManager', () => {
       name: 'age',
       value: '0',
     }];
-    const overrideHeaders = {
-      'accept-ranges': 'bytes',
-    };
+    const overrideHeaders = [{
+      'name': 'accept-ranges',
+      'value': 'bytes',
+    }];
     const merged = [
-      {name: 'age', value: '0'},
       {name: 'accept-ranges', value: 'bytes'},
+      {name: 'age', value: '0'},
     ];
     assert.deepEqual(networkPersistenceManager.mergeHeaders(baseHeaders, overrideHeaders), merged);
   });
@@ -572,13 +639,13 @@ describe('NetworkPersistenceManager', () => {
       name: 'age',
       value: '0',
     }];
-    const overrideHeaders = {
-      'accept-ranges': 'bytes',
-      'age': '1',
-    };
-    const merged = [
-      {name: 'age', value: '1'},
+    const overrideHeaders = [
       {name: 'accept-ranges', value: 'bytes'},
+      {name: 'age', value: '1'},
+    ];
+    const merged = [
+      {name: 'accept-ranges', value: 'bytes'},
+      {name: 'age', value: '1'},
     ];
     assert.deepEqual(networkPersistenceManager.mergeHeaders(baseHeaders, overrideHeaders), merged);
   });
@@ -588,33 +655,38 @@ describe('NetworkPersistenceManager', () => {
     const headers = `[
       {
         "applyTo": "*",
-        "headers": {
-          "age": "0"
-        }
+        "headers": [{
+          "name": "age",
+          "value": "0"
+        }]
       },
       {
         "applyTo": "page.html",
-        "headers": {
-          "age": "1"
-        }
+        "headers": [{
+          "name": "age",
+          "value": "1"
+        }]
       },
       {
         "applyTo": "index.html",
-        "headers": {
-          "age": "2"
-        }
+        "headers": [{
+          "name": "age",
+          "value": "2"
+        }]
       },
       {
         "applyTo": "nested/path/*.js",
-        "headers": {
-          "age": "3"
-        }
+        "headers": [{
+          "name": "age",
+          "value": "3"
+        }]
       },
       {
         "applyTo": "*/path/*.js",
-        "headers": {
-          "age": "4"
-        }
+        "headers": [{
+          "name": "age",
+          "value": "4"
+        }]
       }
     ]`;
 
@@ -641,23 +713,23 @@ describe('NetworkPersistenceManager', () => {
     const expectedMapping = [
       {
         applyTo: /^https?:\/\/www\.example\.com\/(.*)?$/.toString(),
-        headers: {age: '0'},
+        headers: [{name: 'age', value: '0'}],
       },
       {
         applyTo: /^https?:\/\/www\.example\.com\/page\.html$/.toString(),
-        headers: {age: '1'},
+        headers: [{name: 'age', value: '1'}],
       },
       {
         applyTo: /^https?:\/\/www\.example\.com\/(index\.html)?$/.toString(),
-        headers: {age: '2'},
+        headers: [{name: 'age', value: '2'}],
       },
       {
         applyTo: /^https?:\/\/www\.example\.com\/nested\/path\/.*\.js$/.toString(),
-        headers: {age: '3'},
+        headers: [{name: 'age', value: '3'}],
       },
       {
         applyTo: /^https?:\/\/www\.example\.com\/.*\/path\/.*\.js$/.toString(),
-        headers: {age: '4'},
+        headers: [{name: 'age', value: '4'}],
       },
     ];
 

@@ -622,19 +622,27 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  mergeHeaders(baseHeaders: Protocol.Fetch.HeaderEntry[], overrideHeaders: Protocol.Network.Headers):
+  mergeHeaders(baseHeaders: Protocol.Fetch.HeaderEntry[], overrideHeaders: Protocol.Fetch.HeaderEntry[]):
       Protocol.Fetch.HeaderEntry[] {
+    const headerMap = new Platform.MapUtilities.Multimap<string, string>();
+    for (const {name, value} of overrideHeaders) {
+      headerMap.set(name.toLowerCase(), value);
+    }
+
+    const overriddenHeaderNames = new Set(headerMap.keysArray());
+    for (const {name, value} of baseHeaders) {
+      const lowerCaseName = name.toLowerCase();
+      if (!overriddenHeaderNames.has(lowerCaseName)) {
+        headerMap.set(lowerCaseName, value);
+      }
+    }
+
     const result: Protocol.Fetch.HeaderEntry[] = [];
-    const headerMap = new Map<string, string>();
-    for (const header of baseHeaders) {
-      headerMap.set(header.name, header.value);
+    for (const headerName of headerMap.keysArray()) {
+      for (const headerValue of headerMap.get(headerName)) {
+        result.push({name: headerName, value: headerValue});
+      }
     }
-    for (const [headerName, headerValue] of Object.entries(overrideHeaders)) {
-      headerMap.set(headerName, headerValue);
-    }
-    headerMap.forEach((headerValue, headerName) => {
-      result.push({name: headerName, value: headerValue});
-    });
     return result;
   }
 
@@ -766,20 +774,23 @@ export type EventTypes = {
 
 export interface HeaderOverride {
   applyTo: string;
-  headers: Protocol.Network.Headers;
+  headers: Protocol.Fetch.HeaderEntry[];
 }
 
 interface HeaderOverrideWithRegex {
   applyToRegex: RegExp;
-  headers: Protocol.Network.Headers;
+  headers: Protocol.Fetch.HeaderEntry[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isHeaderOverride(arg: any): arg is HeaderOverride {
-  if (!(arg && arg.applyTo && typeof (arg.applyTo === 'string') && arg.headers && Object.keys(arg.headers).length)) {
+  if (!(arg && arg.applyTo && typeof arg.applyTo === 'string' && arg.headers && arg.headers.length &&
+        Array.isArray(arg.headers))) {
     return false;
   }
-  return Object.values(arg.headers).every(value => typeof value === 'string');
+  return arg.headers.every(
+      (header: Protocol.Fetch.HeaderEntry) =>
+          header.name && typeof header.name === 'string' && header.value && typeof header.value === 'string');
 }
 
 export function escapeRegex(pattern: string): string {

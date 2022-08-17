@@ -9,6 +9,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Protocol from '../../../generated/protocol.js';
 
 import HeadersViewStyles from './HeadersView.css.js';
 
@@ -81,23 +82,8 @@ export class HeadersView extends UI.View.SimpleView {
       parsingError = true;
     }
 
-    // Header overrides are stored as the key-value pairs of a JSON object on
-    // disk. For the editor we want them as an array instead, so that we can
-    // access/add/remove entries by their index.
-    const arrayOfHeaderOverrideArrays: HeaderOverride[] = headerOverrides.map(headerOverride => {
-      return {
-        applyTo: headerOverride.applyTo,
-        headers: Object.entries(headerOverride.headers).map(([headerName, headerValue]) => {
-          return {
-            name: headerName,
-            value: headerValue,
-          };
-        }),
-      };
-    });
-
     this.#headersViewComponent.data = {
-      headerOverrides: arrayOfHeaderOverrideArrays,
+      headerOverrides,
       uiSourceCode: this.#uiSourceCode,
       parsingError,
     };
@@ -128,18 +114,8 @@ export class HeadersView extends UI.View.SimpleView {
   }
 }
 
-type Header = {
-  name: string,
-  value: string,
-};
-
-type HeaderOverride = {
-  applyTo: string,
-  headers: Header[],
-};
-
 export interface HeadersViewComponentData {
-  headerOverrides: HeaderOverride[];
+  headerOverrides: Persistence.NetworkPersistenceManager.HeaderOverride[];
   uiSourceCode: Workspace.UISourceCode.UISourceCode;
   parsingError: boolean;
 }
@@ -148,7 +124,7 @@ export class HeadersViewComponent extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-sources-headers-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #headerOverrides: HeaderOverride[] = [];
+  #headerOverrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #parsingError = false;
   #focusElement: {blockIndex: number, headerIndex?: number}|null = null;
@@ -213,7 +189,7 @@ export class HeadersViewComponent extends HTMLElement {
     selection?.removeAllRanges();
   }
 
-  #generateNextHeaderName(headers: Header[]): string {
+  #generateNextHeaderName(headers: Protocol.Fetch.HeaderEntry[]): string {
     const takenNames = new Set<string>(headers.map(header => header.name));
     let idx = 1;
     while (takenNames.has('headerName' + idx)) {
@@ -270,17 +246,7 @@ export class HeadersViewComponent extends HTMLElement {
   }
 
   #onHeadersChanged(): void {
-    // In the editor header overrides are represented by items in an array, so
-    // that we can access/add/remove entries by their index. On disk, they are
-    // stored as key-value pairs of a JSON object instead.
-    const arrayOfHeaderOverrideObjects: Persistence.NetworkPersistenceManager.HeaderOverride[] =
-        this.#headerOverrides.map(headerOverride => {
-          return {
-            applyTo: headerOverride.applyTo,
-            headers: headerOverride.headers.reduce((a, v) => ({...a, [v.name]: v.value}), {}),
-          };
-        });
-    this.#uiSourceCode?.setWorkingCopy(JSON.stringify(arrayOfHeaderOverrideObjects, null, 2));
+    this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#headerOverrides, null, 2));
   }
 
   #render(): void {
@@ -355,7 +321,8 @@ export class HeadersViewComponent extends HTMLElement {
     // clang-format on
   }
 
-  #renderHeaderRow(header: Header, blockIndex: number, headerIndex: number): LitHtml.TemplateResult {
+  #renderHeaderRow(header: Protocol.Fetch.HeaderEntry, blockIndex: number, headerIndex: number):
+      LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}>

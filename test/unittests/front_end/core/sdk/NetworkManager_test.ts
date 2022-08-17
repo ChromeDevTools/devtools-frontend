@@ -285,21 +285,24 @@ describeWithMockConnection('InterceptedRequest', () => {
             content: `[
             {
               "applyTo": "index.html",
-              "headers": {
-                "index-only": "only added to index.html"
-              }
+              "headers": [{
+                "name": "index-only",
+                "value": "only added to index.html"
+              }]
             },
             {
               "applyTo": "*.css",
-              "headers": {
-                "css-only": "only added to css files"
-              }
+              "headers": [{
+                "name": "css-only",
+                "value": "only added to css files"
+              }]
             },
             {
               "applyTo": "path/to/*.js",
-              "headers": {
-                "another-header": "only added to specific path"
-              }
+              "headers": [{
+                "name": "another-header",
+                "value": "only added to specific path"
+              }]
             }
           ]`,
           },
@@ -309,9 +312,10 @@ describeWithMockConnection('InterceptedRequest', () => {
             content: `[
             {
               "applyTo": "*",
-              "headers": {
-                "age": "overridden"
-              }
+              "headers": [{
+                "name": "age",
+                "value": "overridden"
+              }]
             }
           ]`,
           },
@@ -335,9 +339,9 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: responseBody,
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
-            {name: 'age', value: 'overridden'},
             {name: 'css-only', value: 'only added to css files'},
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });
@@ -356,8 +360,8 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: btoa('Hello World!'),
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
             {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });
@@ -376,9 +380,9 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: '',
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
-            {name: 'age', value: 'overridden'},
             {name: 'another-header', value: 'only added to specific path'},
+            {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });
@@ -397,8 +401,8 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode: 200,
           body: btoa('Hello World!'),
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
             {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });
@@ -417,8 +421,8 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode,
           body: 'interceptedRequest content',
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
             {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });
@@ -437,8 +441,8 @@ describeWithMockConnection('InterceptedRequest', () => {
           responseCode: 200,
           body: btoa('Hello World!'),
           responseHeaders: [
-            {name: 'content-type', value: 'text/html; charset=utf-8'},
             {name: 'age', value: 'overridden'},
+            {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
         });
   });

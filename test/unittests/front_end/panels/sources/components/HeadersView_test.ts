@@ -71,16 +71,23 @@ describe('HeadersView', async () => {
     const headers = `[
       {
         "applyTo": "*",
-        "headers": {
-          "server": "DevTools Unit Test Server",
-          "access-control-allow-origin": "*"
-        }
+        "headers": [
+          {
+            "name": "server",
+            "value": "DevTools Unit Test Server"
+          },
+          {
+            "name": "access-control-allow-origin",
+            "value": "*"
+          }
+        ]
       },
       {
         "applyTo": "*.jpg",
-        "headers": {
-          "jpg-header": "only for jpg files"
-        }
+        "headers": [{
+          "name": "jpg-header",
+          "value": "only for jpg files"
+        }]
       }
     ]`;
     const {uiSourceCode, project} = createFileSystemUISourceCode({

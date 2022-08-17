@@ -268,7 +268,8 @@ describe('Source Panel grouping', async function() {
     assert.deepEqual(await readSourcesTreeView(), groupedExpectedTree);
   });
 
-  it('can mix group by authored/deployed and group by folder', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1349268] can mix group by authored/deployed and group by folder', async () => {
     // Have the target load the page.
     await goToResource(targetPage);
     await openSourcesPanel();

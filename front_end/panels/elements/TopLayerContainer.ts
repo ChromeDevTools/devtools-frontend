@@ -25,14 +25,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TopLayerContainer extends UI.TreeOutline.TreeElement {
   tree: ElementsTreeOutline.ElementsTreeOutline;
   domModel: SDK.DOMModel.DOMModel;
-  currentTopLayerElements: Set<ElementsTreeElement>;
+  currentTopLayerDOMNodes: Set<SDK.DOMModel.DOMNode> = new Set();
   topLayerUpdateThrottler: Common.Throttler.Throttler;
 
   constructor(tree: ElementsTreeOutline.ElementsTreeOutline, domModel: SDK.DOMModel.DOMModel) {
     super('#top-layer');
     this.tree = tree;
     this.domModel = domModel;
-    this.currentTopLayerElements = new Set();
     this.topLayerUpdateThrottler = new Common.Throttler.Throttler(1);
   }
 
@@ -43,7 +42,7 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
   async updateTopLayerElements(): Promise<void> {
     this.removeChildren();
     this.removeCurrentTopLayerElementsAdorners();
-    this.currentTopLayerElements = new Set();
+    this.currentTopLayerDOMNodes = new Set();
 
     const newTopLayerElementsIDs = await this.domModel.getTopLayerElements();
     if (!newTopLayerElementsIDs || newTopLayerElementsIDs.length === 0) {
@@ -57,15 +56,9 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
         const topLayerElementShortcut = new SDK.DOMModel.DOMNodeShortcut(
             this.domModel.target(), topLayerDOMNode.backendNodeId(), 0, topLayerDOMNode.nodeName());
         const topLayerElementRepresentation = new ElementsTreeOutline.ShortcutTreeElement(topLayerElementShortcut);
-        const topLayerTreeElement = this.tree.treeElementByNode.get(topLayerDOMNode);
-        if (!topLayerTreeElement) {
-          continue;
-        }
-
-        topLayerElementIndex++;
-        this.addTopLayerAdorner(topLayerTreeElement, topLayerElementRepresentation, topLayerElementIndex);
-        this.currentTopLayerElements.add(topLayerTreeElement);
         this.appendChild(topLayerElementRepresentation);
+        this.currentTopLayerDOMNodes.add(topLayerDOMNode);
+
         // Add the element's backdrop if previous top layer element is a backdrop.
         const previousTopLayerDOMNode =
             (i > 0) ? this.domModel.idToDOMNode.get(newTopLayerElementsIDs[i - 1]) : undefined;
@@ -75,13 +68,21 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
           const backdropElementRepresentation = new ElementsTreeOutline.ShortcutTreeElement(backdropElementShortcut);
           topLayerElementRepresentation.appendChild(backdropElementRepresentation);
         }
+
+        // TODO(changhaohan): store not-yet-inserted DOMNodes and adorn them when inserted.
+        const topLayerTreeElement = this.tree.treeElementByNode.get(topLayerDOMNode);
+        if (topLayerTreeElement) {
+          this.addTopLayerAdorner(topLayerTreeElement, topLayerElementRepresentation, ++topLayerElementIndex);
+        }
       }
     }
   }
 
   private removeCurrentTopLayerElementsAdorners(): void {
-    for (const topLayerElement of this.currentTopLayerElements) {
-      topLayerElement.removeAllAdorners();
+    for (const node of this.currentTopLayerDOMNodes) {
+      const topLayerTreeElement = this.tree.treeElementByNode.get(node);
+      // TODO(changhaohan): remove only top layer adorner.
+      topLayerTreeElement?.removeAllAdorners();
     }
   }
 

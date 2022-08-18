@@ -184,7 +184,7 @@ export class CSSStyleDeclaration {
       for (const shorthand of shorthands) {
         if (propertiesSet.has(shorthand)) {
           continue;
-        }  // There already is a shorthand this #longhands falls under.
+        }  // There already is a shorthand this #longhand falls under.
         const shorthandValue = this.#shorthandValues.get(shorthand);
         if (!shorthandValue) {
           continue;

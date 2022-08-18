@@ -1189,7 +1189,7 @@ export class ElementsTreeOutline extends
     }
     const container = new TopLayerContainer(parent.treeOutline, domModel);
     await container.throttledUpdateTopLayerElements();
-    if (container.currentTopLayerElements.size > 0) {
+    if (container.currentTopLayerDOMNodes.size > 0) {
       parent.appendChild(container);
     }
     this.#topLayerContainerByParent.set(parent, container);
@@ -1460,10 +1460,10 @@ export class ElementsTreeOutline extends
   private async topLayerElementsChanged(): Promise<void> {
     for (const [parent, container] of this.#topLayerContainerByParent) {
       await container.throttledUpdateTopLayerElements();
-      if (container.currentTopLayerElements.size > 0 && container.parent !== parent) {
+      if (container.currentTopLayerDOMNodes.size > 0 && container.parent !== parent) {
         parent.appendChild(container);
       }
-      container.hidden = container.currentTopLayerElements.size === 0;
+      container.hidden = container.currentTopLayerDOMNodes.size === 0;
     }
   }
 

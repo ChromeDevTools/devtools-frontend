@@ -55,6 +55,6 @@ describeWithRealConnection('TopLayerContainer', async () => {
 
     const topLayerContainer = new Elements.TopLayerContainer.TopLayerContainer(tree, domModel);
     await topLayerContainer.updateTopLayerElements();
-    assert.strictEqual(topLayerContainer.currentTopLayerElements.size, 2);
+    assert.strictEqual(topLayerContainer.currentTopLayerDOMNodes.size, 2);
   });
 });

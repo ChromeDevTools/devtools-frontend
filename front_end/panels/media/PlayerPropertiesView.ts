@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import playerPropertiesViewStyles from './playerPropertiesView.css.js';
@@ -136,7 +137,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 type TabData = {
-  [x: string]: string,
+  [x: string]: string|object,
 };
 
 // Keep this enum in sync with panels/media/base/media_log_properties.h
@@ -179,7 +180,7 @@ export class PropertyRenderer extends UI.Widget.VBox {
     super();
     this.contentElement.classList.add('media-property-renderer');
     const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
-    this.contents = this.contentElement.createChild('span', 'media-property-renderer-contents');
+    this.contents = this.contentElement.createChild('div', 'media-property-renderer-contents');
     UI.UIUtils.createTextChild(titleElement, title);
     this.title = title;
     this.value = null;
@@ -213,16 +214,36 @@ export class PropertyRenderer extends UI.Widget.VBox {
     }
   }
 
+  protected unsetNestedContents(): void {
+    this.contentElement.classList.add('media-property-renderer-hidden');
+    if (this.pseudoColorProtectionElement === null) {
+      this.pseudoColorProtectionElement = document.createElement('div');
+      this.pseudoColorProtectionElement.classList.add('media-property-renderer');
+      this.pseudoColorProtectionElement.classList.add('media-property-renderer-hidden');
+      (this.contentElement.parentNode as HTMLElement)
+          .insertBefore(this.pseudoColorProtectionElement, this.contentElement);
+    }
+  }
+
+  changeNestedContents(value: object): void {
+    if (value === null || Object.keys(value).length === 0) {
+      this.unsetNestedContents();
+    } else {
+      if (this.pseudoColorProtectionElement !== null) {
+        this.pseudoColorProtectionElement.remove();
+        this.pseudoColorProtectionElement = null;
+      }
+      this.contentElement.classList.remove('media-property-renderer-hidden');
+      this.contents.removeChildren();
+      const jsonWrapperElement =
+          new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(value, '', ''), true);
+      jsonWrapperElement.show(this.contents);
+    }
+  }
+
   changeContents(value: string|null): void {
     if (value === null) {
-      this.contentElement.classList.add('media-property-renderer-hidden');
-      if (this.pseudoColorProtectionElement === null) {
-        this.pseudoColorProtectionElement = document.createElement('div');
-        this.pseudoColorProtectionElement.classList.add('media-property-renderer');
-        this.pseudoColorProtectionElement.classList.add('media-property-renderer-hidden');
-        (this.contentElement.parentNode as HTMLElement)
-            .insertBefore(this.pseudoColorProtectionElement, this.contentElement);
-      }
+      this.unsetNestedContents();
     } else {
       if (this.pseudoColorProtectionElement !== null) {
         this.pseudoColorProtectionElement.remove();
@@ -257,6 +278,13 @@ export class DefaultPropertyRenderer extends PropertyRenderer {
   constructor(title: Platform.UIString.LocalizedString, defaultText: string) {
     super(title);
     this.changeContents(defaultText);
+  }
+}
+
+export class NestedPropertyRenderer extends PropertyRenderer {
+  constructor(title: Platform.UIString.LocalizedString, content: object) {
+    super(title);
+    this.changeNestedContents(content);
   }
 }
 
@@ -337,7 +365,11 @@ export class TrackManager {
   addNewTab(tabs: GenericTrackMenu|NoTracksPlaceholderMenu, tabData: TabData, tabNumber: number): void {
     const tabElements = [];
     for (const [name, data] of Object.entries(tabData)) {
-      tabElements.push(new DefaultPropertyRenderer(i18n.i18n.lockedString(name), data));
+      if (typeof data === 'object') {
+        tabElements.push(new NestedPropertyRenderer(i18n.i18n.lockedString(name), data));
+      } else {
+        tabElements.push(new DefaultPropertyRenderer(i18n.i18n.lockedString(name), data));
+      }
     }
     const newTab = new AttributesView(tabElements);
 

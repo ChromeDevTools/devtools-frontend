@@ -50,6 +50,7 @@ copy_to_gen("sources") {
     "popover-typescript.js",
     "popover.html",
     "popover.js",
+    "redundant-worker-sourcemap.html",
     "restart-frame.html",
     "script-with-sourcemap-without-mappings.html",
     "script-with-sourcemap-without-mappings.js",

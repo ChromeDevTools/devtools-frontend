@@ -594,12 +594,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       project: Workspace.Workspace.Project, target: SDK.Target.Target|null,
       frame: SDK.ResourceTreeModel.ResourceTreeFrame|null, projectOrigin: string, isFromSourceMap: boolean,
       path: Platform.DevToolsPath.EncodedPathString): string {
-    let targetId = target && !(this.groupByAuthored && isFromSourceMap) ? target.id() : '';
     const projectId = project.type() === Workspace.Workspace.projectTypes.FileSystem ? project.id() : '';
+    let targetId = target && !(this.groupByAuthored && isFromSourceMap) ? target.id() : '';
+    let frameId = this.groupByFrame && frame ? frame.id : '';
     if (this.groupByAuthored) {
-      targetId = isFromSourceMap ? 'Authored' : 'Deployed:' + targetId;
+      if (isFromSourceMap) {
+        targetId = 'Authored';
+        frameId = '';
+      } else {
+        targetId = 'Deployed:' + targetId;
+      }
     }
-    const frameId = this.groupByFrame && frame ? frame.id : '';
     return targetId + ':' + projectId + ':' + frameId + ':' + projectOrigin + ':' + path;
   }
 

@@ -141,7 +141,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   constructor(target: Target) {
     super(target);
     this.dispatcher = new NetworkDispatcher(this);
-    this.fetchDispatcher = new FetchDispatcher(target.fetchAgent());
+    this.fetchDispatcher = new FetchDispatcher(target.fetchAgent(), this);
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
     target.registerFetchDispatcher(this.fetchDispatcher);
@@ -264,7 +264,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return this.dispatcher.requestForURL(url);
   }
 
-  requestforId(id: string): NetworkRequest|null {
+  requestForId(id: string): NetworkRequest|null {
     return this.dispatcher.requestForId(id);
   }
 
@@ -392,15 +392,18 @@ const MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
 
 export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
   readonly #fetchAgent: ProtocolProxyApi.FetchApi;
+  readonly #manager: NetworkManager;
 
-  constructor(agent: ProtocolProxyApi.FetchApi) {
+  constructor(agent: ProtocolProxyApi.FetchApi, manager: NetworkManager) {
     this.#fetchAgent = agent;
+    this.#manager = manager;
   }
 
-  requestPaused({requestId, request, resourceType, responseStatusCode, responseHeaders}:
+  requestPaused({requestId, request, resourceType, responseStatusCode, responseHeaders, networkId}:
                     Protocol.Fetch.RequestPausedEvent): void {
+    const networkRequest = networkId ? this.#manager.requestForId(networkId) : null;
     void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
-        this.#fetchAgent, request, resourceType, requestId, responseStatusCode, responseHeaders));
+        this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
   }
 
   authRequired({}: Protocol.Fetch.AuthRequiredEvent): void {
@@ -1549,12 +1552,14 @@ export class InterceptedRequest {
   responseStatusCode: number|undefined;
   responseHeaders: Protocol.Fetch.HeaderEntry[]|undefined;
   requestId: Protocol.Fetch.RequestId;
+  networkRequest: NetworkRequest|null;
 
   constructor(
       fetchAgent: ProtocolProxyApi.FetchApi,
       request: Protocol.Network.Request,
       resourceType: Protocol.Network.ResourceType,
       requestId: Protocol.Fetch.RequestId,
+      networkRequest: NetworkRequest|null,
       responseStatusCode?: number,
       responseHeaders?: Protocol.Fetch.HeaderEntry[],
   ) {
@@ -1565,6 +1570,17 @@ export class InterceptedRequest {
     this.responseStatusCode = responseStatusCode;
     this.responseHeaders = responseHeaders;
     this.requestId = requestId;
+    this.networkRequest = networkRequest;
+    if (this.networkRequest && this.responseHeaders) {
+      // This populates 'NetworkRequest.originalResponseHeaders' with the
+      // response headers from CDP's 'Fetch.requestPaused'. Populating this
+      // field together with 'NetworkRequest.responseHeaders' with the info
+      // from 'Network.responseReceivedExtraInfo' would have been easier, but we
+      // are not sure whether the response headers from the 2 CDP events are
+      // always exactly the same.
+      // Creates a deep copy.
+      this.networkRequest.originalResponseHeaders = this.responseHeaders.map(headerEntry => ({...headerEntry}));
+    }
   }
 
   hasResponded(): boolean {

@@ -256,9 +256,13 @@ async function checkRequestOverride(
     multitargetNetworkManager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.RequestFulfilled, resolve);
   });
+  const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
+      requestId as unknown as Protocol.Network.RequestId, request.url as Platform.DevToolsPath.UrlString,
+      request.url as Platform.DevToolsPath.UrlString, null, null, null);
 
   const interceptedRequest = new SDK.NetworkManager.InterceptedRequest(
-      fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, responseStatusCode, responseHeaders);
+      fetchAgent, request, Protocol.Network.ResourceType.Document, requestId, networkRequest, responseStatusCode,
+      responseHeaders);
   interceptedRequest.responseBody = async () => {
     return {error: null, content: responseBody, encoded: true};
   };
@@ -267,6 +271,7 @@ async function checkRequestOverride(
   await multitargetNetworkManager.requestIntercepted(interceptedRequest);
   await fulfilledRequest;
   assert.isTrue(spy.calledOnceWithExactly(expectedOverriddenResponse));
+  assert.deepEqual(networkRequest.originalResponseHeaders, responseHeaders);
 }
 
 describeWithMockConnection('InterceptedRequest', () => {

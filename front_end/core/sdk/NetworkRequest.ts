@@ -236,6 +236,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     [x: string]: string|undefined,
   };
   #responseHeadersTextInternal: string;
+  #originalResponseHeaders: Protocol.Fetch.HeaderEntry[];
   #requestHeadersInternal: NameValue[];
   #requestHeaderValues: {
     [x: string]: string|undefined,
@@ -336,6 +337,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.#responseHeaderValues = {};
     this.#responseHeadersTextInternal = '';
+    this.#originalResponseHeaders = [];
 
     this.#requestHeadersInternal = [];
     this.#requestHeaderValues = {};
@@ -937,6 +939,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#responseHeaderValues = {};
 
     this.dispatchEventToListeners(Events.ResponseHeadersChanged);
+  }
+
+  get originalResponseHeaders(): Protocol.Fetch.HeaderEntry[] {
+    return this.#originalResponseHeaders;
+  }
+
+  set originalResponseHeaders(headers: Protocol.Fetch.HeaderEntry[]) {
+    this.#originalResponseHeaders = headers;
   }
 
   get responseHeadersText(): string {

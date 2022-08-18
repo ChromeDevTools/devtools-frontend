@@ -60,6 +60,7 @@ const defaultRequest = {
   `,
   wasBlocked: () => false,
   blockedResponseCookies: () => [],
+  originalResponseHeaders: [],
 } as unknown as SDK.NetworkRequest.NetworkRequest;
 
 function setUpEnvironment() {

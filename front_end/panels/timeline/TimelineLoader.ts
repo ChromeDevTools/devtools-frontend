@@ -136,7 +136,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     this.firstRawChunk = false;
 
     if (this.state === State.Initial) {
-      if (chunk.startsWith('{"nodes":[')) {
+      if (chunk.match(/^{(\s)*"nodes":(\s)*\[/)) {
         this.state = State.LoadingCPUProfileFormat;
       } else if (chunk[0] === '{') {
         this.state = State.LookingForEvents;

@@ -68,7 +68,7 @@ export class TextPrompt extends HTMLElement {
 
   onInput(): void {
     this.#suggestion().value = this.#text();
-    this.dispatchEvent(new PromptInputEvent(this.#text().trim()));
+    this.dispatchEvent(new PromptInputEvent(this.#text()));
   }
 
   onKeyDown(event: KeyboardEvent): void {

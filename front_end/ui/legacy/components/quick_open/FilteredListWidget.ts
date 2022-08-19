@@ -209,7 +209,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   }
 
   private cleanValue(): string {
-    return this.query.substring(this.prefix.length);
+    return this.query.substring(this.prefix.length).trim();
   }
 
   wasShown(): void {

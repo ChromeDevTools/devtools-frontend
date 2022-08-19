@@ -298,7 +298,7 @@ export class MainImpl {
         'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
     Root.Runtime.experiments.register(
-        'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,
+        'keyboardShortcutEditor', 'Enable keyboard shortcut editor', false,
         'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
 
     // Back/forward cache
@@ -429,6 +429,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.CSS_LAYERS,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'lighthousePanelFR',
+      'keyboardShortcutEditor',
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

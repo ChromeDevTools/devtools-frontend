@@ -15,8 +15,8 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
-const EXPANDED_GROUPS_SELECTOR = '[data-group].expanded';
-const COLLAPSED_GROUPS_SELECTOR = '[data-group]:not(.expanded)';
+const EXPANDED_GROUPS_SELECTOR = 'details[open]';
+const COLLAPSED_GROUPS_SELECTOR = 'details:not([open])';
 const CODE_SNIPPET_SELECTOR = '.code-snippet';
 const GROUP_NAME_SELECTOR = '.group-header-title';
 const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item';
@@ -25,7 +25,10 @@ const BREAKPOINT_LOCATION_SELECTOR = '.location';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-async function renderSingleBreakpoint() {
+async function renderSingleBreakpoint(): Promise<{
+  component: SourcesComponents.BreakpointsView.BreakpointsView,
+  data: SourcesComponents.BreakpointsView.BreakpointsViewData,
+}> {
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
@@ -52,7 +55,10 @@ async function renderSingleBreakpoint() {
   return {component, data};
 }
 
-async function renderMultipleBreakpoints() {
+async function renderMultipleBreakpoints(): Promise<{
+  component: SourcesComponents.BreakpointsView.BreakpointsView,
+  data: SourcesComponents.BreakpointsView.BreakpointsViewData,
+}> {
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
@@ -110,22 +116,22 @@ async function renderMultipleBreakpoints() {
   return {component, data};
 }
 
-function extractVisibleBreakpointItems(data: SourcesComponents.BreakpointsView.BreakpointsViewData) {
-  const visibleGroups = data.groups.filter(group => group.expanded);
-  const breakpointItems = visibleGroups.flatMap(group => group.breakpointItems);
+function extractBreakpointItems(data: SourcesComponents.BreakpointsView.BreakpointsViewData):
+    SourcesComponents.BreakpointsView.BreakpointItem[] {
+  const breakpointItems = data.groups.flatMap(group => group.breakpointItems);
   assert.isAbove(breakpointItems.length, 0);
   return breakpointItems;
 }
 
 function checkCodeSnippet(
-    renderedBreakpointItem: HTMLDivElement, breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem) {
+    renderedBreakpointItem: HTMLDivElement, breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): void {
   const snippetElement = renderedBreakpointItem.querySelector(CODE_SNIPPET_SELECTOR);
   assertElement(snippetElement, HTMLSpanElement);
   assert.strictEqual(snippetElement.textContent, breakpointItem.codeSnippet);
 }
 
 function checkCheckboxState(
-    checkbox: HTMLInputElement, breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem) {
+    checkbox: HTMLInputElement, breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): void {
   const checked = checkbox.checked;
   const indeterminate = checkbox.indeterminate;
   if (breakpointItem.status === SourcesComponents.BreakpointsView.BreakpointStatus.INDETERMINATE) {
@@ -136,8 +142,20 @@ function checkCheckboxState(
   }
 }
 
+function checkGroupNames(
+    renderedGroupElements: Element[], breakpointGroups: SourcesComponents.BreakpointsView.BreakpointGroup[]): void {
+  assert.lengthOf(renderedGroupElements, breakpointGroups.length);
+  for (let i = 0; i < renderedGroupElements.length; ++i) {
+    const renderedGroup = renderedGroupElements[i];
+    assertElement(renderedGroup, HTMLDetailsElement);
+    const titleElement = renderedGroup.querySelector(GROUP_NAME_SELECTOR);
+    assertElement(titleElement, HTMLSpanElement);
+    assert.strictEqual(titleElement.textContent, breakpointGroups[i].name);
+  }
+}
+
 describeWithEnvironment('BreakpointsView', () => {
-  it('renders breakpoint entries of groups that are expanded', async () => {
+  it('correctly expands breakpoint groups', async () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
@@ -147,31 +165,19 @@ describeWithEnvironment('BreakpointsView', () => {
     const renderedExpandedGroups = Array.from(component.shadowRoot.querySelectorAll(EXPANDED_GROUPS_SELECTOR));
     assert.lengthOf(renderedExpandedGroups, expandedGroups.length);
 
-    for (let i = 0; i < renderedExpandedGroups.length; ++i) {
-      const renderedGroup = renderedExpandedGroups[i];
-      assertElement(renderedGroup, HTMLDivElement);
-
-      const expectedLength = expandedGroups[i].breakpointItems.length;
-      const actualLength = renderedGroup.querySelectorAll(BREAKPOINT_ITEM_SELECTOR).length;
-      assert.strictEqual(actualLength, expectedLength);
-    }
+    checkGroupNames(renderedExpandedGroups, expandedGroups);
   });
 
-  it('does not show breakpoint entries if group is not expanded', async () => {
+  it('correctly collapses breakpoint groups', async () => {
     const {component, data} = await renderMultipleBreakpoints();
     assertShadowRoot(component.shadowRoot);
 
     const collapsedGroups = data.groups.filter(group => !group.expanded);
     assert.isAbove(collapsedGroups.length, 0);
 
-    const renderedCollapsedGroups = component.shadowRoot.querySelectorAll(COLLAPSED_GROUPS_SELECTOR);
-    assertElements(renderedCollapsedGroups, HTMLDivElement);
-    assert.lengthOf(renderedCollapsedGroups, collapsedGroups.length);
+    const renderedCollapsedGroups = Array.from(component.shadowRoot.querySelectorAll(COLLAPSED_GROUPS_SELECTOR));
 
-    for (const element of renderedCollapsedGroups.values()) {
-      const renderedBreakpointItems = element.querySelectorAll(BREAKPOINT_ITEM_SELECTOR);
-      assert.lengthOf(renderedBreakpointItems, 0);
-    }
+    checkGroupNames(renderedCollapsedGroups, collapsedGroups);
   });
 
   it('renders the group names', async () => {
@@ -195,7 +201,7 @@ describeWithEnvironment('BreakpointsView', () => {
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
-    const breakpointItems = extractVisibleBreakpointItems(data);
+    const breakpointItems = extractBreakpointItems(data);
     assert.lengthOf(renderedBreakpointItems, breakpointItems.length);
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {
@@ -214,7 +220,7 @@ describeWithEnvironment('BreakpointsView', () => {
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
-    const breakpointItems = extractVisibleBreakpointItems(data);
+    const breakpointItems = extractBreakpointItems(data);
     assert.lengthOf(renderedBreakpointItems, breakpointItems.length);
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {
@@ -230,7 +236,7 @@ describeWithEnvironment('BreakpointsView', () => {
 
     const renderedBreakpointItems = Array.from(component.shadowRoot.querySelectorAll(BREAKPOINT_ITEM_SELECTOR));
 
-    const breakpointItems = extractVisibleBreakpointItems(data);
+    const breakpointItems = extractBreakpointItems(data);
     assert.lengthOf(renderedBreakpointItems, breakpointItems.length);
 
     for (let i = 0; i < renderedBreakpointItems.length; ++i) {

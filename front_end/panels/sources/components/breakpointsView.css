@@ -35,26 +35,34 @@ input {
   margin: 3px 0;
 }
 
-.triangle {
-  margin-left: 6px;
-  margin-right: 4px;
-  display: inline-block;
+details > summary {
+  height: 18px;
+  list-style: none;
+  display: flex;
+  padding: 4px 4px 4px 6px;
+  align-items: center;
+}
+
+details > summary::before {
+  display: block;
+  user-select: none;
   -webkit-mask-image: var(--image-file-treeoutlineTriangles);
   -webkit-mask-size: 32px 24px;
   -webkit-mask-position: 0 0;
-  background-color: var(--color-text-primary);
+  background-color: var(--color-text-secondary);
+  content: "";
   height: 12px;
-  width: 8px;
+  width: 9px;
+  overflow: hidden;
+}
+
+details[open] > summary::before {
+  -webkit-mask-position: -16px 0;
 }
 
 .group-header {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  height: 18px;
-}
-
-.expanded > .group-header > .triangle {
-  -webkit-mask-position: -16px 0;
 }
 
 .group-header-title {
@@ -84,7 +92,7 @@ input {
 }
 
 .checkbox-label {
-  padding-left: 24px;
+  padding-left: 20px;
   display: flex;
   align-items: center;
 }

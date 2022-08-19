@@ -119,19 +119,14 @@ export class BreakpointsView extends HTMLElement {
   }
 
   #renderBreakpointGroup(group: BreakpointGroup): LitHtml.TemplateResult {
-    const groupClassMap = {
-      'expanded': group.expanded,
-    };
     // clang-format off
     return LitHtml.html`
-      <div data-group='true' class=${LitHtml.Directives.classMap(groupClassMap)}>
-        <div class='group-header' @click=${(): void => this.#onGroupExpandToggled(group)}>
-            <span class='triangle'></span>
-            ${this.#renderFileIcon()}
-            <span class='group-header-title'>${group.name}</span>
-        </div>
-        ${group.expanded? LitHtml.html`
-          ${group.breakpointItems.map(entry => this.#renderBreakpointEntry(entry))}` : LitHtml.nothing}
+      <details data-group='true' ?open=${group.expanded} @click=${(e: Event): void => this.#onGroupExpandToggled(e, group)}>
+        <summary>
+          <span class='group-header'>${this.#renderFileIcon()}<span class='group-header-title'>${group.name}</span></span>
+        </summary>
+        ${LitHtml.html`
+          ${group.breakpointItems.map(entry => this.#renderBreakpointEntry(entry))}`}
       </div>
       `;
     // clang-format on
@@ -155,7 +150,7 @@ export class BreakpointsView extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-    <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : 1}>
+    <div class=${LitHtml.Directives.classMap(classMap)} aria-label=${breakpointItemDescription}  tabIndex=${breakpointItem.isHit ? 0 : -1}>
       <label class='checkbox-label'>
         <input type='checkbox' aria-label=${breakpointItem.location} ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE} ?checked=${breakpointItem.status === BreakpointStatus.ENABLED} @change=${(e: Event): void => this.#onCheckboxToggled(e, breakpointItem)}>
       </label>
@@ -185,10 +180,10 @@ export class BreakpointsView extends HTMLElement {
     return i18nString(UIStrings.breakpointHit, {PH1: checkboxDescription});
   }
 
-  #onGroupExpandToggled(group: BreakpointGroup): void {
-    group.expanded = !group.expanded;
-    this.dispatchEvent(new ExpandedStateChangedEvent(group.url, group.expanded));
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  #onGroupExpandToggled(e: Event, group: BreakpointGroup): void {
+    const detailsElement = e.target as HTMLDetailsElement;
+    group.expanded = detailsElement.open;
+    this.dispatchEvent(new ExpandedStateChangedEvent(group.url, detailsElement.open));
   }
 
   #onCheckboxToggled(e: Event, item: BreakpointItem): void {

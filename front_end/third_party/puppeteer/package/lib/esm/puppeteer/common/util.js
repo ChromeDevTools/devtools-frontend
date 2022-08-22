@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 import { isNode } from '../environment.js';
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 import { debug } from './Debug.js';
 import { ElementHandle } from './ElementHandle.js';
+import { isErrorLike } from '../util/ErrorLike.js';
 import { TimeoutError } from './Errors.js';
 import { JSHandle } from './JSHandle.js';
 /**
@@ -260,12 +261,9 @@ export function makePredicateString(predicate, predicateQueryHandler) {
             return !!(rect.top || rect.bottom || rect.width || rect.height);
         }
     }
-    const predicateQueryHandlerDef = predicateQueryHandler
-        ? `const predicateQueryHandler = ${predicateQueryHandler};`
-        : '';
     return `
     (() => {
-      ${predicateQueryHandlerDef}
+      const predicateQueryHandler = ${predicateQueryHandler};
       const checkWaitForOptions = ${checkWaitForOptions};
       return (${predicate})(...args)
     })() `;
@@ -367,48 +365,5 @@ export async function getReadableFromProtocolStream(client, handle) {
             }
         },
     });
-}
-/**
- * @internal
- */
-export function isErrorLike(obj) {
-    return (typeof obj === 'object' && obj !== null && 'name' in obj && 'message' in obj);
-}
-/**
- * @internal
- */
-export function isErrnoException(obj) {
-    return (isErrorLike(obj) &&
-        ('errno' in obj || 'code' in obj || 'path' in obj || 'syscall' in obj));
-}
-/**
- * Creates an returns a promise along with the resolve/reject functions.
- *
- * If the promise has not been resolved/rejected withing the `timeout` period,
- * the promise gets rejected with a timeout error.
- *
- * @internal
- */
-export function createDeferredPromiseWithTimer(timeoutMessage, timeout = 5000) {
-    let resolver = (_) => { };
-    let rejector = (_) => { };
-    const taskPromise = new Promise((resolve, reject) => {
-        resolver = resolve;
-        rejector = reject;
-    });
-    const timeoutId = setTimeout(() => {
-        rejector(new Error(timeoutMessage));
-    }, timeout);
-    return {
-        promise: taskPromise,
-        resolve: (value) => {
-            clearTimeout(timeoutId);
-            resolver(value);
-        },
-        reject: (err) => {
-            clearTimeout(timeoutId);
-            rejector(err);
-        },
-    };
 }
 //# sourceMappingURL=util.js.map

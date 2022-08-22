@@ -56,6 +56,7 @@ export class ProtocolError extends CustomError {
  *
  * @example
  * An example of handling a timeout error:
+ *
  * ```ts
  * try {
  *   await page.waitForSelector('.foo');

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { assert } from '../common/assert.js';
+import { assert } from '../util/assert.js';
 import { Browser } from '../common/Browser.js';
 import { BrowserFetcher } from './BrowserFetcher.js';
 import { BrowserRunner } from './BrowserRunner.js';
@@ -90,7 +90,7 @@ export class FirefoxLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
+            browser = await Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();

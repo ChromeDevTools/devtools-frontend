@@ -38,8 +38,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { devices } from 'puppeteer';
+     * import {devices} from 'puppeteer';
      * ```
      */
     get devices() {
@@ -48,8 +49,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { errors } from 'puppeteer';
+     * import {errors} from 'puppeteer';
      * ```
      */
     get errors() {
@@ -58,8 +60,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { networkConditions } from 'puppeteer';
+     * import {networkConditions} from 'puppeteer';
      * ```
      */
     get networkConditions() {
@@ -68,8 +71,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { registerCustomQueryHandler } from 'puppeteer';
+     * import {registerCustomQueryHandler} from 'puppeteer';
      * ```
      */
     registerCustomQueryHandler(name, queryHandler) {
@@ -78,8 +82,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { unregisterCustomQueryHandler } from 'puppeteer';
+     * import {unregisterCustomQueryHandler} from 'puppeteer';
      * ```
      */
     unregisterCustomQueryHandler(name) {
@@ -88,8 +93,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { customQueryHandlerNames } from 'puppeteer';
+     * import {customQueryHandlerNames} from 'puppeteer';
      * ```
      */
     customQueryHandlerNames() {
@@ -98,8 +104,9 @@ class Puppeteer {
     /**
      * @deprecated Import directly puppeteer.
      * @example
+     *
      * ```ts
-     * import { clearCustomQueryHandlers } from 'puppeteer';
+     * import {clearCustomQueryHandlers} from 'puppeteer';
      * ```
      */
     clearCustomQueryHandlers() {

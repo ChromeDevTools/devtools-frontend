@@ -25,13 +25,14 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Dialog_client, _Dialog_type, _Dialog_message, _Dialog_defaultValue, _Dialog_handled;
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
  *
  * @remarks
  *
  * @example
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -46,6 +47,7 @@ import { assert } from './assert.js';
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ *
  * @public
  */
 export class Dialog {

@@ -33,6 +33,7 @@ import { Point } from './JSHandle.js';
  *
  * @example
  * An example of holding down `Shift` in order to select and delete some text:
+ *
  * ```ts
  * await page.keyboard.type('Hello World!');
  * await page.keyboard.press('ArrowLeft');
@@ -48,6 +49,7 @@ import { Point } from './JSHandle.js';
  *
  * @example
  * An example of pressing `A`
+ *
  * ```ts
  * await page.keyboard.down('Shift');
  * await page.keyboard.press('KeyA');
@@ -111,6 +113,7 @@ export declare class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
+     *
      * ```ts
      * page.keyboard.sendCharacter('嗨');
      * ```
@@ -131,6 +134,7 @@ export declare class Keyboard {
      * Holding down `Shift` will not type the text in upper case.
      *
      * @example
+     *
      * ```ts
      * await page.keyboard.type('Hello'); // Types instantly
      * await page.keyboard.type('World', {delay: 100}); // Types slower, like a user
@@ -194,6 +198,7 @@ export interface MouseWheelOptions {
  * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
  *
  * @example
+ *
  * ```ts
  * // Using ‘page.mouse’ to trace a 100x100 square.
  * await page.mouse.move(0, 0);
@@ -214,17 +219,24 @@ export interface MouseWheelOptions {
  *
  * @example
  * For example, if you want to select all content between nodes:
+ *
  * ```ts
- * await page.evaluate((from, to) => {
- *   const selection = from.getRootNode().getSelection();
- *   const range = document.createRange();
- *   range.setStartBefore(from);
- *   range.setEndAfter(to);
- *   selection.removeAllRanges();
- *   selection.addRange(range);
- * }, fromJSHandle, toJSHandle);
+ * await page.evaluate(
+ *   (from, to) => {
+ *     const selection = from.getRootNode().getSelection();
+ *     const range = document.createRange();
+ *     range.setStartBefore(from);
+ *     range.setEndAfter(to);
+ *     selection.removeAllRanges();
+ *     selection.addRange(range);
+ *   },
+ *   fromJSHandle,
+ *   toJSHandle
+ * );
  * ```
+ *
  * If you then would want to copy-paste your selection, you can use the clipboard api:
+ *
  * ```ts
  * // The clipboard api does not allow you to copy, unless the tab is focused.
  * await page.bringToFront();
@@ -235,13 +247,19 @@ export interface MouseWheelOptions {
  *   return navigator.clipboard.readText();
  * });
  * ```
+ *
  * **Note**: If you want access to the clipboard API,
  * you have to give it permission to do so:
+ *
  * ```ts
- * await browser.defaultBrowserContext().overridePermissions(
- *   '<your origin>', ['clipboard-read', 'clipboard-write']
- * );
+ * await browser
+ *   .defaultBrowserContext()
+ *   .overridePermissions('<your origin>', [
+ *     'clipboard-read',
+ *     'clipboard-write',
+ *   ]);
  * ```
+ *
  * @public
  */
 export declare class Mouse {
@@ -285,8 +303,11 @@ export declare class Mouse {
      *
      * @example
      * An example of zooming into an element:
+     *
      * ```ts
-     * await page.goto('https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366');
+     * await page.goto(
+     *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366'
+     * );
      *
      * const elem = await page.$('div');
      * const boundingBox = await elem.boundingBox();
@@ -295,7 +316,7 @@ export declare class Mouse {
      *   boundingBox.y + boundingBox.height / 2
      * );
      *
-     * await page.mouse.wheel({ deltaY: -100 })
+     * await page.mouse.wheel({deltaY: -100});
      * ```
      */
     wheel(options?: MouseWheelOptions): Promise<void>;

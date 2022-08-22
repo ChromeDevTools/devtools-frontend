@@ -60,11 +60,12 @@ const path = __importStar(require("path"));
 const readline = __importStar(require("readline"));
 const rimraf_1 = __importDefault(require("rimraf"));
 const util_1 = require("util");
-const assert_js_1 = require("../common/assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Connection_js_1 = require("../common/Connection.js");
 const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const NodeWebSocketTransport_js_1 = require("../node/NodeWebSocketTransport.js");
 const PipeTransport_js_1 = require("./PipeTransport.js");
 const removeFolderAsync = (0, util_1.promisify)(rimraf_1.default);
@@ -232,7 +233,7 @@ class BrowserRunner {
                 }
             }
             catch (error) {
-                throw new Error(`${PROCESS_ERROR_EXPLANATION}\nError cause: ${(0, util_js_1.isErrorLike)(error) ? error.stack : error}`);
+                throw new Error(`${PROCESS_ERROR_EXPLANATION}\nError cause: ${(0, ErrorLike_js_1.isErrorLike)(error) ? error.stack : error}`);
             }
         }
         // Attempt to remove temporary profile directory to avoid littering.
@@ -322,7 +323,7 @@ function pidExists(pid) {
         return process.kill(pid, 0);
     }
     catch (error) {
-        if ((0, util_js_1.isErrnoException)(error)) {
+        if ((0, ErrorLike_js_1.isErrnoException)(error)) {
             if (error.code && error.code === 'ESRCH') {
                 return false;
             }

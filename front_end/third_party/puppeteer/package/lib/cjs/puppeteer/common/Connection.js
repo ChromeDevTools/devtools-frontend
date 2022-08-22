@@ -28,7 +28,7 @@ exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = expo
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Debug_js_1 = require("./Debug.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:protocol:RECV ◀');
@@ -184,20 +184,29 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         return !__classPrivateFieldGet(this, _Connection_manuallyAttached, "f").has(targetId);
     }
     /**
-     * @param targetInfo - The target info
-     * @returns The CDP session that is created
+     * @internal
      */
-    async createSession(targetInfo) {
-        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
+    async _createSession(targetInfo, isAutoAttachEmulated = true) {
+        if (!isAutoAttachEmulated) {
+            __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
+        }
         const { sessionId } = await this.send('Target.attachToTarget', {
             targetId: targetInfo.targetId,
             flatten: true,
         });
+        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").delete(targetInfo.targetId);
         const session = __classPrivateFieldGet(this, _Connection_sessions, "f").get(sessionId);
         if (!session) {
             throw new Error('CDPSession creation failed.');
         }
         return session;
+    }
+    /**
+     * @param targetInfo - The target info
+     * @returns The CDP session that is created
+     */
+    async createSession(targetInfo) {
+        return await this._createSession(targetInfo, false);
     }
 }
 exports.Connection = Connection;
@@ -238,14 +247,17 @@ exports.CDPSessionEmittedEvents = {
  * and {@link https://github.com/aslushnikov/getting-started-with-cdp/blob/HEAD/README.md | Getting Started with DevTools Protocol}.
  *
  * @example
+ *
  * ```ts
  * const client = await page.target().createCDPSession();
  * await client.send('Animation.enable');
- * client.on('Animation.animationCreated', () => console.log('Animation created!'));
+ * client.on('Animation.animationCreated', () =>
+ *   console.log('Animation created!')
+ * );
  * const response = await client.send('Animation.getPlaybackRate');
  * console.log('playback rate is ' + response.playbackRate);
  * await client.send('Animation.setPlaybackRate', {
- *   playbackRate: response.playbackRate / 2
+ *   playbackRate: response.playbackRate / 2,
  * });
  * ```
  *

@@ -119,8 +119,8 @@ export declare const enum BrowserEmittedEvents {
  * emit various events which are documented in the {@link BrowserEmittedEvents} enum.
  *
  * @example
- *
  * An example of using a {@link Browser} to create a {@link Page}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -133,8 +133,8 @@ export declare const enum BrowserEmittedEvents {
  * ```
  *
  * @example
- *
  * An example of disconnecting from and reconnecting to a {@link Browser}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -194,9 +194,10 @@ export declare class Browser extends EventEmitter {
      * browser contexts.
      *
      * @example
+     *
      * ```ts
      * (async () => {
-     *  const browser = await puppeteer.launch();
+     *   const browser = await puppeteer.launch();
      *   // Create a new incognito browser context.
      *   const context = await browser.createIncognitoBrowserContext();
      *   // Create a new page in a pristine context.
@@ -265,9 +266,12 @@ export declare class Browser extends EventEmitter {
      * @example
      *
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browser.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      */
     waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
@@ -357,6 +361,7 @@ export declare const enum BrowserContextEmittedEvents {
  * method. "Incognito" browser contexts don't write any browsing data to disk.
  *
  * @example
+ *
  * ```ts
  * // Create a new incognito browser context
  * const context = await browser.createIncognitoBrowserContext();
@@ -367,6 +372,7 @@ export declare const enum BrowserContextEmittedEvents {
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ *
  * @public
  */
 export declare class BrowserContext extends EventEmitter {
@@ -384,9 +390,12 @@ export declare class BrowserContext extends EventEmitter {
      *
      * @example
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browserContext.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browserContext.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      *
      * @param predicate - A function to be run for every target
@@ -417,9 +426,12 @@ export declare class BrowserContext extends EventEmitter {
     isIncognito(): boolean;
     /**
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
-     * await context.overridePermissions('https://html5demos.com', ['geolocation']);
+     * await context.overridePermissions('https://html5demos.com', [
+     *   'geolocation',
+     * ]);
      * ```
      *
      * @param origin - The origin to grant permissions to, e.g. "https://example.com".
@@ -431,6 +443,7 @@ export declare class BrowserContext extends EventEmitter {
      * Clears all permission overrides for the browser context.
      *
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
      * context.overridePermissions('https://example.com', ['clipboard-read']);

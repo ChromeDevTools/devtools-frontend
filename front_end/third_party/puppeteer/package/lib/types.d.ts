@@ -45,6 +45,7 @@ export declare class Accessibility {
      *
      * @example
      * An example of dumping the entire accessibility tree:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * console.log(snapshot);
@@ -52,14 +53,14 @@ export declare class Accessibility {
      *
      * @example
      * An example of logging the focused node's name:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * const node = findFocusedNode(snapshot);
      * console.log(node && node.name);
      *
      * function findFocusedNode(node) {
-     *   if (node.focused)
-     *     return node;
+     *   if (node.focused) return node;
      *   for (const child of node.children || []) {
      *     const foundNode = findFocusedNode(child);
      *     return foundNode;
@@ -69,7 +70,6 @@ export declare class Accessibility {
      * ```
      *
      * @returns An AXNode object representing the snapshot.
-     *
      */
     snapshot(options?: SnapshotOptions): Promise<SerializedAXNode | null>;
     private serializeTree;
@@ -84,8 +84,6 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 /* Excluded from this release type: addEventListener_2 */
 
 /* Excluded from this release type: ariaHandler */
-
-/* Excluded from this release type: assert */
 
 /**
  * @public
@@ -128,8 +126,8 @@ export declare interface BoxModel {
  * emit various events which are documented in the {@link BrowserEmittedEvents} enum.
  *
  * @example
- *
  * An example of using a {@link Browser} to create a {@link Page}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -142,8 +140,8 @@ export declare interface BoxModel {
  * ```
  *
  * @example
- *
  * An example of disconnecting from and reconnecting to a {@link Browser}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -182,9 +180,10 @@ export declare class Browser extends EventEmitter {
      * browser contexts.
      *
      * @example
+     *
      * ```ts
      * (async () => {
-     *  const browser = await puppeteer.launch();
+     *   const browser = await puppeteer.launch();
      *   // Create a new incognito browser context.
      *   const context = await browser.createIncognitoBrowserContext();
      *   // Create a new page in a pristine context.
@@ -247,9 +246,12 @@ export declare class Browser extends EventEmitter {
      * @example
      *
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browser.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      */
     waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
@@ -345,6 +347,7 @@ export declare interface BrowserConnectOptions {
  * method. "Incognito" browser contexts don't write any browsing data to disk.
  *
  * @example
+ *
  * ```ts
  * // Create a new incognito browser context
  * const context = await browser.createIncognitoBrowserContext();
@@ -355,6 +358,7 @@ export declare interface BrowserConnectOptions {
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ *
  * @public
  */
 export declare class BrowserContext extends EventEmitter {
@@ -369,9 +373,12 @@ export declare class BrowserContext extends EventEmitter {
      *
      * @example
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browserContext.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browserContext.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      *
      * @param predicate - A function to be run for every target
@@ -402,9 +409,12 @@ export declare class BrowserContext extends EventEmitter {
     isIncognito(): boolean;
     /**
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
-     * await context.overridePermissions('https://html5demos.com', ['geolocation']);
+     * await context.overridePermissions('https://html5demos.com', [
+     *   'geolocation',
+     * ]);
      * ```
      *
      * @param origin - The origin to grant permissions to, e.g. "https://example.com".
@@ -416,6 +426,7 @@ export declare class BrowserContext extends EventEmitter {
      * Clears all permission overrides for the browser context.
      *
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
      * context.overridePermissions('https://example.com', ['clipboard-read']);
@@ -545,7 +556,9 @@ export declare const enum BrowserEmittedEvents {
  * ```ts
  * const browserFetcher = puppeteer.createBrowserFetcher();
  * const revisionInfo = await browserFetcher.download('533271');
- * const browser = await puppeteer.launch({executablePath: revisionInfo.executablePath})
+ * const browser = await puppeteer.launch({
+ *   executablePath: revisionInfo.executablePath,
+ * });
  * ```
  *
  * **NOTE** BrowserFetcher is not designed to work concurrently with other
@@ -683,14 +696,17 @@ export declare interface BrowserLaunchArgumentOptions {
  * and {@link https://github.com/aslushnikov/getting-started-with-cdp/blob/HEAD/README.md | Getting Started with DevTools Protocol}.
  *
  * @example
+ *
  * ```ts
  * const client = await page.target().createCDPSession();
  * await client.send('Animation.enable');
- * client.on('Animation.animationCreated', () => console.log('Animation created!'));
+ * client.on('Animation.animationCreated', () =>
+ *   console.log('Animation created!')
+ * );
  * const response = await client.send('Animation.getPlaybackRate');
  * console.log('playback rate is ' + response.playbackRate);
  * await client.send('Animation.setPlaybackRate', {
- *   playbackRate: response.playbackRate / 2
+ *   playbackRate: response.playbackRate / 2,
  * });
  * ```
  *
@@ -821,6 +837,7 @@ export declare class Connection extends EventEmitter {
     /* Excluded from this release type: onMessage */
     dispose(): void;
     /* Excluded from this release type: isAutoAttached */
+    /* Excluded from this release type: _createSession */
     /**
      * @param targetInfo - The target info
      * @returns The CDP session that is created
@@ -958,11 +975,12 @@ export declare interface ContinueRequestOverrides {
  * @example
  * An example of using JavaScript and CSS coverage to get percentage of initially
  * executed code:
+ *
  * ```ts
  * // Enable both JavaScript and CSS coverage
  * await Promise.all([
  *   page.coverage.startJSCoverage(),
- *   page.coverage.startCSSCoverage()
+ *   page.coverage.startCSSCoverage(),
  * ]);
  * // Navigate to page
  * await page.goto('https://example.com');
@@ -976,11 +994,11 @@ export declare interface ContinueRequestOverrides {
  * const coverage = [...jsCoverage, ...cssCoverage];
  * for (const entry of coverage) {
  *   totalBytes += entry.text.length;
- *   for (const range of entry.ranges)
- *     usedBytes += range.end - range.start - 1;
+ *   for (const range of entry.ranges) usedBytes += range.end - range.start - 1;
  * }
- * console.log(`Bytes used: ${usedBytes / totalBytes * 100}%`);
+ * console.log(`Bytes used: ${(usedBytes / totalBytes) * 100}%`);
  * ```
+ *
  * @public
  */
 export declare class Coverage {
@@ -1047,8 +1065,6 @@ export declare interface CoverageEntry {
 
 export declare const createBrowserFetcher: (options: BrowserFetcherOptions) => BrowserFetcher;
 
-/* Excluded from this release type: createDeferredPromiseWithTimer */
-
 /* Excluded from this release type: createJSHandle */
 
 /* Excluded from this release type: createLauncher */
@@ -1107,19 +1123,17 @@ export declare class CustomError extends Error {
 }
 
 /**
- * Contains two functions `queryOne` and `queryAll` that can
- * be {@link registerCustomQueryHandler | registered}
- * as alternative querying strategies. The functions `queryOne` and `queryAll`
- * are executed in the page context.  `queryOne` should take an `Element` and a
- * selector string as argument and return a single `Element` or `null` if no
- * element is found. `queryAll` takes the same arguments but should instead
- * return a `NodeListOf<Element>` or `Array<Element>` with all the elements
- * that match the given query selector.
  * @public
  */
 export declare interface CustomQueryHandler {
-    queryOne?: (element: Node, selector: string) => Node | null;
-    queryAll?: (element: Node, selector: string) => Node[];
+    /**
+     * @returns A {@link Node} matching the given `selector` from {@link node}.
+     */
+    queryOne?: (node: Node, selector: string) => Node | null;
+    /**
+     * @returns Some {@link Node}s matching the given `selector` from {@link node}.
+     */
+    queryAll?: (node: Node, selector: string) => Node[];
 }
 
 /**
@@ -1141,8 +1155,6 @@ export declare function customQueryHandlerNames(): string[];
 export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
 
 export declare const defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
-
-/* Excluded from this release type: DeferredPromise */
 
 /**
  * Copyright 2017 Google Inc. All rights reserved.
@@ -1211,6 +1223,7 @@ export declare type DevicesMap = {
  * @remarks
  *
  * @example
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -1225,6 +1238,7 @@ export declare type DevicesMap = {
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ *
  * @public
  */
 export declare class Dialog {
@@ -1256,8 +1270,6 @@ export declare class Dialog {
     dismiss(): Promise<void>;
 }
 
-/* Excluded from this release type: DOMWorld */
-
 /* Excluded from this release type: downloadBrowser */
 
 /**
@@ -1270,12 +1282,12 @@ export declare class Dialog {
  * const puppeteer = require('puppeteer');
  *
  * (async () => {
- *  const browser = await puppeteer.launch();
- *  const page = await browser.newPage();
- *  await page.goto('https://example.com');
- *  const hrefElement = await page.$('a');
- *  await hrefElement.click();
- *  // ...
+ *   const browser = await puppeteer.launch();
+ *   const page = await browser.newPage();
+ *   await page.goto('https://example.com');
+ *   const hrefElement = await page.$('a');
+ *   await hrefElement.click();
+ *   // ...
  * })();
  * ```
  *
@@ -1297,64 +1309,168 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     #private;
     /* Excluded from this release type: __constructor */
     /**
-     * Wait for the `selector` to appear within the element. If at the moment of calling the
-     * method the `selector` already exists, the method will return immediately. If
-     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
-     * function will throw.
+     * Queries the current element for an element matching the given selector.
      *
-     * This method does not work across navigations or if the element is detached from DOM.
+     * @param selector - The selector to query for.
+     * @returns A {@link ElementHandle | element handle} to the first element
+     * matching the given selector. Otherwise, `null`.
+     */
+    $<Selector extends string>(selector: Selector): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    /**
+     * Queries the current element for all elements matching the given selector.
      *
-     * @param selector - A
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
-     * of an element to wait for
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves when element specified by selector string
-     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
-     * selector is not found in DOM.
-     * @remarks
-     * The optional parameters in `options` are:
+     * @param selector - The selector to query for.
+     * @returns An array of {@link ElementHandle | element handles} that point to
+     * elements matching the given selector.
+     */
+    $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
+    /**
+     * Runs the given function on the first element matching the given selector in
+     * the current element.
      *
-     * - `visible`: wait for the selected element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
+     * If the given function returns a promise, then this method will wait till
+     * the promise resolves.
      *
-     * - `hidden`: wait for the selected element to not be found in the DOM or to be hidden,
-     * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
-     * `false`.
+     * @example
      *
-     * - `timeout`: maximum time to wait in milliseconds. Defaults to `30000`
-     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
-     * by using the {@link Page.setDefaultTimeout} method.
+     * ```ts
+     * const tweetHandle = await page.$('.tweet');
+     * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe(
+     *   '100'
+     * );
+     * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe(
+     *   '10'
+     * );
+     * ```
+     *
+     * @param selector - The selector to query for.
+     * @param pageFunction - The function to be evaluated in this element's page's
+     * context. The first element matching the selector will be passed in as the
+     * first argument.
+     * @param args - Additional arguments to pass to `pageFunction`.
+     * @returns A promise to the result of the function.
+     */
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    ElementHandle<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    /**
+     * Runs the given function on an array of elements matching the given selector
+     * in the current element.
+     *
+     * If the given function returns a promise, then this method will wait till
+     * the promise resolves.
+     *
+     * @example
+     * HTML:
+     *
+     * ```html
+     * <div class="feed">
+     *   <div class="tweet">Hello!</div>
+     *   <div class="tweet">Hi!</div>
+     * </div>
+     * ```
+     *
+     * JavaScript:
+     *
+     * ```js
+     * const feedHandle = await page.$('.feed');
+     * expect(
+     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
+     * ).toEqual(['Hello!', 'Hi!']);
+     * ```
+     *
+     * @param selector - The selector to query for.
+     * @param pageFunction - The function to be evaluated in the element's page's
+     * context. An array of elements matching the given selector will be passed to
+     * the function as its first argument.
+     * @param args - Additional arguments to pass to `pageFunction`.
+     * @returns A promise to the result of the function.
+     */
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
+    Array<NodeFor<Selector>>,
+    ...Params
+    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    /**
+     * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
+     *
+     * The method evaluates the XPath expression relative to the elementHandle.
+     * If there are no such elements, the method will resolve to an empty array.
+     * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
+     */
+    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
+    /**
+     * Wait for an element matching the given selector to appear in the current
+     * element.
+     *
+     * Unlike {@link Frame.waitForSelector}, this method does not work across
+     * navigations or if the element is detached from DOM.
+     *
+     * @example
+     *
+     * ```ts
+     * const puppeteer = require('puppeteer');
+     *
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .mainFrame()
+     *     .waitForSelector('img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @param selector - The selector to query and wait for.
+     * @param options - Options for customizing waiting behavior.
+     * @returns An element matching the given selector.
+     * @throws Throws if an element matching the given selector doesn't appear.
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
+     * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
+     * prefix.
+     *
      * Wait for the `xpath` within the element. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
      * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
      * function will throw.
      *
-     * If `xpath` starts with `//` instead of `.//`, the dot will be appended automatically.
+     * If `xpath` starts with `//` instead of `.//`, the dot will be appended
+     * automatically.
      *
      * This method works across navigation
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * let currentURL;
-     * page
-     * .waitForXPath('//img')
-     * .then(() => console.log('First URL with image: ' + currentURL));
-     * for (currentURL of [
-     * 'https://example.com',
-     * 'https://google.com',
-     * 'https://bbc.com',
-     * ]) {
-     * await page.goto(currentURL);
-     * }
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .waitForXPath('//img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
      * })();
      * ```
+     *
      * @param xpath - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
      * element to wait for
@@ -1366,16 +1482,17 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * The optional Argument `options` have properties:
      *
      * - `visible`: A boolean to wait for element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
      *
      * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-     * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-     * Defaults to `false`.
+     *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+     *   Defaults to `false`.
      *
      * - `timeout`: A number which is maximum time to wait for in milliseconds.
-     * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-     * value can be changed by using the {@link Page.setDefaultTimeout} method.
+     *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The
+     *   default value can be changed by using the {@link Page.setDefaultTimeout}
+     *   method.
      */
     waitForXPath(xpath: string, options?: {
         visible?: boolean;
@@ -1432,13 +1549,15 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * throws an error.
      *
      * @example
+     *
      * ```ts
      * handle.select('blue'); // single selection
      * handle.select('red', 'green', 'blue'); // multiple selections
      * ```
+     *
      * @param values - Values of options to select. If the `<select>` has the
-     *    `multiple` attribute, all values are considered, otherwise only the first
-     *    one is taken into account.
+     * `multiple` attribute, all values are considered, otherwise only the first
+     * one is taken into account.
      */
     select(...values: string[]): Promise<string[]>;
     /**
@@ -1446,10 +1565,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input | input element}.
      *
      * @param filePaths - Sets the value of the file input to these paths.
-     *    If a path is relative, then it is resolved against the
-     *    {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
-     *    Note for locals script connecting to remote chrome environments,
-     *    paths must be absolute.
+     * If a path is relative, then it is resolved against the
+     * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
+     * Note for locals script connecting to remote chrome environments,
+     * paths must be absolute.
      */
     uploadFile(this: ElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
     /**
@@ -1470,6 +1589,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * use {@link ElementHandle.press}.
      *
      * @example
+     *
      * ```ts
      * await elementHandle.type('Hello'); // Types instantly
      * await elementHandle.type('World', {delay: 100}); // Types slower, like a user
@@ -1499,7 +1619,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * will type the text in upper case.
      *
      * @param key - Name of key to press, such as `ArrowLeft`.
-     *    See {@link KeyInput} for a list of all key names.
+     * See {@link KeyInput} for a list of all key names.
      */
     press(key: KeyInput, options?: PressOptions): Promise<void>;
     /**
@@ -1523,78 +1643,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     screenshot(this: ElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
     /**
-     * Runs `element.querySelector` within the page.
-     *
-     * @param selector - The selector to query with.
-     * @returns `null` if no element matches the selector.
-     * @throws `Error` if the selector has no associated query handler.
-     */
-    $<Selector extends string>(selector: Selector): Promise<ElementHandle<NodeFor<Selector>> | null>;
-    /**
-     * Runs `element.querySelectorAll` within the page. If no elements match the selector,
-     * the return value resolves to `[]`.
-     */
-    /**
-     * Runs `element.querySelectorAll` within the page.
-     *
-     * @param selector - The selector to query with.
-     * @returns `[]` if no element matches the selector.
-     * @throws `Error` if the selector has no associated query handler.
-     */
-    $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
-    /**
-     * This method runs `document.querySelector` within the element and passes it as
-     * the first argument to `pageFunction`. If there's no element matching `selector`,
-     * the method throws an error.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$eval` would wait for the promise
-     * to resolve and return its value.
-     *
-     * @example
-     * ```ts
-     * const tweetHandle = await page.$('.tweet');
-     * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe('100');
-     * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe('10');
-     * ```
-     */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-    ElementHandle<NodeFor<Selector>>,
-    ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    /**
-     * This method runs `document.querySelectorAll` within the element and passes it as
-     * the first argument to `pageFunction`. If there's no element matching `selector`,
-     * the method throws an error.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$$eval` would wait for the
-     * promise to resolve and return its value.
-     *
-     * @example
-     * ```html
-     * <div class="feed">
-     *   <div class="tweet">Hello!</div>
-     *   <div class="tweet">Hi!</div>
-     * </div>
-     * ```
-     *
-     * @example
-     * ```ts
-     * const feedHandle = await page.$('.feed');
-     * expect(await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)))
-     *  .toEqual(['Hello!', 'Hi!']);
-     * ```
-     */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-    Array<NodeFor<Selector>>,
-    ...Params
-    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    /**
-     * The method evaluates the XPath expression relative to the elementHandle.
-     * If there are no such elements, the method will resolve to an empty array.
-     * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
-     */
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    /**
      * Resolves to true if the element is visible in the current viewport.
      */
     isIntersectingViewport(this: ElementHandle<Element>, options?: {
@@ -1609,8 +1657,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
  */
 export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable' | 'blockedbyclient' | 'blockedbyresponse' | 'connectionaborted' | 'connectionclosed' | 'connectionfailed' | 'connectionrefused' | 'connectionreset' | 'internetdisconnected' | 'namenotresolved' | 'timedout' | 'failed';
 
-/* Excluded from this release type: ErrorLike */
-
 /**
  * Puppeteer methods might throw errors if they are unable to fulfill a request.
  * For example, `page.waitForSelector(selector[, options])` might fail if the
@@ -1621,6 +1667,7 @@ export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable
  *
  * @example
  * An example of handling a timeout error:
+ *
  * ```ts
  * try {
  *   await page.waitForSelector('.foo');
@@ -1666,14 +1713,14 @@ export declare class EventEmitter implements CommonEventEmitter {
     /**
      * Bind an event listener to fire when an event occurs.
      * @param event - the event type you'd like to listen to. Can be a string or symbol.
-     * @param handler  - the function to be called when the event occurs.
+     * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
     on(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
-     * @param handler  - the function that should be removed.
+     * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
     off(event: EventType, handler: Handler): EventEmitter;
@@ -1731,21 +1778,26 @@ export declare const executablePath: (channel?: string | undefined) => string;
 /* Excluded from this release type: executablePathForChannel */
 
 /**
- * This class represents a context for JavaScript execution. A [Page] might have
- * many execution contexts:
- * - each
- *   {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe |
- *   frame } has "default" execution context that is always created after frame is
- *   attached to DOM. This context is returned by the
- *   {@link Frame.executionContext} method.
- * - {@link https://developer.chrome.com/extensions | Extension}'s content scripts
- *   create additional execution contexts.
+ * @deprecated Do not use directly.
  *
+ * Represents a context for JavaScript execution.
+ *
+ * @example
+ * A {@link Page} can have several execution contexts:
+ *
+ * - Each {@link Frame} of a {@link Page | page} has a "default" execution
+ *   context that is always created after frame is attached to DOM. This context
+ *   is returned by the {@link Frame.executionContext} method.
+ * - Each {@link https://developer.chrome.com/extensions | Chrome extensions}
+ *   creates additional execution contexts to isolate their code.
+ *
+ * @remarks
+ * By definition, each context is isolated from one another, however they are
+ * all able to manipulate non-JavaScript resources (such as DOM).
+ *
+ * @remarks
  * Besides pages, execution contexts can be found in
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
- * workers }.
- *
- * @public
+ * {@link WebWorker | workers}.
  */
 export declare class ExecutionContext {
     #private;
@@ -1755,27 +1807,19 @@ export declare class ExecutionContext {
     /* Excluded from this release type: _contextName */
     /* Excluded from this release type: __constructor */
     /**
-     * @remarks
-     *
-     * Not every execution context is associated with a frame. For
-     * example, workers and extensions have execution contexts that are not
-     * associated with frames.
-     *
      * @returns The frame associated with this execution context.
+     *
+     * @remarks
+     * Not every execution context is associated with a frame. For example,
+     * {@link WebWorker | workers} have execution contexts that are not associated
+     * with frames.
      */
     frame(): Frame | null;
     /**
-     * @remarks
-     * If the function passed to the `executionContext.evaluate` returns a
-     * Promise, then `executionContext.evaluate` would wait for the promise to
-     * resolve and return its value. If the function passed to the
-     * `executionContext.evaluate` returns a non-serializable value, then
-     * `executionContext.evaluate` resolves to `undefined`. DevTools Protocol also
-     * supports transferring some additional values that are not serializable by
-     * `JSON`: `-0`, `NaN`, `Infinity`, `-Infinity`, and bigint literals.
-     *
+     * Evaluates the given function.
      *
      * @example
+     *
      * ```ts
      * const executionContext = await page.mainFrame().executionContext();
      * const result = await executionContext.evaluate(() => Promise.resolve(8 * 7))* ;
@@ -1783,82 +1827,94 @@ export declare class ExecutionContext {
      * ```
      *
      * @example
-     * A string can also be passed in instead of a function.
+     * A string can also be passed in instead of a function:
      *
      * ```ts
      * console.log(await executionContext.evaluate('1 + 2')); // prints "3"
      * ```
      *
      * @example
-     * {@link JSHandle} instances can be passed as arguments to the
-     * `executionContext.* evaluate`:
+     * Handles can also be passed as `args`. They resolve to their referenced object:
+     *
      * ```ts
      * const oneHandle = await executionContext.evaluateHandle(() => 1);
      * const twoHandle = await executionContext.evaluateHandle(() => 2);
      * const result = await executionContext.evaluate(
-     *    (a, b) => a + b, oneHandle, * twoHandle
+     *   (a, b) => a + b,
+     *   oneHandle,
+     *   twoHandle
      * );
      * await oneHandle.dispose();
      * await twoHandle.dispose();
      * console.log(result); // prints '3'.
      * ```
-     * @param pageFunction - a function to be evaluated in the `executionContext`
-     * @param args - argument to pass to the page function
      *
-     * @returns A promise that resolves to the return value of the given function.
+     * @param pageFunction - The function to evaluate.
+     * @param args - Additional arguments to pass into the function.
+     * @returns The result of evaluating the function. If the result is an object,
+     * a vanilla object containing the serializable properties of the result is
+     * returned.
      */
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * @remarks
-     * The only difference between `executionContext.evaluate` and
-     * `executionContext.evaluateHandle` is that `executionContext.evaluateHandle`
-     * returns an in-page object (a {@link JSHandle}).
-     * If the function passed to the `executionContext.evaluateHandle` returns a
-     * Promise, then `executionContext.evaluateHandle` would wait for the
-     * promise to resolve and return its value.
+     * Evaluates the given function.
+     *
+     * Unlike {@link ExecutionContext.evaluate | evaluate}, this method returns a
+     * handle to the result of the function.
+     *
+     * This method may be better suited if the object cannot be serialized (e.g.
+     * `Map`) and requires further manipulation.
      *
      * @example
+     *
      * ```ts
      * const context = await page.mainFrame().executionContext();
-     * const aHandle = await context.evaluateHandle(() => Promise.resolve(self));
-     * aHandle; // Handle for the global object.
+     * const handle: JSHandle<typeof globalThis> = await context.evaluateHandle(
+     *   () => Promise.resolve(self)
+     * );
      * ```
      *
      * @example
      * A string can also be passed in instead of a function.
      *
      * ```ts
-     * // Handle for the '3' * object.
-     * const aHandle = await context.evaluateHandle('1 + 2');
+     * const handle: JSHandle<number> = await context.evaluateHandle('1 + 2');
      * ```
      *
      * @example
-     * JSHandle instances can be passed as arguments
-     * to the `executionContext.* evaluateHandle`:
+     * Handles can also be passed as `args`. They resolve to their referenced object:
      *
      * ```ts
-     * const aHandle = await context.evaluateHandle(() => document.body);
-     * const resultHandle = await context.evaluateHandle(body => body.innerHTML, * aHandle);
-     * console.log(await resultHandle.jsonValue()); // prints body's innerHTML
-     * await aHandle.dispose();
-     * await resultHandle.dispose();
+     * const bodyHandle: ElementHandle<HTMLBodyElement> =
+     *   await context.evaluateHandle(() => {
+     *     return document.body;
+     *   });
+     * const stringHandle: JSHandle<string> = await context.evaluateHandle(
+     *   body => body.innerHTML,
+     *   body
+     * );
+     * console.log(await stringHandle.jsonValue()); // prints body's innerHTML
+     * // Always dispose your garbage! :)
+     * await bodyHandle.dispose();
+     * await stringHandle.dispose();
      * ```
      *
-     * @param pageFunction - a function to be evaluated in the `executionContext`
-     * @param args - argument to pass to the page function
-     *
-     * @returns A promise that resolves to the return value of the given function
-     * as an in-page object (a {@link JSHandle}).
+     * @param pageFunction - The function to evaluate.
+     * @param args - Additional arguments to pass into the function.
+     * @returns A {@link JSHandle | handle} to the result of evaluating the
+     * function. If the result is a `Node`, then this will return an
+     * {@link ElementHandle | element handle}.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
-     * This method iterates the JavaScript heap and finds all the objects with the
+     * Iterates through the JavaScript heap and finds all the objects with the
      * given prototype.
-     * @remarks
+     *
      * @example
+     *
      * ```ts
      * // Create a Map object
-     * await page.evaluate(() => window.map = new Map());
+     * await page.evaluate(() => (window.map = new Map()));
      * // Get a handle to the Map object prototype
      * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
      * // Query all map instances into an array
@@ -1870,22 +1926,25 @@ export declare class ExecutionContext {
      * ```
      *
      * @param prototypeHandle - a handle to the object prototype
-     *
      * @returns A handle to an array of objects with the given prototype.
      */
     queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<HandleFor<Prototype[]>>;
-    /* Excluded from this release type: _adoptBackendNodeId */
-    /* Excluded from this release type: _adoptElementHandle */
 }
 
 /* Excluded from this release type: FetchRequestId */
 
 /**
  * File choosers let you react to the page requesting for a file.
+ *
  * @remarks
- * `FileChooser` objects are returned via the `page.waitForFileChooser` method.
+ * `FileChooser` instances are returned via the {@link Page.waitForFileChooser} method.
+ *
+ * In browsers, only one file chooser can be opened at a time.
+ * All file choosers must be accepted or canceled. Not doing so will prevent
+ * subsequent file choosers from appearing.
+ *
  * @example
- * An example of using `FileChooser`:
+ *
  * ```ts
  * const [fileChooser] = await Promise.all([
  *   page.waitForFileChooser(),
@@ -1893,22 +1952,24 @@ export declare class ExecutionContext {
  * ]);
  * await fileChooser.accept(['/tmp/myfile.pdf']);
  * ```
- * **NOTE** In browsers, only one file chooser can be opened at a time.
- * All file choosers must be accepted or canceled. Not doing so will prevent
- * subsequent file choosers from appearing.
+ *
  * @public
  */
 export declare class FileChooser {
     #private;
     /* Excluded from this release type: __constructor */
     /**
-     * Whether file chooser allow for {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple} file selection.
+     * Whether file chooser allow for
+     * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple}
+     * file selection.
      */
     isMultiple(): boolean;
     /**
      * Accept the file chooser request with given paths.
-     * @param filePaths - If some of the  `filePaths` are relative paths,
-     * then they are resolved relative to the {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
+     *
+     * @param filePaths - If some of the `filePaths` are relative paths, then
+     * they are resolved relative to the
+     * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
      */
     accept(filePaths: string[]): Promise<void>;
     /**
@@ -1927,22 +1988,18 @@ export declare class FileChooser {
 export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
 
 /**
- * At every point of time, page exposes its current frame tree via the
- * {@link Page.mainFrame | page.mainFrame} and
- * {@link Frame.childFrames | frame.childFrames} methods.
+ * Represents a DOM frame.
  *
- * @remarks
+ * To understand frames, you can think of frames as `<iframe>` elements. Just
+ * like iframes, frames can be nested, and when JavaScript is executed in a
+ * frame, the JavaScript does not effect frames inside the ambient frame the
+ * JavaScript executes in.
  *
- * `Frame` object lifecycles are controlled by three events that are all
- * dispatched on the page object:
+ * @example
+ * At any point in time, {@link Page | pages} expose their current frame
+ * tree via the {@link Page.mainFrame} and {@link Frame.childFrames} methods.
  *
- * - {@link PageEmittedEvents.FrameAttached}
- *
- * - {@link PageEmittedEvents.FrameNavigated}
- *
- * - {@link PageEmittedEvents.FrameDetached}
- *
- * @Example
+ * @example
  * An example of dumping frame tree:
  *
  * ```ts
@@ -1958,13 +2015,13 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  *   function dumpFrameTree(frame, indent) {
  *     console.log(indent + frame.url());
  *     for (const child of frame.childFrames()) {
- *     dumpFrameTree(child, indent + '  ');
+ *       dumpFrameTree(child, indent + '  ');
  *     }
  *   }
  * })();
  * ```
  *
- * @Example
+ * @example
  * An example of getting text from an iframe element:
  *
  * ```ts
@@ -1973,58 +2030,51 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  * console.log(text);
  * ```
  *
+ * @remarks
+ * Frame lifecycles are controlled by three events that are all dispatched on
+ * the parent {@link Frame.page | page}:
+ *
+ * - {@link PageEmittedEvents.FrameAttached}
+ * - {@link PageEmittedEvents.FrameNavigated}
+ * - {@link PageEmittedEvents.FrameDetached}
+ *
  * @public
  */
 export declare class Frame {
     #private;
+    /* Excluded from this release type: worlds */
     /* Excluded from this release type: _frameManager */
     /* Excluded from this release type: _id */
     /* Excluded from this release type: _loaderId */
     /* Excluded from this release type: _name */
     /* Excluded from this release type: _hasStartedLoading */
     /* Excluded from this release type: _lifecycleEvents */
-    /* Excluded from this release type: _mainWorld */
-    /* Excluded from this release type: _secondaryWorld */
     /* Excluded from this release type: _childFrames */
     /* Excluded from this release type: __constructor */
-    /* Excluded from this release type: _updateClient */
+    /* Excluded from this release type: updateClient */
     /**
-     * @returns a page associated with the frame.
+     * @returns The page associated with the frame.
      */
     page(): Page;
     /**
-     * @remarks
-     *
-     * @returns `true` if the frame is an OOP frame, or `false` otherwise.
+     * @returns `true` if the frame is an out-of-process (OOP) frame. Otherwise,
+     * `false`.
      */
     isOOPFrame(): boolean;
     /**
+     * Navigates a frame to the given url.
+     *
      * @remarks
+     * Navigation to `about:blank` or navigation to the same URL with a different
+     * hash will succeed and return `null`.
      *
-     * `frame.goto` will throw an error if:
-     * - there's an SSL error (e.g. in case of self-signed certificates).
+     * :::warning
      *
-     * - target URL is invalid.
-     *
-     * - the `timeout` is exceeded during navigation.
-     *
-     * - the remote server does not respond or is unreachable.
-     *
-     * - the main resource failed to load.
-     *
-     * `frame.goto` will not throw an error when any valid HTTP status code is
-     * returned by the remote server, including 404 "Not Found" and 500 "Internal
-     * Server Error".  The status code for such responses can be retrieved by
-     * calling {@link HTTPResponse.status}.
-     *
-     * NOTE: `frame.goto` either throws an error or returns a main resource
-     * response. The only exceptions are navigation to `about:blank` or
-     * navigation to the same URL with a different hash, which would succeed and
-     * return `null`.
-     *
-     * NOTE: Headless mode doesn't support navigation to a PDF document. See
-     * the {@link https://bugs.chromium.org/p/chromium/issues/detail?id=761295 | upstream
+     * Headless mode doesn't support navigation to a PDF document. See the {@link
+     * https://bugs.chromium.org/p/chromium/issues/detail?id=761295 | upstream
      * issue}.
+     *
+     * :::
      *
      * @param url - the URL to navigate the frame to. This should include the
      * scheme, e.g. `https://`.
@@ -2035,6 +2085,18 @@ export declare class Frame {
      * @returns A promise which resolves to the main resource response. In case of
      * multiple redirects, the navigation will resolve with the response of the
      * last redirect.
+     * @throws This method will throw an error if:
+     *
+     * - there's an SSL error (e.g. in case of self-signed certificates).
+     * - target URL is invalid.
+     * - the `timeout` is exceeded during navigation.
+     * - the remote server does not respond or is unreachable.
+     * - the main resource failed to load.
+     *
+     * This method will not throw an error when any valid HTTP status code is
+     * returned by the remote server, including 404 "Not Found" and 500 "Internal
+     * Server Error". The status code for such responses can be retrieved by
+     * calling {@link HTTPResponse.status}.
      */
     goto(url: string, options?: {
         referer?: string;
@@ -2042,11 +2104,14 @@ export declare class Frame {
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
     /**
-     * @remarks
+     * Waits for the frame to navigate. It is useful for when you run code which
+     * will indirectly cause the frame to navigate.
      *
-     * This resolves when the frame navigates to a new URL. It is useful for when
-     * you run code which will indirectly cause the frame to navigate. Consider
-     * this example:
+     * Usage of the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API}
+     * to change the URL is considered a navigation.
+     *
+     * @example
      *
      * ```ts
      * const [response] = await Promise.all([
@@ -2057,9 +2122,8 @@ export declare class Frame {
      * ]);
      * ```
      *
-     * Usage of the {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API} to change the URL is considered a navigation.
-     *
-     * @param options - options to configure when the navigation is consided finished.
+     * @param options - options to configure when the navigation is consided
+     * finished.
      * @returns a promise that resolves when the frame navigates to a new URL.
      */
     waitForNavigation(options?: {
@@ -2068,62 +2132,47 @@ export declare class Frame {
     }): Promise<HTTPResponse | null>;
     /* Excluded from this release type: _client */
     /**
+     * @deprecated Do not use the execution context directly.
+     *
      * @returns a promise that resolves to the frame's default execution context.
      */
     executionContext(): Promise<ExecutionContext>;
     /**
-     * @remarks
+     * Behaves identically to {@link Page.evaluateHandle} except it's run within
+     * the context of this frame.
      *
-     * The only difference between {@link Frame.evaluate} and
-     * `frame.evaluateHandle` is that `evaluateHandle` will return the value
-     * wrapped in an in-page object.
-     *
-     * This method behaves identically to {@link Page.evaluateHandle} except it's
-     * run within the context of the `frame`, rather than the entire page.
-     *
-     * @param pageFunction - a function that is run within the frame
-     * @param args - arguments to be passed to the pageFunction
+     * @see {@link Page.evaluateHandle} for details.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
-     * @remarks
+     * Behaves identically to {@link Page.evaluate} except it's run within the
+     * the context of this frame.
      *
-     * This method behaves identically to {@link Page.evaluate} except it's run
-     * within the context of the `frame`, rather than the entire page.
-     *
-     * @param pageFunction - a function that is run within the frame
-     * @param args - arguments to be passed to the pageFunction
+     * @see {@link Page.evaluate} for details.
      */
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * This method queries the frame for the given selector.
+     * Queries the frame for an element matching the given selector.
      *
-     * @param selector - a selector to query for.
-     * @returns A promise which resolves to an `ElementHandle` pointing at the
-     * element, or `null` if it was not found.
+     * @param selector - The selector to query for.
+     * @returns A {@link ElementHandle | element handle} to the first element
+     * matching the given selector. Otherwise, `null`.
      */
     $<Selector extends string>(selector: Selector): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
-     * This runs `document.querySelectorAll` in the frame and returns the result.
+     * Queries the frame for all elements matching the given selector.
      *
-     * @param selector - a selector to search for
-     * @returns An array of element handles pointing to the found frame elements.
+     * @param selector - The selector to query for.
+     * @returns An array of {@link ElementHandle | element handles} that point to
+     * elements matching the given selector.
      */
     $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
     /**
-     * This method evaluates the given XPath expression and returns the results.
+     * Runs the given function on the first element matching the given selector in
+     * the frame.
      *
-     * @param expression - the XPath expression to evaluate.
-     */
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
-    /**
-     * @remarks
-     *
-     * This method runs `document.querySelector` within
-     * the frame and passes it as the first argument to `pageFunction`.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$eval` would wait for
-     * the promise to resolve and return its value.
+     * If the given function returns a promise, then this method will wait till
+     * the promise resolves.
      *
      * @example
      *
@@ -2131,242 +2180,55 @@ export declare class Frame {
      * const searchValue = await frame.$eval('#search', el => el.value);
      * ```
      *
-     * @param selector - the selector to query for
-     * @param pageFunction - the function to be evaluated in the frame's context
-     * @param args - additional arguments to pass to `pageFunction`
+     * @param selector - The selector to query for.
+     * @param pageFunction - The function to be evaluated in the frame's context.
+     * The first element matching the selector will be passed to the function as
+     * its first argument.
+     * @param args - Additional arguments to pass to `pageFunction`.
+     * @returns A promise to the result of the function.
      */
     $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
     ElementHandle<NodeFor<Selector>>,
     ...Params
     ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * @remarks
+     * Runs the given function on an array of elements matching the given selector
+     * in the frame.
      *
-     * This method runs `Array.from(document.querySelectorAll(selector))` within
-     * the frame and passes it as the first argument to `pageFunction`.
-     *
-     * If `pageFunction` returns a Promise, then `frame.$$eval` would wait for
-     * the promise to resolve and return its value.
+     * If the given function returns a promise, then this method will wait till
+     * the promise resolves.
      *
      * @example
      *
-     * ```ts
+     * ```js
      * const divsCounts = await frame.$$eval('div', divs => divs.length);
      * ```
      *
-     * @param selector - the selector to query for
-     * @param pageFunction - the function to be evaluated in the frame's context
-     * @param args - additional arguments to pass to `pageFunction`
+     * @param selector - The selector to query for.
+     * @param pageFunction - The function to be evaluated in the frame's context.
+     * An array of elements matching the given selector will be passed to the
+     * function as its first argument.
+     * @param args - Additional arguments to pass to `pageFunction`.
+     * @returns A promise to the result of the function.
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
     Array<NodeFor<Selector>>,
     ...Params
     ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * @returns the full HTML contents of the frame, including the doctype.
+     * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
+     *
+     * This method evaluates the given XPath expression and returns the results.
+     * @param expression - the XPath expression to evaluate.
      */
-    content(): Promise<string>;
+    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
     /**
-     * Set the content of the frame.
-     *
-     * @param html - HTML markup to assign to the page.
-     * @param options - options to configure how long before timing out and at
-     * what point to consider the content setting successful.
-     */
-    setContent(html: string, options?: {
-        timeout?: number;
-        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
-    }): Promise<void>;
-    /**
-     * @remarks
-     *
-     * If the name is empty, it returns the `id` attribute instead.
-     *
-     * Note: This value is calculated once when the frame is created, and will not
-     * update if the attribute is changed later.
-     *
-     * @returns the frame's `name` attribute as specified in the tag.
-     */
-    name(): string;
-    /**
-     * @returns the frame's URL.
-     */
-    url(): string;
-    /**
-     * @returns the parent `Frame`, if any. Detached and main frames return `null`.
-     */
-    parentFrame(): Frame | null;
-    /**
-     * @returns an array of child frames.
-     */
-    childFrames(): Frame[];
-    /**
-     * @returns `true` if the frame has been detached, or `false` otherwise.
-     */
-    isDetached(): boolean;
-    /**
-     * Adds a `<script>` tag into the page with the desired url or content.
-     *
-     * @param options - configure the script to add to the page.
-     *
-     * @returns a promise that resolves to the added tag when the script's
-     * `onload` event fires or when the script content was injected into the
-     * frame.
-     */
-    addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
-    /**
-     * Adds a `<link rel="stylesheet">` tag into the page with the desired url or
-     * a `<style type="text/css">` tag with the content.
-     *
-     * @param options - configure the CSS to add to the page.
-     *
-     * @returns a promise that resolves to the added tag when the stylesheets's
-     * `onload` event fires or when the CSS content was injected into the
-     * frame.
-     */
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<Node>>;
-    /**
-     *
-     * This method clicks the first element found that matches `selector`.
-     *
-     * @remarks
-     *
-     * This method scrolls the element into view if needed, and then uses
-     * {@link Page.mouse} to click in the center of the element. If there's no
-     * element matching `selector`, the method throws an error.
-     *
-     * Bear in mind that if `click()` triggers a navigation event and there's a
-     * separate `page.waitForNavigation()` promise to be resolved, you may end up
-     * with a race condition that yields unexpected results. The correct pattern
-     * for click and wait for navigation is the following:
-     *
-     * ```javascript
-     * const [response] = await Promise.all([
-     *   page.waitForNavigation(waitOptions),
-     *   frame.click(selector, clickOptions),
-     * ]);
-     * ```
-     * @param selector - the selector to search for to click. If there are
-     * multiple elements, the first will be clicked.
-     */
-    click(selector: string, options?: {
-        delay?: number;
-        button?: MouseButton;
-        clickCount?: number;
-    }): Promise<void>;
-    /**
-     * This method fetches an element with `selector` and focuses it.
-     *
-     * @remarks
-     * If there's no element matching `selector`, the method throws an error.
-     *
-     * @param selector - the selector for the element to focus. If there are
-     * multiple elements, the first will be focused.
-     */
-    focus(selector: string): Promise<void>;
-    /**
-     * This method fetches an element with `selector`, scrolls it into view if
-     * needed, and then uses {@link Page.mouse} to hover over the center of the
-     * element.
-     *
-     * @remarks
-     * If there's no element matching `selector`, the method throws an
-     *
-     * @param selector - the selector for the element to hover. If there are
-     * multiple elements, the first will be hovered.
-     */
-    hover(selector: string): Promise<void>;
-    /**
-     * Triggers a `change` and `input` event once all the provided options have
-     * been selected.
-     *
-     * @remarks
-     *
-     * If there's no `<select>` element matching `selector`, the
-     * method throws an error.
-     *
-     * @example
-     * ```ts
-     * frame.select('select#colors', 'blue'); // single selection
-     * frame.select('select#colors', 'red', 'green', 'blue'); // multiple selections
-     * ```
-     *
-     * @param selector - a selector to query the frame for
-     * @param values - an array of values to select. If the `<select>` has the
-     * `multiple` attribute, all values are considered, otherwise only the first
-     * one is taken into account.
-     * @returns the list of values that were successfully selected.
-     */
-    select(selector: string, ...values: string[]): Promise<string[]>;
-    /**
-     * This method fetches an element with `selector`, scrolls it into view if
-     * needed, and then uses {@link Page.touchscreen} to tap in the center of the
-     * element.
-     *
-     * @remarks
-     *
-     * If there's no element matching `selector`, the method throws an error.
-     *
-     * @param selector - the selector to tap.
-     * @returns a promise that resolves when the element has been tapped.
-     */
-    tap(selector: string): Promise<void>;
-    /**
-     * Sends a `keydown`, `keypress`/`input`, and `keyup` event for each character
-     * in the text.
-     *
-     * @remarks
-     * To press a special key, like `Control` or `ArrowDown`, use
-     * {@link Keyboard.press}.
-     *
-     * @example
-     * ```ts
-     * await frame.type('#mytextarea', 'Hello'); // Types instantly
-     * await frame.type('#mytextarea', 'World', {delay: 100}); // Types slower, like a user
-     * ```
-     *
-     * @param selector - the selector for the element to type into. If there are
-     * multiple the first will be used.
-     * @param text - text to type into the element
-     * @param options - takes one option, `delay`, which sets the time to wait
-     * between key presses in milliseconds. Defaults to `0`.
-     *
-     * @returns a promise that resolves when the typing is complete.
-     */
-    type(selector: string, text: string, options?: {
-        delay: number;
-    }): Promise<void>;
-    /**
-     * Causes your script to wait for the given number of milliseconds.
-     *
-     * @remarks
-     * It's generally recommended to not wait for a number of seconds, but instead
-     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
-     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
-     *
-     * @example
-     *
-     * Wait for 1 second:
-     *
-     * ```
-     * await frame.waitForTimeout(1000);
-     * ```
-     *
-     * @param milliseconds - the number of milliseconds to wait.
-     */
-    waitForTimeout(milliseconds: number): Promise<void>;
-    /**
-     * @remarks
-     *
-     *
-     * Wait for the `selector` to appear in page. If at the moment of calling the
-     * method the `selector` already exists, the method will return immediately.
-     * If the selector doesn't appear after the `timeout` milliseconds of waiting,
-     * the function will throw.
+     * Waits for an element matching the given selector to appear in the frame.
      *
      * This method works across navigations.
      *
      * @example
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      *
@@ -2374,25 +2236,31 @@ export declare class Frame {
      *   const browser = await puppeteer.launch();
      *   const page = await browser.newPage();
      *   let currentURL;
-     *   page.mainFrame()
-     *   .waitForSelector('img')
-     *   .then(() => console.log('First URL with image: ' + currentURL));
+     *   page
+     *     .mainFrame()
+     *     .waitForSelector('img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
      *
-     *   for (currentURL of ['https://example.com', 'https://google.com', 'https://bbc.com']) {
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
      *     await page.goto(currentURL);
      *   }
      *   await browser.close();
      * })();
      * ```
-     * @param selector - the selector to wait for.
-     * @param options - options to define if the element should be visible and how
-     * long to wait before timing out.
-     * @returns a promise which resolves when an element matching the selector
-     * string is added to the DOM.
+     *
+     * @param selector - The selector to query and wait for.
+     * @param options - Options for customizing waiting behavior.
+     * @returns An element matching the given selector.
+     * @throws Throws if an element matching the given selector doesn't appear.
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
-     * @remarks
+     * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
+     *
      * Wait for the `xpath` to appear in page. If at the moment of calling the
      * method the `xpath` already exists, the method will return immediately. If
      * the xpath doesn't appear after the `timeout` milliseconds of waiting, the
@@ -2403,16 +2271,14 @@ export declare class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options  - options to configure the visiblity of the element and how
+     * @param options - options to configure the visiblity of the element and how
      * long to wait before timing out.
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
-     * @remarks
-     *
      * @example
-     *
      * The `waitForFunction` can be used to observe viewport size change:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      *
@@ -2434,7 +2300,7 @@ export declare class Frame {
      *   selector => !!document.querySelector(selector),
      *   {}, // empty options object
      *   selector
-     *);
+     * );
      * ```
      *
      * @param pageFunction - the function to evaluate in the frame context.
@@ -2443,6 +2309,176 @@ export declare class Frame {
      * @returns the promise which resolve when the `pageFunction` returns a truthy value.
      */
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    /**
+     * @returns The full HTML contents of the frame, including the DOCTYPE.
+     */
+    content(): Promise<string>;
+    /**
+     * Set the content of the frame.
+     *
+     * @param html - HTML markup to assign to the page.
+     * @param options - Options to configure how long before timing out and at
+     * what point to consider the content setting successful.
+     */
+    setContent(html: string, options?: {
+        timeout?: number;
+        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+    }): Promise<void>;
+    /**
+     * @returns The frame's `name` attribute as specified in the tag.
+     *
+     * @remarks
+     * If the name is empty, it returns the `id` attribute instead.
+     *
+     * @remarks
+     * This value is calculated once when the frame is created, and will not
+     * update if the attribute is changed later.
+     */
+    name(): string;
+    /**
+     * @returns The frame's URL.
+     */
+    url(): string;
+    /**
+     * @returns The parent frame, if any. Detached and main frames return `null`.
+     */
+    parentFrame(): Frame | null;
+    /**
+     * @returns An array of child frames.
+     */
+    childFrames(): Frame[];
+    /**
+     * @returns `true` if the frame has been detached. Otherwise, `false`.
+     */
+    isDetached(): boolean;
+    /**
+     * Adds a `<script>` tag into the page with the desired url or content.
+     *
+     * @param options - Options for the script.
+     * @returns a promise that resolves to the added tag when the script's
+     * `onload` event fires or when the script content was injected into the
+     * frame.
+     */
+    addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
+    /**
+     * Adds a `<link rel="stylesheet">` tag into the page with the desired url or
+     * a `<style type="text/css">` tag with the content.
+     *
+     * @param options - Options for the style link.
+     * @returns a promise that resolves to the added tag when the stylesheets's
+     * `onload` event fires or when the CSS content was injected into the
+     * frame.
+     */
+    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
+    /**
+     * Clicks the first element found that matches `selector`.
+     *
+     * @remarks
+     * If `click()` triggers a navigation event and there's a separate
+     * `page.waitForNavigation()` promise to be resolved, you may end up with a
+     * race condition that yields unexpected results. The correct pattern for
+     * click and wait for navigation is the following:
+     *
+     * ```ts
+     * const [response] = await Promise.all([
+     *   page.waitForNavigation(waitOptions),
+     *   frame.click(selector, clickOptions),
+     * ]);
+     * ```
+     *
+     * @param selector - The selector to query for.
+     */
+    click(selector: string, options?: {
+        delay?: number;
+        button?: MouseButton;
+        clickCount?: number;
+    }): Promise<void>;
+    /**
+     * Focuses the first element that matches the `selector`.
+     *
+     * @param selector - The selector to query for.
+     * @throws Throws if there's no element matching `selector`.
+     */
+    focus(selector: string): Promise<void>;
+    /**
+     * Hovers the pointer over the center of the first element that matches the
+     * `selector`.
+     *
+     * @param selector - The selector to query for.
+     * @throws Throws if there's no element matching `selector`.
+     */
+    hover(selector: string): Promise<void>;
+    /**
+     * Selects a set of value on the first `<select>` element that matches the
+     * `selector`.
+     *
+     * @example
+     *
+     * ```ts
+     * frame.select('select#colors', 'blue'); // single selection
+     * frame.select('select#colors', 'red', 'green', 'blue'); // multiple selections
+     * ```
+     *
+     * @param selector - The selector to query for.
+     * @param values - The array of values to select. If the `<select>` has the
+     * `multiple` attribute, all values are considered, otherwise only the first
+     * one is taken into account.
+     * @returns the list of values that were successfully selected.
+     * @throws Throws if there's no `<select>` matching `selector`.
+     */
+    select(selector: string, ...values: string[]): Promise<string[]>;
+    /**
+     * Taps the first element that matches the `selector`.
+     *
+     * @param selector - The selector to query for.
+     * @throws Throws if there's no element matching `selector`.
+     */
+    tap(selector: string): Promise<void>;
+    /**
+     * Sends a `keydown`, `keypress`/`input`, and `keyup` event for each character
+     * in the text.
+     *
+     * @remarks
+     * To press a special key, like `Control` or `ArrowDown`, use
+     * {@link Keyboard.press}.
+     *
+     * @example
+     *
+     * ```ts
+     * await frame.type('#mytextarea', 'Hello'); // Types instantly
+     * await frame.type('#mytextarea', 'World', {delay: 100}); // Types slower, like a user
+     * ```
+     *
+     * @param selector - the selector for the element to type into. If there are
+     * multiple the first will be used.
+     * @param text - text to type into the element
+     * @param options - takes one option, `delay`, which sets the time to wait
+     * between key presses in milliseconds. Defaults to `0`.
+     */
+    type(selector: string, text: string, options?: {
+        delay: number;
+    }): Promise<void>;
+    /**
+     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     *
+     * Causes your script to wait for the given number of milliseconds.
+     *
+     * @remarks
+     * It's generally recommended to not wait for a number of seconds, but instead
+     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
+     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
+     *
+     * @example
+     *
+     * Wait for 1 second:
+     *
+     * ```ts
+     * await frame.waitForTimeout(1000);
+     * ```
+     *
+     * @param milliseconds - the number of milliseconds to wait.
+     */
+    waitForTimeout(milliseconds: number): Promise<void>;
     /**
      * @returns the frame's title.
      */
@@ -2539,11 +2575,11 @@ export declare interface FrameWaitForFunctionOptions {
  */
 export declare interface GeolocationOptions {
     /**
-     * Latitude between -90 and 90.
+     * Latitude between `-90` and `90`.
      */
     longitude: number;
     /**
-     * Longitude between -180 and 180.
+     * Longitude between `-180` and `180`.
      */
     latitude: number;
     /**
@@ -2578,14 +2614,13 @@ export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
 export declare type Handler<T = any> = (event?: T) => void;
 
 /**
- *
  * Represents an HTTP request sent by a page.
  * @remarks
  *
  * Whenever the page sends a request, such as for a network resource, the
  * following events are emitted by Puppeteer's `page`:
  *
- * - `request`:  emitted when the request is issued by the page.
+ * - `request`: emitted when the request is issued by the page.
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *
@@ -2645,14 +2680,14 @@ export declare class HTTPRequest {
     abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * @returns An InterceptResolutionState object describing the current resolution
-     *  action and priority.
+     * action and priority.
      *
-     *  InterceptResolutionState contains:
-     *    action: InterceptResolutionAction
-     *    priority?: number
+     * InterceptResolutionState contains:
+     * action: InterceptResolutionAction
+     * priority?: number
      *
-     *  InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
-     *  `disabled`, `none`, or `already-handled`.
+     * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
+     * `disabled`, `none`, or `already-handled`.
      */
     interceptResolutionState(): InterceptResolutionState;
     /**
@@ -2770,6 +2805,7 @@ export declare class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      *
      * @example
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
@@ -2800,13 +2836,14 @@ export declare class HTTPRequest {
      *
      * @example
      * An example of fulfilling all requests with 404 responses:
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
      *   request.respond({
      *     status: 404,
      *     contentType: 'text/plain',
-     *     body: 'Not Found!'
+     *     body: 'Not Found!',
      *   });
      * });
      * ```
@@ -2864,7 +2901,7 @@ export declare class HTTPResponse {
      */
     status(): number;
     /**
-     * @returns  The status text of the response (e.g. usually an "OK" for a
+     * @returns The status text of the response (e.g. usually an "OK" for a
      * success).
      */
     statusText(): string;
@@ -2969,13 +3006,13 @@ export declare class HTTPResponse {
 
     /* Excluded from this release type: InternalQueryHandler */
 
-    /* Excluded from this release type: isErrnoException */
-
-    /* Excluded from this release type: isErrorLike */
-
     /* Excluded from this release type: isNode */
 
     /* Excluded from this release type: isNumber */
+
+    /* Excluded from this release type: IsolatedWorld */
+
+    /* Excluded from this release type: IsolatedWorldChart */
 
     /* Excluded from this release type: IsPageTargetCallback */
 
@@ -3026,20 +3063,23 @@ export declare class HTTPResponse {
     }
 
     /**
-     * Represents an in-page JavaScript object. JSHandles can be created with the
-     * {@link Page.evaluateHandle | page.evaluateHandle} method.
+     * Represents a reference to a JavaScript object. Instances can be created using
+     * {@link Page.evaluateHandle}.
+     *
+     * Handles prevent the referenced JavaScript object from being garbage-collected
+     * unless the handle is purposely {@link JSHandle.dispose | disposed}. JSHandles
+     * are auto-disposed when their associated frame is navigated away or the parent
+     * context gets destroyed.
+     *
+     * Handles can be used as arguments for any evaluation function such as
+     * {@link Page.$eval}, {@link Page.evaluate}, and {@link Page.evaluateHandle}.
+     * They are resolved to their referenced object.
      *
      * @example
+     *
      * ```ts
      * const windowHandle = await page.evaluateHandle(() => window);
      * ```
-     *
-     * JSHandle prevents the referenced JavaScript object from being garbage-collected
-     * unless the handle is {@link JSHandle.dispose | disposed}. JSHandles are auto-
-     * disposed when their origin frame gets navigated or the parent context gets destroyed.
-     *
-     * JSHandle instances can be used as arguments for {@link Page.$eval},
-     * {@link Page.evaluate}, and {@link Page.evaluateHandle}.
      *
      * @public
      */
@@ -3049,43 +3089,26 @@ export declare class HTTPResponse {
          * Used for nominally typing {@link JSHandle}.
          */
         [__JSHandleSymbol]?: T;
-        /* Excluded from this release type: _client */
-        /* Excluded from this release type: _disposed */
-        /* Excluded from this release type: _remoteObject */
-        /* Excluded from this release type: _context */
+        /* Excluded from this release type: client */
+        /* Excluded from this release type: disposed */
         /* Excluded from this release type: __constructor */
-        /** Returns the execution context the handle belongs to.
+        /**
+         * @returns The execution context the handle belongs to.
          */
         executionContext(): ExecutionContext;
         /**
-         * This method passes this handle as the first argument to `pageFunction`. If
-         * `pageFunction` returns a Promise, then `handle.evaluate` would wait for the
-         * promise to resolve and return its value.
+         * Evaluates the given function with the current handle as its first argument.
          *
-         * @example
-         * ```ts
-         * const tweetHandle = await page.$('.tweet .retweets');
-         * expect(await tweetHandle.evaluate(node => node.innerText)).toBe('10');
-         * ```
+         * @see {@link ExecutionContext.evaluate} for more details.
          */
         evaluate<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
         this,
         ...Params
         ]>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
         /**
-         * This method passes this handle as the first argument to `pageFunction`.
+         * Evaluates the given function with the current handle as its first argument.
          *
-         * @remarks
-         *
-         * The only difference between `jsHandle.evaluate` and
-         * `jsHandle.evaluateHandle` is that `jsHandle.evaluateHandle` returns an
-         * in-page object (JSHandle).
-         *
-         * If the function passed to `jsHandle.evaluateHandle` returns a Promise, then
-         * `evaluateHandle.evaluateHandle` waits for the promise to resolve and
-         * returns its value.
-         *
-         * See {@link Page.evaluateHandle} for more details.
+         * @see {@link ExecutionContext.evaluateHandle} for more details.
          */
         evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
         this,
@@ -3097,51 +3120,53 @@ export declare class HTTPResponse {
         getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
         getProperty(propertyName: string): Promise<JSHandle<unknown>>;
         /**
-         * The method returns a map with property names as keys and JSHandle instances
-         * for the property values.
+         * Gets a map of handles representing the properties of the current handle.
          *
          * @example
+         *
          * ```ts
          * const listHandle = await page.evaluateHandle(() => document.body.children);
          * const properties = await listHandle.getProperties();
          * const children = [];
          * for (const property of properties.values()) {
          *   const element = property.asElement();
-         *   if (element)
+         *   if (element) {
          *     children.push(element);
+         *   }
          * }
          * children; // holds elementHandles to all children of document.body
          * ```
          */
         getProperties(): Promise<Map<string, JSHandle>>;
         /**
-         * @returns Returns a JSON representation of the object.If the object has a
-         * `toJSON` function, it will not be called.
-         * @remarks
+         * @returns A vanilla object representing the serializable portions of the
+         * referenced object.
+         * @throws Throws if the object cannot be serialized due to circularity.
          *
-         * The JSON is generated by running {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify | JSON.stringify}
-         * on the object in page and consequent {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse | JSON.parse} in puppeteer.
-         * **NOTE** The method throws if the referenced object is not stringifiable.
+         * @remarks
+         * If the object has a `toJSON` function, it **will not** be called.
          */
-        jsonValue<T = unknown>(): Promise<T>;
+        jsonValue(): Promise<T>;
         /**
-         * @returns Either `null` or the object handle itself, if the object
-         * handle is an instance of {@link ElementHandle}.
+         * @returns Either `null` or the handle itself if the handle is an
+         * instance of {@link ElementHandle}.
          */
         asElement(): ElementHandle<Node> | null;
         /**
-         * Stops referencing the element handle, and resolves when the object handle is
-         * successfully disposed of.
+         * Releases the object referenced by the handle for garbage collection.
          */
         dispose(): Promise<void>;
         /**
          * Returns a string representation of the JSHandle.
          *
-         * @remarks Useful during debugging.
+         * @remarks
+         * Useful during debugging.
          */
         toString(): string;
         /**
-         * Provides access to [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject) backing this JSHandle.
+         * Provides access to the
+         * [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject)
+         * backing this handle.
          */
         remoteObject(): Protocol.Runtime.RemoteObject;
     }
@@ -3162,6 +3187,7 @@ export declare class HTTPResponse {
      *
      * @example
      * An example of holding down `Shift` in order to select and delete some text:
+     *
      * ```ts
      * await page.keyboard.type('Hello World!');
      * await page.keyboard.press('ArrowLeft');
@@ -3177,6 +3203,7 @@ export declare class HTTPResponse {
      *
      * @example
      * An example of pressing `A`
+     *
      * ```ts
      * await page.keyboard.down('Shift');
      * await page.keyboard.press('KeyA');
@@ -3234,6 +3261,7 @@ export declare class HTTPResponse {
          * Holding down `Shift` will not type the text in upper case.
          *
          * @example
+         *
          * ```ts
          * page.keyboard.sendCharacter('嗨');
          * ```
@@ -3254,6 +3282,7 @@ export declare class HTTPResponse {
          * Holding down `Shift` will not type the text in upper case.
          *
          * @example
+         *
          * ```ts
          * await page.keyboard.type('Hello'); // Types instantly
          * await page.keyboard.type('World', {delay: 100}); // Types slower, like a user
@@ -3392,6 +3421,8 @@ export declare class HTTPResponse {
      */
     export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 
+    /* Excluded from this release type: MAIN_WORLD */
+
     /* Excluded from this release type: makePredicateString */
 
     /**
@@ -3428,6 +3459,7 @@ export declare class HTTPResponse {
      * Every `page` object has its own Mouse, accessible with [`page.mouse`](#pagemouse).
      *
      * @example
+     *
      * ```ts
      * // Using ‘page.mouse’ to trace a 100x100 square.
      * await page.mouse.move(0, 0);
@@ -3448,17 +3480,24 @@ export declare class HTTPResponse {
      *
      * @example
      * For example, if you want to select all content between nodes:
+     *
      * ```ts
-     * await page.evaluate((from, to) => {
-     *   const selection = from.getRootNode().getSelection();
-     *   const range = document.createRange();
-     *   range.setStartBefore(from);
-     *   range.setEndAfter(to);
-     *   selection.removeAllRanges();
-     *   selection.addRange(range);
-     * }, fromJSHandle, toJSHandle);
+     * await page.evaluate(
+     *   (from, to) => {
+     *     const selection = from.getRootNode().getSelection();
+     *     const range = document.createRange();
+     *     range.setStartBefore(from);
+     *     range.setEndAfter(to);
+     *     selection.removeAllRanges();
+     *     selection.addRange(range);
+     *   },
+     *   fromJSHandle,
+     *   toJSHandle
+     * );
      * ```
+     *
      * If you then would want to copy-paste your selection, you can use the clipboard api:
+     *
      * ```ts
      * // The clipboard api does not allow you to copy, unless the tab is focused.
      * await page.bringToFront();
@@ -3469,13 +3508,19 @@ export declare class HTTPResponse {
      *   return navigator.clipboard.readText();
      * });
      * ```
+     *
      * **Note**: If you want access to the clipboard API,
      * you have to give it permission to do so:
+     *
      * ```ts
-     * await browser.defaultBrowserContext().overridePermissions(
-     *   '<your origin>', ['clipboard-read', 'clipboard-write']
-     * );
+     * await browser
+     *   .defaultBrowserContext()
+     *   .overridePermissions('<your origin>', [
+     *     'clipboard-read',
+     *     'clipboard-write',
+     *   ]);
      * ```
+     *
      * @public
      */
     export declare class Mouse {
@@ -3516,8 +3561,11 @@ export declare class HTTPResponse {
          *
          * @example
          * An example of zooming into an element:
+         *
          * ```ts
-         * await page.goto('https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366');
+         * await page.goto(
+         *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366'
+         * );
          *
          * const elem = await page.$('div');
          * const boundingBox = await elem.boundingBox();
@@ -3526,7 +3574,7 @@ export declare class HTTPResponse {
          *   boundingBox.y + boundingBox.height / 2
          * );
          *
-         * await page.mouse.wheel({ deltaY: -100 })
+         * await page.mouse.wheel({deltaY: -100});
          * ```
          */
         wheel(options?: MouseWheelOptions): Promise<void>;
@@ -3670,6 +3718,7 @@ export declare class HTTPResponse {
      *
      * @example
      * This example creates a page, navigates it to a URL, and then saves a screenshot:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      *
@@ -3687,6 +3736,7 @@ export declare class HTTPResponse {
      *
      * @example
      * This example logs a message for a single page `load` event:
+     *
      * ```ts
      * page.once('load', () => console.log('Page loaded!'));
      * ```
@@ -3751,9 +3801,9 @@ export declare class HTTPResponse {
          *
          * ```ts
          * const [fileChooser] = await Promise.all([
-         * page.waitForFileChooser(),
-         * page.click('#upload-file-button'),
-         * // some button that triggers file selection
+         *   page.waitForFileChooser(),
+         *   page.click('#upload-file-button'),
+         *   // some button that triggers file selection
          * ]);
          * await fileChooser.accept(['/tmp/myfile.pdf']);
          * ```
@@ -3761,10 +3811,13 @@ export declare class HTTPResponse {
         waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
         /**
          * Sets the page's geolocation.
+         *
          * @remarks
-         * NOTE: Consider using {@link BrowserContext.overridePermissions} to grant
+         * Consider using {@link BrowserContext.overridePermissions} to grant
          * permissions for the page to read its geolocation.
+         *
          * @example
+         *
          * ```ts
          * await page.setGeolocation({latitude: 59.95, longitude: 30.31667});
          * ```
@@ -3785,6 +3838,7 @@ export declare class HTTPResponse {
         browserContext(): BrowserContext;
         /**
          * @returns The page's main frame.
+         *
          * @remarks
          * Page is guaranteed to have a main frame which persists during navigations.
          */
@@ -3799,27 +3853,31 @@ export declare class HTTPResponse {
          */
         frames(): Frame[];
         /**
-         * @returns all of the dedicated
-         * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
-         * WebWorkers}
-         * associated with the page.
+         * @returns all of the dedicated {@link
+         * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
+         * WebWorkers} associated with the page.
+         *
          * @remarks
-         * NOTE: This does not contain ServiceWorkers
+         * This does not contain ServiceWorkers
          */
         workers(): WebWorker[];
         /**
-         * @param value - Whether to enable request interception.
-         *
-         * @remarks
          * Activating request interception enables {@link HTTPRequest.abort},
-         * {@link HTTPRequest.continue} and {@link HTTPRequest.respond} methods.  This
+         * {@link HTTPRequest.continue} and {@link HTTPRequest.respond} methods. This
          * provides the capability to modify network requests that are made by a page.
          *
          * Once request interception is enabled, every request will stall unless it's
          * continued, responded or aborted; or completed using the browser cache.
          *
+         * Enabling request interception disables page caching.
+         *
+         * See the
+         * {@link https://pptr.dev/next/guides/request-interception|Request interception guide}
+         * for more details.
+         *
          * @example
          * An example of a naïve request interceptor that aborts all image requests:
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * (async () => {
@@ -3827,17 +3885,19 @@ export declare class HTTPResponse {
          *   const page = await browser.newPage();
          *   await page.setRequestInterception(true);
          *   page.on('request', interceptedRequest => {
-         *     if (interceptedRequest.url().endsWith('.png') ||
-         *         interceptedRequest.url().endsWith('.jpg'))
+         *     if (
+         *       interceptedRequest.url().endsWith('.png') ||
+         *       interceptedRequest.url().endsWith('.jpg')
+         *     )
          *       interceptedRequest.abort();
-         *     else
-         *       interceptedRequest.continue();
-         *     });
+         *     else interceptedRequest.continue();
+         *   });
          *   await page.goto('https://example.com');
          *   await browser.close();
          * })();
          * ```
-         * NOTE: Enabling request interception disables page caching.
+         *
+         * @param value - Whether to enable request interception.
          */
         setRequestInterception(value: boolean): Promise<void>;
         /**
@@ -3845,7 +3905,7 @@ export declare class HTTPResponse {
          *
          * @remarks
          * Activating drag interception enables the `Input.drag`,
-         * methods  This provides the capability to capture drag events emitted
+         * methods This provides the capability to capture drag events emitted
          * on the page, which can then be used to simulate drag-and-drop.
          */
         setDragInterception(enabled: boolean): Promise<void>;
@@ -3860,19 +3920,21 @@ export declare class HTTPResponse {
         /**
          * @param networkConditions - Passing `null` disables network condition emulation.
          * @example
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * const slow3G = puppeteer.networkConditions['Slow 3G'];
          *
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * await page.emulateNetworkConditions(slow3G);
-         * await page.goto('https://www.google.com');
-         * // other actions...
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   await page.emulateNetworkConditions(slow3G);
+         *   await page.goto('https://www.google.com');
+         *   // other actions...
+         *   await browser.close();
          * })();
          * ```
+         *
          * @remarks
          * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
          * https://crbug.com/563644). To set the page offline, you can use
@@ -3894,7 +3956,7 @@ export declare class HTTPResponse {
          * - {@link Page.setContent | page.setContent(html,options)}
          *
          * - {@link Page.waitForNavigation | page.waitForNavigation(options)}
-         * @param timeout - Maximum navigation time in milliseconds.
+         *   @param timeout - Maximum navigation time in milliseconds.
          */
         setDefaultNavigationTimeout(timeout: number): void;
         /**
@@ -3932,15 +3994,20 @@ export declare class HTTPResponse {
          * recommended as they are easier to debug and use with TypeScript):
          *
          * @example
+         *
          * ```ts
-         * const aHandle = await page.evaluateHandle('document')
+         * const aHandle = await page.evaluateHandle('document');
          * ```
          *
          * @example
          * {@link JSHandle} instances can be passed as arguments to the `pageFunction`:
+         *
          * ```ts
          * const aHandle = await page.evaluateHandle(() => document.body);
-         * const resultHandle = await page.evaluateHandle(body => body.innerHTML, aHandle);
+         * const resultHandle = await page.evaluateHandle(
+         *   body => body.innerHTML,
+         *   aHandle
+         * );
          * console.log(await resultHandle.jsonValue());
          * await resultHandle.dispose();
          * ```
@@ -3950,14 +4017,17 @@ export declare class HTTPResponse {
          * you instead get an {@link ElementHandle} back:
          *
          * @example
+         *
          * ```ts
-         * const button = await page.evaluateHandle(() => document.querySelector('button'));
+         * const button = await page.evaluateHandle(() =>
+         *   document.querySelector('button')
+         * );
          * // can call `click` because `button` is an `ElementHandle`
          * await button.click();
          * ```
          *
          * The TypeScript definitions assume that `evaluateHandle` returns
-         *  a `JSHandle`, but if you know it's going to return an
+         * a `JSHandle`, but if you know it's going to return an
          * `ElementHandle`, pass it as the generic argument:
          *
          * ```ts
@@ -3981,7 +4051,7 @@ export declare class HTTPResponse {
          *
          * ```ts
          * // Create a Map object
-         * await page.evaluate(() => window.map = new Map());
+         * await page.evaluate(() => (window.map = new Map()));
          * // Get a handle to the Map object prototype
          * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
          * // Query all map instances into an array
@@ -3991,6 +4061,7 @@ export declare class HTTPResponse {
          * await mapInstances.dispose();
          * await mapPrototype.dispose();
          * ```
+         *
          * @param prototypeHandle - a handle to the object prototype.
          * @returns Promise which resolves to a handle to an array of objects with
          * this prototype.
@@ -4025,7 +4096,10 @@ export declare class HTTPResponse {
          * ```ts
          * // if you don't provide HTMLInputElement here, TS will error
          * // as `value` is not on `Element`
-         * const searchValue = await page.$eval('#search', (el: HTMLInputElement) => el.value);
+         * const searchValue = await page.$eval(
+         *   '#search',
+         *   (el: HTMLInputElement) => el.value
+         * );
          * ```
          *
          * The compiler should be able to infer the return type
@@ -4038,7 +4112,8 @@ export declare class HTTPResponse {
          * // The compiler can infer the return type in this case, but if it can't
          * // or if you want to be more explicit, provide it as the generic type.
          * const searchValue = await page.$eval<string>(
-         *  '#search', (el: HTMLInputElement) => el.value
+         *   '#search',
+         *   (el: HTMLInputElement) => el.value
          * );
          * ```
          *
@@ -4063,7 +4138,6 @@ export declare class HTTPResponse {
          * the page and passes the result as the first argument to the `pageFunction`.
          *
          * @remarks
-         *
          * If `pageFunction` returns a promise `$$eval` will wait for the promise to
          * resolve and then return its value.
          *
@@ -4075,7 +4149,7 @@ export declare class HTTPResponse {
          *
          * // get the text content of all the `.options` elements:
          * const options = await page.$$eval('div > span.options', options => {
-         *   return options.map(option => option.textContent)
+         *   return options.map(option => option.textContent);
          * });
          * ```
          *
@@ -4104,16 +4178,17 @@ export declare class HTTPResponse {
          * // The compiler can infer the return type in this case, but if it can't
          * // or if you want to be more explicit, provide it as the generic type.
          * const allInputValues = await page.$$eval<string[]>(
-         *  'input', (elements: HTMLInputElement[]) => elements.map(e => e.textContent)
+         *   'input',
+         *   (elements: HTMLInputElement[]) => elements.map(e => e.textContent)
          * );
          * ```
          *
          * @param selector - the
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
          * to query for
-         * @param pageFunction - the function to be evaluated in the page context. Will
-         * be passed the result of `Array.from(document.querySelectorAll(selector))`
-         * as its first argument.
+         * @param pageFunction - the function to be evaluated in the page context.
+         * Will be passed the result of
+         * `Array.from(document.querySelectorAll(selector))` as its first argument.
          * @param args - any additional arguments to pass through to `pageFunction`.
          *
          * @returns The result of calling `pageFunction`. If it returns an element it
@@ -4128,8 +4203,10 @@ export declare class HTTPResponse {
          * The method evaluates the XPath expression relative to the page document as
          * its context node. If there are no such elements, the method resolves to an
          * empty array.
+         *
          * @remarks
          * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
+         *
          * @param expression - Expression to evaluate
          */
         $x(expression: string): Promise<Array<ElementHandle<Node>>>;
@@ -4141,6 +4218,7 @@ export declare class HTTPResponse {
         deleteCookie(...cookies: Protocol.Network.DeleteCookiesRequest[]): Promise<void>;
         /**
          * @example
+         *
          * ```ts
          * await page.setCookie(cookieObject1, cookieObject2);
          * ```
@@ -4148,10 +4226,13 @@ export declare class HTTPResponse {
         setCookie(...cookies: Protocol.Network.CookieParam[]): Promise<void>;
         /**
          * Adds a `<script>` tag into the page with the desired URL or content.
+         *
          * @remarks
-         * Shortcut for {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options) }.
-         * @returns Promise which resolves to the added tag when the script's onload fires or
-         * when the script content was injected into frame.
+         * Shortcut for
+         * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
+         *
+         * @returns Promise which resolves to the added tag when the script's onload
+         * fires or when the script content was injected into frame.
          */
         addScriptTag(options: {
             url?: string;
@@ -4172,81 +4253,104 @@ export declare class HTTPResponse {
             content?: string;
         }): Promise<ElementHandle<Node>>;
         /**
-         * The method adds a function called `name` on the page's `window` object. When
-         * called, the function executes `puppeteerFunction` in node.js and returns a
-         * `Promise` which resolves to the return value of `puppeteerFunction`.
+         * The method adds a function called `name` on the page's `window` object.
+         * When called, the function executes `puppeteerFunction` in node.js and
+         * returns a `Promise` which resolves to the return value of
+         * `puppeteerFunction`.
          *
          * If the puppeteerFunction returns a `Promise`, it will be awaited.
          *
-         * NOTE: Functions installed via `page.exposeFunction` survive navigations.
-         * @param name - Name of the function on the window object
-         * @param pptrFunction -  Callback function which will be called in
-         * Puppeteer's context.
+         * :::note
+         *
+         * Functions installed via `page.exposeFunction` survive navigations.
+         *
+         * :::note
+         *
          * @example
          * An example of adding an `md5` function into the page:
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * const crypto = require('crypto');
          *
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * page.on('console', (msg) => console.log(msg.text()));
-         * await page.exposeFunction('md5', (text) =>
-         * crypto.createHash('md5').update(text).digest('hex')
-         * );
-         * await page.evaluate(async () => {
-         * // use window.md5 to compute hashes
-         * const myString = 'PUPPETEER';
-         * const myHash = await window.md5(myString);
-         * console.log(`md5 of ${myString} is ${myHash}`);
-         * });
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   page.on('console', msg => console.log(msg.text()));
+         *   await page.exposeFunction('md5', text =>
+         *     crypto.createHash('md5').update(text).digest('hex')
+         *   );
+         *   await page.evaluate(async () => {
+         *     // use window.md5 to compute hashes
+         *     const myString = 'PUPPETEER';
+         *     const myHash = await window.md5(myString);
+         *     console.log(`md5 of ${myString} is ${myHash}`);
+         *   });
+         *   await browser.close();
          * })();
          * ```
+         *
+         * @example
          * An example of adding a `window.readfile` function into the page:
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * const fs = require('fs');
          *
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * page.on('console', (msg) => console.log(msg.text()));
-         * await page.exposeFunction('readfile', async (filePath) => {
-         * return new Promise((resolve, reject) => {
-         * fs.readFile(filePath, 'utf8', (err, text) => {
-         *    if (err) reject(err);
-         *    else resolve(text);
-         *  });
-         * });
-         * });
-         * await page.evaluate(async () => {
-         * // use window.readfile to read contents of a file
-         * const content = await window.readfile('/etc/hosts');
-         * console.log(content);
-         * });
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   page.on('console', msg => console.log(msg.text()));
+         *   await page.exposeFunction('readfile', async filePath => {
+         *     return new Promise((resolve, reject) => {
+         *       fs.readFile(filePath, 'utf8', (err, text) => {
+         *         if (err) reject(err);
+         *         else resolve(text);
+         *       });
+         *     });
+         *   });
+         *   await page.evaluate(async () => {
+         *     // use window.readfile to read contents of a file
+         *     const content = await window.readfile('/etc/hosts');
+         *     console.log(content);
+         *   });
+         *   await browser.close();
          * })();
          * ```
+         *
+         * @param name - Name of the function on the window object
+         * @param pptrFunction - Callback function which will be called in Puppeteer's
+         * context.
          */
         exposeFunction(name: string, pptrFunction: Function | {
             default: Function;
         }): Promise<void>;
         /**
          * Provide credentials for `HTTP authentication`.
-         * @remarks To disable authentication, pass `null`.
+         *
+         * @remarks
+         * To disable authentication, pass `null`.
          */
         authenticate(credentials: Credentials): Promise<void>;
         /**
          * The extra HTTP headers will be sent with every request the page initiates.
-         * NOTE: All HTTP header names are lowercased. (HTTP headers are
+         *
+         * :::tip
+         *
+         * All HTTP header names are lowercased. (HTTP headers are
          * case-insensitive, so this shouldn’t impact your server code.)
-         * NOTE: page.setExtraHTTPHeaders does not guarantee the order of headers in
+         *
+         * :::
+         *
+         * :::note
+         *
+         * page.setExtraHTTPHeaders does not guarantee the order of headers in
          * the outgoing requests.
+         *
+         * :::
+         *
          * @param headers - An object containing additional HTTP headers to be sent
          * with every request. All header values must be strings.
-         * @returns
          */
         setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
         /**
@@ -4282,12 +4386,12 @@ export declare class HTTPResponse {
          *
          * - `TaskDuration` : Combined duration of all tasks performed by the browser.
          *
-         *
          * - `JSHeapUsedSize` : Used JavaScript heap size.
          *
          * - `JSHeapTotalSize` : Total JavaScript heap size.
+         *
          * @remarks
-         * NOTE: All timestamps are in monotonic time: monotonically increasing time
+         * All timestamps are in monotonic time: monotonically increasing time
          * in seconds since an arbitrary point in the past.
          */
         metrics(): Promise<Metrics>;
@@ -4311,17 +4415,17 @@ export declare class HTTPResponse {
          *   {@link Page.setDefaultTimeout} methods.
          *
          * - `waitUntil`: When to consider setting markup succeeded, defaults to
-         *    `load`. Given an array of event strings, setting content is considered
-         *    to be successful after all events have been fired. Events can be
-         *    either:<br/>
-         *  - `load` : consider setting content to be finished when the `load` event
-         *    is fired.<br/>
-         *  - `domcontentloaded` : consider setting content to be finished when the
-         *    `DOMContentLoaded` event is fired.<br/>
-         *  - `networkidle0` : consider setting content to be finished when there are
-         *    no more than 0 network connections for at least `500` ms.<br/>
-         *  - `networkidle2` : consider setting content to be finished when there are
-         *    no more than 2 network connections for at least `500` ms.
+         *   `load`. Given an array of event strings, setting content is considered
+         *   to be successful after all events have been fired. Events can be
+         *   either:<br/>
+         * - `load` : consider setting content to be finished when the `load` event
+         *   is fired.<br/>
+         * - `domcontentloaded` : consider setting content to be finished when the
+         *   `DOMContentLoaded` event is fired.<br/>
+         * - `networkidle0` : consider setting content to be finished when there are
+         *   no more than 0 network connections for at least `500` ms.<br/>
+         * - `networkidle2` : consider setting content to be finished when there are
+         *   no more than 2 network connections for at least `500` ms.
          */
         setContent(html: string, options?: WaitForOptions): Promise<void>;
         /**
@@ -4340,22 +4444,23 @@ export declare class HTTPResponse {
          *   {@link Page.setDefaultTimeout} methods.
          *
          * - `waitUntil`:When to consider navigation succeeded, defaults to `load`.
-         *    Given an array of event strings, navigation is considered to be
-         *    successful after all events have been fired. Events can be either:<br/>
-         *  - `load` : consider navigation to be finished when the load event is
-         *    fired.<br/>
-         *  - `domcontentloaded` : consider navigation to be finished when the
-         *    DOMContentLoaded event is fired.<br/>
-         *  - `networkidle0` : consider navigation to be finished when there are no
-         *    more than 0 network connections for at least `500` ms.<br/>
-         *  - `networkidle2` : consider navigation to be finished when there are no
-         *    more than 2 network connections for at least `500` ms.
+         *   Given an array of event strings, navigation is considered to be
+         *   successful after all events have been fired. Events can be either:<br/>
+         * - `load` : consider navigation to be finished when the load event is
+         *   fired.<br/>
+         * - `domcontentloaded` : consider navigation to be finished when the
+         *   DOMContentLoaded event is fired.<br/>
+         * - `networkidle0` : consider navigation to be finished when there are no
+         *   more than 0 network connections for at least `500` ms.<br/>
+         * - `networkidle2` : consider navigation to be finished when there are no
+         *   more than 2 network connections for at least `500` ms.
          *
          * - `referer` : Referer header value. If provided it will take preference
          *   over the referer header value set by
          *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.
          *
          * `page.goto` will throw an error if:
+         *
          * - there's an SSL error (e.g. in case of self-signed certificates).
          * - target URL is invalid.
          * - the timeout is exceeded during navigation.
@@ -4363,9 +4468,9 @@ export declare class HTTPResponse {
          * - the main resource failed to load.
          *
          * `page.goto` will not throw an error when any valid HTTP status code is
-         *   returned by the remote server, including 404 "Not Found" and 500
-         *   "Internal Server Error". The status code for such responses can be
-         *   retrieved by calling response.status().
+         * returned by the remote server, including 404 "Not Found" and 500
+         * "Internal Server Error". The status code for such responses can be
+         * retrieved by calling response.status().
          *
          * NOTE: `page.goto` either throws an error or returns a main resource
          * response. The only exceptions are navigation to about:blank or navigation
@@ -4395,16 +4500,16 @@ export declare class HTTPResponse {
          *   {@link Page.setDefaultTimeout} methods.
          *
          * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
-         *    Given an array of event strings, navigation is considered to be
-         *    successful after all events have been fired. Events can be either:<br/>
-         *  - `load` : consider navigation to be finished when the load event is
-         *    fired.<br/>
-         *  - `domcontentloaded` : consider navigation to be finished when the
-         *    DOMContentLoaded event is fired.<br/>
-         *  - `networkidle0` : consider navigation to be finished when there are no
-         *    more than 0 network connections for at least `500` ms.<br/>
-         *  - `networkidle2` : consider navigation to be finished when there are no
-         *    more than 2 network connections for at least `500` ms.
+         *   Given an array of event strings, navigation is considered to be
+         *   successful after all events have been fired. Events can be either:<br/>
+         * - `load` : consider navigation to be finished when the load event is
+         *   fired.<br/>
+         * - `domcontentloaded` : consider navigation to be finished when the
+         *   DOMContentLoaded event is fired.<br/>
+         * - `networkidle0` : consider navigation to be finished when there are no
+         *   more than 0 network connections for at least `500` ms.<br/>
+         * - `networkidle2` : consider navigation to be finished when there are no
+         *   more than 2 network connections for at least `500` ms.
          */
         reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
         /**
@@ -4412,10 +4517,11 @@ export declare class HTTPResponse {
          * you run code that will indirectly cause the page to navigate.
          *
          * @example
+         *
          * ```ts
          * const [response] = await Promise.all([
-         * page.waitForNavigation(), // The promise resolves after navigation has finished
-         * page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+         *   page.waitForNavigation(), // The promise resolves after navigation has finished
+         *   page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
          * ]);
          * ```
          *
@@ -4427,6 +4533,7 @@ export declare class HTTPResponse {
          * @param options - Navigation parameters which might have the following
          * properties:
          * @returns A `Promise` which resolves to the main resource response.
+         *
          * - In case of multiple redirects, the navigation will resolve with the
          *   response of the last redirect.
          * - In case of navigation to a different anchor or navigation due to History
@@ -4438,25 +4545,27 @@ export declare class HTTPResponse {
          * @param options - Optional waiting parameters
          * @returns Promise which resolves to the matched response
          * @example
+         *
          * ```ts
          * const firstResponse = await page.waitForResponse(
-         * 'https://example.com/resource'
+         *   'https://example.com/resource'
          * );
          * const finalResponse = await page.waitForResponse(
-         * (response) =>
-         * response.url() === 'https://example.com' && response.status() === 200
+         *   response =>
+         *     response.url() === 'https://example.com' && response.status() === 200
          * );
-         * const finalResponse = await page.waitForResponse(async (response) => {
-         * return (await response.text()).includes('<html>');
+         * const finalResponse = await page.waitForResponse(async response => {
+         *   return (await response.text()).includes('<html>');
          * });
          * return finalResponse.ok();
          * ```
+         *
          * @remarks
          * Optional Waiting Parameters have:
          *
          * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
-         * `0` to disable the timeout. The default value can be changed by using the
-         * {@link Page.setDefaultTimeout} method.
+         *   `0` to disable the timeout. The default value can be changed by using the
+         *   {@link Page.setDefaultTimeout} method.
          */
         waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
             timeout?: number;
@@ -4466,25 +4575,27 @@ export declare class HTTPResponse {
          * @param options - Optional waiting parameters
          * @returns Promise which resolves to the matched response.
          * @example
+         *
          * ```ts
          * const firstResponse = await page.waitForResponse(
-         * 'https://example.com/resource'
+         *   'https://example.com/resource'
          * );
          * const finalResponse = await page.waitForResponse(
-         * (response) =>
-         * response.url() === 'https://example.com' && response.status() === 200
+         *   response =>
+         *     response.url() === 'https://example.com' && response.status() === 200
          * );
-         * const finalResponse = await page.waitForResponse(async (response) => {
-         * return (await response.text()).includes('<html>');
+         * const finalResponse = await page.waitForResponse(async response => {
+         *   return (await response.text()).includes('<html>');
          * });
          * return finalResponse.ok();
          * ```
+         *
          * @remarks
          * Optional Parameter have:
          *
          * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-         * pass `0` to disable the timeout. The default value can be changed by using
-         * the {@link Page.setDefaultTimeout} method.
+         *   pass `0` to disable the timeout. The default value can be changed by using
+         *   the {@link Page.setDefaultTimeout} method.
          */
         waitForResponse(urlOrPredicate: string | ((res: HTTPResponse) => boolean | Promise<boolean>), options?: {
             timeout?: number;
@@ -4502,17 +4613,19 @@ export declare class HTTPResponse {
          * @param options - Optional waiting parameters
          * @returns Promise which resolves to the matched frame.
          * @example
+         *
          * ```ts
-         * const frame = await page.waitForFrame(async (frame) => {
+         * const frame = await page.waitForFrame(async frame => {
          *   return frame.name() === 'Test';
          * });
          * ```
+         *
          * @remarks
          * Optional Parameter have:
          *
          * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-         * pass `0` to disable the timeout. The default value can be changed by using
-         * the {@link Page.setDefaultTimeout} method.
+         *   pass `0` to disable the timeout. The default value can be changed by using
+         *   the {@link Page.setDefaultTimeout} method.
          */
         waitForFrame(urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>), options?: {
             timeout?: number;
@@ -4532,16 +4645,16 @@ export declare class HTTPResponse {
          *   {@link Page.setDefaultTimeout} methods.
          *
          * - `waitUntil` : When to consider navigation succeeded, defaults to `load`.
-         *    Given an array of event strings, navigation is considered to be
-         *    successful after all events have been fired. Events can be either:<br/>
-         *  - `load` : consider navigation to be finished when the load event is
-         *    fired.<br/>
-         *  - `domcontentloaded` : consider navigation to be finished when the
-         *    DOMContentLoaded event is fired.<br/>
-         *  - `networkidle0` : consider navigation to be finished when there are no
-         *    more than 0 network connections for at least `500` ms.<br/>
-         *  - `networkidle2` : consider navigation to be finished when there are no
-         *    more than 2 network connections for at least `500` ms.
+         *   Given an array of event strings, navigation is considered to be
+         *   successful after all events have been fired. Events can be either:<br/>
+         * - `load` : consider navigation to be finished when the load event is
+         *   fired.<br/>
+         * - `domcontentloaded` : consider navigation to be finished when the
+         *   DOMContentLoaded event is fired.<br/>
+         * - `networkidle0` : consider navigation to be finished when there are no
+         *   more than 0 network connections for at least `500` ms.<br/>
+         * - `networkidle2` : consider navigation to be finished when there are no
+         *   more than 2 network connections for at least `500` ms.
          */
         goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
         /**
@@ -4559,16 +4672,16 @@ export declare class HTTPResponse {
          *   {@link Page.setDefaultTimeout} methods.
          *
          * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
-         *    Given an array of event strings, navigation is considered to be
-         *    successful after all events have been fired. Events can be either:<br/>
-         *  - `load` : consider navigation to be finished when the load event is
-         *    fired.<br/>
-         *  - `domcontentloaded` : consider navigation to be finished when the
-         *    DOMContentLoaded event is fired.<br/>
-         *  - `networkidle0` : consider navigation to be finished when there are no
-         *    more than 0 network connections for at least `500` ms.<br/>
-         *  - `networkidle2` : consider navigation to be finished when there are no
-         *    more than 2 network connections for at least `500` ms.
+         *   Given an array of event strings, navigation is considered to be
+         *   successful after all events have been fired. Events can be either:<br/>
+         * - `load` : consider navigation to be finished when the load event is
+         *   fired.<br/>
+         * - `domcontentloaded` : consider navigation to be finished when the
+         *   DOMContentLoaded event is fired.<br/>
+         * - `networkidle0` : consider navigation to be finished when there are no
+         *   more than 0 network connections for at least `500` ms.<br/>
+         * - `networkidle2` : consider navigation to be finished when there are no
+         *   more than 2 network connections for at least `500` ms.
          */
         goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
         /**
@@ -4586,18 +4699,20 @@ export declare class HTTPResponse {
          * don't expect phones to change size, so you should emulate before navigating
          * to the page.
          * @example
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * const iPhone = puppeteer.devices['iPhone 6'];
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * await page.emulate(iPhone);
-         * await page.goto('https://www.google.com');
-         * // other actions...
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   await page.emulate(iPhone);
+         *   await page.goto('https://www.google.com');
+         *   // other actions...
+         *   await browser.close();
          * })();
          * ```
+         *
          * @remarks List of all available devices is available in the source code:
          * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
          */
@@ -4627,6 +4742,7 @@ export declare class HTTPResponse {
          * values are `screen`, `print` and `null`. Passing `null` disables CSS media
          * emulation.
          * @example
+         *
          * ```ts
          * await page.evaluate(() => matchMedia('screen').matches);
          * // → true
@@ -4657,45 +4773,54 @@ export declare class HTTPResponse {
          * objects, emulates CSS media features on the page. Each media feature object
          * must have the following properties:
          * @example
+         *
          * ```ts
          * await page.emulateMediaFeatures([
-         * { name: 'prefers-color-scheme', value: 'dark' },
-         * ]);
-         * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
-         * // → true
-         * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
-         * // → false
-         *
-         * await page.emulateMediaFeatures([
-         * { name: 'prefers-reduced-motion', value: 'reduce' },
+         *   {name: 'prefers-color-scheme', value: 'dark'},
          * ]);
          * await page.evaluate(
-         * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+         *   () => matchMedia('(prefers-color-scheme: dark)').matches
          * );
          * // → true
          * await page.evaluate(
-         * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+         *   () => matchMedia('(prefers-color-scheme: light)').matches
          * );
          * // → false
          *
          * await page.emulateMediaFeatures([
-         * { name: 'prefers-color-scheme', value: 'dark' },
-         * { name: 'prefers-reduced-motion', value: 'reduce' },
+         *   {name: 'prefers-reduced-motion', value: 'reduce'},
          * ]);
-         * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
-         * // → true
-         * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
-         * // → false
          * await page.evaluate(
-         * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+         *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
          * );
          * // → true
          * await page.evaluate(
-         * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+         *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
          * );
          * // → false
          *
-         * await page.emulateMediaFeatures([{ name: 'color-gamut', value: 'p3' }]);
+         * await page.emulateMediaFeatures([
+         *   {name: 'prefers-color-scheme', value: 'dark'},
+         *   {name: 'prefers-reduced-motion', value: 'reduce'},
+         * ]);
+         * await page.evaluate(
+         *   () => matchMedia('(prefers-color-scheme: dark)').matches
+         * );
+         * // → true
+         * await page.evaluate(
+         *   () => matchMedia('(prefers-color-scheme: light)').matches
+         * );
+         * // → false
+         * await page.evaluate(
+         *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
+         * );
+         * // → true
+         * await page.evaluate(
+         *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+         * );
+         * // → false
+         *
+         * await page.emulateMediaFeatures([{name: 'color-gamut', value: 'p3'}]);
          * await page.evaluate(() => matchMedia('(color-gamut: srgb)').matches);
          * // → true
          * await page.evaluate(() => matchMedia('(color-gamut: p3)').matches);
@@ -4717,6 +4842,7 @@ export declare class HTTPResponse {
          * If no arguments set, clears idle state emulation.
          *
          * @example
+         *
          * ```ts
          * // set idle emulation
          * await page.emulateIdleState({isUserActive: true, isScreenUnlocked: false});
@@ -4738,6 +4864,7 @@ export declare class HTTPResponse {
          * Simulates the given vision deficiency on the page.
          *
          * @example
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          *
@@ -4747,13 +4874,13 @@ export declare class HTTPResponse {
          *   await page.goto('https://v8.dev/blog/10-years');
          *
          *   await page.emulateVisionDeficiency('achromatopsia');
-         *   await page.screenshot({ path: 'achromatopsia.png' });
+         *   await page.screenshot({path: 'achromatopsia.png'});
          *
          *   await page.emulateVisionDeficiency('deuteranopia');
-         *   await page.screenshot({ path: 'deuteranopia.png' });
+         *   await page.screenshot({path: 'deuteranopia.png'});
          *
          *   await page.emulateVisionDeficiency('blurredVision');
-         *   await page.screenshot({ path: 'blurred-vision.png' });
+         *   await page.screenshot({path: 'blurred-vision.png'});
          *
          *   await browser.close();
          * })();
@@ -4770,12 +4897,13 @@ export declare class HTTPResponse {
          * In the case of multiple pages in a single browser, each page can have its
          * own viewport size.
          * @example
+         *
          * ```ts
          * const page = await browser.newPage();
          * await page.setViewport({
-         * width: 640,
-         * height: 480,
-         * deviceScaleFactor: 1,
+         *   width: 640,
+         *   height: 480,
+         *   deviceScaleFactor: 1,
          * });
          * await page.goto('https://example.com');
          * ```
@@ -4823,8 +4951,6 @@ export declare class HTTPResponse {
          */
         viewport(): Viewport | null;
         /**
-         * @remarks
-         *
          * Evaluates a function in the page's context and returns the result.
          *
          * If the function passed to `page.evaluteHandle` returns a Promise, the
@@ -4843,6 +4969,7 @@ export declare class HTTPResponse {
          * recommended as they are easier to debug and use with TypeScript):
          *
          * @example
+         *
          * ```ts
          * const aHandle = await page.evaluate('1 + 2');
          * ```
@@ -4877,7 +5004,7 @@ export declare class HTTPResponse {
          * - whenever the page is navigated
          *
          * - whenever the child frame is attached or navigated. In this case, the
-         * function is invoked in the context of the newly attached frame.
+         *   function is invoked in the context of the newly attached frame.
          *
          * The function is invoked after the document was created but before any of
          * its scripts were run. This is useful to amend the JavaScript environment,
@@ -4886,6 +5013,7 @@ export declare class HTTPResponse {
          * @param args - Arguments to pass to `pageFunction`
          * @example
          * An example of overriding the navigator.languages property before the page loads:
+         *
          * ```ts
          * // preload.js
          *
@@ -4931,10 +5059,10 @@ export declare class HTTPResponse {
          *
          * - `clip` : An object which specifies clipping region of the page.
          *   Should have the following fields:<br/>
-         *  - `x` : x-coordinate of top-left corner of clip area.<br/>
-         *  - `y` :  y-coordinate of top-left corner of clip area.<br/>
-         *  - `width` : width of clipping area.<br/>
-         *  - `height` : height of clipping area.
+         * - `x` : x-coordinate of top-left corner of clip area.<br/>
+         * - `y` : y-coordinate of top-left corner of clip area.<br/>
+         * - `width` : width of clipping area.<br/>
+         * - `height` : height of clipping area.
          *
          * - `omitBackground` : Hides default white background and allows
          *   capturing screenshots with transparency. Defaults to `false`.
@@ -4974,7 +5102,6 @@ export declare class HTTPResponse {
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust | `-webkit-print-color-adjust`}
          * property to force rendering of exact colors.
          *
-         *
          * @param options - options for generating the PDF.
          */
         createPDFStream(options?: PDFOptions): Promise<Readable>;
@@ -5007,12 +5134,14 @@ export declare class HTTPResponse {
          * there's a separate `page.waitForNavigation()` promise to be resolved, you
          * may end up with a race condition that yields unexpected results. The
          * correct pattern for click and wait for navigation is the following:
+         *
          * ```ts
          * const [response] = await Promise.all([
-         * page.waitForNavigation(waitOptions),
-         * page.click(selector, clickOptions),
+         *   page.waitForNavigation(waitOptions),
+         *   page.click(selector, clickOptions),
          * ]);
          * ```
+         *
          * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
          * @param selector - A `selector` to search for element to click. If there are
          * multiple elements satisfying the `selector`, the first will be clicked
@@ -5033,7 +5162,7 @@ export declare class HTTPResponse {
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector }
          * of an element to focus. If there are multiple elements satisfying the
          * selector, the first will be focused.
-         * @returns  Promise which resolves when the element matching selector is
+         * @returns Promise which resolves when the element matching selector is
          * successfully focused. The promise will be rejected if there is no element
          * matching selector.
          * @remarks
@@ -5061,10 +5190,12 @@ export declare class HTTPResponse {
          * throws an error.
          *
          * @example
+         *
          * ```ts
          * page.select('select#colors', 'blue'); // single selection
          * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
          * ```
+         *
          * @param selector - A
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
          * to query the page for
@@ -5096,12 +5227,14 @@ export declare class HTTPResponse {
          *
          * To press a special key, like `Control` or `ArrowDown`, use {@link Keyboard.press}.
          * @example
+         *
          * ```ts
          * await page.type('#mytextarea', 'Hello');
          * // Types instantly
-         * await page.type('#mytextarea', 'World', { delay: 100 });
+         * await page.type('#mytextarea', 'World', {delay: 100});
          * // Types slower, like a user
          * ```
+         *
          * @param selector - A
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
          * of an element to type into. If there are multiple elements satisfying the
@@ -5116,13 +5249,14 @@ export declare class HTTPResponse {
             delay: number;
         }): Promise<void>;
         /**
+         * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+         *
          * Causes your script to wait for the given number of milliseconds.
          *
          * @remarks
-         *
          * It's generally recommended to not wait for a number of seconds, but instead
-         * use {@link Page.waitForSelector}, {@link Page.waitForXPath} or
-         * {@link Page.waitForFunction} to wait for exactly the conditions you want.
+         * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
+         * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
          *
          * @example
          *
@@ -5142,25 +5276,27 @@ export declare class HTTPResponse {
          * function will throw.
          *
          * This method works across navigations:
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * let currentURL;
-         * page
-         * .waitForSelector('img')
-         * .then(() => console.log('First URL with image: ' + currentURL));
-         * for (currentURL of [
-         * 'https://example.com',
-         * 'https://google.com',
-         * 'https://bbc.com',
-         * ]) {
-         * await page.goto(currentURL);
-         * }
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   let currentURL;
+         *   page
+         *     .waitForSelector('img')
+         *     .then(() => console.log('First URL with image: ' + currentURL));
+         *   for (currentURL of [
+         *     'https://example.com',
+         *     'https://google.com',
+         *     'https://bbc.com',
+         *   ]) {
+         *     await page.goto(currentURL);
+         *   }
+         *   await browser.close();
          * })();
          * ```
+         *
          * @param selector - A
          * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
          * of an element to wait for
@@ -5172,16 +5308,16 @@ export declare class HTTPResponse {
          * The optional Parameter in Arguments `options` are :
          *
          * - `Visible`: A boolean wait for element to be present in DOM and to be
-         * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-         * properties. Defaults to `false`.
+         *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+         *   properties. Defaults to `false`.
          *
          * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
-         * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
-         * `false`.
+         *   i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+         *   `false`.
          *
          * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
-         * (30 seconds). Pass `0` to disable timeout. The default value can be changed
-         * by using the {@link Page.setDefaultTimeout} method.
+         *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
+         *   by using the {@link Page.setDefaultTimeout} method.
          */
         waitForSelector<Selector extends string>(selector: Selector, options?: Exclude<WaitForSelectorOptions, 'root'>): Promise<ElementHandle<NodeFor<Selector>> | null>;
         /**
@@ -5191,25 +5327,27 @@ export declare class HTTPResponse {
          * function will throw.
          *
          * This method works across navigation
+         *
          * ```ts
          * const puppeteer = require('puppeteer');
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * let currentURL;
-         * page
-         * .waitForXPath('//img')
-         * .then(() => console.log('First URL with image: ' + currentURL));
-         * for (currentURL of [
-         * 'https://example.com',
-         * 'https://google.com',
-         * 'https://bbc.com',
-         * ]) {
-         * await page.goto(currentURL);
-         * }
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   let currentURL;
+         *   page
+         *     .waitForXPath('//img')
+         *     .then(() => console.log('First URL with image: ' + currentURL));
+         *   for (currentURL of [
+         *     'https://example.com',
+         *     'https://google.com',
+         *     'https://bbc.com',
+         *   ]) {
+         *     await page.goto(currentURL);
+         *   }
+         *   await browser.close();
          * })();
          * ```
+         *
          * @param xpath - A
          * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
          * element to wait for
@@ -5221,16 +5359,16 @@ export declare class HTTPResponse {
          * The optional Argument `options` have properties:
          *
          * - `visible`: A boolean to wait for element to be present in DOM and to be
-         * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-         * properties. Defaults to `false`.
+         *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+         *   properties. Defaults to `false`.
          *
          * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-         * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-         * Defaults to `false`.
+         *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+         *   Defaults to `false`.
          *
          * - `timeout`: A number which is maximum time to wait for in milliseconds.
-         * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-         * value can be changed by using the {@link Page.setDefaultTimeout} method.
+         *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
+         *   value can be changed by using the {@link Page.setDefaultTimeout} method.
          */
         waitForXPath(xpath: string, options?: {
             visible?: boolean;
@@ -5246,65 +5384,68 @@ export declare class HTTPResponse {
          * ```ts
          * const puppeteer = require('puppeteer');
          * (async () => {
-         * const browser = await puppeteer.launch();
-         * const page = await browser.newPage();
-         * const watchDog = page.waitForFunction('window.innerWidth < 100');
-         * await page.setViewport({ width: 50, height: 50 });
-         * await watchDog;
-         * await browser.close();
+         *   const browser = await puppeteer.launch();
+         *   const page = await browser.newPage();
+         *   const watchDog = page.waitForFunction('window.innerWidth < 100');
+         *   await page.setViewport({width: 50, height: 50});
+         *   await watchDog;
+         *   await browser.close();
          * })();
          * ```
          *
          * @example
          * To pass arguments from node.js to the predicate of
          * {@link Page.waitForFunction} function:
+         *
          * ```ts
          * const selector = '.foo';
          * await page.waitForFunction(
-         * (selector) => !!document.querySelector(selector),
-         * {},
-         * selector
+         *   selector => !!document.querySelector(selector),
+         *   {},
+         *   selector
          * );
          * ```
          *
          * @example
          * The predicate of {@link Page.waitForFunction} can be asynchronous too:
+         *
          * ```ts
          * const username = 'github-username';
          * await page.waitForFunction(
-         * async (username) => {
-         * const githubResponse = await fetch(
-         *  `https://api.github.com/users/${username}`
-         * );
-         * const githubUser = await githubResponse.json();
-         * // show the avatar
-         * const img = document.createElement('img');
-         * img.src = githubUser.avatar_url;
-         * // wait 3 seconds
-         * await new Promise((resolve, reject) => setTimeout(resolve, 3000));
-         * img.remove();
-         * },
-         * {},
-         * username
+         *   async username => {
+         *     const githubResponse = await fetch(
+         *       `https://api.github.com/users/${username}`
+         *     );
+         *     const githubUser = await githubResponse.json();
+         *     // show the avatar
+         *     const img = document.createElement('img');
+         *     img.src = githubUser.avatar_url;
+         *     // wait 3 seconds
+         *     await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+         *     img.remove();
+         *   },
+         *   {},
+         *   username
          * );
          * ```
          *
          * @param pageFunction - Function to be evaluated in browser context
          * @param options - Optional waiting parameters
+         *
          * - `polling` - An interval at which the `pageFunction` is executed, defaults
          *   to `raf`. If `polling` is a number, then it is treated as an interval in
          *   milliseconds at which the function would be executed. If polling is a
          *   string, then it can be one of the following values:
-         *    - `raf` - to constantly execute `pageFunction` in
-         *      `requestAnimationFrame` callback. This is the tightest polling mode
-         *      which is suitable to observe styling changes.
-         *    - `mutation`-  to execute pageFunction on every DOM mutation.
+         *   - `raf` - to constantly execute `pageFunction` in
+         *     `requestAnimationFrame` callback. This is the tightest polling mode
+         *     which is suitable to observe styling changes.
+         *   - `mutation`- to execute pageFunction on every DOM mutation.
          * - `timeout` - maximum time to wait for in milliseconds. Defaults to `30000`
          *   (30 seconds). Pass `0` to disable timeout. The default value can be
          *   changed by using the {@link Page.setDefaultTimeout} method.
-         * @param args -  Arguments to pass to `pageFunction`
-         * @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
-         * `pageFunction`'s return value.
+         *   @param args - Arguments to pass to `pageFunction`
+         *   @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
+         *   `pageFunction`'s return value.
          */
         waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: {
             timeout?: number;
@@ -5328,7 +5469,8 @@ export declare class HTTPResponse {
      * @public
      */
     export declare const enum PageEmittedEvents {
-        /** Emitted when the page closes.
+        /**
+         * Emitted when the page closes.
          * @eventProperty
          */
         Close = "close",
@@ -5343,12 +5485,13 @@ export declare class HTTPResponse {
          *
          * @example
          * An example of handling `console` event:
+         *
          * ```ts
          * page.on('console', msg => {
          *   for (let i = 0; i < msg.args().length; ++i)
-         *    console.log(`${i}: ${msg.args()[i]}`);
-         *  });
-         *  page.evaluate(() => console.log('hello', 5, {foo: 'bar'}));
+         *     console.log(`${i}: ${msg.args()[i]}`);
+         * });
+         * page.evaluate(() => console.log('hello', 5, {foo: 'bar'}));
          * ```
          */
         Console = "console",
@@ -5389,14 +5532,15 @@ export declare class HTTPResponse {
          *
          * @remarks
          * Contains an object with two properties:
+         *
          * - `title`: the title passed to `console.timeStamp`
          * - `metrics`: objec containing metrics as key/value pairs. The values will
          *   be `number`s.
          */
         Metrics = "metrics",
         /**
-         * Emitted when an uncaught exception happens within the page.
-         * Contains an `Error`.
+         * Emitted when an uncaught exception happens within the page. Contains an
+         * `Error`.
          */
         PageError = "pageerror",
         /**
@@ -5425,12 +5569,13 @@ export declare class HTTPResponse {
          * Emitted when a page issues a request and contains a {@link HTTPRequest}.
          *
          * @remarks
-         * The object is readonly. See {@link Page.setRequestInterception} for intercepting
-         * and mutating requests.
+         * The object is readonly. See {@link Page.setRequestInterception} for
+         * intercepting and mutating requests.
          */
         Request = "request",
         /**
-         * Emitted when a request ended up loading from cache. Contains a {@link HTTPRequest}.
+         * Emitted when a request ended up loading from cache. Contains a
+         * {@link HTTPRequest}.
          *
          * @remarks
          * For certain requests, might contain undefined.
@@ -5449,7 +5594,8 @@ export declare class HTTPResponse {
          */
         RequestFailed = "requestfailed",
         /**
-         * Emitted when a request finishes successfully. Contains a {@link HTTPRequest}.
+         * Emitted when a request finishes successfully. Contains a
+         * {@link HTTPRequest}.
          */
         RequestFinished = "requestfinished",
         /**
@@ -5475,6 +5621,7 @@ export declare class HTTPResponse {
      *
      * See {@link PageEmittedEvents} for more detail on the events and when they are
      * emitted.
+     *
      * @public
      */
     export declare interface PageEventObject {
@@ -5508,6 +5655,7 @@ export declare class HTTPResponse {
      * @remarks
      *
      * The sizes of each format are as follows:
+     *
      * - `Letter`: 8.5in x 11in
      *
      * - `Legal`: 8.5in x 14in
@@ -5581,6 +5729,7 @@ export declare class HTTPResponse {
         /**
          * HTML template for the print header. Should be valid HTML with the following
          * classes used to inject values into them:
+         *
          * - `date` formatted print date
          *
          * - `title` document title
@@ -5771,62 +5920,71 @@ export declare class HTTPResponse {
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { devices } from 'puppeteer';
+         * import {devices} from 'puppeteer';
          * ```
          */
         get devices(): typeof devices;
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { errors } from 'puppeteer';
+         * import {errors} from 'puppeteer';
          * ```
          */
         get errors(): typeof errors;
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { networkConditions } from 'puppeteer';
+         * import {networkConditions} from 'puppeteer';
          * ```
          */
         get networkConditions(): typeof networkConditions;
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { registerCustomQueryHandler } from 'puppeteer';
+         * import {registerCustomQueryHandler} from 'puppeteer';
          * ```
          */
         registerCustomQueryHandler(name: string, queryHandler: CustomQueryHandler): void;
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { unregisterCustomQueryHandler } from 'puppeteer';
+         * import {unregisterCustomQueryHandler} from 'puppeteer';
          * ```
          */
         unregisterCustomQueryHandler(name: string): void;
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { customQueryHandlerNames } from 'puppeteer';
+         * import {customQueryHandlerNames} from 'puppeteer';
          * ```
          */
         customQueryHandlerNames(): string[];
         /**
          * @deprecated Import directly puppeteer.
          * @example
+         *
          * ```ts
-         * import { clearCustomQueryHandlers } from 'puppeteer';
+         * import {clearCustomQueryHandlers} from 'puppeteer';
          * ```
          */
         clearCustomQueryHandlers(): void;
     }
 
     /* Excluded from this release type: PUPPETEER_REVISIONS */
+
+    /* Excluded from this release type: PUPPETEER_WORLD */
 
     /* Excluded from this release type: puppeteerDirname */
 
@@ -5869,6 +6027,7 @@ export declare class HTTPResponse {
      *
      * @example
      * The following is a typical example of using Puppeteer to drive automation:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      *
@@ -5906,9 +6065,10 @@ export declare class HTTPResponse {
          *
          * @example
          * You can use `ignoreDefaultArgs` to filter out `--mute-audio` from default arguments:
+         *
          * ```ts
          * const browser = await puppeteer.launch({
-         *   ignoreDefaultArgs: ['--mute-audio']
+         *   ignoreDefaultArgs: ['--mute-audio'],
          * });
          * ```
          *
@@ -5986,6 +6146,7 @@ export declare class HTTPResponse {
      * allowed to consist of lower- and upper case latin letters.
      *
      * @example
+     *
      * ```
      * puppeteer.registerCustomQueryHandler('text', { … });
      * const aHandle = await page.$('text/…');
@@ -6053,7 +6214,7 @@ export declare class HTTPResponse {
      */
     export declare interface ScreenshotOptions {
         /**
-         * @defaultValue 'png'
+         * @defaultValue `png`
          */
         type?: 'png' | 'jpeg' | 'webp';
         /**
@@ -6064,8 +6225,8 @@ export declare class HTTPResponse {
          */
         path?: string;
         /**
-         * When true, takes a screenshot of the full page.
-         * @defaultValue false
+         * When `true`, takes a screenshot of the full page.
+         * @defaultValue `false`
          */
         fullPage?: boolean;
         /**
@@ -6078,22 +6239,22 @@ export declare class HTTPResponse {
         quality?: number;
         /**
          * Hides default white background and allows capturing screenshots with transparency.
-         * @defaultValue false
+         * @defaultValue `false`
          */
         omitBackground?: boolean;
         /**
          * Encoding of the image.
-         * @defaultValue 'binary'
+         * @defaultValue `binary`
          */
         encoding?: 'base64' | 'binary';
         /**
          * Capture the screenshot beyond the viewport.
-         * @defaultValue true
+         * @defaultValue `true`
          */
         captureBeyondViewport?: boolean;
         /**
          * Capture the screenshot from the surface, rather than the view.
-         * @defaultValue true
+         * @defaultValue `true`
          */
         fromSurface?: boolean;
     }
@@ -6224,6 +6385,8 @@ export declare class HTTPResponse {
              root?: ElementHandle<Node>;
          }
 
+         /* Excluded from this release type: source */
+
          /**
           * @public
           */
@@ -6330,6 +6493,7 @@ export declare class HTTPResponse {
           * which can be opened in Chrome DevTools or {@link https://chromedevtools.github.io/timeline-viewer/ | timeline viewer}.
           *
           * @example
+          *
           * ```ts
           * await page.tracing.start({path: 'trace.json'});
           * await page.goto('https://www.google.com');
@@ -6433,13 +6597,13 @@ export declare class HTTPResponse {
           */
          export declare interface WaitForOptions {
              /**
-              * Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to
-              * disable the timeout.
+              * Maximum wait time in milliseconds. Pass 0 to disable the timeout.
               *
-              * @remarks
               * The default value can be changed by using the
               * {@link Page.setDefaultTimeout} or {@link Page.setDefaultNavigationTimeout}
               * methods.
+              *
+              * @defaultValue `30000`
               */
              timeout?: number;
              waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
@@ -6449,9 +6613,31 @@ export declare class HTTPResponse {
           * @public
           */
          export declare interface WaitForSelectorOptions {
+             /**
+              * Wait for the selected element to be present in DOM and to be visible, i.e.
+              * to not have `display: none` or `visibility: hidden` CSS properties.
+              *
+              * @defaultValue `false`
+              */
              visible?: boolean;
+             /**
+              * Wait for the selected element to not be found in the DOM or to be hidden,
+              * i.e. have `display: none` or `visibility: hidden` CSS properties.
+              *
+              * @defaultValue `false`
+              */
              hidden?: boolean;
+             /**
+              * Maximum time to wait in milliseconds. Pass `0` to disable timeout.
+              *
+              * The default value can be changed by using {@link Page.setDefaultTimeout}
+              *
+              * @defaultValue `30000` (30 seconds)
+              */
              timeout?: number;
+             /**
+              * @deprecated Do not use. Use the {@link ElementHandle.waitForSelector}
+              */
              root?: ElementHandle<Node>;
          }
 
@@ -6475,12 +6661,12 @@ export declare class HTTPResponse {
           */
          export declare interface WaitTimeoutOptions {
              /**
-              * Maximum wait time in milliseconds, defaults to 30 seconds, pass `0` to
-              * disable the timeout.
+              * Maximum wait time in milliseconds. Pass 0 to disable the timeout.
               *
-              * @remarks
               * The default value can be changed by using the
               * {@link Page.setDefaultTimeout} method.
+              *
+              * @defaultValue `30000`
               */
              timeout?: number;
          }
@@ -6488,7 +6674,7 @@ export declare class HTTPResponse {
          /* Excluded from this release type: waitWithTimeout */
 
          /**
-          * The WebWorker class represents a
+          * This class represents a
           * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
           *
           * @remarks
@@ -6496,9 +6682,14 @@ export declare class HTTPResponse {
           * object to signal the worker lifecycle.
           *
           * @example
+          *
           * ```ts
-          * page.on('workercreated', worker => console.log('Worker created: ' + worker.url()));
-          * page.on('workerdestroyed', worker => console.log('Worker destroyed: ' + worker.url()));
+          * page.on('workercreated', worker =>
+          *   console.log('Worker created: ' + worker.url())
+          * );
+          * page.on('workerdestroyed', worker =>
+          *   console.log('Worker destroyed: ' + worker.url())
+          * );
           *
           * console.log('Current workers:');
           * for (const worker of page.workers()) {

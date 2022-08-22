@@ -16,7 +16,7 @@
  */
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { EventEmitter } from './EventEmitter.js';
-import { Frame } from './FrameManager.js';
+import { Frame } from './Frame.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { SecurityDetails } from './SecurityDetails.js';
 import { Protocol } from 'devtools-protocol';
@@ -64,7 +64,7 @@ export declare class HTTPResponse {
      */
     status(): number;
     /**
-     * @returns  The status text of the response (e.g. usually an "OK" for a
+     * @returns The status text of the response (e.g. usually an "OK" for a
      * success).
      */
     statusText(): string;

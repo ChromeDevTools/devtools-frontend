@@ -7,7 +7,7 @@ exports.FirefoxLauncher = void 0;
 const fs_1 = __importDefault(require("fs"));
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
-const assert_js_1 = require("../common/assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Browser_js_1 = require("../common/Browser.js");
 const BrowserFetcher_js_1 = require("./BrowserFetcher.js");
 const BrowserRunner_js_1 = require("./BrowserRunner.js");
@@ -96,7 +96,7 @@ class FirefoxLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser_js_1.Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
+            browser = await Browser_js_1.Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();

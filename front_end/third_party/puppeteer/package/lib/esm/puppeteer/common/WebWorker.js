@@ -15,7 +15,7 @@ import { ExecutionContext } from './ExecutionContext.js';
 import { JSHandle } from './JSHandle.js';
 import { debugError } from './util.js';
 /**
- * The WebWorker class represents a
+ * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
  *
  * @remarks
@@ -23,9 +23,14 @@ import { debugError } from './util.js';
  * object to signal the worker lifecycle.
  *
  * @example
+ *
  * ```ts
- * page.on('workercreated', worker => console.log('Worker created: ' + worker.url()));
- * page.on('workerdestroyed', worker => console.log('Worker destroyed: ' + worker.url()));
+ * page.on('workercreated', worker =>
+ *   console.log('Worker created: ' + worker.url())
+ * );
+ * page.on('workerdestroyed', worker =>
+ *   console.log('Worker destroyed: ' + worker.url())
+ * );
  *
  * console.log('Current workers:');
  * for (const worker of page.workers()) {
@@ -37,7 +42,6 @@ import { debugError } from './util.js';
  */
 export class WebWorker extends EventEmitter {
     /**
-     *
      * @internal
      */
     constructor(client, url, consoleAPICalled, exceptionThrown) {

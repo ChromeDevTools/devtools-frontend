@@ -25,12 +25,13 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInitPromise, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 import { EventEmitter } from './EventEmitter.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { NetworkEventManager } from './NetworkEventManager.js';
-import { debugError, isString, createDeferredPromiseWithTimer, } from './util.js';
+import { debugError, isString } from './util.js';
+import { createDeferredPromiseWithTimer, } from '../util/DeferredPromise.js';
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -86,7 +87,7 @@ export class NetworkManager extends EventEmitter {
      */
     initialize() {
         if (__classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) {
-            return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f").promise;
+            return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         }
         __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, createDeferredPromiseWithTimer('NetworkManager initialization timed out', 30000), "f");
         const init = Promise.all([
@@ -97,16 +98,15 @@ export class NetworkManager extends EventEmitter {
                 : null,
             __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.enable'),
         ]);
+        const deferredInitPromise = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         init
             .then(() => {
-            var _a;
-            (_a = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) === null || _a === void 0 ? void 0 : _a.resolve();
+            deferredInitPromise.resolve();
         })
             .catch(err => {
-            var _a;
-            return (_a = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) === null || _a === void 0 ? void 0 : _a.reject(err);
+            deferredInitPromise.reject(err);
         });
-        return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f").promise;
+        return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
     }
     async authenticate(credentials) {
         __classPrivateFieldSet(this, _NetworkManager_credentials, credentials, "f");

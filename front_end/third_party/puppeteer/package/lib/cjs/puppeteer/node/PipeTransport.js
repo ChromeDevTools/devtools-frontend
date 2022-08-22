@@ -28,7 +28,7 @@ exports.PipeTransport = void 0;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const assert_js_1 = require("../common/assert.js");
+const assert_js_1 = require("../util/assert.js");
 const util_js_1 = require("../common/util.js");
 /**
  * @internal

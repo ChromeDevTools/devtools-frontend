@@ -68,6 +68,7 @@ export class Accessibility {
      *
      * @example
      * An example of dumping the entire accessibility tree:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * console.log(snapshot);
@@ -75,14 +76,14 @@ export class Accessibility {
      *
      * @example
      * An example of logging the focused node's name:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * const node = findFocusedNode(snapshot);
      * console.log(node && node.name);
      *
      * function findFocusedNode(node) {
-     *   if (node.focused)
-     *     return node;
+     *   if (node.focused) return node;
      *   for (const child of node.children || []) {
      *     const foundNode = findFocusedNode(child);
      *     return foundNode;
@@ -92,7 +93,6 @@ export class Accessibility {
      * ```
      *
      * @returns An AXNode object representing the snapshot.
-     *
      */
     async snapshot(options = {}) {
         var _a, _b;
@@ -101,7 +101,7 @@ export class Accessibility {
         let backendNodeId;
         if (root) {
             const { node } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('DOM.describeNode', {
-                objectId: root._remoteObject.objectId,
+                objectId: root.remoteObject().objectId,
             });
             backendNodeId = node.backendNodeId;
         }

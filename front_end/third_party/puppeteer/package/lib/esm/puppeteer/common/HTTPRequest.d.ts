@@ -17,7 +17,7 @@
 import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { EventEmitter } from './EventEmitter.js';
-import { Frame } from './FrameManager.js';
+import { Frame } from './Frame.js';
 import { HTTPResponse } from './HTTPResponse.js';
 /**
  * @public
@@ -68,14 +68,13 @@ interface CDPSession extends EventEmitter {
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
 }
 /**
- *
  * Represents an HTTP request sent by a page.
  * @remarks
  *
  * Whenever the page sends a request, such as for a network resource, the
  * following events are emitted by Puppeteer's `page`:
  *
- * - `request`:  emitted when the request is issued by the page.
+ * - `request`: emitted when the request is issued by the page.
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *
@@ -156,14 +155,14 @@ export declare class HTTPRequest {
     abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * @returns An InterceptResolutionState object describing the current resolution
-     *  action and priority.
+     * action and priority.
      *
-     *  InterceptResolutionState contains:
-     *    action: InterceptResolutionAction
-     *    priority?: number
+     * InterceptResolutionState contains:
+     * action: InterceptResolutionAction
+     * priority?: number
      *
-     *  InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
-     *  `disabled`, `none`, or `already-handled`.
+     * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
+     * `disabled`, `none`, or `already-handled`.
      */
     interceptResolutionState(): InterceptResolutionState;
     /**
@@ -281,6 +280,7 @@ export declare class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      *
      * @example
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
@@ -311,13 +311,14 @@ export declare class HTTPRequest {
      *
      * @example
      * An example of fulfilling all requests with 404 responses:
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
      *   request.respond({
      *     status: 404,
      *     contentType: 'text/plain',
-     *     body: 'Not Found!'
+     *     body: 'Not Found!',
      *   });
      * });
      * ```

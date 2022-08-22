@@ -39,7 +39,7 @@ import removeRecursive from 'rimraf';
 import * as URL from 'url';
 import createHttpsProxyAgent from 'https-proxy-agent';
 import { getProxyForUrl } from 'proxy-from-env';
-import { assert } from '../common/assert.js';
+import { assert } from '../util/assert.js';
 import tar from 'tar-fs';
 import bzip from 'unbzip2-stream';
 const { PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM } = process.env;
@@ -134,7 +134,9 @@ function existsAsync(filePath) {
  * ```ts
  * const browserFetcher = puppeteer.createBrowserFetcher();
  * const revisionInfo = await browserFetcher.download('533271');
- * const browser = await puppeteer.launch({executablePath: revisionInfo.executablePath})
+ * const browser = await puppeteer.launch({
+ *   executablePath: revisionInfo.executablePath,
+ * });
  * ```
  *
  * **NOTE** BrowserFetcher is not designed to work concurrently with other

@@ -48,6 +48,7 @@ const revisions_js_1 = require("../revisions.js");
  *
  * @example
  * The following is a typical example of using Puppeteer to drive automation:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -112,9 +113,10 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      *
      * @example
      * You can use `ignoreDefaultArgs` to filter out `--mute-audio` from default arguments:
+     *
      * ```ts
      * const browser = await puppeteer.launch({
-     *   ignoreDefaultArgs: ['--mute-audio']
+     *   ignoreDefaultArgs: ['--mute-audio'],
      * });
      * ```
      *

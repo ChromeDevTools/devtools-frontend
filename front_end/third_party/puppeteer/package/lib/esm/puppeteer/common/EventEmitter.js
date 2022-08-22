@@ -22,7 +22,7 @@ export class EventEmitter {
     /**
      * Bind an event listener to fire when an event occurs.
      * @param event - the event type you'd like to listen to. Can be a string or symbol.
-     * @param handler  - the function to be called when the event occurs.
+     * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
     on(event, handler) {
@@ -32,7 +32,7 @@ export class EventEmitter {
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
-     * @param handler  - the function that should be removed.
+     * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
     off(event, handler) {

@@ -14,14 +14,14 @@ exports.NetworkEventManager = void 0;
  */
 class NetworkEventManager {
     constructor() {
-        /*
+        /**
          * There are four possible orders of events:
-         *  A. `_onRequestWillBeSent`
-         *  B. `_onRequestWillBeSent`, `_onRequestPaused`
-         *  C. `_onRequestPaused`, `_onRequestWillBeSent`
-         *  D. `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
-         *     `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`
-         *     (see crbug.com/1196004)
+         * A. `_onRequestWillBeSent`
+         * B. `_onRequestWillBeSent`, `_onRequestPaused`
+         * C. `_onRequestPaused`, `_onRequestWillBeSent`
+         * D. `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
+         * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`
+         * (see crbug.com/1196004)
          *
          * For `_onRequest` we need the event from `_onRequestWillBeSent` and
          * optionally the `interceptionId` from `_onRequestPaused`.
@@ -35,16 +35,16 @@ class NetworkEventManager {
          *
          * Note that (chains of) redirect requests have the same `requestId` (!) as
          * the original request. We have to anticipate series of events like these:
-         *  A. `_onRequestWillBeSent`,
-         *     `_onRequestWillBeSent`, ...
-         *  B. `_onRequestWillBeSent`, `_onRequestPaused`,
-         *     `_onRequestWillBeSent`, `_onRequestPaused`, ...
-         *  C. `_onRequestWillBeSent`, `_onRequestPaused`,
-         *     `_onRequestPaused`, `_onRequestWillBeSent`, ...
-         *  D. `_onRequestPaused`, `_onRequestWillBeSent`,
-         *     `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
-         *     `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
-         *     (see crbug.com/1196004)
+         * A. `_onRequestWillBeSent`,
+         * `_onRequestWillBeSent`, ...
+         * B. `_onRequestWillBeSent`, `_onRequestPaused`,
+         * `_onRequestWillBeSent`, `_onRequestPaused`, ...
+         * C. `_onRequestWillBeSent`, `_onRequestPaused`,
+         * `_onRequestPaused`, `_onRequestWillBeSent`, ...
+         * D. `_onRequestPaused`, `_onRequestWillBeSent`,
+         * `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
+         * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
+         * (see crbug.com/1196004)
          */
         _NetworkEventManager_requestWillBeSentMap.set(this, new Map());
         _NetworkEventManager_requestPausedMap.set(this, new Map());

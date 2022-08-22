@@ -25,7 +25,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Browser_instances, _Browser_ignoreHTTPSErrors, _Browser_defaultViewport, _Browser_process, _Browser_connection, _Browser_closeCallback, _Browser_targetFilterCallback, _Browser_isPageTargetCallback, _Browser_defaultContext, _Browser_contexts, _Browser_screenshotTaskQueue, _Browser_targetManager, _Browser_emitDisconnected, _Browser_setIsPageTargetCallback, _Browser_createTarget, _Browser_onAttachedToTarget, _Browser_onDetachedFromTarget, _Browser_onTargetChanged, _Browser_onTargetDiscovered, _Browser_getVersion, _BrowserContext_connection, _BrowserContext_browser, _BrowserContext_id;
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 import { ConnectionEmittedEvents } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { waitWithTimeout } from './util.js';
@@ -65,8 +65,8 @@ const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * emit various events which are documented in the {@link BrowserEmittedEvents} enum.
  *
  * @example
- *
  * An example of using a {@link Browser} to create a {@link Page}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -79,8 +79,8 @@ const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * ```
  *
  * @example
- *
  * An example of disconnecting from and reconnecting to a {@link Browser}:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -130,8 +130,8 @@ export class Browser extends EventEmitter {
             if (!context) {
                 throw new Error('Missing browser context');
             }
-            return new Target(targetInfo, session, context, __classPrivateFieldGet(this, _Browser_targetManager, "f"), () => {
-                return __classPrivateFieldGet(this, _Browser_connection, "f").createSession(targetInfo);
+            return new Target(targetInfo, session, context, __classPrivateFieldGet(this, _Browser_targetManager, "f"), (isAutoAttachEmulated) => {
+                return __classPrivateFieldGet(this, _Browser_connection, "f")._createSession(targetInfo, isAutoAttachEmulated);
             }, __classPrivateFieldGet(this, _Browser_ignoreHTTPSErrors, "f"), (_a = __classPrivateFieldGet(this, _Browser_defaultViewport, "f")) !== null && _a !== void 0 ? _a : null, __classPrivateFieldGet(this, _Browser_screenshotTaskQueue, "f"), __classPrivateFieldGet(this, _Browser_isPageTargetCallback, "f"));
         });
         _Browser_onAttachedToTarget.set(this, async (target) => {
@@ -250,9 +250,10 @@ export class Browser extends EventEmitter {
      * browser contexts.
      *
      * @example
+     *
      * ```ts
      * (async () => {
-     *  const browser = await puppeteer.launch();
+     *   const browser = await puppeteer.launch();
      *   // Create a new incognito browser context.
      *   const context = await browser.createIncognitoBrowserContext();
      *   // Create a new page in a pristine context.
@@ -376,9 +377,12 @@ export class Browser extends EventEmitter {
      * @example
      *
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browser.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      */
     async waitForTarget(predicate, options = {}) {
@@ -391,10 +395,10 @@ export class Browser extends EventEmitter {
         this.on("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
         this.on("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
         try {
+            this.targets().forEach(check);
             if (!timeout) {
                 return await targetPromise;
             }
-            this.targets().forEach(check);
             return await waitWithTimeout(targetPromise, 'target', timeout);
         }
         finally {
@@ -502,6 +506,7 @@ _Browser_ignoreHTTPSErrors = new WeakMap(), _Browser_defaultViewport = new WeakM
  * method. "Incognito" browser contexts don't write any browsing data to disk.
  *
  * @example
+ *
  * ```ts
  * // Create a new incognito browser context
  * const context = await browser.createIncognitoBrowserContext();
@@ -512,6 +517,7 @@ _Browser_ignoreHTTPSErrors = new WeakMap(), _Browser_defaultViewport = new WeakM
  * // Dispose context once it's no longer needed.
  * await context.close();
  * ```
+ *
  * @public
  */
 export class BrowserContext extends EventEmitter {
@@ -540,9 +546,12 @@ export class BrowserContext extends EventEmitter {
      *
      * @example
      * An example of finding a target for a page opened via `window.open`:
+     *
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browserContext.waitForTarget(target => target.url() === 'https://www.example.com/');
+     * const newWindowTarget = await browserContext.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
      * ```
      *
      * @param predicate - A function to be run for every target
@@ -591,9 +600,12 @@ export class BrowserContext extends EventEmitter {
     }
     /**
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
-     * await context.overridePermissions('https://html5demos.com', ['geolocation']);
+     * await context.overridePermissions('https://html5demos.com', [
+     *   'geolocation',
+     * ]);
      * ```
      *
      * @param origin - The origin to grant permissions to, e.g. "https://example.com".
@@ -618,6 +630,7 @@ export class BrowserContext extends EventEmitter {
      * Clears all permission overrides for the browser context.
      *
      * @example
+     *
      * ```ts
      * const context = browser.defaultBrowserContext();
      * context.overridePermissions('https://example.com', ['clipboard-read']);

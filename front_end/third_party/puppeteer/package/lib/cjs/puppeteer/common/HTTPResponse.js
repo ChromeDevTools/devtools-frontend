@@ -101,7 +101,7 @@ class HTTPResponse {
         return __classPrivateFieldGet(this, _HTTPResponse_status, "f");
     }
     /**
-     * @returns  The status text of the response (e.g. usually an "OK" for a
+     * @returns The status text of the response (e.g. usually an "OK" for a
      * success).
      */
     statusText() {

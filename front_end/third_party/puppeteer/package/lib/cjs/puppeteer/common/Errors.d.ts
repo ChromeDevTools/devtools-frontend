@@ -57,6 +57,7 @@ export interface PuppeteerErrors {
  *
  * @example
  * An example of handling a timeout error:
+ *
  * ```ts
  * try {
  *   await page.waitForSelector('.foo');

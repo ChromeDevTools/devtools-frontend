@@ -16,10 +16,10 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ariaHandler = void 0;
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 async function queryAXTree(client, element, accessibleName, role) {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
-        objectId: element._remoteObject.objectId,
+        objectId: element.remoteObject().objectId,
         accessibleName,
         role,
     });
@@ -36,11 +36,12 @@ const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*(?<quote>"|')(?<value>\\.|
 function isKnownAttribute(attribute) {
     return knownAttributes.has(attribute);
 }
-/*
+/**
  * The selectors consist of an accessible name to query for and optionally
  * further aria attributes on the form `[<attribute>=<value>]`.
  * Currently, we only support the `name` and `role` attribute.
  * The following examples showcase how the syntax works wrt. querying:
+ *
  * - 'title[role="heading"]' queries for elements with name 'title' and role 'heading'.
  * - '[role="img"]' queries for elements with role 'img' and any name.
  * - 'label' queries for elements with name 'label' and any role.
@@ -66,18 +67,18 @@ const queryOne = async (element, selector) => {
     if (!res[0] || !res[0].backendDOMNodeId) {
         return null;
     }
-    return exeCtx._adoptBackendNodeId(res[0].backendDOMNodeId);
+    return (await exeCtx._world.adoptBackendNode(res[0].backendDOMNodeId));
 };
-const waitFor = async (domWorld, selector, options) => {
+const waitFor = async (isolatedWorld, selector, options) => {
     const binding = {
         name: 'ariaQuerySelector',
         pptrFunction: async (selector) => {
-            const root = options.root || (await domWorld._document());
+            const root = options.root || (await isolatedWorld.document());
             const element = await queryOne(root, selector);
             return element;
         },
     };
-    return (await domWorld._waitForSelectorInPage((_, selector) => {
+    return (await isolatedWorld._waitForSelectorInPage((_, selector) => {
         return globalThis.ariaQuerySelector(selector);
     }, selector, options, binding));
 };
@@ -85,8 +86,9 @@ const queryAll = async (element, selector) => {
     const exeCtx = element.executionContext();
     const { name, role } = parseAriaSelector(selector);
     const res = await queryAXTree(exeCtx._client, element, name, role);
+    const world = exeCtx._world;
     return Promise.all(res.map(axNode => {
-        return exeCtx._adoptBackendNodeId(axNode.backendDOMNodeId);
+        return world.adoptBackendNode(axNode.backendDOMNodeId);
     }));
 };
 const queryAllArray = async (element, selector) => {

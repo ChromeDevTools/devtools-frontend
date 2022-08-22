@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ariaHandler } from './AriaQueryHandler.js';
-function createInternalQueryHandler(handler) {
+function internalizeCustomQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
         const queryOne = handler.queryOne;
@@ -56,7 +56,7 @@ function createInternalQueryHandler(handler) {
     }
     return internalHandler;
 }
-const defaultHandler = createInternalQueryHandler({
+const defaultHandler = internalizeCustomQueryHandler({
     queryOne: (element, selector) => {
         if (!('querySelector' in element)) {
             throw new Error(`Could not invoke \`querySelector\` on node of type ${element.nodeName}.`);
@@ -72,7 +72,7 @@ const defaultHandler = createInternalQueryHandler({
         ];
     },
 });
-const pierceHandler = createInternalQueryHandler({
+const pierceHandler = internalizeCustomQueryHandler({
     queryOne: (element, selector) => {
         let found = null;
         const search = (root) => {
@@ -120,11 +120,29 @@ const pierceHandler = createInternalQueryHandler({
         return result;
     },
 });
-const builtInHandlers = new Map([
-    ['aria', ariaHandler],
-    ['pierce', pierceHandler],
+const xpathHandler = internalizeCustomQueryHandler({
+    queryOne: (element, selector) => {
+        const doc = element.ownerDocument || document;
+        const result = doc.evaluate(selector, element, null, XPathResult.FIRST_ORDERED_NODE_TYPE);
+        return result.singleNodeValue;
+    },
+    queryAll: (element, selector) => {
+        const doc = element.ownerDocument || document;
+        const iterator = doc.evaluate(selector, element, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+        const array = [];
+        let item;
+        while ((item = iterator.iterateNext())) {
+            array.push(item);
+        }
+        return array;
+    },
+});
+const INTERNAL_QUERY_HANDLERS = new Map([
+    ['aria', { handler: ariaHandler }],
+    ['pierce', { handler: pierceHandler }],
+    ['xpath', { handler: xpathHandler }],
 ]);
-const queryHandlers = new Map(builtInHandlers);
+const QUERY_HANDLERS = new Map();
 /**
  * Registers a {@link CustomQueryHandler | custom query handler}.
  *
@@ -134,6 +152,7 @@ const queryHandlers = new Map(builtInHandlers);
  * allowed to consist of lower- and upper case latin letters.
  *
  * @example
+ *
  * ```
  * puppeteer.registerCustomQueryHandler('text', { … });
  * const aHandle = await page.$('text/…');
@@ -147,15 +166,17 @@ const queryHandlers = new Map(builtInHandlers);
  * @public
  */
 export function registerCustomQueryHandler(name, handler) {
-    if (queryHandlers.get(name)) {
+    if (INTERNAL_QUERY_HANDLERS.has(name)) {
+        throw new Error(`A query handler named "${name}" already exists`);
+    }
+    if (QUERY_HANDLERS.has(name)) {
         throw new Error(`A custom query handler named "${name}" already exists`);
     }
     const isValidName = /^[a-zA-Z]+$/.test(name);
     if (!isValidName) {
         throw new Error(`Custom query handler names may only contain [a-zA-Z]`);
     }
-    const internalHandler = createInternalQueryHandler(handler);
-    queryHandlers.set(name, internalHandler);
+    QUERY_HANDLERS.set(name, { handler: internalizeCustomQueryHandler(handler) });
 }
 /**
  * @param name - The name of the query handler to unregistered.
@@ -163,9 +184,7 @@ export function registerCustomQueryHandler(name, handler) {
  * @public
  */
 export function unregisterCustomQueryHandler(name) {
-    if (queryHandlers.has(name) && !builtInHandlers.has(name)) {
-        queryHandlers.delete(name);
-    }
+    QUERY_HANDLERS.delete(name);
 }
 /**
  * @returns a list with the names of all registered custom query handlers.
@@ -173,9 +192,7 @@ export function unregisterCustomQueryHandler(name) {
  * @public
  */
 export function customQueryHandlerNames() {
-    return [...queryHandlers.keys()].filter(name => {
-        return !builtInHandlers.has(name);
-    });
+    return [...QUERY_HANDLERS.keys()];
 }
 /**
  * Clears all registered handlers.
@@ -183,26 +200,27 @@ export function customQueryHandlerNames() {
  * @public
  */
 export function clearCustomQueryHandlers() {
-    customQueryHandlerNames().forEach(unregisterCustomQueryHandler);
+    QUERY_HANDLERS.clear();
 }
+const CUSTOM_QUERY_SEPARATORS = ['=', '/'];
 /**
  * @internal
  */
 export function getQueryHandlerAndSelector(selector) {
-    const hasCustomQueryHandler = /^[a-zA-Z]+\//.test(selector);
-    if (!hasCustomQueryHandler) {
-        return { updatedSelector: selector, queryHandler: defaultHandler };
+    for (const handlerMap of [QUERY_HANDLERS, INTERNAL_QUERY_HANDLERS]) {
+        for (const [name, { handler: queryHandler, transformSelector },] of handlerMap) {
+            for (const separator of CUSTOM_QUERY_SEPARATORS) {
+                const prefix = `${name}${separator}`;
+                if (selector.startsWith(prefix)) {
+                    selector = selector.slice(prefix.length);
+                    if (transformSelector) {
+                        selector = transformSelector(selector);
+                    }
+                    return { updatedSelector: selector, queryHandler };
+                }
+            }
+        }
     }
-    const index = selector.indexOf('/');
-    const name = selector.slice(0, index);
-    const updatedSelector = selector.slice(index + 1);
-    const queryHandler = queryHandlers.get(name);
-    if (!queryHandler) {
-        throw new Error(`Query set to use "${name}", but no query handler of that name was found`);
-    }
-    return {
-        updatedSelector,
-        queryHandler,
-    };
+    return { updatedSelector: selector, queryHandler: defaultHandler };
 }
 //# sourceMappingURL=QueryHandler.js.map

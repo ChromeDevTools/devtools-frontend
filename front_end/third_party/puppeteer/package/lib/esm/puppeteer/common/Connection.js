@@ -25,7 +25,7 @@ var _Connection_instances, _Connection_url, _Connection_transport, _Connection_d
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 import { debug } from './Debug.js';
 const debugProtocolSend = debug('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = debug('puppeteer:protocol:RECV ◀');
@@ -181,20 +181,29 @@ export class Connection extends EventEmitter {
         return !__classPrivateFieldGet(this, _Connection_manuallyAttached, "f").has(targetId);
     }
     /**
-     * @param targetInfo - The target info
-     * @returns The CDP session that is created
+     * @internal
      */
-    async createSession(targetInfo) {
-        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
+    async _createSession(targetInfo, isAutoAttachEmulated = true) {
+        if (!isAutoAttachEmulated) {
+            __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
+        }
         const { sessionId } = await this.send('Target.attachToTarget', {
             targetId: targetInfo.targetId,
             flatten: true,
         });
+        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").delete(targetInfo.targetId);
         const session = __classPrivateFieldGet(this, _Connection_sessions, "f").get(sessionId);
         if (!session) {
             throw new Error('CDPSession creation failed.');
         }
         return session;
+    }
+    /**
+     * @param targetInfo - The target info
+     * @returns The CDP session that is created
+     */
+    async createSession(targetInfo) {
+        return await this._createSession(targetInfo, false);
     }
 }
 _Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_lastId = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_manuallyAttached = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
@@ -234,14 +243,17 @@ export const CDPSessionEmittedEvents = {
  * and {@link https://github.com/aslushnikov/getting-started-with-cdp/blob/HEAD/README.md | Getting Started with DevTools Protocol}.
  *
  * @example
+ *
  * ```ts
  * const client = await page.target().createCDPSession();
  * await client.send('Animation.enable');
- * client.on('Animation.animationCreated', () => console.log('Animation created!'));
+ * client.on('Animation.animationCreated', () =>
+ *   console.log('Animation created!')
+ * );
  * const response = await client.send('Animation.getPlaybackRate');
  * console.log('playback rate is ' + response.playbackRate);
  * await client.send('Animation.setPlaybackRate', {
- *   playbackRate: response.playbackRate / 2
+ *   playbackRate: response.playbackRate / 2,
  * });
  * ```
  *

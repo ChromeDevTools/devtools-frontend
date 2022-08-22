@@ -17,7 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = exports.clearCustomQueryHandlers = exports.customQueryHandlerNames = exports.unregisterCustomQueryHandler = exports.registerCustomQueryHandler = void 0;
 const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
-function createInternalQueryHandler(handler) {
+function internalizeCustomQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
         const queryOne = handler.queryOne;
@@ -59,7 +59,7 @@ function createInternalQueryHandler(handler) {
     }
     return internalHandler;
 }
-const defaultHandler = createInternalQueryHandler({
+const defaultHandler = internalizeCustomQueryHandler({
     queryOne: (element, selector) => {
         if (!('querySelector' in element)) {
             throw new Error(`Could not invoke \`querySelector\` on node of type ${element.nodeName}.`);
@@ -75,7 +75,7 @@ const defaultHandler = createInternalQueryHandler({
         ];
     },
 });
-const pierceHandler = createInternalQueryHandler({
+const pierceHandler = internalizeCustomQueryHandler({
     queryOne: (element, selector) => {
         let found = null;
         const search = (root) => {
@@ -123,11 +123,29 @@ const pierceHandler = createInternalQueryHandler({
         return result;
     },
 });
-const builtInHandlers = new Map([
-    ['aria', AriaQueryHandler_js_1.ariaHandler],
-    ['pierce', pierceHandler],
+const xpathHandler = internalizeCustomQueryHandler({
+    queryOne: (element, selector) => {
+        const doc = element.ownerDocument || document;
+        const result = doc.evaluate(selector, element, null, XPathResult.FIRST_ORDERED_NODE_TYPE);
+        return result.singleNodeValue;
+    },
+    queryAll: (element, selector) => {
+        const doc = element.ownerDocument || document;
+        const iterator = doc.evaluate(selector, element, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+        const array = [];
+        let item;
+        while ((item = iterator.iterateNext())) {
+            array.push(item);
+        }
+        return array;
+    },
+});
+const INTERNAL_QUERY_HANDLERS = new Map([
+    ['aria', { handler: AriaQueryHandler_js_1.ariaHandler }],
+    ['pierce', { handler: pierceHandler }],
+    ['xpath', { handler: xpathHandler }],
 ]);
-const queryHandlers = new Map(builtInHandlers);
+const QUERY_HANDLERS = new Map();
 /**
  * Registers a {@link CustomQueryHandler | custom query handler}.
  *
@@ -137,6 +155,7 @@ const queryHandlers = new Map(builtInHandlers);
  * allowed to consist of lower- and upper case latin letters.
  *
  * @example
+ *
  * ```
  * puppeteer.registerCustomQueryHandler('text', { … });
  * const aHandle = await page.$('text/…');
@@ -150,15 +169,17 @@ const queryHandlers = new Map(builtInHandlers);
  * @public
  */
 function registerCustomQueryHandler(name, handler) {
-    if (queryHandlers.get(name)) {
+    if (INTERNAL_QUERY_HANDLERS.has(name)) {
+        throw new Error(`A query handler named "${name}" already exists`);
+    }
+    if (QUERY_HANDLERS.has(name)) {
         throw new Error(`A custom query handler named "${name}" already exists`);
     }
     const isValidName = /^[a-zA-Z]+$/.test(name);
     if (!isValidName) {
         throw new Error(`Custom query handler names may only contain [a-zA-Z]`);
     }
-    const internalHandler = createInternalQueryHandler(handler);
-    queryHandlers.set(name, internalHandler);
+    QUERY_HANDLERS.set(name, { handler: internalizeCustomQueryHandler(handler) });
 }
 exports.registerCustomQueryHandler = registerCustomQueryHandler;
 /**
@@ -167,9 +188,7 @@ exports.registerCustomQueryHandler = registerCustomQueryHandler;
  * @public
  */
 function unregisterCustomQueryHandler(name) {
-    if (queryHandlers.has(name) && !builtInHandlers.has(name)) {
-        queryHandlers.delete(name);
-    }
+    QUERY_HANDLERS.delete(name);
 }
 exports.unregisterCustomQueryHandler = unregisterCustomQueryHandler;
 /**
@@ -178,9 +197,7 @@ exports.unregisterCustomQueryHandler = unregisterCustomQueryHandler;
  * @public
  */
 function customQueryHandlerNames() {
-    return [...queryHandlers.keys()].filter(name => {
-        return !builtInHandlers.has(name);
-    });
+    return [...QUERY_HANDLERS.keys()];
 }
 exports.customQueryHandlerNames = customQueryHandlerNames;
 /**
@@ -189,28 +206,29 @@ exports.customQueryHandlerNames = customQueryHandlerNames;
  * @public
  */
 function clearCustomQueryHandlers() {
-    customQueryHandlerNames().forEach(unregisterCustomQueryHandler);
+    QUERY_HANDLERS.clear();
 }
 exports.clearCustomQueryHandlers = clearCustomQueryHandlers;
+const CUSTOM_QUERY_SEPARATORS = ['=', '/'];
 /**
  * @internal
  */
 function getQueryHandlerAndSelector(selector) {
-    const hasCustomQueryHandler = /^[a-zA-Z]+\//.test(selector);
-    if (!hasCustomQueryHandler) {
-        return { updatedSelector: selector, queryHandler: defaultHandler };
+    for (const handlerMap of [QUERY_HANDLERS, INTERNAL_QUERY_HANDLERS]) {
+        for (const [name, { handler: queryHandler, transformSelector },] of handlerMap) {
+            for (const separator of CUSTOM_QUERY_SEPARATORS) {
+                const prefix = `${name}${separator}`;
+                if (selector.startsWith(prefix)) {
+                    selector = selector.slice(prefix.length);
+                    if (transformSelector) {
+                        selector = transformSelector(selector);
+                    }
+                    return { updatedSelector: selector, queryHandler };
+                }
+            }
+        }
     }
-    const index = selector.indexOf('/');
-    const name = selector.slice(0, index);
-    const updatedSelector = selector.slice(index + 1);
-    const queryHandler = queryHandlers.get(name);
-    if (!queryHandler) {
-        throw new Error(`Query set to use "${name}", but no query handler of that name was found`);
-    }
-    return {
-        updatedSelector,
-        queryHandler,
-    };
+    return { updatedSelector: selector, queryHandler: defaultHandler };
 }
 exports.getQueryHandlerAndSelector = getQueryHandlerAndSelector;
 //# sourceMappingURL=QueryHandler.js.map

@@ -40,8 +40,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._connectToBrowser = void 0;
 const util_js_1 = require("./util.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const environment_js_1 = require("../environment.js");
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Browser_js_1 = require("./Browser.js");
 const Connection_js_1 = require("./Connection.js");
 const fetch_js_1 = require("./fetch.js");
@@ -102,7 +103,7 @@ async function getWSEndpoint(browserURL) {
         return data.webSocketDebuggerUrl;
     }
     catch (error) {
-        if ((0, util_js_1.isErrorLike)(error)) {
+        if ((0, ErrorLike_js_1.isErrorLike)(error)) {
             error.message =
                 `Failed to fetch browser webSocket URL from ${endpointURL}: ` +
                     error.message;

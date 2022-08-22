@@ -13,32 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DOMWorld, WaitForSelectorOptions } from './DOMWorld.js';
+import { IsolatedWorld, WaitForSelectorOptions } from './IsolatedWorld.js';
 import { ElementHandle } from './ElementHandle.js';
 import { JSHandle } from './JSHandle.js';
+/**
+ * @public
+ */
+export interface CustomQueryHandler {
+    /**
+     * @returns A {@link Node} matching the given `selector` from {@link node}.
+     */
+    queryOne?: (node: Node, selector: string) => Node | null;
+    /**
+     * @returns Some {@link Node}s matching the given `selector` from {@link node}.
+     */
+    queryAll?: (node: Node, selector: string) => Node[];
+}
 /**
  * @internal
  */
 export interface InternalQueryHandler {
+    /**
+     * Queries for a single node given a selector and {@link ElementHandle}.
+     *
+     * Akin to {@link Window.prototype.querySelector}.
+     */
     queryOne?: (element: ElementHandle<Node>, selector: string) => Promise<ElementHandle<Node> | null>;
+    /**
+     * Queries for multiple nodes given a selector and {@link ElementHandle}.
+     *
+     * Akin to {@link Window.prototype.querySelectorAll}.
+     */
     queryAll?: (element: ElementHandle<Node>, selector: string) => Promise<Array<ElementHandle<Node>>>;
-    waitFor?: (domWorld: DOMWorld, selector: string, options: WaitForSelectorOptions) => Promise<ElementHandle<Node> | null>;
+    /**
+     * Queries for multiple nodes given a selector and {@link ElementHandle}.
+     * Unlike {@link queryAll}, this returns a handle to a node array.
+     *
+     * Akin to {@link Window.prototype.querySelectorAll}.
+     */
     queryAllArray?: (element: ElementHandle<Node>, selector: string) => Promise<JSHandle<Node[]>>;
-}
-/**
- * Contains two functions `queryOne` and `queryAll` that can
- * be {@link registerCustomQueryHandler | registered}
- * as alternative querying strategies. The functions `queryOne` and `queryAll`
- * are executed in the page context.  `queryOne` should take an `Element` and a
- * selector string as argument and return a single `Element` or `null` if no
- * element is found. `queryAll` takes the same arguments but should instead
- * return a `NodeListOf<Element>` or `Array<Element>` with all the elements
- * that match the given query selector.
- * @public
- */
-export interface CustomQueryHandler {
-    queryOne?: (element: Node, selector: string) => Node | null;
-    queryAll?: (element: Node, selector: string) => Node[];
+    /**
+     * Waits until a single node appears for a given selector and
+     * {@link ElementHandle}.
+     *
+     * Akin to {@link Window.prototype.querySelectorAll}.
+     */
+    waitFor?: (isolatedWorld: IsolatedWorld, selector: string, options: WaitForSelectorOptions) => Promise<ElementHandle<Node> | null>;
 }
 /**
  * Registers a {@link CustomQueryHandler | custom query handler}.
@@ -49,6 +69,7 @@ export interface CustomQueryHandler {
  * allowed to consist of lower- and upper case latin letters.
  *
  * @example
+ *
  * ```
  * puppeteer.registerCustomQueryHandler('text', { … });
  * const aHandle = await page.$('text/…');

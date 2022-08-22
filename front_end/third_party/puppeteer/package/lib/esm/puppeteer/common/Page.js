@@ -24,23 +24,26 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Page_instances, _Page_closed, _Page_client, _Page_target, _Page_keyboard, _Page_mouse, _Page_timeoutSettings, _Page_touchscreen, _Page_accessibility, _Page_frameManager, _Page_emulationManager, _Page_tracing, _Page_pageBindings, _Page_coverage, _Page_javascriptEnabled, _Page_viewport, _Page_screenshotTaskQueue, _Page_workers, _Page_fileChooserInterceptors, _Page_disconnectPromise, _Page_userDragInterceptionEnabled, _Page_handlerMap, _Page_onDetachedFromTarget, _Page_onAttachedToTarget, _Page_initialize, _Page_onFileChooser, _Page_onTargetCrashed, _Page_onLogEntryAdded, _Page_emitMetrics, _Page_buildMetricsObject, _Page_handleException, _Page_onConsoleAPI, _Page_onBindingCalled, _Page_addConsoleMessage, _Page_onDialog, _Page_resetDefaultBackgroundColor, _Page_setTransparentBackgroundColor, _Page_sessionClosePromise, _Page_go, _Page_screenshotTask;
+var _Page_instances, _Page_closed, _Page_client, _Page_target, _Page_keyboard, _Page_mouse, _Page_timeoutSettings, _Page_touchscreen, _Page_accessibility, _Page_frameManager, _Page_emulationManager, _Page_tracing, _Page_pageBindings, _Page_coverage, _Page_javascriptEnabled, _Page_viewport, _Page_screenshotTaskQueue, _Page_workers, _Page_fileChooserPromises, _Page_disconnectPromise, _Page_userDragInterceptionEnabled, _Page_handlerMap, _Page_onDetachedFromTarget, _Page_onAttachedToTarget, _Page_initialize, _Page_onFileChooser, _Page_onTargetCrashed, _Page_onLogEntryAdded, _Page_emitMetrics, _Page_buildMetricsObject, _Page_handleException, _Page_onConsoleAPI, _Page_onBindingCalled, _Page_addConsoleMessage, _Page_onDialog, _Page_resetDefaultBackgroundColor, _Page_setTransparentBackgroundColor, _Page_sessionClosePromise, _Page_go, _Page_screenshotTask;
 import { Accessibility } from './Accessibility.js';
-import { assert } from './assert.js';
+import { assert } from '../util/assert.js';
 import { CDPSessionEmittedEvents } from './Connection.js';
 import { ConsoleMessage } from './ConsoleMessage.js';
 import { Coverage } from './Coverage.js';
 import { Dialog } from './Dialog.js';
+import { MAIN_WORLD } from './IsolatedWorld.js';
 import { EmulationManager } from './EmulationManager.js';
 import { EventEmitter } from './EventEmitter.js';
 import { FileChooser } from './FileChooser.js';
-import { FrameManager, FrameManagerEmittedEvents, } from './FrameManager.js';
+import { FrameManager, FrameManagerEmittedEvents } from './FrameManager.js';
 import { Keyboard, Mouse, Touchscreen } from './Input.js';
 import { NetworkManagerEmittedEvents, } from './NetworkManager.js';
 import { _paperFormats } from './PDFOptions.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
-import { createJSHandle, debugError, evaluationString, getExceptionMessage, importFS, getReadableAsBuffer, getReadableFromProtocolStream, isErrorLike, isNumber, isString, pageBindingDeliverErrorString, pageBindingDeliverErrorValueString, pageBindingDeliverResultString, pageBindingInitString, releaseObject, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from './util.js';
+import { createJSHandle, debugError, evaluationString, getExceptionMessage, importFS, getReadableAsBuffer, getReadableFromProtocolStream, isNumber, isString, pageBindingDeliverErrorString, pageBindingDeliverErrorValueString, pageBindingDeliverResultString, pageBindingInitString, releaseObject, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from './util.js';
+import { isErrorLike } from '../util/ErrorLike.js';
+import { createDeferredPromiseWithTimer, } from '../util/DeferredPromise.js';
 import { WebWorker } from './WebWorker.js';
 /**
  * Page provides methods to interact with a single tab or
@@ -55,6 +58,7 @@ import { WebWorker } from './WebWorker.js';
  *
  * @example
  * This example creates a page, navigates it to a URL, and then saves a screenshot:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -72,6 +76,7 @@ import { WebWorker } from './WebWorker.js';
  *
  * @example
  * This example logs a message for a single page `load` event:
+ *
  * ```ts
  * page.once('load', () => console.log('Page loaded!'));
  * ```
@@ -113,7 +118,7 @@ export class Page extends EventEmitter {
         _Page_viewport.set(this, void 0);
         _Page_screenshotTaskQueue.set(this, void 0);
         _Page_workers.set(this, new Map());
-        _Page_fileChooserInterceptors.set(this, new Set());
+        _Page_fileChooserPromises.set(this, new Set());
         _Page_disconnectPromise.set(this, void 0);
         _Page_userDragInterceptionEnabled.set(this, false);
         _Page_handlerMap.set(this, new WeakMap());
@@ -129,7 +134,7 @@ export class Page extends EventEmitter {
             this.emit("workerdestroyed" /* PageEmittedEvents.WorkerDestroyed */, worker);
         });
         _Page_onAttachedToTarget.set(this, async (createdTarget) => {
-            await __classPrivateFieldGet(this, _Page_frameManager, "f").onAttachedToTarget(createdTarget);
+            __classPrivateFieldGet(this, _Page_frameManager, "f").onAttachedToTarget(createdTarget);
             if (createdTarget._getTargetInfo().type === 'worker') {
                 const session = createdTarget._session();
                 assert(session);
@@ -170,7 +175,7 @@ export class Page extends EventEmitter {
         __classPrivateFieldGet(this, _Page_frameManager, "f").on(FrameManagerEmittedEvents.FrameNavigated, event => {
             return this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, event);
         });
-        const networkManager = __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager();
+        const networkManager = __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager;
         networkManager.on(NetworkManagerEmittedEvents.Request, event => {
             return this.emit("request" /* PageEmittedEvents.Request */, event);
         });
@@ -186,7 +191,6 @@ export class Page extends EventEmitter {
         networkManager.on(NetworkManagerEmittedEvents.RequestFinished, event => {
             return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
         });
-        __classPrivateFieldSet(this, _Page_fileChooserInterceptors, new Set(), "f");
         client.on('Page.domContentEventFired', () => {
             return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
         });
@@ -307,36 +311,36 @@ export class Page extends EventEmitter {
      *
      * ```ts
      * const [fileChooser] = await Promise.all([
-     * page.waitForFileChooser(),
-     * page.click('#upload-file-button'),
-     * // some button that triggers file selection
+     *   page.waitForFileChooser(),
+     *   page.click('#upload-file-button'),
+     *   // some button that triggers file selection
      * ]);
      * await fileChooser.accept(['/tmp/myfile.pdf']);
      * ```
      */
     async waitForFileChooser(options = {}) {
-        if (!__classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f").size) {
+        if (!__classPrivateFieldGet(this, _Page_fileChooserPromises, "f").size) {
             await __classPrivateFieldGet(this, _Page_client, "f").send('Page.setInterceptFileChooserDialog', {
                 enabled: true,
             });
         }
         const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        let callback;
-        const promise = new Promise(x => {
-            return (callback = x);
-        });
-        __classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f").add(callback);
-        return waitWithTimeout(promise, 'waiting for file chooser', timeout).catch(error => {
-            __classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f").delete(callback);
+        const promise = createDeferredPromiseWithTimer(`Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`);
+        __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").add(promise);
+        return promise.catch(error => {
+            __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").delete(promise);
             throw error;
         });
     }
     /**
      * Sets the page's geolocation.
+     *
      * @remarks
-     * NOTE: Consider using {@link BrowserContext.overridePermissions} to grant
+     * Consider using {@link BrowserContext.overridePermissions} to grant
      * permissions for the page to read its geolocation.
+     *
      * @example
+     *
      * ```ts
      * await page.setGeolocation({latitude: 59.95, longitude: 30.31667});
      * ```
@@ -384,6 +388,7 @@ export class Page extends EventEmitter {
     }
     /**
      * @returns The page's main frame.
+     *
      * @remarks
      * Page is guaranteed to have a main frame which persists during navigations.
      */
@@ -412,29 +417,33 @@ export class Page extends EventEmitter {
         return __classPrivateFieldGet(this, _Page_frameManager, "f").frames();
     }
     /**
-     * @returns all of the dedicated
-     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
-     * WebWorkers}
-     * associated with the page.
+     * @returns all of the dedicated {@link
+     * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
+     * WebWorkers} associated with the page.
+     *
      * @remarks
-     * NOTE: This does not contain ServiceWorkers
+     * This does not contain ServiceWorkers
      */
     workers() {
         return Array.from(__classPrivateFieldGet(this, _Page_workers, "f").values());
     }
     /**
-     * @param value - Whether to enable request interception.
-     *
-     * @remarks
      * Activating request interception enables {@link HTTPRequest.abort},
-     * {@link HTTPRequest.continue} and {@link HTTPRequest.respond} methods.  This
+     * {@link HTTPRequest.continue} and {@link HTTPRequest.respond} methods. This
      * provides the capability to modify network requests that are made by a page.
      *
      * Once request interception is enabled, every request will stall unless it's
      * continued, responded or aborted; or completed using the browser cache.
      *
+     * Enabling request interception disables page caching.
+     *
+     * See the
+     * {@link https://pptr.dev/next/guides/request-interception|Request interception guide}
+     * for more details.
+     *
      * @example
      * An example of a naïve request interceptor that aborts all image requests:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * (async () => {
@@ -442,27 +451,29 @@ export class Page extends EventEmitter {
      *   const page = await browser.newPage();
      *   await page.setRequestInterception(true);
      *   page.on('request', interceptedRequest => {
-     *     if (interceptedRequest.url().endsWith('.png') ||
-     *         interceptedRequest.url().endsWith('.jpg'))
+     *     if (
+     *       interceptedRequest.url().endsWith('.png') ||
+     *       interceptedRequest.url().endsWith('.jpg')
+     *     )
      *       interceptedRequest.abort();
-     *     else
-     *       interceptedRequest.continue();
-     *     });
+     *     else interceptedRequest.continue();
+     *   });
      *   await page.goto('https://example.com');
      *   await browser.close();
      * })();
      * ```
-     * NOTE: Enabling request interception disables page caching.
+     *
+     * @param value - Whether to enable request interception.
      */
     async setRequestInterception(value) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager().setRequestInterception(value);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.setRequestInterception(value);
     }
     /**
      * @param enabled - Whether to enable drag interception.
      *
      * @remarks
      * Activating drag interception enables the `Input.drag`,
-     * methods  This provides the capability to capture drag events emitted
+     * methods This provides the capability to capture drag events emitted
      * on the page, which can then be used to simulate drag-and-drop.
      */
     async setDragInterception(enabled) {
@@ -477,33 +488,33 @@ export class Page extends EventEmitter {
      * (#pageemulatenetworkconditionsnetworkconditions)
      */
     setOfflineMode(enabled) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager().setOfflineMode(enabled);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.setOfflineMode(enabled);
     }
     /**
      * @param networkConditions - Passing `null` disables network condition emulation.
      * @example
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * const slow3G = puppeteer.networkConditions['Slow 3G'];
      *
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * await page.emulateNetworkConditions(slow3G);
-     * await page.goto('https://www.google.com');
-     * // other actions...
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.emulateNetworkConditions(slow3G);
+     *   await page.goto('https://www.google.com');
+     *   // other actions...
+     *   await browser.close();
      * })();
      * ```
+     *
      * @remarks
      * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
      * https://crbug.com/563644). To set the page offline, you can use
      * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
      */
     emulateNetworkConditions(networkConditions) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f")
-            .networkManager()
-            .emulateNetworkConditions(networkConditions);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.emulateNetworkConditions(networkConditions);
     }
     /**
      * This setting will change the default maximum navigation time for the
@@ -520,7 +531,7 @@ export class Page extends EventEmitter {
      * - {@link Page.setContent | page.setContent(html,options)}
      *
      * - {@link Page.waitForNavigation | page.waitForNavigation(options)}
-     * @param timeout - Maximum navigation time in milliseconds.
+     *   @param timeout - Maximum navigation time in milliseconds.
      */
     setDefaultNavigationTimeout(timeout) {
         __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultNavigationTimeout(timeout);
@@ -566,15 +577,20 @@ export class Page extends EventEmitter {
      * recommended as they are easier to debug and use with TypeScript):
      *
      * @example
+     *
      * ```ts
-     * const aHandle = await page.evaluateHandle('document')
+     * const aHandle = await page.evaluateHandle('document');
      * ```
      *
      * @example
      * {@link JSHandle} instances can be passed as arguments to the `pageFunction`:
+     *
      * ```ts
      * const aHandle = await page.evaluateHandle(() => document.body);
-     * const resultHandle = await page.evaluateHandle(body => body.innerHTML, aHandle);
+     * const resultHandle = await page.evaluateHandle(
+     *   body => body.innerHTML,
+     *   aHandle
+     * );
      * console.log(await resultHandle.jsonValue());
      * await resultHandle.dispose();
      * ```
@@ -584,14 +600,17 @@ export class Page extends EventEmitter {
      * you instead get an {@link ElementHandle} back:
      *
      * @example
+     *
      * ```ts
-     * const button = await page.evaluateHandle(() => document.querySelector('button'));
+     * const button = await page.evaluateHandle(() =>
+     *   document.querySelector('button')
+     * );
      * // can call `click` because `button` is an `ElementHandle`
      * await button.click();
      * ```
      *
      * The TypeScript definitions assume that `evaluateHandle` returns
-     *  a `JSHandle`, but if you know it's going to return an
+     * a `JSHandle`, but if you know it's going to return an
      * `ElementHandle`, pass it as the generic argument:
      *
      * ```ts
@@ -618,7 +637,7 @@ export class Page extends EventEmitter {
      *
      * ```ts
      * // Create a Map object
-     * await page.evaluate(() => window.map = new Map());
+     * await page.evaluate(() => (window.map = new Map()));
      * // Get a handle to the Map object prototype
      * const mapPrototype = await page.evaluateHandle(() => Map.prototype);
      * // Query all map instances into an array
@@ -628,6 +647,7 @@ export class Page extends EventEmitter {
      * await mapInstances.dispose();
      * await mapPrototype.dispose();
      * ```
+     *
      * @param prototypeHandle - a handle to the object prototype.
      * @returns Promise which resolves to a handle to an array of objects with
      * this prototype.
@@ -665,7 +685,10 @@ export class Page extends EventEmitter {
      * ```ts
      * // if you don't provide HTMLInputElement here, TS will error
      * // as `value` is not on `Element`
-     * const searchValue = await page.$eval('#search', (el: HTMLInputElement) => el.value);
+     * const searchValue = await page.$eval(
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value
+     * );
      * ```
      *
      * The compiler should be able to infer the return type
@@ -678,7 +701,8 @@ export class Page extends EventEmitter {
      * // The compiler can infer the return type in this case, but if it can't
      * // or if you want to be more explicit, provide it as the generic type.
      * const searchValue = await page.$eval<string>(
-     *  '#search', (el: HTMLInputElement) => el.value
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value
      * );
      * ```
      *
@@ -702,7 +726,6 @@ export class Page extends EventEmitter {
      * the page and passes the result as the first argument to the `pageFunction`.
      *
      * @remarks
-     *
      * If `pageFunction` returns a promise `$$eval` will wait for the promise to
      * resolve and then return its value.
      *
@@ -714,7 +737,7 @@ export class Page extends EventEmitter {
      *
      * // get the text content of all the `.options` elements:
      * const options = await page.$$eval('div > span.options', options => {
-     *   return options.map(option => option.textContent)
+     *   return options.map(option => option.textContent);
      * });
      * ```
      *
@@ -743,16 +766,17 @@ export class Page extends EventEmitter {
      * // The compiler can infer the return type in this case, but if it can't
      * // or if you want to be more explicit, provide it as the generic type.
      * const allInputValues = await page.$$eval<string[]>(
-     *  'input', (elements: HTMLInputElement[]) => elements.map(e => e.textContent)
+     *   'input',
+     *   (elements: HTMLInputElement[]) => elements.map(e => e.textContent)
      * );
      * ```
      *
      * @param selector - the
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * to query for
-     * @param pageFunction - the function to be evaluated in the page context. Will
-     * be passed the result of `Array.from(document.querySelectorAll(selector))`
-     * as its first argument.
+     * @param pageFunction - the function to be evaluated in the page context.
+     * Will be passed the result of
+     * `Array.from(document.querySelectorAll(selector))` as its first argument.
      * @param args - any additional arguments to pass through to `pageFunction`.
      *
      * @returns The result of calling `pageFunction`. If it returns an element it
@@ -766,8 +790,10 @@ export class Page extends EventEmitter {
      * The method evaluates the XPath expression relative to the page document as
      * its context node. If there are no such elements, the method resolves to an
      * empty array.
+     *
      * @remarks
      * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
+     *
      * @param expression - Expression to evaluate
      */
     async $x(expression) {
@@ -802,6 +828,7 @@ export class Page extends EventEmitter {
     }
     /**
      * @example
+     *
      * ```ts
      * await page.setCookie(cookieObject1, cookieObject2);
      * ```
@@ -825,10 +852,13 @@ export class Page extends EventEmitter {
     }
     /**
      * Adds a `<script>` tag into the page with the desired URL or content.
+     *
      * @remarks
-     * Shortcut for {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options) }.
-     * @returns Promise which resolves to the added tag when the script's onload fires or
-     * when the script content was injected into frame.
+     * Shortcut for
+     * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
+     *
+     * @returns Promise which resolves to the added tag when the script's onload
+     * fires or when the script content was injected into frame.
      */
     async addScriptTag(options) {
         return this.mainFrame().addScriptTag(options);
@@ -843,63 +873,74 @@ export class Page extends EventEmitter {
         return this.mainFrame().addStyleTag(options);
     }
     /**
-     * The method adds a function called `name` on the page's `window` object. When
-     * called, the function executes `puppeteerFunction` in node.js and returns a
-     * `Promise` which resolves to the return value of `puppeteerFunction`.
+     * The method adds a function called `name` on the page's `window` object.
+     * When called, the function executes `puppeteerFunction` in node.js and
+     * returns a `Promise` which resolves to the return value of
+     * `puppeteerFunction`.
      *
      * If the puppeteerFunction returns a `Promise`, it will be awaited.
      *
-     * NOTE: Functions installed via `page.exposeFunction` survive navigations.
-     * @param name - Name of the function on the window object
-     * @param pptrFunction -  Callback function which will be called in
-     * Puppeteer's context.
+     * :::note
+     *
+     * Functions installed via `page.exposeFunction` survive navigations.
+     *
+     * :::note
+     *
      * @example
      * An example of adding an `md5` function into the page:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * const crypto = require('crypto');
      *
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * page.on('console', (msg) => console.log(msg.text()));
-     * await page.exposeFunction('md5', (text) =>
-     * crypto.createHash('md5').update(text).digest('hex')
-     * );
-     * await page.evaluate(async () => {
-     * // use window.md5 to compute hashes
-     * const myString = 'PUPPETEER';
-     * const myHash = await window.md5(myString);
-     * console.log(`md5 of ${myString} is ${myHash}`);
-     * });
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   page.on('console', msg => console.log(msg.text()));
+     *   await page.exposeFunction('md5', text =>
+     *     crypto.createHash('md5').update(text).digest('hex')
+     *   );
+     *   await page.evaluate(async () => {
+     *     // use window.md5 to compute hashes
+     *     const myString = 'PUPPETEER';
+     *     const myHash = await window.md5(myString);
+     *     console.log(`md5 of ${myString} is ${myHash}`);
+     *   });
+     *   await browser.close();
      * })();
      * ```
+     *
+     * @example
      * An example of adding a `window.readfile` function into the page:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * const fs = require('fs');
      *
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * page.on('console', (msg) => console.log(msg.text()));
-     * await page.exposeFunction('readfile', async (filePath) => {
-     * return new Promise((resolve, reject) => {
-     * fs.readFile(filePath, 'utf8', (err, text) => {
-     *    if (err) reject(err);
-     *    else resolve(text);
-     *  });
-     * });
-     * });
-     * await page.evaluate(async () => {
-     * // use window.readfile to read contents of a file
-     * const content = await window.readfile('/etc/hosts');
-     * console.log(content);
-     * });
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   page.on('console', msg => console.log(msg.text()));
+     *   await page.exposeFunction('readfile', async filePath => {
+     *     return new Promise((resolve, reject) => {
+     *       fs.readFile(filePath, 'utf8', (err, text) => {
+     *         if (err) reject(err);
+     *         else resolve(text);
+     *       });
+     *     });
+     *   });
+     *   await page.evaluate(async () => {
+     *     // use window.readfile to read contents of a file
+     *     const content = await window.readfile('/etc/hosts');
+     *     console.log(content);
+     *   });
+     *   await browser.close();
      * })();
      * ```
+     *
+     * @param name - Name of the function on the window object
+     * @param pptrFunction - Callback function which will be called in Puppeteer's
+     * context.
      */
     async exposeFunction(name, pptrFunction) {
         if (__classPrivateFieldGet(this, _Page_pageBindings, "f").has(name)) {
@@ -926,23 +967,35 @@ export class Page extends EventEmitter {
     }
     /**
      * Provide credentials for `HTTP authentication`.
-     * @remarks To disable authentication, pass `null`.
+     *
+     * @remarks
+     * To disable authentication, pass `null`.
      */
     async authenticate(credentials) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager().authenticate(credentials);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.authenticate(credentials);
     }
     /**
      * The extra HTTP headers will be sent with every request the page initiates.
-     * NOTE: All HTTP header names are lowercased. (HTTP headers are
+     *
+     * :::tip
+     *
+     * All HTTP header names are lowercased. (HTTP headers are
      * case-insensitive, so this shouldn’t impact your server code.)
-     * NOTE: page.setExtraHTTPHeaders does not guarantee the order of headers in
+     *
+     * :::
+     *
+     * :::note
+     *
+     * page.setExtraHTTPHeaders does not guarantee the order of headers in
      * the outgoing requests.
+     *
+     * :::
+     *
      * @param headers - An object containing additional HTTP headers to be sent
      * with every request. All header values must be strings.
-     * @returns
      */
     async setExtraHTTPHeaders(headers) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager().setExtraHTTPHeaders(headers);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.setExtraHTTPHeaders(headers);
     }
     /**
      * @param userAgent - Specific user agent to use in this page
@@ -951,9 +1004,7 @@ export class Page extends EventEmitter {
      * @returns Promise which resolves when the user agent is set.
      */
     async setUserAgent(userAgent, userAgentMetadata) {
-        return __classPrivateFieldGet(this, _Page_frameManager, "f")
-            .networkManager()
-            .setUserAgent(userAgent, userAgentMetadata);
+        return __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.setUserAgent(userAgent, userAgentMetadata);
     }
     /**
      * @returns Object containing metrics as key/value pairs.
@@ -981,12 +1032,12 @@ export class Page extends EventEmitter {
      *
      * - `TaskDuration` : Combined duration of all tasks performed by the browser.
      *
-     *
      * - `JSHeapUsedSize` : Used JavaScript heap size.
      *
      * - `JSHeapTotalSize` : Total JavaScript heap size.
+     *
      * @remarks
-     * NOTE: All timestamps are in monotonic time: monotonically increasing time
+     * All timestamps are in monotonic time: monotonically increasing time
      * in seconds since an arbitrary point in the past.
      */
     async metrics() {
@@ -1017,17 +1068,17 @@ export class Page extends EventEmitter {
      *   {@link Page.setDefaultTimeout} methods.
      *
      * - `waitUntil`: When to consider setting markup succeeded, defaults to
-     *    `load`. Given an array of event strings, setting content is considered
-     *    to be successful after all events have been fired. Events can be
-     *    either:<br/>
-     *  - `load` : consider setting content to be finished when the `load` event
-     *    is fired.<br/>
-     *  - `domcontentloaded` : consider setting content to be finished when the
-     *    `DOMContentLoaded` event is fired.<br/>
-     *  - `networkidle0` : consider setting content to be finished when there are
-     *    no more than 0 network connections for at least `500` ms.<br/>
-     *  - `networkidle2` : consider setting content to be finished when there are
-     *    no more than 2 network connections for at least `500` ms.
+     *   `load`. Given an array of event strings, setting content is considered
+     *   to be successful after all events have been fired. Events can be
+     *   either:<br/>
+     * - `load` : consider setting content to be finished when the `load` event
+     *   is fired.<br/>
+     * - `domcontentloaded` : consider setting content to be finished when the
+     *   `DOMContentLoaded` event is fired.<br/>
+     * - `networkidle0` : consider setting content to be finished when there are
+     *   no more than 0 network connections for at least `500` ms.<br/>
+     * - `networkidle2` : consider setting content to be finished when there are
+     *   no more than 2 network connections for at least `500` ms.
      */
     async setContent(html, options = {}) {
         await __classPrivateFieldGet(this, _Page_frameManager, "f").mainFrame().setContent(html, options);
@@ -1048,22 +1099,23 @@ export class Page extends EventEmitter {
      *   {@link Page.setDefaultTimeout} methods.
      *
      * - `waitUntil`:When to consider navigation succeeded, defaults to `load`.
-     *    Given an array of event strings, navigation is considered to be
-     *    successful after all events have been fired. Events can be either:<br/>
-     *  - `load` : consider navigation to be finished when the load event is
-     *    fired.<br/>
-     *  - `domcontentloaded` : consider navigation to be finished when the
-     *    DOMContentLoaded event is fired.<br/>
-     *  - `networkidle0` : consider navigation to be finished when there are no
-     *    more than 0 network connections for at least `500` ms.<br/>
-     *  - `networkidle2` : consider navigation to be finished when there are no
-     *    more than 2 network connections for at least `500` ms.
+     *   Given an array of event strings, navigation is considered to be
+     *   successful after all events have been fired. Events can be either:<br/>
+     * - `load` : consider navigation to be finished when the load event is
+     *   fired.<br/>
+     * - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     * - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     * - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
      *
      * - `referer` : Referer header value. If provided it will take preference
      *   over the referer header value set by
      *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.
      *
      * `page.goto` will throw an error if:
+     *
      * - there's an SSL error (e.g. in case of self-signed certificates).
      * - target URL is invalid.
      * - the timeout is exceeded during navigation.
@@ -1071,9 +1123,9 @@ export class Page extends EventEmitter {
      * - the main resource failed to load.
      *
      * `page.goto` will not throw an error when any valid HTTP status code is
-     *   returned by the remote server, including 404 "Not Found" and 500
-     *   "Internal Server Error". The status code for such responses can be
-     *   retrieved by calling response.status().
+     * returned by the remote server, including 404 "Not Found" and 500
+     * "Internal Server Error". The status code for such responses can be
+     * retrieved by calling response.status().
      *
      * NOTE: `page.goto` either throws an error or returns a main resource
      * response. The only exceptions are navigation to about:blank or navigation
@@ -1103,16 +1155,16 @@ export class Page extends EventEmitter {
      *   {@link Page.setDefaultTimeout} methods.
      *
      * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
-     *    Given an array of event strings, navigation is considered to be
-     *    successful after all events have been fired. Events can be either:<br/>
-     *  - `load` : consider navigation to be finished when the load event is
-     *    fired.<br/>
-     *  - `domcontentloaded` : consider navigation to be finished when the
-     *    DOMContentLoaded event is fired.<br/>
-     *  - `networkidle0` : consider navigation to be finished when there are no
-     *    more than 0 network connections for at least `500` ms.<br/>
-     *  - `networkidle2` : consider navigation to be finished when there are no
-     *    more than 2 network connections for at least `500` ms.
+     *   Given an array of event strings, navigation is considered to be
+     *   successful after all events have been fired. Events can be either:<br/>
+     * - `load` : consider navigation to be finished when the load event is
+     *   fired.<br/>
+     * - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     * - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     * - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
      */
     async reload(options) {
         const result = await Promise.all([
@@ -1126,10 +1178,11 @@ export class Page extends EventEmitter {
      * you run code that will indirectly cause the page to navigate.
      *
      * @example
+     *
      * ```ts
      * const [response] = await Promise.all([
-     * page.waitForNavigation(), // The promise resolves after navigation has finished
-     * page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+     *   page.waitForNavigation(), // The promise resolves after navigation has finished
+     *   page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
      * ]);
      * ```
      *
@@ -1141,6 +1194,7 @@ export class Page extends EventEmitter {
      * @param options - Navigation parameters which might have the following
      * properties:
      * @returns A `Promise` which resolves to the main resource response.
+     *
      * - In case of multiple redirects, the navigation will resolve with the
      *   response of the last redirect.
      * - In case of navigation to a different anchor or navigation due to History
@@ -1154,29 +1208,31 @@ export class Page extends EventEmitter {
      * @param options - Optional waiting parameters
      * @returns Promise which resolves to the matched response
      * @example
+     *
      * ```ts
      * const firstResponse = await page.waitForResponse(
-     * 'https://example.com/resource'
+     *   'https://example.com/resource'
      * );
      * const finalResponse = await page.waitForResponse(
-     * (response) =>
-     * response.url() === 'https://example.com' && response.status() === 200
+     *   response =>
+     *     response.url() === 'https://example.com' && response.status() === 200
      * );
-     * const finalResponse = await page.waitForResponse(async (response) => {
-     * return (await response.text()).includes('<html>');
+     * const finalResponse = await page.waitForResponse(async response => {
+     *   return (await response.text()).includes('<html>');
      * });
      * return finalResponse.ok();
      * ```
+     *
      * @remarks
      * Optional Waiting Parameters have:
      *
      * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
-     * `0` to disable the timeout. The default value can be changed by using the
-     * {@link Page.setDefaultTimeout} method.
+     *   `0` to disable the timeout. The default value can be changed by using the
+     *   {@link Page.setDefaultTimeout} method.
      */
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        return waitForEvent(__classPrivateFieldGet(this, _Page_frameManager, "f").networkManager(), NetworkManagerEmittedEvents.Request, request => {
+        return waitForEvent(__classPrivateFieldGet(this, _Page_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Request, request => {
             if (isString(urlOrPredicate)) {
                 return urlOrPredicate === request.url();
             }
@@ -1191,29 +1247,31 @@ export class Page extends EventEmitter {
      * @param options - Optional waiting parameters
      * @returns Promise which resolves to the matched response.
      * @example
+     *
      * ```ts
      * const firstResponse = await page.waitForResponse(
-     * 'https://example.com/resource'
+     *   'https://example.com/resource'
      * );
      * const finalResponse = await page.waitForResponse(
-     * (response) =>
-     * response.url() === 'https://example.com' && response.status() === 200
+     *   response =>
+     *     response.url() === 'https://example.com' && response.status() === 200
      * );
-     * const finalResponse = await page.waitForResponse(async (response) => {
-     * return (await response.text()).includes('<html>');
+     * const finalResponse = await page.waitForResponse(async response => {
+     *   return (await response.text()).includes('<html>');
      * });
      * return finalResponse.ok();
      * ```
+     *
      * @remarks
      * Optional Parameter have:
      *
      * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-     * pass `0` to disable the timeout. The default value can be changed by using
-     * the {@link Page.setDefaultTimeout} method.
+     *   pass `0` to disable the timeout. The default value can be changed by using
+     *   the {@link Page.setDefaultTimeout} method.
      */
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        return waitForEvent(__classPrivateFieldGet(this, _Page_frameManager, "f").networkManager(), NetworkManagerEmittedEvents.Response, async (response) => {
+        return waitForEvent(__classPrivateFieldGet(this, _Page_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Response, async (response) => {
             if (isString(urlOrPredicate)) {
                 return urlOrPredicate === response.url();
             }
@@ -1229,7 +1287,7 @@ export class Page extends EventEmitter {
      */
     async waitForNetworkIdle(options = {}) {
         const { idleTime = 500, timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        const networkManager = __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager();
+        const networkManager = __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager;
         let idleResolveCallback;
         const idlePromise = new Promise(resolve => {
             idleResolveCallback = resolve;
@@ -1281,17 +1339,19 @@ export class Page extends EventEmitter {
      * @param options - Optional waiting parameters
      * @returns Promise which resolves to the matched frame.
      * @example
+     *
      * ```ts
-     * const frame = await page.waitForFrame(async (frame) => {
+     * const frame = await page.waitForFrame(async frame => {
      *   return frame.name() === 'Test';
      * });
      * ```
+     *
      * @remarks
      * Optional Parameter have:
      *
      * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-     * pass `0` to disable the timeout. The default value can be changed by using
-     * the {@link Page.setDefaultTimeout} method.
+     *   pass `0` to disable the timeout. The default value can be changed by using
+     *   the {@link Page.setDefaultTimeout} method.
      */
     async waitForFrame(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
@@ -1337,16 +1397,16 @@ export class Page extends EventEmitter {
      *   {@link Page.setDefaultTimeout} methods.
      *
      * - `waitUntil` : When to consider navigation succeeded, defaults to `load`.
-     *    Given an array of event strings, navigation is considered to be
-     *    successful after all events have been fired. Events can be either:<br/>
-     *  - `load` : consider navigation to be finished when the load event is
-     *    fired.<br/>
-     *  - `domcontentloaded` : consider navigation to be finished when the
-     *    DOMContentLoaded event is fired.<br/>
-     *  - `networkidle0` : consider navigation to be finished when there are no
-     *    more than 0 network connections for at least `500` ms.<br/>
-     *  - `networkidle2` : consider navigation to be finished when there are no
-     *    more than 2 network connections for at least `500` ms.
+     *   Given an array of event strings, navigation is considered to be
+     *   successful after all events have been fired. Events can be either:<br/>
+     * - `load` : consider navigation to be finished when the load event is
+     *   fired.<br/>
+     * - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     * - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     * - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
      */
     async goBack(options = {}) {
         return __classPrivateFieldGet(this, _Page_instances, "m", _Page_go).call(this, -1, options);
@@ -1366,16 +1426,16 @@ export class Page extends EventEmitter {
      *   {@link Page.setDefaultTimeout} methods.
      *
      * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
-     *    Given an array of event strings, navigation is considered to be
-     *    successful after all events have been fired. Events can be either:<br/>
-     *  - `load` : consider navigation to be finished when the load event is
-     *    fired.<br/>
-     *  - `domcontentloaded` : consider navigation to be finished when the
-     *    DOMContentLoaded event is fired.<br/>
-     *  - `networkidle0` : consider navigation to be finished when there are no
-     *    more than 0 network connections for at least `500` ms.<br/>
-     *  - `networkidle2` : consider navigation to be finished when there are no
-     *    more than 2 network connections for at least `500` ms.
+     *   Given an array of event strings, navigation is considered to be
+     *   successful after all events have been fired. Events can be either:<br/>
+     * - `load` : consider navigation to be finished when the load event is
+     *   fired.<br/>
+     * - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     * - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     * - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
      */
     async goForward(options = {}) {
         return __classPrivateFieldGet(this, _Page_instances, "m", _Page_go).call(this, +1, options);
@@ -1397,18 +1457,20 @@ export class Page extends EventEmitter {
      * don't expect phones to change size, so you should emulate before navigating
      * to the page.
      * @example
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * const iPhone = puppeteer.devices['iPhone 6'];
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * await page.emulate(iPhone);
-     * await page.goto('https://www.google.com');
-     * // other actions...
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   await page.emulate(iPhone);
+     *   await page.goto('https://www.google.com');
+     *   // other actions...
+     *   await browser.close();
      * })();
      * ```
+     *
      * @remarks List of all available devices is available in the source code:
      * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
      */
@@ -1450,6 +1512,7 @@ export class Page extends EventEmitter {
      * values are `screen`, `print` and `null`. Passing `null` disables CSS media
      * emulation.
      * @example
+     *
      * ```ts
      * await page.evaluate(() => matchMedia('screen').matches);
      * // → true
@@ -1492,45 +1555,54 @@ export class Page extends EventEmitter {
      * objects, emulates CSS media features on the page. Each media feature object
      * must have the following properties:
      * @example
+     *
      * ```ts
      * await page.emulateMediaFeatures([
-     * { name: 'prefers-color-scheme', value: 'dark' },
-     * ]);
-     * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
-     * // → true
-     * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
-     * // → false
-     *
-     * await page.emulateMediaFeatures([
-     * { name: 'prefers-reduced-motion', value: 'reduce' },
+     *   {name: 'prefers-color-scheme', value: 'dark'},
      * ]);
      * await page.evaluate(
-     * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     *   () => matchMedia('(prefers-color-scheme: dark)').matches
      * );
      * // → true
      * await page.evaluate(
-     * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     *   () => matchMedia('(prefers-color-scheme: light)').matches
      * );
      * // → false
      *
      * await page.emulateMediaFeatures([
-     * { name: 'prefers-color-scheme', value: 'dark' },
-     * { name: 'prefers-reduced-motion', value: 'reduce' },
+     *   {name: 'prefers-reduced-motion', value: 'reduce'},
      * ]);
-     * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
-     * // → true
-     * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
-     * // → false
      * await page.evaluate(
-     * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
      * );
      * // → true
      * await page.evaluate(
-     * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
      * );
      * // → false
      *
-     * await page.emulateMediaFeatures([{ name: 'color-gamut', value: 'p3' }]);
+     * await page.emulateMediaFeatures([
+     *   {name: 'prefers-color-scheme', value: 'dark'},
+     *   {name: 'prefers-reduced-motion', value: 'reduce'},
+     * ]);
+     * await page.evaluate(
+     *   () => matchMedia('(prefers-color-scheme: dark)').matches
+     * );
+     * // → true
+     * await page.evaluate(
+     *   () => matchMedia('(prefers-color-scheme: light)').matches
+     * );
+     * // → false
+     * await page.evaluate(
+     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     * );
+     * // → true
+     * await page.evaluate(
+     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     * );
+     * // → false
+     *
+     * await page.emulateMediaFeatures([{name: 'color-gamut', value: 'p3'}]);
      * await page.evaluate(() => matchMedia('(color-gamut: srgb)').matches);
      * // → true
      * await page.evaluate(() => matchMedia('(color-gamut: p3)').matches);
@@ -1577,6 +1649,7 @@ export class Page extends EventEmitter {
      * If no arguments set, clears idle state emulation.
      *
      * @example
+     *
      * ```ts
      * // set idle emulation
      * await page.emulateIdleState({isUserActive: true, isScreenUnlocked: false});
@@ -1605,6 +1678,7 @@ export class Page extends EventEmitter {
      * Simulates the given vision deficiency on the page.
      *
      * @example
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      *
@@ -1614,13 +1688,13 @@ export class Page extends EventEmitter {
      *   await page.goto('https://v8.dev/blog/10-years');
      *
      *   await page.emulateVisionDeficiency('achromatopsia');
-     *   await page.screenshot({ path: 'achromatopsia.png' });
+     *   await page.screenshot({path: 'achromatopsia.png'});
      *
      *   await page.emulateVisionDeficiency('deuteranopia');
-     *   await page.screenshot({ path: 'deuteranopia.png' });
+     *   await page.screenshot({path: 'deuteranopia.png'});
      *
      *   await page.emulateVisionDeficiency('blurredVision');
-     *   await page.screenshot({ path: 'blurred-vision.png' });
+     *   await page.screenshot({path: 'blurred-vision.png'});
      *
      *   await browser.close();
      * })();
@@ -1655,12 +1729,13 @@ export class Page extends EventEmitter {
      * In the case of multiple pages in a single browser, each page can have its
      * own viewport size.
      * @example
+     *
      * ```ts
      * const page = await browser.newPage();
      * await page.setViewport({
-     * width: 640,
-     * height: 480,
-     * deviceScaleFactor: 1,
+     *   width: 640,
+     *   height: 480,
+     *   deviceScaleFactor: 1,
      * });
      * await page.goto('https://example.com');
      * ```
@@ -1716,8 +1791,6 @@ export class Page extends EventEmitter {
         return __classPrivateFieldGet(this, _Page_viewport, "f");
     }
     /**
-     * @remarks
-     *
      * Evaluates a function in the page's context and returns the result.
      *
      * If the function passed to `page.evaluteHandle` returns a Promise, the
@@ -1736,6 +1809,7 @@ export class Page extends EventEmitter {
      * recommended as they are easier to debug and use with TypeScript):
      *
      * @example
+     *
      * ```ts
      * const aHandle = await page.evaluate('1 + 2');
      * ```
@@ -1772,7 +1846,7 @@ export class Page extends EventEmitter {
      * - whenever the page is navigated
      *
      * - whenever the child frame is attached or navigated. In this case, the
-     * function is invoked in the context of the newly attached frame.
+     *   function is invoked in the context of the newly attached frame.
      *
      * The function is invoked after the document was created but before any of
      * its scripts were run. This is useful to amend the JavaScript environment,
@@ -1781,6 +1855,7 @@ export class Page extends EventEmitter {
      * @param args - Arguments to pass to `pageFunction`
      * @example
      * An example of overriding the navigator.languages property before the page loads:
+     *
      * ```ts
      * // preload.js
      *
@@ -1809,7 +1884,7 @@ export class Page extends EventEmitter {
      * @param enabled - sets the `enabled` state of cache
      */
     async setCacheEnabled(enabled = true) {
-        await __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager().setCacheEnabled(enabled);
+        await __classPrivateFieldGet(this, _Page_frameManager, "f").networkManager.setCacheEnabled(enabled);
     }
     /**
      * @remarks
@@ -1833,10 +1908,10 @@ export class Page extends EventEmitter {
      *
      * - `clip` : An object which specifies clipping region of the page.
      *   Should have the following fields:<br/>
-     *  - `x` : x-coordinate of top-left corner of clip area.<br/>
-     *  - `y` :  y-coordinate of top-left corner of clip area.<br/>
-     *  - `width` : width of clipping area.<br/>
-     *  - `height` : height of clipping area.
+     * - `x` : x-coordinate of top-left corner of clip area.<br/>
+     * - `y` : y-coordinate of top-left corner of clip area.<br/>
+     * - `width` : width of clipping area.<br/>
+     * - `height` : height of clipping area.
      *
      * - `omitBackground` : Hides default white background and allows
      *   capturing screenshots with transparency. Defaults to `false`.
@@ -1931,7 +2006,6 @@ export class Page extends EventEmitter {
      * Use the
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust | `-webkit-print-color-adjust`}
      * property to force rendering of exact colors.
-     *
      *
      * @param options - options for generating the PDF.
      */
@@ -2033,12 +2107,14 @@ export class Page extends EventEmitter {
      * there's a separate `page.waitForNavigation()` promise to be resolved, you
      * may end up with a race condition that yields unexpected results. The
      * correct pattern for click and wait for navigation is the following:
+     *
      * ```ts
      * const [response] = await Promise.all([
-     * page.waitForNavigation(waitOptions),
-     * page.click(selector, clickOptions),
+     *   page.waitForNavigation(waitOptions),
+     *   page.click(selector, clickOptions),
      * ]);
      * ```
+     *
      * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
      * @param selector - A `selector` to search for element to click. If there are
      * multiple elements satisfying the `selector`, the first will be clicked
@@ -2057,7 +2133,7 @@ export class Page extends EventEmitter {
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector }
      * of an element to focus. If there are multiple elements satisfying the
      * selector, the first will be focused.
-     * @returns  Promise which resolves when the element matching selector is
+     * @returns Promise which resolves when the element matching selector is
      * successfully focused. The promise will be rejected if there is no element
      * matching selector.
      * @remarks
@@ -2089,10 +2165,12 @@ export class Page extends EventEmitter {
      * throws an error.
      *
      * @example
+     *
      * ```ts
      * page.select('select#colors', 'blue'); // single selection
      * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
      * ```
+     *
      * @param selector - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
      * to query the page for
@@ -2128,12 +2206,14 @@ export class Page extends EventEmitter {
      *
      * To press a special key, like `Control` or `ArrowDown`, use {@link Keyboard.press}.
      * @example
+     *
      * ```ts
      * await page.type('#mytextarea', 'Hello');
      * // Types instantly
-     * await page.type('#mytextarea', 'World', { delay: 100 });
+     * await page.type('#mytextarea', 'World', {delay: 100});
      * // Types slower, like a user
      * ```
+     *
      * @param selector - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * of an element to type into. If there are multiple elements satisfying the
@@ -2148,13 +2228,14 @@ export class Page extends EventEmitter {
         return this.mainFrame().type(selector, text, options);
     }
     /**
+     * @deprecated Use `new Promise(r => setTimeout(r, milliseconds));`.
+     *
      * Causes your script to wait for the given number of milliseconds.
      *
      * @remarks
-     *
      * It's generally recommended to not wait for a number of seconds, but instead
-     * use {@link Page.waitForSelector}, {@link Page.waitForXPath} or
-     * {@link Page.waitForFunction} to wait for exactly the conditions you want.
+     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
+     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
      *
      * @example
      *
@@ -2176,25 +2257,27 @@ export class Page extends EventEmitter {
      * function will throw.
      *
      * This method works across navigations:
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * let currentURL;
-     * page
-     * .waitForSelector('img')
-     * .then(() => console.log('First URL with image: ' + currentURL));
-     * for (currentURL of [
-     * 'https://example.com',
-     * 'https://google.com',
-     * 'https://bbc.com',
-     * ]) {
-     * await page.goto(currentURL);
-     * }
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .waitForSelector('img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
      * })();
      * ```
+     *
      * @param selector - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
      * of an element to wait for
@@ -2206,16 +2289,16 @@ export class Page extends EventEmitter {
      * The optional Parameter in Arguments `options` are :
      *
      * - `Visible`: A boolean wait for element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
      *
      * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
-     * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
-     * `false`.
+     *   i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+     *   `false`.
      *
      * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
-     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
-     * by using the {@link Page.setDefaultTimeout} method.
+     *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     *   by using the {@link Page.setDefaultTimeout} method.
      */
     async waitForSelector(selector, options = {}) {
         return await this.mainFrame().waitForSelector(selector, options);
@@ -2227,25 +2310,27 @@ export class Page extends EventEmitter {
      * function will throw.
      *
      * This method works across navigation
+     *
      * ```ts
      * const puppeteer = require('puppeteer');
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * let currentURL;
-     * page
-     * .waitForXPath('//img')
-     * .then(() => console.log('First URL with image: ' + currentURL));
-     * for (currentURL of [
-     * 'https://example.com',
-     * 'https://google.com',
-     * 'https://bbc.com',
-     * ]) {
-     * await page.goto(currentURL);
-     * }
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .waitForXPath('//img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
      * })();
      * ```
+     *
      * @param xpath - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
      * element to wait for
@@ -2257,16 +2342,16 @@ export class Page extends EventEmitter {
      * The optional Argument `options` have properties:
      *
      * - `visible`: A boolean to wait for element to be present in DOM and to be
-     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
-     * properties. Defaults to `false`.
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
      *
      * - `hidden`: A boolean wait for element to not be found in the DOM or to be
-     * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
-     * Defaults to `false`.
+     *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+     *   Defaults to `false`.
      *
      * - `timeout`: A number which is maximum time to wait for in milliseconds.
-     * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
-     * value can be changed by using the {@link Page.setDefaultTimeout} method.
+     *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
+     *   value can be changed by using the {@link Page.setDefaultTimeout} method.
      */
     waitForXPath(xpath, options = {}) {
         return this.mainFrame().waitForXPath(xpath, options);
@@ -2280,92 +2365,92 @@ export class Page extends EventEmitter {
      * ```ts
      * const puppeteer = require('puppeteer');
      * (async () => {
-     * const browser = await puppeteer.launch();
-     * const page = await browser.newPage();
-     * const watchDog = page.waitForFunction('window.innerWidth < 100');
-     * await page.setViewport({ width: 50, height: 50 });
-     * await watchDog;
-     * await browser.close();
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   const watchDog = page.waitForFunction('window.innerWidth < 100');
+     *   await page.setViewport({width: 50, height: 50});
+     *   await watchDog;
+     *   await browser.close();
      * })();
      * ```
      *
      * @example
      * To pass arguments from node.js to the predicate of
      * {@link Page.waitForFunction} function:
+     *
      * ```ts
      * const selector = '.foo';
      * await page.waitForFunction(
-     * (selector) => !!document.querySelector(selector),
-     * {},
-     * selector
+     *   selector => !!document.querySelector(selector),
+     *   {},
+     *   selector
      * );
      * ```
      *
      * @example
      * The predicate of {@link Page.waitForFunction} can be asynchronous too:
+     *
      * ```ts
      * const username = 'github-username';
      * await page.waitForFunction(
-     * async (username) => {
-     * const githubResponse = await fetch(
-     *  `https://api.github.com/users/${username}`
-     * );
-     * const githubUser = await githubResponse.json();
-     * // show the avatar
-     * const img = document.createElement('img');
-     * img.src = githubUser.avatar_url;
-     * // wait 3 seconds
-     * await new Promise((resolve, reject) => setTimeout(resolve, 3000));
-     * img.remove();
-     * },
-     * {},
-     * username
+     *   async username => {
+     *     const githubResponse = await fetch(
+     *       `https://api.github.com/users/${username}`
+     *     );
+     *     const githubUser = await githubResponse.json();
+     *     // show the avatar
+     *     const img = document.createElement('img');
+     *     img.src = githubUser.avatar_url;
+     *     // wait 3 seconds
+     *     await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+     *     img.remove();
+     *   },
+     *   {},
+     *   username
      * );
      * ```
      *
      * @param pageFunction - Function to be evaluated in browser context
      * @param options - Optional waiting parameters
+     *
      * - `polling` - An interval at which the `pageFunction` is executed, defaults
      *   to `raf`. If `polling` is a number, then it is treated as an interval in
      *   milliseconds at which the function would be executed. If polling is a
      *   string, then it can be one of the following values:
-     *    - `raf` - to constantly execute `pageFunction` in
-     *      `requestAnimationFrame` callback. This is the tightest polling mode
-     *      which is suitable to observe styling changes.
-     *    - `mutation`-  to execute pageFunction on every DOM mutation.
+     *   - `raf` - to constantly execute `pageFunction` in
+     *     `requestAnimationFrame` callback. This is the tightest polling mode
+     *     which is suitable to observe styling changes.
+     *   - `mutation`- to execute pageFunction on every DOM mutation.
      * - `timeout` - maximum time to wait for in milliseconds. Defaults to `30000`
      *   (30 seconds). Pass `0` to disable timeout. The default value can be
      *   changed by using the {@link Page.setDefaultTimeout} method.
-     * @param args -  Arguments to pass to `pageFunction`
-     * @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
-     * `pageFunction`'s return value.
+     *   @param args - Arguments to pass to `pageFunction`
+     *   @returns A `Promise` which resolves to a JSHandle/ElementHandle of the the
+     *   `pageFunction`'s return value.
      */
     waitForFunction(pageFunction, options = {}, ...args) {
         return this.mainFrame().waitForFunction(pageFunction, options, ...args);
     }
 }
-_Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_mouse = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_accessibility = new WeakMap(), _Page_frameManager = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_tracing = new WeakMap(), _Page_pageBindings = new WeakMap(), _Page_coverage = new WeakMap(), _Page_javascriptEnabled = new WeakMap(), _Page_viewport = new WeakMap(), _Page_screenshotTaskQueue = new WeakMap(), _Page_workers = new WeakMap(), _Page_fileChooserInterceptors = new WeakMap(), _Page_disconnectPromise = new WeakMap(), _Page_userDragInterceptionEnabled = new WeakMap(), _Page_handlerMap = new WeakMap(), _Page_onDetachedFromTarget = new WeakMap(), _Page_onAttachedToTarget = new WeakMap(), _Page_instances = new WeakSet(), _Page_initialize = async function _Page_initialize() {
+_Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_mouse = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_accessibility = new WeakMap(), _Page_frameManager = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_tracing = new WeakMap(), _Page_pageBindings = new WeakMap(), _Page_coverage = new WeakMap(), _Page_javascriptEnabled = new WeakMap(), _Page_viewport = new WeakMap(), _Page_screenshotTaskQueue = new WeakMap(), _Page_workers = new WeakMap(), _Page_fileChooserPromises = new WeakMap(), _Page_disconnectPromise = new WeakMap(), _Page_userDragInterceptionEnabled = new WeakMap(), _Page_handlerMap = new WeakMap(), _Page_onDetachedFromTarget = new WeakMap(), _Page_onAttachedToTarget = new WeakMap(), _Page_instances = new WeakSet(), _Page_initialize = async function _Page_initialize() {
     await Promise.all([
         __classPrivateFieldGet(this, _Page_frameManager, "f").initialize(__classPrivateFieldGet(this, _Page_target, "f")._targetId),
         __classPrivateFieldGet(this, _Page_client, "f").send('Performance.enable'),
         __classPrivateFieldGet(this, _Page_client, "f").send('Log.enable'),
     ]);
 }, _Page_onFileChooser = async function _Page_onFileChooser(event) {
-    if (!__classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f").size) {
+    if (!__classPrivateFieldGet(this, _Page_fileChooserPromises, "f").size) {
         return;
     }
     const frame = __classPrivateFieldGet(this, _Page_frameManager, "f").frame(event.frameId);
-    assert(frame);
-    const context = await frame.executionContext();
-    const element = await context._adoptBackendNodeId(event.backendNodeId);
-    const interceptors = Array.from(__classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f"));
-    __classPrivateFieldGet(this, _Page_fileChooserInterceptors, "f").clear();
-    const fileChooser = new FileChooser(
-    // This is guaranteed by the event.
-    element, event);
-    for (const interceptor of interceptors) {
-        interceptor.call(undefined, fileChooser);
+    assert(frame, 'This should never happen.');
+    // This is guaranteed to be an HTMLInputElement handle by the event.
+    const handle = (await frame.worlds[MAIN_WORLD].adoptBackendNode(event.backendNodeId));
+    const fileChooser = new FileChooser(handle, event);
+    for (const promise of __classPrivateFieldGet(this, _Page_fileChooserPromises, "f")) {
+        promise.resolve(fileChooser);
     }
+    __classPrivateFieldGet(this, _Page_fileChooserPromises, "f").clear();
 }, _Page_onTargetCrashed = function _Page_onTargetCrashed() {
     this.emit('error', new Error('Page crashed!'));
 }, _Page_onLogEntryAdded = function _Page_onLogEntryAdded(event) {
@@ -2462,7 +2547,7 @@ _Page_closed = new WeakMap(), _Page_client = new WeakMap(), _Page_target = new W
     }
     const textTokens = [];
     for (const arg of args) {
-        const remoteObject = arg._remoteObject;
+        const remoteObject = arg.remoteObject();
         if (remoteObject.objectId) {
             textTokens.push(arg.toString());
         }

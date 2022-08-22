@@ -29,7 +29,7 @@ export declare type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, h
  */
 export declare type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
 /**
- * The WebWorker class represents a
+ * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
  *
  * @remarks
@@ -37,9 +37,14 @@ export declare type ExceptionThrownCallback = (details: Protocol.Runtime.Excepti
  * object to signal the worker lifecycle.
  *
  * @example
+ *
  * ```ts
- * page.on('workercreated', worker => console.log('Worker created: ' + worker.url()));
- * page.on('workerdestroyed', worker => console.log('Worker destroyed: ' + worker.url()));
+ * page.on('workercreated', worker =>
+ *   console.log('Worker created: ' + worker.url())
+ * );
+ * page.on('workerdestroyed', worker =>
+ *   console.log('Worker destroyed: ' + worker.url())
+ * );
  *
  * console.log('Current workers:');
  * for (const worker of page.workers()) {
@@ -52,7 +57,6 @@ export declare type ExceptionThrownCallback = (details: Protocol.Runtime.Excepti
 export declare class WebWorker extends EventEmitter {
     #private;
     /**
-     *
      * @internal
      */
     constructor(client: CDPSession, url: string, consoleAPICalled: ConsoleAPICalledCallback, exceptionThrown: ExceptionThrownCallback);

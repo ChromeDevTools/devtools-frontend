@@ -28,7 +28,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _FirefoxTargetManager_instances, _FirefoxTargetManager_connection, _FirefoxTargetManager_discoveredTargetsByTargetId, _FirefoxTargetManager_availableTargetsByTargetId, _FirefoxTargetManager_availableTargetsBySessionId, _FirefoxTargetManager_ignoredTargets, _FirefoxTargetManager_targetFilterCallback, _FirefoxTargetManager_targetFactory, _FirefoxTargetManager_targetInterceptors, _FirefoxTargetManager_attachedToTargetListenersBySession, _FirefoxTargetManager_initializeCallback, _FirefoxTargetManager_initializePromise, _FirefoxTargetManager_targetsIdsForInit, _FirefoxTargetManager_onSessionDetached, _FirefoxTargetManager_onTargetCreated, _FirefoxTargetManager_onTargetDestroyed, _FirefoxTargetManager_onAttachedToTarget, _FirefoxTargetManager_finishInitializationIfReady;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FirefoxTargetManager = void 0;
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Connection_js_1 = require("./Connection.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 /**
@@ -40,9 +40,10 @@ const EventEmitter_js_1 = require("./EventEmitter.js");
  * because Firefox's CDP implementation does not support auto-attach.
  *
  * Firefox does not support targetInfoChanged and detachedFromTarget events:
+ *
  * - https://bugzilla.mozilla.org/show_bug.cgi?id=1610855
  * - https://bugzilla.mozilla.org/show_bug.cgi?id=1636979
- * @internal
+ *   @internal
  */
 class FirefoxTargetManager extends EventEmitter_js_1.EventEmitter {
     constructor(connection, targetFactory, targetFilterCallback) {

@@ -45,6 +45,7 @@ export declare function importDebug(): Promise<typeof import('debug')>;
  * ```
  *
  * @example
+ *
  * ```
  * const log = debug('Page');
  *

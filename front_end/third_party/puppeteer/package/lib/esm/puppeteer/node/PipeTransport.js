@@ -25,7 +25,7 @@ var _PipeTransport_instances, _PipeTransport_pipeWrite, _PipeTransport_eventList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { assert } from '../common/assert.js';
+import { assert } from '../util/assert.js';
 import { addEventListener, debugError, removeEventListeners, } from '../common/util.js';
 /**
  * @internal

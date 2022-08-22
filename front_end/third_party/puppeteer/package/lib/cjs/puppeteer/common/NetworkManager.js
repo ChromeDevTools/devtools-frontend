@@ -28,12 +28,13 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInitPromise, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkManager = exports.NetworkManagerEmittedEvents = void 0;
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
 const util_js_1 = require("./util.js");
+const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -89,9 +90,9 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
      */
     initialize() {
         if (__classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) {
-            return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f").promise;
+            return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         }
-        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, (0, util_js_1.createDeferredPromiseWithTimer)('NetworkManager initialization timed out', 30000), "f");
+        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, (0, DeferredPromise_js_1.createDeferredPromiseWithTimer)('NetworkManager initialization timed out', 30000), "f");
         const init = Promise.all([
             __classPrivateFieldGet(this, _NetworkManager_ignoreHTTPSErrors, "f")
                 ? __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Security.setIgnoreCertificateErrors', {
@@ -100,16 +101,15 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
                 : null,
             __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.enable'),
         ]);
+        const deferredInitPromise = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
         init
             .then(() => {
-            var _a;
-            (_a = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) === null || _a === void 0 ? void 0 : _a.resolve();
+            deferredInitPromise.resolve();
         })
             .catch(err => {
-            var _a;
-            return (_a = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) === null || _a === void 0 ? void 0 : _a.reject(err);
+            deferredInitPromise.reject(err);
         });
-        return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f").promise;
+        return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
     }
     async authenticate(credentials) {
         __classPrivateFieldSet(this, _NetworkManager_credentials, credentials, "f");

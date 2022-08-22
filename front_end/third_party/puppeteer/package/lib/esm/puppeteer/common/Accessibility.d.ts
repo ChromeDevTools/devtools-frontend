@@ -143,6 +143,7 @@ export declare class Accessibility {
      *
      * @example
      * An example of dumping the entire accessibility tree:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * console.log(snapshot);
@@ -150,14 +151,14 @@ export declare class Accessibility {
      *
      * @example
      * An example of logging the focused node's name:
+     *
      * ```ts
      * const snapshot = await page.accessibility.snapshot();
      * const node = findFocusedNode(snapshot);
      * console.log(node && node.name);
      *
      * function findFocusedNode(node) {
-     *   if (node.focused)
-     *     return node;
+     *   if (node.focused) return node;
      *   for (const child of node.children || []) {
      *     const foundNode = findFocusedNode(child);
      *     return foundNode;
@@ -167,7 +168,6 @@ export declare class Accessibility {
      * ```
      *
      * @returns An AXNode object representing the snapshot.
-     *
      */
     snapshot(options?: SnapshotOptions): Promise<SerializedAXNode | null>;
     private serializeTree;

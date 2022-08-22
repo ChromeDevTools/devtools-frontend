@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { assert } from '../common/assert.js';
+import { assert } from '../util/assert.js';
 import { Browser } from '../common/Browser.js';
 import { BrowserRunner } from './BrowserRunner.js';
 import { executablePathForChannel, resolveExecutablePath, } from './ProductLauncher.js';
@@ -83,7 +83,7 @@ export class ChromeLauncher {
                 slowMo,
                 preferredRevision: this._preferredRevision,
             });
-            browser = await Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
+            browser = await Browser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
         }
         catch (error) {
             runner.kill();

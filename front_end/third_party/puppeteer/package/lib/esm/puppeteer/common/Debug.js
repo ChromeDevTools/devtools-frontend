@@ -52,6 +52,7 @@ export async function importDebug() {
  * ```
  *
  * @example
+ *
  * ```
  * const log = debug('Page');
  *

@@ -17,10 +17,16 @@ import { Protocol } from 'devtools-protocol';
 import { ElementHandle } from './ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
+ *
  * @remarks
- * `FileChooser` objects are returned via the `page.waitForFileChooser` method.
+ * `FileChooser` instances are returned via the {@link Page.waitForFileChooser} method.
+ *
+ * In browsers, only one file chooser can be opened at a time.
+ * All file choosers must be accepted or canceled. Not doing so will prevent
+ * subsequent file choosers from appearing.
+ *
  * @example
- * An example of using `FileChooser`:
+ *
  * ```ts
  * const [fileChooser] = await Promise.all([
  *   page.waitForFileChooser(),
@@ -28,9 +34,7 @@ import { ElementHandle } from './ElementHandle.js';
  * ]);
  * await fileChooser.accept(['/tmp/myfile.pdf']);
  * ```
- * **NOTE** In browsers, only one file chooser can be opened at a time.
- * All file choosers must be accepted or canceled. Not doing so will prevent
- * subsequent file choosers from appearing.
+ *
  * @public
  */
 export declare class FileChooser {
@@ -40,13 +44,17 @@ export declare class FileChooser {
      */
     constructor(element: ElementHandle<HTMLInputElement>, event: Protocol.Page.FileChooserOpenedEvent);
     /**
-     * Whether file chooser allow for {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple} file selection.
+     * Whether file chooser allow for
+     * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#attr-multiple | multiple}
+     * file selection.
      */
     isMultiple(): boolean;
     /**
      * Accept the file chooser request with given paths.
-     * @param filePaths - If some of the  `filePaths` are relative paths,
-     * then they are resolved relative to the {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
+     *
+     * @param filePaths - If some of the `filePaths` are relative paths, then
+     * they are resolved relative to the
+     * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
      */
     accept(filePaths: string[]): Promise<void>;
     /**

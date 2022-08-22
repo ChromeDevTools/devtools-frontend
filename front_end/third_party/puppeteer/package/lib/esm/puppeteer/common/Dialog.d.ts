@@ -21,6 +21,7 @@ import { Protocol } from 'devtools-protocol';
  * @remarks
  *
  * @example
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -35,6 +36,7 @@ import { Protocol } from 'devtools-protocol';
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ *
  * @public
  */
 export declare class Dialog {

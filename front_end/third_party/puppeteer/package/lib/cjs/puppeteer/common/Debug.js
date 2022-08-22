@@ -79,6 +79,7 @@ exports.importDebug = importDebug;
  * ```
  *
  * @example
+ *
  * ```
  * const log = debug('Page');
  *

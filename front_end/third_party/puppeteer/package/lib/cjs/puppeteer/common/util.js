@@ -38,11 +38,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDeferredPromiseWithTimer = exports.isErrnoException = exports.isErrorLike = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.makePredicateString = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
+exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.makePredicateString = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
 const environment_js_1 = require("../environment.js");
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const Debug_js_1 = require("./Debug.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Errors_js_1 = require("./Errors.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 /**
@@ -178,7 +179,7 @@ async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise
         cleanup();
         throw error;
     });
-    if (isErrorLike(result)) {
+    if ((0, ErrorLike_js_1.isErrorLike)(result)) {
         throw result;
     }
     return result;
@@ -300,12 +301,9 @@ function makePredicateString(predicate, predicateQueryHandler) {
             return !!(rect.top || rect.bottom || rect.width || rect.height);
         }
     }
-    const predicateQueryHandlerDef = predicateQueryHandler
-        ? `const predicateQueryHandler = ${predicateQueryHandler};`
-        : '';
     return `
     (() => {
-      ${predicateQueryHandlerDef}
+      const predicateQueryHandler = ${predicateQueryHandler};
       const checkWaitForOptions = ${checkWaitForOptions};
       return (${predicate})(...args)
     })() `;
@@ -413,50 +411,4 @@ async function getReadableFromProtocolStream(client, handle) {
     });
 }
 exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
-/**
- * @internal
- */
-function isErrorLike(obj) {
-    return (typeof obj === 'object' && obj !== null && 'name' in obj && 'message' in obj);
-}
-exports.isErrorLike = isErrorLike;
-/**
- * @internal
- */
-function isErrnoException(obj) {
-    return (isErrorLike(obj) &&
-        ('errno' in obj || 'code' in obj || 'path' in obj || 'syscall' in obj));
-}
-exports.isErrnoException = isErrnoException;
-/**
- * Creates an returns a promise along with the resolve/reject functions.
- *
- * If the promise has not been resolved/rejected withing the `timeout` period,
- * the promise gets rejected with a timeout error.
- *
- * @internal
- */
-function createDeferredPromiseWithTimer(timeoutMessage, timeout = 5000) {
-    let resolver = (_) => { };
-    let rejector = (_) => { };
-    const taskPromise = new Promise((resolve, reject) => {
-        resolver = resolve;
-        rejector = reject;
-    });
-    const timeoutId = setTimeout(() => {
-        rejector(new Error(timeoutMessage));
-    }, timeout);
-    return {
-        promise: taskPromise,
-        resolve: (value) => {
-            clearTimeout(timeoutId);
-            resolver(value);
-        },
-        reject: (err) => {
-            clearTimeout(timeoutId);
-            rejector(err);
-        },
-    };
-}
-exports.createDeferredPromiseWithTimer = createDeferredPromiseWithTimer;
 //# sourceMappingURL=util.js.map

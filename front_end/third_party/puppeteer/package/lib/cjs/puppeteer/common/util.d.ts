@@ -15,7 +15,6 @@
  */
 /// <reference types="node" />
 /// <reference types="node" />
-/// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
 import { CDPSession } from './Connection.js';
@@ -98,7 +97,7 @@ export declare function pageBindingDeliverErrorValueString(name: string, seq: nu
 /**
  * @internal
  */
-export declare function makePredicateString(predicate: Function, predicateQueryHandler?: Function): string;
+export declare function makePredicateString(predicate: Function, predicateQueryHandler: Function): string;
 /**
  * @internal
  */
@@ -115,36 +114,4 @@ export declare function getReadableAsBuffer(readable: Readable, path?: string): 
  * @internal
  */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
-/**
- * @internal
- */
-export interface ErrorLike extends Error {
-    name: string;
-    message: string;
-}
-/**
- * @internal
- */
-export declare function isErrorLike(obj: unknown): obj is ErrorLike;
-/**
- * @internal
- */
-export declare function isErrnoException(obj: unknown): obj is NodeJS.ErrnoException;
-/**
- * @internal
- */
-export declare type DeferredPromise<T> = {
-    promise: Promise<T>;
-    resolve: (_: T) => void;
-    reject: (_: Error) => void;
-};
-/**
- * Creates an returns a promise along with the resolve/reject functions.
- *
- * If the promise has not been resolved/rejected withing the `timeout` period,
- * the promise gets rejected with a timeout error.
- *
- * @internal
- */
-export declare function createDeferredPromiseWithTimer<T>(timeoutMessage: string, timeout?: number): DeferredPromise<T>;
 //# sourceMappingURL=util.d.ts.map

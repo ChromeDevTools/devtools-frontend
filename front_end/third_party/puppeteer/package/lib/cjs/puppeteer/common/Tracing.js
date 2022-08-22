@@ -28,8 +28,9 @@ exports.Tracing = void 0;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const util_js_1 = require("./util.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 /**
  * The Tracing class exposes the tracing audit interface.
  * @remarks
@@ -37,6 +38,7 @@ const util_js_1 = require("./util.js");
  * which can be opened in Chrome DevTools or {@link https://chromedevtools.github.io/timeline-viewer/ | timeline viewer}.
  *
  * @example
+ *
  * ```ts
  * await page.tracing.start({path: 'trace.json'});
  * await page.goto('https://www.google.com');
@@ -119,7 +121,7 @@ class Tracing {
                 resolve(buffer !== null && buffer !== void 0 ? buffer : undefined);
             }
             catch (error) {
-                if ((0, util_js_1.isErrorLike)(error)) {
+                if ((0, ErrorLike_js_1.isErrorLike)(error)) {
                     reject(error);
                 }
                 else {

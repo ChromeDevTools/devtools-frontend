@@ -18,7 +18,7 @@ const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const util_js_1 = require("./util.js");
 /**
- * The WebWorker class represents a
+ * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
  *
  * @remarks
@@ -26,9 +26,14 @@ const util_js_1 = require("./util.js");
  * object to signal the worker lifecycle.
  *
  * @example
+ *
  * ```ts
- * page.on('workercreated', worker => console.log('Worker created: ' + worker.url()));
- * page.on('workerdestroyed', worker => console.log('Worker destroyed: ' + worker.url()));
+ * page.on('workercreated', worker =>
+ *   console.log('Worker created: ' + worker.url())
+ * );
+ * page.on('workerdestroyed', worker =>
+ *   console.log('Worker destroyed: ' + worker.url())
+ * );
  *
  * console.log('Current workers:');
  * for (const worker of page.workers()) {
@@ -40,7 +45,6 @@ const util_js_1 = require("./util.js");
  */
 class WebWorker extends EventEmitter_js_1.EventEmitter {
     /**
-     *
      * @internal
      */
     constructor(client, url, consoleAPICalled, exceptionThrown) {

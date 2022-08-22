@@ -43,6 +43,7 @@ export interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgu
  *
  * @example
  * The following is a typical example of using Puppeteer to drive automation:
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -90,9 +91,10 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @example
      * You can use `ignoreDefaultArgs` to filter out `--mute-audio` from default arguments:
+     *
      * ```ts
      * const browser = await puppeteer.launch({
-     *   ignoreDefaultArgs: ['--mute-audio']
+     *   ignoreDefaultArgs: ['--mute-audio'],
      * });
      * ```
      *

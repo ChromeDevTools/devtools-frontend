@@ -28,13 +28,14 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Dialog_client, _Dialog_type, _Dialog_message, _Dialog_defaultValue, _Dialog_handled;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dialog = void 0;
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
  *
  * @remarks
  *
  * @example
+ *
  * ```ts
  * const puppeteer = require('puppeteer');
  *
@@ -49,6 +50,7 @@ const assert_js_1 = require("./assert.js");
  *   page.evaluate(() => alert('1'));
  * })();
  * ```
+ *
  * @public
  */
 class Dialog {

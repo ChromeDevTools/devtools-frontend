@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _HTTPRequest_instances, _HTTPRequest_client, _HTTPRequest_isNavigationRequest, _HTTPRequest_allowInterception, _HTTPRequest_interceptionHandled, _HTTPRequest_url, _HTTPRequest_resourceType, _HTTPRequest_method, _HTTPRequest_postData, _HTTPRequest_headers, _HTTPRequest_frame, _HTTPRequest_continueRequestOverrides, _HTTPRequest_responseForRequest, _HTTPRequest_abortErrorReason, _HTTPRequest_interceptResolutionState, _HTTPRequest_interceptHandlers, _HTTPRequest_initiator, _HTTPRequest_continue, _HTTPRequest_respond, _HTTPRequest_abort;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
-const assert_js_1 = require("./assert.js");
+const assert_js_1 = require("../util/assert.js");
 const util_js_1 = require("./util.js");
 /**
  * The default cooperative request interception resolution priority
@@ -22,14 +22,13 @@ const util_js_1 = require("./util.js");
  */
 exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
 /**
- *
  * Represents an HTTP request sent by a page.
  * @remarks
  *
  * Whenever the page sends a request, such as for a network resource, the
  * following events are emitted by Puppeteer's `page`:
  *
- * - `request`:  emitted when the request is issued by the page.
+ * - `request`: emitted when the request is issued by the page.
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *
@@ -147,14 +146,14 @@ class HTTPRequest {
     }
     /**
      * @returns An InterceptResolutionState object describing the current resolution
-     *  action and priority.
+     * action and priority.
      *
-     *  InterceptResolutionState contains:
-     *    action: InterceptResolutionAction
-     *    priority?: number
+     * InterceptResolutionState contains:
+     * action: InterceptResolutionAction
+     * priority?: number
      *
-     *  InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
-     *  `disabled`, `none`, or `already-handled`.
+     * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
+     * `disabled`, `none`, or `already-handled`.
      */
     interceptResolutionState() {
         if (!__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f")) {
@@ -323,6 +322,7 @@ class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      *
      * @example
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
@@ -381,13 +381,14 @@ class HTTPRequest {
      *
      * @example
      * An example of fulfilling all requests with 404 responses:
+     *
      * ```ts
      * await page.setRequestInterception(true);
      * page.on('request', request => {
      *   request.respond({
      *     status: 404,
      *     contentType: 'text/plain',
-     *     body: 'Not Found!'
+     *     body: 'Not Found!',
      *   });
      * });
      * ```

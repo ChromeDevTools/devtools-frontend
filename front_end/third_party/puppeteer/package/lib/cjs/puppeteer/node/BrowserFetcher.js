@@ -68,7 +68,7 @@ const rimraf_1 = __importDefault(require("rimraf"));
 const URL = __importStar(require("url"));
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
 const proxy_from_env_1 = require("proxy-from-env");
-const assert_js_1 = require("../common/assert.js");
+const assert_js_1 = require("../util/assert.js");
 const tar_fs_1 = __importDefault(require("tar-fs"));
 const unbzip2_stream_1 = __importDefault(require("unbzip2-stream"));
 const { PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM } = process.env;
@@ -163,7 +163,9 @@ function existsAsync(filePath) {
  * ```ts
  * const browserFetcher = puppeteer.createBrowserFetcher();
  * const revisionInfo = await browserFetcher.download('533271');
- * const browser = await puppeteer.launch({executablePath: revisionInfo.executablePath})
+ * const browser = await puppeteer.launch({
+ *   executablePath: revisionInfo.executablePath,
+ * });
  * ```
  *
  * **NOTE** BrowserFetcher is not designed to work concurrently with other

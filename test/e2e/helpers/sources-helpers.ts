@@ -45,6 +45,10 @@ export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';
 const WATCH_EXPRESSION_VALUE_SELECTOR = '.watch-expression-tree-item .object-value-string.value';
+const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
+const OVERRIDES_TAB_SELECTOR = '[aria-label="Overrides"]';
+export const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
+const CLEAR_CONFIGURATION_SELECTOR = '[aria-label="Clear configuration"]';
 
 export async function toggleNavigatorSidebar(frontend: puppeteer.Page) {
   const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
@@ -611,6 +615,13 @@ export async function refreshDevToolsAndRemoveBackendState(target: puppeteer.Pag
   // Navigate to a different site to make sure that back-end state will be removed.
   await target.goto('about:blank');
   await reloadDevTools({selectedPanel: {name: 'sources'}});
+}
+
+export async function enableLocalOverrides() {
+  await click(MORE_TABS_SELECTOR);
+  await click(OVERRIDES_TAB_SELECTOR);
+  await click(ENABLE_OVERRIDES_SELECTOR);
+  await waitFor(CLEAR_CONFIGURATION_SELECTOR);
 }
 
 export type LabelMapping = {

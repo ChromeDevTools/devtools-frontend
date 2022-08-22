@@ -16,12 +16,9 @@ import {
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
-import {clickOnContextMenu, openSourcesPanel} from '../helpers/sources-helpers.js';
+import {clickOnContextMenu, enableLocalOverrides, openSourcesPanel} from '../helpers/sources-helpers.js';
 
-const MORE_TABS_SELECTOR = '[aria-label="More tabs"]';
-const OVERRIDES_TAB_SELECTOR = '[aria-label="Overrides"]';
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
-const CLEAR_CONFIGURATION_SELECTOR = '[aria-label="Clear configuration"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
 const FILE_TREE_NEW_FILE_SELECTOR = '[aria-label="NewFile, file"] .tree-element-title';
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
@@ -29,13 +26,6 @@ const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
 const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
 const HEADERS_VIEW_SELECTOR = '.request-headers-view';
 const HEADERS_OUTLINE_SELECTOR = '[role=treeitem]:not(.hidden)';
-
-async function enableLocalOverrides() {
-  await click(MORE_TABS_SELECTOR);
-  await click(OVERRIDES_TAB_SELECTOR);
-  await click(ENABLE_OVERRIDES_SELECTOR);
-  await waitFor(CLEAR_CONFIGURATION_SELECTOR);
-}
 
 async function createHeaderOverride() {
   await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');

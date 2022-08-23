@@ -20,7 +20,7 @@ import {clickOnContextMenu, enableLocalOverrides, openSourcesPanel} from '../hel
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
-const FILE_TREE_NEW_FILE_SELECTOR = '[aria-label="NewFile, file"] .tree-element-title';
+const FILE_TREE_HEADERS_FILE_SELECTOR = '[aria-label=".headers, file"] .tree-element-title';
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
 const HEADERS_TAB_SELECTOR = '[aria-label=Headers][role="tab"]';
 const ACTIVE_HEADERS_TAB_SELECTOR = '[aria-label=Headers][role=tab][aria-selected=true]';
@@ -36,7 +36,7 @@ async function createHeaderOverride() {
   await typeText('*.html\n');
   await typeText('aaa\n');
   await typeText('bbb');
-  const title = await waitFor(FILE_TREE_NEW_FILE_SELECTOR);
+  const title = await waitFor(FILE_TREE_HEADERS_FILE_SELECTOR);
   let labelText = await title?.evaluate(el => el.textContent);
   assert.strictEqual(labelText, '*.headers');
   await pressKey('s', {control: true});

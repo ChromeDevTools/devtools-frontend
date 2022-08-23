@@ -1266,6 +1266,10 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
+  updateAccessibleName(): void {
+    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${this.uiSourceCodeInternal.name()}, ${this.nodeType}`);
+  }
+
   get uiSourceCode(): Workspace.UISourceCode.UISourceCode {
     return this.uiSourceCodeInternal;
   }
@@ -1523,6 +1527,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
       tooltip = i18nString(UIStrings.sFromSourceMap, {PH1: this.uiSourceCodeInternal.displayName()});
     }
     this.treeElement.tooltip = tooltip;
+    this.treeElement.updateAccessibleName();
 
     this.parent?.childrenInternal.delete(this.id);
     this.id = 'UISourceCode:' + this.uiSourceCodeInternal.canononicalScriptId();

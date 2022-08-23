@@ -177,7 +177,7 @@ export class ParsedURL {
    */
   static encodedFromParentPathAndName(parentPath: Platform.DevToolsPath.EncodedPathString, name: string):
       Platform.DevToolsPath.EncodedPathString {
-    return ParsedURL.concatenate(parentPath, '/', encodeURIComponent(name));
+    return ParsedURL.concatenate(parentPath, '/', ParsedURL.preEncodeSpecialCharactersInPath(name));
   }
 
   /**

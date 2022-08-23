@@ -12165,10 +12165,10 @@
     "message": "Show Memory Inspector"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
-    "message": "Delete memory highlight"
+    "message": "Stop highlighting this memory"
   },
   "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
-    "message": "Jump to highlighted memory"
+    "message": "Jump to this memory"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Address has to be a number between {PH1} and {PH2}"

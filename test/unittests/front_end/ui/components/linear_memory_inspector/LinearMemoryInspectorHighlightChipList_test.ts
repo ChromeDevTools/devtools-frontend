@@ -125,11 +125,11 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
 
   it('shows tooltip on jump to highlighted memory button', () => {
     const button = getElementWithinComponent(component, HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR, HTMLButtonElement);
-    assert.strictEqual(button.title, 'Jump to highlighted memory');
+    assert.strictEqual(button.title, 'Jump to this memory');
   });
 
   it('shows tooltip on delete highlight button', () => {
     const button = getElementWithinComponent(component, HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR, HTMLButtonElement);
-    assert.strictEqual(button.title, 'Delete memory highlight');
+    assert.strictEqual(button.title, 'Stop highlighting this memory');
   });
 });

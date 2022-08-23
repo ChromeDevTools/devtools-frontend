@@ -169,7 +169,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.lengthOf(frames, 1);
     const addedFrame = frames[0];
     assertNotNullOrUndefined(addedFrame);
-    const key = await addedFrame.storageKey;
+    const key = await addedFrame.getStorageKey(false);
     assertNotNullOrUndefined(key);
     assert.strictEqual(key, testKey);
   });

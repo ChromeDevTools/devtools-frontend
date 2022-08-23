@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
 import {getTestServerPort} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -242,6 +243,9 @@ describe('The Console Tab', async () => {
   });
 
   describe('shows messages from before', async () => {
+    expectError(
+        'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}');
+
     it('iframe removal', async () => {
       const messages =
           await getConsoleMessages('navigation/after-removal', false, () => waitForConsoleMessagesToBeNonEmpty(3));

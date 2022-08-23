@@ -134,6 +134,9 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async storageKeyForFrame(frameId: Protocol.Page.FrameId): Promise<string|null> {
+    if (!this.framesInternal.has(frameId)) {
+      return null;
+    }
     const response = await this.storageAgent.invoke_getStorageKeyForFrame({frameId: frameId});
     if (response.getError() === 'Frame tree node for given frame not found') {
       return null;
@@ -540,11 +543,11 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     const storageKeys = new Set<string>();
     let mainStorageKey: string|null = null;
 
-    for (const {isMainFrame, storageKey} of await Promise.all(
-             [...this.framesInternal.values()].map(async f => f.storageKey.then(k => ({
-                                                                                  isMainFrame: f.isMainFrame(),
-                                                                                  storageKey: k,
-                                                                                }))))) {
+    for (const {isMainFrame, storageKey} of await Promise.all([...this.framesInternal.values()].map(
+             f => f.getStorageKey(/* forceFetch */ false).then(k => ({
+                                                                 isMainFrame: f.isMainFrame(),
+                                                                 storageKey: k,
+                                                               }))))) {
       if (isMainFrame) {
         mainStorageKey = storageKey;
       }
@@ -570,7 +573,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getMainStorageKey(): Promise<string|null> {
-    return this.mainFrame ? this.mainFrame.storageKey : null;
+    return this.mainFrame ? this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
   }
 
   getMainSecurityOrigin(): string|null {
@@ -767,6 +770,7 @@ export class ResourceTreeFrame {
     this.#urlInternal = framePayload.url as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
     this.#securityOriginInternal = framePayload.securityOrigin;
+    void this.getStorageKey(/* forceFetch */ true);
     this.#unreachableUrlInternal =
         framePayload.unreachableUrl as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = framePayload?.adFrameStatus;
@@ -827,8 +831,8 @@ export class ResourceTreeFrame {
     return this.#securityOriginInternal;
   }
 
-  get storageKey(): Promise<string|null> {
-    if (!this.#storageKeyInternal) {
+  getStorageKey(forceFetch: boolean): Promise<string|null> {
+    if (!this.#storageKeyInternal || forceFetch) {
       this.#storageKeyInternal = this.#model.storageKeyForFrame(this.#idInternal);
     }
     return this.#storageKeyInternal;

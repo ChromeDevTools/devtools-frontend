@@ -100,7 +100,7 @@ export async function getPuppeteerConnection(
   );
 
   const [, browser] = await Promise.all([
-    connection.createSession({ targetId: mainTargetId }),
+    connection._createSession({targetId: mainTargetId}, /* emulateAutoAttach=*/ true),
     browserPromise,
   ]);
 

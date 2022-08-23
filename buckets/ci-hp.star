@@ -59,7 +59,10 @@ highly_privileged_builder(
             "bugs": "none",
         },
     },
-    notifies = ["autoroll sheriff notifier"],
+    notifies = [
+        "autoroll sheriff notifier",
+        "autoroll deps look up notifier",
+    ],
 )
 
 luci.list_view(

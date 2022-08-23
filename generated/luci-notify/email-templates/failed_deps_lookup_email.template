@@ -1,0 +1,5 @@
+Dependency Roller: {{.Build.Builder.Builder}} has not found a recent version
+
+Builder {{.Build.Builder.Builder}} was not able to find a most recent dependency version at
+<a href="https://ci.chromium.org/b/{{.Build.Id}}">Build {{.Build.Number}}</a>
+on `{{.Build.EndTime | time}}`

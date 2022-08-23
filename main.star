@@ -165,7 +165,7 @@ luci.notifier(
     name = "autoroll sheriff notifier",
     on_occurrence = ["FAILURE", "SUCCESS"],
     failed_step_regexp = [
-        "Previous roll failed",
+        ".*Previous roll failed",
     ],
     notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
     template = luci.notifier_template(
@@ -175,6 +175,24 @@ luci.notifier(
 The autoroller may be stuck. Please check out <a href=\"https://chromium-review.googlesource.com/q/owner:devtools-ci-autoroll-builder%2540chops-service-accounts.iam.gserviceaccount.com\">roll CLs</a>, find the latest autoroll CL and investigate.
 
 Builder {{.Build.Builder.Builder}} found stale CL at
+<a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>
+on `{{.Build.EndTime | time}}`
+""",
+    ),
+)
+
+luci.notifier(
+    name = "autoroll deps look up notifier",
+    on_occurrence = ["FAILURE", "SUCCESS"],
+    failed_step_regexp = [
+        ".*look up .*",
+    ],
+    notify_emails = ["alexschulze@google.com", "machenbach@google.com", "liviurau@google.com"],
+    template = luci.notifier_template(
+        name = "failed_deps_lookup_email",
+        body = """Dependency Roller: {{.Build.Builder.Builder}} has not found a recent version
+
+Builder {{.Build.Builder.Builder}} was not able to find a most recent dependency version at
 <a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>
 on `{{.Build.EndTime | time}}`
 """,

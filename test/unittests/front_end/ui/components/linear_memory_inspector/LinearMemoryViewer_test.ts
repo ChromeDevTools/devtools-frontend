@@ -365,4 +365,31 @@ describe('LinearMemoryViewer', () => {
       assert.strictEqual(selectedValue, dataWithHighlightInfo.memory[index]);
     }
   });
+
+  it('focuses highlighted byte cells when focusedMemoryHighlight provided', async () => {
+    const {component, dataWithHighlightInfo} = await setUpComponentWithHighlightInfo();
+    const dataWithFocusedMemoryHighlight = {
+      ...dataWithHighlightInfo,
+      focusedMemoryHighlight: dataWithHighlightInfo.highlightInfo,
+    };
+    component.data = dataWithFocusedMemoryHighlight;
+    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused', HTMLSpanElement);
+
+    for (let i = 0; i < byteCells.length; ++i) {
+      const selectedValue = parseInt(byteCells[i].innerText, 16);
+      const index = dataWithHighlightInfo.highlightInfo.startAddress - dataWithHighlightInfo.memoryOffset + i;
+      assert.strictEqual(selectedValue, dataWithHighlightInfo.memory[index]);
+    }
+  });
+
+  it('does not focus highlighted byte cells when no focusedMemoryHighlight provided', async () => {
+    const {component, dataWithHighlightInfo} = await setUpComponentWithHighlightInfo();
+    const dataWithFocusedMemoryHighlight = {
+      ...dataWithHighlightInfo,
+      focusedMemoryHighlight: dataWithHighlightInfo.highlightInfo,
+    };
+    component.data = dataWithFocusedMemoryHighlight;
+    const byteCells = getElementsWithinComponent(component, '.byte-cell.focused', HTMLSpanElement);
+    assert.isEmpty(byteCells);
+  });
 });

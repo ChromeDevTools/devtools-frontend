@@ -203,6 +203,7 @@ export class LinearMemoryInspector extends HTMLElement {
     const canGoForwardInHistory = this.#history.canRollover();
 
     const highlightedMemoryAreas = this.#highlightInfo ? [this.#highlightInfo] : [];
+    const focusedMemoryHighlight = this.#getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas, this.#address);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -214,9 +215,8 @@ export class LinearMemoryInspector extends HTMLElement {
           @pagenavigation=${this.#navigatePage}
           @historynavigation=${this.#navigateHistory}></${LinearMemoryNavigator.litTagName}>
           <${LinearMemoryHighlightChipList.litTagName}
-          .data=${{highlightInfos: highlightedMemoryAreas} as LinearMemoryHighlightChipListData}
-          @jumptohighlightedmemory=${this.#onJumpToAddress}
-          @>
+          .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight: focusedMemoryHighlight } as LinearMemoryHighlightChipListData}
+          @jumptohighlightedmemory=${this.#onJumpToAddress}>
           </${LinearMemoryHighlightChipList.litTagName}>
         <${LinearMemoryViewer.litTagName}
           .data=${{
@@ -224,7 +224,8 @@ export class LinearMemoryInspector extends HTMLElement {
             end - this.#memoryOffset),
             address: this.#address, memoryOffset: start,
             focus: this.#currentNavigatorMode === Mode.Submitted,
-            highlightInfo: this.#highlightInfo } as LinearMemoryViewerData}
+            highlightInfo: this.#highlightInfo,
+            focusedMemoryHighlight: focusedMemoryHighlight } as LinearMemoryViewerData}
           @byteselected=${this.#onByteSelected}
           @resize=${this.#resize}>
         </${LinearMemoryViewer.litTagName}>
@@ -374,6 +375,29 @@ export class LinearMemoryInspector extends HTMLElement {
     this.#history.push(historyEntry);
     this.#address = address;
     this.dispatchEvent(new AddressChangedEvent(this.#address));
+  }
+
+  // Returns the highlightInfo with the smallest size property that encloses the provided address.
+  // If there are multiple smallest enclosing highlights, we pick the one appearing the earliest in highlightedMemoryAreas.
+  // If no such highlightInfo exists, it returns undefined.
+  //
+  // Selecting the smallest enclosing memory highlight is a heuristic that aims to pick the
+  // most specific highlight given a provided address. This way, objects contained in other objects are
+  // potentially still accessible.
+  #getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas: HighlightInfo[], address: number): HighlightInfo
+      |undefined {
+    let smallestEnclosingHighlight;
+    for (const highlightedMemory of highlightedMemoryAreas) {
+      if (highlightedMemory.startAddress <= address &&
+          address < highlightedMemory.startAddress + highlightedMemory.size) {
+        if (!smallestEnclosingHighlight) {
+          smallestEnclosingHighlight = highlightedMemory;
+        } else if (highlightedMemory.size < smallestEnclosingHighlight.size) {
+          smallestEnclosingHighlight = highlightedMemory;
+        }
+      }
+    }
+    return smallestEnclosingHighlight;
   }
 }
 

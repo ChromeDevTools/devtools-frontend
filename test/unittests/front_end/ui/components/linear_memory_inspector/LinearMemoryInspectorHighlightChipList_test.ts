@@ -27,15 +27,15 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
   function renderHighlightRow() {
     component = new LinearMemoryInspector.LinearMemoryHighlightChipList.LinearMemoryHighlightChipList();
     renderElementIntoDOM(component);
-
+    const highlightInfo = {
+      startAddress: 10,
+      size: 8,
+      type: 'double',
+      name: 'myNumber',
+    };
     component.data = {
       highlightInfos: [
-        {
-          startAddress: 10,
-          size: 8,
-          type: 'double',
-          name: 'myNumber',
-        },
+        highlightInfo,
       ],
     };
   }
@@ -48,6 +48,27 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
     const expressionName = shadowRoot.querySelector(HIGHLIGHT_PILL_VARIABLE_NAME);
     assertElement(expressionName, HTMLSpanElement);
     assert.strictEqual(expressionName.innerText, 'myNumber');
+  });
+
+  it('focuses a highlight chip button', async () => {
+    const shadowRoot = component.shadowRoot;
+    assertShadowRoot(shadowRoot);
+    const chip = shadowRoot.querySelector(HIGHLIGHT_CHIP);
+    assertElement(chip, HTMLDivElement);
+    assert.isTrue(!chip.classList.contains('focused'));
+
+    const highlightedMemory = {
+      startAddress: 10,
+      size: 8,
+      type: 'double',
+      name: 'myNumber',
+    };
+    const data = {
+      highlightInfos: [highlightedMemory],
+      focusedMemoryHighlight: highlightedMemory,
+    } as LinearMemoryInspector.LinearMemoryHighlightChipList.LinearMemoryHighlightChipListData;
+    component.data = data;
+    assert.isTrue(chip.classList.contains('focused'));
   });
 
   it('renders multiple chips', () => {

@@ -16,6 +16,7 @@ export interface LinearMemoryViewerData {
   memoryOffset: number;
   focus: boolean;
   highlightInfo?: HighlightInfo;
+  focusedMemoryHighlight?: HighlightInfo;
 }
 
 export class ByteSelectedEvent extends Event {
@@ -53,6 +54,7 @@ export class LinearMemoryViewer extends HTMLElement {
   #address = 0;
   #memoryOffset = 0;
   #highlightInfo?: HighlightInfo;
+  #focusedMemoryHighlight?: HighlightInfo;
 
   #numRows = 1;
   #numBytesInRow = BYTE_GROUP_SIZE;
@@ -73,6 +75,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#memory = data.memory;
     this.#address = data.address;
     this.#highlightInfo = data.highlightInfo;
+    this.#focusedMemoryHighlight = data.focusedMemoryHighlight;
     this.#memoryOffset = data.memoryOffset;
     this.#focusOnByte = data.focus;
     this.#update();
@@ -239,12 +242,14 @@ export class LinearMemoryViewer extends HTMLElement {
       const addMargin = i !== startIndex && (i - startIndex) % BYTE_GROUP_SIZE === 0;
       const selected = i === this.#address - this.#memoryOffset;
       const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
+      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
       const classMap = {
         'cell': true,
         'byte-cell': true,
         'byte-group-margin': addMargin,
         selected,
         'highlight-area': shouldBeHighlighted,
+        'focused-area': focusedMemoryArea,
       };
       const isSelectableCell = i < this.#memory.length;
       const byteValue = isSelectableCell ? html`${toHexString({number: this.#memory[i], pad: 2, prefix: false})}` : '';
@@ -259,11 +264,13 @@ export class LinearMemoryViewer extends HTMLElement {
     for (let i = startIndex; i < endIndex; ++i) {
       const actualIndex = i + this.#memoryOffset;
       const shouldBeHighlighted = this.#shouldBeHighlighted(actualIndex);
+      const focusedMemoryArea = this.#isFocusedArea(actualIndex);
       const classMap = {
         'cell': true,
         'text-cell': true,
         selected: this.#address - this.#memoryOffset === i,
         'highlight-area': shouldBeHighlighted,
+        'focused-area': focusedMemoryArea,
       };
       const isSelectableCell = i < this.#memory.length;
       const value = isSelectableCell ? html`${this.#toAscii(this.#memory[i])}` : '';
@@ -290,6 +297,14 @@ export class LinearMemoryViewer extends HTMLElement {
     }
     return this.#highlightInfo.startAddress <= index
     && index < this.#highlightInfo.startAddress + this.#highlightInfo.size;
+  }
+
+  #isFocusedArea(index: number): boolean {
+    if (!this.#focusedMemoryHighlight) {
+      return false;
+    }
+    return this.#focusedMemoryHighlight.startAddress <= index
+    && index < this.#focusedMemoryHighlight.startAddress + this.#focusedMemoryHighlight.size;
   }
 }
 

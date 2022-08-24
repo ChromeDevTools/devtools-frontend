@@ -59,18 +59,6 @@
   border-radius: 50%;
 }
 
-.highlight-chip:hover > .delete-highlight-container {
-  display: flex;
-  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
-  background: linear-gradient(90deg, transparent 0%, rgb(241 243 244) 25%); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
-:host-context(.-theme-with-dark-background) .highlight-chip:hover > .delete-highlight-container {
-  display: flex;
-  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
-  background: linear-gradient(90deg, transparent 0%, rgb(41 42 45) 25%); /* stylelint-disable-line plugin/use_theme_colors */
-}
-
 .jump-to-highlight-button {
   cursor: pointer;
   padding: 0;
@@ -107,4 +95,31 @@
 .separator {
   white-space: pre;
   flex-shrink: 0;
+}
+
+.highlight-chip.focused {
+  border-color: var(--color-primary);
+  background-color: var(--color-button-secondary-background-hovering);
+}
+
+.highlight-chip:hover > .delete-highlight-container {
+  display: flex;
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(241 243 244) 25%); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+.highlight-chip.focused:hover > .delete-highlight-container {
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(231 241 253) 25%); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+:host-context(.-theme-with-dark-background) .highlight-chip:hover > .delete-highlight-container {
+  display: flex;
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(41 42 45) 25%); /* stylelint-disable-line plugin/use_theme_colors */
+}
+
+:host-context(.-theme-with-dark-background) .highlight-chip.focused:hover > .delete-highlight-container {
+  /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
+  background: linear-gradient(90deg, transparent 0%, rgb(48 55 68) 25%); /* stylelint-disable-line plugin/use_theme_colors */
 }

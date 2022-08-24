@@ -39,6 +39,7 @@ describe('The Overrides Panel', async function() {
     await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
     await waitFor('[aria-label="NewFile, file"]');
     await typeText('bar\n');
+    await waitFor('[aria-label="bar, file"]');
 
     const treeItems = await $$('.navigator-file-tree-item');
     const treeItemNames = await Promise.all(treeItems.map(x => x.evaluate(y => y.textContent)));

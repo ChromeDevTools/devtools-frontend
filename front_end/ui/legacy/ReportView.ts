@@ -130,6 +130,13 @@ export class Section extends VBox {
     return this.titleElement;
   }
 
+  getFieldElement(): HTMLElement {
+    return this.fieldList;
+  }
+  appendFieldWithCustomView(customElement: HTMLElement): void {
+    this.fieldList.append(customElement);
+  }
+
   setTitle(title: string, tooltip?: string): void {
     if (this.titleElement.textContent !== title) {
       this.titleElement.textContent = title;

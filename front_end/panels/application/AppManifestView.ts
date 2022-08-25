@@ -458,7 +458,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.presentationSection = this.reportView.appendSection(i18nString(UIStrings.presentation));
     this.protocolHandlersSection = this.reportView.appendSection(i18nString(UIStrings.protocolHandlers));
     this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
-    this.protocolHandlersSection.contentElement.append(this.protocolHandlersView);
+    this.protocolHandlersSection.appendFieldWithCustomView(this.protocolHandlersView);
     this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons');
     this.shortcutSections = [];
     this.screenshotsSections = [];

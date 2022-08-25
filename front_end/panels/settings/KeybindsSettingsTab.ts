@@ -461,6 +461,7 @@ export class ShortcutListItem {
   private createIconButton(label: string, iconName: string, className: string, listener: () => void):
       HTMLButtonElement {
     const button = document.createElement('button') as HTMLButtonElement;
+    button.setAttribute('title', label);
     button.appendChild(UI.Icon.Icon.create(iconName));
     button.addEventListener('click', listener);
     UI.ARIAUtils.setAccessibleName(button, label);

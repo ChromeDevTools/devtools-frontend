@@ -1396,7 +1396,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     button.setToggleWithDot(true);
 
     button.element.addEventListener('click', event => {
-      const menu = new UI.ContextMenu.ContextMenu(event);
+      const boundingRect = button.element.getBoundingClientRect();
+      const menu = new UI.ContextMenu.ContextMenu(event, {
+        x: boundingRect.left,
+        y: boundingRect.bottom,
+      });
       const preferredColorScheme = prefersColorSchemeSetting.get();
       const isLightColorScheme = preferredColorScheme === 'light';
       const isDarkColorScheme = preferredColorScheme === 'dark';

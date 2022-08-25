@@ -171,6 +171,10 @@ button.text-button {
   margin: 0 2px;
 }
 
+.keybinds-list-text:has(.keybinds-delete-button) {
+  grid-column: 3 / -1;
+}
+
 .docs-link.devtools-link {
   align-self: flex-start;
   min-height: 2em;

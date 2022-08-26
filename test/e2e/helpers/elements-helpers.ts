@@ -22,6 +22,8 @@ import {
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
 const CSS_PROPERTY_VALUE_SELECTOR = '.value';
+const CSS_DECLARATION_SELECTOR =
+    `[role="treeitem"]:has(${CSS_PROPERTY_NAME_SELECTOR}):has(${CSS_PROPERTY_VALUE_SELECTOR})`;
 const COLOR_SWATCH_SELECTOR = '.color-swatch-inner';
 const CSS_STYLE_RULE_SELECTOR = '[aria-label*="css selector"]';
 const COMPUTED_PROPERTY_SELECTOR = 'devtools-computed-style-property';
@@ -409,6 +411,19 @@ export const getComputedStyleProperties = async () => {
     properties.push({name, value, trace});
   }
   return properties;
+};
+
+export const getDisplayedCSSDeclarations = async () => {
+  const allRuleSelectors = await $$(CSS_STYLE_RULE_SELECTOR);
+  const declarations = [];
+  for (const ruleSelector of allRuleSelectors) {
+    const cssDeclarations = await $$(CSS_DECLARATION_SELECTOR, ruleSelector);
+    const currentDeclarations =
+        await Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
+    declarations.push(...currentDeclarations);
+  }
+
+  return declarations;
 };
 
 export const getDisplayedStyleRulesCompact = async () => {

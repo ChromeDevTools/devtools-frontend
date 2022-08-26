@@ -558,19 +558,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const longhandProperties = this.style.longhandProperties(this.name);
+    const longhandProperties = this.property.getLonghandProperties();
     const leadingProperties = this.style.leadingProperties();
 
-    for (let i = 0; i < longhandProperties.length; ++i) {
-      const name = longhandProperties[i].name;
+    for (const property of longhandProperties) {
+      const name = property.name;
       let inherited = false;
       let overloaded = false;
 
       const section = this.section();
       if (section) {
         inherited = section.isPropertyInherited(name);
-        overloaded = this.matchedStylesInternal.propertyState(longhandProperties[i]) ===
-            SDK.CSSMatchedStyles.PropertyState.Overloaded;
+        overloaded =
+            this.matchedStylesInternal.propertyState(property) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
       }
 
       const leadingProperty = leadingProperties.find(property => property.name === name && property.activeInStyle());
@@ -579,8 +579,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
 
       const item = new StylePropertyTreeElement(
-          this.parentPaneInternal, this.matchedStylesInternal, longhandProperties[i], false, inherited, overloaded,
-          false);
+          this.parentPaneInternal, this.matchedStylesInternal, property, false, inherited, overloaded, false);
       item.setComputedStyles(this.computedStyles);
       item.setParentsComputedStyles(this.parentsComputedStyles);
       this.appendChild(item);

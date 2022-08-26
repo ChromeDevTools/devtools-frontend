@@ -971,7 +971,7 @@ export class StylePropertiesSection {
         break;
       }
       count++;
-      const isShorthand = Boolean(style.longhandProperties(property.name).length);
+      const isShorthand = property.getLonghandProperties().length > 0;
       const inherited = this.isPropertyInherited(property.name);
       const overloaded = this.isPropertyOverloaded(property);
       if (style.parentRule && style.parentRule.isUserAgent() && inherited) {

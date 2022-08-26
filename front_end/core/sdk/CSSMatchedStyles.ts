@@ -5,7 +5,7 @@
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {cssMetadata, CustomVariableRegex, VariableRegex} from './CSSMetadata.js';
+import {cssMetadata, VariableRegex} from './CSSMetadata.js';
 
 import {type CSSModel} from './CSSModel.js';
 import {type CSSProperty} from './CSSProperty.js';
@@ -618,7 +618,8 @@ class NodeCascade {
     this.propertiesState.clear();
     this.activeProperties.clear();
 
-    for (const style of this.styles) {
+    for (let i = this.styles.length - 1; i >= 0; i--) {
+      const style = this.styles[i];
       const rule = style.parentRule;
       // Compute cascade for CSSStyleRules only.
       if (rule && !(rule instanceof CSSStyleRule)) {
@@ -637,43 +638,42 @@ class NodeCascade {
           continue;
         }
 
+        // When a property does not have a range in an otherwise ranged CSSStyleDeclaration,
+        // we consider it as a non-leading property (see computeLeadingProperties()), and most
+        // of them are computed longhands. We exclude these from activeProperties calculation,
+        // and use parsed longhands instead (see below).
+        if (style.range && !property.range) {
+          continue;
+        }
+
         if (!property.activeInStyle()) {
           this.propertiesState.set(property, PropertyState.Overloaded);
           continue;
         }
 
         const canonicalName = metadata.canonicalPropertyName(property.name);
-        const isPropShorthand = Boolean(metadata.getLonghands(canonicalName));
-
-        if (isPropShorthand) {
-          const longhandsFromShort =
-              (property.value.match(CustomVariableRegex) || []).map(e => e.replace(CustomVariableRegex, '$2'));
-          longhandsFromShort.forEach(longhandProperty => {
-            if (metadata.isCSSPropertyName(longhandProperty)) {
-              const activeProperty = this.activeProperties.get(longhandProperty);
-              if (!activeProperty) {
-                this.activeProperties.set(longhandProperty, property);
-              } else {
-                this.propertiesState.set(activeProperty, PropertyState.Overloaded);
-                this.activeProperties.set(longhandProperty, property);
-              }
-            }
-          });
+        this.updatePropertyState(property, canonicalName);
+        for (const longhand of property.getLonghandProperties()) {
+          if (metadata.isCSSPropertyName(longhand.name)) {
+            this.updatePropertyState(longhand, longhand.name);
+          }
         }
-
-        const activeProperty = this.activeProperties.get(canonicalName);
-        if (activeProperty && (activeProperty.important || !property.important)) {
-          this.propertiesState.set(property, PropertyState.Overloaded);
-          continue;
-        }
-
-        if (activeProperty) {
-          this.propertiesState.set(activeProperty, PropertyState.Overloaded);
-        }
-        this.propertiesState.set(property, PropertyState.Active);
-        this.activeProperties.set(canonicalName, property);
       }
     }
+  }
+
+  private updatePropertyState(propertyWithHigherSpecificity: CSSProperty, canonicalName: string): void {
+    const activeProperty = this.activeProperties.get(canonicalName);
+    if (activeProperty?.important && !propertyWithHigherSpecificity.important) {
+      this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.Overloaded);
+      return;
+    }
+
+    if (activeProperty) {
+      this.propertiesState.set(activeProperty, PropertyState.Overloaded);
+    }
+    this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.Active);
+    this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
   }
 }
 
@@ -841,9 +841,7 @@ class DOMInheritanceCascade {
     const activeProperties = new Map<string, CSSProperty>();
     for (const nodeCascade of this.#nodeCascades) {
       nodeCascade.computeActiveProperties();
-      for (const entry of nodeCascade.propertiesState.entries()) {
-        const property = (entry[0] as CSSProperty);
-        const state = (entry[1] as PropertyState);
+      for (const [property, state] of nodeCascade.propertiesState) {
         if (state === PropertyState.Overloaded) {
           this.#propertiesState.set(property, PropertyState.Overloaded);
           continue;
@@ -858,11 +856,9 @@ class DOMInheritanceCascade {
       }
     }
     // If every longhand of the shorthand is not active, then the shorthand is not active too.
-    for (const entry of activeProperties.entries()) {
-      const canonicalName = (entry[0] as string);
-      const shorthandProperty = (entry[1] as CSSProperty);
+    for (const [canonicalName, shorthandProperty] of activeProperties) {
       const shorthandStyle = shorthandProperty.ownerStyle;
-      const longhands = shorthandStyle.longhandProperties(shorthandProperty.name);
+      const longhands = shorthandProperty.getLonghandProperties();
       if (!longhands.length) {
         continue;
       }

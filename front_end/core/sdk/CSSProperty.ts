@@ -27,10 +27,12 @@ export class CSSProperty {
   #nameRangeInternal: TextUtils.TextRange.TextRange|null;
   #valueRangeInternal: TextUtils.TextRange.TextRange|null;
   #invalidString?: Common.UIString.LocalizedString;
+  #longhandProperties: CSSProperty[] = [];
 
   constructor(
       ownerStyle: CSSStyleDeclaration, index: number, name: string, value: string, important: boolean,
-      disabled: boolean, parsedOk: boolean, implicit: boolean, text?: string|null, range?: Protocol.CSS.SourceRange) {
+      disabled: boolean, parsedOk: boolean, implicit: boolean, text?: string|null, range?: Protocol.CSS.SourceRange,
+      longhandProperties?: Protocol.CSS.CSSProperty[]) {
     this.ownerStyle = ownerStyle;
     this.index = index;
     this.name = name;
@@ -44,6 +46,24 @@ export class CSSProperty {
     this.#active = true;
     this.#nameRangeInternal = null;
     this.#valueRangeInternal = null;
+
+    if (longhandProperties && longhandProperties.length > 0) {
+      for (const property of longhandProperties) {
+        this.#longhandProperties.push(new CSSProperty(
+            ownerStyle, this.#longhandProperties.length, property.name, property.value, important, disabled, parsedOk,
+            true));
+      }
+    } else {
+      // Blink would not parse shorthands containing 'var()' functions:
+      // https://drafts.csswg.org/css-variables/#variables-in-shorthands).
+      // Therefore we manually check if the current property is a shorthand,
+      // and fills its longhand components with empty values.
+      const longhandNames = cssMetadata().getLonghands(name);
+      for (const longhandName of longhandNames || []) {
+        this.#longhandProperties.push(new CSSProperty(
+            ownerStyle, this.#longhandProperties.length, longhandName, '', important, disabled, parsedOk, true));
+      }
+    }
   }
 
   static parsePayload(ownerStyle: CSSStyleDeclaration, index: number, payload: Protocol.CSS.CSSProperty): CSSProperty {
@@ -55,7 +75,7 @@ export class CSSProperty {
     const result = new CSSProperty(
         ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false,
         ('parsedOk' in payload) ? Boolean(payload.parsedOk) : true, Boolean(payload.implicit), payload.text,
-        payload.range);
+        payload.range, payload.longhandProperties);
     return result;
   }
 
@@ -301,5 +321,9 @@ export class CSSProperty {
    */
   getInvalidStringForInvalidProperty(): Common.UIString.LocalizedString|undefined {
     return this.#invalidString;
+  }
+
+  getLonghandProperties(): CSSProperty[] {
+    return this.#longhandProperties;
   }
 }

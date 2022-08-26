@@ -280,11 +280,11 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       ${this.#renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
-      <div class='report-line'>
-        <div class='report-key'>
+      <div class="report-line">
+        <div class="report-key">
           ${i18nString(UIStrings.url)}
         </div>
-        <div class='report-value'>
+        <div class="report-value">
           ${this.#frame.url}
         </div>
       </div>
@@ -339,11 +339,11 @@ export class BackForwardCacheView extends HTMLElement {
       topFrameElement.setLeadingIcons([UI.Icon.Icon.create('mediumicon-frame')]);
     }
     return LitHtml.html`
-    <div class='report-line'>
-    <div class='report-key'>
+    <div class="report-line">
+    <div class="report-key">
       ${i18nString(UIStrings.framesTitle)}
     </div>
-    <div class='report-value'>
+    <div class="report-value">
       ${treeOutline.element}
     </div>
   </div>`;
@@ -395,7 +395,7 @@ export class BackForwardCacheView extends HTMLElement {
         // clang-format off
         return LitHtml.html`
           <${ReportView.ReportView.ReportSection.litTagName}>
-            <div class='status'>
+            <div class="status">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
                 iconName: 'ic_checkmark_16x16',
                 color: 'green',
@@ -412,7 +412,7 @@ export class BackForwardCacheView extends HTMLElement {
         // clang-format off
         return LitHtml.html`
           <${ReportView.ReportView.ReportSection.litTagName}>
-            <div class='status'>
+            <div class="status">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
                   iconName: 'circled_backslash_icon',
                   color: 'var(--color-text-secondary)',
@@ -496,7 +496,7 @@ export class BackForwardCacheView extends HTMLElement {
       ${explanations.length > 0 ? LitHtml.html`
         <${ReportView.ReportView.ReportSectionHeader.litTagName}>
           ${category}
-          <div class='help-outline-icon'>
+          <div class="help-outline-icon">
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
               iconName: 'help_outline',
               color: 'var(--color-text-secondary)',
@@ -530,9 +530,9 @@ export class BackForwardCacheView extends HTMLElement {
       return LitHtml.nothing;
     }
     const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
-    rows.push(...frames.map(url => LitHtml.html`<div class='text-ellipsis' title=${url}>${url}</div>`));
+    rows.push(...frames.map(url => LitHtml.html`<div class="text-ellipsis" title=${url}>${url}</div>`));
     return LitHtml.html`
-      <div class='explanation-frames'>
+      <div class="explanation-frames">
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
         {rows} as
         ExpandableList.ExpandableList.ExpandableListData}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
@@ -558,7 +558,7 @@ export class BackForwardCacheView extends HTMLElement {
       <${ReportView.ReportView.ReportSection.litTagName}>
         ${(explanation.reason in NotRestoredReasonDescription) ?
           LitHtml.html`
-            <div class='circled-exclamation-icon'>
+            <div class="circled-exclamation-icon">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
                 iconName: 'circled_exclamation_icon',
                 color: 'orange',
@@ -574,7 +574,7 @@ export class BackForwardCacheView extends HTMLElement {
            </div>` :
             LitHtml.nothing}
       </${ReportView.ReportView.ReportSection.litTagName}>
-      <div class='gray-text'>
+      <div class="gray-text">
         ${explanation.reason}
       </div>
       ${this.#renderFramesPerReason(frames)}

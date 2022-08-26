@@ -11,7 +11,6 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import badgeStyles from './badge.css.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
-import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
 const UIStrings = {
   /**
@@ -321,10 +320,6 @@ export class OriginTrialTreeView extends HTMLElement {
 
   set data(data: OriginTrialTreeViewData) {
     this.#render(data.trials);
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [originTrialTreeViewStyles];
   }
 
   #render(trials: Protocol.Page.OriginTrial[]): void {

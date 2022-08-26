@@ -258,13 +258,6 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.#setNodeExpandedState(treeNode, false);
   }
 
-  #getSelectedTreeNode(): TreeNode<TreeNodeDataType> {
-    if (!this.#selectedTreeNode) {
-      throw new Error('getSelectedNode was called but selectedTreeNode is null');
-    }
-    return this.#selectedTreeNode;
-  }
-
   async #flattenSubtree(node: TreeNodeWithChildren<TreeNodeDataType>, filter: (node: TreeNodeDataType) => FilterOption):
       Promise<TreeNode<TreeNodeDataType>[]> {
     const children = await getNodeChildren(node);
@@ -452,7 +445,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // clang-format on
     }
 
-    const nodeIsFocusable = this.#getSelectedTreeNode() === node;
+    const nodeIsFocusable = this.#isSelectedNode(node);
     const tabIndex = nodeIsFocusable ? 0 : -1;
     const listItemClasses = LitHtml.Directives.classMap({
       expanded: isExpandableNode(node) && nodeIsExpanded,

@@ -17,7 +17,7 @@ vars = {
   'build_revision': '7e25322e493e8fb9929fd3b32be624411b34c571',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'c4aedc2c7f8a53152a98e252ab9d9c8fa6de2084',
+  'buildtools_revision': 'cc7f84a4bd6e0643e338aa61275b959c8a66c9d6',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': 'b7ec673cccc42bce346234209dfd194b7911e169',

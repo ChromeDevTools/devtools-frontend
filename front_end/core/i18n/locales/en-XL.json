@@ -4778,6 +4778,12 @@
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "D̂ÓM̂ t́r̂éê b́r̂éâd́ĉŕûḿb̂ś"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollLeft": {
+    "message": "Ŝćr̂ól̂ĺ l̂éf̂t́"
+  },
+  "panels/elements/components/ElementsBreadcrumbs.ts | scrollRight": {
+    "message": "Ŝćr̂ól̂ĺ r̂íĝh́t̂"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(t̂éx̂t́)"
   },

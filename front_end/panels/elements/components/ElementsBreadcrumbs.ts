@@ -20,6 +20,14 @@ const UIStrings = {
   * @description Accessible name for DOM tree breadcrumb navigation.
   */
   breadcrumbs: 'DOM tree breadcrumbs',
+  /**
+  * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the left to show more entries.
+  */
+  scrollLeft: 'Scroll left',
+  /**
+  * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the right to show more entries.
+  */
+  scrollRight: 'Scroll right',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbs.ts', UIStrings);
@@ -252,12 +260,15 @@ export class ElementsBreadcrumbs extends HTMLElement {
       hidden: this.#overflowing === false,
     });
 
+    const tooltipString = direction === 'left' ? i18nString(UIStrings.scrollLeft) : i18nString(UIStrings.scrollRight);
+
     return LitHtml.html`
       <button
         class=${buttonStyles}
         @click=${this.#onOverflowClick(direction)}
         ?disabled=${disabled}
-        aria-label="Scroll ${direction}"
+        aria-label=${tooltipString}
+        title=${tooltipString}
       >&hellip;</button>
       `;
   }

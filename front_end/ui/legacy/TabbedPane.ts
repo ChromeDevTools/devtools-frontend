@@ -591,14 +591,16 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const dropDownContainer = document.createElement('div');
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
+    const moreTabsString = i18nString(UIStrings.moreTabs);
+    dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);
-    ARIAUtils.setAccessibleName(dropDownContainer, i18nString(UIStrings.moreTabs));
+    ARIAUtils.setAccessibleName(dropDownContainer, moreTabsString);
     dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this.dropDownClicked.bind(this));
     dropDownContainer.addEventListener('keydown', this.dropDownKeydown.bind(this));
     dropDownContainer.addEventListener('mousedown', event => {
-      if (event.which !== 1 || this.triggerDropDownTimeout) {
+      if (event.button !== 0 || this.triggerDropDownTimeout) {
         return;
       }
       this.triggerDropDownTimeout = window.setTimeout(this.dropDownClicked.bind(this, event), 200);
@@ -608,7 +610,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private dropDownClicked(ev: Event): void {
     const event = (ev as MouseEvent);
-    if (event.which !== 1) {
+    if (event.button !== 0) {
       return;
     }
     if (this.triggerDropDownTimeout) {

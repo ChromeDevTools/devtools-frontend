@@ -39,7 +39,7 @@ details > summary {
   height: 18px;
   list-style: none;
   display: flex;
-  padding: 4px 4px 4px 6px;
+  padding: 0 4px 0 6px;
   align-items: center;
 }
 

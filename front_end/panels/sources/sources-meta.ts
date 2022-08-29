@@ -1730,7 +1730,7 @@ UI.Context.registerListener({
   },
   async loadListener() {
     const Sources = await loadSourcesModule();
-    return Sources.JavaScriptBreakpointsSidebarPane.JavaScriptBreakpointsSidebarPane.instance();
+    return Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance();
   },
 });
 

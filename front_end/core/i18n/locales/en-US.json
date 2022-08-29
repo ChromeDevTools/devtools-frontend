@@ -9791,9 +9791,6 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pause only when the condition is true"
   },
-  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No breakpoints"
-  },
   "panels/sources/CallStackSidebarPane.ts | addAllContentScriptsToIgnoreList": {
     "message": "Add all content scripts to ignore list"
   },

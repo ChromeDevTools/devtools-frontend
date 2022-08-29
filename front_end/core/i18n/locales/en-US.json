@@ -1449,7 +1449,7 @@
     "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in non-secure contexts is deprecated and will be removed in M107. Please use Web Storage or Indexed Database."
+    "message": "WebSQL in non-secure contexts is deprecated and will be removed soon. Please use Web Storage or Indexed Database."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."

@@ -896,6 +896,15 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "R̂én̂d́êŕîńĝ"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Êńâb́l̂é ŝéâŕĉh́ âś ŷóû t́ŷṕê"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Ŝéâŕĉh́ âś ŷóû t́ŷṕê"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "D̂íŝáb̂ĺê śêár̂ćĥ áŝ ýôú t̂ýp̂é (p̂ŕêśŝ Én̂t́êŕ t̂ó ŝéâŕĉh́)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Ŝh́ôẃ âd́ŝ ón̂ t́ĥíŝ śît́ê, íf̂ ál̂ĺôẃêd́"
   },

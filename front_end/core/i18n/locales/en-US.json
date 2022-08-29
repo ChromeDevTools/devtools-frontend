@@ -896,6 +896,15 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "Rendering"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeCommand": {
+    "message": "Enable search as you type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchAsYouTypeSetting": {
+    "message": "Search as you type"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | searchOnEnterCommand": {
+    "message": "Disable search as you type (press Enter to search)"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
     "message": "Show ads on this site, if allowed"
   },

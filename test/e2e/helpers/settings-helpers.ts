@@ -43,21 +43,23 @@ export const closeSettings = async () => {
   await click('.dialog-close-button');
 };
 
-export const togglePreferenceInSettingsTab = async (label: string) => {
+export const togglePreferenceInSettingsTab = async (label: string, shouldBeChecked?: boolean) => {
   await openSettingsTab('Preferences');
 
-  const selector = `[aria-label="${label}"`;
+  const selector = `[aria-label="${label}"]`;
   await scrollElementIntoView(selector);
   const preference = await waitFor(selector);
 
   const value = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
 
-  await click(preference);
+  if (value !== shouldBeChecked) {
+    await click(preference);
 
-  await waitForFunction(async () => {
-    const newValue = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
-    return newValue !== value;
-  });
+    await waitForFunction(async () => {
+      const newValue = await preference.evaluate(checkbox => (checkbox as HTMLInputElement).checked);
+      return newValue !== value;
+    });
+  }
 
   await closeSettings();
 };

@@ -10,8 +10,10 @@ import {
   $$,
   click,
   getBrowserAndPages,
+  getTextContent,
   pressKey,
   step,
+  summonSearchBox,
   timeout,
   typeText,
   waitFor,
@@ -46,6 +48,8 @@ const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = '.elements input[type=checkbox]
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
+const SEARCH_BOX_SELECTOR = '.search-bar';
+const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
@@ -790,4 +794,13 @@ export const getPropertiesWithHints = async () => {
   }
 
   return propertiesWithHints;
+};
+
+export const summonAndWaitForSearchBox = async () => {
+  await summonSearchBox();
+  await waitFor(SEARCH_BOX_SELECTOR);
+};
+
+export const getSearchResultMatchesText = async () => {
+  return await getTextContent(SEARCH_RESULTS_MATCHES);
 };

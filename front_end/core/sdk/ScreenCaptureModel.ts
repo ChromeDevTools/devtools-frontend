@@ -10,6 +10,11 @@ import {OverlayModel} from './OverlayModel.js';
 import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
+export const enum ScreenshotMode {
+  FROM_VIEWPORT = 'fromViewport',
+  FROM_CLIP = 'fromClip',
+  FULLPAGE = 'fullpage',
+}
 export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyApi.PageDispatcher {
   readonly #agent: ProtocolProxyApi.PageApi;
   #onScreencastFrame: ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void)|null;
@@ -39,11 +44,35 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
   }
 
   async captureScreenshot(
-      format: Protocol.Page.CaptureScreenshotRequestFormat, quality: number,
+      format: Protocol.Page.CaptureScreenshotRequestFormat, quality: number, mode: ScreenshotMode,
       clip?: Protocol.Page.Viewport): Promise<string|null> {
+    const properties: Protocol.Page.CaptureScreenshotRequest = {
+      format: format,
+      quality: quality,
+      fromSurface: true,
+    };
+    switch (mode) {
+      case 'fromClip':
+        properties.captureBeyondViewport = true;
+        properties.clip = clip;
+        break;
+      case 'fullpage':
+        properties.captureBeyondViewport = true;
+        // TODO(crbug/1357584): Delete this after the upstream CDP change lands.
+        properties.clip = clip;
+        // TODO(crbug/1357584): Uncoment this after the upstream CDP change lands.
+        // properties.clip = undefined;
+        break;
+      case 'fromViewport':
+        properties.captureBeyondViewport = false;
+        properties.clip = undefined;
+        break;
+      default:
+        throw new Error('Unexpected or unspecified screnshotMode');
+    }
+
     await OverlayModel.muteHighlight();
-    const result = await this.#agent.invoke_captureScreenshot(
-        {format, quality, clip, fromSurface: true, captureBeyondViewport: true});
+    const result = await this.#agent.invoke_captureScreenshot(properties);
     await OverlayModel.unmuteHighlight();
     return result.data;
   }

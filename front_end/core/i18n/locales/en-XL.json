@@ -1458,7 +1458,7 @@
     "message": "Ŷóûŕ p̂ár̂t́n̂ér̂ íŝ ńêǵôt́îát̂ín̂ǵ âń ôb́ŝól̂ét̂é (D̂)T́L̂Ś v̂ér̂śîón̂. Ṕl̂éâśê ćĥéĉḱ ŵít̂h́ ŷóûŕ p̂ár̂t́n̂ér̂ t́ô h́âv́ê t́ĥíŝ f́îx́êd́."
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "Ŵéb̂ŚQ̂Ĺ îń n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ ín̂ Ḿ107. P̂ĺêáŝé ûśê Ẃêb́ Ŝt́ôŕâǵê ór̂ Ín̂d́êx́êd́ D̂át̂áb̂áŝé."
+    "message": "Ŵéb̂ŚQ̂Ĺ îń n̂ón̂-śêćûŕê ćôńt̂éx̂t́ŝ íŝ d́êṕr̂éĉát̂éd̂ án̂d́ ŵíl̂ĺ b̂é r̂ém̂óv̂éd̂ śôón̂. Ṕl̂éâśê úŝé Ŵéb̂ Śt̂ór̂áĝé ôŕ Îńd̂éx̂éd̂ D́ât́âb́âśê."
   },
   "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
     "message": "StorageType.persistent îś d̂ép̂ŕêćât́êd́. P̂ĺêáŝé ûśê śt̂án̂d́âŕd̂íẑéd̂ navigator.storage ín̂śt̂éâd́."

@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path അവസാനിപ്പിച്ചു, ഇത് നീക്കം ചെയ്യുന്നതുമാണ്. പകരം Event.composedPath() ഉപയോഗിക്കുക."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT ഹെഡ്ഡർ അവസാനിപ്പിച്ചു, അത് നീക്കം ചെയ്യും. 2018 ഏപ്രിൽ 30-ന് ശേഷം Chrome-ന് നൽകുന്ന പബ്ലിക്കായി വിശ്വസനീയമായ എല്ലാ സർട്ടിഫിക്കറ്റുകൾക്കും സർട്ടിഫിക്കറ്റ് സുതാര്യത ആവശ്യമാണ്."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "കൂടുതൽ വിശദാംശങ്ങൾക്ക് ഫീച്ചർ നിലയുടെ പേജ് പരിശോധിക്കുക."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "സുരക്ഷിതമല്ലാത്ത സാഹചര്യങ്ങളിലെ WebSQL അവസാനിപ്പിച്ചു, അത് M107-ൽ നീക്കം ചെയ്യും. വെബ് സ്റ്റോറേജ് അല്ലെങ്കിൽ സൂചികയിലാക്കിയ ഡാറ്റാബേസ് ഉപയോഗിക്കുക."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent അവസാനിപ്പിച്ചു. പകരം, ഏകീകൃത navigator.storage ഉപയോഗിക്കുക."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> പേരന്റുള്ള <source src> അസാധുവായതിനാൽ ഇത് ഒഴിവാക്കി. പകരം <source srcset> ഉപയോഗിക്കുക."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ലേലത്തിന്റെ വർക്ക്‌ലെറ്റ് — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "ഉപയോക്തൃ ഇടപഴകലുകൾ"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "ക്രോസ് ഒറിജിൻ URL-ലേക്ക് റീഡയറക്റ്റ് ചെയ്ത ഒരു URL പ്രീറെൻഡർ ചെയ്യാൻ ശ്രമിച്ചു. നിലവിൽ ക്രോസ്-ഒറിജിൻ പേജുകൾ പ്രീറെൻഡർ ചെയ്യുന്നത് അനുവദനീയമല്ല."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "ഡാറ്റാ സേവർ പ്രവർത്തനക്ഷമമാക്കി"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് അജ്ഞാതമായ കാരണങ്ങളാൽ ഉപേക്ഷിച്ചു."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "മറ്റൊരു ക്രോസ് ഒറിജിൻ പേജിലേക്ക് നാവിഗേഷൻ റീഡയറക്റ്റ് ചെയ്തതിനാൽ, Chrome ഇന്റേണൽ ട്രിഗ്ഗർ ചെയ്ത പ്രീറെൻഡറിംഗ് ഒമ്‌നിബോക്സ് പ്രീറെൻഡറിംഗ്) റദ്ദാക്കി."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome ഇന്റേണൽ ട്രിഗ്ഗർ ചെയ്ത പ്രീറെൻഡറിംഗ് (ഉദാ. ഒമ്‌നിബോക്സ് പ്രീറെൻഡറിംഗ്), ഡിസ്ട്രക്ടറിൽ നശിപ്പിച്ചു."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "ഒരേ ഒറിജിനുള്ള മറ്റൊരു പേജിലേക്ക് നാവിഗേഷൻ റീഡയറക്റ്റ് ചെയ്തതിനാൽ, Chrome ഇന്റേണൽ ട്രിഗ്ഗർ ചെയ്‌ത പ്രീറെൻഡറിംഗ് (ഉദാ. ഒമ്‌നിബോക്സ് പ്രീറെൻഡറിംഗ്) റദ്ദാക്കി."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "മെമ്മറി ഉപയോഗം നേടാനായില്ല"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "പ്രീറെൻഡറിംഗിന്റെ പരമാവധി എണ്ണം കവിഞ്ഞു."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "മെമ്മറി പരിധി കവിഞ്ഞു"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "മിക്‌സഡ് ഉള്ളടക്ക ഫ്രെയിം മുഖേന പ്രീറെൻഡറിംഗ് റദ്ദാക്കി."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "അവസാനിപ്പിച്ച പ്രോപ്പർട്ടി"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "നിഷ്‌ക്രിയമായ നയം"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "നിഷ്‌ക്രിയമായ പ്രോപ്പർട്ടി"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ഈ പ്രശ്‌നം പരിഹരിക്കാൻ, പേരന്റ് എലമെന്റുകൾ {EXISTING_PARENT_ELEMENT_RULE} എന്നതിൽ നിന്ന് {TARGET_PARENT_ELEMENT_RULE} എന്നതിലേക്ക് മറ്റുക."
+    "message": "പേരന്റ് എലമെന്റിലെ {EXISTING_PARENT_ELEMENT_RULE} പ്രോപ്പർട്ടി {TARGET_PARENT_ELEMENT_RULE} എന്നതിലേക്ക് മാറ്റാൻ ശ്രമിക്കുക."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "പേരന്റ് എലമെന്റിൽ {REASON_RULE_CODE} നയം ഉള്ളതിനാൽ, {AFFECTED_RULE_CODE} എന്ന ഈ എലമെന്റുകൾക്ക് ഫലമൊന്നുമില്ല."
+    "message": "പേരന്റ് എലമെന്റിലെ {REASON_PROPERTY_DECLARATION_CODE} പ്രോപ്പർട്ടി {AFFECTED_PROPERTY_DECLARATION_CODE} എന്നതിന്റെ ഫലത്തെ ബെെപ്പാസ് ചെയ്യുന്നു."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} പ്രോപ്പർട്ടി {TARGET_PROPERTY_DECLARATION} എന്നതിലേക്ക് മാറ്റാൻ ശ്രമിക്കുക."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ഈ പ്രോപ്പർട്ടി പ്രവർത്തിക്കാൻ, {REASON_RULE_CODE} എന്നതിന്റെ മൂല്യം നീക്കം ചെയ്യുക അല്ലെങ്കിൽ മാറ്റുക"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} നീക്കം ചെയ്യാനോ അതിന്റെ മൂല്യം മാറ്റാനോ ശ്രമിക്കുക."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ഈ എലമെന്റിൽ {REASON_RULE_CODE} നയം ഉള്ളതിനാൽ, {AFFECTED_RULE_CODE} എന്നതിന് ഫലമൊന്നുമില്ല."
+    "message": "ഒരേ എലമെന്റിലെ {REASON_PROPERTY_DECLARATION_CODE} പ്രോപ്പർട്ടി {AFFECTED_PROPERTY_DECLARATION_CODE} എന്നതിന്റെ ഫലത്തെ ബെെപ്പാസ് ചെയ്യുന്നു."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "പുതിയ ക്ലാസ് ചേർക്കുക"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "പ്രോപ്പർട്ടി നാമം അജ്ഞാതമാണ്"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "മുകളിലത്തെ ലെയർ"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "വെളിപ്പെടുത്തുക"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "അവഗണിച്ചു"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "എലമെന്റ്"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ഫ്രെയിം"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ഹെഡ്ഡർ മൂല്യം അസാധുവാണ്"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "ഒരേ സമയത്തുള്ള പരമാവധി രജിസ്‌ട്രേഷനുകൾ"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ലംഘനം}other{# ലംഘനങ്ങൾ}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "സർട്ടിഫിക്കറ്റ് കാണുക"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "സജീവമായ client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "സെർവർ സൈഡ് പ്രവർത്തനരീതി ട്രിഗർ ചെയ്യുന്ന സജീവ client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ഉറവിടവും ഡോക്യുമെന്റും ഒരേ സൈറ്റിൽ നിന്നാണ് നൽകുന്നതെങ്കിൽ ഈ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ഡീകോഡ് ചെയ്‌തു:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ഡിസ്‌ക് കാഷെയിൽ നിന്നുള്ളത്)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "പൊതുവായത്"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ഹെഡ്ഡർ ഓവർറൈഡുകൾ"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ഫ്രെയിം അനുസരിച്ച് നെറ്റ്‍വർക്ക് ലോഗ് ഇനങ്ങൾ ഗ്രൂപ്പ് ചെയ്യരുത്"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "UNC പാതകളിലൂടെ Windows Shares-ൽ നിന്ന് സോഴ്‌സ് മാപ്പുകൾ പോലുള്ള ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ DevTools എന്നതിനെ അനുവദിക്കുക. സുരക്ഷാ കാരണങ്ങളാൽ ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കി."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ഫ്രെയിം"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "റോ CDP കമാൻഡ് അയയ്‌ക്കുക"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ഫോർമാറ്റ്: പാരാമീറ്ററുകളില്ലാത്ത ഒരു കമാൻഡിന് 'Domain.commandName', അല്ലെങ്കിൽ പാരാമീറ്ററുകളുള്ള ഒരു കമാൻഡിന് JSON ഒബ്‌ജക്റ്റ് ആയി '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. 'cmd'/'method', 'args'/'params'/'arguments' എന്നിവയും JSON ഒബ്‌ജക്റ്റിന്റെ ഇതര കീകളായി പിന്തുണയ്ക്കുന്നു."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "സെഷൻ"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ഡിഫോൾട്ടുകൾ പുനഃസ്ഥാപിക്കുക, തുടർന്ന് റീലോഡ് ചെയ്യുക"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ഫീഡ്ബാക്ക് അയയ്ക്കുക"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ക്രമീകരണം"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "അവസ്ഥ \"ശരി\" ആയിരിക്കുമ്പോൾ മാത്രം താൽക്കാലികമായി നിർത്തുക"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ബ്രേക്ക്‌പോയിന്റുകൾ ഒന്നുമില്ല"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "വർണ്ണ പിക്കർ തുറക്കുക."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "സൃഷ്ടിക്കൽ/വിന്യസിക്കൽ പ്രകാരമുള്ള ഗ്രൂപ്പ് ഫയലുകൾ"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "കോൺഫിഗറേഷൻ മായ്ക്കുക"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "ഡീബഗ്ഗർ മറയ്ക്കുക"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "നിരസിക്കൽ ലിസ്റ്റിലുള്ള ഉറവിടങ്ങൾ മറയ്ക്കുക"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "നാവിഗേറ്റർ മറയ്ക്കുക"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "വാച്ച് എക്‌സ്‌പ്രഷനുകൾ റീഫ്രഷ് ചെയ്യുക"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ബ്രേക്ക്‌പോയിന്റ് ഹിറ്റ്"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "പരിശോധിച്ചത്"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "മിക്‌സഡ്"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "അൺചെക്ക് ചെയ്തു"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ഒരു ഹെഡ്ഡർ ചേർക്കുക"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "സമയം"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ഇടപെടലുകൾ"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "നെറ്റ്‌വർക്ക്"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ഇവന്റ്"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ഇവന്റിന്റെ സമയക്രമം"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "വികസിപ്പിച്ചത്"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ടൈമർ ഇൻസ്‌റ്റാൾ ചെയ്യുക"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ഇടപഴകൽ തരം:{PH1} ഐഡി:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ലേഔട്ട് അസാധുവാക്കുക"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "പ്രശ്നം ഇപ്പോൾ ലഭ്യമല്ല"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "മെമ്മറി ഹൈലൈറ്റ് ഇല്ലാതാക്കുക"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "ഹൈലൈറ്റ് ചെയ്ത മെമ്മറിയിലേക്ക് പോകുക"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "{PH1} എന്നതിന്റെയും {PH2} എന്നതിന്റെയും ഇടയിലുള്ള ഒരു നമ്പറായിരിക്കണം വിലാസം"

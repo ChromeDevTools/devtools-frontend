@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path жактырылган жок жана өчүрүлөт. Анын ордуна төмөнкүнү колдонуңуз: Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT аталышы жактырылган жок жана өчүрүлөт. Chrome 2018-жылдын 30-апрелинде чыгарылган жалпыга ишенимдүү бардык тастыктамалардын тунуктугун талап кылат."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Кеңири маалымат алуу үчүн функциянын статус барагын караңыз."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Кооптуу контексттердеги WebSQL жактырылган жок жана M107 ичинен өчүрүлөт. Тармактагы сактагычты же индекстелген дайындар базасын колдонуңуз."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent жактырылган жок. Анын ордуна стандарттуу navigator.storage элементин колдонуңуз."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Ата-эне элементи <picture> болгон <source src> жараксыз болгондуктан, четке кагылды. Анын ордуна төмөнкүнү колдонуңуз: <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Аукциондор — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Колдонуучунун мамилелери"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Башка булактардагы URL дарекке багыттаган URL'ди алдын ала көрсөтүүгө аракет жасалды. Учурда ар кандай булактардагы барактарды алдын ала көрсөтүүгө болбойт."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Трафикти үнөмдөө иштетилди"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Алдын ала көрсөтүлгөн барак белгисиз себептерден улам жабылды."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome'дун ички тутуму иштеткен алдын ала көрсөтүү (мисалы, Omnibox'ту алдын ала көрсөтүү) жокко чыгарылды, анткени өтүү аракети башка булактардагы баракка багытталды."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome'дун ички тутуму иштеткен алдын ала көрсөтүү (мисалы, Omnibox'ту алдын ала көрсөтүү) деструктордо бузулду."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome'дун ички тутуму иштеткен алдын ала көрсөтүү (мисалы, Omnibox'ту алдын ала көрсөтүү) жокко чыгарылды, анткени өтүү аракети ушундай эле башка булактагы баракка багытталды."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Эстутумду колдонуу мүмкүн болгон жок"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Алдын ала көрсөтүүнүн максималдуу саны чектен ашты."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Эстутум чектен ашып кетти"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Алдын ала көрсөтүү аралаш мазмун фрейми тарабынан жокко чыгарылды."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Жактырылбаган касиет"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Жигерсиз эреже"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Жигерсиз касиет"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Бул көйгөйдү оңдоо үчүн аталык элементтерди {EXISTING_PARENT_ELEMENT_RULE} ордуна төмөнкүгө өзгөртүңүз: {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Ата-эне элементиндеги {EXISTING_PARENT_ELEMENT_RULE} касиетин төмөнкүгө өзгөртүп көрүңүз: {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Аталык элементте {REASON_RULE_CODE} эреже бар, андыктан бул элементтердин ({AFFECTED_RULE_CODE}) эффекти жок"
+    "message": "Ата-эне элементиндеги {REASON_PROPERTY_DECLARATION_CODE} касиети {AFFECTED_PROPERTY_DECLARATION_CODE} эффектин кыйгап өтөт."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} касиетин төмөнкүгө өзгөртүп көрүңүз: {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Бул касиет иштеши үчүн, {REASON_RULE_CODE} маанисин өчүрүп же өзгөртүңүз"
+    "message": "Төмөнкүнү өчүрүп же анын маанисин өзгөртүп көрүңүз: {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Бул элементте {REASON_RULE_CODE} эреже бар, андыктан {AFFECTED_RULE_CODE} элементинде эффект жок."
+    "message": "Ошол эле элементтеги {REASON_PROPERTY_DECLARATION_CODE} касиети {AFFECTED_PROPERTY_DECLARATION_CODE} эффектин кыйгап өтөт."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Жаңы класс кошуу"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Белгисиз мүнөздөмө атылышы"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "жогорку катмар"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "көрсөтүү"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Этибарга алынган жок"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Элемент"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Фрейм"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Аталыш мааниси жараксыз"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Бир убакта каттоолордун максималдуу саны"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# бузуу}other{# бузуу}}"
@@ -6645,7 +6663,7 @@
     "message": "{PH1}× жайлатуу"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
-    "message": "Демейки мааниден ашып кетсе, тутумдун майнаптуулугу төмөндөшү мүмкүн."
+    "message": "Демейки мааниден ашып кетсе, системанын майнаптуулугу төмөндөшү мүмкүн."
   },
   "panels/mobile_throttling/ThrottlingManager.ts | forceDisconnectedFromNetwork": {
     "message": "Тармактан мажбурлап ажыратылды"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Тастыктаманы көрүү"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Активдүү client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Сервер аракеттерин иштеткен жигердүү client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Эгер булак менен документ бир сайттан алынса, бул параметрди тандаңыз."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Чечмеленген код:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(диск кешинен)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Жалпы"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Башкы саптагы өзгөрүүлөр"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Кеңири маалымат"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Тармак таржымалындагы нерселер алкагы боюнча топтоштурулбасын"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools кызматына Windows Shares'ден булак карталары сыяктуу булактарды Windows Shares'де UNC жолдору аркылуу жүктөөгө уруксат берүү. Коопсуздук себептеринен улам демейки шартта өчүрүлдү."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "алкак"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "CDP буйругунун иштетилбеген версиясын жөнөтүү"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Формат: параметрлери жок буйрук үчүн 'Domain.commandName' же параметрлери менен буйрук үчүн JSON объекти катары '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. 'cmd'/'method' жана 'args'/'params'/'arguments' элементтери да JSON объекти үчүн кошумча ачкычтар катары колдоого алынат."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сеанс"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Демейкилерди калыбына келтирүү жана кайрадан жүктөө"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Пикир билдирүү"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Жөндөөлөр"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Абал туура болгондо гана тындыруу"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Ажырым чекиттери жок"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Түс тандагычты ачуу."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Файлдарды Автордук/Жайгаштыруу боюнча топтоштуруу"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Конфигурацияны тазалоо"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Мүчүлүштүктөрдү оңдогучту жашыруу"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Четке кагылган булактарды жашыруу"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Багыт аныктагычты жашыруу"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Көрүү туюнтмаларын жаңыртуу"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ажырым чекитин басуу"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "белгиленди"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "аралаш"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "белгиленген эмес"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Жогорку колонтитулду кошуу"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Убакыттар"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Мамилелер"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Тармак"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Иш-чара"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Иш-чаранын убакыты"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "иштелип чыккан"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Таймерди орнотуу"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Өз ара аракеттешүү түрү:{PH1} идентификатор:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Жараксыз калып"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Көйгөй учурда жеткиликсиз"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Эстутумдагы негизги нерсени өчүрүү"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Бөлүп көрсөтүлгөн эстутумга өтүү"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Дарек {PH1} жана {PH2} сандарынын ортосунда болушу керек"

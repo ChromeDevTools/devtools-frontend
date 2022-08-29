@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT হেডার বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "আরও বিস্তারিত জানার জন্য ফিচার স্ট্যাটাস পৃষ্ঠা চেক করুন।"
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "অ-সুরক্ষিত কন্টেক্সটে WebSQL বাতিল করা হয়েছে এবং M107-এ সরানো হবে। ওয়েব স্টোরেজ বা ইন্ডেক্স করা ডেটাবেস ব্যবহার করুন।"
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> অভিভাবক সহ <source src> ভুল তাই এর ব্যবহার বন্ধ করা হয়েছে। এর পরিবর্তে <source srcset> ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo বন্ধ করা হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
+    "message": "window.webkitStorageInfo বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "নিলামের ওয়ার্কলেট — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "ব্যবহারকারীর ইন্টার‍্যাকশন"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "একটি URL প্রিরেন্ডার করার চেষ্টা করা হয়েছে যা একটি ক্রস-অরিজিন URL-এ রিডাইরেক্ট করা হয়েছে। বর্তমানে ক্রস-অরিজিন পৃষ্ঠা প্রিরেন্ডারিং অননুমোদিত।"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "'ডেটা সেভার' ফিচার চালু করা আছে"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "একটি প্রিরেন্ডার করা পৃষ্ঠা অজানা কারণে সরিয়ে দেওয়া হয়েছে।"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome ইন্টার্নালের (যেমন, Omnibox প্রিরেন্ডারিং) বাতিল করা হয়েছে কারণ নেভিগেশন অন্য ক্রস-অরিজিন পৃষ্ঠায় রিডাইরেক্ট করা হয়েছে।"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome ইন্টার্নালের (যেমন, Omnibox প্রিরেন্ডারিং) মাধ্যমে ট্রিগার করা প্রিরেন্ডারিং 'ডেস্ট্রাক্টর' ফাংশনে নষ্ট করা হয়।"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome ইন্টার্নালের (যেমন, Omnibox প্রিরেন্ডারিং) বাতিল করা হয়েছে কারণ নেভিগেশনটিকে অন্য একই-অরিজিন পৃষ্ঠায় রিডাইরেক্ট করা হয়েছে।"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "মেমরি ব্যবহার সংক্রান্ত তথ্য পাওয়া যায়নি"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation।"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "প্রিরেন্ডারিংয়ের সর্বোচ্চ সংখ্যা ছাড়িয়ে গেছে।"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "মেমরির সীমা পেরিয়ে গেছে"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "একাধিক কন্টেন্ট ফ্রেম দ্বারা প্রিরেন্ডারিং বাতিল করা হয়।"
@@ -4731,22 +4746,25 @@
     "message": "ডেভেলপার রিসোর্স দেখান"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "শীঘ্রই বন্ধ করা হয়েছে এমন প্রপার্টি"
+    "message": "বন্ধ করা হয়েছে এমন প্রপার্টি"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "ইনঅ্যাক্টিভ নিয়ম"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "অ্যাক্টিভ না থাকা প্রপার্টি"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "সমস্যার সমাধানের জন্য {TARGET_PARENT_ELEMENT_RULE}-এ মূল এলিমেন্ট {EXISTING_PARENT_ELEMENT_RULE} পরিবর্তন করুন।"
+    "message": "মূল এলিমেন্টের {EXISTING_PARENT_ELEMENT_RULE} প্রপার্টিকে, {TARGET_PARENT_ELEMENT_RULE}-এ পরিবর্তন করার চেষ্টা করুন।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "মূল এলিমেন্টে {REASON_RULE_CODE} নিয়ম আছে, তাই এই এলিমেন্ট {AFFECTED_RULE_CODE}-এর কোনও এফেক্ট নেই"
+    "message": "মূল এলিমেন্ট, {REASON_PROPERTY_DECLARATION_CODE} প্রপার্টির {AFFECTED_PROPERTY_DECLARATION_CODE} প্রভাবকে বাইপাস করে।"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} প্রপার্টি, {TARGET_PROPERTY_DECLARATION}-এ পরিবর্তন করার চেষ্টা করুন।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "এই ফিচারটি কাজ করার জন্য {REASON_RULE_CODE} মানটি সরান বা পরিবর্তন করুন"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} সরানোর অথবা এটির ভ্যালু পরিবর্তনের চেষ্টা করুন।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "এই এলিমেন্টে {REASON_RULE_CODE} নিয়ম আছে, তাই {AFFECTED_RULE_CODE}-এর কোনও এফেক্ট নেই।"
+    "message": "একই এলিমেন্টের {REASON_PROPERTY_DECLARATION_CODE} প্রপার্টি, {AFFECTED_PROPERTY_DECLARATION_CODE}-এর প্রভাবকে বাইপাস করে।"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "নতুন ক্লাস যোগ করুন"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "প্রপার্টি নাম অজানা"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "উপরের লেয়ার"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "প্রকাশ করুন"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "এড়ানো হয়েছে"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "এলিমেন্ট"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ফ্রেম"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "হেডারের ভুল মান"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "বর্তমানে সর্বাধিক রেজিস্ট্রেশন"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# বার লঙ্ঘন}one{# বার লঙ্ঘন}other{# বার লঙ্ঘন}}"
@@ -7446,7 +7464,7 @@
     "message": "client experiment variation IDs অ্যাক্টিভ রয়েছে।"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "client experiment variation IDs চালু করুন যা সার্ভার-সাইড আচরণ ট্রিগার করবে।"
+    "message": "client experiment variation IDs চালু করুন যা সার্ভার-সাইড আচরণ ট্রিগার করে।"
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "একই সাইট থেকে রিসোর্স ও ডকুমেন্ট পরিবেশন করা হলে এই বিকল্পটি বেছে নিন।"
@@ -7479,7 +7497,7 @@
     "message": "সাধারণ"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "হেডার ওভাররাইড করে"
+    "message": "হেডার ওভাররাইড"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "আরও জানুন"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "সার্টিফিকেট দেখুন"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs অ্যাক্টিভ রয়েছে।"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs চালু করুন যা সার্ভার-সাইড আচরণ ট্রিগার করে।"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "একই সাইট থেকে রিসোর্স ও ডকুমেন্ট পরিবেশন করা হলে এই বিকল্পটি বেছে নিন।"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ডিকোড করা হয়েছে:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ডিস্ক ক্যাশে থেকে)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "সাধারণ"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "হেডার ওভাররাইড"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "আরও জানুন"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ফ্রেম অনুযায়ী নেটওয়ার্ক লগ আইটেম গ্রুপ করবেন না"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "UNC পাথের মাধ্যমে Windows শেয়ার থেকে সোর্স ম্যাপের মতো রিসোর্স লোড করার জন্য DevTools-কে অনুমতি দিন। ডিফল্ট হিসেবে, নিরাপত্তা সংক্রান্ত কারণের জন্য বন্ধ করা আছে।"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ফ্রেম"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "একটি 'র' CDP কমান্ড পাঠান"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ফর্ম্যাট: প্যারামিটার ছাড়া 'Domain.commandName'-এর জন্য কমান্ড অথবা প্যারামিটার সহ কমান্ডের জন্য JSON অবজেক্ট হিসেবে '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'। 'cmd'/'method' এবং 'args'/'params'/ এছাড়াও, 'arguments', JSON অবজেক্টের জন্য বিকল্প 'কী' হিসেবে কাজ করে।"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "সেশন"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ডিফল্ট সেটিংস রিস্টোর করে আবার লোড করুন"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "মতামত জানান"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "সেটিংস"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "শুধু সঠিক অবস্থা হলেই পজ করা হবে"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "কোনও ব্রেকপয়েন্ট নেই"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "কালার পিকার খুলুন।"
@@ -9990,7 +10032,7 @@
     "message": "ফাইলে ব্রেকপয়েন্ট চালু করুন"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "মিক্স"
+    "message": "মিশ্রিত"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "কোনও ব্রেকপয়েন্ট নেই"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "লেখক/ডেপ্লয়েড অনুযায়ী ফাইল গ্রুপ করুন"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "কনফিগারেশন মুছুন"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "ডিবাগার লুকান"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "উপেক্ষা-তালিকার সোর্স লুকান"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "নেভিগেটর লুকান"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ওয়াচ এক্সপ্রেশন রিফ্রেশ করুন"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "ব্রেকপয়েন্ট হিট {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "টিকচিহ্ন দেওয়া আছে"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "মিশ্রিত"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "টিকচিহ্ন সরানো হয়েছে"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "হেডার যোগ করুন"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "সময়"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ইন্টারঅ্যাকশন"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "নেটওয়ার্ক"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ইভেন্ট"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ইভেন্ট টাইমিং"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "বিবর্তিত"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "টাইমার ইনস্টল করুন"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ইন্টার‌্যাকশনের ধরন:{PH1} আইডি:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "লেআউট বাতিল করুন"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "এই সময়ে সমস্যা সম্পর্কিত তথ্য উপলভ্য নেই"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "স্মৃতির হাইলাইট মুছে দিন"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "সরাসরি হাইলাইট করা মেমরিতে যান"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "অ্যাড্রেস {PH1} এবং {PH2}-এর মাঝের কোনও সংখ্যা হতে হবে"

@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path 已淘汰，並將會移除。請改用 Event.composedPath()。"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT 標題已淘汰，並將會移除。Chrome 要求 2018 年 4 月 30 日後發出的所有公開信任憑證都必須符合《憑證透明度政策》的規定。"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "詳情請參閱功能狀態頁面。"
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "不安全環境中的 WebSQL 已淘汰，並將在 M107 中移除。請使用「網絡儲存空間」或「已加入索引的資料庫」。"
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent 已淘汰。請改用標準化的 navigator.storage。"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "具有 <picture> 父項的 <source src> 無效，因此系統會忽略。請改用「<source srcset>」。"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo 已淘汰。請改為標準化的 navigator.storage。"
+    "message": "window.webkitStorageInfo 已淘汰。請改用標準化的 navigator.storage。"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "系統將封鎖網址包含嵌入憑證 (例如 https://user:pass@host/) 的子資源要求。"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "競投 Worklet - {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "使用者互動"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "要預先顯示的網址會重新導向到跨來源網址，但目前無法預先顯示跨來源頁面。"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "已啟用「數據節省程式」"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "系統因故捨棄預先顯示的頁面。"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "由 Chrome 內部觸發的預先顯示 (例如網址列預先顯示) 已取消，因為導覽功能已將頁面重新導向至另一個跨來源的頁面。"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "由 Chrome 內部觸發的預先顯示 (例如網址列預先顯示) 已在解構子中銷毀。"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "由 Chrome 內部觸發的預先顯示 (例如網址列預先顯示) 已取消，因為導覽功能已將頁面重新導向至另一個相同來源的頁面。"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "無法取得記憶體用量"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation。"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "預先顯示次數超過上限。"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "已超過記憶體上限"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "混合內容頁框已取消預先顯示。"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "已淘汰的屬性"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "未啟用的規則"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "無效的屬性"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "為修正此問題，請將父元素「{EXISTING_PARENT_ELEMENT_RULE}」變更為「{TARGET_PARENT_ELEMENT_RULE}」。"
+    "message": "請嘗試將父元素的 {EXISTING_PARENT_ELEMENT_RULE} 屬性變更為 {TARGET_PARENT_ELEMENT_RULE}。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "父元素包含「{REASON_RULE_CODE}」規則，因此這個「{AFFECTED_RULE_CODE}」元素沒有任何作用"
+    "message": "父元素上的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會繞過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "請嘗試將 {EXISTING_PROPERTY_DECLARATION} 屬性變更為 {TARGET_PROPERTY_DECLARATION}。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "如要使用此屬性，請移除或變更 {REASON_RULE_CODE} 的值"
+    "message": "請嘗試移除 {REASON_PROPERTY_DECLARATION_CODE} 或變更值。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "此元素有「{REASON_RULE_CODE}」規則，因此「{AFFECTED_RULE_CODE}」沒有任何作用。"
+    "message": "相同元素中的 {REASON_PROPERTY_DECLARATION_CODE} 屬性會繞過 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "新增類別"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "屬性名稱不明"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "頂層"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "顯示"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "已略過"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "元素"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "頁框"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "無效的標題數值"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "並發註冊數量上限"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# 個違規項目}other{# 個違規項目}}"
@@ -7443,7 +7461,7 @@
     "message": "此要求沒有 Cookie。"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs 運作中。"
+    "message": "有效client experiment variation IDs。"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
     "message": "觸發伺服器端行為的有效client experiment variation IDs。"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看憑證"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "有效client experiment variation IDs。"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "觸發伺服器端行為的有效client experiment variation IDs。"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "如果資源和文件是由同一個網站提供，請選擇此選項。"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "已解碼："
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(來自磁碟快取)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "一般"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "標題覆寫"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "瞭解詳情"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "不要按頁框將網絡記錄項目分類"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "允許 DevTools 透過 UNC 路徑從「Windows 共用」載入來源對應等資源。為安全起見，系統會根據預設停用此功能。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "頁框"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "傳送原始 CDP 指令"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "格式：'Domain.commandName' (適用於沒有參數的指令) 或 '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' (JSON 物件，適用於有參數的指令)。您亦可使用 'cmd'/'method' 和 'args'/'params'/'arguments' 作為 JSON 物件的替代鍵。"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "工作階段"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "還原預設並重新載入"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "提供意見"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "設定"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "只在條件為 true 時暫停"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "沒有中斷點"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "開啟顏色挑選器。"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter 鍵"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "按已授權/已部署將檔案分組"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "清除設定"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "隱藏偵錯工具"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "隱藏忽略清單中的來源"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "隱藏導覽工具"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "重新整理監看運算式"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "已到達「{PH1}」中斷點"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "已勾選"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "混合"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "冇剔到"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "新增標題"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "時間"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "互動"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "網絡"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "事件"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "活動時間"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "已轉變"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "安裝計時器"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "互動類型：{PH1} ID：{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "讓版面配置失效"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "目前無法取得問題"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "刪除記憶體焦點內容"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "跳至突顯的記憶體"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "位址必須為介乎 {PH1} 和 {PH2} 之間的數字"

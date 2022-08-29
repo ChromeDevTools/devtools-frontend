@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ Event.composedPath() ជំនួសវិញ។"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "ផ្នែកក្បាល Expect-CT ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានលុបចេញ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ផ្សាយក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ពិនិត្យមើលទំព័រស្ថានភាពមុខងារ ដើម្បីទទួលបានព័ត៌មានលម្អិតបន្ថែម។"
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL ក្នុង​បរិបទ​អសុវត្ថិភាព​ត្រូវបាន​បញ្ឈប់ ហើយ​នឹង​ត្រូវបាន​លុបចេញ​នៅក្នុង M107។ សូមប្រើប្រាស់​ទំហំផ្ទុក​លើ​បណ្ដាញ ឬ​មូលដ្ឋានទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍។"
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> ដែលមានមេ <picture> គឺមិនត្រឹមត្រូវទេ ហើយដូច្នេះ មិនត្រូវបានអើពើទេ។ សូមប្រើប្រាស់ <source srcset> ជំនួសវិញ។"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ត្រូវបាន​បញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
+    "message": "window.webkitStorageInfo ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "សំណើធនធានរងដែល URL របស់​ពួក​វា​មានព័ត៌មានផ្ទៀងផ្ទាត់បង្កប់ (ឧ. https://user:pass@host/) ត្រូវបានទប់ស្កាត់។"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "សំណុំ​ការងារ​ដេញថ្លៃ — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "អន្តរកម្មអ្នកប្រើប្រាស់"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "បានព្យាយាមបំប្លែងជាមុននូវ URL ​ដែល​បានបញ្ជូន​បន្ត​ទៅ URL ដែលមានប្រភពដើម​ផ្សេង។ បច្ចុប្បន្ន ការបំប្លែង​ជាមុន​នូវទំព័រ​ដែល​មាន​ប្រភពដើម​ផ្សេង​មិនត្រូវបាន​អនុញ្ញាត​ទេ។"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "មុខងារសន្សំសំចៃទិន្នន័យត្រូវបានបើក"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "ទំព័រ​ដែលបាន​បំប្លែងជាមុន​ត្រូវបាន​បោះបង់​ដោយសារមូលហេតុ​ដែលមិន​ស្គាល់។"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "ការបំប្លែង​ជាមុន​ត្រូវបាន​ដំណើរការ​ដោយ Chrome ខាងក្នុង (ឧ.  ការបំប្លែង​​ពហុប្រអប់ជាមុន) ត្រូវបាន​បោះបង់ ដោយសារ​ការរុករក​ត្រូវបាន​បញ្ជូនបន្ត​ទៅ​ទំព័រ​ដែលមានប្រភពដើម​ផ្សេង។"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "ការបំប្លែង​ជាមុន​ត្រូវបាន​ដំណើរការ​ដោយ Chrome ខាងក្នុង (ឧ.  ការបំប្លែង​​ពហុប្រអប់ជាមុន) ត្រូវបាន​បំផ្លាញ​នៅក្នុង​ឧបករណ៍​បំផ្លាញ។"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "ការបំប្លែង​ជាមុន​ត្រូវបាន​ដំណើរការ​ដោយ Chrome ខាងក្នុង (ឧ.  ការបំប្លែង​ពហុប្រអប់ជាមុន) ត្រូវបាន​បោះបង់ ដោយសារ​ការរុករក​ត្រូវបាន​បញ្ជូនបន្ត​ទៅ​ទំព័រ​ដែលមានប្រភពដើម​ដូចគ្នា​ផ្សេង។"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "មិនអាចយកការប្រើប្រាស់​អង្គចងចាំបានទេ"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation។"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "បានលើស​ចំនួន​ច្រើនបំផុត​នៃ​ការបំប្លែង​ជាមុន។"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "បានប្រើ​លើសដែនកំណត់អង្គចងចាំ"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "ការបំប្លែង​ជាមុន​ត្រូវបាន​បោះបង់​ដោយស៊ុម​ខ្លឹមសារ​ចម្រុះ។"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "លក្ខណៈដែលបានបញ្ឈប់"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "វិធាន​អសកម្ម"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "លក្ខណៈអសកម្ម"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "សូមប្ដូរ​ធាតុ​មេ {EXISTING_PARENT_ELEMENT_RULE} ទៅ {TARGET_PARENT_ELEMENT_RULE} ដើម្បីដោះស្រាយ​បញ្ហា។"
+    "message": "សាកល្បងផ្លាស់ប្ដូរលក្ខណៈ {EXISTING_PARENT_ELEMENT_RULE} នៅលើធាតុមេទៅជា {TARGET_PARENT_ELEMENT_RULE}។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "ធាតុ​មេ​មាន​វិធាន {REASON_RULE_CODE} ដូច្នេះ​ធាតុ​នេះ {AFFECTED_RULE_CODE} មិនប៉ះពាល់​ទេ"
+    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើធាតុមេរំលងឥទ្ធិពលនៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "សាកល្បងផ្លាស់ប្ដូរលក្ខណៈ {EXISTING_PROPERTY_DECLARATION} ទៅជា {TARGET_PROPERTY_DECLARATION}។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ដើម្បីឱ្យ​លក្ខណៈ​នេះ​ដំណើរការ សូមលុបចេញ ឬ​ផ្លាស់ប្ដូរ​តម្លៃ​នៃ {REASON_RULE_CODE}"
+    "message": "សាកល្បងលុប {REASON_PROPERTY_DECLARATION_CODE} ចេញ ឬផ្លាស់ប្ដូរតម្លៃរបស់វា។"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ធាតុនេះ​មាន​វិធាន {REASON_RULE_CODE} ដូច្នេះ {AFFECTED_RULE_CODE} មិន​ប៉ះពាល់​ទេ។"
+    "message": "លក្ខណៈ {REASON_PROPERTY_DECLARATION_CODE} នៅលើធាតុដដែលរំលងឥទ្ធិពលនៃ {AFFECTED_PROPERTY_DECLARATION_CODE}។"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "បញ្ចូល​ថ្នាក់​ថ្មី"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ឈ្មោះ​លក្ខណសម្បត្តិ​ដែលមិនស្គាល់"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ស្រទាប់លើគេ"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "បង្ហាញ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "មិនបាន​អើពើ"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ធាតុ"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ស៊ុម"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "តម្លៃផ្នែកក្បាលមិនត្រឹមត្រូវ"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "ការចុះឈ្មោះដំណាលគ្នាជាអតិបរមា"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{ការបំពាន #}other{ការបំពាន #}}"
@@ -7455,7 +7473,7 @@
     "message": "ចម្លងតម្លៃ"
   },
   "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "បានបំប្លែងកូដ៖"
+    "message": "បានឌិកូដ៖"
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ពី​ឃ្លាំងបម្រុង​របស់​ថាស)"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "មើល​វិញ្ញាបនបត្រ"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs សកម្ម។"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs សកម្ម​ដែលជំរុញ​សកម្មភាព​នៅផ្នែក​ម៉ាស៊ីនមេ​។"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ជ្រើសរើស​ជម្រើសនេះ ប្រសិនបើ​ធនធាន និងឯកសារ​មានផ្ដល់ជូន​ពីគេហទំព័រតែមួយ។"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "បានឌិកូដ៖"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ពី​ឃ្លាំងបម្រុង​របស់​ថាស)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ទូទៅ"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ការលុបពីលើផ្នែកក្បាល"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "កុំដាក់​ធាតុកំណត់ហេតុបណ្ដាញ​ជាក្រុម​តាមស៊ុម"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "អនុញ្ញាតឱ្យ DevTools ផ្ទុកធនធាន ដូចជាផែនទីប្រភពពី Windows Shares តាមរយៈផ្លូវ UNC។ បានបិទតាម​លំនាំដើមដោយសារហេតុផលសុវត្ថិភាព។"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ស៊ុម"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ផ្ញើការបញ្ជា CDP ដែលមិនទាន់ដំណើរការ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ទម្រង់៖ 'Domain.commandName' សម្រាប់ឃ្លាបញ្ជាដែលគ្មានប៉ារ៉ាម៉ែត្រ ឬ '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' ជាវត្ថុ JSON សម្រាប់ឃ្លាបញ្ជាដែលមានប៉ារ៉ាម៉ែត្រ។ 'cmd'/'method' និង'args'/'params'/'arguments' ក៏អាចប្រើប្រាស់ជាឃីជំនួសវត្ថុ JSON ផងដែរ។"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "វគ្គ"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ស្ដារលំនាំដើម និងផ្ទុកឡើងវិញ"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ផ្ញើ​មតិ​កែ​លម្អ"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ការកំណត់"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "ផ្អាក​តែនៅពេល​ដែលស្ថានភាព​គឺពិត​ប៉ុណ្ណោះ"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "គ្មាន​ចំណុចផ្អាក​ទេ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "បើកផ្ទាំង​ជ្រើសរើស​ពណ៌។"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "ដាក់​ឯកសារ​ជាក្រុម​តាម \"បានសរសេរ\"/\"បានដាក់ឱ្យប្រើ\""
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "សម្អាត​ការកំណត់​រចនាសម្ព័ន្ធ"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "លាក់​កម្មវិធី​ជួសជុល"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "លាក់ប្រភពដែលមានក្នុងបញ្ជីមិនអើពើ"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "លាក់​ឧបករណ៍​រុករក"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ផ្ទុក​កន្សោម​នៃការមើល​ឡើងវិញ"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "ការឈានដល់ចំណុចផ្អាក {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "បានធីក​"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "ចម្រុះ"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "បានដោះធីក"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "បញ្ចូលផ្នែកក្បាល"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "រយៈពេល"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "អន្តរកម្ម"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "បណ្ដាញ"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ព្រឹត្តិការណ៍"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ការកំណត់ពេលព្រឹត្តិការណ៍"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ត្រូវបាន​វិវឌ្ឍ"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ដំឡើង​កម្មវិធី​កំណត់ម៉ោង"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ប្រភេទអន្តរកម្ម​៖ {PH1} លេខសម្គាល់៖{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "បញ្ឈប់​សុពលភាព​ប្លង់"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "មិនអាច​បង្ហាញបញ្ហា​បានទេ​នៅពេលនេះ"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "លុបការរំលេចអង្គចងចាំ"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "រំលងទៅអង្គចងចាំដែលបានរំលេច"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "អាសយដ្ឋាន​ត្រូវតែជា​លេខចន្លោះពី {PH1} ទៅ {PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "ផ្ញើមតិកែលម្អ​របស់អ្នកមកយើង។"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "ផ្ញើមតិកែលម្អ"
+    "message": "ផ្ញើ​មតិ​កែ​លម្អ"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "ចុចដើម្បីបើក​ផ្ទាំងបណ្ដាញ និង​បង្ហាញសំណើ​សម្រាប់ URL៖ {url}"

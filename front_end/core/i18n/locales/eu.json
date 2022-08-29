@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path zaharkituta dago eta kendu egingo da. Haren ordez, erabili Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT goiburua zaharkituta dago, eta kendu egingo da. Chrome-k ziurtagiri-gardentasuna eskatzen die publikoki fidagarritzat hartzen diren ziurtagiri guztiei (2018ko apirilaren 30a ezkero jaulkitakoak)."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Xehetasun gehiago lortzeko, ikusi eginbideen egoeraren orria."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL zaharkituta dago seguruak ez diren testuinguruetan, eta kendu egingo da M107 bertsioan. Erabili web-biltegiratzea edo indexatutako datu-basea."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent zaharkituta dago. Haren ordez, erabili navigator.storage estandarra."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> duen <source src> elementuak ez du balio elementu nagusi gisa. Beraz, ez ikusi egingo zaio. Haren ordez, erabili <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Enkanteak egiteko worklet-a: {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Erabiltzailearen interakzioak"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Jatorri anitzeko URL batera birbideratzen duen URL bat aurrez errendatzeko saiakera egin da. Desgaituta dago jatorri anitzeko orriak aurrez errendatzeko aukera."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Datu-aurreztailea gaituta dago"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Aurrez errendatutako orri bat utzi egin da arrazoi ezezagunak direla eta."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome-k abiarazitako errendatzearen aurreko prozesua (adibidez, arakatzaileko barra aurrez errendatzeko aukera) bertan behera utzi da, nabigazioa jatorri anitzeko beste orri batera birbideratzen delako."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome-k abiarazitako errendatzearen aurreko prozesua (adibidez, arakatzaileko barra aurrez errendatzeko aukera) suntsitzailean suntsitu da."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome-k abiarazitako errendatzearen aurreko prozesua (adibidez, arakatzaileko barra aurrez errendatzeko aukera) bertan behera utzi da, nabigazioa jatorri bereko beste orri batera birbideratzen delako."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Ezin izan da lortu memoriaren erabilera"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Aurrez errendatzeko aukeren gehieneko kopurua gainditu da."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Memoriaren muga gainditu da"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Eduki mistoko marko batek bertan behera utzi du errendatzearen aurreko prozesua."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Propietate zaharkitua"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Araua inaktibo dago"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Propietatea inaktibo dago"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Arazoa konpontzeko, aldatu elementu nagusiaren {EXISTING_PARENT_ELEMENT_RULE} araua eta ezarri {TARGET_PARENT_ELEMENT_RULE} araua."
+    "message": "Aldatu elementu nagusiko {EXISTING_PARENT_ELEMENT_RULE} propietatea {TARGET_PARENT_ELEMENT_RULE} propietatera."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Elementu nagusiak {REASON_RULE_CODE} araua dauka; beraz, elementuaren {AFFECTED_RULE_CODE} arauak ez du eraginik"
+    "message": "Elementu nagusiko {REASON_PROPERTY_DECLARATION_CODE} propietateak {AFFECTED_PROPERTY_DECLARATION_CODE} propietatearen eragina saihesten du."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Aldatu {EXISTING_PROPERTY_DECLARATION} propietatea {TARGET_PROPERTY_DECLARATION} propietatera."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Propietateak funtziona dezan, kendu edo aldatu {REASON_RULE_CODE} arauaren balioa"
+    "message": "Kendu {REASON_PROPERTY_DECLARATION_CODE} edo aldatu haren balioa."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Elementu honek {REASON_RULE_CODE} araua dauka; beraz, {AFFECTED_RULE_CODE} arauak ez du eraginik."
+    "message": "Elementu bereko {REASON_PROPERTY_DECLARATION_CODE} propietateak {AFFECTED_PROPERTY_DECLARATION_CODE} propietatearen eragina saihesten du."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Gehitu ikasgela bat"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Propietate-izen ezezaguna"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "goiko geruza"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "erakutsi"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ez ikusi egin zaio"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elementua"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Markoa"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Goiburuko balio baliogabea"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Aldi berean egon daitezkeen gehieneko erregistro kopurua"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# urratze}other{# urratze}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Ikusi ziurtagiria"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs aktiboak."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Zerbitzariaren portaera abiarazten duten client experiment variation IDs aktiboak."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Aukeratu hau baliabidea eta dokumentua webgune beretik badatoz."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Deskodetutakoak:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(iturburua: disko-cachea)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Orokorrak"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Goiburuaren ordezkapenak"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Lortu informazio gehiago"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ez taldekatu sarearen erregistroko elementuak markoaren arabera"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Eman UNC bide-izenen bidez baliabideak (adibidez, iturburu-mapak) Windows Shares-etik kargatzeko baimena DevTools garatzaileentzako tresnei. Segurtasuna bermatzeko, desgaituta dago modu lehenetsian."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "markoa"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Bidali formaturik gabeko CDP agindu bat"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formatua: 'Domain.commandName' (parametrorik gabeko agindu baterako) edo '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' JSON objektu gisa (parametroak dituen agindu baterako). JSON objektuaren ordezko gako gisa 'cmd'/'method' eta 'args'/'params'/'arguments' ere onartzen dira."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Saioa"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Leheneratu balio lehenetsiak eta kargatu berriro"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Bidali oharrak"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Ezarpenak"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pausatu soilik baldintza egiazkoa denean"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Ez dago eten-punturik"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ireki kolore-hautatzailea."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Sartu"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Taldekatu fitxategiak sortutakoen edo inplementatutakoen arabera"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Garbitu konfigurazioa"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Ezkutatu araztailea"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Ezkutatu ez ikusi egiteko zerrendan dauden iturburuak"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Ezkutatu nabigatzailea"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Freskatu ikuskapen-adierazpenak"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} aldatze-puntura iritsi da"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "markatuta"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "nahasita"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "markatu gabea"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Gehitu goiburu bat"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Denborak"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Elkarrekintzak"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Sarea"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Gertaera"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Gertaeraren denbora"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "eraldatu"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalatu tenporizadorea"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interakzio mota: {PH1}. IDa: {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Baliogabetu diseinua"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Arazoa ez dago erabilgarri une honetan"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Ezabatu memoriaren nabarmentzea"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Joan nabarmendutako memoriara"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Helbideak {PH1} eta {PH2} arteko zenbaki bat izan behar du"

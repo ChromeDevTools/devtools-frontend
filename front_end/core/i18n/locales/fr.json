@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "L'API Event.path est obsolète et sera supprimée. Veuillez utiliser Event.composedPath() à la place."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "L'en-tête Expect-CT est obsolète et sera supprimé. Chrome exige la transparence des certificats pour tous les certificats reconnus publiquement émis après le 30 avril 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Pour en savoir plus, consultez la page d'état de la fonctionnalité."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL dans les contextes non sécurisés est obsolète et sera supprimé dans M107. Veuillez utiliser le stockage Web ou la base de données indexée."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent est obsolète. Veuillez plutôt utiliser la version normalisée navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "L'élément <source src> avec un parent <picture> n'est pas valide et est donc ignoré. Veuillez utiliser l'attribut <source srcset> à la place."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet d'enchères : {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Interactions des utilisateurs"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Tentative de préchargement d'une URL redirigeant vers une URL d'origine différente. Le préchargement de pages multi-origines n'est pas autorisé actuellement."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Économiseur de données activé"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Une page préchargée a été abandonnée pour des raisons inconnues."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Le préchargement déclenché en interne par Chrome (par exemple,  le préchargement de l'omnibox) est annulé, car la navigation est redirigée vers une autre page multi-origine."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Le préchargement déclenché en interne par Chrome (par exemple,  le préchargement de l'omnibox) est détruit dans l'outil de destruction."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Le préchargement déclenché en interne par Chrome (par exemple,  le préchargement de l'omnibox) est annulé, car la navigation est redirigée vers une autre page de même origine."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Échec de l'obtention de l'utilisation de mémoire"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Nombre maximal de préchargements dépassé."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Limite de mémoire dépassée"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Le préchargement est annulé par un frame mixte."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Propriété obsolète"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Règle inactive"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Propriété inactive"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Veuillez remplacer les éléments parents {EXISTING_PARENT_ELEMENT_RULE} par {TARGET_PARENT_ELEMENT_RULE} pour résoudre ce problème."
+    "message": "Essayez de remplacer la propriété {EXISTING_PARENT_ELEMENT_RULE} du parent par {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "L'élément parent contient la règle {REASON_RULE_CODE}. La règle {AFFECTED_RULE_CODE} de cet élément n'a donc aucun effet."
+    "message": "La propriété {REASON_PROPERTY_DECLARATION_CODE} de l'élément parent contourne l'effet de {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Essayez de remplacer la propriété {EXISTING_PROPERTY_DECLARATION} par {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Pour que cette propriété fonctionne, veuillez supprimer ou modifier la valeur de {REASON_RULE_CODE}"
+    "message": "Essayez de supprimer {REASON_PROPERTY_DECLARATION_CODE} ou de modifier sa valeur."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Cet élément est associé à une règle {REASON_RULE_CODE}. {AFFECTED_RULE_CODE} n'a donc aucun effet."
+    "message": "La propriété {REASON_PROPERTY_DECLARATION_CODE} du même élément contourne l'effet de {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Ajouter une classe"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nom de la propriété inconnu"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "Calque du haut"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "afficher"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoré"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Élément"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Frame"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Valeur d'en-tête non valide"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Nombre maximal d'enregistrements simultanés"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# cas de non-respect}one{# cas de non-respect}other{# cas de non-respect}}"
@@ -7455,7 +7473,7 @@
     "message": "Copier la valeur"
   },
   "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "Décodées :"
+    "message": "Décodé :"
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(à partir du cache du disque)"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Afficher le certificat"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs actifs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs actifs qui déclenchent un comportement côté serveur."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Sélectionnez cette option si la ressource et le document sont diffusés à partir du même site."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Décodé :"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(à partir du cache du disque)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Général"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Forçage d'en-tête"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "En savoir plus"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ne pas regrouper les éléments du journal réseau par frame"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Autoriser DevTools à charger des ressources telles que des cartes sources à partir de partages Windows via des chemins UNC. Désactivé par défaut pour des raisons de sécurité."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Envoyer une commande CDP brute"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format : 'Domain.commandName' pour une commande sans paramètres ou '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' comme objet JSON pour une commande avec paramètres. 'cmd'/'method' et 'args'/'params'/'arguments' sont également acceptés comme clés alternatives pour l'objet JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Restaurer les valeurs par défaut et actualiser"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Envoyer des commentaires"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Paramètres"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Suspendre uniquement quand la condition est \"True\""
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Aucun point d'arrêt"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ouvrir le sélecteur de couleur."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Entrée"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Regrouper les fichiers par créés/déployés"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Effacer la configuration"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Masquer le débogueur"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Masquer les sources de la liste des éléments à ignorer"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Masquer le navigateur"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Actualiser les expressions de contrôle"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "appel de point d'arrêt {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "coché"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "mixte"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "décochée"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Ajouter un en-tête"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Durées"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interactions"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Réseau"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Événement"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Durée de l'événement"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "évolué"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installer un minuteur"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Type d'interaction : {PH1}, ID : {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalider la mise en page"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problème non disponible pour le moment"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Supprimer la mise en surbrillance de la mémoire"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Accéder à la mémoire mise en surbrillance"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "L'adresse doit être un nombre compris entre {PH1} et {PH2}"

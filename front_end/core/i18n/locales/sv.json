@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path är utfasad och kommer att tas bort. Använd Event.composedPath() i stället."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Huvudet Expect-CT är utfasat och kommer att tas bort. Chrome kräver certifikattransparens för alla offentligt betrodda certifikat som utfärdats efter den 30 april 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Du hittar mer information på sidan för funktionsstatus."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL i osäkra sammanhang fasas ut och tas bort i M107. Använd webblagring eller indexerade databaser."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent är utfasad. Använd navigator.storage i stället."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> med <picture> som överordnat element är ogiltigt och ignoreras därför. Använd <source srcset> i stället."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo är utfasad. Använd navigator.storage i stället."
+    "message": "window.webkitStorageInfo är utfasat. Använd navigator.storage i stället."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Förfrågningar från underresurser vars webbadresser innehåller inbäddade användaruppgifter (t.ex. https://user:pass@host/) blockeras."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auktions-worklet – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Användarinteraktioner"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker—{PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Ett försök gjordes att förrendera en webbadress som omdirigerade till en webbadress med korsursprung. Förrendering av sidor med korsursprung tillåts inte för närvarande."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Databesparing har aktiverats"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "En förrenderad sida avbröts av okänd anledning."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Förrendering som aktiverats av Chrome (t.ex. förrendering i adressfältet) har avbrutits eftersom navigeringen omdirigeras till en annan sida med korsursprung."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Förrendering som aktiverats av Chrome (t.ex. förrendering i adressfältet) förstörs i destruktorn."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Förrendering som aktiverats av Chrome (t.ex. förrendering i adressfältet) har avbrutits eftersom navigeringen omdirigeras till en annan sida med samma ursprung."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Det gick inte att hämta minnesanvändningen"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Det högsta tillåtna antalet förrenderingar har överskridits."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Minnesgränsen har överskridits"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Förrenderingen avbryts av en ram med blandat innehåll."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Utfasad egenskap"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inaktiv regel"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inaktiv egenskap"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Ändra de överordnade elementen från {EXISTING_PARENT_ELEMENT_RULE} till {TARGET_PARENT_ELEMENT_RULE} för att åtgärda problemet."
+    "message": "Testa att ändra egenskapen {EXISTING_PARENT_ELEMENT_RULE} i elementet som är överordnat {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Det överordnade elementet har {REASON_RULE_CODE} regel, så dessa element {AFFECTED_RULE_CODE} ingen effekt"
+    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i det överordnade elementet kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Testa att ändra egenskapen {EXISTING_PROPERTY_DECLARATION} till {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Ta bort eller ändra värdet på {REASON_RULE_CODE} för att egendomen ska fungera"
+    "message": "Testa att ta bort {REASON_PROPERTY_DECLARATION_CODE} eller ändra dess värde."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Detta element har {REASON_RULE_CODE} regel, så {AFFECTED_RULE_CODE} har ingen effekt."
+    "message": "Egenskapen {REASON_PROPERTY_DECLARATION_CODE} i samma element kringgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lägg till ny klass"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Okänt egendomsnamn"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "topplager"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "visa"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoreras"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Ram"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ogiltigt värde för huvudet"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maximalt antal samtidiga registreringar"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# överträdelse}other{# överträdelser}}"
@@ -7455,7 +7473,7 @@
     "message": "Kopiera värde"
   },
   "panels/network/RequestHeadersView.ts | decoded": {
-    "message": "Avkodad:"
+    "message": "Avkodat:"
   },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(från diskcache)"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Visa certifikat"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiva client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktiva client experiment variation IDs som utlöser beteenden på serversidan."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Välj detta alternativ om resursen och dokumentet visas från samma webbplats."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Avkodat:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(från diskcache)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Allmänt"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Åsidosättanden av huvuden"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Läs mer"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Gruppera inte objekt i nätverksloggar efter ram"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Tillåt att DevTools läser in resurser, till exempel källkartor, från filresurser i Windows-nätverk via sökvägar i UNC. Inaktiverat som standard av säkerhetsskäl."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ram"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Skicka ett CDP-kommando med rådata"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' för ett kommando utan parametrar eller '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' som ett JSON-objekt för ett kommando med parametrar. Det finns även stöd för 'cmd'/'method' och 'args'/'params'/'arguments' som alternativa nycklar för JSON-objektet."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Återställ standardinställningarna och läs in igen"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Skicka feedback"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Inställningar"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pausa endast när villkoret är sant"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Inga brytpunkter"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Öppna färgväljaren."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Retur"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Gruppera filer efter Skriven/Implementerad"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Rensa konfiguration"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Dölj felsökningsfunktionen"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Dölj källor på ignoreringslistan"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Dölj navigator"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Uppdatera bevakningsuttryck"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} träffade brytpunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "markerad"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "blandat"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "avmarkerad"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Lägg till ett huvud"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Tider"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaktioner"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Nätverk"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Händelse"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Tidskod för händelse"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "utvecklad"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installationstimer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaktionstyp:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ogiltigförklara layout"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemet är inte tillgängligt för närvarande"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Radera minnesmarkering"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Hoppa till markerat minne"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen måste vara ett tal mellan {PH1} och {PH2}"

@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Приложният програмен интерфейс Event.path е оттеглен и ще бъде премахнат. Вместо него използвайте Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Заглавката Expect-CT е оттеглена и ще бъде премахната. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Проверете страницата за състояние на функцията за още подробности."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Използването на WebSQL в незащитен контекст е оттеглено и ще бъде премахнато във версия M107. Моля, използвайте уеб хранилище или индексирана база от данни."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "Приложният програмен интерфейс StorageType.persistent е оттеглен. Вместо него използвайте стандартизирания navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Комбинацията от <source src> и родителски елемент <picture> е невалидна и следователно бе пренебрегната. Вместо това използвайте <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet за търгове – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Потребителски взаимодействия"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Извършен бе опит за предварително рендериране на URL адрес, който пренасочи към URL адрес от външен източник. Понастоящем не се допуска предварителното рендериране на страници от външни източници."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Разширението „Икономия на данни“ е активирано"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Предварително рендерирана страница бе изоставена по неизвестни причини."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Предварително рендериране, задействано от вътрешен процес на Chrome (напр. от полето за всичко), е анулирано, тъй като навигацията се пренасочва към друга страница от външен източник."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Предварително рендериране, задействано от вътрешен процес на Chrome (напр. от полето за всичко), е прекратено в деструктора."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Предварително рендериране, задействано от вътрешен процес на Chrome (напр. от полето за всичко), е анулирано, тъй като навигацията се пренасочва към друга страница от същия източник."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Извличането на данните за използваната памет не бе успешно"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Максималният брой процеси за предварително рендериране е превишен."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Ограничението за паметта е надхвърлено"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Предварителното рендериране е анулирано от рамка със смесено съдържание."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Оттеглено свойство"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Неактивно правило"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Неактивно свойство"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "За да отстраните този проблем, променете родителските елементи {EXISTING_PARENT_ELEMENT_RULE} на {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Опитайте да промените на {TARGET_PARENT_ELEMENT_RULE} свойството {EXISTING_PARENT_ELEMENT_RULE} на родителския елемент."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Родителският елемент има правило {REASON_RULE_CODE}, поради което този елемент {AFFECTED_RULE_CODE} няма ефект"
+    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на родителския елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Опитайте да промените на {TARGET_PROPERTY_DECLARATION} свойството {EXISTING_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "За да работи това свойство, премахнете или променете стойността на {REASON_RULE_CODE}"
+    "message": "Опитайте да премахнете свойството {REASON_PROPERTY_DECLARATION_CODE} или да промените стойността му."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Този елемент има правило {REASON_RULE_CODE}, поради което {AFFECTED_RULE_CODE} няма ефект."
+    "message": "Свойството {REASON_PROPERTY_DECLARATION_CODE} на същия елемент заобикаля ефекта на {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавяне на нов клас"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Неизвестно име на свойство"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "най-горен слой"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "показване"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Пренебрегнато"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Елемент"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Рамка"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Невалидна стойност на заглавката"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Максимален брой едновременни регистрации"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# нарушение}other{# нарушения}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Преглед на сертификата"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Активни: client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Активни елементи (client experiment variation IDs), които предизвикват активност от страна на сървъра."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Изберете тази опция, ако ресурсът и документът се показват от един и същ сайт."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Декодирано:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(от кеша на диска)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Общи"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Замени на заглавките"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Научете повече"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Без групиране по рамка на елементите от регистрационния файл за мрежата"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Разрешете на DevTools да зарежда ресурси, като карти на изходния код, от Windows Shares чрез UNC пътища. От съображения за сигурност това е деактивирано по подразбиране."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "рамка"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Изпращане на необработена команда от тип CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Формат: 'Domain.commandName' за команда без параметри или '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' като JSON обект за команда с параметри. 'cmd'/'method' и 'args'/'params'/'arguments' се поддържат и като алтернативни ключове за JSON обекта."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сесия"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Възстановяване на стандартните настройки и презареждане"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Изпращане на отзиви"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Настройки"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Поставяне на пауза само когато условието е true"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Няма точки на прекъсване"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Отваряне на инструмента за избор на цветове."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Групиране на файловете по авторски/внедрен код"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Изчистване на конфигурацията"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Скриване на инструмента за откриване и отстраняване на грешки"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Скриване на източниците, добавени в списъка за пренебрегване"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Скриване на инструмента за навигиране"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Опресняване на изразите за наблюдение"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Достигане до точка на прекъсване: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "с отметка"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "смесено"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "без отметка"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Добавяне на заглавка"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Времена"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Взаимодействия"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Мрежа"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Събитие"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Време на събитието"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "развито"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Инсталиране на таймер"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Тип взаимодействие: {PH1}, ID: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Анулиране на валидността на оформление"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "В момента проблемът не е налице"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Изтриване на открояването на паметта"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Преминаване към откроената памет"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адресът трябва да е число между {PH1} и {PH2}"

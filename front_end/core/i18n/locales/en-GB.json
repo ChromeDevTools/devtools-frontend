@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "The Expect-CT header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after 30 April 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Check the feature status page for more details."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL in non-secure contexts is deprecated and will be removed in M107. Please use web storage or indexed database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent is deprecated. Please use standardised navigator.storage instead."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> with a <picture> parent is invalid and therefore ignored. Please use <source srcset> instead."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auction worklet – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "User interactions"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Attempted to prerender a URL which redirected to a cross-origin URL. Currently, prerendering cross-origin pages are disallowed."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Data saver enabled"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "A prerendered page was abandoned for unknown reasons."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Prerendering triggered by Chrome internal (e.g. Omnibox prerendering) is cancelled because the navigation is redirected to another cross-origin page."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Prerendering triggered by Chrome internal (e.g. Omnibox prerendering) is destroyed in the destructor."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Prerendering triggered by Chrome internal (e.g. Omnibox prerendering) is cancelled because the navigation is redirected to another same-origin page."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Fail to get memory usage"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Max number of prerendering exceeded."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Memory limit exceeded"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Prerendering is cancelled by a mixed content frame."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Deprecated property"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inactive rule"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inactive property"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Please change parent elements {EXISTING_PARENT_ELEMENT_RULE} to {TARGET_PARENT_ELEMENT_RULE} to fix this issue."
+    "message": "Try changing the {EXISTING_PARENT_ELEMENT_RULE} property on the parent to {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Parent element has {REASON_RULE_CODE} rule, therefore this element's {AFFECTED_RULE_CODE} has no effect"
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the parent element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Try changing the {EXISTING_PROPERTY_DECLARATION} property to {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "For this property to work, please remove or change the value of {REASON_RULE_CODE}"
+    "message": "Try removing {REASON_PROPERTY_DECLARATION_CODE} or changing its value."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "This element has {REASON_RULE_CODE} rule, therefore {AFFECTED_RULE_CODE} has no effect."
+    "message": "The {REASON_PROPERTY_DECLARATION_CODE} property on the same element bypasses the effect of {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Unknown property name"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "top-layer"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "reveal"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignored"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Frame"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Invalid header value"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maximum concurrent registrations"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# violation}other{# violations}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "View certificate"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Active client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Active client experiment variation IDs that trigger server-side behaviour."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Choose this option if the resource and the document are served from the same site."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Decoded:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "General"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Header overrides"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Learn more"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Don't group network log items by frame"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from Windows Shares via UNC paths. Disabled by default for security reasons."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Send a raw CDP command"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' for a command without parameters, or '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' as a JSON object for a command with parameters. 'cmd'/'method' and 'args'/'params'/'arguments' are also supported as alternative keys for the JSON object."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Restore defaults and reload"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Send feedback"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Settings"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pause only when the condition is true"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "No breakpoints"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Open colour picker."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Group files by authored/deployed"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Hide debugger"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Hide ignore-listed sources"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Hide navigator"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} breakpoint hit"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "ticked"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "mixed"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "unticked"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Add a header"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Timings"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interactions"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Network"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Event"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Event timing"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "evolved"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Install timer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaction type:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalidate layout"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Issue unavailable at this time"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Delete memory highlight"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Jump to highlighted memory"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Address has to be a number between {PH1} and {PH2}"

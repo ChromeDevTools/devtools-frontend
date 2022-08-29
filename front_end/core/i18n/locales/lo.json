@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "ສິ້ນສຸດການສະໜັບສະໜຸນ Event.path ແລ້ວ ແລະ ຈະຖືກລຶບອອກ. ກະລຸນາໃຊ້ Event.composedPath() ແທນ."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "ເຊົາສະໜັບສະໜູນສ່ວນຫົວ Expect-CT ແລ້ວ ແລະ ມັນຈະຖືກລຶບອອກ. Chrome ຕ້ອງການຄວາມໂປ່ງໃສຂອງໃບຮັບຮອງສຳລັບໃບຮັບຮອງທັງໝົດທີ່ໄດ້ຮັບຄວາມເຊື່ອຖືຈາກສາທາລະນະເຊິ່ງອອກຫຼັງຈາກວັນທີ 30 ເມສາ 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ກະລຸນາກວດສອບໜ້າສະຖານະຄຸນສົມບັດສຳລັບລາຍລະອຽດເພີ່ມເຕີມ."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "ເຊົາໃຊ້ WebSQL ໃນບໍລິບົດທີ່ບໍ່ປອດໄພແລ້ວ ແລະ ມັນຈະຖືກລຶບອອກໃນ M107. ກະລຸນາໃຊ້ບ່ອນຈັດເກັບຂໍ້ມູນເວັບ ຫຼື ຖານຂໍ້ມູນດັດຊະນີ."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "ເຊົາສະໜັບສະໜູນ StorageType.persistent ແລ້ວ. ກະລຸນາໃຊ້ navigator.storage ທີ່ໄດ້ມາດຕະຖານແທນ."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> ທີ່ມີ <picture> ຫຼັກນັ້ນບໍ່ຖືກຕ້ອງ ແລະ ຈະຖືກເພີກເສີຍ. ກະລຸນາໃຊ້ <source srcset> ແທນ."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "ເຊົາສະໜັບສະໜຸນ window.webkitStorageInfo ແລ້ວ. ກະລຸນາໃຊ້ navigator.storage ທີ່ໄດ້ມາດຕະຖານແທນ."
+    "message": "ເຊົາສະໜັບສະໜູນ window.webkitStorageInfo ແລ້ວ. ກະລຸນາໃຊ້ navigator.storage ທີ່ໄດ້ມາດຕະຖານແທນ."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "ບລັອກຄຳຮ້ອງຂໍແຫຼ່ງຊັບພະຍາກອນຍ່ອຍທີ່ URL ມີຂໍ້ມູນການເຂົ້າສູ່ລະບົບທີ່ຝັງໄວ້ (ເຊັ່ນ: https://user:pass@host/) ແລ້ວ."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ງານປະມູນ — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "ການໂຕ້ຕອບຂອງຜູ້ໃຊ້"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "ພະຍາຍາມສະແດງ URL ລ່ວງໜ້າເຊິ່ງປ່ຽນເສັ້ນທາງໄປຫາ URL ຂ້າມຕົ້ນທາງ. ປັດຈຸບັນລະບົບບໍ່ອະນຸຍາດໃຫ້ສະແດງພາບໜ້າຂ້າມຕົ້ນທາງລ່ວງໜ້າ."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "ເປີດການນຳໃຊ້ຕົວປະຢັດຂໍ້ມູນແລ້ວ"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "ໜ້າທີ່ສະແດງພາບລ່ວງໜ້າຖືກຍົກເລີກໂດຍບໍ່ຮູ້ສາເຫດ."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "ການສະແດງພາບລ່ວງໜ້າທີ່ກະຕຸ້ນໃຫ້ເກີດໂດຍພາຍໃນ Chrome (ຕົວຢ່າງ: ການສະແດງພາບລ່ວງໜ້າ Omnibox) ຖືກຍົກເລີກເນື່ອງຈາກການນໍາທາງຖືກປ່ຽນເສັ້ນທາງໄປຫາໜ້າຂ້າມຕົ້ນທາງອື່ນ."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "ການສະແດງພາບລ່ວງໜ້າທີ່ກະຕຸ້ນໃຫ້ເກີດໂດຍພາຍໃນ Chrome (ຕົວຢ່າງ: ການສະແດງພາບລ່ວງໜ້າ Omnibox) ຖືກທໍາລາຍໃນເຄື່ອງມືທໍາລາຍລ້າງ."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "ການສະແດງພາບລ່ວງໜ້າທີ່ກະຕຸ້ນໃຫ້ເກີດໂດຍພາຍໃນ Chrome (ຕົວຢ່າງ: ການສະແດງພາບລ່ວງໜ້າ Omnibox) ຖືກຍົກເລີກເນື່ອງຈາກການນໍາທາງຖືກປ່ຽນເສັ້ນທາງໄປຫາໜ້າຕົ້ນທາງດຽວກັນອື່ນ."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "ໂຫຼດຂໍ້ມູນການໃຊ້ໜ່ວຍຄວາມຈຳບໍ່ສຳເລັດ"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "ເກີນຈໍານວນສູງສຸດຂອງການສະແດງພາບລ່ວງໜ້າແລ້ວ."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "ເກີນຂີດຈຳກັດໜ່ວຍຄວາມຈຳແລ້ວ"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "ການສະແດງພາບລ່ວງໜ້າຈະຖືກຍົກເລີກໂດຍເຟຣມເນື້ອຫາປະສົມ."
@@ -4731,22 +4746,25 @@
     "message": "ສະແດງຊັບພະຍາກອນຂອງນັກພັດທະນາ"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "ຄຸນສົມບັດທີ່ເຊົາໃຊ້ໄປແລ້ວ"
+    "message": "ຄຸນສົມບັດທີ່ເຊົາສະໜັບສະໜູນແລ້ວ"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "ກົດລະບຽບທີ່ບໍ່ໄດ້ໃຊ້"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "ຄຸນສົມບັດທີ່ບໍ່ໄດ້ນຳໃຊ້"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ກະລຸນາປ່ຽນອົງປະກອບຫຼັກ {EXISTING_PARENT_ELEMENT_RULE} ເປັນ {TARGET_PARENT_ELEMENT_RULE} ເພື່ອແກ້ໄຂບັນຫານີ້."
+    "message": "ລອງປ່ຽນຄຸນສົມບັດ {EXISTING_PARENT_ELEMENT_RULE} ຢູ່ອົງປະກອບຫຼັກເປັນ {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "ອົງປະກອບຫຼັກມີກົດລະບຽບ {REASON_RULE_CODE}, ສະນັ້ນອົງປະກອບ {AFFECTED_RULE_CODE} ນີ້ຈຶ່ງບໍ່ມີຜົນ"
+    "message": "ຄຸນສົມບັດ {REASON_PROPERTY_DECLARATION_CODE} ໃນອົງປະກອບຫຼັກບາຍພາສຜົນກະທົບຂອງ {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "ລອງປ່ຽນຄຸນສົມບັດ {EXISTING_PROPERTY_DECLARATION} ເປັນ {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ເພື່ອເຮັດໃຫ້ຄຸນສົມບັດນີ້ໃຊ້ໄດ້, ກະລຸນາປ່ຽນ ຫຼື ລຶບ {REASON_RULE_CODE} ອອກ"
+    "message": "ລອງລຶບ {REASON_PROPERTY_DECLARATION_CODE} ອອກ ຫຼື ປ່ຽນຄ່າຂອງມັນ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ອົງປະກອບນີ້ມີກົດລະບຽບ {REASON_RULE_CODE}, ສະນັ້ນ {AFFECTED_RULE_CODE} ຈຶ່ງບໍ່ມີຜົນ."
+    "message": "ຄຸນສົມບັດ {REASON_PROPERTY_DECLARATION_CODE} ໃນອົງປະກອບດຽວກັນບາຍພາສຜົນກະທົບຂອງ {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ເພີ່ມຄລາສໃໝ່"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ບໍ່ຮູ້ຈັກຊື່ຄຸນສົມບັດ"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ຊັ້ນເທິງສຸດ"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ສະແດງ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ລະເວັ້ນແລ້ວ"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ອົງປະກອບ"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ເຟຣມ"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ຄ່າສ່ວນຫົວບໍ່ຖືກຕ້ອງ"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "ການລົງທະບຽນພ້ອມກັນສູງສຸດ"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ການລະເມີດ}other{# ການລະເມີດ}}"
@@ -7446,7 +7464,7 @@
     "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "client experiment variation IDs ທີ່ເຄື່ອນໄຫວທີ່ກະຕຸ້ນພຶດຕິກຳໃນຝັ່ງເຊີບເວີ."
+    "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່ເຊິ່ງກະຕຸ້ນໃຫ້ເກີດລັກສະນະການເຮັດວຽກຝັ່ງເຊີບເວີ."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ເລືອກຕົວເລືອກນີ້ຖ້າຊັບພະຍາກອນ ແລະ ເອກະສານນຳມາຈາກເວັບໄຊດຽວກັນ."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ເບິ່ງໃບຮັບຮອງ"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs ທີ່ນຳໃຊ້ຢູ່ເຊິ່ງກະຕຸ້ນໃຫ້ເກີດລັກສະນະການເຮັດວຽກຝັ່ງເຊີບເວີ."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ເລືອກຕົວເລືອກນີ້ຖ້າຊັບພະຍາກອນ ແລະ ເອກະສານນຳມາຈາກເວັບໄຊດຽວກັນ."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ຖອດລະຫັດແລ້ວ:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ຈາກແຄສດິສ)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ທົ່ວໄປ"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ການຍົກເລີກສ່ວນຫົວ"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "ສຶກສາເພີ່ມເຕີມ"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ຢ່າຈັດກຸ່ມລາຍການບັນທຶກເຄືອຂ່າຍຕາມເຟຣມ"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "ອະນຸຍາດ DevTools ໃຫ້ໂຫຼດຊັບພະຍາກອນ ເຊັ່ນ: ແຜນທີ່ແຫຼ່ງທີ່ມາ ຈາກການແບ່ງປັນຂອງ Windows ຜ່ານເສັ້ນທາງ UNC. ປິດການນຳໃຊ້ຕາມຄ່າເລີ່ມຕົ້ນເພື່ອຄວາມປອດໄພ."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ເຟຣມ"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ສົ່ງຄຳສັ່ງ CDP ດິບ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ຮູບແບບ: 'Domain.commandName' ສຳລັບຄຳສັ່ງທີ່ບໍ່ມີພາຣາມີເຕີ ຫຼື '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' ເປັນອອບເຈັກ JSON ສຳລັບຄຳສັ່ງທີ່ມີພາຣາມີເຕີ. 'cmd'/'method' ແລະ 'args'/'params'/'arguments' ເປັນລະຫັດສຳຮອງສຳລັບອອບເຈັກ JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "ເຊດຊັນ"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ກູ້ຄືນຄ່າເລີ່ມຕົ້ນ ແລະ ໂຫຼດຄືນໃໝ່"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ສົ່ງຄຳຕິຊົມ"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ການຕັ້ງຄ່າ"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "ຢຸດຊົ່ວຄາວສະເພາະເມື່ອເງື່ອນໄຂເປັນ true"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ບໍ່ມີຈຸດເບຣກພອຍ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "ເປີດຕົວເລືອກສີ."
@@ -9990,7 +10032,7 @@
     "message": "ເປີດການນຳໃຊ້ເບຣກພອຍໃນໄຟລ໌"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "ປະ​ສົມ"
+    "message": "ປະສົມ"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "ບໍ່ມີຈຸດເບຣກພອຍ"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "ຈັດກຸ່ມໄຟລ໌ຕາມການຂຽນ/ການປັບໃຊ້"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ລຶບລ້າງການຕັ້ງຄ່າ"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "ເຊື່ອງຕົວດີບັກ"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "ເຊື່ອງແຫຼ່ງທີ່ມາທີ່ຢູ່ໃນລາຍການລະເວັ້ນ"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "ເຊື່ອງຕົວນຳທາງ"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ໂຫຼດນິກົດໃນການເບິ່ງ"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "ພົບເບຣກພອຍ {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "ເລືອກໄວ້"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "ປະສົມ"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ຍົກເລີກການເລືອກແລ້ວ"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ເພີ່ມສ່ວນຫົວ"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "ໄລຍະເວລາ"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ການໂຕ້ຕອບ"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "ເຄືອຂ່າຍ"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ເຫດການ"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ຊ່ວງເວລາຂອງເຫດການ"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ພັດທະນາແລ້ວ"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ຕິດຕັ້ງໂມງນັບຖອຍຫຼັງ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ການໂຕ້ຕອບປະເພດ:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ລຶບລ້າງໂຄງຮ່າງ"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ບັນຫາທີ່ຍັງບໍ່ສາມາດແກ້ໄຂ."
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "ລຶບໜ່ວຍຄວາມຈຳທີ່ໄຮໄລ"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "ຂ້າມໄປຫາໜ່ວຍຄວາມຈຳທີ່ໄຮໄລ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ທີ່ຢູ່ຈຳເປັນຕ້ອງເປັນຕົວເລກລະຫວ່າງ {PH1} ຫາ {PH2}"

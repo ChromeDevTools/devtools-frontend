@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ Event.composedPath() แทน"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "ส่วนหัว Expect-CT เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ดูรายละเอียดเพิ่มเติมที่หน้าสถานะฟีเจอร์"
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "เราเลิกใช้งาน WebSQL ในบริบทที่ไม่ปลอดภัยแล้วและจะนําออกใน M107 โปรดใช้พื้นที่เก็บข้อมูลเว็บหรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> ที่มีองค์ประกอบหลัก <picture> ไม่ถูกต้องและด้วยเหตุนี้ระบบจึงจะไม่สนใจ โปรดใช้ <source srcset> แทน"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet การประมูล — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "การโต้ตอบของผู้ใช้"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "พยายามแสดงผลล่วงหน้าสำหรับ URL ซึ่งเปลี่ยนเส้นทางไปยัง URL แบบข้ามต้นทาง ปัจจุบันไม่อนุญาตให้ใช้หน้าแบบข้ามต้นทางที่แสดงผลล่วงหน้า"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "เปิดใช้การประหยัดอินเทอร์เน็ตแล้ว"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "หน้าที่แสดงผลล่วงหน้าถูกละทิ้งโดยไม่ทราบสาเหตุ"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "การแสดงผลล่วงหน้าที่ Chrome เรียกใช้ภายใน (เช่น การแสดงแถบอเนกประสงค์ล่วงหน้า) ถูกยกเลิกเนื่องจากมีการเปลี่ยนเส้นทางไปยังหน้าแบบข้ามต้นทางหน้าอื่น"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "การแสดงผลล่วงหน้าที่ Chrome เรียกใช้ภายใน (เช่น การแสดงแถบอเนกประสงค์ล่วงหน้า) ถูกทําลายในตัวทําลาย"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "การแสดงผลล่วงหน้าที่ Chrome เรียกใช้ภายใน (เช่น การแสดงแถบอเนกประสงค์ล่วงหน้า) ถูกยกเลิกเนื่องจากมีการเปลี่ยนเส้นทางไปยังหน้าแบบต้นทางเดียวกันหน้าอื่น"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "โหลดข้อมูลการใช้งานหน่วยความจำไม่สำเร็จ"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "การแสดงผลล่วงหน้าเกินจํานวนสูงสุดแล้ว"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "เกินขีดจำกัดหน่วยความจำ"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "การแสดงผลล่วงหน้าถูกยกเลิกโดยเฟรมเนื้อหาผสม"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "พร็อพเพอร์ตี้ที่เลิกใช้งานแล้ว"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "กฎที่ไม่ได้ใช้งาน"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "พร็อพเพอร์ตี้ที่ไม่ได้ใช้งาน"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "โปรดเปลี่ยนองค์ประกอบระดับบน {EXISTING_PARENT_ELEMENT_RULE} เป็น {TARGET_PARENT_ELEMENT_RULE} เพื่อแก้ไขปัญหานี้"
+    "message": "ลองเปลี่ยนพร็อพเพอร์ตี้ {EXISTING_PARENT_ELEMENT_RULE} ระดับบนเป็น {TARGET_PARENT_ELEMENT_RULE}"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "องค์ประกอบระดับบนมีกฎ {REASON_RULE_CODE} ดังนั้นองค์ประกอบ {AFFECTED_RULE_CODE} จึงไม่มีผล"
+    "message": "พร็อพเพอร์ตี้ {REASON_PROPERTY_DECLARATION_CODE} ในองค์ประกอบระดับบนข้ามผลกระทบของ {AFFECTED_PROPERTY_DECLARATION_CODE}"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "ลองเปลี่ยนพร็อพเพอร์ตี้ {EXISTING_PROPERTY_DECLARATION} เป็น {TARGET_PROPERTY_DECLARATION}"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "โปรดเปลี่ยนหรือนําค่าของ {REASON_RULE_CODE} ออกเพื่อให้พร็อพเพอร์ตี้นี้ทํางาน"
+    "message": "ลองนำ {REASON_PROPERTY_DECLARATION_CODE} ออกหรือเปลี่ยนค่า"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "องค์ประกอบนี้มีกฎ {REASON_RULE_CODE} ดังนั้น {AFFECTED_RULE_CODE} จึงไม่มีผล"
+    "message": "พร็อพเพอร์ตี้ {REASON_PROPERTY_DECLARATION_CODE} ในองค์ประกอบเดียวกันข้ามผลกระทบของ {AFFECTED_PROPERTY_DECLARATION_CODE}"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "เพิ่มคลาสใหม่"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ชื่อพร็อพเพอร์ตี้ที่ไม่รู้จัก"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "เลเยอร์บน"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "แสดง"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ละเว้น"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "องค์ประกอบ"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "เฟรม"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ค่าส่วนหัวไม่ถูกต้อง"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "การจดทะเบียนพร้อมกันสูงสุด"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{การละเมิด # รายการ}other{การละเมิด # รายการ}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ดูใบรับรอง"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs ที่ใช้งานอยู่"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs ที่มีการใช้งานซึ่งทำให้เกิดลักษณะการทำงานฝั่งเซิร์ฟเวอร์"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "เลือกตัวเลือกนี้หากทรัพยากรและเอกสารส่งมาจากเว็บไซต์เดียวกัน"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ถอดรหัสแล้ว:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(จากแคชดิสก์)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ทั่วไป"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "การลบล้างส่วนหัว"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "อย่าจัดกลุ่มรายการในบันทึกเครือข่ายตามเฟรม"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "อนุญาตให้ DevTools โหลดทรัพยากร เช่น การแมปแหล่งที่มา จากการแชร์ของ Windows ผ่านเส้นทาง UNC ปิดใช้อยู่โดยค่าเริ่มต้นเพื่อความปลอดภัย"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "เฟรม"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ส่งคำสั่ง CDP ที่เป็นข้อมูลดิบ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "รูปแบบ: 'Domain.commandName' สำหรับคำสั่งที่ไม่มีพารามิเตอร์ หรือ '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' เป็นออบเจ็กต์ JSON สำหรับคำสั่งที่มีพารามิเตอร์ นอกจากนี้ ระบบยังรองรับ 'cmd'/'method' และ 'args'/'params'/'arguments' เป็นคีย์สำรองสำหรับออบเจ็กต์ JSON ด้วย"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "เซสชัน"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "คืนค่าเริ่มต้นและโหลดซ้ำ"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ส่งความคิดเห็น"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "การตั้งค่า"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "หยุดชั่วคราวเฉพาะเมื่อเงื่อนไขเป็นจริง"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ไม่มีเบรกพอยท์"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "เปิดตัวเลือกสี"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "จัดกลุ่มไฟล์ตามสถานะ \"เขียนแล้ว\" หรือ \"ทำให้ใช้งานได้แล้ว\""
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ล้างการกำหนดค่า"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "ซ่อนโปรแกรมแก้ไขข้อบกพร่อง"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "ซ่อนแหล่งที่มาที่อยู่ในรายการละเว้น"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "ซ่อนตัวนำทาง"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "รีเฟรชนิพจน์การดู"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "พบเบรกพอยท์{PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "เลือกไว้"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "ผสม"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ยกเลิกการเลือกแล้ว"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "เพิ่มส่วนหัว"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "ระยะเวลา"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "การโต้ตอบ"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "เครือข่าย"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "เหตุการณ์"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ระยะเวลาของเหตุการณ์"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "พัฒนาแล้ว"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ติดตั้งตัวจับเวลา"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ประเภทการโต้ตอบ:{PH1} รหัส:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ระบุว่าเลย์เอาต์ไม่ถูกต้อง"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ปัญหาที่ยังไม่เรียบร้อย"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "ลบไฮไลต์หน่วยความจำ"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "ข้ามไปยังหน่วยความจำที่ไฮไลต์"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ที่อยู่ต้องเป็นตัวเลขระหว่าง {PH1} ถึง {PH2}"

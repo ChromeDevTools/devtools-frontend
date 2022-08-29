@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path चल्तीबाट हटाइएको छ र यसलाई सदाका लागि हटाइने छ। कृपया यसको साटो Event.composedPath() प्रयोग गर्नुहोस्।"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT हेडर चल्तीबाट हटाइएको छ र यसलाई सदाका लागि हटाइने छ। Chrome ले तोकेको मापदण्डअनुसार ३० अप्रिल २०१८ पछि जारी गरिएका सार्वजनिक रूपमा विश्वसनीय सबै सर्टिफिकेटहरू पारदर्शी हुनु पर्छ।"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "थप विवरणका लागि सुविधाको स्थितिसम्बन्धी पेज हेर्नुहोस्।"
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "असुरक्षित परिस्थितिमा रहेको WebSQL चल्तीबाट हटाइएको छ र यसलाई M107 मा हटाइने छ। कृपया वेब भण्डारण वा इन्डेक्स गरिएको डेटाबेस प्रयोग गर्नुहोस्।"
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent चल्तीबाट हटाइएको छ। कृपया यसको साटो स्तरीकृत navigator.storage प्रयोग गर्नुहोस्।"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> प्यारेन्ट भएको <source src> अवैध छ र यो एलिमेन्टलाई बेवास्ता गरिएको छ। कृपया यसको साटो <source srcset> प्रयोग गर्नुहोस्।"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo चल्तीबाट हटाइएको छ। कृपया यसको साटो navigator.storage प्रयोग गर्नुहोस्।"
+    "message": "window.webkitStorageInfo चल्तीबाट हटाइएको छ। कृपया यसको साटो स्तरीकृत navigator.storage प्रयोग गर्नुहोस्।"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Subresource requests whose URLs contain embedded credentials (e.g. https://user:pass@host/) are blocked."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "अक्सन वर्कलेट — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "प्रयोगकर्ताले गरेका अन्तर्क्रिया"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "कुनै URL प्रिरेन्डर गर्ने प्रयास गर्दा रिडिरेक्ट गरेर फरक ओरिजिन भएको URL मा पठाइयो। हाल फरक ओरिजिन भएका पेजहरू प्रिरेन्डर गर्न पाइँदैन।"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "डेटा सेभर अन गरियो"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "अज्ञात कारणहरूले गर्दा प्रिरेन्डर गरिएको एउटा पेज त्यागियो।"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "नेभिगेसन गर्दा फरक ओरिजिन भएको अर्को पेजमा रिडिरेक्ट गरिएको हुनाले Chrome आफैले ट्रिगर गरेको प्रिरेन्डरिङ (उदाहरणका लागि, Omnibox प्रिरेन्डरिङ) रद्द गरिएको छ।"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome आफैले ट्रिगर गरेको प्रिरेन्डरिङ (उदाहरणका लागि, Omnibox प्रिरेन्डरिङ) डिस्ट्रक्टरमा नष्ट गरिएको छ।"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "नेभिगेसन गर्दा उही ओरिजिन भएको अर्को पेजमा रिडिरेक्ट गरिएको हुनाले Chrome आफैले ट्रिगर गरेको प्रिरेन्डरिङ (उदाहरणका लागि, Omnibox प्रिरेन्डरिङ) रद्द गरिएको छ।"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "मेमोरीको प्रयोगसम्बन्धी डेटा हटाउन सकिएन"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "योभन्दा बढी सङ्ख्यामा प्रिरेन्डर गर्न सकिँदैन।"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "मेमोरीका सम्बन्धमा तोकिएको सीमा नाघ्यो"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "मिश्रित कन्टेन्ट फ्रेमले प्रिरेन्डरिङ रद्द गरेको छ।"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "चल्तीबाट हटाइएको प्रोपर्टी"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "निष्क्रिय नियम"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "निष्क्रिय प्रोपर्टी"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "यो समस्या समाधान गर्न प्यारेन्ट एलिमेन्टको {EXISTING_PARENT_ELEMENT_RULE} परिवर्तन गरी {TARGET_PARENT_ELEMENT_RULE} बनाउनुहोस्।"
+    "message": "प्यारेन्टको {EXISTING_PARENT_ELEMENT_RULE} प्रोपर्टी परिवर्तन गरी {TARGET_PARENT_ELEMENT_RULE} बनाई हेर्नुहोस्।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "प्यारेन्ट एलिमेन्टमा {REASON_RULE_CODE} सम्बन्धी नियम लागू गरिएको छ, त्यसकारण यो एलिमेन्टको {AFFECTED_RULE_CODE} ले कुनै पनि प्रभाव पार्दैन"
+    "message": "प्यारेन्ट एलिमेन्टको {REASON_PROPERTY_DECLARATION_CODE} प्रोपर्टीले {AFFECTED_PROPERTY_DECLARATION_CODE} को प्रभाव बाइपास गर्छ।"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} प्रोपर्टी परिवर्तन गरी {TARGET_PROPERTY_DECLARATION} बनाउने प्रयास गर्नुहोस्।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "तपाईंले {REASON_RULE_CODE} को मान हटाएपछि वा परिवर्तन गरेपछि मात्र यो प्रोपर्टीले काम गर्छ"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} हटाई वा यसको मान परिवर्तन गरी हेर्नुहोस्।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "यो एलिमेन्टमा {REASON_RULE_CODE} नियम लागू गरिएको छ। त्यसैले {AFFECTED_RULE_CODE} ले कुनै प्रभाव पार्दैन।"
+    "message": "यही एलिमेन्टको {REASON_PROPERTY_DECLARATION_CODE} प्रोपर्टीले {AFFECTED_PROPERTY_DECLARATION_CODE} को प्रभाव बाइपास गर्छ।"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "नयाँ क्लास थप्नुहोस्"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "प्रोपर्टीको नाम अज्ञात छ"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "सबैभन्दा माथिको तल"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "देखाउनुहोस्"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "बेवास्ता गरिएको"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "एलिमेन्ट"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "फ्रेम"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "हेडरको अवैध मान"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "अधिकतम समवर्ती दर्ता"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# उल्लङ्घन}other{# वटा उल्लङ्घन}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "प्रमाणपत्र हेर्नुहोस्"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "सक्रिय client experiment variation IDs।"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "सर्भर साइड बिहेभियर ट्रिगर गर्ने सक्रिय client experiment variation IDs।"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "रिसोर्स र डकुमेन्ट दुवै उही साइटबाट देखाइन्छ भने यो विकल्प चयन गर्नुहोस्।"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "डिकोड गरियो:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(डिस्कमा भएको क्यासबाट)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "सामान्य"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "हेडरका ओभरराइडहरू"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "थप जान्नुहोस्"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "नेटवर्क लग वस्तुका फ्रेमका आधारमा समूह नबनाइयोस्"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools लाई UNC पथ मार्फत Windows Shares मा भएका स्रोत नक्सालगायतका स्रोतहरू लोड गर्ने अनुमति दिनुहोस्। सुरक्षासम्बन्धी कारणहरूले गर्दा स्वतः अफ गरिएको छ।"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "फ्रेम"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "अप्रशोधित CDP कमान्ड पठाउनुहोस्"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "फर्म्याट: प्यारामिटरहरू नभएको कमान्डका हकमा 'Domain.commandName' वा प्यारामिटरहरू भएको कमान्डका हकमा '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' (JSON अब्जेक्टका रूपमा)। JSON अब्जेक्टको वैकल्पिक कीका रूपमा 'cmd'/'method' र 'args'/'params'/'arguments' पनि प्रयोग गर्न सकिन्छ।"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "सत्र"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "डिफल्ट सेटिङ रिस्टोर गर्नुहोस् र रिलोड गर्नुहोस्"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "प्रतिक्रिया पठाउनुहोस्"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "सेटिङ"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "यो अवस्था सही हुँदा मात्र पज गरियोस्"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "कुनै पनि ब्रेकपोइन्ट छैन"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "कलर पिकर खोल्नुहोस्।"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "अधिकार दिइएको/डिप्लोय गरिएको आधारमा फाइलहरूको समूह बनाउनुहोस्"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "कन्फिगुरेसन खाली गर्नुहोस्"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "डिबगर लुकाइयोस्"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "वेवास्ता गरिएको सूचीमा भएका स्रोतहरू लुकाउनुहोस्"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "नेभिगेटर लुकाइयोस्"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "वाच एक्स्प्रेसन रिफ्रेस गर्नुहोस्"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ब्रेकपोइन्ट हिट"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "चिन्ह लगाइएको"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "मिश्रित"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "चिन्ह नलगाइएको"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "एउटा हेडर हाल्नुहोस्"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "समय"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "अन्तर्क्रियाहरू"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "नेटवर्क"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "इभेन्ट"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "कार्यक्रमको समय"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "बेग्लै तरिकाले गणना गरिएको"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "टाइमर इन्स्टल गर्नुहोस्"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "अन्तर्क्रियाको प्रकार:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "लेआउट अवैध छ भनी पुष्टि गर्नुहोस्"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "हाल यो समस्या उपलब्ध छैन"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "हाइलाइट गरिएको मेमोरी हटाउनुहोस्"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "हाइलाइट गरिएको मेमोरीमा जानुहोस्"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ठेगाना {PH1} र {PH2} बिचको कुनै नम्बर हुनु पर्छ"

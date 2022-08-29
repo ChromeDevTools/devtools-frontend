@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "API Event.path tugi on katkestatud ja see eemaldatakse. Kasutage selle asemel API-t Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "API Expect-CT tugi on katkestatud ja see eemaldatakse. Chrome nõuab, et kõik avalikud usaldusväärsed sertifikaadid, mis on välja antud pärast 30. aprilli 2018, peavad järgima sertifikaadi läbipaistvuse eeskirju."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Lisateabe saamiseks vaadake funktsiooni oleku lehte."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL-i tugi on ebaturvalistes kontekstides katkestatud ja eemaldatakse M107-s. Kasutage veebipõhist salvestusruumi või indekseeritud andmebaasi."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "API StorageType.persistent tugi on katkestatud. Kasutage selle asemel standardset API-t navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Element <source src> vanematribuudiga <picture> on sobimatu ja seetõttu seda eiratakse. Kasutage selle asemel atribuuti <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Oksjoni töök — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Kasutaja interaktsioonid"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Üritati eelrenderdada URL-i, mis suunas ümber mitme lähtekohaga URL-ile. Praegu on mitme lähtekohaga lehtede eelrenderdamine keelatud."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Andmemahu säästja on lubatud"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Eelrenderdatud leht hüljati teadmata põhjusel."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome'i siseprotsesside (nt omnikastikese eelrenderdamine) käivitatud eelrenderdamine tühistati, sest navigeerimine suunati ümber teisele mitme lähtekohaga lehele."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome'i siseprotsesside (nt omnikastikese eelrenderdamine) käivitatud eelrenderdamine hävitati destruktoris."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome'i siseprotsesside (nt omnikastikese eelrenderdamine) käivitatud eelrenderdamine tühistati, sest navigeerimine suunati ümber teisele sama lähtekohaga lehele."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Mälukasutuse andmeid ei õnnestunud hankida"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Eelrenderdamise maksimaalne number on ületatud."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Mälulimiit on ületatud"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Eelrenderdamise tühistas mitmesuguse sisuga raam."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Katkestatud toega atribuut"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Mitteaktiivne reegel"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inaktiivne atribuut"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Probleemi lahendamiseks muutke emaelemendi reegel {EXISTING_PARENT_ELEMENT_RULE} reegliks {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Proovige ülemüksuse atribuudi {EXISTING_PARENT_ELEMENT_RULE} väärtuseks määrata {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Emaelemendil on reegel {REASON_RULE_CODE}, seega ei rakendu selle elemendi reegel {AFFECTED_RULE_CODE}"
+    "message": "Ülemelemendi atribuut {REASON_PROPERTY_DECLARATION_CODE} eirab atribuudi {AFFECTED_PROPERTY_DECLARATION_CODE} mõju."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Proovige atribuudi {EXISTING_PROPERTY_DECLARATION} väärtuseks määrata {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Eemaldage reegel {REASON_RULE_CODE} või muutke selle väärtust, et see atribuut saaks toimida"
+    "message": "Proovige {REASON_PROPERTY_DECLARATION_CODE} eemaldada või muuta selle väärtust."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Sellel elemendil on reegel {REASON_RULE_CODE}, seega reegel {AFFECTED_RULE_CODE} ei kehti."
+    "message": "Sama elemendi atribuut {REASON_PROPERTY_DECLARATION_CODE} eirab atribuudi {AFFECTED_PROPERTY_DECLARATION_CODE} mõju."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lisa uus klass"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tundmatu vara nimi"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "top-layer"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "näita"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Eiratud"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Raam"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Sobimatu päise väärtus"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Samaaegsete registreerimiste maksimaalne arv"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# rikkumine}other{# rikkumist}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Kuva sertifikaat"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiivne client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktiivsed client experiment variation IDs, mis käivitavad serveripoolse käitumise."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Tehke see valik, kui ressurss ja dokument esitatakse samalt saidilt."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekodeeritud:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ketta vahemälust)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Üldine"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Päiste alistamised"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Lisateave"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ära rühmita võrgulogi üksusi raami alusel"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Lubage tööriistal DevTools laadida Windowsi jagatud failidest ressursse (nt kaarte) üksuse UNC teede kaudu. Turvalisuse huvides on see vaikimisi keelatud."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "raam"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Saada töötlemata CDP-käsk"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Vorming: 'Domain.commandName' ilma parameetriteta käsu jaoks või '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' JSON-objektina parameetritega käsu jaoks. Üksusi 'cmd'/'method' ja 'args'/'params'/'arguments' toetatakse JSON-objekti puhul samuti alternatiivsete võtmetena."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Seanss"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Taasta vaikeseaded ja laadi uuesti"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Tagasiside saatmine"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Seaded"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Peata ainult juhul, kui tingimus on tõene"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Katkestuspunkte ei ole"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ava värvivalija."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + sisestusklahv"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Failide grupeerimine olekute Autoriga/Juurutatud järgi"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Tühjenda seadistus"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Peida silur"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Peida eiramisloendisse lisatud allikad"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Peida navigeerija"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Värskenda vaatamisavaldisi"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} – jõuti katkestuspunktini"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "märgitud"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "erinevad"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "märkimata"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Lisa päis"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Ajastused"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaktsioonid"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Võrk"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Sündmus"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Sündmuse ajastus"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "tuletatud"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Taimeri installimine"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaktsiooni tüüp: {PH1} ID: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Paigutuse kehtetuks muutmine"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Probleem pole praegu saadaval"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Peata selle mäluüksuse esiletõstmine"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Liigu esiletõstetud mäluüksuse juurde"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Aadress peab olema number vahemikus {PH1} ja {PH2}"

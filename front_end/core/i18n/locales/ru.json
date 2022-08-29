@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "API Event.path больше не поддерживается и будет удален. Вместо него используйте Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Заголовок Expect-CT больше не поддерживается и будет удален. В Chrome проверка требуется для всех общедоступных доверенных сертификатов, выпущенных после 30 апреля 2018 г."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Дополнительную информацию можно найти на странице состояния функции."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Технология WebSQL в небезопасных контекстах больше не поддерживается и будет удалена в версии M107. Используйте веб-хранилище или индексированную базу."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent больше не поддерживается. Используйте стандартный метод navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Элемент <source src> с родительским объектом <picture> недействителен, поэтому игнорируется. Используйте <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Аукцион Worklet — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Взаимодействие пользователя"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Не удалось предварительно отрисовать страницу, переход с которой выполняется на междоменный URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Экономия трафика включена."
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "По неизвестной причине предварительно отрисованная страница была покинута."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с иным источником."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) уничтожена в деструкторе."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с тем же источником."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Не удалось определить использование памяти."
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Превышено максимальное число предварительных отрисовок."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Превышен лимит памяти."
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Предварительная отрисовка отменена фреймом смешанного контента."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Устаревшее свойство"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Неактивное правило"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Неактивное свойство"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Чтобы устранить эту проблему, измените родительские элементы {EXISTING_PARENT_ELEMENT_RULE} на следующие: {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Попробуйте изменить родительское свойство {EXISTING_PARENT_ELEMENT_RULE} на {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Родительский элемент использует правило {REASON_RULE_CODE}, поэтому правило {AFFECTED_RULE_CODE} не работает."
+    "message": "Свойство {REASON_PROPERTY_DECLARATION_CODE} на родительском элементе обходит эффект {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Попробуйте изменить свойство {EXISTING_PROPERTY_DECLARATION} на {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Чтобы это свойство работало, удалите или измените значение {REASON_RULE_CODE}."
+    "message": "Попробуйте удалить {REASON_PROPERTY_DECLARATION_CODE} или изменить значение."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Этот элемент использует правило {REASON_RULE_CODE}, поэтому правило {AFFECTED_RULE_CODE} не работает."
+    "message": "Свойство {REASON_PROPERTY_DECLARATION_CODE} в том же элементе обходит эффект, накладываемый {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Добавить класс"
@@ -4959,7 +4977,7 @@
     "message": "DOM страницы"
   },
   "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "открыть"
+    "message": "показать"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Показать все узлы (ещё {PH1})"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Неизвестное имя свойства"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "верхний слой"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "показать"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Игнорируется"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Элемент"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Фрейм"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Недопустимое значение заголовка"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Максимальное количество одновременных регистраций"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# нарушение}one{# нарушение}few{# нарушения}many{# нарушений}other{# нарушения}}"
@@ -7443,10 +7461,10 @@
     "message": "У этого запроса нет файлов cookie."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs: активно"
+    "message": "client experiment variation IDs: активно."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Активные client experiment variation IDs, которые запускают поведение со стороны сервера"
+    "message": "Активные client experiment variation IDs, которые запускают поведение со стороны сервера."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Показать сертификат"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs: активно."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Активные client experiment variation IDs, которые запускают поведение со стороны сервера."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Выберите этот вариант, если ресурс и документ находятся на одном и том же сайте."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Декодировано:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(источник: кеш диска)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Общие"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Переопределения заголовков"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Подробнее…"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не группировать записи сети по фреймам"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Позволить DevTools загружать ресурсы, например карты исходного кода, при предоставлении доступа в Windows через пути UNC. По умолчанию эта функция отключена из соображений безопасности."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрейм"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Отправить необработанную команду CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Используйте формат 'Domain.commandName' для команды без параметров или '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' как объект JSON для команды с параметрами. 'cmd'/'method' и 'args'/'params'/'arguments' поддерживаются в качестве альтернативного ключа для объекта JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сеанс"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Восстановить настройки по умолчанию и обновить страницу"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Отправить отзыв"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Настройки"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Приостанавливать, если условие имеет значение true"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Отсутствуют точки останова."
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Открыть палитру"
@@ -9990,7 +10032,7 @@
     "message": "Включить точки останова в файле"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "смешанное"
+    "message": "смешанные"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "Отсутствуют точки останова."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Ввод"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Сгруппировать файлы по авторским и развернутым"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Очистить настройки"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Скрыть отладчик"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Скрыть источники из списка игнорируемых"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Скрыть навигатор"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Обновить выражения контрольного значения"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Достигнута точка останова {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "отмечено"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "смешанные"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "флажок не установлен"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Добавить заголовок"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Временные метки"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Взаимодействия"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Сеть"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Событие"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Временные метки событий"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "усовершенствованный"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Таймер установки"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Тип взаимодействия: {PH1}, идентификатор: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Аннулировать макет"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Сведения о проблеме сейчас недоступны"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Снять выделение памяти"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Перейти к выделенной памяти"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адрес должен быть числом от {PH1} до {PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "Отправить отзыв"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "Оставить отзыв"
+    "message": "Отправить отзыв"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Нажмите, чтобы открыть панель \"Сеть\" и показать запрос для следующего URL: {url}"

@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Інтэрфейс API Event.path не падтрымліваецца і будзе выдалены. Выкарыстоўвайце замест яго Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Загаловак \"Expect-CT\" не падтрымліваецца і будзе выдалены. У Chrome патрабуецца праверка ўсіх агульнадаступных давераных сертыфікатаў, выпушчаных пасля 30 красавіка 2018 г."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Падрабязныя звесткі можна знайсці на старонцы стану функцыі."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "База даных WebSQL больш не падтрымліваецца ў небяспечных кантэкстах і ў версіі M107 будзе выдалена. Выкарыстоўвайце вэб-сховішча або індэксаваную базу даных."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Элемент <source src> з бацькоўскім элементам <picture> з'яўляецца несапраўдным і таму ігнаруецца. Выкарыстоўвайце замест яго <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo не падтрымліваецца. Выкарыстоўвайце стандартны метад navigator.storage."
+    "message": "window.webkitStorageInfo больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Запыты субрэсурсаў, чые URL-адрасы змяшчаюць убудаваныя ўліковыя даныя (напрыклад, https://user:pass@host/), блакіруюцца."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Ворклет аўкцыёнаў – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Узаемадзеянні карыстальніка"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Была ажыццёўлена спроба папярэдняй візуалізацыі URL-адраса, які перанакіроўваў на міждаменны URL-адрас. Папярэдняя візуалізацыя міждаменных старонак зараз забаронена."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Эканомія трафіка ўключана"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Па невядомай прычыне папярэдне візуалізаваная старонка была пакінута."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Папярэдняя візуалізацыя, запушчаная самім браўзерам Chrome (напрыклад, папярэдняя візуалізацыя пры выкарыстанні амнібокса), скасавана, бо пры пераходзе выканана перанакіраванне на іншую міждаменную старонку."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Папярэдняя візуалізацыя, запушчаная самім браўзерам Chrome (напрыклад, папярэдняя візуалізацыя пры выкарыстанні амнібокса), знішчана дэструктарам."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Папярэдняя візуалізацыя, запушчаная самім браўзерам Chrome (напрыклад, папярэдняя візуалізацыя пры выкарыстанні амнібокса), скасавана, бо пры пераходзе выконваецца перанакіраванне на іншую старонку, якая паходзіць з той жа крыніцы."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Не ўдалося атрымаць даныя пра выкарыстанне памяці"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Перавышана максімальная колькасць папярэдніх візуалізацый."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Ліміт памяці перавышаны"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Папярэдняя візуалізацыя скасавана фрэймам змешанага змесціва."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Састарэлая ўласцівасць"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Неактыўнае правіла"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Неактыўная ўласцівасць"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Каб выправіць гэту праблему, змяніце бацькоўскія элементы {EXISTING_PARENT_ELEMENT_RULE} на наступныя: {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Паспрабуйце змяніць уласцівасць \"{EXISTING_PARENT_ELEMENT_RULE}\" бацькоўскага элемента на \"{TARGET_PARENT_ELEMENT_RULE}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Бацькоўскі элемент выкарыстоўвае правіла \"{REASON_RULE_CODE}\", таму правіла \"{AFFECTED_RULE_CODE}\" не дзейнічае"
+    "message": "Уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" бацькоўскага элемента перакрывае дзеянне ўласцівасці \"{AFFECTED_PROPERTY_DECLARATION_CODE}\"."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Паспрабуйце змяніць уласцівасць \"{EXISTING_PROPERTY_DECLARATION}\" на \"{TARGET_PROPERTY_DECLARATION}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Каб гэта ўласцівасць працавала, выдаліце або змяніце значэнне {REASON_RULE_CODE}"
+    "message": "Паспрабуйце выдаліць уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" або змяніць яе значэнне."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Гэты элемент выкарыстоўвае правіла \"{REASON_RULE_CODE}\", таму правіла \"{AFFECTED_RULE_CODE}\" не дзейнічае."
+    "message": "Уласцівасць \"{REASON_PROPERTY_DECLARATION_CODE}\" гэтага самага элемента перакрывае дзеянне ўласцівасці \"{AFFECTED_PROPERTY_DECLARATION_CODE}\"."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Дадаць новы клас"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Невядомае імя ўласцівасці"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "верхні слой"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "паказаць"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ігнаруецца"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Элемент"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Фрэйм"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Няправільнае значэнне загалоўка"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Максімальная колькасць адначасовых рэгістрацый"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# парушэнне}one{# парушэнне}few{# парушэнні}many{# парушэнняў}other{# парушэння}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Прагледзець сертыфікат"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Актыўна: client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs (актыўных), якія актывуюць паводзіны на баку сервера."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Выберыце гэты варыянт, калі рэсурс і дакумент атрымліваюцца з аднаго сайта."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Дэкадавана:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(з кэша на дыску)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Агульныя"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Перавызначэнні загалоўкаў"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Даведацца больш"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групаваць элементы сеткавага журнала па фрэймах"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Дазволіць інструментам \"DevTools\" загружаць такія рэсурсы, як карты зыходнага кода, з абагуленых рэсурсаў у сістэме Windows праз шляхі UNC. Стандартна гэта функцыя адключана з меркаванняў бяспекі."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрэйм"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Адпраўце неапрацаваную каманду CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Фармат: 'Domain.commandName' для каманды без параметраў або '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' як аб'ект JSON для каманды з параметрамі. 'cmd'/'method' і 'args'/'params'/'arguments' таксама падтрымліваюцца як альтэрнатыўныя ключы для аб'екта JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сеанс"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Аднавіць стандартныя налады і перазагрузіць"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Адправіць водгук"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Налады"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Прыпыніць, толькі калі ўмова роўная true"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Няма пунктаў прыпынення"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Адкрыць сродак выбару колеру."
@@ -9990,7 +10032,7 @@
     "message": "Уключыць пункты прыпынення ў файле"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "змешаная"
+    "message": "камбінацыя"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "Няма пунктаў прыпынення"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Групаванне файлаў па аўтарскіх і разгорнутых"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ачысціць канфігурацыю"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Не паказваць адладчык"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Схаваць занесеныя ў спіс ігнаравання крыніцы"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Не паказваць навігатар"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Абнавіць выразы кантрольнага значэння"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "дасягнуты пункт прыпынення {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "птушка стаіць"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "камбінацыя"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "птушка не стаіць"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Дадаць загаловак"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Разлік часу"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Узаемадзеянні"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Сетка"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Падзея"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Меткі часу падзей"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "палепшаная версія"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Усталяваць таймер"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Тып узаемадзеяння: {PH1}, ідэнтыфікатар: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Зрабіць макет неправадзейным"
@@ -11937,7 +12000,7 @@
     "message": "Ёмістасць аўдыярэндара"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | sampleRate": {
-    "message": "Частата выбаркі"
+    "message": "Частата дыскрэтызацыі"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | state": {
     "message": "Стан"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Зараз праблему паказаць немагчыма"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Скасаваць вылучэнне памяці"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Перайсці да вылучанай памяці"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Адрас павінен быць лікам ад {PH1} да {PH2}"

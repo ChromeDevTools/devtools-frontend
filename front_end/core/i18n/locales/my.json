@@ -1158,7 +1158,7 @@
     "message": "အရောင်ဖော်မက်ကို RGB သို့ သတ်မှတ်မည်"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
-    "message": "မှောင်သည့် အပြင်အဆင်သို့ ပြောင်းမည်"
+    "message": "အမှောင်နောက်ခံသို့ ပြောင်းမည်"
   },
   "entrypoints/main/main-meta.ts | switchToLightTheme": {
     "message": "လင်းသည့်အပြင်အဆင်သို့ ပြောင်းခြင်း"
@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path ကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၎င်းအစား Event.composedPath() ကို အသုံးပြုပါ။"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT ခေါင်းစီးကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၂၀၁၈ ခုနှစ်၊ ဧပြီလ ၃၀ ရက် နောက်ပိုင်းတွင်ထုတ်ပြီး အများလက်ခံထားသည့် အသိအမှတ်ပြုလက်မှတ်အားလုံးအတွက် ‘အသိအမှတ်ပြုလက်မှတ် ပွင့်လင်းမြင်သာမှု’ ရှိရန် Chrome က သတ်မှတ်ထားသည်။"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "နောက်ထပ်အသးစိတ်အတွက် ဝန်ဆောင်မှုအခြေအနေ စာမျက်နှာကို ကြည့်နိုင်သည်။"
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "လုံခြုံမှုမရှိသည့် အကြောင်းအရာများရှိ WebSQL ကို ရပ်ဆိုင်းထားပြီး M107 တွင် ဖယ်ရှားပါမည်။ ‘ဝဘ်သိုလှောင်ခန်း’ (သို့) ‘အညွှန်းပါသည့် ဒေတာဘေ့စ်’ ကို အသုံးပြုပါ။"
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> ပင်မ ရှိသည့် <source src> သည် မမှန်ကန်သဖြင့် လစ်လျူရှုလိုက်သည်။ ၎င်းအစား <source srcset> ကို အသုံးပြုပါ။"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "လေလံတင်သည့် ကြားခံစနစ် — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "အသုံးပြုသူ ပြန်လှန်တုံ့ပြန်မှုများ"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2235,7 +2244,7 @@
     "message": "မှောင်သည့် နောက်ခံအရောင်"
   },
   "panels/application/AppManifestView.ts | darkThemeColor": {
-    "message": "မှောင်သည့်အရောင် အပြင်အဆင်"
+    "message": "အမှောင်နောက်ခံ အရောင်"
   },
   "panels/application/AppManifestView.ts | description": {
     "message": "ဖော်ပြချက်"
@@ -3582,10 +3591,10 @@
     "message": "ဤဖရိမ်၏ ပင်မဖရိမ်သည် ကြော်ငြာဖရိမ် ဖြစ်သောကြောင့် ၎င်းကို ကြော်ငြာဖရိမ်အဖြစ် သတ်မှတ်သည်။"
   },
   "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "ကြိုတင်စီမံခြင်း"
+    "message": "ကြိုတင်ပုံဖော်ခြင်း"
   },
   "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "ကြိုတင်စီမံခြင်း အခြေအနေ"
+    "message": "ကြိုတင်ပုံဖော်ခြင်း အခြေအနေ"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "ပြန်လည် စတင်ရန်"
@@ -3723,7 +3732,7 @@
     "message": "စဖွင့်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
-    "message": "ကြိုတင်စီမံခြင်းက AudioContext API ကို ပံ့ပိုးမှုမရှိသေးပါ။"
+    "message": "ကြိုတင်ပုံဖော်ခြင်းက AudioContext API ကို ပံ့ပိုးမှုမရှိသေးပါ။"
   },
   "panels/application/components/Prerender2.ts | BlockedByClient": {
     "message": "ရင်းမြစ်ဖွင့်ခြင်းကို ကလိုင်းယင့်က ပိတ်ထားသည်။"
@@ -3732,31 +3741,34 @@
     "message": "CancelAllHostsForTesting။"
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "ဤစာမျက်နှာက ကလိုင်းယင့် အသိအမှတ်ပြုလက်မှတ် တောင်းဆိုလျက်ရှိပြီး ကြိုတင်စီမံခြင်းကဲ့သို့ ဖျောက်ထားသည့်စာမျက်နှာအတွက် သင့်လျော်မှုမရှိပါ။"
+    "message": "ဤစာမျက်နှာက ကလိုင်းယင့် အသိအမှတ်ပြုလက်မှတ် တောင်းဆိုလျက်ရှိပြီး ကြိုတင်ပုံဖော်ခြင်းကဲ့သို့ ဖျောက်ထားသည့်စာမျက်နှာအတွက် သင့်လျော်မှုမရှိပါ။"
   },
   "panels/application/components/Prerender2.ts | CrossOriginNavigation": {
-    "message": "ကြိုတင်စီမံထားသည့် စာမျက်နှာသည် ဖွင့်ပြီးနောက် ဇာစ်မြစ်အမျိုးမျိုးရှိ URL သို့ လမ်းညွှန်ထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်စီမံခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
+    "message": "ကြိုတင်ပုံဖော်ထားသည့် စာမျက်နှာသည် ဖွင့်ပြီးနောက် ဇာစ်မြစ်အမျိုးမျိုးရှိ URL သို့ လမ်းညွှန်ထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်ပုံဖော်ခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
   },
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
-    "message": "ဇာစ်မြစ်အမျိုးမျိုးရှိ URL တစ်ခုသို့ တစ်ဆင့်ပြန်ညွှန်ပြသည့် URL ကို ကြိုတင်စီမံရန် ကြိုးပမ်းထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်စီမံခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
+    "message": "ဇာစ်မြစ်အမျိုးမျိုးရှိ URL တစ်ခုသို့ တစ်ဆင့်ပြန်ညွှန်ပြသည့် URL ကို ကြိုတင်ပုံဖော်ရန် ကြိုးပမ်းထားသည်။ ဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာများ ကြိုတင်ပုံဖော်ခြင်းကို လောလောဆယ် ခွင့်ပြုမထားပါ။"
+  },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "ဒေတာ ချွေတာမှုကို ဖွင့်ထားသည်"
   },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "အမျိုးအမည်မသိ အကြောင်းရင်းများဖြင့် ကြိုတင်စီမံထားသည့်စာမျက်နှာကို ချန်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | DidFailLoad": {
-    "message": "ကြိုတင်စီမံနေစဉ် DidFailLoadWithError ဖြစ်သွားသည်။"
+    "message": "ကြိုတင်ပုံဖော်နေစဉ် DidFailLoadWithError ဖြစ်သွားသည်။"
   },
   "panels/application/components/Prerender2.ts | Download": {
     "message": "‘ကြိုတင်စီမံစနစ်’ တွင် ဒေါင်းလုဒ်လုပ်ခြင်းကို ခွင့်ပြုမထားပါ။"
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "လမ်းညွှန်မှုကို အခြားဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာသို့ တစ်ဆင့်ပြန်ညွှန်ပြထားသဖြင့် Chrome အတွင်းပိုင်း (ဥပမာ- Omnibox ကြိုတင်စီမံခြင်း) က စတင်ထားသည့် ကြိုတင်စီမံခြင်းကို ပယ်ဖျက်ထားသည်။"
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome အတွင်းပိုင်း (ဥပမာ- Omnibox ကြိုတင်စီမံခြင်း) က စတင်ထားသည့် ကြိုတင်စီမံခြင်းကို ဖျက်စီးသည့်စနစ်တွင် ဖျက်စီးထားသည်။"
+    "message": "လမ်းညွှန်မှုကို အခြားဇာစ်မြစ်အမျိုးမျိုးရှိ စာမျက်နှာသို့ တစ်ဆင့်ပြန်ညွှန်ပြထားသဖြင့် Chrome အတွင်းပိုင်း (ဥပမာ- Omnibox ကြိုတင်ပုံဖော်ခြင်း) က စတင်ထားသည့် ကြိုတင်ပုံဖော်ခြင်းကို ပယ်ဖျက်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "လမ်းညွှန်မှုကို အခြားတူညီသည့်ဇာစ်မြစ်ရှိ စာမျက်နှာသို့ တစ်ဆင့်ပြန်ညွှန်ပြထားသဖြင့် Chrome အတွင်းပိုင်း (ဥပမာ- Omnibox ကြိုတင်စီမံခြင်း) က စတင်ထားသည့် ကြိုတင်စီမံခြင်းကို ပယ်ဖျက်ထားသည်။"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "မှတ်ဉာဏ်အသုံးပြုမှု မရယူနိုင်ပါ"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation။"
@@ -3771,37 +3783,40 @@
     "message": "ကြိုတင်စီမံစနစ်က UI မှအထောက်အထား တောင်းဆိုချက်များကို မပံ့ပိုးပါ။"
   },
   "panels/application/components/Prerender2.ts | LowEndDevice": {
-    "message": "ကြိုတင်စီမံခြင်းကို မှတ်ဉာဏ်နည်းသော စက်များအတွက် ပံ့ပိုးမထားပါ။"
+    "message": "ကြိုတင်ပုံဖော်ခြင်းကို မှတ်ဉာဏ်နည်းသော စက်များအတွက် ပံ့ပိုးမထားပါ။"
   },
   "panels/application/components/Prerender2.ts | MainFrameNavigation": {
-    "message": "ကနဦး ကြိုတင်စီမံခြင်းဆိုင်ရာ လမ်းညွှန်မှုပြီးနောက် လမ်းညွှန်မှုများကို ခွင့်ပြုမထားပါ"
+    "message": "ကနဦး ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုပြီးနောက် လမ်းညွှန်မှုများကို ခွင့်ပြုမထားပါ"
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
-    "message": "ကြိုတင်စီမံမှုသည် အများဆုံးအရေအတွက်ကို ကျော်လွန်ထားသည်။"
+    "message": "ကြိုတင်ပုံဖော်ခြင်းသည် အများဆုံးအရေအတွက်ကို ကျော်လွန်ထားသည်။"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "မှတ်ဉာဏ်ကန့်သတ်ချက် ကျော်လွန်သွားသည်"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
-    "message": "အကြောင်းအရာ အရောအနှောဖရိမ်က ကြိုတင်စီမံခြင်းကို ပယ်ဖျက်ထားသည်။"
+    "message": "အကြောင်းအရာ အရောအနှောဖရိမ်က ကြိုတင်ပုံဖော်ခြင်းကို ပယ်ဖျက်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
     "message": "ကြိုတင်စီမံထားသည့် စာမျက်နှာက ခွင့်ပြုမထားသည့် API ကို သုံးထားသည်"
   },
   "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
-    "message": "ဆာဗာသည် 200/204/205 အခြေအနေပြကုဒ် မဟုတ်သည့်ကုဒ်ကို ရယူခြင်းကြောင့် ကနဦး ကြိုတင်စီမံခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို ပြုလုပ်၍မရပါ။"
+    "message": "ဆာဗာသည် 200/204/205 အခြေအနေပြကုဒ် မဟုတ်သည့်ကုဒ်ကို ရယူခြင်းကြောင့် ကနဦး ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို ပြုလုပ်၍မရပါ။"
   },
   "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
-    "message": "စာမျက်နှာကြိုတင်စီမံခြင်းကို အဆုံးတွင် လုပ်ဆောင်မထားပါ။"
+    "message": "စာမျက်နှာကြိုတင်ပုံဖော်ခြင်းကို အဆုံးတွင် လုပ်ဆောင်မထားပါ။"
   },
   "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
     "message": "လမ်းညွှန်မှုဆိုင်ရာ တောင်းဆိုချက်ကို CSP က ပိတ်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
-    "message": "ကြိုတင်စီမံနေစဉ် ကွန်ရက်အမှားတစ်ခု ဖြစ်သွားသည်။"
+    "message": "ကြိုတင်ပုံဖော်ခြင်းလုပ်ဆောင်နေစဉ် ကွန်ရက်အမှားတစ်ခု ဖြစ်သွားသည်။"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
     "message": "ကြိုတင်စီမံထားသည့် စာမျက်နှာ ရပ်တန့်သွားသည်။"
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
-    "message": "စာမျက်နှာကြိုတင်စီမံခြင်းအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ်ကို ပိတ်ထားသည်။"
+    "message": "စာမျက်နှာကြိုတင်ပုံဖော်ခြင်းအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ်ကို ပိတ်ထားသည်။"
   },
   "panels/application/components/Prerender2.ts | SslCertificateError": {
     "message": "SSL အသိအမှတ်ပြုလက်မှတ် အမှားအယွင်း။"
@@ -4731,22 +4746,25 @@
     "message": "ဆော့ဖ်ဝဲအင်ဂျင်နီယာ ရင်းမြစ်များ ပြရန်"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "ရပ်ဆိုင်းထားသော Property"
+    "message": "ရပ်ဆိုင်းထားသော property"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "အသုံးမပြုသော စည်းမျဉ်း"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "အသုံးမပြုသည့် property"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ဤပြဿနာဖြေရှင်းရန် ပင်မအစိတ်အပိုင်းများဖြစ်သော {EXISTING_PARENT_ELEMENT_RULE} ကို {TARGET_PARENT_ELEMENT_RULE} သို့ ပြောင်းပါ။"
+    "message": "ပင်မရှိ {EXISTING_PARENT_ELEMENT_RULE} property ကို {TARGET_PARENT_ELEMENT_RULE} သို့ ပြောင်းကြည့်ပါ။"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "ပင်မအစိတ်အပိုင်းတွင် {REASON_RULE_CODE} စည်းမျဉ်းရှိသည့်အတွက် {AFFECTED_RULE_CODE} သည် သက်ရောက်မှုမရှိပါ"
+    "message": "ပင်မအစိတ်အပိုင်းရှိ {REASON_PROPERTY_DECLARATION_CODE} property အပေါ် {AFFECTED_PROPERTY_DECLARATION_CODE} ၏ သက်ရောက်မှု မရှိပါ။"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} property ကို {TARGET_PROPERTY_DECLARATION} သို့ ပြောင်းကြည့်ပါ။"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ဤ Property အလုပ်လုပ်ရန်အတွက် {REASON_RULE_CODE} ၏ တန်ဖိုးကို ဖယ်ရှားပါ (သို့) ပြောင်းလဲပါ"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} ကို ဖယ်ရှားကြည့်ပါ (သို့) ၎င်း၏တန်ဖိုးကို ပြောင်းကြည့်ပါ။"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ဤအစိတ်အပိုင်းတွင် {REASON_RULE_CODE} စည်းမျဉ်းရှိသည့်အတွက် {AFFECTED_RULE_CODE} သည် သက်ရောက်မှုမရှိပါ။"
+    "message": "တူညီသော အစိတ်အပိုင်းရှိ {REASON_PROPERTY_DECLARATION_CODE} property အပေါ် {AFFECTED_PROPERTY_DECLARATION_CODE} ၏ သက်ရောက်မှု မရှိပါ။"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "အမျိုးအစားအသစ် ထည့်ရန်"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "သတ်မှတ်ချက်အမည် မသိပါ"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ထိပ်ဆုံးအလွှာ"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ပြသရန်"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "လျစ်လျူရှုထားသည်"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "အစိတ်အပိုင်း"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ဖရိမ်"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ခေါင်းစီးတန်ဖိုး မမှန်ပါ"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "တစ်ပြိုင်နက် စာရင်းသွင်းမှု အများဆုံးအရေအတွက်"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{ချိုးဖောက်မှု # ခု}other{ချိုးဖောက်မှု # ခု}}"
@@ -7446,7 +7464,7 @@
     "message": "client experiment variation IDs သုံးနေသည်။"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "ဆာဗာအခြမ်းလုပ်ဆောင်ပုံကို စတင်စေသည့် ဖွင့်ထားသော client experiment variation IDs။"
+    "message": "ဆာဗာအခြမ်းလုပ်ဆောင်ပုံကို စတင်စေသည့် အသုံးပြုနေသော client experiment variation IDs။"
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ရင်းမြစ်နှင့် မှတ်တမ်းဖိုင်တို့ကို ဝဘ်ဆိုက်တစ်ခုတည်းမှ ဝန်ဆောင်မှုပေးပါက ဤတစ်ခုကို ရွေးပါ။"
@@ -7479,7 +7497,7 @@
     "message": "အထွေထွေ"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "ခေါင်းစီး အစားထိုးခြင်းများ"
+    "message": "ခေါင်းစီး အစားထိုးရန်"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "အသိအမှတ်ပြုလက်မှတ်ကို ကြည့်ရန်"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs သုံးနေသည်။"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "ဆာဗာအခြမ်းလုပ်ဆောင်ပုံကို စတင်စေသည့် အသုံးပြုနေသော client experiment variation IDs။"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ရင်းမြစ်နှင့် မှတ်တမ်းဖိုင်တို့ကို ဝဘ်ဆိုက်တစ်ခုတည်းမှ ဝန်ဆောင်မှုပေးပါက ဤတစ်ခုကို ရွေးပါ။"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ကုဒ်ဖြည်ထားသည်-"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ဒစ်ခ်ကက်ရှ်မှ)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "အထွေထွေ"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ခေါင်းစီး အစားထိုးရန်"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ကွန်ရက်မှတ်တမ်းဖိုင်များကို ဖရိမ်အလိုက် အုပ်စုမဖွဲ့ပါနှင့်"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "UNC ဖိုင်တွဲများလမ်းကြောင်းများမှတစ်ဆင့် Windows Shares မှ မြေပုံများကဲ့သို့ ရင်းမြစ်များအား DevTools ကို ဖွင့်ခွင့်ပြုရန်။ လုံခြုံရေးအကြောင်းများကြောင့် မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ထားသည်။"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ဖရိမ်"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "CDP ကွန်မန်း အကြမ်း ပို့ရန်"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ဖော်မက်- ကန့်သတ်ချက်များမရှိသည့် ကွန်မန်းအတွက် 'Domain.commandName' (သို့) ကန့်သတ်ချက်များရှိသည့် ကွန်မန်းအတွက် JSON ပစ္စည်းအနေဖြင့်ရှိသည့် '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'။ 'cmd'/'method' နှင့် 'args'/'params'/'arguments' တို့ကို JSON ပစ္စည်းအတွက် အခြားကီးများအနေဖြင့် ပံ့ပိုးထားသည်။"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "စက်ရှင်"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "မူရင်းများ ပြန်ပြောင်းပြီး ပြန်လည်စတင်ရန်"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "အကြံပြုချက် ပို့ရန်"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ဆက်တင်များ"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "အခြေအနေအမှန်ဖြစ်မှသာ ခဏရပ်ပါ"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ဖြတ်တောက်မှတ်များ မရှိပါ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "အရောင်ရွေးစနစ်ကို ဖွင့်ပါ။"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "စာရေးသူ/ထည့်သွင်းမှု အလိုက် အုပ်စုဖိုင်များ"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "စီစဉ်သတ်မှတ်ချက်ကို ရှင်းထုတ်ရန်"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "အမှားရှာပြင်ကိရိယာ ဖျောက်ထားရန်"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "လျစ်လျူရှုစာရင်းပြုလုပ်ထားသည့် ရင်းမြစ်များ ဖျောက်ရန်"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "လမ်းညွှန်စနစ်ကို ဖျောက်ထားရန်"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "စောင့်ကြည့်စရာဖော်ပြချက်များ ပြန်လည်စတင်ရန်"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ဖြတ်တောက်မှတ် ထိသည်"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "အမှန်ခြစ်ထားသည်"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "ရောထားသည်"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "အမှန်ခြစ်မထားပါ"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ခေါင်းစီးထည့်ရန်"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "တုံ့ပြန်ချိန်များ"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ပြန်လှန်တုံ့ပြန်မှုများ"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "ကွန်ရက်"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ဖြစ်ရပ်"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ဖြစ်ရပ် တုံ့ပြန်ချိန်"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "အဆင့်ဆင့်ပြောင်းလဲထားသည်"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "အချိန်တိုင်းစက် ထည့်သွင်းရန်"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ပြန်လှန်တုံ့ပြန်မှု အမျိုးအစား-{PH1} id-{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "အပြင်အဆင်ကို ပျက်ပြယ်စေခြင်း"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "လောလောဆယ်တွင် ပြဿနာကို မရနိုင်ပါ"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "မှတ်ဉာဏ် မြင်သာထင်သာဖြစ်အောင်လုပ်ခြင်းကို ဖျက်ရန်"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "မြင်သာထင်သာဖြစ်အောင်လုပ်ထားသည့် မှတ်ဉာဏ်သို့ သွားရန်"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "လိပ်စာသည် {PH1} နှင့် {PH2} အကြား ကိန်းဖြစ်ရမည်"

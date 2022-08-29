@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path eskirdi va olib tashlanadi. Oʻrniga Event.composedPath() ishlating."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT sarlavhasi eskirdi va olib tashlanadi. Chrome 2018-yil 30-apreldan keyin chiqarilgan barcha ochiq ishonchli sertifikatlar uchun sertifikat shaffofligini talab qiladi."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Qoʻshimcha maʼlumotni funksiya holati sahifasidan topishingiz mumkin."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Himoyalanmagan kontekstlarda WebSQL ishlatilishi eskirgan va M107 versiyasida olib tashlanadi. Oʻrniga veb xotira yoki indekslangan axborot omboridan foydalaning."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent tugatilgan. Oʻrniga standartlashtirilgan navigator.storage ishlating."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> tuzilmali <source src> yaroqsiz va inkor etiladi. Oʻrniga <source srcset> ishlating."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auksion Worklet — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Foydalanuvchi bilan oʻzaro aloqa"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Oldindan renderlash URL manzili begona URL manziliga yoʻnaltirishga urindi. Hozir begona manba sahifalarini oldindan renderlashga ruxsat berilmagan."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Trafikni rejash funksiyasi yoqildi"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Oldindan renderlash sahifasi noaniq sabablarga koʻra tashlab ketildi."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome ichki vositalari tomonidan ishga tushirilgan oldindan renderlash (masalan, Omniboks oldindan renderlash) begona manbali boshqa sahifaga yoʻnaltirilgani uchun bekor qilindi."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome ichki vositalari tomonidan ishga tushirilgan oldindan renderlash (masalan, Omniboks oldindan renderlash) destruktorda yoʻq qilindi."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome ichki vositalari tomonidan ishga tushirilgan oldindan renderlash (masalan, Omniboks oldindan renderlash) bir xil manbali boshqa sahifaga yoʻnaltirilgani uchun bekor qilindi."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Xotira sarfi olinmadi"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Oldindan renderlashlar soni maksimal limitga yetdi."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Xotira chegarasidan oshib ketdi"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Oldindan renderlash aralash kontent freymi tomondan bekor qilindi."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Tugatilgan xususiyat"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Nofaol qoida"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Nofaol xususiyat"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Muammoni hal qilish uchun {EXISTING_PARENT_ELEMENT_RULE} yuqori elementlarini {TARGET_PARENT_ELEMENT_RULE} ga oʻzgartiring."
+    "message": "Asosiy elementdagi {EXISTING_PARENT_ELEMENT_RULE} xususiyatini {TARGET_PARENT_ELEMENT_RULE} bilan almashtiring."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Yuqori elementda {REASON_RULE_CODE} qoidasi mavjud va quyidagi {AFFECTED_RULE_CODE} elementlari taʼsir qilmaydi"
+    "message": "Asosiy elementdagi {REASON_PROPERTY_DECLARATION_CODE} xususiyati {AFFECTED_PROPERTY_DECLARATION_CODE} effektini bekor qiladi."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} xossasini {TARGET_PROPERTY_DECLARATION}ga oʻzgartiring."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Bu xususiyat ishlashi uchun {REASON_RULE_CODE} qiymatini olib tashlang yoki oʻzgartiring"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}ni olib tashlang yoki qiymatini oʻzgartiring."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Bu elementda {REASON_RULE_CODE} qoidasi mavjud va {AFFECTED_RULE_CODE} taʼsir qilmaydi."
+    "message": "Xuddi shu elementdagi {REASON_PROPERTY_DECLARATION_CODE} xususiyati {AFFECTED_PROPERTY_DECLARATION_CODE} effektini bekor qiladi."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Yangi class kiritish"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Notanish xususiyat nomi"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ustki-qatlam"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ochiqlash"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Rad etildi"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Freym"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Sarlavha qiymati xato"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimal bir vaqtda roʻyxatdan oʻtish"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ta qoidabuzarlik}other{# ta qoidabuzarlik}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Sertifikatni ochish"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Faol client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Serverda amal bajaradigan faol client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Agar manba va hujjat bir saytdan boʻlsa, shu variantni tanlang."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekodlandi:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk keshidan)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Umumiy"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Oldindan aniqlangan sarlavhalar"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Batafsil"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Tarmoq jurnali qaydlari freym asosida guruhlanmasin"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools ob'ektiga Windows Sharesdan UNC yoʻllari orqali manba xaritalari kabi resurslarni yuklashiga ruxsat bering. Xavfsizlik sabablariga koʻra standart holatda ishlamaydi"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "freym"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Qayta ishlanmagan CDP buyrugʻini yuborish"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: parametrlarsiz buyruq uchun 'Domain.commandName' yoki parametrli buyruq uchun JSON obyekti sifatida '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. 'cmd'/'method' and 'args'/'params'/'arguments' are also supported as alternative keys for the JSON obyekti uchun muqobil kalitlar sifatida ham qoʻllab-quvvatlanadi."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Seans"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Asliga qaytarish va qayta yuklash"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Fikr-mulohaza"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Sozlamalar"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Faqat shart faol boʻlsa, pauza qilish"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Oraliq nuqtalarsiz"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ranglar palitrasini ochish."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Yozilgan va joylangan shakldagi guruhli fayllar"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Konfiguratsiyani tozalash"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Debagerni berkitish"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Inkor etiladigan manbalarni yashirish"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Navigatorni berkitish"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Tomosha ifodalarini yangilash"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} uzish nuqtasiga yetdi"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "belgilandi"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "aralash"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "belgilanmagan"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Sarlavha kiritish"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Vaqtlar"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Harakatlar"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Tarmoq"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Hodisa"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Hodisa vaqti"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "yaxshilangan"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Taymer oʻrnatish"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Oʻzaro taʼsir turi:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Maket bekor qilinishi"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hozircha muammo mavjud emas"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Yorqin xotirani oʻchirish"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Yorqin xotirga oʻtish"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Manzil soni {PH1}–{PH2} orasida boʻlsin"

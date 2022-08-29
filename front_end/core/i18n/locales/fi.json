@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path on poistettu käytöstä ja poistetaan kokonaan. Käytä sen sijaan tätä: Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Otsikko (Expect-CT) on poistettu käytöstä ja poistetaan kokonaan. Chrome edellyttää Certificate Transparencya kaikille 30.4.2018 jälkeen myönnetyille julkisesti luotetuille varmenteille."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Lisätietoa löydät ominaisuuden tilasivulta."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL on poistettu käytöstä suojaamattomissa konteksteissa ja poistetaan kokonaan M107:ssa. Käytä verkkotallennustilaa tai hakemistoon lisättyä tietokantaa."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent on poistettu käytöstä. Valitse sen sijaan standardoitu navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src>, jolla on <picture>-ylätaso, on virheellinen ja jätetään näin ollen huomiotta. Käytä sen sijaan tätä: <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Huutokauppa-worklet – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Käyttäjän toiminta"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Yritettiin esirenderöidä URL-osoite, joka uudelleenohjasi eri alkuperän URL-osoitteeseen. Eri lähteistä peräisin olevien sivujen esirenderöinti on kiellettyä."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Data Saver käytössä"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Esirenderöity sivu on hylätty tuntemattomista syistä."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chromen käynnistämä sisäinen esirenderöinti (esim. Omniboxin esirenderöinti) perutaan, koska navigointi uudelleenohjataan toiselle eri alkuperän sivulle."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chromen käynnistämä sisäinen esirenderöinti (esim. Omniboxin esirenderöinti) tuhotaan purkajassa."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chromen käynnistämä sisäinen esirenderöinti (esim. Omniboxin esirenderöinti) perutaan, koska navigointi uudelleenohjataan toiselle saman alkuperän sivulle."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Muistin käytön haku epäonnistui"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Esirenderöinnin enimmäismäärä ylitetty"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Muistiraja ylitetty"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Esirenderöinti perutaan yhdistelmäsisällön kehyksellä."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Käytöstä poistettu ominaisuus"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Ei-aktiivinen sääntö"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Ei-aktiivinen omaisuus"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Korjaa ongelma muuttamalla ylätason elementit ({EXISTING_PARENT_ELEMENT_RULE}) muotoon {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Kokeile muuttaa ylätason elementin omaisuuden ({EXISTING_PARENT_ELEMENT_RULE}) arvoksi {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Ylätason elementillä ({REASON_RULE_CODE}) on sääntö, joten {AFFECTED_RULE_CODE} ei vaikuta."
+    "message": "Ylätason elementissä oleva ominaisuus ({REASON_PROPERTY_DECLARATION_CODE}) ohittaa vaikutuksen ({AFFECTED_PROPERTY_DECLARATION_CODE})."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Kokeile muuttaa omaisuuden ({EXISTING_PROPERTY_DECLARATION}) arvoksi {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Poista {REASON_RULE_CODE} tai muuta sen arvoa, jotta tämä omaisuus toimii"
+    "message": "Kokeile poistaa {REASON_PROPERTY_DECLARATION_CODE} tai muuttaa sen arvoa."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Tällä elementillä ({REASON_RULE_CODE}) on sääntö, joten {AFFECTED_RULE_CODE} ei vaikuta."
+    "message": "Samassa elementissä oleva ominaisuus ({REASON_PROPERTY_DECLARATION_CODE}) ohittaa vaikutuksen ({AFFECTED_PROPERTY_DECLARATION_CODE})."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Lisää uusi luokka"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Tuntematon ominaisuuden nimi"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ylin taso"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "näytä"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ohitettu"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elementti"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Kehys"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Virheellinen otsikon arvo"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Samanaikaisten rekisteröitymisten enimmäismäärä"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# rikkomus}other{# rikkomusta}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Katso varmenne"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiivinen client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktiiviset tyypin client experiment variation IDs kohteet, jotka käynnistävät palvelinpuolen toimia."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Valitse tämä vaihtoehto, jos materiaali ja dokumentti toimitetaan samalta sivustolta."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Purettu:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(levyn välimuistista)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Yleistä"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Otsikon ohitukset"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Lue lisää"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Älä ryhmittele verkkolokin sisältöä kehysten mukaan"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Salli, että DevTools voi ladata materiaaleja, esim. lähdekarttoja, Windows-tiedostojaon polkujen (UNC) kautta. Oletuksena pois käytöstä turvallisuussyistä."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "kehys"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Lähetä raakakomento: CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Muoto: 'Domain.commandName' komennolle ilman parametreja tai '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' JSON-objektina komennolle, jolla on parametreja. Myös 'cmd'/'method' ja 'args'/'params'/'arguments' ovat tuettuja vaihtoehtoisia avaimia objektille (JSON)."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Käyttökerta"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Palauta oletusasetukset ja lataa uudelleen"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Lähetä palautetta"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Asetukset"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Keskeytyy vain, kun ehto on tosi"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Ei pysäytyspisteitä"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Avaa värivalitsin."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Tiedostojen ryhmittely tekijän/käyttöönoton mukaan"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Tyhjennä määritys"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Piilota virheenkorjaus"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Piilota ohituslistassa olevat lähteet"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Piilota siirtymistyökalu"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Päivitä katselun lausekkeet"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Pysäytyspiste ({PH1}) saavutettu"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "valittu"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "sekalainen"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ei valittu"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Lisää otsikko"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Ajat"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaktiot"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Verkko"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Tapahtuma"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Tapahtumien ajoitus"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "muuttunut"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Asenna ajastin"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaktiotapa: {PH1} tunnus: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Merkitse asettelu kelpaamattomaksi"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Ongelmaa ei ole saatavilla tällä hetkellä"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Poista muistin korostus"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Siirry korostettuun muistiin"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Osoitteen on oltava numero välillä {PH1}–{PH2}"

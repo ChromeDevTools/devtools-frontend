@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path は非推奨であり、削除される予定です。代わりに Event.composedPath() を使用してください。"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "詳しくは、機能のステータスページをご覧ください。"
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "セキュアでないコンテキストの WebSQL はサポートが終了し、M107 で削除される予定です。Web Storage またはインデックス登録済みのデータベースを使用してください。"
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent が非推奨となりました。代わりに、標準化された navigator.storage を使用してください。"
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> で <picture> 親要素を使用すると無効となり、無視されます。代わりに <source srcset> を使用してください。"
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo のサポートは終了しました。代わりに、標準化された navigator.storage を使用してください。"
+    "message": "window.webkitStorageInfo が非推奨となりました。代わりに、標準化された navigator.storage を使用してください。"
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "URL に埋め込み認証情報（https://user:pass@host/ など）が含まれるサブリソース リクエストはブロックされます。"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "オークション ワークレット - {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "ユーザー操作"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "事前レンダリングを試行した URL はクロスオリジン URL にリダイレクトされました。現在のところ、クロスオリジンのページを事前レンダリングすることはできません。"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "データセーバーが有効です"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "事前レンダリングされたページは、不明な理由により放棄されました。"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome 内部（Omnibox の事前レンダリングなど）でトリガーされた事前レンダリングはキャンセルされました。ナビゲーションが別のクロスオリジンのページにリダイレクトされたためです。"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome 内部（Omnibox の事前レンダリングなど）でトリガーされた事前レンダリングはデストラクタで破棄されました。"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome 内部（Omnibox の事前レンダリングなど）でトリガーされた事前レンダリングはキャンセルされました。ナビゲーションが別の同一オリジンのページにリダイレクトされたためです。"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "メモリ使用量を取得できませんでした"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation。"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "事前レンダリングの最大回数を超えました。"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "メモリ上限を超えています"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "事前レンダリングは、混合コンテンツ フレームによってキャンセルされました。"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "サポートが終了したプロパティ"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "無効なルール"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "無効なプロパティ"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "この問題を解決するには、親要素 {EXISTING_PARENT_ELEMENT_RULE} を {TARGET_PARENT_ELEMENT_RULE} に変更してください。"
+    "message": "親の {EXISTING_PARENT_ELEMENT_RULE} プロパティを {TARGET_PARENT_ELEMENT_RULE} に変更してみてください。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "親要素に {REASON_RULE_CODE} ルールがあるため、この要素 {AFFECTED_RULE_CODE} は無効です"
+    "message": "親要素に {REASON_PROPERTY_DECLARATION_CODE} プロパティが設定されているため、{AFFECTED_PROPERTY_DECLARATION_CODE} は適用されません。"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} プロパティを {TARGET_PROPERTY_DECLARATION} に変更してみてください。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "このプロパティを機能させるには、{REASON_RULE_CODE} の値を削除するか変更してください"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} を削除するか、値を変更してみてください。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "この要素には {REASON_RULE_CODE} ルールがあるため、{AFFECTED_RULE_CODE} は無効です。"
+    "message": "同じ要素に {REASON_PROPERTY_DECLARATION_CODE} プロパティが設定されているため、{AFFECTED_PROPERTY_DECLARATION_CODE} は適用されません。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "新しいクラスを追加"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "不明なプロパティ名"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "上位レイヤ"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "表示"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "除外"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "要素"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "フレーム"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "無効なヘッダー値"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "最大同時登録数"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# 件の違反}other{# 件の違反}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "証明書を表示"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "有効なclient experiment variation IDs です。"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "サーバーサイドの動作をトリガーするアクティブな client experiment variation IDs です。"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "リソースとドキュメントが同じサイトから配信されている場合は、このオプションを選択してください。"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "デコード済み:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "（ディスク キャッシュから）"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "全般"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ヘッダーのオーバーライド"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "詳細"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ネットワーク ログ項目をフレーム別にグループ化しない"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools が UNC パスを介して Windows Share からソースマップなどのリソースを読み込むことを許可します。セキュリティ上の理由により、デフォルトで無効になっています。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "フレーム"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "raw CDP コマンドを送信"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "形式: パラメータのないコマンドの場合は 'Domain.commandName'、パラメータを持つコマンドの JSON オブジェクトの場合は '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' です。JSON オブジェクトの代替キーとして、'cmd' / 'method'、'args' / 'params' / 'arguments' もサポートされます。"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "セッション"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "デフォルトを復元して再読み込み"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "フィードバックを送信"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "設定"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "条件が true の場合のみ一時停止"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ブレークポイントがありません"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "カラー選択ツールを開く"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "作成元 / 実装元別にファイルをグループ化する"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "設定をクリアします"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "デバッガを非表示"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "無視リストのソースを非表示にする"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "ナビゲータを非表示"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Watch 式を更新します"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ブレークポイントに達しました"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "オン"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "混合"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "オフ"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ヘッダーを追加"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "タイミング"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "操作"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "ネットワーク"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "イベント"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "イベントのタイミング"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "更新"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "タイマーをインストール"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "インタラクション タイプ: {PH1} ID: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "レイアウトを無効化"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "現在、問題を表示できません"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "メモリのハイライト表示を削除"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "ハイライト表示されたメモリに移動"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "アドレスは {PH1}～{PH2} の数値で指定してください"

@@ -489,7 +489,7 @@
     "message": "ఈ కుక్కీ బ్లాక్ చేయబడింది, ఎందుకంటే రిక్వెస్ట్ url మార్గానికి సరైన మ్యాచ్ కాదు లేదా దాని సూపర్‌డైరెక్టరీ కాదు."
   },
   "core/sdk/NetworkRequest.ts | samePartyFromCrossPartyContext": {
-    "message": "ఈ కుక్కీకి \"SameParty\" లక్షణం ఉన్నందున బ్లాక్ చేయబడింది, కానీ రిక్వెస్ట్ క్రాస్-పార్టీ. రిసోర్స్ URL డొమైన్, అలాగే ఫ్రేమ్‌లు/డాక్యుమెంట్‌లు జోడించబడిన రిసోర్స్ డొమైన్‌లు ఒకే ఫస్ట్-పార్టీ సెట్ యజమానులు లేదా సభ్యులు కానందున, సిస్టమ్ రిక్వెస్ట్ క్రాస్-పార్టీగా పరిగణించబడుతుంది."
+    "message": "ఈ కుక్కీకి \"SameParty\" లక్షణం ఉన్నందున బ్లాక్ చేయబడింది, కానీ రిక్వెస్ట్ క్రాస్-పార్టీ. రిసోర్స్ URL డొమైన్, అలాగే ఫ్రేమ్‌లు/డాక్యుమెంట్‌లు జోడించబడిన రిసోర్స్ డొమైన్‌లు ఒకే ఫస్ట్-పార్టీ సెట్ యజమానులు లేదా మెంబర్‌లు కానందున, సిస్టమ్ రిక్వెస్ట్ క్రాస్-పార్టీగా పరిగణించబడుతుంది."
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "ఈ కుక్కీ బ్లాక్ చేయబడింది, ఎందుకంటే అది \"SameSite=Lax\" లక్షణాన్ని కలిగి ఉంది, అలాగే రిక్వెస్ట్ అగ్ర-స్థాయి నావిగేషన్ నుండి ప్రారంభించబడకుండా వేరే సైట్ నుండి చేయబడింది."
@@ -528,7 +528,7 @@
     "message": "ఈ Set-Cookie హెడర్ చెల్లని సింటాక్స్‌ను కలిగి ఉంది."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSameparty": {
-    "message": "Set-Cookie హెడర్ ద్వారా కుక్కీని సెట్ చేయడానికి చేసిన ఈ ప్రయత్నం బ్లాక్ చేయబడింది ఎందుకంటే ఇది \"SameParty\" లక్షణాన్ని కలిగి ఉంది, కానీ రిక్వెస్ట్ క్రాస్-పార్టీ. రిసోర్స్ URL డొమైన్, అలాగే ఫ్రేమ్‌లు/డాక్యుమెంట్‌లు జోడించబడిన రిసోర్స్ డొమైన్‌లు ఒకే ఫస్ట్-పార్టీ సెట్ యజమానులు లేదా సభ్యులు కానందున, సిస్టమ్ రిక్వెస్ట్ క్రాస్-పార్టీగా పరిగణించబడుతుంది."
+    "message": "Set-Cookie హెడర్ ద్వారా కుక్కీని సెట్ చేయడానికి చేసిన ఈ ప్రయత్నం బ్లాక్ చేయబడింది ఎందుకంటే ఇది \"SameParty\" లక్షణాన్ని కలిగి ఉంది, కానీ రిక్వెస్ట్ క్రాస్-పార్టీ. రిసోర్స్ URL డొమైన్, అలాగే ఫ్రేమ్‌లు/డాక్యుమెంట్‌లు జోడించబడిన రిసోర్స్ డొమైన్‌లు ఒకే ఫస్ట్-పార్టీ సెట్ యజమానులు లేదా మెంబర్‌లు కానందున, సిస్టమ్ రిక్వెస్ట్ క్రాస్-పార్టీగా పరిగణించబడుతుంది."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamepartyAttribute": {
     "message": "Set-Cookie హెడర్ ద్వారా కుక్కీని సెట్ చేయడానికి చేసిన ఈ ప్రయత్నం బ్లాక్ చేయబడింది ఎందుకంటే ఇది \"SameParty\" లక్షణాన్ని కలిగి ఉంది, కానీ ఇతర వైరుధ్య లక్షణాలను కూడా కలిగి ఉంది. Chromeకు \"Secure\" లక్షణాన్ని కలిగి ఉండటానికి \"SameParty\" లక్షణాన్ని ఉపయోగించే కుక్కీలు అవసరం, అలాగే అవి \"SameSite=Strict\"కు పరిమితం కాకూడదు."
@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. దయచేసి బదులుగా Event.composedPath() ఉపయోగించండి."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT హెడర్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. Chromeను ఉపయోగించే విషయంలో, ఏప్రిల్ 30, 2018 తర్వాత జారీ చేయబడిన, పబ్లిక్‌గా విశ్వసనీయమైన సర్టిఫికెట్‌లన్నింటికీ పారదర్శకత సర్టిఫికెట్ అవసరం అవుతుంది."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "మరిన్ని వివరాల కోసం ఫీచర్ స్టేటస్ పేజీని చెక్ చేయండి."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "సురక్షితం కాని సందర్భాలలో WebSQL విస్మరించబడుతుంది, M107లో తీసివేయబడుతుంది. దయచేసి వెబ్ స్టోర్‌ను లేదా ఇండెక్స్ చేయబడిన డేటాబేస్‌ను ఉపయోగించండి."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent విస్మరించబడింది. బదులుగా దయచేసి ప్రామాణిక navigator.storage‌ను ఉపయోగించండి."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> పేరెంట్ కలిగిన <source src> చెల్లదు, కాబట్టి విస్మరించబడింది. బదులుగా దయచేసి <source srcset> ఉపయోగించండి."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo విస్మరించబడింది. బదులుగా దయచేసి ప్రామాణిక navigator.storage ఉపయోగించండి."
+    "message": "window.webkitStorageInfo విస్మరించబడింది. బదులుగా దయచేసి ప్రామాణిక navigator.storage‌ను ఉపయోగించండి."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "సబ్‌రిసోర్స్ రిక్వెస్ట్‌లు వేటి URLలు అయితే పొందుపరిచిన ఆధారాలు (ఉదా. https://user:pass@host/) కలిగి ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ఆక్షన్ వర్క్‌లెట్ — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "యూజర్ ఇంటరాక్షన్‌లు"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "క్రాస్-ఆరిజిన్ URLకు మళ్లించిన URLను ప్రీరెండర్ చేయడానికి ప్రయత్నించారు. క్రాస్-ఆరిజిన్ పేజీలను ప్రీరెండర్ చేయడానికి ప్రస్తుతం అనుమతి లేదు."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "డేటా సేవర్ ఎనేబుల్ చేయబడింది"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "ప్రీరెండర్ చేయబడిన పేజీ తెలియని కారణాల వలన విస్మరించబడింది."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "అంతర్గతంగా Chrome ట్రిగ్గర్ చేసిన ప్రీరెండరింగ్ (ఉదా., ఓమ్నిబాక్స్ ప్రీరెండరింగ్) రద్దు చేయబడింది ఎందుకంటే నావిగేషన్ మరో క్రాస్-ఆరిజిన్ పేజీకి మళ్లించబడింది."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "అంతర్గతంగా Chrome ట్రిగ్గర్ చేసిన ప్రీరెండరింగ్ (ఉదా., ఓమ్నిబాక్స్ ప్రీరెండరింగ్) విధ్వంసంలో నాశనమయ్యింది."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "అంతర్గతంగా Chrome ట్రిగ్గర్ చేసిన ప్రీరెండరింగ్ (ఉదా., ఓమ్నిబాక్స్ ప్రీరెండరింగ్) రద్దు చేయబడింది ఎందుకంటే నావిగేషన్ ఒకే ఆరిజిన్ కలిగిన మరో పేజీకి మళ్లించబడింది."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "మెమరీ వినియోగాన్ని పొందడంలో విఫలమైంది"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "ప్రీరెండరింగ్ యొక్క గరిష్ఠ సంఖ్య మించిపోయింది."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "మెమరీ పరిమితి మించిపోయింది"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "ప్రీరెండరింగ్‌ను మిక్స్‌డ్ కంటెంట్ ఫ్రేమ్ రద్దు చేసింది."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "విస్మరించబడిన ప్రాపర్టీ"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "ఇన్‌యాక్టివ్ నియమం"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "ఇన్‌యాక్టివ్ ప్రాపర్టీ"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ఈ సమస్యను పరిష్కరించడానికి దయచేసి పేరెంట్ ఎలిమెంట్‌లను {EXISTING_PARENT_ELEMENT_RULE} నుండి {TARGET_PARENT_ELEMENT_RULE}కు మార్చండి."
+    "message": "పేరెంట్‌లోని {EXISTING_PARENT_ELEMENT_RULE} ప్రాపర్టీని {TARGET_PARENT_ELEMENT_RULE}‌కు మార్చడానికి ట్రై చేయండి."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "పేరెంట్ ఎలిమెంట్ {REASON_RULE_CODE} నియమాన్ని కలిగి ఉంది, కాబట్టి ఈ ఎలిమెంట్‌లు {AFFECTED_RULE_CODE}కు ఎటువంటి ప్రభావం ఉండదు"
+    "message": "పేరెంట్ ఎలిమెంట్‌లో ఉన్న {REASON_PROPERTY_DECLARATION_CODE} ప్రాపర్టీ, {AFFECTED_PROPERTY_DECLARATION_CODE} ప్రభావాన్ని బైపాస్ చేస్తుంది."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} ప్రాపర్టీని {TARGET_PROPERTY_DECLARATION}‌కు మార్చడానికి ట్రై చేయండి."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ఈ ప్రాపర్టీ పని చేయాలంటే, దయచేసి {REASON_RULE_CODE} విలువను తీసివేయండి లేదా మార్చండి"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}‌ను తీసివేయడానికి లేదా దాని విలువను మార్చడానికి ట్రై చేయండి."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ఈ ఎలిమెంట్ {REASON_RULE_CODE} నియమాన్ని కలిగి ఉంది, కాబట్టి {AFFECTED_RULE_CODE}కు ఎటువంటి ప్రభావం ఉండదు."
+    "message": "ఒకే ఎలిమెంట్‌లో ఉన్న {REASON_PROPERTY_DECLARATION_CODE} ప్రాపర్టీ, {AFFECTED_PROPERTY_DECLARATION_CODE} ప్రభావాన్ని బైపాస్ చేస్తుంది."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "కొత్త క్లాస్‌ను జోడించండి"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "తెలియని ప్రాపర్టీ పేరు"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ఎగువ-లేయర్"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "బహిరంగపరచండి"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "విస్మరించబడింది"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ఎలిమెంట్"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ఫ్రేమ్"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "చెల్లని హెడర్ విలువ"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "ఒకే సమయంలో జరగగల గరిష్ఠ రిజిస్ట్రేషన్‌లు"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ఉల్లంఘన}other{# ఉల్లంఘనలు}}"
@@ -7446,7 +7464,7 @@
     "message": "client experiment variation IDs యాక్టివ్‌గా ఉంది."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "సర్వర్ వైపు పనితీరు‌ను ట్రిగ్గర్ చేసే యాక్టివ్ client experiment variation IDs."
+    "message": "సర్వర్-వైపు పనితీరును ట్రిగ్గర్ చేసే యాక్టివ్ client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "రిసోర్స్, డాక్యుమెంట్ ఒకే సైట్ నుండి అందించబడితే ఈ ఆప్షన్‌ను ఎంచుకోండి."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "సర్టిఫికెట్‌ను చూడండి"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs యాక్టివ్‌గా ఉంది."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "సర్వర్-వైపు పనితీరును ట్రిగ్గర్ చేసే యాక్టివ్ client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "రిసోర్స్, డాక్యుమెంట్ ఒకే సైట్ నుండి అందించబడితే ఈ ఆప్షన్‌ను ఎంచుకోండి."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "డీకోడ్ చేసినవి:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(డిస్క్ కాష్ నుండి)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "సాధారణం"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "హెడర్ ఓవర్‌రైడ్‌లు"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ఫ్రేమ్ వారీగా నెట్‌వర్క్ లాగ్ ఐటెమ్‌లను గ్రూప్ చేయవద్దు"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "UNC పాత్‌ల ద్వారా Windows షేర్‌ల నుండి సోర్స్ మ్యాప్‌ల వంటి రిసోర్స్‌లను లోడ్ చేయడానికి DevTools‌ను అనుమతించండి. సెక్యూరిటీ కారణాల దృష్ట్యా ఆటోమేటిక్‌గా డిజేబుల్ చేయబడింది."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ఫ్రేమ్"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ప్రాసెస్ చేయని CDP కమాండ్‌ను పంపండి"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ఫార్మాట్: పారామీటర్‌లు లేని కమాండ్ కోసం 'Domain.commandName', లేదా పారామీటర్‌లు గల కమాండ్ కోసం JSON ఆబ్జెక్ట్‌గా '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. 'cmd'/'method', 'args'/'params'/'arguments' కూడా JSON ఆబ్జెక్ట్‌కు ప్రత్యామ్నాయ కీలుగా సపోర్ట్ ఇస్తాయి."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "సెషన్"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "డిఫాల్ట్ సెట్టింగ్‌లను రీస్టోర్ చేసి, రీలోడ్ చేయి"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ఫీడ్‌బ్యాక్‌ను పంపండి"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "సెట్టింగ్‌లు"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "కండిషన్ ఒప్పు అయినప్పుడు మాత్రమే పాజ్ చేయండి"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "బ్రేక్ పాయింట్‌లు ఏవీ లేవు"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "రంగు ఎంపికను తెరవండి."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+ఎంటర్"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "ప్రామాణీకరించబడిన/అమలు చేయబడిన సోర్స్ ఆధారంగా ఫైల్స్‌ను గ్రూప్ చేయండి"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "కాన్ఫిగరేషన్‌ను క్లియర్ చేయండి"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "డీబగ్గర్‌ను దాచండి"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "విస్మరించడానికి లిస్ట్ చేయబడిన సోర్స్‌లను దాచండి"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "నావిగేటర్‌ను దాచండి"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "వాచ్ ఎక్స్ప్రెషన్‌లను రిఫ్రెష్ చేయండి"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} బ్రేక్‌పాయింట్ హిట్"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "ఎంచుకోబడింది"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "మిక్స్‌డ్"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ఎంపిక తీసివేయబడింది"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "హెడర్‌ను జోడించండి"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "సమయాలు"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ఇంటరాక్షన్‌లు"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "నెట్‌వర్క్"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ఈవెంట్"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ఈవెంట్ టైమింగ్"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ఉత్పన్నమైంది"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "టైమర్‌ను ఇన్‌స్టాల్ చేయండి"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ఇంటరాక్షన్ రకం:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "లేఅవుట్‌ను చెల్లకుండా చేయండి"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ప్రస్తుతం సమస్య అందుబాటులో లేదు"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "మెమరీ హైలైట్‌ను తొలగించండి"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "హైలైట్ చేయబడిన మెమరీకి వెళ్లండి"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "అడ్రస్ {PH1}, {PH2}లకు మధ్య ఉన్న నంబర్ అయి ఉండాలి"

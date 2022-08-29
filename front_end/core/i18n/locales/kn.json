@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ Event.composedPath() ಬಳಸಿ."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT ಶಿರೋಲೇಖವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ವೈಶಿಷ್ಟ್ಯದ ಸ್ಥಿತಿ ಪುಟವನ್ನು ಪರಿಶೀಲಿಸಿ."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "ಅಸುರಕ್ಷಿತ ಸಂದರ್ಭಗಳಲ್ಲಿರುವ WebSQL ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗುತ್ತದೆ ಹಾಗೂ M107 ನಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ವೆಬ್ ಸಂಗ್ರಹಣೆ ಅಥವಾ ಇಂಡೆಕ್ಸ್ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬಳಸಿ."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> ಪೇರೆಂಟ್ ಜೊತೆಗಿನ <source src> ಅಮಾನ್ಯವಾಗಿದೆ ಮತ್ತು ಆದ್ದರಿಂದ ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ. ಬದಲಿಗೆ <source srcset> ಬಳಸಿ."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "ಬಳಕೆದಾರರ ಸಂವಹನಗಳು"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "ಕ್ರಾಸ್-ಆರಿಜಿನ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾದ URL ಅನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ. ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಪುಟಗಳನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡುವುದನ್ನು ಪ್ರಸ್ತುತ ಅನುಮತಿಸಲಾಗಿಲ್ಲ."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "ಡೇಟಾ ಉಳಿಸುವಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "ಅಪರಿಚಿತ ಕಾರಣಗಳಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಲಾಗಿದೆ ಏಕೆಂದರೆ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮತ್ತೊಂದು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಪುಟಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಡಿಸ್ಟ್ರಕ್ಟರ್‌ನಲ್ಲಿ ನಾಶಪಡಿಸಲಾಗಿದೆ."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome ವತಿಯಿಂದಲೇ ಟ್ರಿಗರ್ ಮಾಡಲಾದ (ಉದಾ., ಓಮ್ನಿಬಾಕ್ಸ್ ಪ್ರೀರೆಂಡರಿಂಗ್) ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಲಾಗಿದೆ ಏಕೆಂದರೆ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಮತ್ತೊಂದು ಅದೇ ಮೂಲಸ್ಥಾನ ಪುಟಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಪಡೆಯಲು ವಿಫಲವಾಗಿದೆ"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "ಗರಿಷ್ಟ ಸಂಖ್ಯೆಯ ಪ್ರೀರೆಂಡರಿಂಗ್ ಮಿತಿಯನ್ನು ಮೀರಿದೆ."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "ಮೆಮೊರಿ ಮಿತಿಯು ಮೀರಿದೆ"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "ಮಿಶ್ರ ವಿಷಯದ ಫ್ರೇಮ್ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಿದೆ."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "ತಡೆಹಿಡಿದಿರುವ ಪ್ರಾಪರ್ಟಿ"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "ನಿಷ್ಕ್ರಿಯವಾಗಿರುವ ನಿಯಮ"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "ನಿಷ್ಕ್ರಿಯವಾಗಿರುವ ಪ್ರಾಪರ್ಟಿ"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "ಈ ಸಮಸ್ಯೆಯನ್ನು ಬಗೆಹರಿಸಲು ಮೂಲ ಎಲಿಮೆಂಟ್‌ಗಳನ್ನು{EXISTING_PARENT_ELEMENT_RULE} {TARGET_PARENT_ELEMENT_RULE} ಗೆ ಬದಲಿಸಿ."
+    "message": "ಮೂಲ ಘಟಕದಲ್ಲಿರುವ {EXISTING_PARENT_ELEMENT_RULE} ಪ್ರಾಪರ್ಟಿಯನ್ನು {TARGET_PARENT_ELEMENT_RULE} ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "ಮೂಲ ಎಲಿಮೆಂಟ್ {REASON_RULE_CODE} ನಿಯಮವನ್ನು ಹೊಂದಿದೆ, ಹಾಗಾಗಿ ಈ ಎಲಿಮೆಂಟ್‌ಗಳು {AFFECTED_RULE_CODE} ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ"
+    "message": "ಮೂಲ ಎಲಿಮೆಂಟ್‌ನ {REASON_PROPERTY_DECLARATION_CODE} ಪ್ರಾಪರ್ಟಿಯು {AFFECTED_PROPERTY_DECLARATION_CODE} ನ ಎಫೆಕ್ಟ್ ಅನ್ನು ಬೈಪಾಸ್ ಮಾಡುತ್ತದೆ."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} ಪ್ರಾಪರ್ಟಿಯನ್ನು {TARGET_PROPERTY_DECLARATION} ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "ಈ ಪ್ರಾಪರ್ಟಿ ಕೆಲಸ ಮಾಡಲು {REASON_RULE_CODE} ನ ಮೌಲ್ಯವನ್ನು ತೆಗೆದುಹಾಕಿ ಅಥವಾ ಬದಲಾಯಿಸಿ"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} ಅನ್ನು ತೆಗೆದುಹಾಕಲು ಅಥವಾ ಅದರ ಮೌಲ್ಯವನ್ನು ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "ಈ ಎಲಿಮೆಂಟ್ {REASON_RULE_CODE} ನಿಯಮವನ್ನು ಹೊಂದಿದೆ ಹಾಗಾಗಿ {AFFECTED_RULE_CODE} ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ."
+    "message": "ಅದೇ ಎಲಿಮೆಂಟ್‌ನ {REASON_PROPERTY_DECLARATION_CODE} ಪ್ರಾಪರ್ಟಿಯು {AFFECTED_PROPERTY_DECLARATION_CODE} ನ ಎಫೆಕ್ಟ್ ಅನ್ನು ಬೈಪಾಸ್ ಮಾಡುತ್ತದೆ."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "ಹೊಸ ವರ್ಗವನ್ನು ಸೇರಿಸಿ"
@@ -4959,7 +4977,7 @@
     "message": "ಪುಟದ DOM"
   },
   "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "ಪ್ರದರ್ಶಿಸಿ"
+    "message": "ಬಹಿರಂಗಪಡಿಸಿ"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "ಎಲ್ಲಾ ನೋಡ್‌ಗಳನ್ನು ತೋರಿಸಿ (ಇನ್ನೂ {PH1})"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "ಅಪರಿಚಿತ ಪ್ರಾಪರ್ಟಿ ಹೆಸರು"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "ಟಾಪ-ಲೇಯರ್"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ಬಹಿರಂಗಪಡಿಸಿ"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "ನಿರ್ಲಕ್ಷಿಸಲಾಗಿದೆ"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ಎಲಿಮೆಂಟ್"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "ಫ್ರೇಮ್"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ಅಮಾನ್ಯ ಶಿರೋಲೇಖ ಮೌಲ್ಯ"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "ಗರಿಷ್ಠ ಏಕಕಾಲಿಕ ನೋಂದಣಿಗಳು"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ಉಲ್ಲಂಘನೆ}one{# ಉಲ್ಲಂಘನೆಗಳು}other{# ಉಲ್ಲಂಘನೆಗಳು}}"
@@ -7479,7 +7497,7 @@
     "message": "ಸಾಮಾನ್ಯ"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "ಶಿರೋಲೇಖವನ್ನು ಅತಿಕ್ರಮಿಸುತ್ತದೆ"
+    "message": "ಶಿರೋಲೇಖದ ಓವರ್‌ರೈಡ್‌ಗಳು"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "ಪ್ರಮಾಣಪತ್ರವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "ಸಕ್ರಿಯ client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "ಸರ್ವರ್-ಸೈಡ್ ವರ್ತನೆಯನ್ನು ಟ್ರಿಗರ್ ಮಾಡುವ, ಸಕ್ರಿಯ client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "ಮಾಹಿತಿಯ ಮೂಲ ಮತ್ತು ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ಒಂದೇ ಸೈಟ್‌ನಿಂದ ನೀಡಿದ್ದರೆ ಈ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "ಡಿಕೋಡ್ ಮಾಡಿರುವುದು:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ಡಿಸ್ಕ್ ಕ್ಯಾಷ್‌ನಿಂದ)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "ಸಾಮಾನ್ಯ"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "ಶಿರೋಲೇಖದ ಓವರ್‌ರೈಡ್‌ಗಳು"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "ಫ್ರೇಮ್ ಮೂಲಕ ನೆಟ್‌ವರ್ಕ್ ಲಾಗ್ ಐಟಂಗಳನ್ನು ಗುಂಪು ಮಾಡಬೇಡಿ"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Windows Shares ನಿಂದ UNC ಮಾರ್ಗಗಳ ಮೂಲಕ ಸೋರ್ಸ್-ಮ್ಯಾಪ್‌ಗಳಂತಹ ಮಾಹಿತಿಯ ಮೂಲಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು DevTools ಗೆ ಅನುಮತಿಸಿ. ಭದ್ರತಾ ಕಾರಣಗಳಿಂದ ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ಫ್ರೇಮ್"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "ಕಚ್ಚಾ CDP ಕಮಾಂಡ್ ಅನ್ನು ಕಳುಹಿಸಿ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "ಫಾರ್ಮ್ಯಾಟ್: ಪ್ಯಾರಾಮೀಟರ್‌ಗಳಿಲ್ಲದ ಕಮಾಂಡ್‌ಗಾಗಿ 'Domain.commandName' ಅಥವಾ ಪ್ಯಾರಾಮೀಟರ್‌ಗಳಿರುವ ಕಮಾಂಡ್‌ಗಾಗಿ JSON ಆಬ್ಜೆಕ್ಟ್ ಆಗಿ '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. JSON ಆಬ್ಜೆಕ್ಟ್‌ಗಾಗಿ, 'cmd'/'method' ಮತ್ತು 'args'/'params'/'arguments' ಗಳೂ ಸಹ ಪರ್ಯಾಯ ಕೀಗಳಾಗಿ ಬೆಂಬಲಿತವಾಗಿವೆ."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "ಸೆಶನ್"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "ಡೀಫಾಲ್ಟ್‌ಗಳನ್ನು ಮರುಸ್ಥಾಪಿಸಿ ಮತ್ತು ಮರುಲೋಡ್ ಮಾಡಿ"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "ಷರತ್ತು ನಿಜವಾಗಿರುವಾಗ ಮಾತ್ರ ವಿರಾಮಗೊಳಿಸಿ"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ಯಾವುದೇ ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳಿಲ್ಲ"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "ಬಣ್ಣ ಆಯ್ಕೆಮಾಡುವಿಕೆ ತೆರೆಯಿರಿ."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "ದೃಢೀಕರಿಸಿದ/ನಿಯೋಜಿಸಿದ ಪ್ರಕಾರ ಫೈಲ್‌ಗಳನ್ನು ಗುಂಪು ಮಾಡಿ"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ಕಾನ್ಫಿಗರೇಶನ್ ತೆರವುಗೊಳಿಸಿ"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "ಡೀಬಗರ್ ಮರೆಮಾಡಿ"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿಯಲ್ಲಿರುವ ಮೂಲಗಳನ್ನು ಮರೆಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "ನ್ಯಾವಿಗೇಟರ್ ಅನ್ನು ಮರೆಮಾಡಿ"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಹಿಟ್"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "ಪರಿಶೀಲಿಸಲಾಗಿದೆ"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "ಮಿಶ್ರ"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ಗುರುತಿಸದಿರುವುದು"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "ಶಿರೋಲೇಖವನ್ನು ಸೇರಿಸಿ"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "ಸಮಯಗಳು"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "ಸಂವಹನಗಳು"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "ನೆಟ್‌ವರ್ಕ್"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "ಈವೆಂಟ್"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "ಈವೆಂಟ್ ಟೈಮಿಂಗ್"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ವಿಕಸನಗೊಳಿಸಿರುವುದು"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ಟೈಮರ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "ಸಂವಹನದ ಪ್ರಕಾರ:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ಲೇಔಟ್ ಅನ್ನು ಅಮಾನ್ಯಗೊಳಿಸಿ"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ಈ ಸಮಯದಲ್ಲಿ ಸಮಸ್ಯೆ ಲಭ್ಯವಿಲ್ಲ"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "ಮೆಮೊರಿ ಹೈಲೈಟ್ ಅನ್ನು ಅಳಿಸಿ"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "ಹೈಲೈಟ್ ಮಾಡಲಾದ ಮೆಮೊರಿಗೆ ಹೋಗಿ"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "ವಿಳಾಸವು {PH1} ಮತ್ತು {PH2} ರ ನಡುವೆ ಸಂಖ್ಯೆಯಾಗಿರಬೇಕು"
   },
@@ -12177,7 +12246,7 @@
     "message": "ನಮಗೆ ನಿಮ್ಮ ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ."
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಕಳುಹಿಸಿ"
+    "message": "ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಪ್ಯಾನೆಲ್ ಅನ್ನು ತೆರೆಯಲು ಕ್ಲಿಕ್ ಮಾಡಿ ಮತ್ತು URL ಗಾಗಿ ವಿನಂತಿಯನ್ನು ತೋರಿಸಿ: {url}"

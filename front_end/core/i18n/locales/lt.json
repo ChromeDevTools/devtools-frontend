@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Funkcijos „Event.path“ teikimas nutrauktas ir ji bus pašalinta. Vietoj jos naudokite funkciją „Event.composedPath()“."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "„Expect-CT“ antraštės teikimas nutrauktas ir ji bus pašalinta. „Chrome“ reikalauja visų viešai pateikiamų sertifikatų, išduotų po 2018 m. balandžio 30 d., sertifikato skaidrumo."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Jei reikia daugiau išsamios informacijos, žr. funkcijų būsenos puslapį."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "„WebSQL“ teikimas nesaugiame kontekste nutraukiamas ir pašalinama M107. Naudokite žiniatinklio saugyklą arba indeksuotą duomenų bazę."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "„StorageType.persistent“ teikimas nutrauktas. Vietoj to naudokite standartizuotą „navigator.storage“."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Elementas „<source src>“ su „<picture>“ aukštesniuoju elementu netinkamas, todėl jo nepaisoma. Vietoj jo naudokite „<source srcset>“."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Aukciono darbų blokas – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Naudotojo sąveikos"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Bandyta iš anksto pateikti URL, kuris peradresavo į kelių šaltinių URL. Šiuo metu išankstinio pateikimo kelių šaltinių puslapiai neleidžiami."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Duomenų taupymo priemonė įgalinta"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Iš anksto pateiktas puslapis buvo nutrauktas dėl nežinomų priežasčių."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Išankstinis pateikimas, suaktyvinamas viduje naudojant „Chrome“ (pvz., „omnibox“ išankstinis pateikimas) atšauktas, nes naršymas peradresuojamas į kitą kelių šaltinių puslapį."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Išankstinis pateikimas, suaktyvinamas viduje naudojant „Chrome“ (pvz., „omnibox“ išankstinis pateikimas) panaikinamas naudojant panaikinimo metodą."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Išankstinis pateikimas, suaktyvinamas viduje naudojant „Chrome“ (pvz., „omnibox“ išankstinis pateikimas), atšauktas, nes naršymas peradresuojamas į kitą to paties šaltinio puslapį."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Nepavyko gauti atminties sąnaudų"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Viršytas maks. išankstinių pateikimų skaičius."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Viršytas atminties apribojimas"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Išankstinis pateikimas atšauktas naudojant įvairaus turinio rėmelį."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Nuosavybė, kurios teikimas nutrauktas"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Neaktyvi taisyklė"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Neaktyvi nuosavybė"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Jei norite išspręsti šią problemą, pakeiskite pirminius elementus „{EXISTING_PARENT_ELEMENT_RULE}“ į „{TARGET_PARENT_ELEMENT_RULE}“."
+    "message": "Pabandykite pirminiame elemente pakeisti nuosavybę „{EXISTING_PARENT_ELEMENT_RULE}“ į „{TARGET_PARENT_ELEMENT_RULE}“."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Pirminiam elementui taikoma taisyklė „{REASON_RULE_CODE}“, todėl šis elementas „{AFFECTED_RULE_CODE}“ neturi jokio poveikio"
+    "message": "Pirminio elemento nuosavybė „{REASON_PROPERTY_DECLARATION_CODE}“ apeina funkcijos „{AFFECTED_PROPERTY_DECLARATION_CODE}“ poveikį."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Pabandykite pakeisti nuosavybę „{EXISTING_PROPERTY_DECLARATION}“ į „{TARGET_PROPERTY_DECLARATION}“."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Kad ši nuosavybė veiktų, pašalinkite arba pakeiskite „{REASON_RULE_CODE}“ vertę"
+    "message": "Pabandykite pašalinti „{REASON_PROPERTY_DECLARATION_CODE}“ arba pakeisti jo vertę."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Šiam elementui taikoma taisyklė „{REASON_RULE_CODE}“, todėl „{AFFECTED_RULE_CODE}“ neturi jokio poveikio."
+    "message": "Nuosavybė „{REASON_PROPERTY_DECLARATION_CODE}“ tame pačiame elemente apeina „{AFFECTED_PROPERTY_DECLARATION_CODE}“ poveikį."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Pridėti naują kursą"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nežinomas nuosavybės pavadinimas"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "viršutinis sluoksnis"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "rodyti"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Nepaisoma"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elementas"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Rėmelis"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Netinkama antraštės vertė"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Didžiausias vienu metu vykstančių registracijų skaičius"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# pažeidimas}one{# pažeidimas}few{# pažeidimai}many{# pažeidimo}other{# pažeidimų}}"
@@ -7443,10 +7461,10 @@
     "message": "Šioje užklausoje nėra slapukų."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "Aktyvūs client experiment variation IDs."
+    "message": "Aktyvus „client experiment variation IDs“."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktyvių client experiment variation IDs, kurie suaktyvina serverio veikimą."
+    "message": "Aktyvus client experiment variation IDs, kuris suaktyvina serverio veikimą."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Pasirinkite šią parinktį, jei šaltinis ir dokumentas teikiami iš tos pačios svetainės."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Žiūrėti sertifikatą"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktyvus „client experiment variation IDs“."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktyvus client experiment variation IDs, kuris suaktyvina serverio veikimą."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Pasirinkite šią parinktį, jei šaltinis ir dokumentas teikiami iš tos pačios svetainės."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Iššifruota:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(iš disko talpyklos)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Bendrieji"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Antraščių nepaisymas"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Sužinokite daugiau"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Negrupuoti tinklo žurnalo elementų pagal rėmelį"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Leiskite „DevTools“ įkelti šaltinius, pvz., šaltinio žemėlapius, iš „Windows Shares“ naudojant UNC kelius. Išjungta pagal numatytuosius nustatymus saugos sumetimais."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rėmelis"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Siųsti neapdorotą CDP komandą"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formatas: 'Domain.commandName' komandai be parametrų arba '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' kaip JSON objektas komandai su parametrais. 'cmd'/'method' ir 'args'/'params'/'arguments' taip pat palaikomi kaip alternatyvūs raktai JSON objektui."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Seansas"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Atkurti numatytuosius nustatymus ir įkelti iš naujo"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Siųsti atsiliepimą"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Nustatymai"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pristabdyti, tik kai sąlyga teisinga"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Stabdos taškų nėra"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Atidaryti spalvos parinkiklį."
@@ -9990,7 +10032,7 @@
     "message": "Įgalinti stabdos taškus faile"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "mišri"
+    "message": "mišrus"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "Atskaitos taškų nėra"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + „Enter“"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Grupuoti failus pagal tai, ar sukurta, ar pritaikyta"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Išvalyti konfigūraciją"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Slėpti derintuvę"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Slėpti nepaisomus šaltinius"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Slėpti naršymo priemonę"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Atnaujinti stebėjimo išraiškas"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} stabdos taško įvykis"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "pažymėta"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "mišrus"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "atžymėta"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Pridėti antraštę"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Laikas"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Sąveikos"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Tinklas"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Įvykis"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Įvykio laikas"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "patobulintas"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Diegimo laikmatis"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Sąveikos tipas: {PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Nepatvirtinti išdėstymo"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problema šiuo metu nepasiekiama"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Ištrinti paryškintą atmintį"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Pereiti į paryškintą atmintį"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresas turi būti skaičius nuo {PH1} iki {PH2}"

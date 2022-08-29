@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "تم إيقاف واجهة برمجة التطبيقات Event.path نهائيًا وستتم إزالتها. يُرجى استخدام الإجراء Event.composedPath() بدلاً منها."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "تم إيقاف عنوان Expect-CT نهائيًا وستتم إزالته. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "لمزيد من التفاصيل، يُرجى الاطّلاع على صفحة حالة الميزة."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "لغة الاستعلامات البنيوية (SQL) على الويب في السياقات غير الآمنة تم إيقافها نهائيًا وستتم إزالتها في الإصدار M107. يُرجى استخدام \"مساحة تخزين الويب\" أو \"قاعدة البيانات المُفهرَسة\"."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "تم إيقاف StorageType.persistent نهائيًا. يُرجى استخدام navigator.storage الموحّدة بدلاً منها."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "إنّ استخدام العنصر <source src> مع العنصر الرئيسي <picture> غير صالح، وبالتالي سيتم تجاهله. يُرجى استخدام السمة <source srcset> بدلاً من ذلك."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "الوظيفة المصغّرة للمزاد - {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "تفاعلات المستخدمين"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "تمت محاولة العرض المُسبق لعنوان URL أُعيد توجيهه إلى عنوان URL المشترك النطاق. ولا يُسمح حاليًا بعرض الصفحات المشتركة النطاق مسبقًا."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "ميزة \"توفير البيانات\" مفعَّلة."
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "تم التخلي عن الصفحة المعروضة مسبقًا لأسباب غير معروفة."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "تم إلغاء عملية العرض المُسبق التي أطلقها Chrome داخليًا (مثل العرض المُسبق للمربّع المتعدد الاستخدامات) بسبب أنّ عملية التنقُّل أُعيد توجيهها إلى صفحة أخرى تابعة لنطاق مشترك."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "إنّ عملية العرض المُسبق التي أطلقها Chrome داخليًا (مثل العرض المُسبق للمربّع المتعدد الاستخدامات) تم محوها في الدالة destructor."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "تم إلغاء عملية العرض المُسبق التي أطلقها Chrome داخليًا (مثل العرض المُسبق للمربّع المتعدد الاستخدامات) بسبب أنّ عملية التنقُّل أُعيد توجيهها إلى صفحة أخرى تابعة للنطاق نفسه."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "تعذَّر الحصول على معلومات استخدام الذاكرة."
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "تم تجاوز الحد الأقصى لعدد عمليات العرض المُسبق."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "تم تجاوز الحدّ الأقصى للذاكرة."
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "يتم إلغاء العرض المُسبق من خلال إطار محتوى مختلَط."
@@ -4731,22 +4746,25 @@
     "message": "عرض موارد مطوّر البرامج"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "موقع متوقّف نهائيًا"
+    "message": "سمة متوقّفة نهائيًا"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "قاعدة غير نشطة"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "سمة غير نشطة"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "يُرجى تغيير قاعدة العناصر الرئيسية من {EXISTING_PARENT_ELEMENT_RULE} إلى {TARGET_PARENT_ELEMENT_RULE} لحل هذه المشكلة."
+    "message": "يُرجى محاولة تغيير سمة {EXISTING_PARENT_ELEMENT_RULE} في العنصر الرئيسي إلى {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "القاعدة المخصّصة للعنصر الرئيسي هي {REASON_RULE_CODE}، وبالتالي لن يكون لقاعدة {AFFECTED_RULE_CODE} الخاصة بهذا العنصر أي تأثير."
+    "message": "إنّ سمة {REASON_PROPERTY_DECLARATION_CODE} في العنصر الرئيسي تتجاوز تأثير {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "يُرجى محاولة تغيير سمة {EXISTING_PROPERTY_DECLARATION} إلى {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "لكي يعمل هذا الموقع، يُرجى إزالة قيمة {REASON_RULE_CODE} أو تغييرها."
+    "message": "حاوِل إزالة {REASON_PROPERTY_DECLARATION_CODE} أو تغيير قيمته."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "القاعدة المخصصة لهذا العنصر هي {REASON_RULE_CODE}، وبالتالي لن يكون لقاعدة {AFFECTED_RULE_CODE} أي تأثير."
+    "message": "إنّ سمة {REASON_PROPERTY_DECLARATION_CODE} في العنصر نفسه تتجاوز تأثير {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "إضافة فئة جديدة"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "اسم الخاصية غير معروف."
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "طبقة علوية"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "عرض"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "عنصر تم تجاهله"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "العنصر"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "الإطار"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "قيمة العنوان غير الصالحة"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "الحد الأقصى للتسجيلات المتزامنة"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{مخالفة واحدة}zero{# مخالفة}two{مخالفتان}few{# مخالفات}many{# مخالفةً}other{# مخالفة}}"
@@ -7443,10 +7461,10 @@
     "message": "لا يتضمّن هذا الطلب ملفات تعريف الارتباط."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariation": {
-    "message": "client experiment variation IDs نشِط"
+    "message": "client experiment variation IDs النشِطة"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "عنوان client experiment variation IDs النشِط الذي يؤدي إلى سلوك من جهة الخادم."
+    "message": "client experiment variation IDs النشِطة التي تؤدي إلى سلوك من جهة الخادم"
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "يمكنك تحديد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
@@ -7479,7 +7497,7 @@
     "message": "عامة"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "إلغاء العنوان"
+    "message": "حالات تجاوز العنوان"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "مزيد من المعلومات"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "عرض الشهادة"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs النشِطة"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs النشِطة التي تؤدي إلى سلوك من جهة الخادم"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "يمكنك تحديد هذا الخيار إذا تم عرض المورد والمستند من الموقع الإلكتروني ذاته."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "العناوين التي تم فك ترميزها:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(من ذاكرة التخزين المؤقت للقرص)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "عامة"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "حالات تجاوز العنوان"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "مزيد من المعلومات"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "عدم تجميع عناصر سجلّ الشبكة حسب الإطار"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "يسمح هذا الإعداد لـ DevTools بتحميل الموارد، مثل خرائط المصدر، من شبكات خوادم مشاركة الملفات في Windows عبر مسارات UNC. يكون هذا الإعداد غير مفعَّل بشكل تلقائي لأسباب تتعلق بالأمان."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "إطار"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "إرسال أمر صف CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "التنسيق: اختَر 'Domain.commandName' لأمر بدون معلَمات، أو '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' ككائن JSON لأمر يتضمّن معلَمات. يمكنك أيضًا استخدام 'cmd'/'method' و'args'/'params'/'arguments' كمفاتيح بديلة للكائن JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "الجلسة"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "استعادة الإعدادات التلقائية وإعادة التحميل مرة أخرى"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "إرسال ملاحظات"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "الإعدادات"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "الإيقاف المؤقت فقط عندما تكون الحالة بالقيمة \"true\""
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "ما مِن نقاط إيقاف."
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "افتح علبة الألوان."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "تجميع الملفات حسب ما تم تأليفه/ما تم نشره"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "محو الإعدادات"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "إخفاء برنامج تصحيح الأخطاء"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "إخفاء المصادر المدرَجة بقائمة التجاهل"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "إخفاء أداة التنقّل"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "إعادة تحميل تعبيرات المشاهدة"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "الوصول إلى نقطة الإيقاف {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "هناك علامة موضوعة في المربع."
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "مجموعة من الحالات"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "إزالة العلامة من المربّع"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "إضافة عنوان"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "الأوقات"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "التفاعلات"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "الشبكة"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "الحدث"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "توقيت الحدث"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "الموقع الإلكتروني المطوَّر"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "تثبيت موقِّت"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "نوع التفاعل:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "إلغاء صلاحية التصميم"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "المشكلة غير متاحة في الوقت الحالي"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "حذف تمييز الذاكرة"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "الانتقال إلى الذاكرة المميّزة"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "يجب أن يكون العنوان عددًا بين {PH1} و{PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "إرسال ملاحظاتك"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "إرسال الملاحظات"
+    "message": "إرسال ملاحظات"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "انقر لفتح \"لوحة الشبكة\" ولعرض الطلب الخاص بعنوان URL: {url}"

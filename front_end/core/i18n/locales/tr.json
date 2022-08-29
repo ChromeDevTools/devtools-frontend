@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path artık kullanılmıyor olup kaldırılacaktır. Lütfen bunun yerine Event.composedPath() politikasını kullanın."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT seçeneği artık kullanılmıyor olup kaldırılacaktır. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Daha fazla bilgi için özellik durumu sayfasına göz atın."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Güvenli olmayan bağlamlarda WebSQL kullanımı kaldırılacak ve M107'de mevcut olmayacak. Lütfen web depolama veya dizine eklenmiş veritabanı kullanın."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent kullanımdan kaldırıldı. Lütfen bunun yerine standart navigator.storage kullanın."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Üst öğesi <picture> olan <source src> öğeleri geçersiz olduğundan yoksayılır. Lütfen bunun yerine <source srcset> politikasını kullanın."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Açık Artırma İş Akışı — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Kullanıcı Etkileşimleri"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Çapraz kaynak URL'sine yönlendirilen bir URL'yi önceden oluşturma girişimi gerçekleşti. Şu anda çapraz kaynak sayfalarının önceden oluşturulmasına izin verilmemektedir."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Veri tasarrufu etkinleştirildi"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Önceden oluşturulmuş bir sayfa, bilinmeyen nedenlerle terk edildi."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), gezinme işlemi çapraz kaynağa sahip başka bir sayfaya yönlendirildiği için iptal edildi."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), yıkıcıda kaldırıldı."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Dahili Chrome tarafından tetiklenen önceden oluşturma (ör. çok amaçlı adres çubuğu önceden oluşturma), gezinme işlemi aynı kaynağa sahip başka bir sayfaya yönlendirildiği için iptal edildi."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Bellek kullanımı alınamıyor"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Maksimum önceden oluşturma sayısı aşıldı."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Bellek sınırı aşıldı"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Önceden oluşturma, karma içerik çerçevesi tarafından iptal edildi."
@@ -4731,22 +4746,25 @@
     "message": "Geliştirici Kaynaklarını Göster"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Kullanımdan Kaldırılan Özellik"
+    "message": "Özellik kullanımdan kaldırıldı"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Etkin olmayan kural"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Etkin olmayan özellik"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Bu sorunu düzeltmek için lütfen {EXISTING_PARENT_ELEMENT_RULE} olan üst öğeleri {TARGET_PARENT_ELEMENT_RULE} olarak değiştirin."
+    "message": "Üst öğedeki {EXISTING_PARENT_ELEMENT_RULE} özelliğini {TARGET_PARENT_ELEMENT_RULE} olarak değiştirmeyi deneyin."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Üst öğede {REASON_RULE_CODE} kuralı olduğu için bu {AFFECTED_RULE_CODE} öğeleri herhangi bir etkiye sahip değildir"
+    "message": "Üst öğedeki {REASON_PROPERTY_DECLARATION_CODE} özelliği {AFFECTED_PROPERTY_DECLARATION_CODE} etkisini atlar."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} özelliğini {TARGET_PROPERTY_DECLARATION} olarak değiştirmeyi deneyin."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Bu özelliğin çalışabilmesi için lütfen {REASON_RULE_CODE} değerini kaldırın veya değiştirin"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE} özelliğini kaldırmayı veya değerini değiştirmeyi deneyin."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Bu öğede {REASON_RULE_CODE} kuralı olduğu için {AFFECTED_RULE_CODE} herhangi bir etkiye sahip değildir."
+    "message": "Aynı öğedeki {REASON_PROPERTY_DECLARATION_CODE} özelliği {AFFECTED_PROPERTY_DECLARATION_CODE} etkisini atlar."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Yeni sınıf ekle"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Özellik adı bilinmiyor"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "üst katman"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "göster"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Yoksayıldı"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Öğe"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Çerçeve"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Geçersiz Üstbilgi Değeri"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimum Eşzamanlı Kayıt Sayısı"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# ihlal}other{# ihlal}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Sertifikayı göster"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "client experiment variation IDs etkin."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Sunucu tarafı davranışlarını tetikleyen aktif client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Hem kaynak hem de doküman aynı siteden yayınlanıyorsa bu seçeneği belirleyin."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Kod çözüldü:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(disk önbelleğinden)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Genel"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Üst bilgi geçersiz kılmaları"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Daha fazla bilgi"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ağ günlüğü nesneleri çerçeveye göre gruplanmasın"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools sitesinin, Windows paylaşımlarından UNC yolları aracılığıyla kaynak haritaları gibi kaynakları yüklemesine izin verin. Güvenlik nedeniyle varsayılan olarak devre dışıdır."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "çerçeve"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Ham CDP komutu gönder"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Biçim: Parametre içermeyen bir komut için 'Domain.commandName' veya parametre içeren bir komut için JSON nesnesi olarak '{\"command\":\"Domain.commandName\", \"parameters\": {...}}'. JSON nesnesine alternatif anahtar olarak 'cmd'/'method' ve 'args'/'params'/'arguments' öğeleri de desteklenir."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Oturum"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Varsayılanları geri getir ve yeniden yükle"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Geri bildirim gönder"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Ayarlar"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Yalnızca koşul doğruysa duraklat"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Ayrılma noktası yok"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Renk seçiciyi aç."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Dosyaları oluşturulma/dağıtılma bazında gruplandırın"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Yapılandırmayı temizle"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Hata ayıklayıcıyı sakla"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Yoksayılanlar listesindeki kaynakları gizle"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Gezinme panelini gizle"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "İzlenen ifadeleri yenile"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ayrılma noktası isabeti"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "işaretli"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "karma"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "işaretlenmedi"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Üstbilgi ekle"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Zamanlamalar"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Etkileşimler"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Ağ"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Etkinlik"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Etkinlik Zamanlaması"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "gelişti"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Zamanlayıcı yükle"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Etkileşim türü:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Düzeni Geçersiz Kıl"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Sorun şu anda kullanılamıyor"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Bellek vurgulamasını sil"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Vurgulanan belleğe atla"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres {PH1} ile {PH2} arasında bir sayı olmalıdır"

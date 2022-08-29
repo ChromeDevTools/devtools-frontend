@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path is opgeskort en sal verwyder word. Gebruik pleks daarvan Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Die Expect-CT-opskrif is opgeskort en sal verwyder word. Chrome vereis Sertifikaatdeursigtigheid vir alle sertifikate wat publiek vertrou word en ná 30 April 2018 uitgereik is."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Gaan die kenmerkstatusbladsy na vir meer besonderhede."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL in onveilige kontekste is opgeskort en sal in M107 verwyder word. Gebruik asseblief webberging of ’n geïndekseerde databasis."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent is opgeskort. Gebruik pleks daarvan gestandaardiseerdenavigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> met ’n <picture>-ouer is ongeldig en word daarom geïgnoreer. Gebruik pleks daarvan <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Veilingwerkbrokkie — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Gebruikerinteraksies"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Het vooraflewering van ’n URL wat na ’n kruisoorsprong-URL herlei word, probeer. Vooraflewering van kruisoorsprongbladsye word nie tans toegelaat nie."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Databespaarder is geaktiveer"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "’n Voorafgelewerde bladsy is weens onbekende redes weggegooi."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Vooraflewering wat van binne deur Chrome geaktiveer is (bv., Omnibox-vooraflewering), word gekanselleer omdat die navigasie na ’n ander kruisoorsprongbaldsy herlei word."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Vooraflewering wat van binne deur Chrome geaktiveer is (bv., Omnibox-vooraflewering), word vernietig."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Vooraflewering wat van binne deur Chrome geaktiveer is (bv., Omnibox-vooraflewering), is gekanselleer omdat die navigasie na ’n ander bladsy van dieselfde oorsprong herlei word."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Kon nie geheuegebruik kry nie"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Maksimum aantal vooraflewerings is oorskry."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Geheuelimiet is oorskry"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Vooraflewering is deur ’n raam met gemengde inhoud gekanselleer."
@@ -4731,22 +4746,25 @@
     "message": "Wys ontwikkelaarhulpbronne"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Opgeskorte eiendom"
+    "message": "Opgeskorte eienskap"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Onaktiewe reël"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Onaktiewe eienskap"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Verander asseblief ouerelemente {EXISTING_PARENT_ELEMENT_RULE} na {TARGET_PARENT_ELEMENT_RULE} om hierdie kwessie reg te stel."
+    "message": "Probeer om die {EXISTING_PARENT_ELEMENT_RULE}-eienskap op die ouer-element na {TARGET_PARENT_ELEMENT_RULE} te verander."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Ouerelement het {REASON_RULE_CODE}-reël en dus het hierdie elemente {AFFECTED_RULE_CODE} geen uitwerking nie"
+    "message": "Die {REASON_PROPERTY_DECLARATION_CODE}-eienskap op die ouer-element omseil die effek van {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Probeer om die {EXISTING_PROPERTY_DECLARATION}-eienskap na {TARGET_PROPERTY_DECLARATION} te verander."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Verwyder of verander asseblief die waarde van {REASON_RULE_CODE} sodat hierdie eiendom kan werk"
+    "message": "Probeer om {REASON_PROPERTY_DECLARATION_CODE} te verwyder of die waarde daarvan te verander."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Hierdie element het {REASON_RULE_CODE}-reël en {AFFECTED_RULE_CODE} het dus geen uitwerking nie."
+    "message": "Die {REASON_PROPERTY_DECLARATION_CODE}-eienskap op dieselfde element omseil die effek van {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Voeg nuwe klas by"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Onbekende eienskapnaam"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "boonste laag"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "wys"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Geïgnoreer"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Raam"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ongeldige opskrifwaarde"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimum gelyklopende registrasies"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# oortreding}other{# oortredings}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Bekyk sertifikaat"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiewe client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktiewe client experiment variation IDs wat bedienerkantoptrede aktiveer."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Kies hierdie opsie as die hulpbron en die dokument vanaf dieselfde werf bedien word."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Gedekodeer:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(uit skyfkasgeheue)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Algemeen"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Opskriftersydestellings"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Kom meer te wete"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Moenie netwerkloglêeritems volgens raam groepeer nie"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Laat DevTools toe om hulpbronne soos bronkaarte vanaf Windows-lêerdelings via UNC-paaie te laai. By verstek gedeaktiveer vir veiligheidsredes."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "raam"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Stuur 'n rou CDP-bevel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formaat: 'Domain.commandName' vir ’n opdrag sonder parameters, of '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' as ’n JSON-voorwerp vir ’n opdrag met parameters. 'cmd'/'method' en 'args'/'params'/'arguments' word ook as alternatiewe sleutels vir die JSON-voorwerp gesteun."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sessie"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Stel verstekke terug en herlaai"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Stuur terugvoer"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Instellings"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Onderbreek slegs wanneer die voorwaarde waar is"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Geen breekpunte nie"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Maak kleurkieser oop."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Groepeer lêers volgens geskryf/ontplooi"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Vee opstelling uit"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Versteek ontfouter"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Versteek bronne op ignoreerlys"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Versteek navigator"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Herlaai dophou-uitdrukkings"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} breekpuntslag"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "gemerk"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "gemeng"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ontmerk"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Voeg 'n opskrif by"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Tydsduur"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaksies"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Netwerk"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Geval"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Geleentheidtydsberekening"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "ontwikkel"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installeer afteller"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Soort interaksie:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ongeldige uitleg"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Kwessie is nie op hierdie tydstip beskikbaar nie"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Vee die geheuekleurmerk uit"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Spring na kleurmerkgeheue"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adres moet 'n getal tussen {PH1} en {PH2} wees"

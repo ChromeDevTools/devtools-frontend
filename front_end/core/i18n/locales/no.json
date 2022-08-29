@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path er avviklet og kommer til å bli fjernet. Bruk Event.composedPath() i stedet."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT-hodet er avviklet og kommer til å bli fjernet. Chrome krever sertifikatåpenhet for alle offentlig klarerte sertifikater som er utstedt etter 30. april 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Se statussiden for funksjonen for å få mer informasjon."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL i usikre kontekster er avviklet og blir fjernet i M107. Bruk nettlagring eller indeksert database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent er avviklet. Bruk standardisert navigator.storage i stedet."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> med <picture> som forelder er ugyldig og blir derfor ignorert. Bruk <source srcset> i stedet."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Arbeidsbok for auksjoner – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Brukerinteraksjoner"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Forsøkte å forhåndsgjengi en nettadresse som ble viderekoblet til en opphavsuavhengig nettadresse. Forhåndsgjengivelse av opphavsuavhengige sider er foreløpig ikke tillatt."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Datasparing er slått på"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "En forhåndsgjengitt side ble forlatt av ukjente årsaker."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Forhåndsgjengivelse som utløses av Chrome internt (f.eks. Forhåndsgjengivelse i multifunksjonsfeltet) er avbrutt fordi navigasjonen blir viderekoblet til en annen opphavsuavhengig side."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Forhåndsgjengivelse som utløses av Chrome internt (f.eks. Forhåndsgjengivelse i multifunksjonsfeltet) blir tilintetgjort i Destructor."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Forhåndsgjengivelse som utløses av Chrome internt (f.eks. Forhåndsgjengivelse i multifunksjonsfelt) er avbrutt fordi navigeringen blir viderekoblet til en annen side med samme opprinnelse."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Kunne ikke hente minnebruk"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Det maksimale antallet forhåndsgjengivelser er overskredet."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Minnegrensen er overskredet"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Forhåndsgjengivelse kanselleres av en ramme for blandet innhold."
@@ -4731,22 +4746,25 @@
     "message": "Vis utviklerressurser"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Avviklet område"
+    "message": "Avviklet egenskap"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inaktiv regel"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inaktiv egenskap"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Endre de overordnede elementene {EXISTING_PARENT_ELEMENT_RULE} til {TARGET_PARENT_ELEMENT_RULE} for å løse dette problemet."
+    "message": "Prøv å endre {EXISTING_PARENT_ELEMENT_RULE}-egenskapen på det overordnede elementet til {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Den overordnede reklamekomponenten har regelen {REASON_RULE_CODE}, så dette reklameelementet {AFFECTED_RULE_CODE} har derfor ingen virkning"
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}-egenskapen på det overordnede elementet omgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Prøv å endre {EXISTING_PROPERTY_DECLARATION}-egenskapen til {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "For at dette området skal fungere, må du fjerne eller endre verdien for {REASON_RULE_CODE}"
+    "message": "Prøv å fjerne {REASON_PROPERTY_DECLARATION_CODE} eller endre verdien."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Denne reklamekomponenten har regelen {REASON_RULE_CODE}, så {AFFECTED_RULE_CODE} har derfor ingen effekt."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}-egenskapen på samme element omgår effekten av {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Legg til ny klasse"
@@ -4959,7 +4977,7 @@
     "message": "Side DOM"
   },
   "panels/elements/ElementsTreeOutline.ts | reveal": {
-    "message": "avdekk"
+    "message": "vis"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
     "message": "Vis alle noder ({PH1} flere)"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ukjent egenskapsnavn"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "topplag"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "vis"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorert"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Ramme"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ugyldig hodeverdi"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimalt antall samtidige registreringer"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# overtredelse}other{# overtredelser}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktiv client experiment variation IDs"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktiv client experiment variation IDs som utløser atferd på tjenersiden."
+    "message": "Aktive client experiment variation IDs som utløser atferd på tjenersiden."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Velg dette alternativet hvis ressursen og dokumentet vises fra samme nettsted."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Vis sertifikatet"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiv client experiment variation IDs"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktive client experiment variation IDs som utløser atferd på tjenersiden."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Velg dette alternativet hvis ressursen og dokumentet vises fra samme nettsted."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekodet:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(fra diskbufferen)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Generelt"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Hodeoverstyringer"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Finn ut mer"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ikke gruppér nettverksloggelementer etter ramme"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "La DevTools laste inn ressurser, for eksempel kildekart, fra Windows-nettverksressurser via UNC-baner. Deaktivert som standard av sikkerhetshensyn."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ramme"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Send en CDP-kommando direkte"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' for kommandoer uten parametere, eller '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' som et JSON-objekt for kommandoer med parametere. 'cmd'/'method' og 'args'/'params'/'arguments' støttes også som alternative nøkler for JSON-objektet."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Økt"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Gjenopprett standardverdier, og last inn på nytt"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Send tilbakemelding"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Innstillinger"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Satt på pause bare når tilstanden er oppfylt"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Ingen stoppunkter"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Åpne fargevelger."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Gruppér filer etter forfatter/implementert"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Slett konfigurasjon"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Skjul feilsøking"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Skjul kilder som står på ignoreringslisten"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Skjul navigatør"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Oppdater klokkeuttrykk"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1}-stoppunkttreff"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "avmerket"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "blandet"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ikke avmerket"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Legg til en topptekst"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Tid"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaksjoner"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Nettverk"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Hendelse"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Tidspunkt for hendelse"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "utviklet"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installeringstimer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaksjonstype:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ugylddigjør layout"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemet er ikke tilgjengelig nå"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Slett fremheving av minne"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Gå til fremhevet minne"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen må være et tall mellom {PH1} og {PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "Send oss en tilbakemelding."
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "Gi tilbakemelding"
+    "message": "Send tilbakemelding"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klikk for å åpne nettverkspanelet og vis forespørsel for nettadressen: {url}"

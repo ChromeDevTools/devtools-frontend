@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path er udfaset og vil blive fjernet. Brug i stedet Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Headeren Expect-CT er udfaset og bliver fjernet. Chrome kræver Certifikatgennemsigtighed for alle offentligt godkendte certifikater, der er udstedt efter den 30. april 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Du kan få flere oplysninger på siden for funktionsstatus."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL i usikre kontekster er udfaset og fjernes i M107. Du skal bruge Web Storage eller Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent er udfaset. Brug i stedet standardiseret navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> med en overordnet <picture> er ugyldig og ignoreres. Brug i stedet <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet for auktion – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Brugerinteraktioner"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker-{PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Et forsøg på at forhåndsgengive en webadresse er omdirigeret til en webadresse med krydsoprindelse. Det er i øjeblikket ikke tilladt at foretage forhåndsgengivelser af sider med krydsoprindelse."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Datasparefunktionen er aktiveret"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "En forhåndsgengivet side blev afbrudt af ukendte årsager."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "En forhåndsgengivelse, der aktiveres internt af Chrome (f.eks. en forhåndsgengivelse i omnifeltet) , er annulleret, fordi navigationen omdirigeres til en anden side med samme oprindelse."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "En forhåndsgengivelse, der aktiveres internt af Chrome (f.eks. en forhåndsgengivelse i omnifeltet), er ødelagt i destruktøren."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "En forhåndsgengivelse, der aktiveres internt af Chrome (f.eks. en forhåndsgengivelse i omnifeltet), er annulleret, fordi navigationen omdirigeres til en anden side med samme oprindelse."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Hukommelsesforbruget blev ikke hentet"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Det maksimale antal forhåndsgengivelser er overskredet."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Hukommelsesgrænsen er overskredet"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Forhåndsgengivelsen annulleres af en ramme med blandet indhold."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Udfaset egenskab"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inaktiv regel"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inaktiv ejendom"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Skift de overordnede elementer fra {EXISTING_PARENT_ELEMENT_RULE} til {TARGET_PARENT_ELEMENT_RULE} for at løse dette problem."
+    "message": "Prøv at ændre egenskaben {EXISTING_PARENT_ELEMENT_RULE} for det overordnede element til {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Det overordnede element har reglen {REASON_RULE_CODE}, og derfor har disse elementer {AFFECTED_RULE_CODE} ingen effekt"
+    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på det overordnede element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Prøv at ændre egenskaben {EXISTING_PROPERTY_DECLARATION} til {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Fjern eller rediger værdien af {REASON_RULE_CODE} for at få denne egenskab til at fungere"
+    "message": "Prøv at fjerne {REASON_PROPERTY_DECLARATION_CODE} eller ændre dens værdi."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Dette element har reglen {REASON_RULE_CODE}, og derfor har {AFFECTED_RULE_CODE} ingen effekt."
+    "message": "Egenskaben {REASON_PROPERTY_DECLARATION_CODE} på det samme element omgår effekten af {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Tilføj et nyt hold"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ukendt egenskabsnavn"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "øverste lag"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "vis"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignoreret"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Ramme"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ugyldig headerværdi"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimale antal samtidige registreringer"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# overtrædelse}one{# overtrædelse}other{# overtrædelser}}"
@@ -7479,7 +7497,7 @@
     "message": "Generelt"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Tilsidesættelse af overskrift"
+    "message": "Tilsidesættelse af header"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Se certifikat"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktive client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktive client experiment variation IDs, der aktiverer serversideadfærd."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Vælg denne mulighed, hvis ressourcen og dokumentet vises via samme website."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Afkodet:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(fra diskcache)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Generelt"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Tilsidesættelse af header"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Gruppér ikke elementer i netværkslog efter ramme"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Giv DevTools tilladelse til at indlæse ressourcer såsom kildekort fra Windows Shares via UNC-stier. Af sikkerhedsmæssige årsager er den som standard deaktiveret."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ramme"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Send en rå CDP-kommando"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' for en kommando uden parametre eller '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' som et JSON-objekt for en kommando med parametre. 'cmd'/'method' og 'args'/'params'/'arguments' understøttes også som alternative nøgler til JSON-objektet."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Gendan standarder, og genindlæs"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Send feedback"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Indstillinger"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Sæt kun på pause, når tilstanden er sand"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Der er ingen stoppunkter"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Åbn farvevælgeren."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Gruppér filer efter oprettet/implementeret"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ryd konfiguration"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Skjul debugger"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Skjul kilder på listen over ignorerede"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Skjul navigatør"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Opdater kontrolværdiudtryk"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} ramt stoppunkt"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "markeret"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "blandet"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "ikke markeret"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Tilføj et sidehoved"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Tider"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interaktioner"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Netværk"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Begivenhed"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Hændelsestid"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "nyudviklet"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installer timer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interaktionstype:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ugyldiggør layout"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemet er ikke tilgængeligt på nuværende tidspunkt"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Slet fremhævning af hukommelse"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Gå til fremhævet hukommelse"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adressen skal være et tal mellem {PH1} og {PH2}"

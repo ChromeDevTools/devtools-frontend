@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Hindi na ginagamit at aalisin ang Event.path. Event.composedPath() na lang ang gamitin."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Hindi na ginagamit at aalisin ang Expect-CT na header. Iniaatas ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Tingnan ang page ng status ng feature para sa higit pang detalye."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Hindi na ginagamit ang WebSQL sa mga hindi secure na konteksto at aalisin ito sa M107. Pakigamit ang Web Storage o Naka-index na Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "Hindi na ginagamit ang StorageType.persistent. Pakigamit na lang ang standardized na navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Invalid at binabalewala ang <source src> na may parent na <picture>. <source srcset> na lang ang gamitin."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet ng Auction — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Mga Pakikipag-ugnayan ng User"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Nagtangkang mag-prerender ng URL na nag-redirect sa isang cross-origin URL. Kasalukuyang hindi pinapayagan ang pag-prerender ng mga cross-origin na page."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Naka-enable ang Data saver"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "May na-prerender na page na inabanduna sa mga hindi alam na dahilan."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Ang pag-prerender na na-trigger ng Chrome internal (hal., pag-prerender ng Omnibox) ay nakansela dahil ang pag-navigate ay na-redirect sa ibang cross-origin na page."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Ang pag-prerender na na-trigger ng Chrome internal (hal., pag-prerender ng Omnibox) ay na-destroy sa destructor."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Ang pag-prerender na na-trigger ng Chrome internal (hal., pag-prerender ng Omnibox) ay nakansela dahil ang pag-navigate ay naka-redirect sa ibang same-origin na page."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Hindi nakuha ang paggamit ng memory"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Nalampasan na ang max na bilang ng pag-prerender."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Lumampas na sa limitasyon sa memory"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Na-cancel ng halo-halong content na frame ang pag-prerender."
@@ -4731,22 +4746,25 @@
     "message": "Ipakita ang Mga Resource ng Developer"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Hindi na Ginagamit na Property"
+    "message": "Hindi na ginagamit na property"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Hindi aktibong panuntunan"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Hindi aktibong property"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Gawing {TARGET_PARENT_ELEMENT_RULE} ang mga parent na element na {EXISTING_PARENT_ELEMENT_RULE} para maayos ang isyung ito."
+    "message": "Subukang baguhin ang {EXISTING_PARENT_ELEMENT_RULE} na property sa parent sa {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Ang parent na element ay may {REASON_RULE_CODE} na panuntunan, samaktuwid ang mga element na ito na {AFFECTED_RULE_CODE} ay walang epekto"
+    "message": "Naba-bypass ng {REASON_PROPERTY_DECLARATION_CODE} na property sa parent element ang epekto ng {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Subukang gawing {TARGET_PROPERTY_DECLARATION} ang {EXISTING_PROPERTY_DECLARATION} na property."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Para gumana ang property na ito, pakialis o baguhin ang value ng {REASON_RULE_CODE}"
+    "message": "Subukang alisin ang {REASON_PROPERTY_DECLARATION_CODE} o baguhin ang value nito."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Ang element na ito ay may {REASON_RULE_CODE} na panuntunan, samakatuwid walang epekto ang {AFFECTED_RULE_CODE}."
+    "message": "Naba-bypass ng {REASON_PROPERTY_DECLARATION_CODE} na property sa parehong element ang epekto ng {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Magdagdag ng bagong class"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Hindi kilalang pangalan ng property"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "top-layer"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ipakita"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Binalewala"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Frame"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Invalid na Value ng Header"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maximum na Mga Magkakasabay-sabay na Pagpaparehistro"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# paglabag}one{# paglabag}other{# na paglabag}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktibong client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktibong client experiment variation IDs na nagti-trigger ng server-side na gawi."
+    "message": "Aktibong client experiment variation IDs na nagti-trigger ng gawi sa server-side."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Piliin ang opsyong ito kung inihahatid sa iisang site ang resource at ang dokumento."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Tingnan ang certificate"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktibong client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktibong client experiment variation IDs na nagti-trigger ng gawi sa server-side."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Piliin ang opsyong ito kung inihahatid sa iisang site ang resource at ang dokumento."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Na-decode:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(mula sa cache ng disk)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Pangkalahatan"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Mga pag-override sa header"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Matuto pa"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Huwag pagpangkatin ang mga item sa log ng network ayon sa frame"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Payagan ang DevTools na mag-load ng mga resource, tulad ng mga source map, mula sa Windows Shares sa pamamagitan ng mga UNC na path. Naka-disable bilang default para sa mga layuning panseguridad."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Magpadala ng raw na command ng CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Format: 'Domain.commandName' para sa command na walang parameter, o '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' bilang isang JSON object para sa command na may mga parameter. Sinusuportahan din ang 'cmd'/'method' at 'args'/'params'/'arguments' bilang mga alternatibong key para sa JSON object."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "I-restore ang mga default at i-reload"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Magpadala ng feedback"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Mga Setting"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "I-pause lang kapag true ang kundisyon"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Walang breakpoint"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Buksan ang tagapili ng kulay."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Igrupo ang mga file ayon sa Naka-author/Naka-deploy"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "I-clear ang configuration"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Itago ang debugger"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Itago ang mga source na nakalistang babalewalain"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Itago ang navigator"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "I-refresh ang mga expression na babantayan"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} breakpoint na hit"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "na-check"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "halo-halo"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "naka-uncheck"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Magdagdag ng header"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Mga Timing"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Mga Pakikipag-ugnayan"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Network"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Event"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Timing ng Event"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "nagbago"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Pag-install ng Timer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Uri ng pakikipag-ugnayan:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Pag-invalidate sa Layout"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hindi available ang isyu sa ngayon"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "I-delete ang highlight sa memory"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Pumunta sa naka-highlight na memory"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Dapat ay numero sa pagitan ng {PH1} at {PH2} ang address"

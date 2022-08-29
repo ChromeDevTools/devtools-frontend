@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Az Event.path attribútumot megszüntettük, és el fogjuk távolítani. Használja helyette a következőt: Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Az Expect-CT fejlécet megszüntettük, és el fogjuk távolítani. A Chrome megköveteli A tanúsítványok átláthatósága funkció használatát a 2018. április 30. után kibocsátott összes nyilvánosan megbízható tanúsítvány esetében."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "További részleteket a funkció állapotát jelző oldalon találhat."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "A nem biztonságos környezetben lévő WebSQL elavult, ezért az M107-ben el fogjuk távolítani. Használjon webes tárhelyet vagy indexelt adatbázist."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "A StorageType.persistent paramétert megszüntettük. Használja helyette a szabványosított navigator.storage paramétert."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "A <picture> fölérendelt elemmel rendelkező <source src> elem érvénytelen, ezért a rendszer figyelmen kívül hagyja. Használja helyette a következőt: <source srcset>."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "A(z) window.webkitStorageInfo elemet megszüntettük. Használja helyette a szabványosított navigator.storage paramétert."
+    "message": "A window.webkitStorageInfo paramétert megszüntettük. Használja helyette a szabványosított navigator.storage paramétert."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "Le vannak tiltva azok az alerőforrás-kérések, amelyek URL-jei beágyazott hitelesítési adatokat tartalmaznak (pl. https://user:pass@host/)."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Aukciós worklet – {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Felhasználói interakciók"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Egy eltérő eredetű URL-címre irányított URL-t próbált meg előzetesen renderelni. Az eltérő eredetű oldalak előzetes renderelése jelenleg nem engedélyezett."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Az Adatforgalom-csökkentő aktiválva van"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Egy előzetesen renderelt oldal ismeretlen ok miatt elhagyásra került."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "A Chrome által aktivált előzetes renderelés (pl. a cím- és keresősáv előzetes renderelése) meg lett szakítva, mert a navigáció egy másik, eltérő eredetű oldalra lett átirányítva."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "A Chrome által aktivált előzetes renderelés (pl. cím- és keresősáv előzetes renderelése) megsemmisült a destruktorban."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "A Chrome által aktivált előzetes renderelés (pl. a cím- és keresősáv előzetes renderelése) meg lett szakítva, mert a navigáció egy másik, azonos eredetű oldalra lett átirányítva."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Nem sikerült a memóriahasználat lekérése"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Túllépte az előzetes renderelések maximális számát."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Túllépte a memóriakorlátot"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Az előzetes renderelést törölte egy vegyes tartalomkeret."
@@ -4731,22 +4746,25 @@
     "message": "Fejlesztői források megjelenítése"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Elavult tulajdon"
+    "message": "Elavult tulajdonság"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Inaktív szabály"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Inaktív tulajdonság"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "A probléma megoldásához módosítsa a fölérendelt elemeket ({EXISTING_PARENT_ELEMENT_RULE}) a következőre: {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Módosítsa a fölérendelt elem {EXISTING_PARENT_ELEMENT_RULE} tulajdonságát a következőre: {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "A fölérendelt elem {REASON_RULE_CODE} szabállyal rendelkezik, ezért a(z) {AFFECTED_RULE_CODE} paraméternek nincs hatása."
+    "message": "A fölérendelt elemen lévő {REASON_PROPERTY_DECLARATION_CODE} tulajdonság megkerüli a {AFFECTED_PROPERTY_DECLARATION_CODE} hatását."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Próbálja meg módosítani a {EXISTING_PROPERTY_DECLARATION} tulajdonságot a következőre: {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "A tulajdon megfelelő működéséhez távolítsa el vagy módosítsa a következő értékét: {REASON_RULE_CODE}"
+    "message": "Próbálja meg eltávolítani a következőt: {REASON_PROPERTY_DECLARATION_CODE}, vagy módosítsa az értékét."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Ez az elem {REASON_RULE_CODE} szabállyal rendelkezik, ezért a(z) {AFFECTED_RULE_CODE} paraméternek nincs hatása."
+    "message": "Az ugyanazon az elemen található {REASON_PROPERTY_DECLARATION_CODE} tulajdonság megkerüli az {AFFECTED_PROPERTY_DECLARATION_CODE} hatását."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Új osztály hozzáadása"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Ismeretlen tulajdonnév"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "legfelső réteg"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "felfedés"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Figyelmen kívül hagyva"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elem"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Keret"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Érvénytelen fejlécérték"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Egyidejű regisztrációk maximális száma"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# irányelvsértés}other{# irányelvsértés}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktív client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktív szerveroldali viselkedést kiváltó client experiment variation IDs."
+    "message": "Szerveroldali viselkedést kiváltó aktív client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Akkor válassza ezt a lehetőséget, ha az erőforrás és a dokumentum ugyanarról a webhelyről kerül megjelenítésre."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Tanúsítvány megtekintése"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktív client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Szerveroldali viselkedést kiváltó aktív client experiment variation IDs."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Akkor válassza ezt a lehetőséget, ha az erőforrás és a dokumentum ugyanarról a webhelyről kerül megjelenítésre."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekódolva:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(a lemez gyorsítótárából)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Általános"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Fejléc-felülbírálások"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "További információ"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Ne csoportosítsa keretek szerint a hálózati napló elemeit"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "A források betöltésének engedélyezése a DevTools számára (ilyenek például a forrás-hozzárendelések a Windows Shares szolgáltatásból a UNC-útvonalakon keresztül). Biztonsági okokból alapértelmezés szerint le van tiltva."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "keret"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Nyers CDP-parancs küldése"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formátum: 'Domain.commandName' paraméterek nélküli parancs esetén vagy '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' JSON-objektumként paraméterrel rendelkező parancs esetén. A 'cmd'/'method' és az 'args'/'params'/'arguments' is támogatott alternatív kulcsként a JSON-objektumnál."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Munkamenet"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Alapértelmezett értékek visszaállítása és újratöltés"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Visszajelzés küldése"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Beállítások"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Csak akkor szüneteljen, ha a feltétel igaz"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Nincsenek töréspontok"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Színválasztó megnyitása."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Fájlok csoportosítása szerző/bevezetés szerint"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Konfiguráció törlése"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Hibakereső elrejtése"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Mellőzési listára tett források elrejtése"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Navigátor elrejtése"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Figyelendő kifejezések frissítése"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} törésponttalálat"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "bejelölve"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "vegyes"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "nincs bejelölve"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Fejléc hozzáadása"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Mért idők"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interakciók"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Hálózat"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Esemény"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Esemény időzítése"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "továbbfejlesztett"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Időmérő telepítése"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Interakciótípus: {PH1}, azonosító: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Elrendezés érvénytelenítése"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Jelenleg nem hozzáférhető a probléma"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Kiemelt memória törlése"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Ugrás a kiemelt memóriára"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "A címnek {PH1} és {PH2} közötti számnak kell lennie"

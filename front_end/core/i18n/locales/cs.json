@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "API Event.path je zastaralé a bude odstraněno. Použijte místo něj API Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Záhlaví Expect-CT je zastaralé a bude odstraněno. Chrome u všech veřejně důvěryhodných certifikátů vydaných po 30. dubnu 2018 vyžaduje ochranu Certificate Transparency."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Další podrobnosti najdete na stránce s informacemi o stavu funkcí."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Podpora WebSQL v nezabezpečených kontextech je zastaralá a v M107 bude odstraněna. Použijte rozhraní Web Storage nebo IndexedDB."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "Rozhraní StorageType.persistent je zastaralé. Použijte místo něj standardizované rozhraní navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Prvek <source src> s nadřazeným prvkem <picture> je neplatný, a proto je ignorován. Použijte místo něj prvek <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet pro aukce — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Interakce uživatelů"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Došlo k pokusu o předběžného vykreslení adresy URL, která přesměrovávala na adresu URL z jiného zdroje. Předběžné vykreslování stránek z jiných zdrojů je aktuálně zakázáno."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Spořič dat je aktivní"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Předběžně vykreslená stránka byla z neznámých důvodů opuštěna."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Předběžné vykreslení spuštěné interní akcí Chromu (např. předběžné vykreslování z omniboxu) je zrušeno, protože navigace je přesměrována na jinou stránku z jiného zdroje."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Předběžné vykreslení spuštěné interním modulem Chromu (např. předběžné vykreslování z omniboxu) je zničeno v destruktoru."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Předběžné vykreslování spuštěné interní akcí Chromu (např. předběžným vykreslováním omniboxu) je zrušeno, protože navigace je přesměrována na jinou stránku stejného zdroje."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Informace o využití paměti se nepodařilo načíst"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Byl překročen maximální počet předběžných vykreslení."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Byl překročen limit paměti"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Předběžné vykreslování je zrušeno rámcem smíšeného obsahu."
@@ -4731,22 +4746,25 @@
     "message": "Zobrazit zdroje pro vývojáře"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Podpora služby byla ukončena"
+    "message": "Podpora vlastnosti byla ukončena"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Neaktivní pravidlo"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Neaktivní služba"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Tento problém lze vyřešit změnou nadřazených prvků {EXISTING_PARENT_ELEMENT_RULE} na {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Zkuste vlastnost {EXISTING_PARENT_ELEMENT_RULE} u nadřazeného prvku změnit na {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Nadřazený prvek má pravidlo {REASON_RULE_CODE}, proto tyto prvky {AFFECTED_RULE_CODE} nemají žádný účinek"
+    "message": "Vlastnost {REASON_PROPERTY_DECLARATION_CODE} nadřazeného prvku obchází účinek vlastnosti {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Zkuste změnit vlastnost {EXISTING_PROPERTY_DECLARATION} na {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Aby tato vlastnost fungovala, odstraňte nebo změňte hodnotu {REASON_RULE_CODE}"
+    "message": "Zkuste vlastnost {REASON_PROPERTY_DECLARATION_CODE} odstranit nebo změnit její hodnotu."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Tento prvek má pravidlo {REASON_RULE_CODE}, takže {AFFECTED_RULE_CODE} nemá žádný vliv."
+    "message": "Vlastnost {REASON_PROPERTY_DECLARATION_CODE} stejného prvku obchází účinek vlastnosti {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Přidat novou třídu"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Neznámý název vlastnosti"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "horní vrstva"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "ukázat"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorováno"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Prvek"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Rámec"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Neplatná hodnota záhlaví"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maximální počet souběžných registrací"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# porušení}few{# porušení}many{# porušení}other{# porušení}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktivní client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktivní client experiment variation IDs, které spouštějí chování na straně serveru."
+    "message": "Aktivní client experiment variation IDs, která spouštějí chování na straně serveru."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Tuto možnost vyberte, pokud je zdroj i dokument poskytován ze stejného webu."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Zobrazit certifikát"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktivní client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktivní client experiment variation IDs, která spouštějí chování na straně serveru."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Tuto možnost vyberte, pokud je zdroj i dokument poskytován ze stejného webu."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekódované:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(z mezipaměti disku)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Obecné"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Přepsání záhlaví"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Další informace"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Neseskupovat položky protokolu sítě podle rámce"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Povolit nástrojům DevTools načítat zdroje, jako jsou mapy zdrojů, ze sdílených složek Windows prostřednictvím cest UNC. Ve výchozím nastavení je to z bezpečnostních důvodů zakázáno."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "rámec"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Odeslat neupravený příkaz CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formát: pro příkaz bez parametrů 'Domain.commandName', případně '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' jako objekt JSON pro příkaz s parametry. U objektu JSON jsou podporovány také alternativní klíče 'cmd'/'method' a 'args'/'params'/'arguments'."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Relace"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Obnovit výchozí nastavení a znovu načíst"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Odeslat zpětnou vazbu"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Nastavení"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pozastavit, pouze při splnění podmínky"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Žádné zarážky"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Otevřít výběr barvy."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Seskupit soubory podle původní/nasazeno"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Vymazat konfiguraci"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Skrýt ladicí nástroj"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Skrýt zdroje na seznamu ignorovaných"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Skrýt navigační panel"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Obnovit sledované výrazy"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Bylo dosaženo zarážky typu {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "vybráno"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "různé"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "nezaškrtnuto"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Přidat záhlaví"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Časy"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Interakce"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Síť"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Událost"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Časování událostí"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "rozvinuté"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Nainstalovat časovač"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Typ interakce: {PH1} id: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Zneplatnění rozvržení"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problém v tuto chvíli není k dispozici"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Smazat zvýraznění paměti"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Přejít na zvýrazněnou paměť"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa musí být číslo mezi {PH1} a {PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "Zašlete nám svoji zpětnou vazbu."
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "Poslat zpětnou vazbu"
+    "message": "Odeslat zpětnou vazbu"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Kliknutím otevřete panel sítě a zobrazíte žádost pro adresu URL: {url}"

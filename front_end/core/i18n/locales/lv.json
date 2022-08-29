@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Saskarne Event.path vairs netiek izmantota un tiks noņemta. Tās vietā, lūdzu, izmantojiet metodi Event.composedPath()."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Galvene Expect-CT vairs netiek atbalstīta un tiks noņemta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Plašāku informāciju skatiet funkcijas statusa lapā."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "Saskarne WebSQL vairs netiek izmantota nedrošos kontekstos un versijā M107 tiks noņemta. Lūdzu, izmantojiet saskarni Web Storage vai Indexed Database."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "Tips StorageType.persistent vairs netiek atbalstīts. Tā vietā, lūdzu, izmantojiet standartizētu navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "Elements <source src> ar galveno elementu <picture> nav derīgs, tādēļ tiks ignorēts. Tā vietā, lūdzu, izmantojiet <source srcset>."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Viena uzdevuma konteksts izsolei — {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Lietotāju mijiedarbība"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "Tika mēģināts iepriekš atveidot vietrādi URL, no kura tika veikta novirzīšana uz citas izcelsmes URL. Pašlaik nav atļauts iepriekš atveidot citas izcelsmes lapas."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "Datu lietojuma samazinātājs ir iespējots"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Iepriekš atveidota lapa tika atmesta nezināmu iemeslu dēļ."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Iepriekšēja atveidošana, ko aktivizējis iekšējs Chrome process (piemēram, iepriekšēja atveidošana no universālā lodziņa) ir atcelta, jo navigācijā ir veikta novirzīšana uz citu citas izcelsmes lapu."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Iepriekšēja atveidošana, ko aktivizējis iekšējs Chrome process (piemēram, iepriekšēja atveidošana no universālā lodziņa) tiek likvidēta likvidētājā."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Iepriekšēja atveidošana, ko aktivizējis iekšējs Chrome process (piemēram, iepriekšēja atveidošana no universālā lodziņa) ir atcelta, jo navigācijā ir veikta novirzīšana uz citu tādas pašas izcelsmes lapu."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Neizdevās iegūt informāciju par atmiņas lietojumu"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "Ir pārsniegts iepriekšējas atveidošanas procesu maksimālais skaits."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "Pārsniegts atmiņas ierobežojums"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Iepriekšēja atveidošana ir atcelta jaukta satura ietvara dēļ."
@@ -4731,22 +4746,25 @@
     "message": "Rādīt izstrādātāja resursus"
   },
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
-    "message": "Novecojis rekvizīts"
+    "message": "Rekvizīts vairs netiek atbalstīts"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Neaktīva kārtula"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Rekvizīts nav aktīvs"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Lai novērstu šo problēmu, lūdzu, mainiet vecākelementus no {EXISTING_PARENT_ELEMENT_RULE} uz {TARGET_PARENT_ELEMENT_RULE}."
+    "message": "Mēģiniet nomainīt galvenā elementa rekvizītu {EXISTING_PARENT_ELEMENT_RULE} uz {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Galvenajam elementam ir {REASON_RULE_CODE} kārtula, tāpēc šī elementa rekvizīts {AFFECTED_RULE_CODE} netiek ņemts vērā"
+    "message": "Rekvizīta {AFFECTED_PROPERTY_DECLARATION_CODE} darbība tiek apieta, jo galvenajam elementam ir norādīts rekvizīts {REASON_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Mēģiniet nomainīt rekvizītu {EXISTING_PROPERTY_DECLARATION} uz {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Lai šis rekvizīts darbotos, noņemiet vai mainiet {REASON_RULE_CODE} vērtību"
+    "message": "Mēģiniet noņemt rekvizītu {REASON_PROPERTY_DECLARATION_CODE} vai mainīt tā vērtību."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Šim elementam ir {REASON_RULE_CODE} kārtula, tāpēc rekvizīts {AFFECTED_RULE_CODE} netiek ņemts vērā."
+    "message": "Rekvizīta {AFFECTED_PROPERTY_DECLARATION_CODE} darbība tiek apieta, jo tam pašam elementam ir norādīts rekvizīts {REASON_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Pievienot jaunu klasi"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Nezināms īpašuma nosaukums"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "top-layer"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "atklāt"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorēts"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elements"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Ietvars"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Nederīga galvenes vērtība"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Maksimālais vienlaicīgu reģistrāciju skaits"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# pārkāpums}zero{# pārkāpumu}one{# pārkāpums}other{# pārkāpumi}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktīvi client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "Aktīvi identifikatori (client experiment variation IDs), kas aktivizēja servera puses darbību."
+    "message": "Aktīvi identifikatori (client experiment variation IDs), kas aktivizē servera puses darbību."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Izvēlieties šo iespēju, ja resurss un dokuments tiek rādīts no vienas vietnes."
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Skatīt sertifikātu"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktīvi client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "Aktīvi identifikatori (client experiment variation IDs), kas aktivizē servera puses darbību."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Izvēlieties šo iespēju, ja resurss un dokuments tiek rādīts no vienas vietnes."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekodēts:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(no diska kešatmiņas)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Vispārīga informācija"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Galveņu ignorēšana"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Uzzināt vairāk"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Negrupēt tīkla žurnāla vienumus pēc ietvara"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Atļaut rīku komplektam DevTools ielādēt resursus, piemēram, avotu kartes, no Windows koplietojumiem, izmantojot UNC ceļus. Drošības apsvērumu dēļ šī opcija pēc noklusējuma ir atspējota."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "ietvars"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Nosūtiet neapstrādātu CDP komandu"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formāts: 'Domain.commandName' komandai bez parametriem vai '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' kā JSON objekts komandai ar parametriem. Tiek atbalstītas arī 'cmd'/'method' un 'args'/'params'/'arguments' kā alternatīvas atslēgas JSON objektam."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesija"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Atjaunot noklusējuma vērtības un ielādēt atkārtoti"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Sūtīt atsauksmes"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Iestatījumi"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Pārtraukt tikai, kad nosacījuma vērtība ir “true”"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Nav pārtraukumpunktu"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Atveriet krāsu atlasītāju."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Grupēt failus pēc statusa “Jūsu izveidots” vai “Izvietots”"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Notīrīt konfigurāciju"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Paslēpt atkļūdotāju"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Slēpt ignorēšanas sarakstā iekļautos avotus"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Paslēpt navigatoru"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Atsvaidzināt uzraudzības izteiksmes"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Sasniegts pārtraukumpunkts ar statusu {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "atzīmēts"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "dažādi"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "nav atzīmēta"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Pievienot galveni"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Laikspiedoli"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Darbības"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Tīkls"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Notikums"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Notikuma laiks"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "uzlabota"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalēšanas taimeris"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Mijiedarbības veids: {PH1} ID: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Atzīmēt izkārtojumu kā nederīgu"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problēma šobrīd nav pieejama"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Dzēst atzīmēto atmiņu"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Pāriet uz atzīmēto atmiņu"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adreses vērtībai ir jābūt skaitlim no {PH1} līdz {PH2}"

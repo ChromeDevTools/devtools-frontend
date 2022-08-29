@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path është zhvlerësuar dhe do të hiqet. Përdor Event.composedPath() më mirë."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Koka Expect-CT është zhvlerësuar dhe do të hiqet. Chrome kërkon transparencën e certifikatave për të gjitha certifikatat e besuara në mënyrë publike të lëshuara pas datës 30 prill 2018."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Kontrollo faqen e statusit të veçorisë për detaje të tjera."
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "WebSQL në kontekste jo të sigurta është zhvlerësuar dhe do të hiqet në M107. Përdor hapësirën ruajtëse të uebit ose bazën e indeksuar të të dhënave."
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent është zhvlerësuar. Përdor më mirë një version të standardizuar të navigator.storage."
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<source src> me një prind <picture> është i pavlefshëm dhe, për këtë arsye, është shpërfillur. Përdor <source srcset> më mirë."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet-i i ankandit - {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "Ndërveprimet e përdoruesit"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -3582,10 +3591,10 @@
     "message": "Ky kuadër konsiderohet kuadër reklame pasi kuadri i tij prind është kuadër reklame."
   },
   "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "Interpretimi paraprak"
+    "message": "Paraqitje paraprake"
   },
   "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "Statusi i interpretimit paraprak"
+    "message": "Statusi i paraqitjes paraprake"
   },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Rifresko"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "U bë një përpjekje për të paraqitur paraprakisht një URL që të ridrejtonte te një URL me origjinë të kryqëzuar. Paraqitja paraprake e faqeve me origjinë të kryqëzuar nuk lejohet aktualisht."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "\"Kursyesi i të dhënave\" u aktivizua"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "Një faqe e paraqitur paraprakisht u braktis për arsye të panjohura."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është anuluar sepse navigimi është ridrejtuar te një faqe tjetër me origjinë të kryqëzuar."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është shkatërruar te shkatërruesi."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Paraqitja paraprake e aktivizuar nga Chrome në nivel të brendshëm (p.sh. paraqitja paraprake e shiritit të Omnibox) është anuluar sepse navigimi është ridrejtuar te një faqe tjetër me origjinë të njëjtë."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "Marrja e përdorimit të memories dështoi"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "U kalua numri maksimal i paraqitjeve paraprake."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "U kalua kufiri i memories"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "Paraqitja paraprake është anuluar nga një kuadër i përmbajtjeve të përziera."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "Karakteristikë e zhvlerësuar"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "Rregulli joaktiv"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "Karakteristika joaktive"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "Ndrysho elementet prind {EXISTING_PARENT_ELEMENT_RULE} në {TARGET_PARENT_ELEMENT_RULE} për ta rregulluar këtë problem."
+    "message": "Provo ta ndryshosh karakteristikën {EXISTING_PARENT_ELEMENT_RULE} në elementin prind si {TARGET_PARENT_ELEMENT_RULE}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "Elementi prind ka rregullin {REASON_RULE_CODE} dhe prandaj {AFFECTED_RULE_CODE} i këtij elementi nuk ka asnjë efekt"
+    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në elementin prind shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "Provo ta ndryshosh karakteristikën {EXISTING_PROPERTY_DECLARATION} si {TARGET_PROPERTY_DECLARATION}."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "Që kjo karakteristikë të funksionojë, hiq ose ndrysho vlerën e {REASON_RULE_CODE}"
+    "message": "Provo ta heqësh {REASON_PROPERTY_DECLARATION_CODE} ose të ndryshosh vlerën e saj."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "Ky element ka rregullin {REASON_RULE_CODE} dhe prandaj {AFFECTED_RULE_CODE} nuk ka asnjë efekt."
+    "message": "Karakteristika {REASON_PROPERTY_DECLARATION_CODE} në të njëjtin element shmang efektin e {AFFECTED_PROPERTY_DECLARATION_CODE}."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Shto klasë të re"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "Emër karakteristike i panjohur"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "shtresa e sipërme"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "shfaq"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Shpërfillur"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "Kuadri"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Vlerë e pavlefshme e kokës"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "Regjistrimet maksimale të njëkohshme"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# shkelje}other{# shkelje}}"
@@ -7446,7 +7464,7 @@
     "message": "Aktiv: client experiment variation IDs."
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "client experiment variation IDs aktiv që shkakton veprime në anën e serverit."
+    "message": "client experiment variation IDs (aktive) që aktivizojnë sjelljen nga ana e serverit."
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
@@ -7479,7 +7497,7 @@
     "message": "Të përgjithshme"
   },
   "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Anulimet e kokës së faqes"
+    "message": "Anulimet e kokave"
   },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Mëso më shumë"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Shiko certifikatën"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "Aktiv: client experiment variation IDs."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "client experiment variation IDs (aktive) që aktivizojnë sjelljen nga ana e serverit."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "Zgjidhe këtë opsion nëse burimi dhe dokumenti shërbehen nga i njëjti sajt."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "Dekoduar:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(nga memoria specifike e diskut)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Të përgjithshme"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "Anulimet e kokave"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "Mëso më shumë"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Mos grupo artikujt e evidencës së rrjetit sipas kuadrit"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "Lejo që DevTools të ngarkojë burimet, si p.sh. hartat e burimit, nga Windows Shares nëpërmjet shtigjeve UNC. Çaktivizuar si parazgjedhje për arsye sigurie."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "kuadër"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Dërgo një komandë të papërpunuar të CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "Formati: 'Domain.commandName' për një komandë pa parametrat ose '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' si një objekt JSON për një komandë me parametrat. 'cmd'/'method' dhe 'args'/'params'/'arguments' mbështeten po ashtu si çelësa alternativë për objektin JSON."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesioni"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Rivendos parazgjedhjet dhe ringarko"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "Dërgo komentet"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "Cilësimet"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Vendos në pauzë vetëm kur kushti është i vërtetë"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "Asnjë pikë ndërprerjeje"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Hap zgjedhësin e ngjyrës."
@@ -9990,7 +10032,7 @@
     "message": "Aktivizo pikat e ndërprerjes në skedar"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "të përziera"
+    "message": "i përzier"
   },
   "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "Asnjë pikë ndërprerjeje"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "Grupo skedarët si të krijuar nga zhvilluesi ose të vendosur nga shfletuesi"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Pastro konfigurimin"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "Fshih korrigjuesin"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "Fshih burimet e listuara për shpërfillje"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "Fshih naviguesin"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Rifresko paraqitjet e orës"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "Ndeshja e pikës së ndërprerjes: {PH1}"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "u përzgjodh"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "i përzier"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "e pazgjedhur"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "Shto një titull"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "Koha"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "Ndërveprimet"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Rrjeti"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Ngjarje"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "Koha e ngjarjes"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "i evoluar"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalo kohëmatësin"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "Lloji i ndërveprimit:{PH1} ID-ja:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Zhvlerëso strukturën"
@@ -12095,6 +12158,12 @@
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemi nuk ofrohet për momentin"
   },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "Fshi memorien e theksuar"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "Kalo te memoria e theksuar"
+  },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "Adresa duhet të jetë numër mes {PH1} dhe {PH2}"
   },
@@ -12177,7 +12246,7 @@
     "message": "Na dërgo komentet e tua."
   },
   "ui/components/panel_feedback/PreviewToggle.ts | shortFeedbackLink": {
-    "message": "Dërgo komente"
+    "message": "Dërgo komentet"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Kliko për të hapur panelin e rrjetit dhe për të shfaqur kërkesën për URL-në: {url}"

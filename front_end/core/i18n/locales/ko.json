@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path는 지원 중단되었으며 삭제될 예정입니다. 대신 Event.composedPath()를 사용하세요."
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT 헤더는 지원 중단되었으며 삭제될 예정입니다. Chrome에서는 2018년 4월 30일 후 발행되었으며 공개적으로 신뢰할 수 있는 모든 인증서에 대해 인증서 투명성을 요구합니다."
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "자세한 내용은 기능 상태 페이지에서 확인하세요."
   },
@@ -1448,11 +1451,14 @@
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "비보안 컨텍스트의 WebSQL이 지원 중단되었으며 M107에서 삭제될 예정입니다. 웹 스토리지 또는 색인이 생성된 데이터베이스를 사용하세요."
   },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
+  },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "<picture> 상위 요소를 지닌 <source src>가 잘못되었으므로 무시됩니다. 대신 <source srcset>를 사용하세요."
   },
   "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo는 지원 중단되었습니다. 대신 표준화된 navigator.storage를 사용하세요."
+    "message": "window.webkitStorageInfo은(는) 지원 중단되었습니다. 대신 표준화된 navigator.storage을(를) 사용하세요."
   },
   "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
     "message": "삽입된 사용자 인증 정보(예: https://user:pass@host/)가 URL에 포함된 하위 리소스 요청이 차단되었습니다."
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "입찰 Worklet: {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "사용자 상호작용"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "교차 출처 URL로 리디렉션되는 URL의 사전 렌더링을 시도했습니다. 현재 교차 출처 페이지의 사전 렌더링은 허용되지 않습니다."
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "데이터 절약 모드 사용 설정됨"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "사전 렌더링된 페이지가 알 수 없는 이유로 취소되었습니다."
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome 내부에서 트리거된 사전 렌더링(예: 검색주소창 사전 렌더링)이 취소되었습니다. 교차 출처의 다른 페이지로 탐색이 리디렉션되기 때문입니다."
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome 내부에서 트리거된 사전 렌더링(예: 검색주소창 사전 렌더링)이 소멸자에서 소멸되었습니다."
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome 내부에서 트리거된 사전 렌더링(예: 검색주소창 사전 렌더링)이 취소되었습니다. 동일 출처의 다른 페이지로 탐색이 리디렉션되기 때문입니다."
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "메모리 사용량을 가져올 수 없음"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation."
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "사전 렌더링 개수 한도를 초과했습니다."
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "메모리 한도 초과"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "혼합 콘텐츠 프레임으로 인해 사전 렌더링이 취소되었습니다."
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "지원 중단된 속성"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "비활성 규칙"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "비활성 속성"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "이 문제를 해결하려면 상위 요소 {EXISTING_PARENT_ELEMENT_RULE}을 {TARGET_PARENT_ELEMENT_RULE}로 변경하세요."
+    "message": "상위 요소의 {EXISTING_PARENT_ELEMENT_RULE} 속성을 {TARGET_PARENT_ELEMENT_RULE}(으)로 변경해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "상위 요소에 {REASON_RULE_CODE} 규칙이 있으므로 이 요소 {AFFECTED_RULE_CODE}는 아무런 영향도 미치지 않습니다."
+    "message": "상위 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "{EXISTING_PROPERTY_DECLARATION} 속성을 {TARGET_PROPERTY_DECLARATION}(으)로 변경해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "이 속성이 작동하게 하려면 {REASON_RULE_CODE} 값을 삭제하거나 변경하세요."
+    "message": "{REASON_PROPERTY_DECLARATION_CODE}을(를) 삭제하거나 값을 변경해 보세요."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "이 요소에는 {REASON_RULE_CODE} 규칙이 있으므로 {AFFECTED_RULE_CODE}는 아무런 영향도 미치지 않습니다."
+    "message": "동일한 요소의 {REASON_PROPERTY_DECLARATION_CODE} 속성은 {AFFECTED_PROPERTY_DECLARATION_CODE}의 효과를 우회합니다."
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "새 클래스 추가"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "알 수 없는 속성 이름"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "상단 레이어"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "표시"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "무시됨"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "요소"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "프레임"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "잘못된 헤더 값"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "최대 동시 등록 수"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{위반 #건}other{위반 #건}}"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "인증서 보기"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "활성 client experiment variation IDs입니다."
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "서버 측 행동을 트리거하는 활성 client experiment variation IDs입니다."
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "리소스와 문서가 동일한 사이트에서 제공되는 경우 이 옵션을 선택하세요."
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "디코딩됨:"
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "(디스크 캐시에서)"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "일반"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "헤더 재정의"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "자세히 알아보기"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "프레임별로 네트워크 로그 항목을 그룹 지정하지 마세요"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "DevTools이(가) UNC 경로를 통해 Windows 네트워크 공유 위치에서 소스 맵과 같은 리소스를 로드하도록 허용합니다. 보안상의 이유로 기본적으로 사용 중지되어 있습니다."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "프레임"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "원본 CDP 명령어 전송"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "형식: 매개변수가 없는 명령어의 경우 'Domain.commandName', 매개변수가 있는 명령어의 경우 JSON 객체로 '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' 형식이어야 합니다. 'cmd'/'method' 및 'args'/'params'/'arguments'도 JSON 객체의 대체 키로 지원됩니다."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "세션"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "기본값 복원 및 새로고침"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "의견 보내기"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "설정"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "조건이 true인 경우에만 일시중지"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "중단점 없음"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "색상 선택 도구를 엽니다."
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "작성됨/배포됨 기준으로 파일 그룹화"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "구성 지우기"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "디버거 숨기기"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "무시 목록에 포함된 소스 숨기기"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "탐색기 숨기기"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "감시 표현식 새로고침"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "{PH1} 중단점 도달"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "선택함"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "혼합"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "선택 해제됨"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "헤더 추가"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "소요 시간"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "상호작용"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "네트워크"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "이벤트"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "이벤트 시간"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "웹 번들에서"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "타이머 설치"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "상호작용 유형:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "레이아웃 무효화"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "현재 문제를 표시할 수 없음"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "메모리 강조표시 삭제"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "강조표시된 메모리로 이동"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "주소는 {PH1}에서 {PH2} 사이의 숫자여야 합니다."

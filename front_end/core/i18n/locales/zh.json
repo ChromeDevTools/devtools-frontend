@@ -1397,6 +1397,9 @@
   "models/issues_manager/DeprecationIssue.ts | eventPath": {
     "message": "Event.path 已被弃用，并将被移除。请改用 Event.composedPath()。"
   },
+  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
+    "message": "Expect-CT 标头已被弃用，并将被移除。Chrome 要求，在 2018 年 4 月 30 日之后颁发的所有受大众信任的证书均须遵守证书透明度政策。"
+  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "如需了解详情，请参阅功能状态页面。"
   },
@@ -1447,6 +1450,9 @@
   },
   "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
     "message": "不安全情境中的 WebSQL 已被弃用，并将在 M107 中被移除。请使用网络存储或索引型数据库。"
+  },
+  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
+    "message": "StorageType.persistent 已被弃用。请改用标准化 navigator.storage。"
   },
   "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
     "message": "带有 <picture> 父级的 <source src> 无效，因此会被忽略。请改用 <source srcset>。"
@@ -1702,6 +1708,9 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "竞价 Worklet - {PH1}"
+  },
+  "models/timeline_model/TimelineModel.ts | userInteractions": {
+    "message": "用户互动"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
@@ -3740,6 +3749,9 @@
   "panels/application/components/Prerender2.ts | CrossOriginRedirect": {
     "message": "已尝试预渲染重定向到跨源网址的网址。目前不允许预渲染跨源网页。"
   },
+  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
+    "message": "流量节省程序已启用"
+  },
   "panels/application/components/Prerender2.ts | Destroyed": {
     "message": "预渲染的网页因不明原因被舍弃。"
   },
@@ -3752,11 +3764,11 @@
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
     "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）被取消了，因为导航会重定向到另一个跨源网页。"
   },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndDestroyed": {
-    "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）会在析构函数中被销毁。"
-  },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
     "message": "Chrome 自身触发的预渲染（例如多功能框预渲染）被取消了，因为导航会重定向到另一个同源网页。"
+  },
+  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
+    "message": "未能获取内存用量"
   },
   "panels/application/components/Prerender2.ts | InProgressNavigation": {
     "message": "InProgressNavigation。"
@@ -3778,6 +3790,9 @@
   },
   "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
     "message": "超出了预渲染次数上限。"
+  },
+  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
+    "message": "超出了内存上限"
   },
   "panels/application/components/Prerender2.ts | MixedContent": {
     "message": "混合内容框架取消了预渲染。"
@@ -4733,20 +4748,23 @@
   "panels/elements/CSSRuleValidator.ts | deprecatedPropertyHintPrefix": {
     "message": "已弃用的属性"
   },
-  "panels/elements/CSSRuleValidator.ts | ruleValidationHintPrefix": {
-    "message": "无效的规则"
+  "panels/elements/CSSRuleValidator.ts | inactivePropertyHintPrefix": {
+    "message": "无效属性"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
-    "message": "若要解决此问题，请将父元素 {EXISTING_PARENT_ELEMENT_RULE} 更改为 {TARGET_PARENT_ELEMENT_RULE}。"
+    "message": "请尝试将父级元素的 {EXISTING_PARENT_ELEMENT_RULE} 属性更改为 {TARGET_PARENT_ELEMENT_RULE}。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleReason": {
-    "message": "父元素设有 {REASON_RULE_CODE} 规则，因此 {AFFECTED_RULE_CODE} 元素不会产生任何影响"
+    "message": "父元素的 {REASON_PROPERTY_DECLARATION_CODE} 属性会绕过 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
+  },
+  "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleChangeSuggestion": {
+    "message": "请尝试将 {EXISTING_PROPERTY_DECLARATION} 属性更改为 {TARGET_PROPERTY_DECLARATION}。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleFix": {
-    "message": "为了使此属性正常发挥作用，请移除或更改 {REASON_RULE_CODE} 的值"
+    "message": "请尝试移除 {REASON_PROPERTY_DECLARATION_CODE} 或更改其值。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedBySameElementRuleReason": {
-    "message": "此元素设有 {REASON_RULE_CODE} 规则，因此 {AFFECTED_RULE_CODE} 不会产生任何影响。"
+    "message": "同一元素的 {REASON_PROPERTY_DECLARATION_CODE} 属性会绕过 {AFFECTED_PROPERTY_DECLARATION_CODE} 的效果。"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "添加新类"
@@ -5183,8 +5201,8 @@
   "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
     "message": "属性名称未知"
   },
-  "panels/elements/TopLayerContainer.ts | topLayer": {
-    "message": "顶层"
+  "panels/elements/TopLayerContainer.ts | reveal": {
+    "message": "显示"
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "已忽略"
@@ -5699,11 +5717,11 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "元素"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
-    "message": "框架"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "无效的标头值"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
+    "message": "最大并发注册数"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# 项违规行为}other{# 项违规行为}}"
@@ -7446,7 +7464,7 @@
     "message": "活跃的client experiment variation IDs。"
   },
   "panels/network/RequestHeadersView.ts | activeClientExperimentVariationIds": {
-    "message": "触发服务器端行为的有效client experiment variation IDs。"
+    "message": "触发服务器端行为的活跃client experiment variation IDs。"
   },
   "panels/network/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "如果资源和文档由同一网站提供，请选择此选项。"
@@ -7868,8 +7886,17 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看证书"
   },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariation": {
+    "message": "活跃的client experiment variation IDs。"
+  },
+  "panels/network/components/RequestHeadersView.ts | activeClientExperimentVariationIds": {
+    "message": "触发服务器端行为的活跃client experiment variation IDs。"
+  },
   "panels/network/components/RequestHeadersView.ts | chooseThisOptionIfTheResourceAnd": {
     "message": "如果资源和文档由同一网站提供，请选择此选项。"
+  },
+  "panels/network/components/RequestHeadersView.ts | decoded": {
+    "message": "已解码："
   },
   "panels/network/components/RequestHeadersView.ts | fromDiskCache": {
     "message": "（来自磁盘缓存）"
@@ -7891,6 +7918,9 @@
   },
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "常规"
+  },
+  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
+    "message": "标头覆盖"
   },
   "panels/network/components/RequestHeadersView.ts | learnMore": {
     "message": "了解详情"
@@ -8020,6 +8050,9 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "请勿按框架对网络日志内容分组"
+  },
+  "panels/network/network-meta.ts | enableUNCLoading": {
+    "message": "允许DevTools通过 UNC 路径从 Windows 共享区加载资源（比如来源映射关系）。为安全起见，此功能默认处于停用状态。"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "框架"
@@ -8770,6 +8803,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "发送原始 CDP 命令"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
+    "message": "格式：'Domain.commandName' 表示不带参数的命令，也可将 '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' 作为一个 JSON 对象表示带有参数的命令。系统还支持将 'cmd'/'method' 和 'args'/'params'/'arguments' 用作 JSON 对象的替代键。"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "会话"
@@ -9527,6 +9563,9 @@
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "恢复默认值并重新加载"
   },
+  "panels/settings/SettingsScreen.ts | sendFeedback": {
+    "message": "发送反馈"
+  },
   "panels/settings/SettingsScreen.ts | settings": {
     "message": "设置"
   },
@@ -9751,6 +9790,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "仅在条件为 true 时暂停"
+  },
+  "panels/sources/BreakpointsSidebarPane.ts | noBreakpoints": {
+    "message": "无断点"
   },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "打开颜色选择器。"
@@ -10136,9 +10178,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | authoredDescription": {
-    "message": "按“已编写”/“已部署”将文件分组"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "清除配置"
   },
@@ -10216,6 +10255,9 @@
   },
   "panels/sources/SourcesPanel.ts | hideDebugger": {
     "message": "隐藏调试程序"
+  },
+  "panels/sources/SourcesPanel.ts | hideIgnoreListed": {
+    "message": "隐藏已列入忽略列表的来源"
   },
   "panels/sources/SourcesPanel.ts | hideNavigator": {
     "message": "隐藏导航器"
@@ -10306,6 +10348,18 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "刷新监视表达式"
+  },
+  "panels/sources/components/BreakpointsView.ts | breakpointHit": {
+    "message": "遇到{PH1}断点"
+  },
+  "panels/sources/components/BreakpointsView.ts | checked": {
+    "message": "已勾选"
+  },
+  "panels/sources/components/BreakpointsView.ts | indeterminate": {
+    "message": "混合"
+  },
+  "panels/sources/components/BreakpointsView.ts | unchecked": {
+    "message": "未选中"
   },
   "panels/sources/components/HeadersView.ts | addHeader": {
     "message": "添加标题"
@@ -10741,6 +10795,9 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
     "message": "时间"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
+    "message": "互动"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "网络"
@@ -11222,6 +11279,9 @@
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "事件"
   },
+  "panels/timeline/TimelineUIUtils.ts | eventTiming": {
+    "message": "事件时间"
+  },
   "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
     "message": "演变了"
   },
@@ -11320,6 +11380,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "安装定时器"
+  },
+  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
+    "message": "互动类型：{PH1} ID：{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "使布局失效"
@@ -12094,6 +12157,12 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "目前无法解决的问题"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | deleteHighlight": {
+    "message": "删除内存中的突出显示效果"
+  },
+  "ui/components/linear_memory_inspector/LinearMemoryHighlightChipList.ts | jumpToAddress": {
+    "message": "跳转到突出显示的内存"
   },
   "ui/components/linear_memory_inspector/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
     "message": "地址必须是一个介于 {PH1} 和 {PH2} 之间的数字"

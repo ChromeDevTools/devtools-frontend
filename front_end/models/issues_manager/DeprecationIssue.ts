@@ -185,7 +185,7 @@ const UIStrings = {
    * @description Warning displayed to developers when `window.openDatabase` is used in non-secure contexts to notify that the API is deprecated and will be removed.
    */
   openWebDatabaseInsecureContext:
-      'WebSQL in non-secure contexts is deprecated and will be removed in M107. Please use Web Storage or Indexed Database.',
+      'WebSQL in non-secure contexts is deprecated and will be removed soon. Please use Web Storage or Indexed Database.',
   /**
    * @description Warning displayed to developers when persistent storage type is used to notify that storage type is deprecated.
    */

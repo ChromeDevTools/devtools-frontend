@@ -225,6 +225,11 @@ export const $$textContent = async (textContent: string, root?: puppeteer.JSHand
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
+export const getTextContent = async<ElementType extends Element = Element>(selector: string) => {
+  const text = await (await $<ElementType>(selector))?.evaluate(node => node.textContent);
+  return text ?? undefined;
+};
+
 export const waitFor = async<ElementType extends Element = Element>(
     selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
@@ -721,3 +726,10 @@ export async function setCheckBox(selector: string, wantChecked: boolean): Promi
   }
   assert.strictEqual(await checkbox.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
 }
+
+export const summonSearchBox = async () => {
+  const {frontend} = getBrowserAndPages();
+  await frontend.keyboard.down('Control');
+  await frontend.keyboard.press('f');
+  await frontend.keyboard.up('Control');
+};

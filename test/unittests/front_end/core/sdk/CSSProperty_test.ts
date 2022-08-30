@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('CSSProperty', () => {
@@ -49,5 +50,43 @@ describeWithEnvironment('CSSProperty', () => {
     it('formats declaration with unknown property that contains a function correctly', async () => {
       assert.strictEqual(await formatStyle('unknownProperty: rgba(0,0,0,0);;', '', ''), 'unknownProperty: rgba(0,0,0,0);');
     });
+  });
+
+  it('should correctly construct new CSSProperty', () => {
+    const stubStyle = {} as SDK.CSSStyleDeclaration.CSSStyleDeclaration;
+
+    const property1 =
+        new SDK.CSSProperty.CSSProperty(stubStyle, 0, 'display', 'block', false, false, true, false, 'display: block');
+    assert.deepEqual(property1.getLonghandProperties(), []);
+
+    const stubLonghands = [
+      {name: 'margin-top', value: '1px'} as Protocol.CSS.CSSProperty,
+      {name: 'margin-right', value: '1px'} as Protocol.CSS.CSSProperty,
+      {name: 'margin-bottom', value: '1px'} as Protocol.CSS.CSSProperty,
+      {name: 'margin-left', value: '1px'} as Protocol.CSS.CSSProperty,
+    ];
+    const property2 = new SDK.CSSProperty.CSSProperty(
+        stubStyle, 1, 'margin', '1px', false, false, true, false, 'margin: 1px', undefined, stubLonghands);
+    assert.deepEqual(
+        property2.getLonghandProperties().map(property => property.propertyText),
+        [
+          'margin-top: 1px;',
+          'margin-right: 1px;',
+          'margin-bottom: 1px;',
+          'margin-left: 1px;',
+        ],
+        'supplied longhand components should be added correctly');
+
+    const property3 = new SDK.CSSProperty.CSSProperty(
+        stubStyle, 1, 'margin', 'var(--margin)', false, false, true, false, 'margin: var(--margin)', undefined, []);
+    assert.deepEqual(
+        property3.getLonghandProperties().map(property => property.propertyText),
+        [
+          'margin-top: ;',
+          'margin-right: ;',
+          'margin-bottom: ;',
+          'margin-left: ;',
+        ],
+        'locally added longhand components should be parsed with empty values');
   });
 });

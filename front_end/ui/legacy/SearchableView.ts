@@ -561,10 +561,6 @@ export class SearchableView extends VBox {
   }
 
   private onInput(_event: Event): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('searchAsYouType').get()) {
-      return;
-    }
-
     if (this.valueChangedTimeoutId) {
       clearTimeout(this.valueChangedTimeoutId);
     }

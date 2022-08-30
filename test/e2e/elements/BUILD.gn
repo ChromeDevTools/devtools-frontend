@@ -19,7 +19,6 @@ node_ts_library("elements") {
     "oopif-elements_test.ts",
     "pseudo-states_test.ts",
     "reveal-correct-node_test.ts",
-    "search-elements_test.ts",
     "selection-after-delete_test.ts",
     "shadowroot-styles_test.ts",
     "sidebar-event-listeners-remove_test.ts",

@@ -959,7 +959,8 @@ export enum RecordingExported {
   ToJSON = 2,
   ToPuppeteerReplay = 3,
   ToExtension = 4,
-  MaxValue = 5,
+  ToLighthouse = 5,
+  MaxValue = 6,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

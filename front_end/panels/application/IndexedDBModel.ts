@@ -196,6 +196,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     if (databaseId.securityOrigin) {
       await this.indexedDBAgent.invoke_clearObjectStore(
           {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name, objectStoreName});
+    } else if (databaseId.storageKey) {
+      await this.indexedDBAgent.invoke_clearObjectStore(
+          {storageKey: databaseId.storageKey, databaseName: databaseId.name, objectStoreName});
     }
   }
 
@@ -204,6 +207,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     if (databaseId.securityOrigin) {
       await this.indexedDBAgent.invoke_deleteObjectStoreEntries(
           {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name, objectStoreName, keyRange});
+    } else if (databaseId.storageKey) {
+      await this.indexedDBAgent.invoke_deleteObjectStoreEntries(
+          {storageKey: databaseId.storageKey, databaseName: databaseId.name, objectStoreName, keyRange});
     }
   }
 

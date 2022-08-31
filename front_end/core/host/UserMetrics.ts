@@ -613,7 +613,6 @@ export enum DevtoolsExperiments {
   'timelineInvalidationTracking' = 26,
   'timelineShowAllEvents' = 27,
   'timelineV8RuntimeCallStats' = 28,
-  'timelineWebGL' = 29,
   'timelineReplayEvent' = 30,
   'wasmDWARFDebugging' = 31,
   'dualScreenSupport' = 32,

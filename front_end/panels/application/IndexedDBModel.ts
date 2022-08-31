@@ -38,9 +38,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   private readonly indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
   private readonly storageAgent: ProtocolProxyApi.StorageApi;
   private readonly databasesInternal: Map<DatabaseId, Database>;
-  private databaseNamesBySecurityOrigin: {
-    [x: string]: string[],
-  };
+  private databaseNamesBySecurityOrigin: Map<string, Set<string>>;
   private readonly originsUpdated: Set<string>;
   private readonly throttler: Common.Throttler.Throttler;
   private enabled?: boolean;
@@ -53,7 +51,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     this.storageAgent = target.storageAgent();
 
     this.databasesInternal = new Map();
-    this.databaseNamesBySecurityOrigin = {};
+    this.databaseNamesBySecurityOrigin = new Map();
 
     this.originsUpdated = new Set();
     this.throttler = new Common.Throttler.Throttler(1000);
@@ -164,7 +162,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   clearForOrigin(origin: string): void {
-    if (!this.enabled || !this.databaseNamesBySecurityOrigin[origin]) {
+    if (!this.enabled || !this.databaseNamesBySecurityOrigin.has(origin)) {
       return;
     }
 
@@ -184,7 +182,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   async refreshDatabaseNames(): Promise<void> {
-    for (const securityOrigin in this.databaseNamesBySecurityOrigin) {
+    for (const securityOrigin of this.databaseNamesBySecurityOrigin.keys()) {
       await this.loadDatabaseNames(securityOrigin);
     }
     this.dispatchEventToListeners(Events.DatabaseNamesRefreshed);
@@ -218,8 +216,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   private addOrigin(securityOrigin: string): void {
-    console.assert(!this.databaseNamesBySecurityOrigin[securityOrigin]);
-    this.databaseNamesBySecurityOrigin[securityOrigin] = [];
+    console.assert(!this.databaseNamesBySecurityOrigin.has(securityOrigin));
+    this.databaseNamesBySecurityOrigin.set(securityOrigin, new Set());
     void this.loadDatabaseNames(securityOrigin);
     if (this.isValidSecurityOrigin(securityOrigin)) {
       void this.storageAgent.invoke_trackIndexedDBForOrigin({origin: securityOrigin});
@@ -227,11 +225,11 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   private removeOrigin(securityOrigin: string): void {
-    console.assert(Boolean(this.databaseNamesBySecurityOrigin[securityOrigin]));
-    for (let i = 0; i < this.databaseNamesBySecurityOrigin[securityOrigin].length; ++i) {
-      this.databaseRemoved(securityOrigin, this.databaseNamesBySecurityOrigin[securityOrigin][i]);
+    console.assert(this.databaseNamesBySecurityOrigin.has(securityOrigin));
+    for (const item of this.databaseNamesBySecurityOrigin.get(securityOrigin) || []) {
+      this.databaseRemoved(securityOrigin, item);
     }
-    delete this.databaseNamesBySecurityOrigin[securityOrigin];
+    this.databaseNamesBySecurityOrigin.delete(securityOrigin);
     if (this.isValidSecurityOrigin(securityOrigin)) {
       void this.storageAgent.invoke_untrackIndexedDBForOrigin({origin: securityOrigin});
     }
@@ -244,9 +242,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   private updateOriginDatabaseNames(securityOrigin: string, databaseNames: string[]): void {
     const newDatabaseNames = new Set<string>(databaseNames);
-    const oldDatabaseNames = new Set<string>(this.databaseNamesBySecurityOrigin[securityOrigin]);
+    const oldDatabaseNames = new Set<string>(this.databaseNamesBySecurityOrigin.get(securityOrigin));
 
-    this.databaseNamesBySecurityOrigin[securityOrigin] = databaseNames;
+    this.databaseNamesBySecurityOrigin.set(securityOrigin, newDatabaseNames);
 
     for (const databaseName of oldDatabaseNames) {
       if (!newDatabaseNames.has(databaseName)) {
@@ -262,10 +260,10 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   databases(): DatabaseId[] {
     const result = [];
-    for (const securityOrigin in this.databaseNamesBySecurityOrigin) {
-      const databaseNames = this.databaseNamesBySecurityOrigin[securityOrigin];
-      for (let i = 0; i < databaseNames.length; ++i) {
-        result.push(new DatabaseId(securityOrigin, undefined, databaseNames[i]));
+    for (const securityOrigin of this.databaseNamesBySecurityOrigin.keys()) {
+      const databaseNames = this.databaseNamesBySecurityOrigin.get(securityOrigin);
+      for (const databaseName of databaseNames || []) {
+        result.push(new DatabaseId(securityOrigin, undefined, databaseName));
       }
     }
     return result;
@@ -286,7 +284,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     if (!databaseNames) {
       return [];
     }
-    if (!this.databaseNamesBySecurityOrigin[securityOrigin]) {
+    if (!this.databaseNamesBySecurityOrigin.has(securityOrigin)) {
       return [];
     }
     this.updateOriginDatabaseNames(securityOrigin, databaseNames);
@@ -300,7 +298,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
                                    securityOrigin: databaseId.securityOrigin,
                                    databaseName: databaseId.name,
                                  })).databaseWithObjectStores;
-      if (!this.databaseNamesBySecurityOrigin[databaseId.securityOrigin]) {
+      if (!this.databaseNamesBySecurityOrigin.has(databaseId.securityOrigin)) {
         return;
       }
     }
@@ -358,7 +356,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
         pageSize,
         keyRange,
       });
-      if (!runtimeModel || !this.databaseNamesBySecurityOrigin[databaseId.securityOrigin]) {
+      if (!runtimeModel || !this.databaseNamesBySecurityOrigin.has(databaseId.securityOrigin)) {
         return;
       }
     }
@@ -479,7 +477,8 @@ export class DatabaseId {
   readonly storageKey?: string;
   name: string;
   constructor(securityOrigin: string|undefined, storageKey: string|undefined, name: string) {
-    securityOrigin ? this.securityOrigin = securityOrigin : (storageKey ? this.storageKey = storageKey : undefined);
+    this.securityOrigin = securityOrigin;
+    this.storageKey = securityOrigin ? undefined : storageKey;
     this.name = name;
   }
 

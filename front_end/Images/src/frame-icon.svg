@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="15"
+   height="13"
+   viewBox="0 0 3.9687499 3.4395834"
+   version="1.1"
+   id="svg358"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="frame-icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview360"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="20.496745"
+     inkscape:cx="18.807864"
+     inkscape:cy="21.661976"
+     inkscape:window-width="2142"
+     inkscape:window-height="1445"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs355" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0.26458333,0,0,0.26458333,-0.06614581,-0.39687497)"
+       id="g1834"
+       style="fill:#000000">
+      <path
+         inkscape:connector-curvature="0"
+         fill-rule="evenodd"
+         clip-rule="evenodd"
+         d="M 1,3.5 C 1,2.67157 1.67157,2 2.5,2 H 13 c 0.8284,0 1.5,0.67157 1.5,1.5 v 9 C 14.5,13.3284 13.8284,14 13,14 H 2.5 C 1.67157,14 1,13.3284 1,12.5 Z M 2.5,5 v 7.5 H 13 V 5 Z"
+         id="path1822" />
+    </g>
+  </g>
+</svg>

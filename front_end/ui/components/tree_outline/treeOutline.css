@@ -99,3 +99,13 @@ ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper
   /* stylelint-disable-next-line color-named */
   background-color: var(--legacy-item-selection-bg-color);
 }
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inline-icon {
+  vertical-align: sub;
+}

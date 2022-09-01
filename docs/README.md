@@ -70,3 +70,7 @@ used when committed.
 ### Architectural Documentation
 *   [Architecture of DevTools](architecture_of_devtools.md)
 *   [Resource management in DevTools](resource_management.md)
+
+### Chromium
+*   [Chromium Docs](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
+*   [V8 Documention](https://v8.dev/docs)

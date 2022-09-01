@@ -6,7 +6,6 @@ per-file BUILD.gn=file://config/owner/INFRA_OWNERS
 per-file DEPS=file://config/owner/INFRA_OWNERS
 per-file DEPS=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
 per-file PRESUBMIT.py=file://config/owner/INFRA_OWNERS
-per-file ARCHITECTURE.md=file://config/owner/INFRA_OWNERS
 per-file README.md=file://config/owner/COMMON_OWNERS
 per-file WATCHLISTS=file://config/owner/INFRA_OWNERS
 per-file htaccess=file://config/owner/INFRA_OWNERS

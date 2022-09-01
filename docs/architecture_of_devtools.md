@@ -111,7 +111,7 @@ Loading of core functionality and features is built on top of [JavaScript module
 Core functionality is loaded via static imports, while implementations of features is lazily loaded using [dynamic imports].
 Features themselves use static imports for loading core and feature-specific functionality.
 
-![A high-level overview of how feature implementations are lazily loaded in the DevTools startup process](./docs/images/architecture-lazy-loading-features.png)
+![A high-level overview of how feature implementations are lazily loaded in the DevTools startup process](architecture_of_devtools_lazy_loading_features.png)
 
 Enforcement of the rules regarding loading is implemented using the [ESLint] rule defined in [scripts/eslint_rules/lib/es_modules_import.js](scripts/eslint_rules/lib/es_modules_import.js).
 
@@ -275,7 +275,7 @@ Please favor using `ui/components` wherever possible.
 
 In general, the following structure is applicable to dependencies between modules:
 
-![An overview of allowed visibility rules of modules](./docs/images/module-visibility-rules.png)
+![An overview of allowed visibility rules of modules](architecture_of_devtools_module_visibility_rules.png)
 
 - `core/` can be imported by any module
 - `models/` can be imported by `panels/` and `entrypoints/`

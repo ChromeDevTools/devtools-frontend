@@ -12,17 +12,11 @@ The client-side of the Chrome DevTools, including all JS & CSS to run the DevToo
 
 The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
 
-### Design guidelines
+### Project documentation
 
-Please be aware that DevTools follows additional [development guidelines](docs/design_guidelines.md).
-
-### Issue triage
-
-The issue triage guidelines can be found [in docs/triage_guidelines.md](docs/triage_guidelines.md).
-
-### Workflows
-
-Instructions to set up, use, and maintain a DevTools frontend checkout can be found [in docs/workflows.md](docs/workflows.md).
+Check out the [project documentation](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/README.md)
+for instructions to set up, use, and maintain a DevTools front-end checkout, as well as design guidelines, and architectural
+documentation.
 
 ### Additional references
 

@@ -298,7 +298,6 @@ export enum ExperimentName {
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
-  SYNC_SETTINGS = 'syncSettings',
   FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
   PRECISE_CHANGES = 'preciseChanges',
   STYLES_PANE_CSS_CHANGES = 'stylesPaneCSSChanges',

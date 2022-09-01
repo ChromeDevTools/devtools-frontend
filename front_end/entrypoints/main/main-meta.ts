@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -775,7 +774,6 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.enableSync),
   defaultValue: false,
   reloadRequired: true,
-  experiment: Root.Runtime.ExperimentName.SYNC_SETTINGS,
 });
 
 Common.Settings.registerSettingExtension({

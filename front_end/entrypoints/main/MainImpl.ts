@@ -148,10 +148,7 @@ export class MainImpl {
     this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SYNC_SETTINGS)) {
-      Host.userMetrics.syncSetting(
-          Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
-    }
+    Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
 
     void this.#createAppUI();
   }
@@ -364,10 +361,6 @@ export class MainImpl {
     // Hide Issues Feature.
     Root.Runtime.experiments.register('groupAndHideIssuesByKind', 'Allow grouping and hiding of issues by IssueKind');
 
-    // Checkbox in the Settings UI to enable Chrome Sync is behind this experiment.
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.SYNC_SETTINGS, 'Sync DevTools settings with Chrome Sync');
-
     // Debugging of Reporting API
     Root.Runtime.experiments.register('reportingApiDebugging', 'Enable Reporting API panel in the Application panel');
 
@@ -424,7 +417,6 @@ export class MainImpl {
       'cssTypeComponentLength',
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       'reportingApiDebugging',
-      Root.Runtime.ExperimentName.SYNC_SETTINGS,
       Root.Runtime.ExperimentName.CSS_LAYERS,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'lighthousePanelFR',

@@ -353,31 +353,6 @@
     this.takeControl();
   };
 
-  // Tests that pressing "Pause" will pause script execution if the script
-  // is already running.
-  TestSuite.prototype.testPauseWhenScriptIsRunning = function() {
-    this.showPanel('sources').then(function() {
-      this.evaluateInConsole_('setTimeout("handleClick()", 0)', didEvaluateInConsole.bind(this));
-    }.bind(this));
-
-    function didEvaluateInConsole(resultText) {
-      this.assertTrue(!isNaN(resultText), 'Failed to get timer id: ' + resultText);
-      // Wait for some time to make sure that inspected page is running the
-      // infinite loop.
-      setTimeout(testScriptPause.bind(this), 300);
-    }
-
-    function testScriptPause() {
-      // The script should be in infinite loop. Click "Pause" button to
-      // pause it and wait for the result.
-      UI.panels.sources.togglePause();
-
-      this._waitForScriptPause(this.releaseControl.bind(this));
-    }
-
-    this.takeControl();
-  };
-
   /**
    * Tests network size.
    */

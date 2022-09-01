@@ -25,6 +25,7 @@ node_ts_library("sources") {
     "live-edit-moving-breakpoint_test.ts",
     "navigation_test.ts",
     "overrides_test.ts",
+    "pause-button_test.ts",
     "popover_test.ts",
     "restart-frame_test.ts",
     "script-in-multiple-workers_test.ts",

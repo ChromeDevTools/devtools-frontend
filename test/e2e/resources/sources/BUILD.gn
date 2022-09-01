@@ -24,6 +24,7 @@ copy_to_gen("sources") {
     "filesystem/special-characters.html",
     "filesystem/with space.js",
     "filesystem/with%20space.js",
+    "infinity-loop.html",
     "inline-variable.html",
     "inline-variable.js",
     "live-edit-moving-breakpoint.html",

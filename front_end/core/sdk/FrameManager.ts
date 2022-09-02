@@ -21,36 +21,29 @@ let frameManagerInstance: FrameManager|null = null;
  */
 export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<ResourceTreeModel> {
-  readonly #eventListeners: WeakMap<ResourceTreeModel, Common.EventTarget.EventDescriptor[]>;
-  #frames: Map<string, {
+  readonly #eventListeners = new WeakMap<ResourceTreeModel, Common.EventTarget.EventDescriptor[]>();
+
+  // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
+  // (OOPIFs are usually first attached to a new target and then detached from their old target,
+  // therefore being contained in 2 models for a short period of time.)
+  #frames = new Map<string, {
     frame: ResourceTreeFrame,
     count: number,
-  }>;
-  readonly #framesForTarget: Map<Protocol.Target.TargetID|'main', Set<Protocol.Page.FrameId>>;
-  #topFrame: ResourceTreeFrame|null;
-  #transferringFramesDataCache: Map<string, {
+  }>();
+
+  readonly #framesForTarget = new Map<Protocol.Target.TargetID|'main', Set<Protocol.Page.FrameId>>();
+  #topFrame: ResourceTreeFrame|null = null;
+  #transferringFramesDataCache = new Map<string, {
     creationStackTrace?: Protocol.Runtime.StackTrace,
     creationStackTraceTarget?: Target,
     adScriptId?: Protocol.Runtime.ScriptId,
     debuggerId?: Protocol.Runtime.UniqueDebuggerId,
-  }>;
+  }>();
   #awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}[]> = new Map();
 
   constructor() {
     super();
-    this.#eventListeners = new WeakMap();
     TargetManager.instance().observeModels(ResourceTreeModel, this);
-
-    // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
-    // (OOPIFs are usually first attached to a new target and then detached from their old target,
-    // therefore being contained in 2 models for a short period of time.)
-    this.#frames = new Map();
-
-    // Maps targetIds to a set of frameIds.
-    this.#framesForTarget = new Map();
-
-    this.#topFrame = null;
-    this.#transferringFramesDataCache = new Map();
   }
 
   static instance({forceNew}: {

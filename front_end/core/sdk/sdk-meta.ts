@@ -314,6 +314,11 @@ const UIStrings = {
   * emulates that the webpage is in auto dark mode.
   */
   emulateAutoDarkMode: 'Emulate auto dark mode',
+  /**
+   * @description Label of a checkbox in the DevTools settings UI.
+   */
+  enableUNCLoading:
+      'Allow `DevTools` to load resources, such as source maps, from Windows Shares via `UNC` paths. Disabled by default for security reasons.',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1031,5 +1036,14 @@ Common.Settings.registerSettingExtension({
   settingName: 'emulateAutoDarkMode',
   settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.SOURCES,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.enableUNCLoading),
+  settingName: 'network.enable-unc-loading',
+  settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });

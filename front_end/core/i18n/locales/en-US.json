@@ -695,6 +695,9 @@
   "core/sdk/sdk-meta.ts | enableNetworkRequestBlocking": {
     "message": "Enable network request blocking"
   },
+  "core/sdk/sdk-meta.ts | enableUNCLoading": {
+    "message": "Allow DevTools to load resources, such as source maps, from Windows Shares via UNC paths. Disabled by default for security reasons."
+  },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Enable WebP format"
   },
@@ -6988,9 +6991,6 @@
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Don't group network log items by frame"
-  },
-  "panels/network/network-meta.ts | enableUNCLoading": {
-    "message": "Allow DevTools to load resources, such as source maps, from Windows Shares via UNC paths. Disabled by default for security reasons."
   },
   "panels/network/network-meta.ts | frame": {
     "message": "frame"

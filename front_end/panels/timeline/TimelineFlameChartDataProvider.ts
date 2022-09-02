@@ -916,12 +916,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.framesHeader.collapsible = hasFilmStrip;
     this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */);
     this.frameGroup = this.timelineDataInternal.groups[this.timelineDataInternal.groups.length - 1];
-    const style = TimelineUIUtils.markerStyleForFrame();
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.Frame;
     for (const frame of this.performanceModel.frames()) {
-      this.markers.push(
-          new TimelineFlameChartMarker(frame.startTime, frame.startTime - this.model.minimumRecordTime(), style));
       this.appendFrame(frame);
     }
     ++this.currentLevel;

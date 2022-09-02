@@ -3263,17 +3263,6 @@ export class TimelineUIUtils {
     };
   }
 
-  static markerStyleForFrame(): TimelineMarkerStyle {
-    return {
-      title: i18nString(UIStrings.frame),
-      color: 'rgba(100, 100, 100, 0.4)',
-      lineWidth: 3,
-      dashStyle: [3],
-      tall: true,
-      lowPriority: true,
-    };
-  }
-
   static colorForId(id: string): string {
     if (!colorGenerator) {
       colorGenerator =

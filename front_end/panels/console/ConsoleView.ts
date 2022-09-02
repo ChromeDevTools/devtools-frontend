@@ -1054,6 +1054,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.groupableMessages.clear();
     this.groupableMessageTitle.clear();
     this.sidebar.clear();
+    this.pendingSidebarMessages = [];
     this.updateMessageList();
     this.hidePromptSuggestBox();
     this.viewport.setStickToBottom(true);
